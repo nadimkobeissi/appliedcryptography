@@ -1,0 +1,38 @@
+\ProvidesPackage{beamerthemecipher}[2025/05/04 v1.0 Cipher Beamer Theme]
+
+% Load required packages
+\RequirePackage{tikz}
+\RequirePackage{xcolor}
+\RequirePackage{graphicx}
+\RequirePackage{setspace}
+\RequirePackage{etoolbox}
+\RequirePackage{fontspec}
+\RequirePackage{hyperref}
+\RequirePackage{fancybox}
+
+% TikZ libraries
+\usetikzlibrary{shadows, arrows.meta, positioning, shapes, arrows, calc, decorations.pathmorphing}
+
+% Load dependent themes
+\usecolortheme{cipher}
+\usefonttheme{cipher}
+\useinnertheme{cipher}
+\useoutertheme{cipher}
+
+% Overall settings
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamertemplate{section in toc}[circle]
+
+% Custom commands
+\newcommand{\coversessionname}[1]{\def\insertcoversessionname{#1}}
+\newcommand{\coverpartname}[1]{\def\insertcoverpartname{#1}}
+
+% Set default values
+\coverpartname{}
+\coversessionname{}
+
+% Set Aspect Ratio
+\geometry{papersize={16cm,9cm}}

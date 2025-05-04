@@ -1,0 +1,49 @@
+\ProvidesPackage{beamerfontthemecipher}[2025/05/04 v1.0 Cipher Beamer Theme]
+
+\RequirePackage{fontspec}
+\RequirePackage{unicode-math}
+
+\setsansfont{Inter}[Path=theme/fonts/,
+    UprightFont=*-Regular,
+    BoldFont=*-Bold,
+    ItalicFont=*-Italic,
+    BoldItalicFont=*-BoldItalic,
+    Scale=1.0]
+
+\setmonofont{JetBrainsMono}[Path=theme/fonts/,
+    UprightFont=*-Regular,
+    BoldFont=*-Bold,
+    ItalicFont=*-Italic,
+    BoldItalicFont=*-BoldItalic,
+    Scale=0.9]
+
+\setromanfont{Merriweather}[Path=theme/fonts/,
+    UprightFont=*-Regular,
+    BoldFont=*-Bold,
+    ItalicFont=*-Italic,
+    BoldItalicFont=*-BoldItalic,
+    Scale=1.0]
+
+% Nice math font
+\setmathfont{Libertinus Math}
+
+% Default font is sans-serif (Inter)
+\renewcommand{\familydefault}{\sfdefault}
+
+% Frame title fonts
+\setbeamerfont{frametitle}{family=\ttfamily, size=\LARGE, series=\bfseries}
+\setbeamerfont{framesubtitle}{family=\sffamily, size=\large, series=\mdseries}
+
+% Caption fonts
+\setbeamerfont{caption}{family=\sffamily, size=\tiny}
+
+% Footline fonts
+\setbeamerfont{footline}{family=\ttfamily, size=\tiny}
+
+% Cover slide specific fonts
+\setbeamerfont{cover title}{family=\ttfamily, size=\LARGE}
+\setbeamerfont{cover subtitle}{family=\ttfamily, size=\Large}
+\setbeamerfont{part name}{family=\ttfamily, size=\scriptsize}
+\setbeamerfont{session name}{family=\ttfamily, size=\large}
+\setbeamerfont{cover author}{family=\ttfamily, size=\small}
+\setbeamerfont{cover institute}{family=\ttfamily, size=\small}

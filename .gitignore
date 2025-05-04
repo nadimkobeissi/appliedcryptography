@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+
+# LaTeX
+*.aux
+*.bcf
+*.idx
+*.log
+*.out
+*.bbl
+*.blg
+*.xml
+*.toc
+*.fls
+*.fdb_latexmk
+*.lot
+*.lof
+*.ind
+*.ilg
+*.xdv
+__latex*
+*synctex*
+*.listing
+*.fmt
+*.nav
+*.snm
+*.vrb
