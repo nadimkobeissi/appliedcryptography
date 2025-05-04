@@ -22,16 +22,7 @@
 	\begin{frame}{Defining Cryptography}
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
-				\begin{itemize}
-					\pause
-
-					\item \textbf{Cryptography}: \textit{``the practice and study of
-						techniques for secure communication in the presence of adversarial
-						behavior''} — Ronald Rivest \pause
-
-					\item Necessary since the dawn of civilization. Example: \textbf{Caesar
-						cipher}.
-				\end{itemize}
+				\definitionbox{What is Cryptography?}{\textit{"The practice and study of techniques for secure communication in the presence of adversarial behavior."} \\[0.5em] — Ronald Rivest}
 			\end{column}
 
 			\begin{column}{0.5\textwidth}
@@ -43,14 +34,7 @@
 	\begin{frame}{Defining Cryptography}
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
-				\begin{itemize}
-					\item \textbf{Cryptography}: \textit{``the practice and study of
-						techniques for secure communication in the presence of adversarial
-						behavior''} — Ronald Rivest
-
-					\item Necessary since the dawn of civilization. Example: \textbf{Caesar
-						cipher}.
-				\end{itemize}
+				\definitionbox{What is Cryptography?}{\textit{"The practice and study of techniques for secure communication in the presence of adversarial behavior."} \\[0.5em] — Ronald Rivest}
 			\end{column}
 
 			\begin{column}{0.5\textwidth}
@@ -266,8 +250,6 @@
 
 	\begin{frame}{Why bother?}
 		\begin{itemize}
-			\pause
-
 			\item Can't we just use access control? \pause
 
 			\item Strictly speaking, usernames and passwords can be implemented
@@ -278,6 +260,35 @@
 
 			\item What's so bad about that?
 		\end{itemize}
+		\begin{alertblock}{The Problem with Traditional Access Control}
+			\begin{itemize}
+				\pause
+
+				\item Requires trusting the server completely \pause
+
+				\item No protection during transmission \pause
+
+				\item No way to verify integrity \pause
+
+				\item No way to establish trust between strangers
+			\end{itemize}
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}[c]{The Magic of Cryptography}
+		\begin{center}
+			\Large\textbf{Cryptography lets us achieve what seems impossible}
+			\vspace{1cm}
+			\begin{itemize}
+				\pause
+
+				\item Secure communication over insecure channels \pause
+
+				\item Verification without revealing secrets \pause
+
+				\item Proof of computation without redoing it
+			\end{itemize}
+		\end{center}
 	\end{frame}
 
 	\begin{frame}{Hard problems}
@@ -401,18 +412,31 @@
 	\end{frame}
 
 	\begin{frame}{Symmetric primitive example: hash functions}
-		\begin{itemize}
-			\pause
+		\begin{columns}[c]
+			\begin{column}{0.55\textwidth}
+				\definitionbox{Hash Function Properties}{\begin{itemize}\item Takes input of \textbf{any size}
 
-			\item $\mathsf{SHA256}(\texttt{hello}) = \texttt{0x2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824
-				}$ \pause
+				\item Produces output of \textbf{fixed size}
 
-			\item $\mathsf{SHA256}(\texttt{hullo}) = \texttt{0x7835066a1457504217688c8f5d06909c6591e0ca78c254ccf17450d0d999cab0
-				}$ \pause
+				\item Is \textbf{deterministic} (same input $\rightarrow$ same output)
 
-			\item $\mathsf{SHA256}(\textit{veryLongInputOfAMillionBytes}) = \texttt{0x2be5b2bcfbe63c4ba5ea9acd0e6a8d714bff843a2dbf0ef0abcfe7487e5e83cd
-				}$
-		\end{itemize}
+				\item Even a \textbf{tiny change} in input creates completely different output
+
+				\item Is \textbf{efficient} to compute\end{itemize}}
+			\end{column}
+			\begin{column}{0.45\textwidth}
+				\begin{tcolorbox}
+					[colback=black!5!white,colframe=ciphergray] $\mathsf{SHA256}(\texttt{hello
+					}) =$ \\ \texttt{2cf24dba5fb0a30e26e83b2ac5}\\ \texttt{b9e29e1b161e5c1fa7425e7304}\\
+					\texttt{3362938b9824}
+
+					$\mathsf{SHA256}(\texttt{hullo}) =$ \\ \texttt{7835066a1457504217688c8f5d}\\
+					\texttt{06909c6591e0ca78c254ccf174}\\ \texttt{50d0d999cab0}
+				\end{tcolorbox}
+				\textcolor{cipherprimary}{\textbf{Note:} \small One character change $\rightarrow$
+				completely different hash!}
+			\end{column}
+		\end{columns}
 	\end{frame}
 
 	\begin{frame}{Expected properties of a hash function}
@@ -858,7 +882,7 @@
 		\end{columns}
 	\end{frame}
 
-	\begin{frame}{TLS 1.3: high-level skwtch}
+	\begin{frame}{TLS 1.3: high-level sketch}
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
 				\begin{itemize}
@@ -915,11 +939,9 @@
 			\item \textbf{Serious Cryptography}: hard engineering perspective.
 				\vspace{1cm}
 
-			\item Many assignments!
-
-			\item Many lab sessions!
-
-			\item Many projects!
+			\item \textbf{Always keep an eye on the website:} Course news, updates,
+				materials, slides will all be posted there.
+				\url{https://appliedcryptography.page}
 
 			\item I am aiming for the most engaging course possible!
 		\end{itemize}

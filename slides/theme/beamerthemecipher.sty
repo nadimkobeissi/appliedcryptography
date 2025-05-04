@@ -10,9 +10,11 @@
 \RequirePackage{hyperref}
 \RequirePackage[activate={true,nocompatibility},final,tracking=true,factor=1100,stretch=10,shrink=10]{microtype}
 \RequirePackage{fancybox}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{listings}
 
 % TikZ libraries
-\usetikzlibrary{shadows, arrows.meta, positioning, shapes, arrows, calc, decorations.pathmorphing}
+\usetikzlibrary{shadows, arrows.meta, positioning, shapes, calc}
 
 % Load dependent themes
 \usecolortheme{cipher}
@@ -30,6 +32,24 @@
 % Custom commands
 \newcommand{\coversessionname}[1]{\def\insertcoversessionname{#1}}
 \newcommand{\coverpartname}[1]{\def\insertcoverpartname{#1}}
+
+% Custom definition box
+\newcommand{\definitionbox}[2]{%
+  \begin{tcolorbox}[colback=ciphergray!40!white,colframe=cipherprimary,title=#1,fonttitle=\bfseries]
+    #2
+  \end{tcolorbox}
+}
+
+% Code listing box with syntax highlighting
+\newcommand{\codebox}[3]{%
+  \begin{tcolorbox}[enhanced,title=#1,
+    colback=black!3!white,colframe=cipherprimary!70!black,
+    colbacktitle=cipherprimary,coltitle=white,
+    fonttitle=\bfseries\ttfamily\small,
+    listing only,listing options={language=#2}]
+    #3
+  \end{tcolorbox}
+}
 
 % Set default values
 \coverpartname{}
