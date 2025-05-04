@@ -25,8 +25,8 @@
 				\begin{itemize}
 					\pause
 
-					\item \textbf{Cryptography}: \textit{"the practice and study of techniques
-						for secure communication in the presence of adversarial behavior"} —
+					\item \textbf{Cryptography}: \textit{``the practice and study of techniques
+						for secure communication in the presence of adversarial behavior''} —
 						Ronald Rivest \pause
 
 					\item Necessary since the dawn of civilization. Example: \textbf{Caesar
@@ -44,8 +44,8 @@
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
 				\begin{itemize}
-					\item \textbf{Cryptography}: \textit{"the practice and study of techniques
-						for secure communication in the presence of adversarial behavior"} —
+					\item \textbf{Cryptography}: \textit{``the practice and study of techniques
+						for secure communication in the presence of adversarial behavior''} —
 						Ronald Rivest
 
 					\item Necessary since the dawn of civilization. Example: \textbf{Caesar
@@ -256,7 +256,7 @@
 			\item \textbf{Signal} implements post-compromise security, an advanced security
 				goal.
 				\begin{itemize}
-					\item Allows a conversation to "heal" in the event of a temporary key compromise.
+					\item Allows a conversation to ``heal'' in the event of a temporary key compromise.
 
 					\item More on that later in the course.
 				\end{itemize}
@@ -279,7 +279,7 @@
 		\end{itemize}
 	\end{frame}
 
-	\begin{frame}{"Hard problems"}
+	\begin{frame}{Hard problems}
 		\begin{itemize}
 			\item Cryptography is largely about equating the security of a system to the
 				difficulty of solving a math problem that is thought to be computationally
@@ -306,7 +306,7 @@
 		\bigimagewithcaption{dh.png}{}
 	\end{frame}
 
-	\begin{frame}{"No known feasible computation"}
+	\begin{frame}{No known feasible computation}
 		\begin{itemize}
 			\item The discrete logarithm problem:
 				\begin{itemize}
@@ -330,7 +330,7 @@
 					\item This problem is believed to be computationally hard when $p$ is large
 						and $g$ is a primitive root modulo $p$.
 						\begin{itemize}
-							\item "Believed to be" = we don't know of any way to do it that doesn't
+							\item ``Believed to be'' = we don't know of any way to do it that doesn't
 								take forever, unless we have a strong, stable quantum computer (Shor's
 								algorithm)
 						\end{itemize}
@@ -338,7 +338,7 @@
 		\end{itemize}
 	\end{frame}
 
-	\begin{frame}{"Hard problems"}
+	\begin{frame}{Hard problems}
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
 				\textbf{Asymmetric Primitives}
@@ -347,7 +347,7 @@
 
 					\item Diffie-Hellman, RSA, ML-KEM, etc. \pause
 
-					\item "Asymmetric" because there is a "public key" and a "private key"
+					\item ``Asymmetric'' because there is a ``public key'' and a ``private key''
 						for each party. \pause
 
 					\item Algebraic, assume the hardness of mathematical problems (as seen
@@ -362,14 +362,14 @@
 
 					\item AES, SHA-2, ChaCha20, HMAC\ldots \pause
 
-					\item "Symmetric" because there is one secret key. \pause
+					\item ``Symmetric'' because there is one secret key. \pause
 
 					\item Not algebraic but unstructured, but on their understood
 						resistance to $n$ years of cryptanalysis. \pause
 
 					\item Can act as substitutes for assumptions in security proofs!
 						\begin{itemize}
-							\item Example: hash function assumed to be a "random oracle"
+							\item Example: hash function assumed to be a ``random oracle''
 						\end{itemize}
 				\end{itemize}
 			\end{column}
@@ -378,15 +378,15 @@
 
 	\begin{frame}{Kerckhoff's Principle}
 		\begin{itemize}
-			\item \textit{"A cryptosystem should be secure even if everything about the
-				system, except the key, is public knowledge."} — Auguste Kerckhoffs, 1883
+			\item \textit{``A cryptosystem should be secure even if everything about the
+				system, except the key, is public knowledge.''} — Auguste Kerckhoffs, 1883
 				\pause
 
 			\item \textbf{Why it matters}:
 				\begin{itemize}
 					\pause
 
-					\item No "security through obscurity" \pause
+					\item No ``security through obscurity'' \pause
 
 					\item The key is the only secret: the rest can be audited, tested,
 						trusted \pause
@@ -403,10 +403,10 @@
 		\begin{itemize}
 			\pause
 
-			\item $\mathsf{SHA256}(\texttt{"hello"}) = \texttt{0x2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824
+			\item $\mathsf{SHA256}(\texttt{hello}) = \texttt{0x2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824
 				}$ \pause
 
-			\item $\mathsf{SHA256}(\texttt{"hullo"}) = \texttt{0x7835066a1457504217688c8f5d06909c6591e0ca78c254ccf17450d0d999cab0
+			\item $\mathsf{SHA256}(\texttt{hullo}) = \texttt{0x7835066a1457504217688c8f5d06909c6591e0ca78c254ccf17450d0d999cab0
 				}$ \pause
 
 			\item $\mathsf{SHA256}(\textit{veryLongInputOfAMillionBytes}) = \texttt{0x2be5b2bcfbe63c4ba5ea9acd0e6a8d714bff843a2dbf0ef0abcfe7487e5e83cd
@@ -463,7 +463,7 @@
 					\item \textbf{Zero-knowledge proofs} allow you to prove that you know
 						a secret without revealing any information about it.
 
-					\item They built "zero-knowledge virtual machines" where you can execute
+					\item They built ``zero-knowledge virtual machines'' where you can execute
 						an entire program that runs as a zero-knowledge proof.
 
 					\item ZKP battleship game: server proves to the players that its
@@ -561,7 +561,7 @@
 						\begin{itemize}
 							\item One-way
 
-							\item "Randomized"
+							\item ``Randomized''
 
 							\item Relations between inputs not reflected in outputs
 						\end{itemize}
@@ -662,7 +662,7 @@
 							\item \textbf{Surjective}: Every output has one corresponding input
 						\end{itemize}
 
-					\item "Randomized"
+					\item ``Randomized''
 
 					\item Relations between inputs not reflected in outputs
 				\end{itemize}
@@ -672,7 +672,7 @@
 				\begin{tikzpicture}[scale=0.38]
 					% Define colors
 					\definecolor{domaingreen}{RGB}{102, 170, 68}
-					\definecolor{rangegreen}{RGB}{102, 170, 68} % same color as domain
+					\definecolor{rangegreen}{RGB}{102, 170, 68}
 					\definecolor{circlecolor}{RGB}{235, 137, 85}
 					\definecolor{purplearrow}{RGB}{160, 78, 160}
 
@@ -773,7 +773,7 @@
 		\end{columns}
 	\end{frame}
 
-	\begin{frame}{Block cipher "modes of operation"}
+	\begin{frame}{Block cipher modes of operation}
 		\bigimagewithcaption{block_cipher_modes.png}{Source: Wikipedia}
 	\end{frame}
 
@@ -826,7 +826,7 @@
 			\item \textbf{Signal} implements post-compromise security, an advanced security
 				goal.
 				\begin{itemize}
-					\item Allows a conversation to "heal" in the event of a temporary key compromise.
+					\item Allows a conversation to ``heal'' in the event of a temporary key compromise.
 
 					\item More on that later in the course.
 				\end{itemize}
@@ -907,10 +907,10 @@
 
 	\begin{frame}{Class materials}
 		\begin{itemize}
-			\item Joy of Cryptography: learn about the math, how to reason about and prove
+			\item \textbf{Joy of Cryptography}: learn about the math, how to reason about and prove
 				systems secure.
 
-			\item Serious Cryptography: hard engineering perspective.
+			\item \textbf{Serious Cryptography}: hard engineering perspective.
 				\vspace{1cm}
 
 			\item Many assignments!
