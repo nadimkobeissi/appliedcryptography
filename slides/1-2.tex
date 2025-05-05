@@ -30,7 +30,7 @@
 			\column{0.5\textwidth}{
 				\begin{itemize}[<+->]
 					\item Keep the whole design secret?
-					\textbf{``Advantages''}:
+					\item \textbf{``Advantages''}:
 					\begin{itemize}[<+->]
 						\item Attacker doesn’t know how our cipher (or system, more generally,) works.
 					\end{itemize}
@@ -83,13 +83,13 @@
 	\begin{frame}{One-time pad}{First look at a symmetric cipher}
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
-				\sssubroutine{$Enc(K, M)$}{
+				\sssubroutine{Enc}{K, M}{
 					$C \coloneq K \oplus M$ \\
 					return $C$
 				}{2}
 			\end{column}
 			\begin{column}{0.5\textwidth}
-				\sssubroutine{$Dec(K, C)$}{
+				\sssubroutine{Dec}{K, C}{
 					$M \coloneq K \oplus C$ \\
 					return $M$
 				}{2}
@@ -166,7 +166,7 @@
 			\item We need a pseudo-random uniform distribution:
 			\item If $\mathcal{S}$ is a set of $m$ items, then the uniform distribution over $\mathcal{S}$ assigns probability $\frac{1}{m}$ to each item $x \in \mathcal{S}$
 			\item In practice, this just means we need the bits to be random, unpredictable, uniformly distributed in terms of probability
-			\item Sampling a $K$ from a pseudo-random uniform distribution is written as $K \twoheadleftarrow \{\nliteral{0}, \nliteral{1}\}^n$
+			\item Sampling a $K$ from a pseudo-random uniform distribution is written as $K \twoheadleftarrow \bits^n$
 		\end{itemize}
 	\end{frame}
 
@@ -194,9 +194,9 @@
 			]
 				\node[dashed box] (adversary) {$adversary$};
 				\node[box, right=2cm of adversary](attack){
-					$\underline{ATTACK(M)}$: \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary chooses $M$}} \\
-					\quad $K \twoheadleftarrow \{\nliteral{0}, \nliteral{1}\}^{n}$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim samples $K$}} \\
-					\quad $C \coloneq Enc(K, M)$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim encrypts}} \\
+					$\underline{\textsc{Attack}\scalebox{1.1}{(M)}}$: \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary chooses $M$}} \\
+					\quad $K \twoheadleftarrow \bits^{n}$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim samples $K$}} \\
+					\quad $C \coloneq \textsf{Enc}(K, M)$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim encrypts}} \\
 					\quad return $C$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary sees $C$}}
 				};
 				\draw[->] (adversary) -- node[above] {$M$} (attack);
@@ -226,7 +226,7 @@
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
 				\begin{itemize}
-					\item When we prove security, we prove what is or isn’t possible by the attacker calling $ATTACK(M)$.
+					\item When we prove security, we prove what is or isn’t possible by the attacker calling \textsc{Attack}$(M)$.
 				\end{itemize}
 			\end{column}
 			\begin{column}{0.5\textwidth}
@@ -243,11 +243,11 @@
 
 	\begin{frame}{One-time pad}{Correctness proof}
 		\begin{itemize}[<+->]
-			\item $\forall(n > 0,\; K \in \{\nliteral{0}, \nliteral{1}\}^{n},\; M\in\{\nliteral{0}, \nliteral{1}\}^{n}),\; Dec(K, Enc(K, M)) = M$
+			\item $\forall(n > 0,\; K \in \bits^{n},\; M \in \bits^{n}),\; \textsf{Dec}(K, \textsf{Enc}(K, M)) = M$
 			\item For all positive $n$, any key of $n$ bits and message of $n$ bits will decrypt back to the same plaintext if encrypted into a ciphertext.
 			\item \textbf{Proof}:
 			\begin{align*}
-				Dec(K, Enc(K, M)) &= Dec(K, K \oplus M) \\
+				\textsf{Dec}(K, \textsf{Enc}(K, M)) &= \textsf{Dec}(K, K \oplus M) \\
 				&= K \oplus (K \oplus M) \\
 				&= (K \oplus K) \oplus M \\
 				&= 0^n \oplus M \\
@@ -265,8 +265,8 @@
 				\end{itemize}
 			\end{column}
 			\begin{column}{0.5\textwidth}
-				\sssubroutine{$ATTACK(M)$}{
-					$K \twoheadleftarrow \{\nliteral{0}, \nliteral{1}\}^{n}$ \\
+				\sssubroutine{Attack}{M}{
+					$K \twoheadleftarrow \bits^{n}$ \\
 					$C \coloneq K \oplus M$ \\
 					return $C$
 				}{1.5}
@@ -289,8 +289,8 @@
 				\end{itemize}
 			\end{column}
 			\begin{column}{0.3\textwidth}
-				\sssubroutine{$ATTACK(M)$}{
-					$K \twoheadleftarrow \{\nliteral{0}, \nliteral{1}\}^{n}$ \\
+				\sssubroutine{Attack}{M}{
+					$K \twoheadleftarrow \bits^{n}$ \\
 					$C \coloneq K \oplus M$ \\
 					return $C$
 				}{1.5}
@@ -303,16 +303,16 @@
 			\begin{column}{0.7\textwidth}
 				\begin{itemize}[<+->]
 					\item What if this is true only for $M = \nliteral{01}$?
-					\item Fine, let's pick any $M, C \in \{\nliteral{0, 1}\}^n$.
-					\item What is \prob{$ATTACK(M) = C$}?
-					\item Answer: Exactly when $C = Enc(K, M) = K \oplus M$.
+					\item Fine, let's pick any $M, C \in \bits^n$.
+					\item What is \prob{\textsc{Attack}$(M) = C$}?
+					\item Answer: Exactly when $C = \textsf{Enc}(K, M) = K \oplus M$.
 					\item ...which occurs for exactly one $K$.
-					\item Since $K$ is chosen uniformly from $\{\nliteral{0}, \nliteral{1}\}^n$, the probability of choosing that $K$ is $\frac{1}{2^n}. \quad \qed$
+					\item Since $K$ is chosen uniformly from $\bits^n$, the probability of choosing that $K$ is $\frac{1}{2^n}. \quad \qed$
 				\end{itemize}
 			\end{column}
 			\begin{column}{0.3\textwidth}
-				\sssubroutine{$ATTACK(M)$}{
-					$K \twoheadleftarrow \{\nliteral{0}, \nliteral{1}\}^{n}$ \\
+				\sssubroutine{Attack}{M}{
+					$K \twoheadleftarrow \bits^{n}$ \\
 					$C \coloneq K \oplus M$ \\
 					return $C$
 				}{1.5}
@@ -323,20 +323,21 @@
 	\begin{frame}{One-time pad}{From the adversary's perspective...}
 		\begin{columns}[c]
 			\begin{column}{0.35\textwidth}
-				\sssubroutine{$ATTACK(M)$}{
-					$K \twoheadleftarrow \{\nliteral{0}, \nliteral{1}\}^{n}$ \\
+				\sssubroutine{Attack}{M}{
+					$K \twoheadleftarrow \bits^{n}$ \\
 					$C \coloneq K \oplus M$ \\
 					return $C$
 				}{1.5}
 			\end{column}
 			\begin{column}{0.3\textwidth}
 				\begin{center}
-					\textit{indistinguishable \\ from}
+					{\huge{$\approxeq$}} \\[1em]
+					{\scriptsize\textit{(indistinguishable \\ from)}}
 				\end{center}
 			\end{column}
 			\begin{column}{0.35\textwidth}
-				\sssubroutine{$JUNK(M)$}{
-					$C \twoheadleftarrow \{\nliteral{0}, \nliteral{1}\}^{n}$ \\
+				\sssubroutine{Junk}{M}{
+					$C \twoheadleftarrow \bits^{n}$ \\
 					return $C$
 				}{2}
 			\end{column}
@@ -440,8 +441,8 @@
 				\end{table}
 			\end{column}
 			\begin{column}{0.3\textwidth}
-				\sssubroutine{$ATTACK(M)$}{
-					$K \twoheadleftarrow \{\nliteral{0}, \nliteral{1}\}^{n}$ \\
+				\sssubroutine{Attack}{M}{
+					$K \twoheadleftarrow \bits^{n}$ \\
 					$C \coloneq K \land M$ \\
 					return $C$
 				}{1.5}
@@ -459,7 +460,7 @@
 				\end{itemize}
 			\end{column}
 			\begin{column}{0.5\textwidth}
-				\sssubroutine{$ATTACK(M)$}{
+				\sssubroutine{Attack}{M}{
 					$K \twoheadleftarrow \mathbb{Z}_{n}$ \\
 					$C \coloneq (K + M)\ \%\ n$ \\
 					return $C$
@@ -487,10 +488,10 @@
 				\begin{center}
 					\sslibrary{dice-guess}{
 						$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$ \\[2em]
-						\sslibrarysubroutine{$GUESS(G)$}{
+						\sslibrarysubroutine{Guess}{G}{
 							return $D == G$
 						}{1} \\[2em]
-						\sslibrarysubroutine{$REROLL(G)$}{
+						\sslibrarysubroutine{Reroll}{G}{
 							$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$
 						}{1}
 					}

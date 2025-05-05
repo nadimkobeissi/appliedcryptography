@@ -1,12 +1,15 @@
 \ProvidesPackage{theme/beamerfontthemecipher}[2025/05/04 v1.0 Cipher Beamer Theme]
 
-\setsansfont{Inter}[Scale=1.0]
+\setsansfont{Fira Sans}[Scale=1.0]
 \setmonofont{JetBrains Mono}[Scale=0.9]
 \setromanfont{STIX Two Text}[Scale=1.0]
 \setmathfont{STIX Two Math}[Scale=1.0]
 
-% Default font is sans-serif (Inter)
+% Default font is sans-serif (Fira Sans)
 \renewcommand{\familydefault}{\sfdefault}
+
+% Slightly increase line spacing throughout the presentation
+\linespread{1.05}\selectfont
 
 % Frame title fonts
 \setbeamerfont{frametitle}{family=\ttfamily, size=\LARGE, series=\bfseries}
