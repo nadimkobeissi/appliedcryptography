@@ -1,4 +1,4 @@
-<img src="website/img/aub_red.webp" alt="AUB Logo" style="max-width: 300px;">
+<img src="website/img/aub_red.png" alt="AUB Logo" style="max-width: 250px;">
 
 # Applied Cryptography (CMPS 297AD/396AI)
 
