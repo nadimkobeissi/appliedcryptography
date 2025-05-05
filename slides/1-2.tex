@@ -481,6 +481,37 @@
 		\end{columns}
 	\end{frame}
 
+	\begin{frame}{Attack scenarios as libraries}
+		\begin{columns}[t]
+			\begin{column}{0.65\textwidth}
+				\begin{itemize}
+					\item This is a \textbf{library} with two \textbf{subroutines} and a \textbf{global variable} $D$.
+					\item Victim holds a 6-sided die.
+					\item The first line of the library represents an initialization step.
+					\item Attacker can call the subroutines at any time, and:
+				 	\begin{enumerate}
+						\item Make a guess about the current value of the die and learn whether the guess was correct.
+						\item Instruct the victim to (privately) re-roll the die.
+					\end{enumerate}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.35\textwidth}
+				\vspace{-1cm}
+				\begin{center}
+					\sslibrary{dice-guess}{
+						$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$ \\[2em]
+						\sslibrarysubroutine{$GUESS(G)$}{
+							return $D == G$
+						}{1} \\[2em]
+						\sslibrarysubroutine{$REROLL(G)$}{
+							$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$
+						}{1}
+					}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
 	\begin{frame}[plain]
 		\titlepage
 	\end{frame}

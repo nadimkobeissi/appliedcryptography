@@ -3,19 +3,8 @@
 % Load required packages
 \RequirePackage{tikz}
 \RequirePackage[table]{xcolor}
-\RequirePackage{graphicx}
-\RequirePackage{setspace}
-\RequirePackage{etoolbox}
-\RequirePackage{hyperref}
-\RequirePackage{xstring}
-\RequirePackage{fancybox}
 \RequirePackage[most]{tcolorbox}
-\RequirePackage{listings}
-\RequirePackage{svg}
-\RequirePackage{mathtools}
-\RequirePackage{fontspec}
-\RequirePackage{unicode-math}
-\RequirePackage{amsmath,amssymb,amsfonts}
+\RequirePackage{listings,svg,mathtools,fontspec,unicode-math,tcolorbox,amsmath,amssymb,amsfonts,graphicx,setspace,etoolbox,hyperref,xstring,fancybox,varwidth}
 \RequirePackage[activate={true,nocompatibility},final,tracking=true,factor=1100,stretch=10,shrink=10]{microtype}
 
 % TikZ libraries
@@ -109,5 +98,40 @@
 	\end{center}
 }
 
+\newcommand{\sslibrarysubroutine}[3]{
+	\begin{tikzpicture}[box/.style={rectangle, align=left, fill=white, scale=#3, execute at begin node=\setlength{\baselineskip}{2em}}]
+		\node[box]{
+			\underline{#1}: \\
+			#2
+		};
+	\end{tikzpicture}
+}
+
 \newcommand{\nliteral}[1]{\textcolor{ciphernliteral}{\texttt{#1}}}
 \newcommand{\prob}[1]{$\Pr\bigl[\ $#1$\ \bigr]$}
+
+\newtcolorbox{sslibrarybox}[1][]{
+	colback=white,
+	colframe=gray!20,
+	coltitle=black,
+	enhanced,hbox,
+	fonttitle=\bfseries,
+	title=$\mathcal{L}_\text{#1}$,
+	toptitle=1mm,
+	bottomtitle=1mm,
+	titlerule=0.5pt,
+	left=1mm,
+	right=1mm,
+	top=2mm,
+	bottom=2mm,
+	sharp corners,
+	halign title=center
+}
+
+\newcommand{\sslibrary}[2]{
+	\begin{sslibrarybox}[#1]
+		\begin{varwidth}{\pagewidth}
+			#2
+		\end{varwidth}
+	\end{sslibrarybox}
+}
