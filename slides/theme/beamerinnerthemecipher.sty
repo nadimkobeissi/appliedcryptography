@@ -56,58 +56,14 @@
 \setbeamertemplate{itemize subitem}{\small\raise0.5pt\hbox{\donotcoloroutermaths$\circ$}}
 \setbeamertemplate{itemize subsubitem}{\small\raise0.5pt\hbox{\donotcoloroutermaths$\diamond$}}
 
-% Blocks
-\setbeamertemplate{block begin}{
-  \par\vskip\medskipamount
-  \begin{beamercolorbox}[rounded=true,colsep*=0.75ex]{block title}
-    \usebeamerfont{block title}\insertblocktitle
-  \end{beamercolorbox}
-  \begin{beamercolorbox}[rounded=true,colsep*=0.75ex,sep=0.5ex,vmode]{block body}
-    \usebeamerfont{block body}
-    \ifbeamercolorempty[bg]{block body}{\vskip-.25ex}{}%
-}
-\setbeamertemplate{block end}{
-  \end{beamercolorbox}
-  \vskip\smallskipamount
-}
-
-% Alerted blocks
-\setbeamertemplate{block alerted begin}{
-  \par\vskip\medskipamount
-  \begin{beamercolorbox}[rounded=true,colsep*=0.75ex]{block title alerted}
-    \usebeamerfont{block title alerted}\insertblocktitle
-  \end{beamercolorbox}
-  \begin{beamercolorbox}[rounded=true,colsep*=0.75ex,sep=0.5ex,vmode]{block body alerted}
-    \usebeamerfont{block body alerted}
-    \ifbeamercolorempty[bg]{block body alerted}{\vskip-.25ex}{}%
-}
-\setbeamertemplate{block alerted end}{
-  \end{beamercolorbox}
-  \vskip\smallskipamount
-}
-
-% Example blocks
-\setbeamertemplate{block example begin}{
-  \par\vskip\medskipamount
-  \begin{beamercolorbox}[rounded=true,colsep*=0.75ex]{block title example}
-    \usebeamerfont{block title example}\insertblocktitle
-  \end{beamercolorbox}
-  \begin{beamercolorbox}[rounded=true,colsep*=0.75ex,sep=0.5ex,vmode]{block body example}
-    \usebeamerfont{block body example}
-    \ifbeamercolorempty[bg]{block body example}{\vskip-.25ex}{}%
-}
-\setbeamertemplate{block example end}{
-  \end{beamercolorbox}
-  \vskip\smallskipamount
-}
-
 \newcommand{\imagewithcaption}[3][0.9\textwidth]{
 	\begin{center}
 		\begin{tikzpicture}
-			\node[fill=white, anchor=center, inner sep=0pt]{
+			\hspace{-1mm}
+			\node[fill=white, anchor=center, inner sep=1mm]{
 				\IfEndWith{#2}{.svg}
-					{\includesvg[width=#1, height=0.8\textheight, keepaspectratio]{images/#2}}
-					{\includegraphics[width=#1, height=0.8\textheight, keepaspectratio]{images/#2}}
+					{\includesvg[width=#1, height=0.9\textheight, keepaspectratio]{images/#2}}
+					{\includegraphics[width=#1, height=0.9\textheight, keepaspectratio]{images/#2}}
 			};
 			\node[fit=(current bounding box), inner sep=0.5mm, draw=white, line width=0.5mm] {};
 		\end{tikzpicture}
@@ -120,9 +76,10 @@
 }
 \newcommand{\bigimagewithcaption}[3][1\textwidth]{
 	\begin{center}
-		\vspace{-0.6cm}
+		\vspace{-0.75cm}
 		\begin{tikzpicture}
-			\node[fill=white, anchor=center, inner sep=0pt]{
+			\hspace{-1mm}
+			\node[fill=white, anchor=center, inner sep=1mm]{
 				\IfEndWith{#2}{.svg}
 					{\includesvg[width=#1, height=0.8\textheight, keepaspectratio]{images/#2}}
 					{\includegraphics[width=#1, height=0.8\textheight, keepaspectratio]{images/#2}}

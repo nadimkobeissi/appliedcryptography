@@ -27,6 +27,199 @@
 		\bigimagewithcaption{naive_enc.svg}{Source: The Joy of Cryptography}
 	\end{frame}
 
+	\begin{frame}{Thinking about secrecy}
+		\begin{columns}[c]
+			\column{0.5\textwidth}{
+				\begin{itemize}
+					\item Keep the whole design secret?
+					\pause
+					\textbf{``Advantages''}:
+					\begin{itemize}
+						\item Attacker doesn’t know how our cipher (or system, more generally,) works.
+					\end{itemize}
+					\item \textbf{Disadvantages}:
+					\begin{itemize}
+						\item Figuring out how the thing works might mean a break.
+						\item Can’t expose cipher to scrutiny.
+						\item Everyone needs to invent a cipher.
+					\end{itemize}
+				\end{itemize}
+			}
+			\column{0.5\textwidth}{
+				\imagewithcaption{naive_enc.svg}{Source: The Joy of Cryptography}
+			}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Kerckhoff's Principle}
+		\begin{itemize}
+			\item \textit{``A cryptosystem should be secure even if everything about the system, except the key, is public knowledge.''} — Auguste Kerckhoffs, 1883
+			\pause
+			\item \textbf{Why it matters}:
+				\begin{itemize}
+					\pause
+					\item No ``security through obscurity''
+					\pause
+					\item The key is the only secret: the rest can be audited, tested, trusted
+					\pause
+					\item Encourages open standards and peer review
+					\pause
+					\item If your system's security depends on nobody knowing how it works, it's not secure.
+				\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{Thinking about secrecy}
+		\bigimagewithcaption{keyed_enc.svg}{\textbf{Concentrate all the need for secrecy in the key!}}
+	\end{frame}
+
+	\begin{frame}{Thinking about secrecy}
+		\begin{columns}[c]
+			\column{0.5\textwidth}{
+				\begin{itemize}
+					\item Cipher can be scrutinized, used by anyone.
+					\pause
+					\item Design can be shown to hold so long as the key is secret.
+					\pause
+					\item This is how virtually all cryptography is designed today.
+				\end{itemize}
+			}
+			\column{0.5\textwidth}{
+				\imagewithcaption{keyed_enc.svg}{Source: The Joy of Cryptography}
+			}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{One-time pad}{First look at a symmetric cipher}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\begin{tikzpicture}[box/.style={rectangle, draw, align=left, fill=white, inner sep=7pt, scale=2}]
+						\node[box](Enc){
+							$\underline{Enc(K, M)}$: \\[0.5em]
+							$C := K \oplus M$ \\[0.5em]
+							return $C$
+						};
+					\end{tikzpicture}
+				\end{center}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\begin{tikzpicture}[box/.style={rectangle, draw, align=left, fill=white, inner sep=7pt, scale=2}]
+						\node[box](Enc){
+							$\underline{Dec(K, C)}$: \\[0.5em]
+							$M := K \oplus C$ \\[0.5em]
+							return $M$
+						};
+					\end{tikzpicture}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{XOR (Exclusive OR) Operation}
+		\begin{columns}[c]
+			\column{0.6\textwidth}{
+				\begin{table}
+					\centering
+					\begin{tabular}{|c|c|c|}
+						\hline
+						\rowcolor{white}
+						\textbf{A} & \textbf{B} & \textbf{A $\oplus$ B} \\
+						\hline
+						\rowcolor{white}
+						\texttt{0} & \texttt{0} & \texttt{0} \\
+						\hline
+						\rowcolor{white}
+						\texttt{0} & \texttt{1} & \texttt{1} \\
+						\hline
+						\rowcolor{white}
+						\texttt{1} & \texttt{0} & \texttt{1} \\
+						\hline
+						\rowcolor{white}
+						\texttt{1} & \texttt{1} & \texttt{0} \\
+						\hline
+					\end{tabular}
+					\caption{Truth table for XOR operation}
+				\end{table}
+				\begin{itemize}
+					\item XOR returns 1 when inputs differ
+					\item XOR returns 0 when inputs are the same
+					\item Key property: $x \oplus x = 0$ and $x \oplus 0 = x$
+					\item Self-inverse: $(M \oplus K) \oplus K = M$
+				\end{itemize}
+			}
+			\column{0.4\textwidth}{
+				\begin{center}
+					\begin{tikzpicture}[scale=0.8]
+						\draw[thick] (0,0) circle (1.5);
+						\draw[thick] (1,0) circle (1.5);
+						\node at (0,-2) {A};
+						\node at (1,-2) {B};
+						\begin{scope}
+							\clip (0,0) circle (1.5);
+							\clip (1,0) circle (1.5);
+							\fill[cyan!30] (-1.5,-1.5) rectangle (2.5,1.5);
+						\end{scope}
+						\draw[thick] (0,0) circle (1.5);
+						\draw[thick] (1,0) circle (1.5);
+						\node at (0.5,0) {$A \oplus B$};
+					\end{tikzpicture}
+				\end{center}
+			}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{One-time pad}{First look at a symmetric cipher}
+		\bigimagewithcaption{xor_enc.png}{(We're encoding the message and key as bits)}
+	\end{frame}
+
+	\begin{frame}{One-time pad}{First look at a symmetric cipher}
+		\bigimagewithcaption{xor_dec.png}{(We're encoding the message and key as bits)}
+	\end{frame}
+
+	\begin{frame}{One-time pad}{Correctness proof}
+		\begin{itemize}
+			\item $\forall(n>0,\; K\in\{0, 1\}^{n},\; M\in\{0, 1\}^{n}),\; Dec(K, Enc(K, M))=M$
+			\item For all positive $n$, any key of $n$ bits and message of $n$ bits will decrypt back to the same plaintext if encrypted into a ciphertext.
+			\item \textbf{Proof}:
+			\begin{align*}
+				Dec(K, Enc(K, M)) &= Dec(K, K \oplus M) \\
+				&= K \oplus (K \oplus M) \\
+				&= (K \oplus K) \oplus M \\
+				&= 0^n \oplus M \\
+				&= M \quad \qed
+			\end{align*}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{Key derivation}{Uniform distribution}
+		\begin{itemize}
+			\item How to derive $K$?
+			\item $K$ is ideally random.
+			\item True randomness isn’t practical, so $K$ is in practice pseudo-random.
+			\item We need a pseudo-random uniform distribution:
+			\item If $\mathcal{S}$ is a set of $m$ items, then the uniform distribution over $\mathcal{S}$ assigns probability $\frac{1}{m}$ to each item $x \in \mathcal{S}$
+			\item In practice, this just means we need the bits to be random, unpredictable, uniformly distributed in terms of probability
+			\item Sampling a $K$ from a pseudo-random uniform distribution is written as $K \twoheadleftarrow \{\texttt{0}, \texttt{1}\}^n$
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{Adversary's access to oracle}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item ``Victim'' chooses their key.
+					\item Adversary chooses the message and receives the ciphertext.
+					\item We say that \textbf{the adversary has access to an encryption oracle}.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\imagewithcaption{attacker_interface.svg}{Source: The Joy of Cryptography}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
 	\begin{frame}{Adversary's access to oracle}
 		\begin{center}
 			\begin{tikzpicture}[
@@ -34,18 +227,55 @@
 				dashed box/.style={rectangle, draw, dashed, minimum width=2.5cm, minimum height=2.5cm, align=center, fill=white},
 				>=Stealth,
 			]
-				% Draw the boxes
 				\node[dashed box] (adversary) {$adversary$};
 				\node[box, right=2cm of adversary](attack){
 					$\underline{ATTACK(M)}$: \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary chooses $M$}} \\
 					\quad $K \twoheadleftarrow \{$\textcolor{red}{$\texttt{0}, \texttt{1}$}$\}^{n}$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim samples $K$}} \\
-					\quad $C := \text{Enc}(K, M)$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim encrypts}} \\
+					\quad $C := Enc(K, M)$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim encrypts}} \\
 					\quad return $C$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary sees $C$}}
 				};
-				% Draw the arrows
 				\draw[->] (adversary) -- node[above] {$M$} (attack);
 				\draw[<-] ([yshift=-0.5cm]adversary.east) -- node[below] {$C$} ([yshift=-0.5cm]attack.west);
 			\end{tikzpicture}
 		\end{center}
 	\end{frame}
+
+	\begin{frame}{Adversary's access to oracle}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Adversary can query oracle an unbounded number of times.
+					\item Two queries with same $M$ may return different $(C, C')$, since victim may use different $K$.
+					\item $K$ is always chosen correctly (pseudo-random uniform sampling)
+					\item ``Randomized oracle''
+					\item Attacker cannot see $K$.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\imagewithcaption{attacker_interface.svg}{Source: The Joy of Cryptography}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Adversary's access to oracle}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item When we prove security, we prove what is or isn’t possible by the attacker calling $ATTACK(M)$.
+					\item ``If I use OTP according to the attack scenario (i.e., I sample keys uniformly and use each key to encrypt just one ciphertext), then no matter how the plaintexts are chosen, and no matter how the ciphertext is subsequently used, I can enjoy a certain security guarantee.''
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\imagewithcaption{attacker_interface.svg}{Source: The Joy of Cryptography}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{The next slide}
+	\end{frame}
+
+	\begin{frame}[plain]
+		\titlepage
+	\end{frame}
+
 \end{document}
