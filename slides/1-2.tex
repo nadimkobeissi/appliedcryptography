@@ -28,15 +28,14 @@
 	\begin{frame}{Thinking about secrecy}
 		\begin{columns}[c]
 			\column{0.5\textwidth}{
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item Keep the whole design secret?
-					\pause
 					\textbf{``Advantages''}:
-					\begin{itemize}
+					\begin{itemize}[<+->]
 						\item Attacker doesn’t know how our cipher (or system, more generally,) works.
 					\end{itemize}
 					\item \textbf{Disadvantages}:
-					\begin{itemize}
+					\begin{itemize}[<+->]
 						\item Figuring out how the thing works might mean a break.
 						\item Can’t expose cipher to scrutiny.
 						\item Everyone needs to invent a cipher.
@@ -50,18 +49,13 @@
 	\end{frame}
 
 	\begin{frame}{Kerckhoff's Principle}
-		\begin{itemize}
+		\begin{itemize}[<+->]
 			\item \textit{``A cryptosystem should be secure even if everything about the system, except the key, is public knowledge.''} — Auguste Kerckhoffs, 1883
-			\pause
 			\item \textbf{Why it matters}:
-				\begin{itemize}
-					\pause
+				\begin{itemize}[<+->]
 					\item No ``security through obscurity''
-					\pause
 					\item The key is the only secret: the rest can be audited, tested, trusted
-					\pause
 					\item Encourages open standards and peer review
-					\pause
 					\item If your system's security depends on nobody knowing how it works, it's not secure.
 				\end{itemize}
 		\end{itemize}
@@ -74,11 +68,9 @@
 	\begin{frame}{Thinking about secrecy}
 		\begin{columns}[c]
 			\column{0.5\textwidth}{
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item Cipher can be scrutinized, used by anyone.
-					\pause
 					\item Design can be shown to hold so long as the key is secret.
-					\pause
 					\item This is how virtually all cryptography is designed today.
 				\end{itemize}
 			}
@@ -167,7 +159,7 @@
 	\end{frame}
 
 	\begin{frame}{Key derivation}{Uniform distribution}
-		\begin{itemize}
+		\begin{itemize}[<+->]
 			\item How to derive $K$?
 			\item $K$ is ideally random.
 			\item True randomness isn’t practical, so $K$ is in practice pseudo-random.
@@ -181,7 +173,7 @@
 	\begin{frame}{Adversary's access to oracle}
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item ``Victim'' chooses their key.
 					\item Adversary chooses the message and receives the ciphertext.
 					\item We say that \textbf{the adversary has access to an encryption oracle}.
@@ -216,7 +208,7 @@
 	\begin{frame}{Adversary's access to oracle}
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item Adversary can query oracle an unbounded number of times.
 					\item Two queries with same $M$ may return different $(C, C')$, since victim may use different $K$.
 					\item $K$ is always chosen correctly (pseudo-random uniform sampling)
@@ -250,7 +242,7 @@
 	\end{frame}
 
 	\begin{frame}{One-time pad}{Correctness proof}
-		\begin{itemize}
+		\begin{itemize}[<+->]
 			\item $\forall(n > 0,\; K \in \{\nliteral{0}, \nliteral{1}\}^{n},\; M\in\{\nliteral{0}, \nliteral{1}\}^{n}),\; Dec(K, Enc(K, M)) = M$
 			\item For all positive $n$, any key of $n$ bits and message of $n$ bits will decrypt back to the same plaintext if encrypted into a ciphertext.
 			\item \textbf{Proof}:
@@ -267,7 +259,7 @@
 	\begin{frame}{One-time pad}{How do we prove security?}
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item \textbf{Generally}: a cipher is secure if the adversary can't distinguish the output of calls to $ATTACK$ from random junk.
 					\item \textbf{Formally}: For all positive integers $n$ and all choices of plaintext $M \in \{\texttt{0}, \texttt{1}\}^n$, the output of the following subroutine is uniformly distributed:
 				\end{itemize}
@@ -285,10 +277,10 @@
 	\begin{frame}{One-time pad}{How do we prove security?}
 		\begin{columns}[c]
 			\begin{column}{0.7\textwidth}
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item If the key is random, the output will be uniformly distributed!
 					\item Suppose $M = \nliteral{01}$:
-					\begin{itemize}
+					\begin{itemize}[<+->]
 						\item $K = \nliteral{00}$ is chosen with probability $1/4$:\\$C = K \oplus M = \nliteral{00} \oplus \nliteral{01} = \nliteral{01}$.
 						\item $K = \nliteral{01}$ is chosen with probability $1/4$:\\$C = K \oplus M = \nliteral{01} \oplus \nliteral{01} = \nliteral{00}$.
 						\item $K = \nliteral{10}$ is chosen with probability $1/4$:\\$C = K \oplus M = \nliteral{10} \oplus \nliteral{01} = \nliteral{11}$.
@@ -309,17 +301,12 @@
 	\begin{frame}{One-time pad}{How do we prove security?}
 		\begin{columns}[c]
 			\begin{column}{0.7\textwidth}
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item What if this is true only for $M = \nliteral{01}$?
-					\pause
 					\item Fine, let's pick any $M, C \in \{\nliteral{0, 1}\}^n$.
-					\pause
 					\item What is \prob{$ATTACK(M) = C$}?
-					\pause
 					\item Answer: Exactly when $C = Enc(K, M) = K \oplus M$.
-					\pause
 					\item ...which occurs for exactly one $K$.
-					\pause
 					\item Since $K$ is chosen uniformly from $\{\nliteral{0}, \nliteral{1}\}^n$, the probability of choosing that $K$ is $\frac{1}{2^n}. \quad \qed$
 				\end{itemize}
 			\end{column}
@@ -363,10 +350,10 @@
 	\end{frame}
 
 	\begin{frame}{Limitations of security proofs}{Part 1}
-		\begin{itemize}
+		\begin{itemize}[<+->]
 			\item Rigor and the real world famously don't mix.
 			\item Security proofs are good for rigor but address very little regarding real-world concerns:
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item How can Alice \& Bob obtain a secret key, which only they know?
 				\item How can they keep $K$ secret?
 				\item How can a computer sample from the uniform distribution?
@@ -376,9 +363,9 @@
 	\end{frame}
 
 	\begin{frame}{Limitations of security proofs}{Part 2}
-		\begin{itemize}
+		\begin{itemize}[<+->]
 			\item More questions proofs don't address:
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item How can Alice hide the fact that she is talking to Bob (rather than hide only the content)?
 				\item How can Alice be sure that she is communicating with Bob, not an impostor?
 				\item How can we incentivize Alice and Bob to use encryption?
@@ -391,9 +378,9 @@
 	\end{frame}
 
 	\begin{frame}{OTP: Security Assumptions \& Constraints}{Part 1}
-		\begin{itemize}
+		\begin{itemize}[<+->]
 			\item Our security proofs rely on specific assumptions about the adversary:
-			\begin{itemize}
+			\begin{itemize}[<+->]
 			\item \textbf{Key reuse}: Keys are never intentionally reused (though may repeat by chance).
 			\item \textbf{Observation only}: Adversary passively observes ciphertext but doesn't tam.per with it
 			\item \textbf{Message independence}: Choice of message $M$ is independent of key $K$.
@@ -405,12 +392,12 @@
 	\end{frame}
 
 	\begin{frame}{OTP: Security Assumptions \& Constraints}{Part 2}
-		\begin{itemize}
+		\begin{itemize}[<+->]
 			\item Side-channel attacks violate our model:
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item We assume adversary cannot coerce victim to run a different algorithm.
 				\item Cannot observe execution details:
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item CPU timing information (clock cycles).
 					\item Memory access patterns.
 					\item Cache hits/misses.
@@ -425,9 +412,9 @@
 	\begin{frame}{One-time pad}{What's so special about XOR?}
 		\begin{columns}[c]
 			\begin{column}{0.7\textwidth}
-				\begin{itemize}
-					\item<1-> Let's replace $\oplus$ with $\land$. What would happen?
-					\item<2-> Output no longer uniform!
+				\begin{itemize}[<+->]
+					\item Let's replace $\oplus$ with $\land$. What would happen?
+					\item Output no longer uniform!
 				\end{itemize}
 				\begin{table}
 					\centering
@@ -465,7 +452,7 @@
 	\begin{frame}{One-time pad}{What about $\%\ n$?}
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item Let's replace $\oplus$ with $\%\ n$. What would happen?
 					\item Still good!
 					\item Can you prove correctness and security?
@@ -484,7 +471,7 @@
 	\begin{frame}{Attack scenarios as libraries}
 		\begin{columns}[t]
 			\begin{column}{0.65\textwidth}
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item This is a \textbf{library} with two \textbf{subroutines} and a \textbf{global variable} $D$.
 					\item Victim holds a 6-sided die.
 					\item The first line of the library represents an initialization step.

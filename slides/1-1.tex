@@ -89,12 +89,10 @@
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
 				\textbf{Components}
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item Cryptography manifests as a set of primitives, from which we
 						build protocols intended to accomplish well-defined security goals.
-
 					\item \textbf{Primitives}: AES, RSA, SHA-2, DH\ldots
-
 					\item \textbf{Protocols}: TLS, Signal, SSH, FileVault 2, BitLocker\ldots
 				\end{itemize}
 			\end{column}
@@ -103,7 +101,6 @@
 				\textbf{Examples}
 				\begin{itemize}
 					\pause
-
 					\item \textbf{AES}: Symmetric encryption
 						\begin{itemize}
 							\item $\mathsf{Enc}(k, m) = c$, $\mathsf{Dec}(k, c) = m$.
@@ -124,20 +121,15 @@
 			\end{column}
 		\end{columns}
 	\end{frame}
-
 	\begin{frame}{Cryptographic building blocks}
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
 				\textbf{Security goals}
-				\begin{itemize}
-					\pause
-
+				\begin{itemize}[<+->]
 					\item \textbf{Confidentiality}: Data exchanged between Client and Server
-						is only known to those parties. \pause
-
+						is only known to those parties.
 					\item \textbf{Authentication}: If Server receives data from Client,
-						then Client sent it to Server. \pause
-
+						then Client sent it to Server.
 					\item \textbf{Integrity}: If Server modifies data owned by Client,
 						Client can find out.
 				\end{itemize}
@@ -145,15 +137,11 @@
 
 			\begin{column}{0.5\textwidth}
 				\textbf{Examples}
-				\begin{itemize}
-					\pause
-
+				\begin{itemize}[<+->]
 					\item \textbf{Confidentiality}: When you send a private message on Signal,
-						only you and the recipient can read the content. \pause
-
+						only you and the recipient can read the content.
 					\item \textbf{Authentication}: When you receive an email from your boss,
-						you can verify it actually came from them. \pause
-
+						you can verify it actually came from them.
 					\item \textbf{Integrity}: Your computer can verify that software update
 						downloads haven't been tampered with during transmission.
 				\end{itemize}
@@ -162,58 +150,41 @@
 	\end{frame}
 
 	\begin{frame}{Security goals: more examples}
-		\begin{itemize}
-			\pause
-
+		\begin{itemize}[<+->]
 			\item \textbf{TLS (HTTPS)} ensures that data exchanged between the client
 				and the server is confidential and that parties are authenticated.
 				\begin{itemize}
 					\item Allows you to log into gmail.com without your ISP learning your password.
 				\end{itemize}
-
-				\pause
-
 			\item \textbf{FileVault 2} ensures data confidentiality and integrity on
 				your MacBook.
 				\begin{itemize}
 					\item Prevents thieves from accessing your data if your MacBook is stolen.
 				\end{itemize}
-
-				\pause
-
 			\item \textbf{Signal} implements post-compromise security, an advanced security
 				goal.
 				\begin{itemize}
 					\item Allows a conversation to ``heal'' in the event of a temporary key
 						compromise.
-
 					\item More on that later in the course.
 				\end{itemize}
 		\end{itemize}
 	\end{frame}
 
 	\begin{frame}{Why bother?}
-		\begin{itemize}
-			\item Can't we just use access control? \pause
-
+		\begin{itemize}[<+->]
+			\item Can't we just use access control?
 			\item Strictly speaking, usernames and passwords can be implemented
-				without cryptography\ldots \pause
-
+				without cryptography\ldots
 			\item Server checks if the password matches, or if the IP address matches,
-				etc. before granting access. \pause
-
+				etc. before granting access.
 			\item What's so bad about that?
 		\end{itemize}
 		\begin{alertblock}{The Problem with Traditional Access Control}
-			\begin{itemize}
-				\pause
-
-				\item Requires trusting the server completely \pause
-
-				\item No protection during transmission \pause
-
-				\item No way to verify integrity \pause
-
+			\begin{itemize}[<+->]
+				\item Requires trusting the server completely
+				\item No protection during transmission
+				\item No way to verify integrity
 				\item No way to establish trust between strangers
 			\end{itemize}
 		\end{alertblock}
@@ -223,36 +194,25 @@
 		\begin{center}
 			\Large\textbf{Cryptography lets us achieve what seems impossible}
 			\vspace{1cm}
-			\begin{itemize}
-				\pause
-
-				\item Secure communication over insecure channels \pause
-
-				\item Verification without revealing secrets \pause
-
+			\begin{itemize}[<+->]
+				\item Secure communication over insecure channels
+				\item Verification without revealing secrets
 				\item Proof of computation without redoing it
 			\end{itemize}
 		\end{center}
 	\end{frame}
 
 	\begin{frame}{Hard problems}
-		\begin{itemize}
+		\begin{itemize}[<+->]
 			\item Cryptography is largely about equating the security of a system to the
 				difficulty of solving a math problem that is thought to be computationally
-				very expensive. \pause
-
+				very expensive.
 			\item With cryptography, we get security systems that we can literally
-				mathematically prove as secure (under assumptions). \pause
-
+				mathematically prove as secure (under assumptions).
 			\item Also, this allows for actual magic.
-				\begin{itemize}
-					\pause
-
+				\begin{itemize}[<+->]
 					\item Alice and Bob meet for the first time in the same room as you.
-						\pause
-
-					\item You are listening to everything they are saying. \pause
-
+					\item You are listening to everything they are saying.
 					\item Can they exchange a secret without you learning it?
 				\end{itemize}
 		\end{itemize}
@@ -293,19 +253,14 @@
 				\end{itemize}
 		\end{itemize}
 	\end{frame}
-
 	\begin{frame}{Hard problems}
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
 				\textbf{Asymmetric Primitives}
-				\begin{itemize}
-					\pause
-
-					\item Diffie-Hellman, RSA, ML-KEM, etc. \pause
-
+				\begin{itemize}[<+->]
+					\item Diffie-Hellman, RSA, ML-KEM, etc.
 					\item ``Asymmetric'' because there is a ``public key'' and a ``private
-						key'' for each party. \pause
-
+						key'' for each party.
 					\item Algebraic, assume the hardness of mathematical problems (as seen
 						just now.)
 				\end{itemize}
@@ -313,16 +268,11 @@
 
 			\begin{column}{0.5\textwidth}
 				\textbf{Symmetric Primitives}
-				\begin{itemize}
-					\pause
-
-					\item AES, SHA-2, ChaCha20, HMAC\ldots \pause
-
-					\item ``Symmetric'' because there is one secret key. \pause
-
+				\begin{itemize}[<+->]
+					\item AES, SHA-2, ChaCha20, HMAC\ldots
+					\item ``Symmetric'' because there is one secret key.
 					\item Not algebraic but unstructured, but on their understood
-						resistance to $n$ years of cryptanalysis. \pause
-
+						resistance to $n$ years of cryptanalysis.
 					\item Can act as substitutes for assumptions in security proofs!
 						\begin{itemize}
 							\item Example: hash function assumed to be a ``random oracle''
@@ -333,22 +283,16 @@
 	\end{frame}
 
 	\begin{frame}{Kerckhoff's Principle}
-		\begin{itemize}
+		\begin{itemize}[<+->]
 			\item \textit{``A cryptosystem should be secure even if everything about
 				the system, except the key, is public knowledge.''} — Auguste Kerckhoffs,
-				1883 \pause
-
+				1883
 			\item \textbf{Why it matters}:
-				\begin{itemize}
-					\pause
-
-					\item No ``security through obscurity'' \pause
-
+				\begin{itemize}[<+->]
+					\item No ``security through obscurity''
 					\item The key is the only secret: the rest can be audited, tested,
-						trusted \pause
-
-					\item Encourages open standards and peer review \pause
-
+						trusted
+					\item Encourages open standards and peer review
 					\item If your system's security depends on nobody knowing how it works,
 						it's not secure.
 				\end{itemize}
@@ -359,13 +303,9 @@
 		\begin{columns}[c]
 			\begin{column}{0.55\textwidth}
 				\definitionbox{Hash Function Properties}{\begin{itemize}\item Takes input of \textbf{any size}
-
 				\item Produces output of \textbf{fixed size}
-
 				\item Is \textbf{deterministic} (same input $\rightarrow$ same output)
-
 				\item Even a \textbf{tiny change} in input creates completely different output
-
 				\item Is \textbf{efficient} to compute\end{itemize}}
 			\end{column}
 			\begin{column}{0.45\textwidth}
@@ -388,10 +328,8 @@
 				\begin{itemize}
 					\item \textbf{Collision resistance}: computationally infeasible to find
 						two different inputs producing the same hash.
-
 					\item \textbf{Preimage resistance}: given the output of a hash function,
 						it is computationally infeasible to reconstruct the original input.
-
 					\item \textbf{Second preimage resistance}: given an input and an output,
 						it's computationally infeasible to find another different input
 						producing the same output.
@@ -403,23 +341,16 @@
 			\end{column}
 		\end{columns}
 	\end{frame}
-
 	\begin{frame}{Hash functions: what are they good for?}
-		\begin{itemize}
-			\pause
-
+		\begin{itemize}[<+->]
 			\item \textbf{Password storage}: Store the hash of the password on the server,
 				not the password itself. Then check candidate passwords against the hash.
-				\pause
-
 			\item \textbf{Data integrity verification}: Hash a file. Later hash it
 				again and compare hashes to check if the file has changed, suffered storage
-				degradation, etc. \pause
-
+				degradation, etc.
 			\item \textbf{Proof of work}: Server asks client to hash something a lot of
 				times before they can access some resource. Useful for anti-spam, Bitcoin
-				mining, etc. \pause
-
+				mining, etc.
 			\item \textbf{Zero knowledge proofs}: time for more actual magic
 		\end{itemize}
 	\end{frame}
@@ -427,13 +358,11 @@
 	\begin{frame}{Time for more actual magic}
 		\begin{columns}[c]
 			\begin{column}{0.6\textwidth}
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item \textbf{Zero-knowledge proofs} allow you to prove that you know
 						a secret without revealing any information about it.
-
 					\item They built ``zero-knowledge virtual machines'' where you can execute
 						an entire program that runs as a zero-knowledge proof.
-
 					\item ZKP battleship game: server proves to the players that its
 						output to their battleship guesses is correct, without revealing any
 						additional information (e.g. ship location).
@@ -449,16 +378,14 @@
 	\begin{frame}{Evaluating a hash function's quality}
 		\begin{columns}[c]
 			\begin{column}{0.6\textwidth}
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item \textbf{Recall}:
-						\begin{itemize}
+						\begin{itemize}[<+->]
 							\item \textbf{Asymmetric primitives} are based on mathematical
 								problems, can be mathematically proven secure (given assumptions!)
-
 							\item \textbf{Symmetric primitives} (encryption, hashing\ldots)
 								are statistically, empirically, heuristically shown to be secure,
 								not proven secure.
-
 							\item The more cryptanalysis they survive, the higher confidence
 								we have in their security.
 						\end{itemize}
@@ -474,14 +401,12 @@
 	\begin{frame}{What about encryption?}
 		\begin{columns}[c]
 			\begin{column}{0.6\textwidth}
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item Symmetric primitive of choice for encryption: \textbf{AES}.
-
 					\item Not that far off in terms of design process from hash functions,
 						but:
-						\begin{itemize}
+						\begin{itemize}[<+->]
 							\item AES is a PRP (pseudorandom permutation)
-
 							\item SHA-2 is a PRF (pseudorandom function)
 						\end{itemize}
 				\end{itemize}
@@ -497,12 +422,10 @@
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
 				\textbf{Pseudo-Random Function (SHA-2)}
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item \textbf{Input} is arbitrary-length,
-
 					\item \textbf{Output} is fixed-length, looks random (as discussed
 						earlier).
-
 					\item Indistinguishable from a truly random function by an adversary with
 						limited computational power.
 				\end{itemize}
@@ -510,17 +433,16 @@
 
 			\begin{column}{0.5\textwidth}
 				\textbf{Pseudo-Random Permutation (AES)}
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item \textbf{Input and output} are the same length, forming a permutation.
-
 					\item Each input maps uniquely to one output, allowing invertibility.
-
 					\item Indistinguishable from a truly random permutation by an adversary
 						with limited computational power.
 				\end{itemize}
 			\end{column}
 		\end{columns}
 	\end{frame}
+
 	\begin{frame}{$\mathsf{PRF}: F_{k}= X \rightarrow Y$}
 		\begin{columns}[c]
 			\begin{column}{0.4\textwidth}
@@ -809,12 +731,10 @@
 	\begin{frame}{TLS 1.3: high-level sketch}
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item \textbf{Public key agreement} (eg. Diffie-Hellman) is used to establish
 						a shared secret between the client and the server.
-
 					\item \textbf{AES} is used for encrypting data in transit.
-
 					\item \textbf{SHA-2} is used for hashing (checking certificates, etc.)
 				\end{itemize}
 			\end{column}
@@ -828,13 +748,11 @@
 	\begin{frame}{TLS 1.3: high-level sketch}
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
-				\begin{itemize}
+				\begin{itemize}[<+->]
 					\item Through the design, we accomplish the desired \textbf{security
 						goals} under a well-specified \textbf{threat model}:
-
 					\item \textbf{Security goals}: confidentiality of data, authentication
 						of the server towards the client\ldots
-
 					\item \textbf{Threat model}: malicious Internet Service Provider (ISP),
 						etc.
 				\end{itemize}
@@ -855,37 +773,29 @@
 	\end{frame}
 
 	\begin{frame}{Course goals}
-		\begin{itemize}
+		\begin{itemize}[<+->]
 			\item Understand the reasoning behind the math of modern cryptography.
-
 			\item Analyze and prove the security of cryptographic constructions.
-
 			\item Understand how cryptographic constructions can be composed to build real-world
 				secure protocols and systems.
-
 			\item Discern between theoretical cryptography and applied cryptography from
 				an engineering perspective.
-
 			\item Critically assess security implementations and evaluate real-world cryptographic
 				protocols.
-
 			\item Gain an understanding of the future of cryptography and its role in emerging
 				technologies.
 		\end{itemize}
 	\end{frame}
 
 	\begin{frame}{Class materials}
-		\begin{itemize}
+		\begin{itemize}[<+->]
 			\item \textbf{Joy of Cryptography}: learn about the math, how to reason
 				about and prove systems secure.
-
 			\item \textbf{Serious Cryptography}: hard engineering perspective.
 				\vspace{1cm}
-
 			\item \textbf{Always keep an eye on the website:} Course news, updates,
 				materials, slides will all be posted there.
 				\url{https://appliedcryptography.page}
-
 			\item I am aiming for the most engaging course possible!
 		\end{itemize}
 	\end{frame}
