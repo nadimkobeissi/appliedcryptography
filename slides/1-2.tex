@@ -1,9 +1,7 @@
 \documentclass[aspectratio=169, lualatex, handout]{beamer}
-
 \makeatletter
 \def\input@path{{theme/}}
 \makeatother
-
 \usetheme{cipher}
 
 \title{Introduction to Cryptography}
@@ -93,26 +91,16 @@
 	\begin{frame}{One-time pad}{First look at a symmetric cipher}
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
-				\begin{center}
-					\begin{tikzpicture}[box/.style={rectangle, draw, align=left, fill=white, inner sep=7pt, scale=2}]
-						\node[box](Enc){
-							$\underline{Enc(K, M)}$: \\[0.5em]
-							$C := K \oplus M$ \\[0.5em]
-							return $C$
-						};
-					\end{tikzpicture}
-				\end{center}
+				\sssubroutine{$Enc(K, M)$}{
+					$C \coloneq K \oplus M$ \\
+					return $C$
+				}{2}
 			\end{column}
 			\begin{column}{0.5\textwidth}
-				\begin{center}
-					\begin{tikzpicture}[box/.style={rectangle, draw, align=left, fill=white, inner sep=7pt, scale=2}]
-						\node[box](Enc){
-							$\underline{Dec(K, C)}$: \\[0.5em]
-							$M := K \oplus C$ \\[0.5em]
-							return $M$
-						};
-					\end{tikzpicture}
-				\end{center}
+				\sssubroutine{$Dec(K, C)$}{
+					$M \coloneq K \oplus C$ \\
+					return $M$
+				}{2}
 			\end{column}
 		\end{columns}
 	\end{frame}
@@ -178,21 +166,6 @@
 		\bigimagewithcaption{xor_dec.png}{(We're encoding the message and key as bits)}
 	\end{frame}
 
-	\begin{frame}{One-time pad}{Correctness proof}
-		\begin{itemize}
-			\item $\forall(n>0,\; K\in\{0, 1\}^{n},\; M\in\{0, 1\}^{n}),\; Dec(K, Enc(K, M))=M$
-			\item For all positive $n$, any key of $n$ bits and message of $n$ bits will decrypt back to the same plaintext if encrypted into a ciphertext.
-			\item \textbf{Proof}:
-			\begin{align*}
-				Dec(K, Enc(K, M)) &= Dec(K, K \oplus M) \\
-				&= K \oplus (K \oplus M) \\
-				&= (K \oplus K) \oplus M \\
-				&= 0^n \oplus M \\
-				&= M \quad \qed
-			\end{align*}
-		\end{itemize}
-	\end{frame}
-
 	\begin{frame}{Key derivation}{Uniform distribution}
 		\begin{itemize}
 			\item How to derive $K$?
@@ -201,7 +174,7 @@
 			\item We need a pseudo-random uniform distribution:
 			\item If $\mathcal{S}$ is a set of $m$ items, then the uniform distribution over $\mathcal{S}$ assigns probability $\frac{1}{m}$ to each item $x \in \mathcal{S}$
 			\item In practice, this just means we need the bits to be random, unpredictable, uniformly distributed in terms of probability
-			\item Sampling a $K$ from a pseudo-random uniform distribution is written as $K \twoheadleftarrow \{\texttt{0}, \texttt{1}\}^n$
+			\item Sampling a $K$ from a pseudo-random uniform distribution is written as $K \twoheadleftarrow \{\nliteral{0}, \nliteral{1}\}^n$
 		\end{itemize}
 	\end{frame}
 
@@ -230,8 +203,8 @@
 				\node[dashed box] (adversary) {$adversary$};
 				\node[box, right=2cm of adversary](attack){
 					$\underline{ATTACK(M)}$: \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary chooses $M$}} \\
-					\quad $K \twoheadleftarrow \{$\textcolor{red}{$\texttt{0}, \texttt{1}$}$\}^{n}$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim samples $K$}} \\
-					\quad $C := Enc(K, M)$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim encrypts}} \\
+					\quad $K \twoheadleftarrow \{\nliteral{0}, \nliteral{1}\}^{n}$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim samples $K$}} \\
+					\quad $C \coloneq Enc(K, M)$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim encrypts}} \\
 					\quad return $C$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary sees $C$}}
 				};
 				\draw[->] (adversary) -- node[above] {$M$} (attack);
@@ -262,7 +235,6 @@
 			\begin{column}{0.5\textwidth}
 				\begin{itemize}
 					\item When we prove security, we prove what is or isn’t possible by the attacker calling $ATTACK(M)$.
-					\item ``If I use OTP according to the attack scenario (i.e., I sample keys uniformly and use each key to encrypt just one ciphertext), then no matter how the plaintexts are chosen, and no matter how the ciphertext is subsequently used, I can enjoy a certain security guarantee.''
 				\end{itemize}
 			\end{column}
 			\begin{column}{0.5\textwidth}
@@ -271,7 +243,242 @@
 		\end{columns}
 	\end{frame}
 
-	\begin{frame}{The next slide}
+	\begin{frame}
+		\begin{center}
+			\Large\textit{``If I use OTP according to the attack scenario (I sample keys uniformly and use each key to encrypt just one ciphertext), then no matter how the plaintexts are chosen, and no matter how the ciphertext is subsequently used, I can enjoy a certain security guarantee.''}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}{One-time pad}{Correctness proof}
+		\begin{itemize}
+			\item $\forall(n > 0,\; K \in \{\nliteral{0}, \nliteral{1}\}^{n},\; M\in\{\nliteral{0}, \nliteral{1}\}^{n}),\; Dec(K, Enc(K, M)) = M$
+			\item For all positive $n$, any key of $n$ bits and message of $n$ bits will decrypt back to the same plaintext if encrypted into a ciphertext.
+			\item \textbf{Proof}:
+			\begin{align*}
+				Dec(K, Enc(K, M)) &= Dec(K, K \oplus M) \\
+				&= K \oplus (K \oplus M) \\
+				&= (K \oplus K) \oplus M \\
+				&= 0^n \oplus M \\
+				&= M \quad \qed
+			\end{align*}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{One-time pad}{How do we prove security?}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item \textbf{Generally}: a cipher is secure if the adversary can't distinguish the output of calls to $ATTACK$ from random junk.
+					\item \textbf{Formally}: For all positive integers $n$ and all choices of plaintext $M \in \{\texttt{0}, \texttt{1}\}^n$, the output of the following subroutine is uniformly distributed:
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\sssubroutine{$ATTACK(M)$}{
+					$K \twoheadleftarrow \{\nliteral{0}, \nliteral{1}\}^{n}$ \\
+					$C \coloneq K \oplus M$ \\
+					return $C$
+				}{1.5}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{One-time pad}{How do we prove security?}
+		\begin{columns}[c]
+			\begin{column}{0.7\textwidth}
+				\begin{itemize}
+					\item If the key is random, the output will be uniformly distributed!
+					\item Suppose $M = \nliteral{01}$:
+					\begin{itemize}
+						\item $K = \nliteral{00}$ is chosen with probability $1/4$:\\$C = K \oplus M = \nliteral{00} \oplus \nliteral{01} = \nliteral{01}$.
+						\item $K = \nliteral{01}$ is chosen with probability $1/4$:\\$C = K \oplus M = \nliteral{01} \oplus \nliteral{01} = \nliteral{00}$.
+						\item $K = \nliteral{10}$ is chosen with probability $1/4$:\\$C = K \oplus M = \nliteral{10} \oplus \nliteral{01} = \nliteral{11}$.
+						\item $K = \nliteral{11}$ is chosen with probability $1/4$:\\$C = K \oplus M = \nliteral{11} \oplus \nliteral{01} = \nliteral{10}$.
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.3\textwidth}
+				\sssubroutine{$ATTACK(M)$}{
+					$K \twoheadleftarrow \{\nliteral{0}, \nliteral{1}\}^{n}$ \\
+					$C \coloneq K \oplus M$ \\
+					return $C$
+				}{1.5}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{One-time pad}{How do we prove security?}
+		\begin{columns}[c]
+			\begin{column}{0.7\textwidth}
+				\begin{itemize}
+					\item What if this is true only for $M = \nliteral{01}$?
+					\pause
+					\item Fine, let's pick any $M, C \in \{\nliteral{0, 1}\}^n$.
+					\pause
+					\item What is \prob{$ATTACK(M) = C$}?
+					\pause
+					\item Answer: Exactly when $C = Enc(K, M) = K \oplus M$.
+					\pause
+					\item ...which occurs for exactly one $K$.
+					\pause
+					\item Since $K$ is chosen uniformly from $\{\nliteral{0}, \nliteral{1}\}^n$, the probability of choosing that $K$ is $\frac{1}{2^n}. \quad \qed$
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.3\textwidth}
+				\sssubroutine{$ATTACK(M)$}{
+					$K \twoheadleftarrow \{\nliteral{0}, \nliteral{1}\}^{n}$ \\
+					$C \coloneq K \oplus M$ \\
+					return $C$
+				}{1.5}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{One-time pad}{From the adversary's perspective...}
+		\begin{columns}[c]
+			\begin{column}{0.35\textwidth}
+				\sssubroutine{$ATTACK(M)$}{
+					$K \twoheadleftarrow \{\nliteral{0}, \nliteral{1}\}^{n}$ \\
+					$C \coloneq K \oplus M$ \\
+					return $C$
+				}{1.5}
+			\end{column}
+			\begin{column}{0.3\textwidth}
+				\begin{center}
+					\textit{indistinguishable \\ from}
+				\end{center}
+			\end{column}
+			\begin{column}{0.35\textwidth}
+				\sssubroutine{$JUNK(M)$}{
+					$C \twoheadleftarrow \{\nliteral{0}, \nliteral{1}\}^{n}$ \\
+					return $C$
+				}{2}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\begin{center}
+			\huge \textit{``Real or random?''}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}{Limitations of security proofs}{Part 1}
+		\begin{itemize}
+			\item Rigor and the real world famously don't mix.
+			\item Security proofs are good for rigor but address very little regarding real-world concerns:
+			\begin{itemize}
+				\item How can Alice \& Bob obtain a secret key, which only they know?
+				\item How can they keep $K$ secret?
+				\item How can a computer sample from the uniform distribution?
+				\item How can Alice ensure that $C$ is sent reliably to Bob?
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{Limitations of security proofs}{Part 2}
+		\begin{itemize}
+			\item More questions proofs don't address:
+			\begin{itemize}
+				\item How can Alice hide the fact that she is talking to Bob (rather than hide only the content)?
+				\item How can Alice be sure that she is communicating with Bob, not an impostor?
+				\item How can we incentivize Alice and Bob to use encryption?
+				\item Should the government be allowed to obtain a warrant to read encrypted communications?
+			\end{itemize}
+			\item Security proofs are about specific properties within specific models.
+			\item Real-world security depends on many factors beyond what our models capture.
+			\item Having a security proof is necessary but not sufficient for real-world security.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{OTP: Security Assumptions \& Constraints}{Part 1}
+		\begin{itemize}
+			\item Our security proofs rely on specific assumptions about the adversary:
+			\begin{itemize}
+			\item \textbf{Key reuse}: Keys are never intentionally reused (though may repeat by chance).
+			\item \textbf{Observation only}: Adversary passively observes ciphertext but doesn't tam.per with it
+			\item \textbf{Message independence}: Choice of message $M$ is independent of key $K$.
+			\item \textbf{Key secrecy}: Adversary learns nothing about the key.
+			\item \textbf{No sampling influence}: Adversary cannot influence how the key is sampled.
+			\end{itemize}
+			\item These constraints are \textit{necessary} for the security proofs to hold!.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{OTP: Security Assumptions \& Constraints}{Part 2}
+		\begin{itemize}
+			\item Side-channel attacks violate our model:
+			\begin{itemize}
+				\item We assume adversary cannot coerce victim to run a different algorithm.
+				\item Cannot observe execution details:
+				\begin{itemize}
+					\item CPU timing information (clock cycles).
+					\item Memory access patterns.
+					\item Cache hits/misses.
+					\item Power consumption during encryption.
+				\end{itemize}
+			\end{itemize}
+			\item Real-world security requires considering these additional attack vectors.
+			\item Our security proofs address a \textit{specific threat model} that may not capture all real-world threats.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{One-time pad}{What's so special about XOR?}
+		\begin{columns}[c]
+			\begin{column}{0.7\textwidth}
+				\begin{itemize}
+					\item<1-> Let's replace $\oplus$ with $\land$. What would happen?
+					\item<2-> Output no longer uniform!
+				\end{itemize}
+				\begin{table}
+					\centering
+					\begin{tabular}{|c|c|c|}
+						\hline
+						\rowcolor{white}
+						\textbf{A} & \textbf{B} & \textbf{A $\land$ B} \\
+						\hline
+						\rowcolor{white}
+						\texttt{0} & \texttt{0} & \texttt{0} \\
+						\hline
+						\rowcolor{white}
+						\texttt{0} & \texttt{1} & \texttt{0} \\
+						\hline
+						\rowcolor{white}
+						\texttt{1} & \texttt{0} & \texttt{0} \\
+						\hline
+						\rowcolor{white}
+						\texttt{1} & \texttt{1} & \texttt{1} \\
+						\hline
+					\end{tabular}
+					\caption{Truth table for AND operation}
+				\end{table}
+			\end{column}
+			\begin{column}{0.3\textwidth}
+				\sssubroutine{$ATTACK(M)$}{
+					$K \twoheadleftarrow \{\nliteral{0}, \nliteral{1}\}^{n}$ \\
+					$C \coloneq K \land M$ \\
+					return $C$
+				}{1.5}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{One-time pad}{What about $\%\ n$?}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Let's replace $\oplus$ with $\%\ n$. What would happen?
+					\item Still good!
+					\item Can you prove correctness and security?
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\sssubroutine{$ATTACK(M)$}{
+					$K \twoheadleftarrow \mathbb{Z}_{n}$ \\
+					$C \coloneq (K + M)\ \%\ n$ \\
+					return $C$
+				}{1.5}
+			\end{column}
+		\end{columns}
 	\end{frame}
 
 	\begin{frame}[plain]

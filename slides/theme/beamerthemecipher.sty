@@ -12,6 +12,11 @@
 \RequirePackage[most]{tcolorbox}
 \RequirePackage{listings}
 \RequirePackage{svg}
+\RequirePackage{mathtools}
+\RequirePackage{fontspec}
+\RequirePackage{unicode-math}
+\RequirePackage{amsmath,amssymb,amsfonts}
+\RequirePackage[activate={true,nocompatibility},final,tracking=true,factor=1100,stretch=10,shrink=10]{microtype}
 
 % TikZ libraries
 \usetikzlibrary{shadows, arrows.meta, positioning, shapes, calc, fit, shapes.geometric}
@@ -21,8 +26,6 @@
 \usefonttheme{cipher}
 \useinnertheme{cipher}
 \useoutertheme{cipher}
-
-\RequirePackage[activate={true,nocompatibility},final,tracking=true,factor=1100,stretch=10,shrink=10]{microtype}
 
 % Overall settings
 \setbeamertemplate{navigation symbols}{}
@@ -53,9 +56,58 @@
   \end{tcolorbox}
 }
 
-% Set default values
-\coverpartname{}
-\coversessionname{}
+% Nicely formatted image with caption
+\newcommand{\imagewithcaption}[3][0.9\textwidth]{
+	\begin{center}
+		\begin{tikzpicture}
+			\hspace{-1mm}
+			\node[fill=white, anchor=center, inner sep=1mm]{
+				\IfEndWith{#2}{.svg}
+					{\includesvg[width=#1, height=0.9\textheight, keepaspectratio]{images/#2}}
+					{\includegraphics[width=#1, height=0.9\textheight, keepaspectratio]{images/#2}}
+			};
+			\node[fit=(current bounding box), inner sep=0.5mm, draw=white, line width=0.5mm] {};
+		\end{tikzpicture}
+		\vspace{0.5em}
+		\begin{minipage}{0.7\textwidth}
+				\centering
+				\usebeamerfont{caption}#3
+		\end{minipage}
+	\end{center}
+}
 
-% Set Aspect Ratio
-\geometry{papersize={16cm,9cm}}
+% Nicely formatted image with caption (big)
+\newcommand{\bigimagewithcaption}[3][1\textwidth]{
+	\begin{center}
+		\vspace{-0.75cm}
+		\begin{tikzpicture}
+			\hspace{-1mm}
+			\node[fill=white, anchor=center, inner sep=1mm]{
+				\IfEndWith{#2}{.svg}
+					{\includesvg[width=#1, height=0.8\textheight, keepaspectratio]{images/#2}}
+					{\includegraphics[width=#1, height=0.8\textheight, keepaspectratio]{images/#2}}
+			};
+			\node[fit=(current bounding box), inner sep=0.5mm, draw=white, line width=0.5mm] {};
+		\end{tikzpicture}
+		\vspace{0.3em}
+		\begin{minipage}{0.8\textwidth}
+			\centering
+			\usebeamerfont{caption}#3
+		\end{minipage}
+	\end{center}
+}
+
+% Macro for state-separable proof style subroutines
+\newcommand{\sssubroutine}[3]{
+	\begin{center}
+		\begin{tikzpicture}[box/.style={rectangle, draw, align=left, fill=white, inner sep=7pt, scale=#3, execute at begin node=\setlength{\baselineskip}{2em}}]
+			\node[box]{
+				\underline{#1}: \\
+				#2
+			};
+		\end{tikzpicture}
+	\end{center}
+}
+
+\newcommand{\nliteral}[1]{\textcolor{ciphernliteral}{\texttt{#1}}}
+\newcommand{\prob}[1]{$\Pr\bigl[\ $#1$\ \bigr]$}
