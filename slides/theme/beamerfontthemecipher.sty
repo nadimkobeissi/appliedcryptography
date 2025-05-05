@@ -1,31 +1,13 @@
-\ProvidesPackage{beamerfontthemecipher}[2025/05/04 v1.0 Cipher Beamer Theme]
+\ProvidesPackage{theme/beamerfontthemecipher}[2025/05/04 v1.0 Cipher Beamer Theme]
 
 \RequirePackage{fontspec}
 \RequirePackage{unicode-math}
+\RequirePackage{amsmath,amssymb,amsfonts}
 
-\setsansfont{Inter}[Path=theme/fonts/,
-    UprightFont=*-Regular,
-    BoldFont=*-Bold,
-    ItalicFont=*-Italic,
-    BoldItalicFont=*-BoldItalic,
-    Scale=1.0]
-
-\setmonofont{JetBrainsMono}[Path=theme/fonts/,
-    UprightFont=*-Regular,
-    BoldFont=*-Bold,
-    ItalicFont=*-Italic,
-    BoldItalicFont=*-BoldItalic,
-    Scale=0.9]
-
-\setromanfont{Merriweather}[Path=theme/fonts/,
-    UprightFont=*-Regular,
-    BoldFont=*-Bold,
-    ItalicFont=*-Italic,
-    BoldItalicFont=*-BoldItalic,
-    Scale=1.0]
-
-% Nice math font
-\setmathfont{Libertinus Math}
+\setsansfont{Inter}[Scale=1.0]
+\setmonofont{JetBrains Mono}[Scale=0.9]
+\setromanfont{STIX Two Text}[Scale=1.0]
+\setmathfont{STIX Two Math}[Scale=1.0]
 
 % Default font is sans-serif (Inter)
 \renewcommand{\familydefault}{\sfdefault}

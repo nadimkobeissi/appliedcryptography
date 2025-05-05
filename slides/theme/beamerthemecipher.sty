@@ -1,4 +1,4 @@
-\ProvidesPackage{beamerthemecipher}[2025/05/04 v1.0 Cipher Beamer Theme]
+\ProvidesPackage{theme/beamerthemecipher}[2025/05/04 v1.0 Cipher Beamer Theme]
 
 % Load required packages
 \RequirePackage{tikz}
@@ -6,15 +6,13 @@
 \RequirePackage{graphicx}
 \RequirePackage{setspace}
 \RequirePackage{etoolbox}
-\RequirePackage{fontspec}
 \RequirePackage{hyperref}
-\RequirePackage[activate={true,nocompatibility},final,tracking=true,factor=1100,stretch=10,shrink=10]{microtype}
 \RequirePackage{fancybox}
 \RequirePackage[most]{tcolorbox}
 \RequirePackage{listings}
 
 % TikZ libraries
-\usetikzlibrary{shadows, arrows.meta, positioning, shapes, calc}
+\usetikzlibrary{shadows, arrows.meta, positioning, shapes, calc, fit, shapes.geometric}
 
 % Load dependent themes
 \usecolortheme{cipher}
@@ -22,9 +20,11 @@
 \useinnertheme{cipher}
 \useoutertheme{cipher}
 
+\RequirePackage[activate={true,nocompatibility},final,tracking=true,factor=1100,stretch=10,shrink=10]{microtype}
+
 % Overall settings
 \setbeamertemplate{navigation symbols}{}
-\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{blocks}[rounded]
 \setbeamertemplate{itemize items}[circle]
 \setbeamertemplate{enumerate items}[default]
 \setbeamertemplate{section in toc}[circle]

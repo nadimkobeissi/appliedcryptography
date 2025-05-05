@@ -1,0 +1,47 @@
+\documentclass[aspectratio=169, lualatex, handout]{beamer}
+
+\makeatletter
+\def\input@path{{theme/}}
+\makeatother
+
+\usetheme{cipher}
+
+\title{Introduction to Cryptography}
+\author{Nadim Kobeissi}
+\institute{American University of Beirut \\ \url{https://appliedcryptography.page}}
+\date{\today}
+
+\coverpartname{Part 1: Cryptography in Theory}
+\coversessionname{1.2: One-Time Pad \& The Provable Security Mindset}
+
+\begin{document}
+	\begin{frame}[plain]
+		\titlepage
+	\end{frame}
+
+	\begin{frame}{How it's made}
+		\bigimagewithcaption{fischer_theory.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
+	\end{frame}
+
+	\begin{frame}{Testing stuff}
+		\begin{center}
+			\begin{tikzpicture}[
+				box/.style={rectangle, draw, minimum height=2.5cm, align=left, fill=white},
+				dashed box/.style={rectangle, draw, dashed, minimum width=2.5cm, minimum height=2.5cm, align=center, fill=white},
+				>=Stealth,
+			]
+				% Draw the boxes
+				\node[dashed box] (adversary) {$adversary$};
+				\node[box, right=2cm of adversary](attack){
+					$\underline{ATTACK(M)}$: \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary chooses $M$}} \\
+					\quad $K \twoheadleftarrow \{$\textcolor{red}{$\texttt{0}, \texttt{1}$}$\}^{n}$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim samples $K$}} \\
+					\quad $C := \text{Enc}(K, M)$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim encrypts}} \\
+					\quad return $C$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary sees $C$}}
+				};
+				% Draw the arrows
+				\draw[->] (adversary) -- node[above] {$M$} (attack);
+				\draw[<-] ([yshift=-0.5cm]adversary.east) -- node[below] {$C$} ([yshift=-0.5cm]attack.west);
+			\end{tikzpicture}
+		\end{center}
+	\end{frame}
+\end{document}
