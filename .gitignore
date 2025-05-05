@@ -25,3 +25,4 @@ __latex*
 *.nav
 *.snm
 *.vrb
+slides/svg-inkscape/*

@@ -104,10 +104,12 @@
 \newcommand{\imagewithcaption}[3][0.9\textwidth]{
 	\begin{center}
 		\begin{tikzpicture}
-			\node[inner sep=1mm]
-				{ \includegraphics[width=#1, keepaspectratio]{images/#2} };
-			\draw[white, line width=1mm]
-				(current bounding box.south west) rectangle (current bounding box.north east);
+			\node[fill=white, anchor=center, inner sep=0pt]{
+				\IfEndWith{#2}{.svg}
+					{\includesvg[width=#1, height=0.8\textheight, keepaspectratio]{images/#2}}
+					{\includegraphics[width=#1, height=0.8\textheight, keepaspectratio]{images/#2}}
+			};
+			\node[fit=(current bounding box), inner sep=0.5mm, draw=white, line width=0.5mm] {};
 		\end{tikzpicture}
 		\vspace{0.5em}
 		\begin{minipage}{0.7\textwidth}
@@ -116,16 +118,16 @@
 		\end{minipage}
 	\end{center}
 }
-
-% Image with caption template
 \newcommand{\bigimagewithcaption}[3][1\textwidth]{
 	\begin{center}
 		\vspace{-0.6cm}
 		\begin{tikzpicture}
-			\node[inner sep=1mm]
-				{ \includegraphics[width=#1, height=0.8\textheight, keepaspectratio]{images/#2} };
-			\draw[white, line width=1mm]
-				(current bounding box.south west) rectangle (current bounding box.north east);
+			\node[fill=white, anchor=center, inner sep=0pt]{
+				\IfEndWith{#2}{.svg}
+					{\includesvg[width=#1, height=0.8\textheight, keepaspectratio]{images/#2}}
+					{\includegraphics[width=#1, height=0.8\textheight, keepaspectratio]{images/#2}}
+			};
+			\node[fit=(current bounding box), inner sep=0.5mm, draw=white, line width=0.5mm] {};
 		\end{tikzpicture}
 		\vspace{0.3em}
 		\begin{minipage}{0.8\textwidth}

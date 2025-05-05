@@ -1,15 +1,19 @@
 all:
-	@make 1.1
-	@make 1.2
+	@make 1-1
+	@make 1-2
 
-1.1:
+clean:
 	@latexmk -C;
-	@latexmk "1.1 - Introduction.tex";
-	@mv "1.1 - Introduction.pdf" pdf/.
-	@latexmk -C;
+	@rm -rf svg-inkscape
 
-1.2:
-	@latexmk -C;
-	@latexmk "1.2 - One-Time Pad & The Provable Security Mindset.tex"
-	@mv "1.2 - One-Time Pad & The Provable Security Mindset.pdf" pdf/.
-	@latexmk -C;
+1-1:
+	@make clean
+	@latexmk -shell-escape "1-1"
+	@mv "1-1.pdf" pdf/.
+	@make clean
+
+1-2:
+	@make clean
+	@latexmk -shell-escape "1-2.tex"
+	@mv "1-2.pdf" pdf/.
+	@make clean
