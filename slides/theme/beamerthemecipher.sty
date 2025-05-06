@@ -112,14 +112,13 @@
 \newcommand{\bits}{\{\nliteral{0}, \nliteral{1}\}}
 \newcommand{\sslibraryfun}[2]{\rmfamily\textsc{#1}\scalebox{1.1}{$(#2)$}}
 
-\newtcolorbox{sslibrarybox}[1][]{
+\newtcolorbox{sslibrarybox}[2][]{
 	colback=white,
 	colframe=black,
 	colbacktitle=sstitlecolor,
 	coltitle=black,
 	enhanced,hbox,
 	fonttitle=\bfseries,
-	title=#1,
 	toptitle=1mm,
 	bottomtitle=1mm,
 	boxrule=0.5pt,
@@ -130,11 +129,13 @@
 	bottom=2mm,
 	titlerule style=sstitlecolor,
 	sharp corners,
-	halign title=center
+	halign title=center,
+	title={#2},
+	#1
 }
 
-\newcommand{\sslibrary}[2]{
-	\begin{sslibrarybox}[\lib{#1}]
+\newcommand{\sslibrary}[3]{
+	\begin{sslibrarybox}[scale=#3]{\lib{#1}}
 		\begin{varwidth}{\pagewidth}
 			#2
 		\end{varwidth}
@@ -142,8 +143,8 @@
 }
 
 \newcommand{\ssprogram}[3]{
-	\begin{sslibrarybox}[\prog{#1}]
-		\begin{tikzpicture}[box/.style={rectangle, align=left, fill=white, scale=#3, inner sep=0pt, outer sep=0pt, execute at begin node=\setlength{\baselineskip}{1.5em}}]
+	\begin{sslibrarybox}[scale=#3]{\prog{#1}}
+		\begin{tikzpicture}[box/.style={rectangle, align=left, fill=white, inner sep=0pt, outer sep=0pt, execute at begin node=\setlength{\baselineskip}{1.5em}}]
 			\node[box]{
 				#2
 			};
@@ -152,7 +153,7 @@
 }
 
 \newcommand{\sslinked}[2]{
-	\begin{varwidth}{0.4\textwidth}#1\end{varwidth}
+	\begin{varwidth}{0.45\textwidth}#1\end{varwidth}
 	$\diamond$
-	\begin{varwidth}{0.4\textwidth}#2\end{varwidth}
+	\begin{varwidth}{0.45\textwidth}#2\end{varwidth}
 }
