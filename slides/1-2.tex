@@ -48,7 +48,7 @@
 		\end{columns}
 	\end{frame}
 
-	\begin{frame}{Kerckhoff's Principle}
+	\begin{frame}{Kerckhoff's principle}
 		\begin{itemize}[<+->]
 			\item \textit{``A cryptosystem should be secure even if everything about the system, except the key, is public knowledge.''} — Auguste Kerckhoffs, 1883
 			\item \textbf{Why it matters}:
@@ -97,7 +97,7 @@
 		\end{columns}
 	\end{frame}
 
-	\begin{frame}{XOR (Exclusive OR) Operation}
+	\begin{frame}{XOR (Exclusive OR) operation}
 		\begin{columns}[c]
 			\column{0.6\textwidth}{
 				\begin{table}
@@ -382,10 +382,10 @@
 		\begin{itemize}[<+->]
 			\item Despite limitations, security proofs provide important benefits:
 			\begin{itemize}[<+->]
-				\item \textbf{Precise guarantees}: Clearly define what security properties are achieved
-				\item \textbf{Confidence}: When properly structured, proofs ensure no obvious attacks exist
-				\item \textbf{Foundation for composition}: Proven components can be securely combined
-				\item \textbf{Precise terminology}: Forces us to clearly define our terms and assumptions
+				\item \textbf{Precise guarantees}: Clearly define what security properties are achieved.
+				\item \textbf{Confidence}: When properly structured, proofs ensure no obvious attacks exist.
+				\item \textbf{Foundation for composition}: Proven components can be securely combined.
+				\item \textbf{Precise terminology}: Forces us to clearly define our terms and assumptions.
 			\end{itemize}
 			\item Security proofs help identify the \textit{boundaries} of security:
 			\begin{itemize}[<+->]
@@ -396,31 +396,24 @@
 		\end{itemize}
 	\end{frame}
 
-	\begin{frame}{The Provable Security Mindset}
-		\begin{columns}[c]
-			\column{0.6\textwidth}{
-				\begin{itemize}[<+->]
-					\item Building systems with provable security in mind:
-					\begin{itemize}[<+->]
-						\item Start with clear security goals and adversary model
-						\item Design systems whose security can be formally analyzed
-						\item Identify and document necessary assumptions
-						\item Distinguish between proven properties and conjectures
-					\end{itemize}
-					\item Good practical security requires both:
-					\begin{itemize}[<+->]
-						\item Rigorous proofs for core mechanisms
-						\item Practical engineering to address real-world constraints
-					\end{itemize}
-				\end{itemize}
-			}
-			\column{0.4\textwidth}{
-				\imagewithcaption{keyed_enc.svg}{Security requires both proven mechanisms and good implementation}
-			}
-		\end{columns}
+	\begin{frame}{The provable security mindset}
+		\begin{itemize}[<+->]
+			\item Building systems with provable security in mind:
+			\begin{itemize}[<+->]
+				\item Start with clear security goals and adversary model.
+				\item Design systems whose security can be formally analyzed.
+				\item Identify and document necessary assumptions.
+				\item Distinguish between proven properties and conjectures.
+			\end{itemize}
+			\item Good practical security requires both:
+			\begin{itemize}[<+->]
+				\item Rigorous proofs for core mechanisms.
+				\item Practical engineering to address real-world constraints.
+			\end{itemize}
+		\end{itemize}
 	\end{frame}
 
-	\begin{frame}{OTP: Security Assumptions \& Constraints}{Part 1}
+	\begin{frame}{OTP: security assumptions \& constraints}{Part 1}
 		\begin{itemize}[<+->]
 			\item Our security proofs rely on specific assumptions about the adversary:
 			\begin{itemize}[<+->]
@@ -434,7 +427,7 @@
 		\end{itemize}
 	\end{frame}
 
-	\begin{frame}{OTP: Security Assumptions \& Constraints}{Part 2}
+	\begin{frame}{OTP: security assumptions \& constraints}{Part 2}
 		\begin{itemize}[<+->]
 			\item Side-channel attacks violate our model:
 			\begin{itemize}[<+->]

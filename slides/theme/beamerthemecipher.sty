@@ -4,7 +4,11 @@
 \RequirePackage{tikz}
 \RequirePackage[table]{xcolor}
 \RequirePackage[most]{tcolorbox}
-\RequirePackage{listings,svg,mathtools,fontspec,unicode-math,tcolorbox,amsmath,amsthm,amssymb,amsfonts,graphicx,setspace,etoolbox,hyperref,xstring,fancybox,varwidth,xspace}
+\RequirePackage{
+	listings,svg,mathtools,fontspec,unicode-math,tcolorbox,
+	amsmath,amsthm,amssymb,amsfonts,graphicx,setspace,
+	etoolbox,hyperref,xstring,fancybox,varwidth,xspace,titlecaps
+}
 \RequirePackage[lining]{InriaSans}
 \RequirePackage{microtype}
 
@@ -16,13 +20,6 @@
 \usefonttheme{cipher}
 \useinnertheme{cipher}
 \useoutertheme{cipher}
-
-% Overall settings
-\setbeamertemplate{navigation symbols}{}
-\setbeamertemplate{blocks}[rounded]
-\setbeamertemplate{itemize items}[circle]
-\setbeamertemplate{enumerate items}[default]
-\setbeamertemplate{section in toc}[circle]
 
 % Custom commands
 \newcommand{\coversessionname}[1]{\def\insertcoversessionname{#1}}
