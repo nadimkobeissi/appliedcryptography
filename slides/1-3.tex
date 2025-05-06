@@ -1,0 +1,54 @@
+\documentclass[aspectratio=169, lualatex, handout]{beamer}
+\makeatletter
+\def\input@path{{theme/}}
+\makeatother
+\usetheme{cipher}
+
+\title{Introduction to Cryptography}
+\author{Nadim Kobeissi}
+\institute{American University of Beirut \\ \url{https://appliedcryptography.page}}
+\date{\today}
+
+\coverpartname{Part 1: Cryptography in Theory}
+\coversessionname{1.3: Rudiments of Provable Security}
+
+\begin{document}
+	\begin{frame}[plain]
+		\titlepage
+	\end{frame}
+
+	\begin{frame}{Attack scenarios as libraries}
+		\begin{columns}[t]
+			\begin{column}{0.65\textwidth}
+				\begin{itemize}[<+->]
+					\item This is a \textbf{library} with two \textbf{subroutines} and a \textbf{global variable} $D$.
+					\item Victim holds a 6-sided die.
+					\item The first line of the library represents an initialization step.
+					\item Attacker can call the subroutines at any time, and:
+				 	\begin{enumerate}
+						\item Make a guess about the current value of the die and learn whether the guess was correct.
+						\item Instruct the victim to (privately) re-roll the die.
+					\end{enumerate}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.35\textwidth}
+				\vspace{-1cm}
+				\begin{center}
+					\sslibrary{dice-guess}{
+						$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$ \\[2em]
+						\sslibrarysubroutine{Guess}{G}{
+							return $D == G$
+						}{1} \\[2em]
+						\sslibrarysubroutine{Reroll}{G}{
+							$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$
+						}{1}
+					}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}[plain]
+		\titlepage
+	\end{frame}
+\end{document}

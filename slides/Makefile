@@ -1,6 +1,7 @@
 all:
 	@make 1-1
 	@make 1-2
+	@make 1-3
 
 clean:
 	@latexmk -C;
@@ -16,4 +17,10 @@ clean:
 	@make clean
 	@latexmk -shell-escape "1-2.tex"
 	@mv "1-2.pdf" pdf/.
+	@make clean
+
+1-3:
+	@make clean
+	@latexmk -shell-escape "1-3.tex"
+	@mv "1-3.pdf" pdf/.
 	@make clean
