@@ -17,6 +17,41 @@
 		\titlepage
 	\end{frame}
 
+	\begin{frame}{Last time, we defined subroutines}
+		\begin{center}
+			\begin{tikzpicture}[
+				box/.style={rectangle, draw, minimum height=2.5cm, align=left, fill=white},
+				dashed box/.style={rectangle, draw, dashed, minimum width=2.5cm, minimum height=2.5cm, align=center, fill=white},
+				>=Stealth,
+			]
+				\node[dashed box] (adversary) {$adversary$};
+				\node[box, right=2cm of adversary](attack){
+					$\underline{\textsc{Attack}\scalebox{1.1}{(M)}}$: \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary chooses $M$}} \\
+					\quad $K \twoheadleftarrow \bits^{n}$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim samples $K$}} \\
+					\quad $C \coloneq \textsf{Enc}(K, M)$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim encrypts}} \\
+					\quad return $C$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary sees $C$}}
+				};
+				\draw[->] (adversary) -- node[above] {$M$} (attack);
+				\draw[<-] ([yshift=-0.5cm]adversary.east) -- node[below] {$C$} ([yshift=-0.5cm]attack.west);
+			\end{tikzpicture}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}{Subroutines}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item ``Victim'' chooses their key.
+					\item Adversary chooses the message and receives the ciphertext.
+					\item We say that \textbf{the adversary has access to an encryption oracle}.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\imagewithcaption{attacker_interface.svg}{Source: The Joy of Cryptography}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
 	\begin{frame}{Attack scenarios as libraries}
 		\begin{columns}[t]
 			\begin{column}{0.65\textwidth}
@@ -35,15 +70,45 @@
 				\vspace{-1cm}
 				\begin{center}
 					\sslibrary{dice-guess}{
-						$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$ \\[2em]
+						$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$ \\[1em]
 						\sslibrarysubroutine{Guess}{G}{
-							return $D == G$
-						}{1} \\[2em]
+							return $D \equiv G$
+						}{1} \\[1em]
 						\sslibrarysubroutine{Reroll}{G}{
 							$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$
 						}{1}
 					}
 				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Test}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Test
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\sslinked{
+					\ssprogram{}{
+						if \sslibraryfun{Guess}{6}:\\
+						\quad return true\\
+						\sslibraryfun{Reroll}{}\\
+						return \sslibraryfun{Guess}{6}
+					}{0.75}
+				}{
+					\sslibrary{dice-guess}{
+						$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$ \\[1em]
+						\sslibrarysubroutine{Guess}{G}{
+							return $D \equiv G$
+						}{1} \\[1em]
+						\sslibrarysubroutine{Reroll}{G}{
+							$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$
+						}{0.75}
+					}
+				}
 			\end{column}
 		\end{columns}
 	\end{frame}

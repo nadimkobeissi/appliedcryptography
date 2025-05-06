@@ -87,7 +87,7 @@
 % Macro for state-separable proof style subroutines
 \newcommand{\sssubroutine}[4]{
 	\begin{center}
-		\begin{tikzpicture}[box/.style={rectangle, draw, align=left, fill=white, inner sep=7pt, scale=#4, execute at begin node=\setlength{\baselineskip}{2em}}]
+		\begin{tikzpicture}[box/.style={rectangle, draw, align=left, fill=white, inner sep=7pt, scale=#4, execute at begin node=\setlength{\baselineskip}{1.5em}}]
 			\node[box]{
 				\underline{\ensuremath{\textsf{\upshape#1}}\scalebox{1.1}{$(#2)$}}: \\
 				#3
@@ -97,9 +97,9 @@
 }
 
 \newcommand{\sslibrarysubroutine}[4]{
-	\begin{tikzpicture}[box/.style={rectangle, align=left, fill=white, scale=#4, execute at begin node=\setlength{\baselineskip}{2em}}]
+	\begin{tikzpicture}[box/.style={rectangle, align=left, inner sep=0pt, outer sep=0pt, fill=white, scale=#4, execute at begin node=\setlength{\baselineskip}{1.5em}, inner sep=0pt, outer sep=0pt}]
 		\node[box]{
-			\underline{{\rmfamily\textsc{#1}}\scalebox{1.1}{$(#2)$}}: \\
+			\underline{\sslibraryfun{#1}{#2}}: \\
 			#3
 		};
 	\end{tikzpicture}
@@ -108,30 +108,51 @@
 \newcommand{\nliteral}[1]{\textcolor{ciphernliteral}{\texttt{#1}}}
 \newcommand{\prob}[1]{$\Pr\bigl[$#1$\bigr]$}
 \newcommand{\lib}[1]{$\mathcal{L}_\text{#1}$}
+\newcommand{\prog}[1]{$\mathcal{A}_\text{#1}$}
 \newcommand{\bits}{\{\nliteral{0}, \nliteral{1}\}}
+\newcommand{\sslibraryfun}[2]{\rmfamily\textsc{#1}\scalebox{1.1}{$(#2)$}}
 
 \newtcolorbox{sslibrarybox}[1][]{
 	colback=white,
-	colframe=gray!20,
+	colframe=black,
+	colbacktitle=sstitlecolor,
 	coltitle=black,
 	enhanced,hbox,
 	fonttitle=\bfseries,
-	title=\lib{#1},
+	title=#1,
 	toptitle=1mm,
 	bottomtitle=1mm,
-	titlerule=0.5pt,
+	boxrule=0.5pt,
+	titlerule=0pt,
 	left=1mm,
 	right=1mm,
 	top=2mm,
 	bottom=2mm,
+	titlerule style=sstitlecolor,
 	sharp corners,
 	halign title=center
 }
 
 \newcommand{\sslibrary}[2]{
-	\begin{sslibrarybox}[#1]
+	\begin{sslibrarybox}[\lib{#1}]
 		\begin{varwidth}{\pagewidth}
 			#2
 		\end{varwidth}
 	\end{sslibrarybox}
+}
+
+\newcommand{\ssprogram}[3]{
+	\begin{sslibrarybox}[\prog{#1}]
+		\begin{tikzpicture}[box/.style={rectangle, align=left, fill=white, scale=#3, inner sep=0pt, outer sep=0pt, execute at begin node=\setlength{\baselineskip}{1.5em}}]
+			\node[box]{
+				#2
+			};
+		\end{tikzpicture}
+	\end{sslibrarybox}
+}
+
+\newcommand{\sslinked}[2]{
+	\begin{varwidth}{0.4\textwidth}#1\end{varwidth}
+	$\diamond$
+	\begin{varwidth}{0.4\textwidth}#2\end{varwidth}
 }
