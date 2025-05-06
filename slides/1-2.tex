@@ -378,6 +378,48 @@
 		\end{itemize}
 	\end{frame}
 
+	\begin{frame}{The value of security proofs}
+		\begin{itemize}[<+->]
+			\item Despite limitations, security proofs provide important benefits:
+			\begin{itemize}[<+->]
+				\item \textbf{Precise guarantees}: Clearly define what security properties are achieved
+				\item \textbf{Confidence}: When properly structured, proofs ensure no obvious attacks exist
+				\item \textbf{Foundation for composition}: Proven components can be securely combined
+				\item \textbf{Precise terminology}: Forces us to clearly define our terms and assumptions
+			\end{itemize}
+			\item Security proofs help identify the \textit{boundaries} of security:
+			\begin{itemize}[<+->]
+				\item What assumptions are necessary?
+				\item What threats are addressed vs. unaddressed?
+				\item What conditions must hold for security to be maintained?
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{The Provable Security Mindset}
+		\begin{columns}[c]
+			\column{0.6\textwidth}{
+				\begin{itemize}[<+->]
+					\item Building systems with provable security in mind:
+					\begin{itemize}[<+->]
+						\item Start with clear security goals and adversary model
+						\item Design systems whose security can be formally analyzed
+						\item Identify and document necessary assumptions
+						\item Distinguish between proven properties and conjectures
+					\end{itemize}
+					\item Good practical security requires both:
+					\begin{itemize}[<+->]
+						\item Rigorous proofs for core mechanisms
+						\item Practical engineering to address real-world constraints
+					\end{itemize}
+				\end{itemize}
+			}
+			\column{0.4\textwidth}{
+				\imagewithcaption{keyed_enc.svg}{Security requires both proven mechanisms and good implementation}
+			}
+		\end{columns}
+	\end{frame}
+
 	\begin{frame}{OTP: Security Assumptions \& Constraints}{Part 1}
 		\begin{itemize}[<+->]
 			\item Our security proofs rely on specific assumptions about the adversary:

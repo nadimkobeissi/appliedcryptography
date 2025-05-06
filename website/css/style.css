@@ -58,7 +58,7 @@ html {
 }
 
 body {
-	font-family: "Fira Sans", sans-serif;
+	font-family: "Inria Sans", sans-serif;
 	font-size: 16px;
 	line-height: 1.7;
 	color: var(--dark);
@@ -141,7 +141,7 @@ strong {
 }
 
 .navbar-logo {
-	font-family: "JetBrains Mono", monospace;
+	font-family: "Inria Sans", monospace;
 	font-weight: 700;
 	font-size: 1.2rem;
 	color: var(--primary);
@@ -749,9 +749,11 @@ strong {
 }
 
 .collapsible-header.active {
-	background: linear-gradient(to bottom,
-			var(--gray-dark) 0%,
-			transparent 100%);
+	background: linear-gradient(
+		to bottom,
+		var(--gray-dark) 0%,
+		transparent 100%
+	);
 	box-shadow: none;
 	border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
