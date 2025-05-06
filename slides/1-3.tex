@@ -151,7 +151,7 @@
 
 	\begin{frame}{When are libraries interchangeable?}
 		\begin{columns}[c]
-			\begin{column}{0.5\textwidth}
+			\begin{column}{0.55\textwidth}
 				\begin{itemize}[<+->]
 					\item Libraries are \textbf{interchangeable} when they:
 					\begin{itemize}[<+->]
@@ -162,25 +162,25 @@
 					\item A lot of the time, \prog{}'s mission is to try to \textit{distinguish} between \lib{1} and \lib{2}.
 				\end{itemize}
 			\end{column}
-			\begin{column}{0.05\textwidth}
-			\end{column}
 			\begin{column}{0.45\textwidth}
-				\sslinked{
-					\sslibrary{otp-real}{
-						\sslibrarysubroutine{Otp.Enc}{M}{
-							$K \twoheadleftarrow \bits^{n}$ \\
-							$C \coloneq K \oplus M$ \\
-							return $C$
+				\begin{flushright}
+					\sslinked{
+						\sslibrary{otp-real}{
+							\sslibrarysubroutine{Otp.Enc}{M}{
+								$K \twoheadleftarrow \bits^{n}$ \\
+								$C \coloneq K \oplus M$ \\
+								return $C$
+							}{1}
 						}{1}
-					}{1}
-				}{\equiv}{
-					\sslibrary{otp-random}{
-						\sslibrarysubroutine{Otp.Enc}{M}{
-							$R \twoheadleftarrow \bits^{n}$ \\
-							return $R$
+					}{\equiv}{
+						\sslibrary{otp-random}{
+							\sslibrarysubroutine{Otp.Enc}{M}{
+								$R \twoheadleftarrow \bits^{n}$ \\
+								return $R$
+							}{1}
 						}{1}
-					}{1}
-				}
+					}
+				\end{flushright}
 			\end{column}
 		\end{columns}
 	\end{frame}
