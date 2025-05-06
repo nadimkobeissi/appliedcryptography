@@ -53,7 +53,7 @@
 	\end{frame}
 
 	\begin{frame}{Attack scenarios as libraries}
-		\begin{columns}[t]
+		\begin{columns}[c]
 			\begin{column}{0.65\textwidth}
 				\begin{itemize}[<+->]
 					\item This is a \textbf{library} with two \textbf{subroutines} and a \textbf{global variable} $D$.
@@ -72,7 +72,7 @@
 					\sslibrary{dice-guess}{
 						$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$ \\[1em]
 						\sslibrarysubroutine{Guess}{G}{
-							return $D \equiv G$
+							return $D == G$
 						}{1} \\[1em]
 						\sslibrarysubroutine{Reroll}{G}{
 							$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$
@@ -83,11 +83,47 @@
 		\end{columns}
 	\end{frame}
 
-	\begin{frame}{Test}
+	\begin{frame}{One-time pad}{From the adversary's perspective...}
+		\begin{columns}[c]
+			\begin{column}{0.35\textwidth}
+				\sssubroutine{Attack}{M}{
+					$K \twoheadleftarrow \bits^{n}$ \\
+					$C \coloneq K \oplus M$ \\
+					return $C$
+				}{1.5}
+			\end{column}
+			\begin{column}{0.3\textwidth}
+				\begin{center}
+					{\huge{$\approxeq$}} \\[1em]
+					{\scriptsize\textit{(indistinguishable \\ from)}}
+				\end{center}
+			\end{column}
+			\begin{column}{0.35\textwidth}
+				\sssubroutine{Junk}{M}{
+					$C \twoheadleftarrow \bits^{n}$ \\
+					return $C$
+				}{2}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}
+		\begin{center}
+			\huge \textit{``Real or random?''}
+		\end{center}
+	\end{frame}
+
+	\begin{frame}{Programs and libraries}
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
-				\begin{itemize}
-					\item Test
+				\begin{itemize}[<+->]
+					\item \prog{} is a \textbf{program} that calls \textbf{library} \lib{dice-guess}.
+					\item Programs can only see the output of function calls to libraries.
+					\begin{itemize}[<+->]
+						\item Programs can't read the values of library variables,
+						\item Programs can't measure how long it took to run a subroutine,
+						\item Etc.
+					\end{itemize}
 				\end{itemize}
 			\end{column}
 			\begin{column}{0.5\textwidth}
@@ -98,11 +134,11 @@
 						\sslibraryfun{Reroll}{}\\
 						return \sslibraryfun{Guess}{6}
 					}{0.95}
-				}{
+				}{\diamond}{
 					\sslibrary{dice-guess}{
 						$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$ \\[1em]
 						\sslibrarysubroutine{Guess}{G}{
-							return $D \equiv G$
+							return $D == G$
 						}{1} \\[1em]
 						\sslibrarysubroutine{Reroll}{G}{
 							$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$
@@ -111,6 +147,255 @@
 				}
 			\end{column}
 		\end{columns}
+	\end{frame}
+
+	\begin{frame}{When are libraries interchangeable?}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item Libraries are \textbf{interchangeable} when they:
+					\begin{itemize}[<+->]
+						\item Have the same interface,
+						\item \prob{\prog{}$\diamond$\lib{1} $\Rightarrow$ \texttt{true}} $=$ \prob{\prog{}$\diamond$\lib{2} $\Rightarrow$ \texttt{true}}
+					\end{itemize}
+					\item i.e. when their usage and output is indistinguishable from the adversary's perspective when they are paired with \prog{}.
+					\item A lot of the time, \prog{}'s mission is to try to \textit{distinguish} between \lib{1} and \lib{2}.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.05\textwidth}
+			\end{column}
+			\begin{column}{0.45\textwidth}
+				\sslinked{
+					\sslibrary{otp-real}{
+						\sslibrarysubroutine{Otp.Enc}{M}{
+							$K \twoheadleftarrow \bits^{n}$ \\
+							$C \coloneq K \oplus M$ \\
+							return $C$
+						}{1}
+					}{1}
+				}{\equiv}{
+					\sslibrary{otp-random}{
+						\sslibrarysubroutine{Otp.Enc}{M}{
+							$R \twoheadleftarrow \bits^{n}$ \\
+							return $R$
+						}{1}
+					}{1}
+				}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{When are libraries interchangeable?}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item Are these libraries interchangeable?
+					\item \textbf{Yes!} Their only difference happens in \textit{unreachable lines of code}.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.05\textwidth}
+			\end{column}
+			\begin{column}{0.45\textwidth}
+				\sslinked{
+					\sslibrary{a}{
+						\sslibrarysubroutine{Foo}{M}{
+							$X \twoheadleftarrow \{1, \ldots, n\}$ \\
+							if $X < 0$: \\
+							\quad return $\nliteral{0}^n$
+						}{1}
+					}{1}
+				}{\overset{?}{\equiv}}{
+					\sslibrary{b}{
+						\sslibrarysubroutine{Foo}{M}{
+							$X \twoheadleftarrow \{1, \ldots, n\}$ \\
+							if $X < 0$: \\
+							\quad return $\nliteral{0}^1$
+						}{1}
+					}{1}
+				}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{When are libraries interchangeable?}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item Are these libraries interchangeable?
+					\item \textbf{Yes!} Their only difference is the value they assign to a \textit{variable that is never actually used}.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.05\textwidth}
+			\end{column}
+			\begin{column}{0.45\textwidth}
+				\sslinked{
+					\sslibrary{a}{
+						\sslibrarysubroutine{Foo}{A, B}{
+							$Y \twoheadleftarrow \bits^n$\\
+							$C \coloneq $\sslibraryfun{Bar}{A}\\
+							return $Y$
+						}{1}\\[1em]
+						\sslibrarysubroutine{Bar}{M}{
+							$X \twoheadleftarrow \bits^n$\\
+							return $X$
+						}{1}
+					}{1}
+				}{\overset{?}{\equiv}}{
+					\sslibrary{b}{
+						\sslibrarysubroutine{Foo}{A, B}{
+							$Y \twoheadleftarrow \bits^n$\\
+							$C \coloneq $\sslibraryfun{Bar}{B}\\
+							return $Y$
+						}{1}\\[1em]
+						\sslibrarysubroutine{Bar}{M}{
+							$X \twoheadleftarrow \bits^n$\\
+							return $X$
+						}{1}
+					}{1}
+				}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{When are libraries interchangeable?}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item Are these libraries interchangeable?
+					\item $\|$ denotes string concatenation.
+					\begin{itemize}
+						\item $\texttt{Po} \| \texttt{tato} = \texttt{Potato}$
+					\end{itemize}
+					\item \textbf{Yes!} Outputting the concatentaion two randomly sampled uniform strings of lengths $n$ and $m$ is the same as outputting a single random string of length $n + m$.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.05\textwidth}
+			\end{column}
+			\begin{column}{0.45\textwidth}
+				\sslinked{
+					\sslibrary{a}{
+						\sslibrarysubroutine{Sample}{}{
+							$X \twoheadleftarrow \bits^n$\\
+							$Y \twoheadleftarrow \bits^m$\\
+							return $X \| Y$
+						}{1}
+					}{1}
+				}{\overset{?}{\equiv}}{
+					\sslibrary{b}{
+						\sslibrarysubroutine{Sample}{}{
+							$R \twoheadleftarrow \bits^{n+m}$\\
+							return $R$
+						}{1}
+					}{1}
+				}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{When are libraries interchangeable?}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item Are these libraries interchangeable?
+					\item \textbf{No!} The first library uses the same $K$ for all subsequent encryptions, which breaks OTP security.
+					\begin{itemize}
+						\item Recall that OTP requires keys to be only used once (hence the name).
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.05\textwidth}
+			\end{column}
+			\begin{column}{0.45\textwidth}
+				\sslinked{
+					\sslibrary{a}{
+						$K \twoheadleftarrow \bits^n$\\[1em]
+						\sslibrarysubroutine{Otp.Enc}{M}{
+							$C \coloneq K \oplus M$ \\
+							return $C$
+						}{1}
+					}{1}
+				}{\overset{?}{\equiv}}{
+					\sslibrary{b}{
+						\sslibrarysubroutine{Otp.Enc}{M}{
+							$C \twoheadleftarrow \bits^n$\\
+							return $C$
+						}{1}
+					}{1}
+				}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{How do we show the distinguisher?}
+		\begin{columns}[c]
+			\begin{column}{0.4\textwidth}
+				\begin{itemize}[<+->]
+					\item What happens if we call \prog{}$\diamond$\lib{a} multiple times?
+					\begin{itemize}
+						\item We'll get the same output $\equiv K$, each time!
+					\end{itemize}
+					\item \prob{\prog{}$\diamond$\lib{a} $\Rightarrow$ \texttt{true}} $= 1$,
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.6\textwidth}
+				\begin{flushright}
+					\sslinked{
+						\ssprogram{}{
+							$C_1 \coloneq$ \sslibraryfun{Otp.Enc}{\nliteral{0}^n}\\
+							$C_2 \coloneq$ \sslibraryfun{Otp.Enc}{\nliteral{0}^n}\\
+							return $C_1 == C_2$
+						}{1}
+					}{\diamond}{
+						\sslibrary{a}{
+							$K \twoheadleftarrow \bits^n$\\[1em]
+							\sslibrarysubroutine{Otp.Enc}{M}{
+								$C \coloneq K \oplus M$ \\
+								return $C$
+							}{1}
+						}{1}
+					}
+				\end{flushright}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{How do we show the distinguisher?}
+		\begin{columns}[c]
+			\begin{column}{0.4\textwidth}
+				\begin{itemize}
+					\item What happens if we call \prog{}$\diamond$\lib{a} multiple times?
+					\begin{itemize}
+						\item We'll get the same output $\equiv K$, each time!
+					\end{itemize}
+					\item \prob{\prog{}$\diamond$\lib{a} $\Rightarrow$ \texttt{true}} $= 1$,
+					\item \prob{\prog{}$\diamond$\lib{b} $\Rightarrow$ \texttt{true}} $= \frac{1}{2^n}$.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.6\textwidth}
+				\begin{flushright}
+					\sslinked{
+						\ssprogram{}{
+							$C_1 \coloneq$ \sslibraryfun{Otp.Enc}{\nliteral{0}^n}\\
+							$C_2 \coloneq$ \sslibraryfun{Otp.Enc}{\nliteral{0}^n}\\
+							return $C_1 == C_2$
+						}{1}
+					}{\diamond}{
+						\sslibrary{b}{
+							\sslibrarysubroutine{Otp.Enc}{M}{
+								$C \twoheadleftarrow \bits^n$\\
+								return $C$
+							}{1}
+						}{1}
+					}
+				\end{flushright}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Test}
+		\begin{itemize}[<+->]
+			\item Test 123
+		\end{itemize}
 	\end{frame}
 
 	\begin{frame}[plain]
