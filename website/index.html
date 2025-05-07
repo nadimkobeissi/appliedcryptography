@@ -34,11 +34,13 @@
 	<script src="js/date.js"></script>
 	<script src="js/menu.js"></script>
 	<script src="js/collapsible.js"></script>
+	<script src="js/updated.js"></script>
 	<script>
 		window.addEventListener(`load`, () => {
 			dateInit()
 			menuInit()
 			collapsibleInit()
+			updatedInit()
 		})
 	</script>
 </head>
@@ -79,8 +81,11 @@
 				<p>
 					Welcome to the Applied Cryptography course website. The goal of this page is to serve as a unified and self-sufficient source of truth on everything concerning your course.
 				</p>
-				<p class="mb-0">
+				<p>
 					<strong><i class="fas fa-bookmark icon"></i>Bookmark this website for the duration of the course and visit it regularly</strong>. All course news will be kept up to date on this website.
+				</p>
+				<p class="mb-0">
+					<strong><i class="fas fa-clock icon"></i>Last updated:</strong> <span id="lastUpdated"><em>Loading...</em></span>
 				</p>
 			</div>
 
@@ -102,7 +107,7 @@
 							<li><strong><i class="fas fa-laptop-code icon"></i>Lab:</strong> TBA.</li>
 							<li><strong><i class="fas fa-calendar-alt icon"></i>Term Dates:</strong> August 25<sup>th</sup> until December 13<sup>th</sup>, 2025.</li>
 							<li><strong><i class="fas fa-envelope icon"></i>Instructor's Email:</strong> <a href="mailto:cmps-297ad-396ai@nadim.email">cmps-297ad-396ai@nadim.email</a></li>
-							<li><strong><i class="fas fa-clock icon"></i>Office Hours:</strong> Email me to make an appointment.</li>
+							<li><strong><i class="fas fa-building-columns icon"></i>Office Hours:</strong> Email me to make an appointment.</li>
 						</ul>
 					</div>
 				</div>
@@ -653,8 +658,6 @@
 	<footer class="footer">
 		<div class="container">
 			<p>
-				<strong>Last Updated:</strong> May 4<sup>th</sup>, 2025.
-				<br />
 				<strong>Copyright:</strong> &copy; 2025—<span id="footerYear"></span> Nadim Kobeissi.
 				<br />
 				<strong>License:</strong> Course materials are hereby released under the <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>. "American University of Beirut", "AUB", the AUB official logo and AUB seal are trademarks of the American University of Beirut. They are not included under the Creative Commons license.
