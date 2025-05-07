@@ -106,13 +106,13 @@
 	\end{tikzpicture}
 }
 
-\newcommand{\nliteral}[1]{\textcolor{ciphernliteral}{\texttt{#1}}}
 \newcommand{\prob}[1]{\ensuremath{\Pr\bigl[\ensuremath{#1}\bigr]}}
 \newcommand{\lib}[2]{\ensuremath{\mathcal{L}^{#1}_\text{#2}}}
 \newcommand{\prog}[1]{\ensuremath{\mathcal{A}_\text{#1}}}
 \newcommand{\link}{\ensuremath{\diamond}}
 \newcommand{\interchangeable}[1]{\ensuremath{\overset{\ensuremath{#1}}{\equiv}}}
-\newcommand{\bits}{\ensuremath{\{\nliteral{0}, \nliteral{1}\}}}
+\newcommand{\bit}[1]{\textcolor{ciphernliteral}{\texttt{#1}}}
+\newcommand{\bits}{\ensuremath{\{\bit{0}, \bit{1}\}}}
 \newcommand{\sslibraryfun}[2]{\ensuremath{\textrm{\textsc{\lowercase{#1}}}\scalebox{1.1}{\ensuremath{(#2)}}}}
 
 \newtcolorbox{sslibrarybox}[2][]{

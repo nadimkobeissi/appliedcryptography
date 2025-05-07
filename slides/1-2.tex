@@ -279,12 +279,12 @@
 			\begin{column}{0.7\textwidth}
 				\begin{itemize}[<+->]
 					\item If the key is random, the output will be uniformly distributed!
-					\item Suppose $M = \nliteral{01}$:
+					\item Suppose $M = \bit{01}$:
 					\begin{itemize}[<+->]
-						\item $K = \nliteral{00}$ is chosen with probability $1/4$:\\$C = K \oplus M = \nliteral{00} \oplus \nliteral{01} = \nliteral{01}$.
-						\item $K = \nliteral{01}$ is chosen with probability $1/4$:\\$C = K \oplus M = \nliteral{01} \oplus \nliteral{01} = \nliteral{00}$.
-						\item $K = \nliteral{10}$ is chosen with probability $1/4$:\\$C = K \oplus M = \nliteral{10} \oplus \nliteral{01} = \nliteral{11}$.
-						\item $K = \nliteral{11}$ is chosen with probability $1/4$:\\$C = K \oplus M = \nliteral{11} \oplus \nliteral{01} = \nliteral{10}$.
+						\item $K = \bit{00}$ is chosen with probability $1/4$:\\$C = K \oplus M = \bit{00} \oplus \bit{01} = \bit{01}$.
+						\item $K = \bit{01}$ is chosen with probability $1/4$:\\$C = K \oplus M = \bit{01} \oplus \bit{01} = \bit{00}$.
+						\item $K = \bit{10}$ is chosen with probability $1/4$:\\$C = K \oplus M = \bit{10} \oplus \bit{01} = \bit{11}$.
+						\item $K = \bit{11}$ is chosen with probability $1/4$:\\$C = K \oplus M = \bit{11} \oplus \bit{01} = \bit{10}$.
 					\end{itemize}
 				\end{itemize}
 			\end{column}
@@ -302,7 +302,7 @@
 		\begin{columns}[c]
 			\begin{column}{0.7\textwidth}
 				\begin{itemize}[<+->]
-					\item What if this is true only for $M = \nliteral{01}$?
+					\item What if this is true only for $M = \bit{01}$?
 					\item Fine, let's pick any $M, C \in \bits^n$.
 					\item What is \prob{\textsc{Attack}$(M) = C$}?
 					\item Answer: Exactly when $C = \textsf{Enc}(K, M) = K \oplus M$.

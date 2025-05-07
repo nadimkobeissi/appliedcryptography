@@ -201,7 +201,7 @@
 						\sslibrarysubroutine{Foo}{M}{
 							$X \twoheadleftarrow \{1, \ldots, n\}$ \\
 							if $X < 0$: \\
-							\quad return $\nliteral{0}^n$
+							\quad return $\bit{0}^n$
 						}{1}
 					}{1}
 				}{\interchangeable{?}}{
@@ -209,7 +209,7 @@
 						\sslibrarysubroutine{Foo}{M}{
 							$X \twoheadleftarrow \{1, \ldots, n\}$ \\
 							if $X < 0$: \\
-							\quad return $\nliteral{0}^1$
+							\quad return $\bit{0}^1$
 						}{1}
 					}{1}
 				}
@@ -341,8 +341,8 @@
 				\begin{flushright}
 					\sslinked{
 						\ssprogram{}{
-							$C_1 \coloneq \sslibraryfun{Otp.Enc}{\nliteral{0}^n}$\\
-							$C_2 \coloneq \sslibraryfun{Otp.Enc}{\nliteral{0}^n}$\\
+							$C_1 \coloneq \sslibraryfun{Otp.Enc}{\bit{0}^n}$\\
+							$C_2 \coloneq \sslibraryfun{Otp.Enc}{\bit{0}^n}$\\
 							return $C_1 == C_2$
 						}{1}
 					}{\link}{
@@ -375,8 +375,8 @@
 				\begin{flushright}
 					\sslinked{
 						\ssprogram{}{
-							$C_1 \coloneq \sslibraryfun{Otp.Enc}{\nliteral{0}^n}$\\
-							$C_2 \coloneq \sslibraryfun{Otp.Enc}{\nliteral{0}^n}$\\
+							$C_1 \coloneq \sslibraryfun{Otp.Enc}{\bit{0}^n}$\\
+							$C_2 \coloneq \sslibraryfun{Otp.Enc}{\bit{0}^n}$\\
 							return $C_1 == C_2$
 						}{1}
 					}{\link}{
@@ -398,7 +398,7 @@
 				\begin{align*}
 					C_i \oplus C_j &= (K \oplus M_i) \oplus (K \oplus M_j) \\
 					&= K \oplus K \oplus M_i \oplus M_j \\
-					&= \nliteral{0}^n \oplus M_i \oplus M_j \\
+					&= \bit{0}^n \oplus M_i \oplus M_j \\
 					&= M_i \oplus M_j
 				\end{align*}
 				\begin{itemize}
@@ -765,15 +765,55 @@
 		\end{columns}
 	\end{frame}
 
+	\begin{frame}{Reminder: AND $(\land)$}
+		\begin{columns}[c]
+			\begin{column}{0.7\textwidth}
+				\begin{itemize}[<+->]
+					\item Let's replace $\oplus$ with $\land$. What would happen?
+					\item Output no longer uniform!
+				\end{itemize}
+				\begin{table}
+					\centering
+					\begin{tabular}{|c|c|c|}
+						\hline
+						\rowcolor{white}
+						\textbf{A} & \textbf{B} & \textbf{A $\land$ B} \\
+						\hline
+						\rowcolor{white}
+						\texttt{0} & \texttt{0} & \texttt{0} \\
+						\hline
+						\rowcolor{white}
+						\texttt{0} & \texttt{1} & \texttt{0} \\
+						\hline
+						\rowcolor{white}
+						\texttt{1} & \texttt{0} & \texttt{0} \\
+						\hline
+						\rowcolor{white}
+						\texttt{1} & \texttt{1} & \texttt{1} \\
+						\hline
+					\end{tabular}
+					\caption{Truth table for AND operation}
+				\end{table}
+			\end{column}
+			\begin{column}{0.3\textwidth}
+				\sssubroutine{Attack}{M}{
+					$K \twoheadleftarrow \bits^{n}$ \\
+					$C \coloneq K \land M$ \\
+					return $C$
+				}{1.5}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
 	\begin{frame}{Creating a distinguisher program}
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
 				\begin{itemize}[<+->]
 					\item Can you write a distinguisher program showing that these libraries are \textbf{not} interchangeable?
 					\item \ssprogram{}{
-						$M \coloneq \nliteral{0}^n$\\
+						$M \coloneq \bit{0}^n$\\
 						$C \coloneq \sslibraryfun{Ots.Enc}{M}$\\
-						return $C == \nliteral{0}^n$
+						return $C == \bit{0}^n$
 					}{1}
 					\item \prob{A\link\lib{}{ots-real} \Rightarrow \texttt{true}} $= 1$
 					\item \prob{A\link\lib{}{ots-rand} \Rightarrow \texttt{true}} $= \frac{1}{2^n}$
