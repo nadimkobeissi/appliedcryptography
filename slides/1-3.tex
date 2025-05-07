@@ -765,6 +765,43 @@
 		\end{columns}
 	\end{frame}
 
+	\begin{frame}{Creating a distinguisher program}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item Can you write a distinguisher program showing that these libraries are \textbf{not} interchangeable?
+					\item \ssprogram{}{
+						$M \coloneq \nliteral{0}^n$\\
+						$C \coloneq \sslibraryfun{Ots.Enc}{M}$\\
+						return $C == \nliteral{0}^n$
+					}{1}
+					\item \prob{A\link\lib{}{ots-real} \Rightarrow \texttt{true}} $= 1$
+					\item \prob{A\link\lib{}{ots-rand} \Rightarrow \texttt{true}} $= \frac{1}{2^n}$
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\sslinked{
+						\sslibrary{}{ots-real}{
+							\sslibrarysubroutine{Ots.Enc}{M}{
+								$K \twoheadleftarrow \bits^n$ \\
+								$C \coloneq K \land M$ \\
+								return $C$
+							}{1}
+						}{0.8}
+					}{\interchangeable{?}}{
+						\sslibrary{}{ots-rand}{
+							\sslibrarysubroutine{Ots.Enc}{M}{
+								$C \twoheadleftarrow \bits^n$ \\
+								return $C$
+							}{1}
+						}{0.8}
+					}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
 	\begin{frame}{Slide deck not yet finished}
 		\begin{itemize}
 			\item Note: this slide deck is not complete. More slides are coming.
