@@ -1,6 +1,6 @@
 const updatedInit = () => {
 	fetch(
-		"https://api.github.com/repos/nadimkobeissi/appliedcryptography/commits",
+		"https://api.github.com/repos/nadimkobeissi/appliedcryptography/commits?per_page=1&sha=main",
 	)
 		.then((response) => response.json())
 		.then((data) => {
