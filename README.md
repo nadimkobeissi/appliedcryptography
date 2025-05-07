@@ -47,10 +47,10 @@ The repository is not intended to be browsed directly. Instead, access the cours
 
 - [ ] Password Manager
 - [ ] Secure Messenger
-- [ ] [ZK Battleship](https://github.com/risc0/battleship-example)
-- [ ] ProofFrog
-- [ ] Verifpal
-- [ ] ProVerif or Tamarin
+- [ ] [ZK Battleship](https://github.com/nategraf/oscw-zkvms-battleship)
+- [ ] [ProofFrog](https://prooffrog.github.io)
+- [ ] [Verifpal](https://verifpal.com)
+- [ ] [ProVerif](https://proverif.inria.fr) or [Tamarin](https://tamarin-prover.com)
 
 ### Assignments
 
