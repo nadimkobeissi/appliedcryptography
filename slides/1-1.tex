@@ -180,14 +180,14 @@
 				etc. before granting access.
 			\item What's so bad about that?
 		\end{itemize}
-		\begin{alertblock}{The Problem with Traditional Access Control}
+		\definitionbox{The Problem with Traditional Access Control}{
 			\begin{itemize}[<+->]
 				\item Requires trusting the server completely
 				\item No protection during transmission
 				\item No way to verify integrity
 				\item No way to establish trust between strangers
 			\end{itemize}
-		\end{alertblock}
+		}
 	\end{frame}
 
 	\begin{frame}[c]{The magic of cryptography}
@@ -302,11 +302,13 @@
 	\begin{frame}{Symmetric primitive example: hash functions}
 		\begin{columns}[c]
 			\begin{column}{0.55\textwidth}
-				\definitionbox{Hash Function Properties}{\begin{itemize}\item Takes input of \textbf{any size}
-				\item Produces output of \textbf{fixed size}
-				\item Is \textbf{deterministic} (same input $\rightarrow$ same output)
-				\item Even a \textbf{tiny change} in input creates completely different output
-				\item Is \textbf{efficient} to compute\end{itemize}}
+				\definitionbox{Hash Function Properties}{
+					\begin{itemize}\item Takes input of \textbf{any size}
+					\item Produces output of \textbf{fixed size}
+					\item Is \textbf{deterministic} (same input $\rightarrow$ same output)
+					\item Even a \textbf{tiny change} in input creates completely different output
+					\item Is \textbf{efficient} to compute\end{itemize}
+				}
 			\end{column}
 			\begin{column}{0.45\textwidth}
 				\begin{tcolorbox}
