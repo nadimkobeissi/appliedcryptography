@@ -152,8 +152,10 @@
 	\end{sslibrarybox}
 }
 
-\newcommand{\sslinked}[3]{
-	\begin{varwidth}{0.45\textwidth}#1\end{varwidth}
-	$#2$
-	\begin{varwidth}{0.45\textwidth}#3\end{varwidth}
+\newcommand{\sslinked}[3]{%
+	\begin{tikzpicture}[baseline]
+		\node[inner sep=0pt, outer sep=0pt] (left) {\begin{varwidth}{\dimexpr\textwidth-\wd2-\wd4\relax}#1\end{varwidth}};
+		\node[inner sep=0pt, outer sep=0pt, anchor=west] (middle) at (left.east) {\Large\ $#2 \ $};
+		\node[inner sep=0pt, outer sep=0pt, anchor=west] (right) at (middle.east) {\begin{varwidth}{\dimexpr\textwidth-\wd0-\wd2\relax}#3\end{varwidth}};
+	\end{tikzpicture}
 }

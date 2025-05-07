@@ -392,10 +392,42 @@
 		\end{columns}
 	\end{frame}
 
-	\begin{frame}{Test}
-		\begin{itemize}[<+->]
-			\item Test 123
-		\end{itemize}
+	\begin{frame}{OTP: why key re-use is bad}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{align*}
+					C_i \oplus C_j &= (K \oplus M_i) \oplus (K \oplus M_j) \\
+					&= K \oplus K \oplus M_i \oplus M_j \\
+					&= \nliteral{0}^n \oplus M_i \oplus M_j \\
+					&= M_i \oplus M_j
+				\end{align*}
+				\begin{itemize}
+					\item \prob{\prog{}$\diamond$\lib{a} $\Rightarrow$ \texttt{true}} $= 1$
+					\item Interactive demo: {\scriptsize\url{https://www.douglas.stebila.ca/teaching/visual-one-time-pad/}}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{flushright}
+					\sslinked{
+						\ssprogram{}{
+							$M_1 \twoheadleftarrow \bits^n$\\
+							$M_2 \twoheadleftarrow \bits^n$\\
+							$C_1 \coloneq$ \sslibraryfun{Otp.Enc}{M_1}\\
+							$C_2 \coloneq$ \sslibraryfun{Otp.Enc}{M_2}\\
+							return $C_1 \oplus C_2 == M_1 \oplus M_2$
+						}{0.85}
+					}{\diamond}{
+						\sslibrary{a}{
+							$K \twoheadleftarrow \bits^n$\\[1em]
+							\sslibrarysubroutine{Otp.Enc}{M}{
+								$C \coloneq K \oplus M$ \\
+								return $C$
+							}{1}
+						}{0.85}
+					}
+				\end{flushright}
+			\end{column}
+		\end{columns}
 	\end{frame}
 
 	\begin{frame}[plain]
