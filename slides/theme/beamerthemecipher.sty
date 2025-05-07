@@ -11,6 +11,7 @@
 }
 \RequirePackage[lining]{InriaSans}
 \RequirePackage{microtype}
+\RequirePackage[auto,outline]{contour}
 
 % TikZ libraries
 \usetikzlibrary{shadows, arrows.meta, positioning, shapes, calc, fit, shapes.geometric}
@@ -106,11 +107,13 @@
 }
 
 \newcommand{\nliteral}[1]{\textcolor{ciphernliteral}{\texttt{#1}}}
-\newcommand{\prob}[1]{$\Pr\bigl[$#1$\bigr]$}
-\newcommand{\lib}[1]{$\mathcal{L}_\text{#1}$}
-\newcommand{\prog}[1]{$\mathcal{A}_\text{#1}$}
-\newcommand{\bits}{\{\nliteral{0}, \nliteral{1}\}}
-\newcommand{\sslibraryfun}[2]{\rmfamily\textsc{#1}\scalebox{1.1}{$(#2)$}}
+\newcommand{\prob}[1]{\ensuremath{\Pr\bigl[\ensuremath{#1}\bigr]}}
+\newcommand{\lib}[1]{\ensuremath{\mathcal{L}_\text{#1}}}
+\newcommand{\prog}[1]{\ensuremath{\mathcal{A}_\text{#1}}}
+\newcommand{\link}{\ensuremath{\diamond}}
+\newcommand{\interchangeable}[1]{\ensuremath{\overset{\ensuremath{#1}}{\equiv}}}
+\newcommand{\bits}{\ensuremath{\{\nliteral{0}, \nliteral{1}\}}}
+\newcommand{\sslibraryfun}[2]{\ensuremath{\textrm{\textsc{\lowercase{#1}}}\scalebox{1.1}{\ensuremath{(#2)}}}}
 
 \newtcolorbox{sslibrarybox}[2][]{
 	colback=white,
@@ -158,4 +161,15 @@
 		\node[inner sep=0pt, outer sep=0pt, anchor=west] (middle) at (left.east) {\Large\ $#2 \ $};
 		\node[inner sep=0pt, outer sep=0pt, anchor=west] (right) at (middle.east) {\begin{varwidth}{\dimexpr\textwidth-\wd0-\wd2\relax}#3\end{varwidth}};
 	\end{tikzpicture}
+}
+
+\contourlength{1.2pt}
+\newcommand{\hl}[1]{%
+    \relax\ifmmode%
+        {}%
+        \contour{hlbg}{\textcolor{hlfg}{${} #1 {}$}}%
+        {}%
+    \else%
+        \contour{hlbg}{\textcolor{hlfg}{#1}}%
+    \fi%
 }
