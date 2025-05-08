@@ -90,7 +90,7 @@
 	\begin{center}
 		\begin{tikzpicture}[box/.style={rectangle, draw, align=left, fill=white, inner sep=7pt, scale=#4, execute at begin node=\setlength{\baselineskip}{1.5em}}]
 			\node[box]{
-				\underline{\ensuremath{\textsf{\upshape#1}}\scalebox{1.1}{$(#2)$}}: \\
+				\underline{\sslibraryfun{#1}{#2}}: \\
 				#3
 			};
 		\end{tikzpicture}
