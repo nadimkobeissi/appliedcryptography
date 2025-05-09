@@ -14,7 +14,7 @@ The repository is not intended to be browsed directly. Instead, access the cours
 
 - [x] Part 1: Session 1
 - [x] Part 1: Session 2
-- [ ] Part 1: Session 3
+- [x] Part 1: Session 3
 - [ ] Part 1: Session 4
 - [ ] Part 1: Session 5
 - [ ] Part 1: Session 6
