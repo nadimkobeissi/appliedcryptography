@@ -881,7 +881,6 @@
 			\item One way to think about huge computations is their monetary cost.
 			\item The table below shows roughly how much a computation involving $2^n$ CPU cycles would cost on the cheapest available Amazon EC2 cloud computing service:
 		\end{itemize}
-		\vspace{0.5em}
 		\begin{table}
 			\centering
 			\begin{tabular}{cll}
@@ -973,6 +972,28 @@
 						\item Far beyond capability of any conceivable computation
 					\end{itemize}
 					\item Asymptotic approach: Both are "computationally secure"
+				\end{itemize}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Birthday probabilities}
+		\begin{columns}[c]
+			\begin{column}{0.6\textwidth}
+				\begin{itemize}[<+->]
+					\item Many cryptographic algorithms fail if two executions sample the same random value.
+					\item General question: If we take $q$ independent uniform samples from a set of $N$ items, what's the probability some value is chosen more than once?
+					\item This probability is called $\sssubroutinename{Birthday}{q,N}$
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.4\textwidth}
+				\begin{align*}
+					\sssubroutinename{Birthday}{q,N} = 1 - \prod_{i=1}^{q-1} \left(1 - \frac{i}{N}\right)
+				\end{align*}
+				\begin{itemize}[<+->]
+					\item Surprisingly high probability!
+					\item With $q \approx 1.2\sqrt{N}$, probability $\approx 0.5$
+					\item For birthdays: only need 23 people for $>50\%$ chance
 				\end{itemize}
 			\end{column}
 		\end{columns}
