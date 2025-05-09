@@ -712,6 +712,31 @@ strong {
 	margin-bottom: 3rem;
 }
 
+.book-display {
+	display: flex;
+	gap: 20px;
+	align-items: flex-start;
+}
+
+.book-cover {
+	width: 200px;
+	height: auto;
+	box-shadow: var(--shadow);
+	border-radius: var(--border-radius);
+	transition: var(--transition);
+}
+
+.book-cover:hover {
+	transform: translateY(-5px);
+	box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 576px) {
+	.book-display .book-cover {
+		display: none;
+	}
+}
+
 .collapsible-header {
 	display: flex;
 	align-items: center;

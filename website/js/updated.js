@@ -1,7 +1,7 @@
 const updatedInit = () => {
 	fetch(
-		"https://api.github.com/repos/nadimkobeissi/appliedcryptography/commits?per_page=1&sha=main",
-	)
+			"https://api.github.com/repos/nadimkobeissi/appliedcryptography/commits?per_page=1&sha=main",
+		)
 		.then((response) => response.json())
 		.then((data) => {
 			if (Array.isArray(data) && data.length > 0) {
