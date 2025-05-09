@@ -12,7 +12,7 @@
   % University logo
   \begin{tikzpicture}[remember picture, overlay]
     \node[anchor=north west, inner sep=0pt] at ([shift={(0.95cm,-0.6cm)}]current page.north west) {
-      \includegraphics[height=1.6cm]{images/aub_white.png}
+      \includegraphics[height=1.6cm]{\insertinstituteimage}
     };
   \end{tikzpicture}
 
@@ -45,7 +45,7 @@
         \vskip0.5cm
         \usebeamercolor[fg]{author}\usebeamerfont{author}\insertauthor\par
         \vskip0.1cm
-        \usebeamercolor[fg]{author}\usebeamerfont{institute}\small{\insertinstitute}\par
+        \usebeamercolor[fg]{cover website}\usebeamerfont{cover website}\insertcoverwebsite\par
       \end{beamercolorbox}
     \end{column}
   \end{columns}
