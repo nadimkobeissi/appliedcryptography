@@ -34,18 +34,18 @@
 
     % Right column - text
     \begin{column}{0.6\textwidth}
-      \begin{beamercolorbox}[wd=\textwidth, leftskip=1.3cm]{cover title}
-        \usebeamerfont{cover title}\usebeamercolor[fg]{cover title}Applied Cryptography\par
+      \begin{beamercolorbox}[wd=\textwidth, leftskip=1.3cm]{title}
+        \usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par
         \vskip0cm
-        \usebeamercolor[fg]{cover subtitle}\usebeamerfont{cover subtitle}CMPS 297AD/396AI\par
+        \usebeamercolor[fg]{subtitle}\usebeamerfont{subtitle}\insertcoversubtitle\par
         \vskip0.5cm
         \usebeamercolor[fg]{part name}\usebeamerfont{part name}\insertcoverpartname\par
         \vskip0cm
         \usebeamercolor[fg]{session name}\usebeamerfont{session name}\insertcoversessionname\par
         \vskip0.5cm
-        \usebeamercolor[fg]{cover author}\usebeamerfont{cover author}Nadim Kobeissi\par
+        \usebeamercolor[fg]{author}\usebeamerfont{author}\insertauthor\par
         \vskip0.1cm
-        \usebeamercolor[fg]{cover author}\usebeamerfont{cover institute}\small{\url{https://appliedcryptography.page}}\par
+        \usebeamercolor[fg]{author}\usebeamerfont{institute}\small{\insertinstitute}\par
       \end{beamercolorbox}
     \end{column}
   \end{columns}
