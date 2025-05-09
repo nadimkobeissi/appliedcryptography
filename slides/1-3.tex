@@ -10,7 +10,7 @@
 \institute{\url{https://appliedcryptography.page}}
 \date{\today}
 \coversubtitle{CMPS 297AD/396AI}
-\coverpartname{Part 1: Cryptography in Theory}
+\coverpartname{Part 1: Provable Security}
 \coversessionname{1.3: Provable Security \\ \& Computational Cryptography}
 
 \begin{document}
@@ -972,7 +972,49 @@
 						\item Best known attack: $\approx 2^{254.4}$ operations
 						\item Far beyond capability of any conceivable computation
 					\end{itemize}
-					\item Asymptotic approach: Both are "computationally secure"
+					\item Asymptotic approach: Both are ``computationally secure''
+				\end{itemize}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Polynomial running time}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item In the asymptotic approach, we focus only on adversaries that run in polynomial time.
+					\item The security parameter $\lambda$ determines the level of security:
+					\begin{itemize}
+						\item Usually the length of secret keys in bits
+						\item All algorithms have access to $\lambda$ as a global variable
+						\item Example: AES-128 uses $\lambda = 128$, AES-256 uses $\lambda = 256$. (``256-bit security'')
+					\end{itemize}
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\definitionbox{Polynomial Running Time}{
+					An algorithm runs in polynomial time if there is a polynomial $p$ such that the algorithm takes at most $O(p(n))$ steps on inputs of length $n$.
+				}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Negligible functions}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\definitionbox{Negligible Functions}{
+					A function $f$ is negligible if it approaches zero faster than $1/p(\lambda)$, for every polynomial $p$. Formally:
+					\begin{itemize}
+						\item For every polynomial $p$, there exists $\lambda_0$ such that $f(\lambda) < 1/p(\lambda)$ for all $\lambda > \lambda_0$.
+						\item For every polynomial $p$, we have $p(\lambda) \in O(1/f(\lambda))$.
+					\end{itemize}
+				}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item \textbf{You can probably ignore the definition and just think about this intuitively:}
+					\item In cryptography, we want attack probabilities to be negligible in the security parameter $\lambda$.
+					\item Negligible probability: essentially zero for practical purposes when $\lambda$ is large enough.
 				\end{itemize}
 			\end{column}
 		\end{columns}
@@ -995,6 +1037,27 @@
 					\item Surprisingly high probability!
 					\item With $q \approx 1.2\sqrt{N}$, probability $\approx 0.5$
 					\item For birthdays: only need 23 people for $>50\%$ chance
+				\end{itemize}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Indistinguishability in computational security}
+		\begin{columns}[c]
+			\begin{column}{0.6\textwidth}
+				\definitionbox{Indistinguishability}{
+					Let \lib{}{1} and \lib{}{2} be two libraries with the same interface. The \textbf{advantage} of a calling program \prog{} in distinguishing \lib{}{1} and \lib{}{2} is:
+					\begin{align*}
+						\left| \prob{\prog{} \link \lib{}{1} \Rightarrow \texttt{true}} - \prob{\prog{} \link \lib{}{2} \Rightarrow \texttt{true}} \right|
+					\end{align*}
+					\lib{}{1} $\approxeq$ \lib{}{2}, if every polynomial-time calling program has only negligible advantage in distinguishing them.
+				}
+			\end{column}
+			\begin{column}{0.4\textwidth}
+				\begin{itemize}[<+->]
+					\item Previously, libraries were interchangeable when probabilities were \textbf{identical}.
+					\item Now, libraries are indistinguishable when probabilities are \textbf{negligibly close}.
+					\item Again: this is intuitive, no need to stress about the formal definition.
 				\end{itemize}
 			\end{column}
 		\end{columns}
