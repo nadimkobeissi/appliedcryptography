@@ -257,24 +257,12 @@
 					<div class="session">
 						<a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/slides/pdf/1-3.pdf" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 1.3</span>
-						<h4 class="session-title"><i class="fas fa-book"></i>Rudiments of Provable Security</h4>
-						<p class="session-overview">This session delves into the rigorous mathematical frameworks that allow cryptographers to provide formal security guarantees for cryptographic schemes. We'll examine how precise definitions of security properties create a foundation for meaningful analysis, and explore various adversarial models that capture different threat scenarios. The concept of reduction—proving that breaking a scheme is at least as hard as solving some well-studied mathematical problem—will be thoroughly explored. Students will learn to understand and construct basic security proofs, recognize different proof techniques, and appreciate the gap between theoretical security and real-world implementations. We'll also discuss the limitations of the provable security paradigm and situations where formal proofs might not capture all relevant attack vectors.</p>
+						<h4 class="session-title"><i class="fas fa-book"></i>Provable Security &amp; Computational Cryptography</h4>
+						<p class="session-overview">This session begins by delving into the rigorous mathematical frameworks that allow cryptographers to provide formal security guarantees for cryptographic schemes. We'll examine how precise definitions of security properties create a foundation for meaningful analysis, and explore various adversarial models that capture different threat scenarios. The concept of reduction—proving that breaking a scheme is at least as hard as solving some well-studied mathematical problem—will be thoroughly explored. We then transition to modern computational cryptography, moving from unconditional security to a more practical approach where security is defined against computationally bounded adversaries. Students will learn about indistinguishability as a fundamental security concept, the bad-event technique for security proofs, and birthday probabilities in cryptographic attacks. The session provides essential mathematical foundations for understanding modern cryptographic security, including quantitative intuition about large numbers (like 2<sup>128</sup>) and tiny probabilities (like 2<sup>-80</sup>) that define practical security boundaries, preparing students for subsequent topics in pseudorandomness.</p>
 						<div class="session-readings">
 							<h5><i class="fas fa-book-open icon"></i>Required Readings</h5>
 							<ul>
 								<li><em>The Joy of Cryptography</em>, Chapter 2: Rudiments of Provable Security</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="session">
-						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.4</span>
-						<h4 class="session-title"><i class="fas fa-book"></i>Modern Computational Cryptography</h4>
-						<p class="session-overview">We introduce modern computational cryptography, transitioning from unconditional security to a more practical approach where security is defined against computationally bounded adversaries. It explores the concrete and asymptotic approaches to provable security, explaining how cryptographic systems can be considered secure when attacks require either astronomically high computational resources or succeed with negligibly small probabilities. Students will learn about indistinguishability as a fundamental security concept, the bad-event technique for security proofs, and birthday probabilities in cryptographic attacks. The chapter provides essential mathematical foundations for understanding modern cryptographic security, including quantitative intuition about large numbers (like 2<sup>128</sup>) and tiny probabilities (like 2<sup>-80</sup>) that define practical security boundaries, preparing students for subsequent topics in pseudorandomness.</p>
-						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i>Required Readings</h5>
-							<ul>
 								<li><em>The Joy of Cryptography</em>, Chapter 4: Modern Computational Cryptography</li>
 							</ul>
 						</div>
@@ -282,7 +270,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.5</span>
+						<span class="session-number">Session 1.4</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Pseudorandom Generators</h4>
 						<p class="session-overview">Pseudorandom generators (PRGs) solve one-time pad's key length limitation by deterministically expanding a short seed into a longer output that's computationally indistinguishable from random. This enables "pseudo-OTP" encryption where short keys can securely encrypt long plaintexts. While PRG security cannot be proven from first principles, they serve as foundational building blocks from which other cryptographic primitives can be constructed through reduction proofs, minimizing the number of security assumptions needed in cryptography./p>
 						<div class="session-readings">
@@ -295,7 +283,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.6</span>
+						<span class="session-number">Session 1.5</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Pseudorandom Functions</h4>
 						<p class="session-overview">Pseudorandom functions (PRFs) extend the concept of PRGs by enabling Alice and Bob to transform a short shared secret into an effectively unlimited amount of shared pseudorandom data. Unlike a PRG's one-time expansion, a PRF acts like a massive dictionary that consistently maps any input to a pseudorandom output that is computationally indistinguishable from random, allowing for key derivation and other cryptographic applications. The chapter covers several construction methods including the CTR construction (using a PRF to build a PRG), the GGM construction (building a PRF from a PRG), and CBC-MAC (for long inputs), while emphasizing the crucial "Golden Rule" that PRF security typically depends on ensuring inputs don't repeat.</p>
 						<div class="session-readings">
@@ -308,7 +296,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.7</span>
+						<span class="session-number">Session 1.6</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Pseudorandom Permutations</h4>
 						<p class="session-overview">Pseudorandom permutations (PRPs), also called block ciphers, extend the concept of PRFs by providing both forward and inverse operations that are indistinguishable from a truly random permutation to an adversary who doesn't know the secret key. The chapter introduces the Feistel construction, which elegantly builds a PRP from a PRF by using multiple rounds where the output of each round becomes part of the input to the next, with the remarkable property that inverse operations can be computed even when the underlying round function isn't invertible. The PRF-PRP switching lemma shows that PRPs and PRFs are often interchangeable in security proofs. While theoretical constructions like 3-round Feistel ciphers are provably secure PRPs, real-world implementations like AES use different designs with more rounds and complex key schedules to provide stronger security against attacks like meet-in-the-middle.</p>
 						<div class="session-readings">
@@ -321,7 +309,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.8</span>
+						<span class="session-number">Session 1.7</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Chosen Plaintext Attacks</h4>
 						<p class="session-overview">This session explores symmetric-key encryption schemes that can securely encrypt multiple plaintexts with the same key. It introduces the concept of chosen-plaintext attack (CPA) security, which requires ciphertexts to be indistinguishable from random strings of the same length, acknowledging that encryption cannot hide plaintext length. The chapter demonstrates why deterministic encryption cannot achieve CPA security and presents a randomized PRF-based encryption scheme as a solution. It covers block cipher modes like CBC and CTR for encrypting long messages, explaining why ECB mode is fundamentally insecure (illustrated by the infamous "ECB penguin"). The chapter also addresses practical considerations like padding for non-block-aligned plaintexts and introduces nonce-based encryption as an alternative to randomization, where security depends only on nonces not being reused rather than on unpredictable randomness.</p>
 						<div class="session-readings">
@@ -334,7 +322,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.9</span>
+						<span class="session-number">Session 1.8</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Chosen Ciphertext Attacks</h4>
 						<p class="session-overview">This session explores chosen-ciphertext attacks (CCA), where adversaries can decrypt chosen ciphertexts, and demonstrates how schemes that are only CPA-secure (like CTR mode) are vulnerable to these attacks due to their malleability. The chapter introduces format-oracle attacks, where information leaked during decryption (such as the presence of null characters) can be exploited to recover entire plaintexts. It formally defines CCA security and shows that achieving it requires preventing adversaries from creating valid modified ciphertexts.</p>
 						<div class="session-readings">
@@ -347,7 +335,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.10</span>
+						<span class="session-number">Session 1.9</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Collision-Resistant Hash Functions</h4>
 						<p class="session-overview">This session explores collision-resistant hash functions, which are deterministic functions that map variable-length inputs to fixed-length outputs where finding two different inputs with the same output ("collisions") should be computationally difficult. The chapter begins by explaining how collisions must exist (by the pigeonhole principle) but should be hard to find, requiring approximately 2<sup>(n/2)</sup> operations for an n-bit hash function. It formalizes collision resistance using salted hash functions to prevent precomputation attacks, and discusses real-world applications like password hashing where salt is critical for security.</p>
 						<div class="session-readings">
@@ -360,7 +348,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.11</span>
+						<span class="session-number">Session 1.10</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Random Oracles and Other Idealized Models</h4>
 						<p class="session-overview">This session explores the Random Oracle Model, a theoretical framework where hash functions are idealized as perfectly random functions that can only be evaluated through queries. We'll examine how this powerful abstraction enables elegant security proofs for practical schemes where traditional analysis fails, including OAEP for RSA and HKDF for key derivation. The session covers the controversy surrounding the model—while random oracles don't exist in reality (leading to theoretical concerns demonstrated by separation results), they often provide reliable security guidance for practical cryptographic design. We'll also discuss other idealized models including the ideal cipher model and the generic group model, which make analogous simplifying assumptions about block ciphers and algebraic groups, respectively. Students will learn when these models are appropriate analytical tools and their limitations when designing real-world cryptographic systems.</p>
 						<div class="session-readings">
@@ -373,7 +361,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.12</span>
+						<span class="session-number">Session 1.11</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Key Exchange</h4>
 						<p class="session-overview">This session introduces the fundamental concept of key exchange, which allows parties to establish shared secret keys over insecure channels. We'll explore the Diffie-Hellman protocol, examining how its elegant mathematical structure enables secure key agreement without prior shared secrets while maintaining security against eavesdroppers. The session covers the discrete logarithm and computational Diffie-Hellman assumptions that underpin the protocol's security, along with practical considerations for parameter selection. Students will understand both the basic protocol and its limitations, including vulnerability to man-in-the-middle attacks when used without authentication. We'll also examine modern applications and variants of key exchange protocols, including their integration into complex systems like TLS and secure messaging platforms, setting the foundation for subsequent discussions of authenticated key exchange.</p>
 						<div class="session-readings">
@@ -386,7 +374,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.13</span>
+						<span class="session-number">Session 1.12</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Public-Key Encryption</h4>
 						<p class="session-overview">This session explores public-key encryption (PKE), a transformative paradigm where encryption and decryption use different keys. Unlike symmetric encryption, PKE allows anyone with a public key to encrypt messages while only the private key holder can decrypt them. We'll examine formal security definitions for PKE schemes, including CPA and CCA security, and prove that any secure single-use PKE scheme remains secure for multiple encryptions. The session introduces El Gamal encryption, which leverages the Diffie-Hellman assumption to create a secure PKE scheme from cyclic group operations. We'll also study the Fujisaki-Okamoto construction, which efficiently transforms any CPA-secure PKE into a CCA-secure one using the random oracle model. Finally, we'll explore hybrid encryption and key encapsulation mechanisms (KEMs) as practical approaches that combine the security advantages of public-key cryptography with the efficiency of symmetric-key methods, enabling real-world applications that require both security and performance.</p>
 						<div class="session-readings">
@@ -399,7 +387,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.14</span>
+						<span class="session-number">Session 1.13</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Digital Signatures</h4>
 						<p class="session-overview">This session explores digital signatures, which allow an entity to cryptographically endorse a message in a way that anyone can verify but only the signer can produce. We'll examine how digital signatures provide the electronic equivalent of handwritten signatures with crucial integrity and non-repudiation properties. The session covers formal security definitions for signatures, including existential unforgeability under chosen-message attacks, and introduces several construction approaches. We'll explore hash-and-sign techniques using trapdoor functions, signature schemes derived from identification protocols, and efficient signature schemes based on the discrete logarithm assumption like DSA and EdDSA. Students will understand both the theoretical foundations and practical implementations of digital signatures, including their critical role in certificate authorities, code signing, and cryptocurrency transactions, as well as the security considerations that affect their deployment in modern systems.</p>
 						<div class="session-readings">
@@ -604,11 +592,12 @@
 
 	<footer class="footer">
 		<div class="container">
-			<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://appliedcryptography.page">Applied Cryptography at the American University of Beirut</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/nadimkobeissi/appliedcryptography">Nadim Kobeissi</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt=""></a></p>
+			<p>
+				<a property="dct:title" rel="cc:attributionURL" href="https://appliedcryptography.page">Applied Cryptography at the American University of Beirut</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/nadimkobeissi/appliedcryptography">Nadim Kobeissi</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt=""></a>
+			</p>
 			<strong>Source:</strong> <a href="https://github.com/nadimkobeissi/appliedcryptography">GitHub</a>
 			<br />
 			<strong>Inspiration Aid:</strong> <a href="https://www.youtube.com/watch?v=Vjg0aHySHAs">Click</a>
-			</p>
 		</div>
 	</footer>
 </body>

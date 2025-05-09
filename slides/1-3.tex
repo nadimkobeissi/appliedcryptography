@@ -10,12 +10,14 @@
 \date{\today}
 
 \coverpartname{Part 1: Cryptography in Theory}
-\coversessionname{1.3: Rudiments of Provable Security}
+\coversessionname{1.3: Provable Security \\ \& Computational Cryptography}
 
 \begin{document}
 	\begin{frame}[plain]
 		\titlepage
 	\end{frame}
+
+	\section{Provable Security}
 
 	\begin{frame}{Last time, we defined subroutines}
 		\begin{center}
@@ -838,6 +840,140 @@
 						}{1}
 					}
 				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\section{Computational Cryptography}
+
+	\begin{frame}{Computational notions in cryptography}
+		\begin{itemize}
+			\item Security definitions in theoretical cryptography can be too strict:
+			\begin{itemize}
+				\item Even attacks requiring a trillion years of computation.
+				\item Even attacks with probability lower than winning the lottery 100 times.
+			\end{itemize}
+			\item Modern provable security takes a more practical approach:
+			\begin{itemize}
+				\item We dismiss attacks with ``astronomically'' high computational cost.
+				\item We dismiss attacks with ``astronomically'' tiny success probability.
+			\end{itemize}
+			\item Instead of ``no attack can succeed, not even in principle'',
+			\item We prove: ``every attack has either astronomically high cost or astronomically small success probability''.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{The concrete approach to provable security}
+		\begin{itemize}
+			\item In the concrete approach to provable security, we aim to be as quantitative as possible about security claims.
+			\item We rarely say definitively that a cryptographic algorithm ``is secure'', as we did with OTP.
+			\item Instead, we use statements like:
+			\begin{itemize}
+				\item \textit{``Any attack that expends at most $2^{80}$ effort can succeed with probability no better than $2^{-64}$.''}
+			\end{itemize}
+			\item It is up to the user to judge whether this quantitative level of security is acceptable based on their use-case.
+			\item This gives users a concrete basis for security decisions.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{Monetary cost of huge computations}
+		\begin{itemize}
+			\item One way to think about huge computations is their monetary cost.
+			\item The table below shows roughly how much a computation involving $2^n$ CPU cycles would cost on the cheapest available Amazon EC2 cloud computing service:
+		\end{itemize}
+		\vspace{0.5em}
+		\begin{table}
+			\centering
+			\begin{tabular}{cll}
+				\textbf{Clock cycles} & \textbf{Approx cost (USD)} & \textbf{Point of reference} \\
+				\hline
+				$2^{50}$ & \$3.50 & cup of coffee \\
+				$2^{55}$ & \$100 & dinner at a high-end restaurant \\
+				$2^{65}$ & \$130,000 & apartment in Achrafieh \\
+				$2^{75}$ & \$130 million & budget of one of the Harry Potter movies \\
+				$2^{85}$ & \$140 billion & GDP of Hungary \\
+				$2^{92}$ & \$20 trillion & GDP of the United States \\
+				$2^{99}$ & \$2 quadrillion & all of human economic activity since 300,000 BCE \\
+				$2^{128}$ & a lot! & a billion human civilizations' worth of effort \\
+			\end{tabular}
+		\end{table}
+	\end{frame}
+
+	\begin{frame}{Understanding tiny probabilities}
+		\begin{itemize}
+			\item Let's put extremely small probabilities in perspective:
+			\begin{itemize}
+				\item In 2009, Patricia Demauro rolled dice 154 consecutive times without getting a 7 in craps.
+				\item Probability of this event: $(30/36)^{154} \approx 2^{-40.6}$
+				\item Often cited as one of the most improbable documented events in gambling history.
+			\end{itemize}
+			\item Other extremely unlikely gambling events:
+			\begin{itemize}
+				\item In 1943, a roulette wheel reportedly landed on red 32 consecutive times.
+				\item Probability: $(18/38)^{31} \approx 2^{-33.4}$
+				\item Winning the American Powerball lottery: $2^{-28.1}$
+				\item Winning Powerball two consecutive weeks: $2^{-56.2}$
+			\end{itemize}
+			\item These examples help us intuitively grasp what probabilities like $2^{-40}$ or $2^{-50}$ actually mean.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{Computational scale of Bitcoin mining}
+		\begin{itemize}[<+->]
+			\item Let's consider cryptocurrencies based on proof-of-work, like Bitcoin.
+			\item These systems incentivize users to perform truly obscene amounts of computation.
+			\item In Bitcoin's proof-of-work mechanism:
+			\begin{itemize}
+				\item Users race to perform SHA-256 hash computations as fast as possible.
+				\item The collective Bitcoin network has performed approximately $2^{95}$ SHA-256 hashes in total.
+				\item In the last 12 months alone: approximately $2^{93.6}$ hashes.
+				\item Current market cap for Bitcoin: approximately 400 billion USD.
+			\end{itemize}
+			\item This shows the enormous scale of computation that economic incentives can support.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{The asymptotic approach to provable security}
+		\begin{itemize}[<+->]
+			\item The concrete approach gives practical guidance (e.g., key sizes) but requires managing tedious quantitative details.
+			\item The asymptotic approach:
+			\begin{itemize}
+				\item Makes qualitative, all-or-nothing statements
+				\item Considers behavior as key size approaches infinity
+				\item Hides tedious quantitative details
+			\end{itemize}
+			\item Similar to asymptotic analysis using big-O notation.
+			\item Example: Instead of calculating that an operation takes exactly $16n^2 + 24n + 74$ steps, we can simply say it takes $O(n^2)$ steps
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{AES: An example of asymptotic security analysis}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item The Advanced Encryption Standard (AES) is a common symmetric-key encryption algorithm.
+					\item It comes in different variants: AES-128, AES-192, AES-256.
+					\item In asymptotic analysis, we'd say:
+					\begin{itemize}
+						\item AES is secure against all polynomial-time adversaries.
+						\item Any successful attack must take exponential time in the key length.
+					\end{itemize}
+					\item This hides the concrete details about specific computational costs.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item Concrete security for AES-128:
+					\begin{itemize}
+						\item Best known attack: $\approx 2^{126.1}$ operations
+					\end{itemize}
+					\item For AES-256:
+					\begin{itemize}
+						\item Best known attack: $\approx 2^{254.4}$ operations
+						\item Far beyond capability of any conceivable computation
+					\end{itemize}
+					\item Asymptotic approach: Both are "computationally secure"
+				\end{itemize}
 			\end{column}
 		\end{columns}
 	\end{frame}

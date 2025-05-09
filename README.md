@@ -25,7 +25,6 @@ The repository is not intended to be browsed directly. Instead, access the cours
 - [ ] Part 1: Session 11
 - [ ] Part 1: Session 12
 - [ ] Part 1: Session 13
-- [ ] Part 1: Session 14
 
 #### Part 2
 
