@@ -90,7 +90,7 @@
 	\begin{center}
 		\begin{tikzpicture}[box/.style={rectangle, draw, align=left, fill=white, inner sep=7pt, scale=#4, execute at begin node=\setlength{\baselineskip}{1.5em}}]
 			\node[box]{
-				\underline{\sslibraryfun{#1}{#2}}: \\
+				\underline{\sssubroutinename{#1}{#2}}: \\
 				#3
 			};
 		\end{tikzpicture}
@@ -100,7 +100,7 @@
 \newcommand{\sslibrarysubroutine}[4]{
 	\begin{tikzpicture}[box/.style={rectangle, align=left, inner sep=0pt, outer sep=0pt, fill=white, scale=#4, execute at begin node=\setlength{\baselineskip}{1.5em}, inner sep=0pt, outer sep=0pt}]
 		\node[box]{
-			\underline{\sslibraryfun{#1}{#2}}: \\
+			\underline{\sssubroutinename{#1}{#2}}: \\
 			#3
 		};
 	\end{tikzpicture}
@@ -113,7 +113,7 @@
 \newcommand{\interchangeable}[1]{\ensuremath{\overset{\ensuremath{#1}}{\equiv}}}
 \newcommand{\bit}[1]{\textcolor{ciphernliteral}{\texttt{#1}}}
 \newcommand{\bits}{\ensuremath{\{\bit{0}, \bit{1}\}}}
-\newcommand{\sslibraryfun}[2]{\ensuremath{\textrm{\textsc{\lowercase{#1}}}\scalebox{1.1}{\ensuremath{(#2)}}}}
+\newcommand{\sssubroutinename}[2]{\ensuremath{\textrm{\textsc{\lowercase{#1}}}\scalebox{1.1}{\ensuremath{(#2)}}}}
 
 \newtcolorbox{sslibrarybox}[2][]{
 	colback=white,

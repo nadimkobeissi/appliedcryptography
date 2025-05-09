@@ -26,7 +26,7 @@
 			]
 				\node[dashed box] (adversary) {$adversary$};
 				\node[box, right=2cm of adversary](attack){
-					$\underline{\sslibraryfun{Attack}{M}}$: \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary chooses $M$}} \\
+					$\underline{\sssubroutinename{Attack}{M}}$: \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary chooses $M$}} \\
 					\quad $K \twoheadleftarrow \bits^{n}$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim samples $K$}} \\
 					\quad $C \coloneq \textsf{Enc}(K, M)$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim encrypts}} \\
 					\quad return $C$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary sees $C$}}
@@ -129,10 +129,10 @@
 			\begin{column}{0.5\textwidth}
 				\sslinked{
 					\ssprogram{}{
-						if \sslibraryfun{Guess}{6}:\\
+						if \sssubroutinename{Guess}{6}:\\
 						\quad return true\\
-						\sslibraryfun{Reroll}{}\\
-						return \sslibraryfun{Guess}{6}
+						\sssubroutinename{Reroll}{}\\
+						return \sssubroutinename{Guess}{6}
 					}{0.95}
 				}{\link}{
 					\sslibrary{}{dice-guess}{
@@ -232,7 +232,7 @@
 					\sslibrary{}{a}{
 						\sslibrarysubroutine{Foo}{A, B}{
 							$Y \twoheadleftarrow \bits^n$\\
-							$C \coloneq \sslibraryfun{Bar}{A}$\\
+							$C \coloneq \sssubroutinename{Bar}{A}$\\
 							return $Y$
 						}{1}\\[1em]
 						\sslibrarysubroutine{Bar}{M}{
@@ -244,7 +244,7 @@
 					\sslibrary{}{b}{
 						\sslibrarysubroutine{Foo}{A, B}{
 							$Y \twoheadleftarrow \bits^n$\\
-							$C \coloneq \sslibraryfun{Bar}{B}$\\
+							$C \coloneq \sssubroutinename{Bar}{B}$\\
 							return $Y$
 						}{1}\\[1em]
 						\sslibrarysubroutine{Bar}{M}{
@@ -341,8 +341,8 @@
 				\begin{flushright}
 					\sslinked{
 						\ssprogram{}{
-							$C_1 \coloneq \sslibraryfun{Otp.Enc}{\bit{0}^n}$\\
-							$C_2 \coloneq \sslibraryfun{Otp.Enc}{\bit{0}^n}$\\
+							$C_1 \coloneq \sssubroutinename{Otp.Enc}{\bit{0}^n}$\\
+							$C_2 \coloneq \sssubroutinename{Otp.Enc}{\bit{0}^n}$\\
 							return $C_1 == C_2$
 						}{1}
 					}{\link}{
@@ -375,8 +375,8 @@
 				\begin{flushright}
 					\sslinked{
 						\ssprogram{}{
-							$C_1 \coloneq \sslibraryfun{Otp.Enc}{\bit{0}^n}$\\
-							$C_2 \coloneq \sslibraryfun{Otp.Enc}{\bit{0}^n}$\\
+							$C_1 \coloneq \sssubroutinename{Otp.Enc}{\bit{0}^n}$\\
+							$C_2 \coloneq \sssubroutinename{Otp.Enc}{\bit{0}^n}$\\
 							return $C_1 == C_2$
 						}{1}
 					}{\link}{
@@ -412,8 +412,8 @@
 						\ssprogram{}{
 							$M_1 \twoheadleftarrow \bits^n$\\
 							$M_2 \twoheadleftarrow \bits^n$\\
-							$C_1 \coloneq \sslibraryfun{Otp.Enc}{M_1}$\\
-							$C_2 \coloneq \sslibraryfun{Otp.Enc}{M_2}$\\
+							$C_1 \coloneq \sssubroutinename{Otp.Enc}{M_1}$\\
+							$C_2 \coloneq \sssubroutinename{Otp.Enc}{M_2}$\\
 							return $C_1 \oplus C_2 == M_1 \oplus M_2$
 						}{0.85}
 					}{\link}{
@@ -539,7 +539,7 @@
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
 				\begin{itemize}[<+->]
-					\item The first two lines of \sslibraryfun{Sample}{M} are the same as \sslibraryfun{Otp.Enc}{M}, so we link it and use it instead.
+					\item The first two lines of \sssubroutinename{Sample}{M} are the same as \sssubroutinename{Otp.Enc}{M}, so we link it and use it instead.
 				\end{itemize}
 			\end{column}
 			\begin{column}{0.5\textwidth}
@@ -547,7 +547,7 @@
 					\sslinked{
 						\sslibrary{}{hyb-3-4}{
 							\sslibrarysubroutine{Sample}{M}{
-								\hl{$Y \coloneq \sslibraryfun{Otp.Enc}{M}$} \\
+								\hl{$Y \coloneq \sssubroutinename{Otp.Enc}{M}$} \\
 								$X' \coloneq Y \oplus M$ \\
 								return $(X', Y)$
 							}{1}
@@ -570,7 +570,7 @@
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
 				\begin{itemize}
-					\item The first two lines of \sslibraryfun{Sample}{M} are the same as \sslibraryfun{Otp.Enc}{M}, so we link it and use it instead.
+					\item The first two lines of \sssubroutinename{Sample}{M} are the same as \sssubroutinename{Otp.Enc}{M}, so we link it and use it instead.
 					\item Recall that \lib{}{otp-real} \interchangeable{} \lib{}{otp-rand}!
 					\item So, we replace \lib{}{otp-real} with \lib{}{otp-rand}.
 				\end{itemize}
@@ -580,7 +580,7 @@
 					\sslinked{
 						\sslibrary{}{hyb-3-4}{
 							\sslibrarysubroutine{Sample}{M}{
-								$Y \coloneq \sslibraryfun{Otp.Enc}{M}$ \\
+								$Y \coloneq \sssubroutinename{Otp.Enc}{M}$ \\
 								$X' \coloneq Y \oplus M$ \\
 								return $(X', Y)$
 							}{1}
@@ -602,7 +602,7 @@
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
 				\begin{itemize}
-					\item The first two lines of \sslibraryfun{Sample}{M} are the same as \sslibraryfun{Otp.Enc}{M}, so we link it and use it instead.
+					\item The first two lines of \sssubroutinename{Sample}{M} are the same as \sssubroutinename{Otp.Enc}{M}, so we link it and use it instead.
 					\item Recall that \lib{}{otp-real} \interchangeable{} \lib{}{otp-rand}!
 					\item So, we replace \lib{}{otp-real} with \lib{}{otp-rand}.
 					\item We inline \lib{}{otp-rand} back into our main library.
@@ -626,7 +626,7 @@
 		\begin{columns}[c]
 			\begin{column}{0.5\textwidth}
 				\begin{itemize}
-					\item The first two lines of \sslibraryfun{Sample}{M} are the same as \sslibraryfun{Otp.Enc}{M}, so we link it and use it instead.
+					\item The first two lines of \sssubroutinename{Sample}{M} are the same as \sssubroutinename{Otp.Enc}{M}, so we link it and use it instead.
 					\item Recall that \lib{}{otp-real} \interchangeable{} \lib{}{otp-rand}!
 					\item So, we replace \lib{}{otp-real} with \lib{}{otp-rand}.
 					\item We inline \lib{}{otp-rand} back into our main library.
@@ -812,7 +812,7 @@
 					\item Can you write a distinguisher program showing that these libraries are \textbf{not} interchangeable?
 					\item \ssprogram{}{
 						$M \coloneq \bit{0}^n$\\
-						$C \coloneq \sslibraryfun{Ots.Enc}{M}$\\
+						$C \coloneq \sssubroutinename{Ots.Enc}{M}$\\
 						return $C == \bit{0}^n$
 					}{1}
 					\item \prob{A\link\lib{}{ots-real} \Rightarrow \texttt{true}} $= 1$

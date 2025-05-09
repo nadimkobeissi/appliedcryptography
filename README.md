@@ -20,6 +20,12 @@ The repository is not intended to be browsed directly. Instead, access the cours
 - [ ] Part 1: Session 6
 - [ ] Part 1: Session 7
 - [ ] Part 1: Session 8
+- [ ] Part 1: Session 9
+- [ ] Part 1: Session 10
+- [ ] Part 1: Session 11
+- [ ] Part 1: Session 12
+- [ ] Part 1: Session 13
+- [ ] Part 1: Session 14
 
 #### Part 2
 
@@ -30,18 +36,9 @@ The repository is not intended to be browsed directly. Instead, access the cours
 - [ ] Part 2: Session 5
 - [ ] Part 2: Session 6
 - [ ] Part 2: Session 7
-
-#### Part 3
-
-- [ ] Part 3: Session 1
-- [ ] Part 3: Session 2
-- [ ] Part 3: Session 3
-- [ ] Part 3: Session 4
-- [ ] Part 3: Session 5
-- [ ] Part 3: Session 6
-- [ ] Part 3: Session 7
-- [ ] Part 3: Session 8
-- [ ] Part 3: Session 9
+- [ ] Part 2: Session 8
+- [ ] Part 2: Session 9
+- [ ] Part 2: Session 10
 
 ### Practical Labs
 
@@ -58,7 +55,4 @@ The repository is not intended to be browsed directly. Instead, access the cours
 
 ## Author & License
 
-- Author: [Nadim Kobeissi](https://nadim.computer)
-- License: [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-
-"American University of Beirut", "AUB", the AUB official logo and AUB seal are trademarks of the American University of Beirut. They are not included under the Creative Commons license.
+si/appliedcryptography">Nadim Kobeissi</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt=""></a></p>
