@@ -16,5 +16,5 @@ By default, these slides are presented in "handout mode", meaning they don't hav
 ### Regarding Inkscape
 If you decide to compile the slides locally, you will need to have [Inkscape](https://inkscape.org) installed and available via the command line. This is because LaTeX has no native support for SVG images, and we use a package that calls Inkscape to do compile-time image format conversion.
 
-On macOS: `brew install --cask inkscape`
-On Linux: God help you, figure it out based on your Linux distribution.
+- **macOS**: `brew install --cask inkscape`
+- **Linux**: God help you, figure it out based on your Linux distribution.
