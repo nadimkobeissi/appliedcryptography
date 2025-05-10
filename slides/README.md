@@ -1,5 +1,37 @@
 # Slides
 
+Welcome to the slides! Here they are. Isn't that amazing?
+
+## Readiness status
+
+I'm still working on the slides. If the checkbox isn't checked, it means you shouldn't use them yet:
+
+- [x] Part 1: Session 1
+- [x] Part 1: Session 2
+- [x] Part 1: Session 3
+- [ ] Part 1: Session 4
+- [ ] Part 1: Session 5
+- [ ] Part 1: Session 6
+- [ ] Part 1: Session 7
+- [ ] Part 1: Session 8
+- [ ] Part 1: Session 9
+- [ ] Part 1: Session 10
+- [ ] Part 1: Session 11
+- [ ] Part 1: Session 12
+
+#### Part 2
+
+- [ ] Part 2: Session 1
+- [ ] Part 2: Session 2
+- [ ] Part 2: Session 3
+- [ ] Part 2: Session 4
+- [ ] Part 2: Session 5
+- [ ] Part 2: Session 6
+- [ ] Part 2: Session 7
+- [ ] Part 2: Session 8
+- [ ] Part 2: Session 9
+- [ ] Part 2: Session 10
+
 ## Compiling the slides
 
 Use the Makefile:

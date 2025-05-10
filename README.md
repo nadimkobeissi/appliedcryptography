@@ -4,53 +4,14 @@
 
 This repository contains the course materials for Applied Cryptography (CMPS 297AD/396AI) at the American University of Beirut.
 
-The repository is not intended to be browsed directly. Instead, access the course materials through the website: [appliedcryptography.page](https://appliedcryptography.page)
+For a better experience, ignore this repository and access the materials through the course website: [appliedcryptography.page](https://appliedcryptography.page)
 
-## Materials Readiness Status
+## Contents
 
-### Slides
-
-#### Part 1
-
-- [x] Part 1: Session 1
-- [x] Part 1: Session 2
-- [x] Part 1: Session 3
-- [ ] Part 1: Session 4
-- [ ] Part 1: Session 5
-- [ ] Part 1: Session 6
-- [ ] Part 1: Session 7
-- [ ] Part 1: Session 8
-- [ ] Part 1: Session 9
-- [ ] Part 1: Session 10
-- [ ] Part 1: Session 11
-- [ ] Part 1: Session 12
-
-#### Part 2
-
-- [ ] Part 2: Session 1
-- [ ] Part 2: Session 2
-- [ ] Part 2: Session 3
-- [ ] Part 2: Session 4
-- [ ] Part 2: Session 5
-- [ ] Part 2: Session 6
-- [ ] Part 2: Session 7
-- [ ] Part 2: Session 8
-- [ ] Part 2: Session 9
-- [ ] Part 2: Session 10
-
-### Practical Labs
-
-- [ ] Password Manager
-- [ ] Secure Messenger
-- [ ] [ZK Battleship](https://github.com/nategraf/oscw-zkvms-battleship)
-- [ ] [ProofFrog](https://prooffrog.github.io)
-- [ ] [Verifpal](https://verifpal.com)
-- [ ] [ProVerif](https://proverif.inria.fr) or [Tamarin](https://tamarin-prover.com)
-- [ ] [CTFs](https://ctftime.org/tasks/?tags=crypto&hidden-tags=crypto) if we have time?
-
-### Assignments
-
-- [ ] Assignments
+- `materials`: Readings, assignments and lab sessions relevant to the course.
+- `slides`: Course slides.
+- `syllabus`: Course syllabus.
+- `website`: [Course website](https://appliedcryptography.page).
 
 ## Random Notes for Me (Please Ignore)
 
