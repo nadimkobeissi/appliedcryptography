@@ -12,12 +12,133 @@
 \date{\today}
 \coversubtitle{CMPS 297AD/396AI}
 \coverpartname{Part 1: Provable Security}
-\coversessionname{1.4: Pseudorandom Generators}
+\coversessionname{1.4: Pseudorandom Generators\\ \& Functions}
 \coverwebsite{\url{https://appliedcryptography.page}}
 
 \begin{document}
 	\begin{frame}[plain]
 		\titlepage
+	\end{frame}
+
+	\begin{frame}{Limitations of One-Time Pad}
+		\begin{block}{The Key Length Problem}
+			One-time pad is not a particularly useful encryption scheme in practice.
+		\end{block}
+		\begin{itemize}[<+->]
+			\item The key must be as long as the plaintext!
+			\item This creates a chicken-and-egg situation:
+			\begin{itemize}[<+->]
+				\item To privately send $n$ bits of information,
+				\item We must already privately share $n$ bits of information.
+			\end{itemize}
+			\item Impractical for most real-world applications.
+			\begin{itemize}[<+->]
+				\item Clearly this is not what we're doing when we use HTTPS,
+				\item or WhatsApp, or pay for something via a debit card...
+			\end{itemize}
+			\item We need encryption schemes where the key can be smaller than the message.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{Idea: find a way to expand the key}
+		\begin{itemize}[<+->]
+			\item Given a key $k_s$ of size $\left|k_s\right| < \left|m\right|$, find a way to obtain $\left|k_e\right| \geq \left|m\right|$
+			\item In the real world, we have two kinds of symmetric encryption schemes:
+			\begin{itemize}[<+->]
+				\item \textbf{Block ciphers}: AES, 3DES, etc.
+				\item \textbf{Stream ciphers}: ChaCha20, RC4, etc.
+			\end{itemize}
+			\item This is exactly what stream ciphers do!
+			\begin{itemize}[<+->]
+				\item Start with a small key $k_s$ of a fixed size $\left|k_s\right| = \lambda$,
+				\item Magically expand it to $k_e$ where $\left|k_e\right| \geq \left|m\right|$,
+				\item $\sssubroutinename{Enc}{K, M} = K \oplus M$
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{Requirements for Key Expansion}
+		\begin{itemize}[<+->]
+			\item Our method would need to be \textbf{deterministic}, so that both the sender and receiver can expand their key in the same way.
+			\item Its output distribution would need to be \textbf{uniform}, since that is a crucial property for the security of OTP.
+			\item Unfortunately, it's \textbf{not possible} to achieve both of these properties simultaneously.
+			\begin{itemize}[<+->]
+				\item Suppose the expansion method is a deterministic function $G: \bits^n \rightarrow \bits^{n+\ell}$
+				\item Its outputs are $\ell$ bits longer than its inputs!
+				\item There are $2^{n+\ell}$ strings of length $n+\ell$ but only (at most) $2^n$ possible outputs of $G$
+				\item So the outputs of $G$ can never induce a uniform distribution.
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{Enter pseudorandomness}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item In cryptography, something is \textbf{pseudorandom} if it is indistinguishable from a uniform distribution.\footnote{The Oxford English Dictionary defines the prefix pseudo- as ``apparently but not really.''}
+					\item We need to invent some \textbf{``secure pseudorandom generator'' (PRG)} $G$ that takes a \textbf{seed} $S$ and ends up being indistinguishable from a true uniform distribution when thrown into a library:
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\sslinked{
+					\sslibrary{}{prg-real}{
+						\sslibrarysubroutine{Prg.Sample}{}{
+							$S \twoheadleftarrow \bits^\lambda$\\
+							return $G(S)$
+						}{1}
+					}{1}
+				}{\approxeq}{
+					\sslibrary{}{prg-rand}{
+						\sslibrarysubroutine{Prg.Sample}{}{
+							$Y \twoheadleftarrow \bits^{\lambda+\ell}$\\
+							return $Y$
+						}{1}
+					}{1}
+				}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Enter pseudorandomness}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item In cryptography, something is \textbf{pseudorandom} if it is indistinguishable from a uniform distribution.\footnote{The Oxford English Dictionary defines the prefix pseudo- as ``apparently but not really.''}
+					\item We need to invent some \textbf{``secure pseudorandom generator'' (PRG)} $G$ that takes a \textbf{seed} $S$ and ends up being indistinguishable from a true uniform distribution when thrown into a library:
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\imagewithcaption{prg-distributions.svg}{Source: The Joy of Cryptography}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Enter pseudorandomness}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item We don't know how to make PRGs, or even if they exist.
+					\item So we simply invent functions that we think act close enough to PRGs (when subjected to statistical and mathematical analysis), and hope for the best.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\sslinked{
+					\sslibrary{}{prg-real}{
+						\sslibrarysubroutine{Prg.Sample}{}{
+							$S \twoheadleftarrow \bits^\lambda$\\
+							return $G(S)$
+						}{1}
+					}{1}
+				}{\approxeq}{
+					\sslibrary{}{prg-rand}{
+						\sslibrarysubroutine{Prg.Sample}{}{
+							$Y \twoheadleftarrow \bits^{\lambda+\ell}$\\
+							return $Y$
+						}{1}
+					}{1}
+				}
+			\end{column}
+		\end{columns}
 	\end{frame}
 
 	\begin{frame}[plain]
