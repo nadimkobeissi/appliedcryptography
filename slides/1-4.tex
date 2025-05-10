@@ -141,6 +141,180 @@
 		\end{columns}
 	\end{frame}
 
+	\begin{frame}{One-time secrecy of a SKE}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\definitionbox{One-time secrecy for SKE}{
+					An SKE scheme $\Sigma$ has one-time secrecy if the following libraries are interchangeable:
+					\vspace{0.5mm}
+					\begin{center}
+						\sslinked{
+							\sslibrary{\Sigma}{ots-real}{
+								\sslibrarysubroutine{Ots.Enc}{M}{
+									$K \twoheadleftarrow \Sigma.\mathcal{K}$ \\
+									$C \coloneq \Sigma.\textsf{Enc}(K, M)$ \\
+									return $C$
+								}{1}
+							}{0.8}
+						}{\interchangeable{}}{
+							\sslibrary{\Sigma}{ots-rand}{
+								\sslibrarysubroutine{Ots.Enc}{M}{
+									$C \twoheadleftarrow \Sigma.\mathcal{C}$ \\
+									return $C$
+								}{1}
+							}{0.8}
+						}
+					\end{center}
+				}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				An encryption scheme has one-time secrecy if its ciphertexts are uniformly distributed, when keys are sampled uniformly, kept secret, and used for only one encryption, and no matter how the plaintexts are chosen.
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Does a PRG-based encryption scheme\\ have one-time secrecy?}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				If:
+				\sslinked{
+					\sslibrary{}{prg-real}{
+						\sslibrarysubroutine{Prg.Sample}{}{
+							$S \twoheadleftarrow \bits^\lambda$\\
+							return $G(S)$
+						}{1}
+					}{1}
+				}{\approxeq}{
+					\sslibrary{}{prg-rand}{
+						\sslibrarysubroutine{Prg.Sample}{}{
+							$Y \twoheadleftarrow \bits^{\lambda+\ell}$\\
+							return $Y$
+						}{1}
+					}{1}
+				}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				Then:
+				\sslinked{
+					\sslibrary{}{ots-real}{
+						\sslibrarysubroutine{Ots.Enc}{M}{
+							$K \twoheadleftarrow \bits^\lambda$ \\
+							$Y \coloneq G(K)$ \\
+							$C \coloneq Y \oplus M$ \\
+							return $C$
+						}{1}
+					}{1}
+				}{\approxeq}{
+					\sslibrary{}{ots-rand}{
+						\sslibrarysubroutine{Ots.Enc}{M}{
+							$C \twoheadleftarrow \bits^{\lambda+\ell}$ \\
+							return $C$
+						}{1}
+					}{1}
+				}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Attacking PRGs}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item Assume that $G(S)$ is a secure PRG.
+					\item Is \sssubroutinename{H}{S} secure?
+				\end{itemize}
+				\sssubroutine{H}{S}{
+					$A \| B \coloneq G(S)$ \\
+					$C \| D \coloneq G(B)$ \\
+					return $A \| B \| C \| D$
+				}{1}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\sslinked{
+					\sslibrary{H}{prg-real}{
+						\sslibrarysubroutine{Prg.Sample}{}{
+							$S \twoheadleftarrow \bits^\lambda$ \\
+							$A \| B \coloneq G(S)$ \\
+							$C \| D \coloneq G(B)$ \\
+							return $A \| B \| C \| D$
+						}{1}
+					}{1}
+				}{\overset{?}{\approxeq}}{
+					\sslibrary{H}{prg-rand}{
+						\sslibrarysubroutine{Ots.Enc}{M}{
+							$Y \twoheadleftarrow \bits^{4\lambda}$ \\
+							return $Y$
+						}{1}
+					}{1}
+				}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Attacking PRGs}
+		\begin{columns}[c]
+			\begin{column}{0.45\textwidth}
+				\begin{itemize}[<+->]
+					\item Assume that $G(S)$ is a secure PRG.
+					\item Is \sssubroutinename{H}{S} secure?
+					\item \textbf{No}:
+					\item \prob{\prog{}\link\lib{H}{prg-real} \Rightarrow \texttt{true}} $ = 1$
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.55\textwidth}
+				\begin{flushright}
+					\sslinked{
+						\ssprogram{}{
+							$A \| B \| C \| D \coloneq \sssubroutinename{Prg.Sample}{}$ \\
+							return $G(B) == C \| D$
+						}{0.9}
+					}{\link}{
+						\sslibrary{H}{prg-real}{
+							\sslibrarysubroutine{Prg.Sample}{}{
+								$S \twoheadleftarrow \bits^\lambda$ \\
+								$A \| B \coloneq G(S)$ \\
+								$C \| D \coloneq G(B)$ \\
+								return $A \| B \| C \| D$
+							}{1}
+						}{0.9}
+					}
+				\end{flushright}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Attacking PRGs}
+		\begin{columns}[c]
+			\begin{column}{0.45\textwidth}
+			\begin{itemize}
+				\item<1-3> Assume that $G(S)$ is a secure PRG.
+				\item<1-3> Is \sssubroutinename{H}{S} secure?
+				\item<1-3> \textbf{No}:
+				\item<1-3> \prob{\prog{}\link\lib{H}{prg-real} \Rightarrow \texttt{true}} $ = 1$
+				\item<2-3> \prob{\prog{}\link\lib{H}{prg-rand} \Rightarrow \texttt{true}} $ = \frac{1}{2^{2\lambda}}$
+				\item<3> Difference certainly not negligible.
+			\end{itemize}
+			\end{column}
+			\begin{column}{0.55\textwidth}
+				\begin{flushright}
+					\sslinked{
+						\ssprogram{}{
+							$A \| B \| C \| D \coloneq \sssubroutinename{Prg.Sample}{}$ \\
+							return $G(B) == C \| D$
+						}{0.9}
+					}{\link}{
+						\sslibrary{H}{prg-rand}{
+							\sslibrarysubroutine{Ots.Enc}{M}{
+								$Y \twoheadleftarrow \bits^{4\lambda}$ \\
+								return $Y$
+							}{1}
+						}{0.9}
+					}
+				\end{flushright}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
 	\begin{frame}[plain]
 		\titlepage
 	\end{frame}
