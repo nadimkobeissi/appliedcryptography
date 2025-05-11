@@ -640,32 +640,17 @@
 \end{frame}
 
 \begin{frame}{The Golden Rule of PRFs}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\definitionbox{The Golden Rule of PRFs}{
-				If a PRF $F$ is being used as a component in a larger construction $H$, then security usually rests on how well $H$ can ensure distinct inputs to $F$.
-			}
-			\begin{itemize}[<+->]
-				\item When analyzing PRF security, focus on input uniqueness.
-				\item Repeated inputs to a PRF create exploitable patterns.
-				\item Even if $F$ is secure, $H$ can be broken if it causes $F$ to receive duplicate inputs.
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\alertbox{Attack Strategy}{
-				To attack $H$, choose inputs that will cause $F$ to be called on a repeated input.
-			}
-			\begin{itemize}[<+->]
-				\item Don't try to directly distinguish $F$'s outputs from uniform.
-				\item Instead, exploit how $H$ uses $F$ incorrectly.
-				\item Find input patterns that force collisions within $F$.
-			\end{itemize}
-			\vspace{1em}
-			\alertbox{Proof Strategy}{
-				To prove security of $H$, establish that inputs to $F$ do not repeat, except with negligible probability.
-			}
-		\end{column}
-	\end{columns}
+	\definitionbox{The Golden Rule of PRFs}{
+		If a PRF $F$ is being used as a component in a larger construction $H$, then security usually rests on how well $H$ can ensure distinct inputs to $F$.
+	}
+	\begin{itemize}[<+->]
+		\item When analyzing PRF security, focus on input uniqueness.
+		\item Repeated inputs to a PRF create exploitable patterns.
+		\item Even if $F$ is secure, $H$ can be broken if it causes $F$ to receive duplicate inputs.
+		\item Don't try to directly distinguish $F$'s outputs from uniform.
+		\item Instead, exploit how $H$ uses $F$ incorrectly.
+		\item Find input patterns that force collisions within $F$.
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{Slides not complete}
