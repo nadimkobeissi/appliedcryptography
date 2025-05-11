@@ -5,7 +5,7 @@
 \RequirePackage{xcolor}
 \RequirePackage[most]{tcolorbox}
 \RequirePackage{
-	listings,mathtools,fontspec,unicode-math,tcolorbox,
+	mathtools,fontspec,unicode-math,tcolorbox,
 	amsmath,amsthm,amssymb,amsfonts,graphicx,setspace,cancel,
 	etoolbox,hyperref,xstring,fancybox,varwidth,xspace,titlecaps
 }
@@ -30,20 +30,9 @@
 
 % Custom definition box
 \newcommand{\definitionbox}[2]{%
-  \begin{tcolorbox}[colback=ciphergray!40!white,colframe=cipherprimary,title=#1,fonttitle=\bfseries]
-    #2
-  \end{tcolorbox}
-}
-
-% Code listing box with syntax highlighting
-\newcommand{\codebox}[3]{%
-  \begin{tcolorbox}[enhanced,title=#1,
-    colback=black!3!white,colframe=cipherprimary!70!black,
-    colbacktitle=cipherprimary,coltitle=white,
-    fonttitle=\bfseries\ttfamily\small,
-    listing only,listing options={language=#2}]
-    #3
-  \end{tcolorbox}
+	\begin{tcolorbox}[colback=ciphergray!40!white,colframe=cipherprimary,title=#1,fonttitle=\bfseries]
+		#2
+	\end{tcolorbox}
 }
 
 % Nicely formatted image with caption
@@ -58,8 +47,8 @@
 		\end{tikzpicture}
 		\vspace{0.5em}
 		\begin{minipage}{0.7\textwidth}
-				\centering
-				\usebeamerfont{caption}#3
+			\centering
+			\usebeamerfont{caption}#3
 		\end{minipage}
 	\end{center}
 }
@@ -162,11 +151,11 @@
 
 \contourlength{1.2pt}
 \newcommand{\hl}[1]{%
-    \relax\ifmmode%
-        {}%
-        \contour{hlbg}{\textcolor{hlfg}{${} #1 {}$}}%
-        {}%
-    \else%
-        \contour{hlbg}{\textcolor{hlfg}{#1}}%
-    \fi%
+	\relax\ifmmode%
+		{}%
+		\contour{hlbg}{\textcolor{hlfg}{${} #1 {}$}}%
+		{}%
+	\else%
+		\contour{hlbg}{\textcolor{hlfg}{#1}}%
+	\fi%
 }

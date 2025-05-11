@@ -16,6 +16,8 @@
 	\titlepage
 \end{frame}
 
+\section{Pseudorandom Generators}
+
 \begin{frame}{Limitations of One-Time Pad}
 	\begin{block}{The Key Length Problem}
 		One-time pad is not a particularly useful encryption scheme in practice.
@@ -307,6 +309,193 @@
 					}{0.9}
 				}
 			\end{flushright}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Example: RC4 (a stream cipher)}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item Used in WEP, SSL/TLS, and other protocols.
+				\item Simple PRG that takes a seed and produces a keystream.
+				\item Basic operation:
+				      \begin{itemize}[<+->]
+					      \item Initialize S-box with permutation of bytes 0-255.
+					      \item Use key to scramble the S-box.
+					      \item Generate pseudorandom bytes iteratively.
+				      \end{itemize}
+				\item Several weaknesses found over time:
+				      \begin{itemize}[<+->]
+					      \item Statistical biases in initial output.
+					      \item Correlation between key and output bytes.
+					      \item Considered cryptographically broken today.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{alertblock}{Security Warning}
+				RC4 is presented as a historical example only. It should not be used in new applications due to known weaknesses.
+			\end{alertblock}
+			\vspace{1em}
+			\begin{center}
+				Modern alternatives:\\
+				ChaCha20, AES-CTR
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{RC4 PRG Algorithm}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\begin{itemize}[<+->]
+				\item RC4 generates a pseudorandom stream of bytes used to encrypt data.
+				\item After key setup (which initializes array S), the algorithm produces keystream bytes:
+				\item Each output byte requires simple operations:
+				      \begin{itemize}[<+->]
+					      \item Array index calculations.
+					      \item Array value swapping.
+					      \item Modular addition.
+				      \end{itemize}
+				\item Fast implementation in software.
+				\item Despite simplicity, it has several cryptographic weaknesses.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\imagewithcaption{rc4_prga_py.png}{RC4 PRG implementation in Python.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\section{Pseudorandom Functions}
+
+\begin{frame}{$\mathsf{PRF}: F_{k}= X \rightarrow Y$}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item We want the mapping to be:
+				      \begin{itemize}
+					      \item One-way
+
+					      \item ``Randomized''
+
+					      \item Relations between inputs not reflected in outputs
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.8\textwidth}
+			\begin{tikzpicture}[scale=0.38]
+				% Define colors
+				\definecolor{domaingreen}{RGB}{102, 170, 68}
+				\definecolor{rangegreen}{RGB}{170, 187, 136}
+				\definecolor{circlecolor}{RGB}{235, 137, 85}
+				\definecolor{purplearrow}{RGB}{160, 78, 160}
+				\definecolor{redarrow}{RGB}{237, 50, 36}
+
+				% Input space (domain) X - made square
+				\draw[dashed, thick, domaingreen, fill=domaingreen]
+				(0,0) rectangle (8,8);
+				\node[text width=6.5cm, align=center, font=\normalsize]
+				at
+				(4,-0.8)
+				{Size: infinite!};
+				\node[font=\small] at (4,9) {Input space (domain) $X$};
+
+				% Output (range) Y - made square - moved more to the right
+				\draw[thick, rangegreen, fill=rangegreen] (15,2) rectangle (20,7);
+				\node[text width=4cm, align=center, font=\normalsize]
+				at
+				(17.5,1.2)
+				{Size: fixed};
+				\node[font=\small] at (17.5,8.5) {Output (range) $Y$};
+				% Input dots - adjusted positions for square domain
+				\filldraw[circlecolor] (2,7) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,7) -- (16.2,6.4);
+				\pause
+				\filldraw[circlecolor] (16.2,6.4) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,6) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(3,6) -- (18.6,5.3);
+				\pause
+				\filldraw[circlecolor] (18.6,5.3) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,5) -- (16.8,4.2);
+				\pause
+				\filldraw[circlecolor] (16.8,4.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (4,3.5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(4,3.5) -- (18.4,3.2);
+				\pause
+				\filldraw[circlecolor] (18.4,3.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,2) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,2) -- (17.1,2.7);
+				\pause
+				\filldraw[circlecolor] (17.1,2.7) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,1) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, ultra thick, redarrow]
+				(3,1) -- (16.8,4.2);
+
+				% "Collisions are inevitable" text directly on the arrow
+				\node[redarrow, font=\scriptsize\bfseries, rotate=14]
+				at
+				(10,3)
+				{Collisions are inevitable};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Pseudorandom function: definition}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Pseudorandom Function (PRF)}{
+				A function $F: \bits^\lambda \times \bits^n \rightarrow \bits^m$ is a secure pseudorandom function (PRF) if the following two libraries are indistinguishable:
+			}
+			\begin{itemize}
+				\item $n$ the input length of the PRF.
+				\item $m$ the output length of the PRF.
+				\item $\lambda$ is the key size and hence the security parameter.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{F}{prf-real}{
+					$K \twoheadleftarrow \{0,1\}^\lambda$\\[1em]
+					\sslibrarysubroutine{Prf.Query}{X}{
+						return $F(K, X)$
+					}{1}
+				}{1}
+			}{\approxeq}{
+				\sslibrary{F}{prf-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{Prf.Query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $L[X] \twoheadleftarrow \bits^m$\\
+						return $L[X]$
+					}{1}
+				}{1}
+			}
 		\end{column}
 	\end{columns}
 \end{frame}
