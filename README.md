@@ -20,6 +20,7 @@ For a better experience, ignore this repository and access the materials through
 - [ ] None of the material covers key management. [Alfred Menezes](https://www.youtube.com/watch?v=C9e023bTfes&list=PLA1qgQLL41SRn_23p8zD0vUpKM4qOgt_T&index=6) may come to the rescue.
 - [ ] **Must** be up-front about exam-required materials. Tell students what's required for each exam first thing. That way, you remove anxiety, and allow them to explore the materials at their leisure.
 - [ ] [Excalidraw](https://excalidraw.com) might be useful.
+- [ ] The upcoming edition of Joy of Cryptography for some reason nuked the chapters on Message Authentication Codes and Block Cipher Modes of Operation? Maybe integrate these in some way into the section on hashing and the section on PRPs respectively?
 
 ## Author & License
 
