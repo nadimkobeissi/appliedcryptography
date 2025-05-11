@@ -1,6 +1,3 @@
-// Static tasks configuration.
-//
-// Example:
 [
 	{
 		"label": "tectonic",
@@ -12,6 +9,8 @@
 			"$ZED_FILENAME"
 		],
 		"cwd": "$ZED_DIRNAME",
+		"reveal": "always",
+		"hide": "on_success",
 		"tags": ["latex-build"]
 	}
 ]
