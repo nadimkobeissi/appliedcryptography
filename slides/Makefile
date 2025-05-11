@@ -10,7 +10,6 @@ all:
 	@make 1-9
 	@make 1-10
 	@make 1-11
-	@make 1-12
 	@make 2-1
 	@make 2-2
 	@make 2-3

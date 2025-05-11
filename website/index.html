@@ -271,25 +271,13 @@
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 1.4</span>
-						<h4 class="session-title"><i class="fas fa-book"></i>Pseudorandom Generators &amp; Functions</h4>
-						<p class="session-overview">This session explores two fundamental pseudorandom primitives that enable practical cryptography. Pseudorandom generators (PRGs) solve one-time pad's key length limitation by deterministically expanding a short seed into a longer output indistinguishable from random, enabling "pseudo-OTP" encryption. Pseudorandom functions (PRFs) extend this concept by acting as massive dictionaries that consistently map any input to a pseudorandom output, allowing parties with a shared secret to derive unlimited pseudorandom data. We'll examine construction methods including the GGM construction (building PRFs from PRGs) and CBC-MAC, while emphasizing the crucial "Golden Rule" that PRF security typically depends on ensuring inputs don't repeat.</p>
+						<h4 class="session-title"><i class="fas fa-book"></i>Pseudorandomness</h4>
+						<p class="session-overview">This session explores three fundamental pseudorandom primitives that enable practical cryptography. Pseudorandom generators (PRGs) solve one-time pad's key length limitation by expanding short seeds into longer outputs indistinguishable from random. Pseudorandom functions (PRFs) extend this by creating massive virtual dictionaries mapping inputs to pseudorandom outputs, allowing parties with a shared secret to derive unlimited pseudorandom data. Pseudorandom permutations (PRPs), also called block ciphers, provide both forward and inverse operations indistinguishable from random permutations. We'll examine key constructions including GGM (building PRFs from PRGs), the Feistel network (building invertible PRPs from non-invertible PRFs), and the PRF-PRP switching lemma that enables interchangeability in security proofs. Throughout, we'll emphasize crucial security principles like the PRF "Golden Rule" of preventing input repetition.</p>
 						<div class="session-readings">
 							<h5><i class="fas fa-book-open icon"></i>Required Readings</h5>
 							<ul>
 								<li><em>The Joy of Cryptography</em>, Chapter 5: Pseudorandom Generators</li>
 								<li><em>The Joy of Cryptography</em>, Chapter 6: Pseudorandom Functions</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="session">
-						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.5</span>
-						<h4 class="session-title"><i class="fas fa-book"></i>Pseudorandom Permutations</h4>
-						<p class="session-overview">Pseudorandom permutations (PRPs), also called block ciphers, extend the concept of PRFs by providing both forward and inverse operations that are indistinguishable from a truly random permutation to an adversary who doesn't know the secret key. The chapter introduces the Feistel construction, which elegantly builds a PRP from a PRF by using multiple rounds where the output of each round becomes part of the input to the next, with the remarkable property that inverse operations can be computed even when the underlying round function isn't invertible. The PRF-PRP switching lemma shows that PRPs and PRFs are often interchangeable in security proofs. While theoretical constructions like 3-round Feistel ciphers are provably secure PRPs, real-world implementations like AES use different designs with more rounds and complex key schedules to provide stronger security against attacks like meet-in-the-middle.</p>
-						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i>Required Readings</h5>
-							<ul>
 								<li><em>The Joy of Cryptography</em>, Chapter 7: Pseudorandom Permutations</li>
 							</ul>
 						</div>
@@ -297,7 +285,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.6</span>
+						<span class="session-number">Session 1.5</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Chosen Plaintext Attacks</h4>
 						<p class="session-overview">This session explores symmetric-key encryption schemes that can securely encrypt multiple plaintexts with the same key. It introduces the concept of chosen-plaintext attack (CPA) security, which requires ciphertexts to be indistinguishable from random strings of the same length, acknowledging that encryption cannot hide plaintext length. The chapter demonstrates why deterministic encryption cannot achieve CPA security and presents a randomized PRF-based encryption scheme as a solution. It covers block cipher modes like CBC and CTR for encrypting long messages, explaining why ECB mode is fundamentally insecure (illustrated by the infamous "ECB penguin"). The chapter also addresses practical considerations like padding for non-block-aligned plaintexts and introduces nonce-based encryption as an alternative to randomization, where security depends only on nonces not being reused rather than on unpredictable randomness.</p>
 						<div class="session-readings">
@@ -310,7 +298,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.7</span>
+						<span class="session-number">Session 1.6</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Chosen Ciphertext Attacks</h4>
 						<p class="session-overview">This session explores chosen-ciphertext attacks (CCA), where adversaries can decrypt chosen ciphertexts, and demonstrates how schemes that are only CPA-secure (like CTR mode) are vulnerable to these attacks due to their malleability. The chapter introduces format-oracle attacks, where information leaked during decryption (such as the presence of null characters) can be exploited to recover entire plaintexts. It formally defines CCA security and shows that achieving it requires preventing adversaries from creating valid modified ciphertexts.</p>
 						<div class="session-readings">
@@ -323,7 +311,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.8</span>
+						<span class="session-number">Session 1.7</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Collision-Resistant Hash Functions</h4>
 						<p class="session-overview">This session explores collision-resistant hash functions, which are deterministic functions that map variable-length inputs to fixed-length outputs where finding two different inputs with the same output ("collisions") should be computationally difficult. The chapter begins by explaining how collisions must exist (by the pigeonhole principle) but should be hard to find, requiring approximately 2<sup>(n/2)</sup> operations for an n-bit hash function. It formalizes collision resistance using salted hash functions to prevent precomputation attacks, and discusses real-world applications like password hashing where salt is critical for security.</p>
 						<div class="session-readings">
@@ -336,7 +324,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.9</span>
+						<span class="session-number">Session 1.8</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Random Oracles and Other Idealized Models</h4>
 						<p class="session-overview">This session explores the Random Oracle Model, a theoretical framework where hash functions are idealized as perfectly random functions that can only be evaluated through queries. We'll examine how this powerful abstraction enables elegant security proofs for practical schemes where traditional analysis fails, including OAEP for RSA and HKDF for key derivation. The session covers the controversy surrounding the model—while random oracles don't exist in reality (leading to theoretical concerns demonstrated by separation results), they often provide reliable security guidance for practical cryptographic design. We'll also discuss other idealized models including the ideal cipher model and the generic group model, which make analogous simplifying assumptions about block ciphers and algebraic groups, respectively. Students will learn when these models are appropriate analytical tools and their limitations when designing real-world cryptographic systems.</p>
 						<div class="session-readings">
@@ -349,7 +337,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.10</span>
+						<span class="session-number">Session 1.9</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Key Exchange</h4>
 						<p class="session-overview">This session introduces the fundamental concept of key exchange, which allows parties to establish shared secret keys over insecure channels. We'll explore the Diffie-Hellman protocol, examining how its elegant mathematical structure enables secure key agreement without prior shared secrets while maintaining security against eavesdroppers. The session covers the discrete logarithm and computational Diffie-Hellman assumptions that underpin the protocol's security, along with practical considerations for parameter selection. Students will understand both the basic protocol and its limitations, including vulnerability to man-in-the-middle attacks when used without authentication. We'll also examine modern applications and variants of key exchange protocols, including their integration into complex systems like TLS and secure messaging platforms, setting the foundation for subsequent discussions of authenticated key exchange.</p>
 						<div class="session-readings">
@@ -362,7 +350,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.11</span>
+						<span class="session-number">Session 1.10</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Public-Key Encryption</h4>
 						<p class="session-overview">This session explores public-key encryption (PKE), a transformative paradigm where encryption and decryption use different keys. Unlike symmetric encryption, PKE allows anyone with a public key to encrypt messages while only the private key holder can decrypt them. We'll examine formal security definitions for PKE schemes, including CPA and CCA security, and prove that any secure single-use PKE scheme remains secure for multiple encryptions. The session introduces El Gamal encryption, which leverages the Diffie-Hellman assumption to create a secure PKE scheme from cyclic group operations. We'll also study the Fujisaki-Okamoto construction, which efficiently transforms any CPA-secure PKE into a CCA-secure one using the random oracle model. Finally, we'll explore hybrid encryption and key encapsulation mechanisms (KEMs) as practical approaches that combine the security advantages of public-key cryptography with the efficiency of symmetric-key methods, enabling real-world applications that require both security and performance.</p>
 						<div class="session-readings">
@@ -375,7 +363,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.12</span>
+						<span class="session-number">Session 1.11</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Digital Signatures</h4>
 						<p class="session-overview">This session explores digital signatures, which allow an entity to cryptographically endorse a message in a way that anyone can verify but only the signer can produce. We'll examine how digital signatures provide the electronic equivalent of handwritten signatures with crucial integrity and non-repudiation properties. The session covers formal security definitions for signatures, including existential unforgeability under chosen-message attacks, and introduces several construction approaches. We'll explore hash-and-sign techniques using trapdoor functions, signature schemes derived from identification protocols, and efficient signature schemes based on the discrete logarithm assumption like DSA and EdDSA. Students will understand both the theoretical foundations and practical implementations of digital signatures, including their critical role in certificate authorities, code signing, and cryptocurrency transactions, as well as the security considerations that affect their deployment in modern systems.</p>
 						<div class="session-readings">
