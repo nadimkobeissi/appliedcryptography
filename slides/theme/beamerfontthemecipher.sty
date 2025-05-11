@@ -1,9 +1,36 @@
 \ProvidesPackage{theme/beamerfontthemecipher}[2025/05/04 v1.0 Cipher Beamer Theme]
 
-\setsansfont{Inria Sans}[Scale=1.0]
-\setmonofont{JetBrains Mono}[Scale=0.9]
-\setromanfont{STIX Two Text}[Scale=1.0]
-\setmathfont{STIX Two Math}[Scale=1.0]
+\setsansfont{Inria Sans}[
+	Path = theme/fonts/,
+	Extension = .ttf,
+	UprightFont = InriaSans-Regular,
+	BoldFont = InriaSans-Bold,
+	ItalicFont = InriaSans-Italic,
+	BoldItalicFont = InriaSans-BoldItalic,
+	Scale = 1.0
+]
+
+\setmonofont{JetBrains Mono}[
+	Path = theme/fonts/,
+	Extension = .ttf,
+	UprightFont = JetBrainsMono-Regular,
+	BoldFont = JetBrainsMono-Bold,
+	ItalicFont = JetBrainsMono-Italic,
+	BoldItalicFont = JetBrainsMono-BoldItalic,
+	Scale = 0.9
+]
+
+\setromanfont{STIX Two Text}[
+	Path = theme/fonts/,
+	Extension = .ttf,
+	UprightFont = STIXTwoText-Regular,
+	BoldFont = STIXTwoText-Bold,
+	ItalicFont = STIXTwoText-Italic,
+	BoldItalicFont = STIXTwoText-BoldItalic,
+	Scale = 1.0
+]
+
+\setmathfont{STIX Two Math}
 
 \renewcommand{\familydefault}{\sfdefault}
 

@@ -1,0 +1,17 @@
+// Static tasks configuration.
+//
+// Example:
+[
+	{
+		"label": "tectonic",
+		"command": "tectonic",
+		"args": [
+			"--keep-intermediates",
+			"--synctex",
+			"-o=pdf",
+			"$ZED_FILENAME"
+		],
+		"cwd": "$ZED_DIRNAME",
+		"tags": ["latex-build"]
+	}
+]

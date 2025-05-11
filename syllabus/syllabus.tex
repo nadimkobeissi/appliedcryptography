@@ -1,7 +1,3 @@
-\directlua{
-	pdf.setmajorversion(1)
-	pdf.setminorversion(7)
-}
 \documentclass[10pt,a4paper,american]{article}
 \usepackage[pdftitle=Applied Cryptography,pdflang=en-US,colorlinks=true,linkcolor=OliveGreen,urlcolor=OliveGreen,bookmarksopen=true]{hyperref}
 \usepackage{xurl,hyperxmp,fontspec,graphicx}
@@ -9,8 +5,8 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[inner=3.00cm,outer=3.00cm,top=3.00cm,bottom=3.00cm]{geometry}
-\usepackage{array,kpfonts,graphicx,fancyhdr,lastpage,bbding,pmboxdraw,listings,acronym,amsthm,bookmark}
-\usepackage[activate={true,nocompatibility},final,tracking=true,factor=1100,stretch=10,shrink=10]{microtype}
+\usepackage{array,kpfonts,graphicx,fancyhdr,bbding,pmboxdraw,listings,acronym,amsthm,bookmark,zref-totpages}
+\usepackage{microtype}
 
 \definecolor{OliveGreen}{HTML}{3F7E31}
 \definecolor{EarthBrown}{HTML}{7D4C31}
@@ -20,7 +16,7 @@
 \fancyhf{}
 \lhead{\fancyplain{}{Applied Cryptography}}
 \rhead{\fancyplain{}{\today}}
-\fancyfoot[RO, LE] {Page \thepage\ of \pageref{LastPage}}
+\fancyfoot[RO, LE] {Page \thepage\ of \ztotpages}
 \thispagestyle{plain}
 
 \newcommand{\schedpart}[3]{

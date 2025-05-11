@@ -2,14 +2,13 @@
 
 % Load required packages
 \RequirePackage{tikz}
-\RequirePackage[table]{xcolor}
+\RequirePackage{xcolor}
 \RequirePackage[most]{tcolorbox}
 \RequirePackage{
-	listings,svg,mathtools,fontspec,unicode-math,tcolorbox,
+	listings,mathtools,fontspec,unicode-math,tcolorbox,
 	amsmath,amsthm,amssymb,amsfonts,graphicx,setspace,cancel,
 	etoolbox,hyperref,xstring,fancybox,varwidth,xspace,titlecaps
 }
-\RequirePackage[lining]{InriaSans}
 \RequirePackage{microtype}
 \RequirePackage[auto,outline]{contour}
 
@@ -53,9 +52,7 @@
 		\begin{tikzpicture}
 			\hspace{-1mm}
 			\node[fill=white, anchor=center, inner sep=1mm]{
-				\IfEndWith{#2}{.svg}
-					{\includesvg[width=#1, height=0.9\textheight, keepaspectratio]{images/#2}}
-					{\includegraphics[width=#1, height=0.9\textheight, keepaspectratio]{images/#2}}
+				\includegraphics[width=#1, height=0.9\textheight, keepaspectratio]{images/#2}
 			};
 			\node[fit=(current bounding box), inner sep=0.5mm, draw=white, line width=0.5mm] {};
 		\end{tikzpicture}
@@ -74,9 +71,7 @@
 		\begin{tikzpicture}
 			\hspace{-1mm}
 			\node[fill=white, anchor=center, inner sep=1mm]{
-				\IfEndWith{#2}{.svg}
-					{\includesvg[width=#1, height=0.8\textheight, keepaspectratio]{images/#2}}
-					{\includegraphics[width=#1, height=0.8\textheight, keepaspectratio]{images/#2}}
+				\includegraphics[width=#1, height=0.8\textheight, keepaspectratio]{images/#2}
 			};
 			\node[fit=(current bounding box), inner sep=0.5mm, draw=white, line width=0.5mm] {};
 		\end{tikzpicture}
@@ -141,7 +136,7 @@
 
 \newcommand{\sslibrary}[4]{
 	\begin{sslibrarybox}[scale=#4]{\lib{#1}{#2}}
-		\begin{varwidth}{\pagewidth}
+		\begin{varwidth}{\textwidth}
 			#3
 		\end{varwidth}
 	\end{sslibrarybox}

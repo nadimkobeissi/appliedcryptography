@@ -34,10 +34,11 @@ I'm still working on the slides. If the checkbox isn't checked, it means you sho
 
 ## Compiling the slides
 
+You'll need to first have [Tectonic](https://tectonic-typesetting.github.io/en-US/) installed. The good news is that this means that you don't need to install LaTeX!
+
 Use the Makefile:
 
 - `make <part>-<session>`: compile a single slide deck with the output in `pdf/`. Example: `make 1-3`.
-- `make clean`: remove intermediate files created during compilation.
 - `make all`: make every slide deck, place output in `pdf/`.
 
 ## Notes
@@ -45,8 +46,9 @@ Use the Makefile:
 ### Regarding handout mode
 By default, these slides are presented in "handout mode", meaning they don't have transitions. If you want to compile them a slide deck with transitions (useful during teaching), remove the `handout` directive from the first line of the slide deck, and then run the corresponding `make` command.
 
-### Regarding Inkscape
-If you decide to compile the slides locally, you will need to have [Inkscape](https://inkscape.org) installed and available via the command line. This is because LaTeX has no native support for SVG images, and we use a package that calls Inkscape to do compile-time image format conversion.
-
 - **macOS**: `brew install --cask inkscape`
 - **Linux**: God help you, figure it out based on your Linux distribution.
+
+### Converting from SVG
+This is for my use only, please ignore:
+`magick -density 4000 input.svg -resize 4000x output.png`
