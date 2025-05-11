@@ -28,9 +28,38 @@
 \newcommand{\coverwebsite}[1]{\def\insertcoverwebsite{#1}}
 \newcommand{\instituteimage}[1]{\def\insertinstituteimage{#1}}
 
-% Custom definition box
 \newcommand{\definitionbox}[2]{%
-	\begin{tcolorbox}[colback=ciphergray!40!white,colframe=cipherprimary,title=#1,fonttitle=\bfseries]
+	\begin{tcolorbox}[
+		enhanced,
+		colback=cipherprimary!5!cipherlight,
+		colframe=cipherprimary,
+		colbacktitle=cipherprimary!40!white,
+		title=#1,
+		fonttitle=\bfseries\sffamily,
+		boxrule=0.4mm,
+		arc=2mm,
+		left=3mm,right=3mm,top=3mm,bottom=3mm,
+		drop shadow={opacity=0.1},
+		sharp corners=southeast
+	]
+		#2
+	\end{tcolorbox}
+}
+
+\newcommand{\alertbox}[2]{%
+	\begin{tcolorbox}[
+		enhanced,
+		colback=red!5!cipherlight,
+		colframe=red!70!black,
+		colbacktitle=red!30!white,
+		title=#1,
+		fonttitle=\bfseries\sffamily,
+		boxrule=0.4mm,
+		arc=2mm,
+		left=3mm,right=3mm,top=3mm,bottom=3mm,
+		drop shadow={opacity=0.1},
+		sharp corners=southeast,
+	]
 		#2
 	\end{tcolorbox}
 }

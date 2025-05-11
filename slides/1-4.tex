@@ -19,9 +19,9 @@
 \section{Pseudorandom Generators}
 
 \begin{frame}{Limitations of One-Time Pad}
-	\begin{block}{The Key Length Problem}
+	\definitionbox{The Key Length Problem}{
 		One-time pad is not a particularly useful encryption scheme in practice.
-	\end{block}
+	}
 	\begin{itemize}[<+->]
 		\item The key must be as long as the plaintext!
 		\item This creates a chicken-and-egg situation:
@@ -142,7 +142,7 @@
 \begin{frame}{One-time secrecy of a SKE}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\definitionbox{One-time secrecy for SKE}{
+			\definitionbox{One-time Secrecy for SKE}{
 				An SKE scheme $\Sigma$ has one-time secrecy if the following libraries are interchangeable:
 				\vspace{0.5mm}
 				\begin{center}
@@ -334,14 +334,10 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
-			\begin{alertblock}{Security Warning}
-				RC4 is presented as a historical example only. It should not be used in new applications due to known weaknesses.
-			\end{alertblock}
+			\alertbox{Security Warning}{
+				RC4 is presented as a historical example only. It should not be used in new applications due to known weaknesses. Modern alternatives include ChaCha20.
+			}
 			\vspace{1em}
-			\begin{center}
-				Modern alternatives:\\
-				ChaCha20, AES-CTR
-			\end{center}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -369,6 +365,40 @@
 \end{frame}
 
 \section{Pseudorandom Functions}
+
+\begin{frame}{Pseudorandom function: definition}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Pseudorandom Function (PRF)}{
+				A function $F: \bits^\lambda \times \bits^n \rightarrow \bits^m$ is a secure pseudorandom function (PRF) if the following two libraries are indistinguishable:
+			}
+			\begin{itemize}
+				\item $n$ the input length of the PRF.
+				\item $m$ the output length of the PRF.
+				\item $\lambda$ is the key size and hence the security parameter.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{F}{prf-real}{
+					$K \twoheadleftarrow \{0,1\}^\lambda$\\[1em]
+					\sslibrarysubroutine{Prf.Query}{X}{
+						return $F(K, X)$
+					}{1}
+				}{1}
+			}{\approxeq}{
+				\sslibrary{F}{prf-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{Prf.Query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $L[X] \twoheadleftarrow \bits^m$\\
+						return $L[X]$
+					}{1}
+				}{1}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
 
 \begin{frame}{$\mathsf{PRF}: F_{k}= X \rightarrow Y$}
 	\begin{columns}[c]
@@ -466,36 +496,116 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Pseudorandom function: definition}
+\begin{frame}{An insecure PRF construction}
 	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\definitionbox{Pseudorandom Function (PRF)}{
-				A function $F: \bits^\lambda \times \bits^n \rightarrow \bits^m$ is a secure pseudorandom function (PRF) if the following two libraries are indistinguishable:
+		\begin{column}{0.45\textwidth}
+			\definitionbox{Claim: An Insecure PRF}{
+				The function $F(K, X) = G(K) \oplus X$ is not a secure PRF, even if $G$ is a secure PRG.
 			}
-			\begin{itemize}
-				\item $n$ the input length of the PRF.
-				\item $m$ the output length of the PRF.
-				\item $\lambda$ is the key size and hence the security parameter.
+			\begin{itemize}[<+->]
+				\item This construction fails because:
+				      \begin{itemize}[<+->]
+					      \item The key $K$ is only fed through the PRG once.
+					      \item The same value $G(K)$ is used for all queries.
+					      \item This creates exploitable patterns in outputs.
+				      \end{itemize}
 			\end{itemize}
 		\end{column}
+		\begin{column}{0.55\textwidth}
+			\begin{center}
+				\sslinked{
+					\sslibrary{F}{prf-real}{
+						$K \twoheadleftarrow \{0,1\}^\lambda$\\[1em]
+						\sslibrarysubroutine{Prf.Query}{X}{
+							return $G(K) \oplus X$
+						}{1}
+					}{1}
+				}{\cancel{\approxeq}}{
+					\sslibrary{F}{prf-rand}{
+						$L \coloneq$ [\ ]\\[1em]
+						\sslibrarysubroutine{Prf.Query}{X}{
+							if $L[X]$ undefined:\\
+							\quad $L[X] \twoheadleftarrow \{0,1\}^m$\\
+							return $L[X]$
+						}{1}
+					}{1}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{An insecure PRF construction}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item When an adversary sees two outputs:
+				      \begin{align*}
+					      Y_1 & = G(K) \oplus X_1 \\
+					      Y_2 & = G(K) \oplus X_2
+				      \end{align*}
+				\item Taking $Y_1 \oplus Y_2$ causes $G(K)$ to cancel:
+				      \begin{align*}
+					      Y_1 \oplus Y_2 & = G(K) \oplus X_1 \oplus G(K) \oplus X_2 \\
+					                     & = X_1 \oplus X_2
+				      \end{align*}
+				\item In a truly random function, $Y_1 \oplus Y_2 = X_1 \oplus X_2$ would be extremely unlikely!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{center}
+				\sslinked{
+					\sslibrary{F}{prf-real}{
+						$K \twoheadleftarrow \{0,1\}^\lambda$\\[1em]
+						\sslibrarysubroutine{Prf.Query}{X}{
+							return $G(K) \oplus X$
+						}{1}
+					}{0.7}
+				}{\cancel{\approxeq}}{
+					\sslibrary{F}{prf-rand}{
+						$L \coloneq$ [\ ]\\[1em]
+						\sslibrarysubroutine{Prf.Query}{X}{
+							if $L[X]$ undefined:\\
+							\quad $L[X] \twoheadleftarrow \{0,1\}^m$\\
+							return $L[X]$
+						}{1}
+					}{0.7}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Another insecure PRF construction}
+	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\sslinked{
-				\sslibrary{F}{prf-real}{
-					$K \twoheadleftarrow \{0,1\}^\lambda$\\[1em]
-					\sslibrarysubroutine{Prf.Query}{X}{
-						return $F(K, X)$
-					}{1}
-				}{1}
-			}{\approxeq}{
-				\sslibrary{F}{prf-rand}{
-					$L \coloneq$ [\ ]\\[1em]
-					\sslibrarysubroutine{Prf.Query}{X}{
-						if $L[X]$ undefined:\\
-						\quad $L[X] \twoheadleftarrow \bits^m$\\
-						return $L[X]$
-					}{1}
-				}{1}
+			\definitionbox{Claim: Another Insecure PRF}{
+				The function $H(K_1 \| K_2, X_1 \| X_2) = F(K_1, X_1) \oplus F(K_2, X_2)$ is not a secure PRF, even if $F$ is a secure PRF.
 			}
+			\begin{itemize}[<+->]
+				\item An unsuccessful attempt to use a PRF with shorter input length to build one with a larger input length.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.55\textwidth}
+			\begin{center}
+				\sslinked{
+					\sslibrary{H}{prf-real}{
+						$K_1 \| K_2 \twoheadleftarrow \{0,1\}^{2\lambda}$\\[1em]
+						\sslibrarysubroutine{Prf.Query}{X_1 \| X_2}{
+							return $F(K_1, X_1) \oplus F(K_2, X_2)$
+						}{1}
+					}{0.7}
+				}{\cancel{\approxeq}}{
+					\sslibrary{H}{prf-rand}{
+						$L \coloneq$ [\ ]\\[1em]
+						\sslibrarysubroutine{Prf.Query}{X_1 \| X_2}{
+							if $L[X_1 \| X_2]$ undefined:\\
+							\quad $L[X_1 \| X_2] \twoheadleftarrow \{0,1\}^m$\\
+							return $L[X_1 \| X_2]$
+						}{1}
+					}{0.7}
+				}
+			\end{center}
 		\end{column}
 	\end{columns}
 \end{frame}
