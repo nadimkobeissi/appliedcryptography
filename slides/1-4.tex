@@ -381,7 +381,7 @@
 		\begin{column}{0.5\textwidth}
 			\sslinked{
 				\sslibrary{F}{prf-real}{
-					$K \twoheadleftarrow \{0,1\}^\lambda$\\[1em]
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
 					\sslibrarysubroutine{Prf.Query}{X}{
 						return $F(K, X)$
 					}{1}
@@ -515,7 +515,7 @@
 			\begin{center}
 				\sslinked{
 					\sslibrary{F}{prf-real}{
-						$K \twoheadleftarrow \{0,1\}^\lambda$\\[1em]
+						$K \twoheadleftarrow \bits^\lambda$\\[1em]
 						\sslibrarysubroutine{Prf.Query}{X}{
 							return $G(K) \oplus X$
 						}{1}
@@ -525,7 +525,7 @@
 						$L \coloneq$ [\ ]\\[1em]
 						\sslibrarysubroutine{Prf.Query}{X}{
 							if $L[X]$ undefined:\\
-							\quad $L[X] \twoheadleftarrow \{0,1\}^m$\\
+							\quad $L[X] \twoheadleftarrow \bits^m$\\
 							return $L[X]$
 						}{1}
 					}{1}
@@ -556,7 +556,7 @@
 			\begin{center}
 				\sslinked{
 					\sslibrary{F}{prf-real}{
-						$K \twoheadleftarrow \{0,1\}^\lambda$\\[1em]
+						$K \twoheadleftarrow \bits^\lambda$\\[1em]
 						\sslibrarysubroutine{Prf.Query}{X}{
 							return $G(K) \oplus X$
 						}{1}
@@ -566,7 +566,7 @@
 						$L \coloneq$ [\ ]\\[1em]
 						\sslibrarysubroutine{Prf.Query}{X}{
 							if $L[X]$ undefined:\\
-							\quad $L[X] \twoheadleftarrow \{0,1\}^m$\\
+							\quad $L[X] \twoheadleftarrow \bits^m$\\
 							return $L[X]$
 						}{1}
 					}{0.7}
@@ -590,7 +590,7 @@
 			\begin{center}
 				\sslinked{
 					\sslibrary{H}{prf-real}{
-						$K_1 \| K_2 \twoheadleftarrow \{0,1\}^{2\lambda}$\\[1em]
+						$K_1 \| K_2 \twoheadleftarrow \bits^{2\lambda}$\\[1em]
 						\sslibrarysubroutine{Prf.Query}{X_1 \| X_2}{
 							return $F(K_1, X_1) \oplus F(K_2, X_2)$
 						}{1}
@@ -600,12 +600,70 @@
 						$L \coloneq$ [\ ]\\[1em]
 						\sslibrarysubroutine{Prf.Query}{X_1 \| X_2}{
 							if $L[X_1 \| X_2]$ undefined:\\
-							\quad $L[X_1 \| X_2] \twoheadleftarrow \{0,1\}^m$\\
+							\quad $L[X_1 \| X_2] \twoheadleftarrow \bits^m$\\
 							return $L[X_1 \| X_2]$
 						}{1}
 					}{0.7}
 				}
 			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why the previous PRF is broken}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item When inputs share the same first half, the corresponding outputs of $H$ have a common term $F(K_1, X_1)$
+				\item Consider querying four inputs: $A\|B$, $A\|B'$, $A'\|B$, $A'\|B'$ (where $A \neq A'$ and $B \neq B'$)
+				      \begin{align*}
+					      Y_1 & = F(K_1, A) \oplus F(K_2, B)   \\
+					      Y_2 & = F(K_1, A) \oplus F(K_2, B')  \\
+					      Y_3 & = F(K_1, A') \oplus F(K_2, B)  \\
+					      Y_4 & = F(K_1, A') \oplus F(K_2, B')
+				      \end{align*}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item If we XOR $Y_1 \oplus Y_2$, the $F(K_1, A)$ terms cancel out
+				\item Similarly, $Y_3 \oplus Y_4$ causes $F(K_1, A')$ to cancel
+				\item \begin{align*}
+					      Y_1 \oplus Y_2 & = F(K_2, B) \oplus F(K_2, B') \\
+					      Y_3 \oplus Y_4 & = F(K_2, B) \oplus F(K_2, B')
+				      \end{align*}
+				\item So $Y_1 \oplus Y_2 = Y_3 \oplus Y_4$ with probability 1
+				\item With a truly random function, this would only happen with probability $1/2^m$ (extremely unlikely!)
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The Golden Rule of PRFs}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{The Golden Rule of PRFs}{
+				If a PRF $F$ is being used as a component in a larger construction $H$, then security usually rests on how well $H$ can ensure distinct inputs to $F$.
+			}
+			\begin{itemize}[<+->]
+				\item When analyzing PRF security, focus on input uniqueness.
+				\item Repeated inputs to a PRF create exploitable patterns.
+				\item Even if $F$ is secure, $H$ can be broken if it causes $F$ to receive duplicate inputs.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\alertbox{Attack Strategy}{
+				To attack $H$, choose inputs that will cause $F$ to be called on a repeated input.
+			}
+			\begin{itemize}[<+->]
+				\item Don't try to directly distinguish $F$'s outputs from uniform.
+				\item Instead, exploit how $H$ uses $F$ incorrectly.
+				\item Find input patterns that force collisions within $F$.
+			\end{itemize}
+			\vspace{1em}
+			\alertbox{Proof Strategy}{
+				To prove security of $H$, establish that inputs to $F$ do not repeat, except with negligible probability.
+			}
 		\end{column}
 	\end{columns}
 \end{frame}
