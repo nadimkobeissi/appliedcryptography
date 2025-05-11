@@ -383,7 +383,7 @@
 				</div>
 				<div class="collapsible-content">
 					<p>
-						In Part 2, we transition from theoretical foundations to real-world cryptographic applications and protocols. This section examines how the provable security concepts from Part 1 are implemented in practice to secure modern digital systems. We begin with secure messaging protocols, exploring how Signal's double ratchet mechanism provides forward secrecy and post-compromise security through continuous key evolution. We then study authenticated key exchange protocols like SIGMA and Triple Diffie-Hellman that secure communications between parties while providing critical security properties. The section covers zero-knowledge proofs, which allow proving knowledge without revealing secrets, and post-quantum cryptography to address threats from quantum computing. We thoroughly examine TLS, the protocol securing internet communications, and the cryptographic underpinnings of blockchain technologies. The section also analyzes significant cryptographic protocol failures, explores formal verification methods for ensuring protocol security, and covers high-assurance cryptography implementations. We conclude with privacy-preserving technologies like Tor and differential privacy that protect sensitive information while enabling useful computation. Throughout Part 2, students will bridge theoretical security concepts with practical implementations, understanding both the mathematical foundations and engineering considerations necessary for designing and deploying secure cryptographic systems in the real world.
+						In Part 2, we shift from theoretical foundations to practical applications, examining how cryptographic principles are implemented in real-world systems. We begin with secure messaging protocols that provide forward secrecy and post-compromise security through ratcheting mechanisms, then explore authenticated key exchange protocols that secure communications against active adversaries. The section covers advanced concepts like zero-knowledge proofs that enable proving knowledge without revealing secrets, and post-quantum cryptography designed to resist attacks from quantum computers. We examine critical infrastructure protocols like TLS that secure internet communications, cloud security applications of cryptography, and analyze significant cryptographic failures to extract valuable design lessons. The course then investigates formal verification and high-assurance implementations that provide mathematical guarantees of security, specialized cryptography in cryptocurrencies, secure multiparty computation enabling joint computation without revealing inputs, and privacy-preserving technologies that protect sensitive information while enabling useful computation. By connecting theoretical foundations to practical systems, students will develop the knowledge needed to evaluate, implement, and design secure cryptographic solutions for complex real-world environments.
 					</p>
 
 					<div class="session">
@@ -454,8 +454,8 @@
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 2.6</span>
-						<h4 class="session-title"><i class="fas fa-book"></i>Cryptocurrency Cryptography</h4>
-						<p class="session-overview">This session explores the cryptographic foundations of blockchain systems and cryptocurrencies, examining how traditional cryptographic primitives are combined in novel ways to create decentralized trust systems. We'll investigate the core components of blockchain protocols, including hash functions in proof-of-work mechanisms, digital signatures for transaction authentication, and Merkle trees for efficient verification. The session covers the cryptographic aspects of Bitcoin, Ethereum, and other significant blockchain platforms, analyzing their security models, consensus mechanisms, and vulnerability mitigations. Students will learn about specialized cryptographic constructions in cryptocurrencies, including zero-knowledge proofs for privacy coins, threshold signatures for multi-signature wallets, and timelock puzzles for conditional transactions. We'll also discuss emerging cryptographic challenges in blockchain systems, including quantum resistance considerations, layer-2 scaling solutions with unique security properties, and the cryptographic foundations of newer consensus mechanisms like proof-of-stake that aim to address energy consumption concerns while maintaining security guarantees.</p>
+						<h4 class="session-title"><i class="fas fa-cloud"></i>Applied Cryptography in Cloud Security</h4>
+						<p class="session-overview">This session explores how cryptographic principles and techniques are applied to secure cloud computing environments, focusing on the unique challenges of protecting data and applications in distributed, multi-tenant infrastructures. We'll examine key management strategies for distributed systems, including hierarchical key management, key rotation policies, and hardware security modules (HSMs) in cloud deployments. The session covers confidential computing technologies that use hardware-based trusted execution environments and memory encryption to protect data in use. Students will learn about tokenization systems that replace sensitive data with non-sensitive equivalents, and encryption schemes optimized for cloud storage including convergent encryption and client-side encryption models. We'll investigate secret management at scale, analyzing secure vaults, dynamic credential generation, and secure secret distribution in containerized environments. The session also explores cryptographic access control mechanisms like attribute-based encryption and practical implementations of end-to-end encryption in cloud services, examining how these technologies can maintain confidentiality even when the cloud provider itself isn't fully trusted.</p>
 						<div class="session-readings">
 							<h5><i class="fas fa-book-open icon"></i>Required Readings</h5>
 							<ul>
@@ -506,12 +506,38 @@
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 2.10</span>
+						<h4 class="session-title"><i class="fas fa-book"></i>Cryptocurrency Cryptography</h4>
+						<p class="session-overview">This session explores the cryptographic foundations of blockchain systems and cryptocurrencies, examining how traditional cryptographic primitives are combined in novel ways to create decentralized trust systems. We'll investigate the core components of blockchain protocols, including hash functions in proof-of-work mechanisms, digital signatures for transaction authentication, and Merkle trees for efficient verification. The session covers the cryptographic aspects of Bitcoin, Ethereum, and other significant blockchain platforms, analyzing their security models, consensus mechanisms, and vulnerability mitigations. Students will learn about specialized cryptographic constructions in cryptocurrencies, including zero-knowledge proofs for privacy coins, threshold signatures for multi-signature wallets, and timelock puzzles for conditional transactions. We'll also discuss emerging cryptographic challenges in blockchain systems, including quantum resistance considerations, layer-2 scaling solutions with unique security properties, and the cryptographic foundations of newer consensus mechanisms like proof-of-stake that aim to address energy consumption concerns while maintaining security guarantees.</p>
+						<div class="session-readings">
+							<h5><i class="fas fa-book-open icon"></i>Required Readings</h5>
+							<ul>
+								<li>TODO</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="session">
+						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
+						<span class="session-number">Session 2.11</span>
+						<h4 class="session-title"><i class="fas fa-users-cog"></i>Secure Multiparty Computation</h4>
+						<p class="session-overview">This session explores Secure Multiparty Computation (MPC), a powerful cryptographic paradigm that enables multiple parties to jointly compute functions over their private inputs without revealing those inputs to each other. We'll examine the theoretical foundations of MPC, including feasibility results, security models, and the distinctions between semi-honest and malicious adversaries. The session covers core MPC techniques including Yao's garbled circuits, secret sharing schemes like Shamir's threshold method, and oblivious transfer protocols that enable secure two-party computation. Students will learn about practical MPC frameworks and implementations such as SCALE-MAMBA, MP-SPDZ, and EMP-toolkit, analyzing their performance characteristics and security guarantees. We'll investigate applications of MPC across various domains, including private data analysis, secure auctions, privacy-preserving machine learning, and confidential financial systems. The session also addresses performance optimizations like preprocessing, circuit minimization, and communication-efficient protocols that make MPC increasingly practical for real-world use. We'll conclude with case studies of deployed MPC systems, examining how these technologies overcome real-world implementation challenges to enable secure collaboration while maintaining strict privacy guarantees.</p>
+						<div class="session-readings">
+							<h5><i class="fas fa-book-open icon"></i>Required Readings</h5>
+							<ul>
+								<li>TODO</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="session">
+						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
+						<span class="session-number">Session 2.12</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Privacy-Preserving Technologies</h4>
 						<p class="session-overview">This session explores cryptographic technologies designed to preserve privacy in various digital contexts, examining how mathematical techniques can protect sensitive information while still enabling useful computation and communication. We'll investigate anonymous communication networks like Tor, analyzing their onion routing architecture, circuit establishment protocols, and defenses against traffic analysis. The session covers differential privacy frameworks that enable statistical analysis of datasets while providing formal privacy guarantees about individual records, including the mathematical foundations, privacy budget concepts, and practical implementation considerations. Students will learn about advanced privacy technologies including private information retrieval, secure multi-party computation, homomorphic encryption, and their applications in areas like private data analysis, secure outsourced computation, and privacy-preserving machine learning. We'll also examine mix networks, anonymous credentials, and attribute-based authentication systems that enable selective disclosure of information without revealing complete identities. The session concludes with a discussion of the challenges in deploying privacy technologies at scale, including performance limitations, usability concerns, and the fundamental tradeoffs between utility, privacy, and efficiency in different application contexts.</p>
 						<div class="session-readings">
 							<h5><i class="fas fa-book-open icon"></i>Required Readings</h5>
 							<ul>
-								<li><em>TODO:</em> Tor design paper, Differential Privacy whitepapers</li>
+								<li>TODO</li>
 							</ul>
 						</div>
 					</div>

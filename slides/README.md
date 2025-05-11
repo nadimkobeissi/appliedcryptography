@@ -30,6 +30,8 @@ I'm still working on the slides. If the checkbox isn't checked, it means you sho
 - [ ] Part 2: Session 8
 - [ ] Part 2: Session 9
 - [ ] Part 2: Session 10
+- [ ] Part 2: Session 11
+- [ ] Part 2: Session 12
 
 ## Compiling the slides
 
