@@ -1112,6 +1112,109 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{AES: a good example of a PRP}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item AES is the most widely used PRP in the world.
+				\item It works on fixed-size blocks: 128 bits.
+				\item Key sizes: 128, 192, or 256 bits.
+				\item Each AES key defines a specific permutation over the space of all 128-bit values.
+				\item For each key, AES maps each possible 128-bit input to exactly one 128-bit output.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Different keys create different permutations.
+				\item AES is efficiently invertible:
+				      \begin{itemize}[<+->]
+					      \item $\text{Dec}(K, \text{Enc}(K, M)) = M$
+				      \end{itemize}
+				\item AES is believed to be computationally indistinguishable from a random permutation.
+				\item Has withstood extensive cryptanalysis for over 20 years.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AES structure}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Internal structure: substitution-permutation network with multiple rounds.
+				      \begin{itemize}[<+->]
+					      \item SubBytes: non-linear substitution
+					      \item ShiftRows: transposition
+					      \item MixColumns: mixing operation
+					      \item AddRoundKey: XOR with round key
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+		\begin{flushright}
+			\scalebox{0.55}{
+			\begin{tikzpicture}[
+					block/.style={rectangle, draw, fill=ciphergray!15, minimum width=2cm, minimum height=0.6cm, align=center, font=\footnotesize},
+					arrow/.style={-stealth, thick},
+					node distance=0.5cm
+				]
+				% Input
+				\node[block] (input) {Plaintext (128 bits)};
+
+				% Initial round (just key addition)
+				\node[block, below=0.8cm of input] (addroundkey0) {AddRoundKey};
+				\draw[arrow] (input) -- (addroundkey0);
+				\node[right=0.3cm of addroundkey0, align=left, font=\scriptsize] (roundkey0) {Round Key 0};
+				\draw[arrow] (roundkey0) -- (addroundkey0);
+
+				% Main rounds box
+				\draw[rounded corners, dashed] (-2,-2.2) rectangle (2,-5.2);
+				\node[align=left, font=\scriptsize] at (-1.7,-2.5) {Rounds 1-9};
+
+				% Main round operations
+				\node[block, below=0.8cm of addroundkey0] (subbytes) {SubBytes};
+				\draw[arrow] (addroundkey0) -- (subbytes);
+
+				\node[block, below=of subbytes] (shiftrows) {ShiftRows};
+				\draw[arrow] (subbytes) -- (shiftrows);
+
+				\node[block, below=of shiftrows] (mixcolumns) {MixColumns};
+				\draw[arrow] (shiftrows) -- (mixcolumns);
+
+				\node[block, below=of mixcolumns] (addroundkey) {AddRoundKey};
+				\draw[arrow] (mixcolumns) -- (addroundkey);
+				\node[right=0.3cm of addroundkey, align=left, font=\scriptsize] (roundkey) {Round Keys 1-9};
+				\draw[arrow] (roundkey) -- (addroundkey);
+
+				% Final round box
+				\draw[rounded corners, dashed] (-2,-5.8) rectangle (2,-7.8);
+				\node[align=left, font=\scriptsize] at (-1.7,-6.1) {Round 10};
+
+				% Final round operations (no MixColumns)
+				\node[block, below=0.8cm of addroundkey] (subbytes2) {SubBytes};
+				\draw[arrow] (addroundkey) -- (subbytes2);
+
+				\node[block, below=of subbytes2] (shiftrows2) {ShiftRows};
+				\draw[arrow] (subbytes2) -- (shiftrows2);
+
+				\node[block, below=of shiftrows2] (addroundkey2) {AddRoundKey};
+				\draw[arrow] (shiftrows2) -- (addroundkey2);
+				\node[right=0.3cm of addroundkey2, align=left, font=\scriptsize] (roundkey2) {Round Key 10};
+				\draw[arrow] (roundkey2) -- (addroundkey2);
+
+				% Output
+				\node[block, below=0.8cm of addroundkey2] (output) {Ciphertext (128 bits)};
+				\draw[arrow] (addroundkey2) -- (output);
+
+				% Note about final round
+				\node[align=center, font=\scriptsize, color=red] at (3.2,-6.8) {No MixColumns\\in final round};
+			\end{tikzpicture}
+			}
+			\end{flushright}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Slides not complete}
 	\begin{itemize}
 		\item This slide deck is not finished and is missing important material. Do not rely on it yet.
