@@ -400,6 +400,43 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{PRG vs PRF: Key Differences}
+	\begin{columns}[t]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{PRG (Pseudorandom Generator)}:
+				      \begin{itemize}[<+->]
+					      \item Takes short seed, produces longer output
+					      \item Generates entire output as a monolithic string
+					      \item $G: \bits^\lambda \rightarrow \bits^{\lambda+\ell}$
+				      \end{itemize}
+			\end{itemize}
+			\begin{center}
+				\sslibrary{F}{prf-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{Prf.Query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $L[X] \twoheadleftarrow \bits^m$\\
+						return $L[X]$
+					}{1}
+				}{0.7}
+			\end{center}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{PRF (Pseudorandom Function)}:
+				      \begin{itemize}[<+->]
+					      \item Maps inputs to pseudorandom outputs
+					      \item Provides access to individual blocks of output
+					      \item Can generate output for any input on demand
+					      \item $F: \bits^\lambda \times \bits^n \rightarrow \bits^m$
+				      \end{itemize}
+				\item PRFs enable "selective access" to pseudorandom values without generating the entire sequence
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{$\mathsf{PRF}: F_{k}= X \rightarrow Y$}
 	\begin{columns}[c]
 		\begin{column}{0.4\textwidth}
@@ -407,14 +444,11 @@
 				\item We want the mapping to be:
 				      \begin{itemize}
 					      \item One-way
-
 					      \item ``Randomized''
-
 					      \item Relations between inputs not reflected in outputs
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
-
 		\begin{column}{0.8\textwidth}
 			\begin{tikzpicture}[scale=0.38]
 				% Define colors
@@ -494,6 +528,63 @@
 			\end{tikzpicture}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{PRFs in the real world: hash functions}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\definitionbox{Hash Function Properties}{
+				\begin{itemize}\item Takes input of \textbf{any size}
+					\item Produces output of \textbf{fixed size}
+					\item Is \textbf{deterministic} (same input $\rightarrow$ same output)
+					\item Even a \textbf{tiny change} in input creates completely different output
+					\item Is \textbf{efficient} to compute\end{itemize}
+			}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\begin{tcolorbox}
+				[colback=black!5!white,colframe=ciphergray] $\mathsf{SHA256}(\texttt{hello}) =$ \\ \texttt{2cf24dba5fb0a30e26e83b2ac5}\\ \texttt{b9e29e1b161e5c1fa7425e7304}\\
+				\texttt{3362938b9824}
+
+				$\mathsf{SHA256}(\texttt{hullo}) =$ \\ \texttt{7835066a1457504217688c8f5d}\\
+				\texttt{06909c6591e0ca78c254ccf174}\\ \texttt{50d0d999cab0}
+			\end{tcolorbox}
+			\textcolor{cipherprimary}{\textbf{Note:} \small One character change $\rightarrow$
+				completely different hash!}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Expected properties of a hash function}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Collision resistance}: computationally infeasible to find
+				      two different inputs producing the same hash.
+				\item \textbf{Preimage resistance}: given the output of a hash function,
+				      it is computationally infeasible to reconstruct the original input.
+				\item \textbf{Second preimage resistance}: given an input and an output,
+				      it's computationally infeasible to find another different input
+				      producing the same output.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{sha2.png}{SHA-2 compression function. Source: Wikipedia}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Hash functions: what are they good for?}
+	\begin{itemize}[<+->]
+		\item \textbf{Password storage}: Store the hash of the password on the server,
+		      not the password itself. Then check candidate passwords against the hash.
+		\item \textbf{Data integrity verification}: Hash a file. Later hash it
+		      again and compare hashes to check if the file has changed, suffered storage
+		      degradation, etc.
+		\item \textbf{Proof of work}: Server asks client to hash something a lot of
+		      times before they can access some resource. Useful for anti-spam, Bitcoin
+		      mining, etc.
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{An insecure PRF construction}
