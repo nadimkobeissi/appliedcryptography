@@ -9,7 +9,7 @@ I'm still working on the slides. If the checkbox isn't checked, it means you sho
 - [x] Part 1: Session 1
 - [x] Part 1: Session 2
 - [x] Part 1: Session 3
-- [ ] Part 1: Session 4
+- [x] Part 1: Session 4
 - [ ] Part 1: Session 5
 - [ ] Part 1: Session 6
 - [ ] Part 1: Session 7

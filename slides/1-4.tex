@@ -8,7 +8,7 @@
 \date{\today}
 \coversubtitle{CMPS 297AD/396AI}
 \coverpartname{Part 1: Provable Security}
-\coversessionname{1.4: Pseudorandom Generators\\ \& Functions}
+\coversessionname{1.4: Pseudorandomness}
 \coverwebsite{\url{https://appliedcryptography.page}}
 
 \begin{document}
@@ -431,7 +431,7 @@
 					      \item Can generate output for any input on demand
 					      \item $F: \bits^\lambda \times \bits^n \rightarrow \bits^m$
 				      \end{itemize}
-				\item PRFs enable "selective access" to pseudorandom values without generating the entire sequence
+				\item PRFs enable ``selective access'' to pseudorandom values without generating the entire sequence
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -519,8 +519,6 @@
 				\pause
 				\draw[-{Stealth[length=6mm, width=4mm]}, ultra thick, redarrow]
 				(3,1) -- (16.8,4.2);
-
-				% "Collisions are inevitable" text directly on the arrow
 				\node[redarrow, font=\scriptsize\bfseries, rotate=14]
 				at
 				(10,3)
@@ -742,6 +740,376 @@
 		\item Instead, exploit how $H$ uses $F$ incorrectly.
 		\item Find input patterns that force collisions within $F$.
 	\end{itemize}
+\end{frame}
+
+\section{Pseudorandom Permutations}
+
+\begin{frame}{What is a permutation?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Permutation}{
+				A permutation is a rearrangement where each input value maps to exactly one output value, and each possible output appears exactly once.
+			}
+			\begin{itemize}[<+->]
+				\item Permutations rearrange elements rather than transforming them.
+				\item Every element in the domain appears exactly once in the range.
+				\item The function is invertible.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Example: simple substitution cipher. Each letter maps to another letter:
+				      \begin{align*}
+					      a & \mapsto g,\quad b \mapsto a,\quad c \mapsto r \\
+					      d & \mapsto b,\quad e \mapsto l,\quad f \mapsto e \\
+					      g & \mapsto d,\quad \ldots
+				      \end{align*}
+				\item Under this permutation: \\
+				      ``cabbage'' $\mapsto$ ``rgaagdl''
+				\item This mapping is reversible because it's a permutation over $\{a,\ldots,z\}$.
+				\item Each letter appears exactly once in the output alphabet.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{PRF versus PRP}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Pseudo-Random Function (SHA-2)}
+			\begin{itemize}[<+->]
+				\item \textbf{Input} is arbitrary-length,
+				\item \textbf{Output} is fixed-length, looks random (as discussed
+				      earlier).
+				\item Indistinguishable from a truly random function by an adversary with
+				      limited computational power.
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\textbf{Pseudo-Random Permutation (AES)}
+			\begin{itemize}[<+->]
+				\item \textbf{Input and output} are the same length, forming a permutation.
+				\item Each input maps uniquely to one output, allowing invertibility.
+				\item Indistinguishable from a truly random permutation by an adversary
+				      with limited computational power.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{$\mathsf{PRF}: F_{k}= X \rightarrow Y$}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item We want the mapping to be:
+				      \begin{itemize}
+					      \item One-way
+					      \item ``Randomized''
+					      \item Relations between inputs not reflected in outputs
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.8\textwidth}
+			\begin{tikzpicture}[scale=0.38]
+				% Define colors
+				\definecolor{domaingreen}{RGB}{102, 170, 68}
+				\definecolor{rangegreen}{RGB}{170, 187, 136}
+				\definecolor{circlecolor}{RGB}{235, 137, 85}
+				\definecolor{purplearrow}{RGB}{160, 78, 160}
+				\definecolor{redarrow}{RGB}{237, 50, 36}
+
+				% Input space (domain) X - made square
+				\draw[dashed, thick, domaingreen, fill=domaingreen]
+				(0,0) rectangle (8,8);
+				\node[text width=6.5cm, align=center, font=\normalsize]
+				at
+				(4,-0.8)
+				{Size: infinite!};
+				\node[font=\small] at (4,9) {Input space (domain) $X$};
+
+				% Output (range) Y - made square - moved more to the right
+				\draw[thick, rangegreen, fill=rangegreen] (15,2) rectangle (20,7);
+				\node[text width=4cm, align=center, font=\normalsize]
+				at
+				(17.5,1.2)
+				{Size: fixed};
+				\node[font=\small] at (17.5,8.5) {Output (range) $Y$};
+				% Input dots - adjusted positions for square domain
+				\filldraw[circlecolor] (2,7) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,7) -- (16.2,6.4);
+				\pause
+				\filldraw[circlecolor] (16.2,6.4) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,6) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(3,6) -- (18.6,5.3);
+				\pause
+				\filldraw[circlecolor] (18.6,5.3) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,5) -- (16.8,4.2);
+				\pause
+				\filldraw[circlecolor] (16.8,4.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (4,3.5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(4,3.5) -- (18.4,3.2);
+				\pause
+				\filldraw[circlecolor] (18.4,3.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,2) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,2) -- (17.1,2.7);
+				\pause
+				\filldraw[circlecolor] (17.1,2.7) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,1) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, ultra thick, redarrow]
+				(3,1) -- (16.8,4.2);
+				\node[redarrow, font=\scriptsize\bfseries, rotate=14]
+				at
+				(10,3)
+				{Collisions are inevitable};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{$\mathsf{PRP}: F_{k}= X \rightarrow X$}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item \textbf{Bijective} (two-way)
+				      \begin{itemize}
+					      \item \textbf{Injective}: no two inputs map to same output (no
+					            collisions)
+					      \item \textbf{Surjective}: Every output has one corresponding input
+				      \end{itemize}
+				\item ``Randomized''
+				\item Relations between inputs not reflected in outputs
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.8\textwidth}
+			\begin{tikzpicture}[scale=0.38]
+				% Define colors
+				\definecolor{domaingreen}{RGB}{102, 170, 68}
+				\definecolor{rangegreen}{RGB}{102, 170, 68}
+				\definecolor{circlecolor}{RGB}{235, 137, 85}
+				\definecolor{purplearrow}{RGB}{160, 78, 160}
+
+				% Input space (domain) X - made square
+				\draw[dashed, thick, domaingreen, fill=domaingreen]
+				(0,0) rectangle (8,8);
+				\node[text width=6.5cm, align=center, font=\normalsize]
+				at
+				(4,-0.8)
+				{Size: fixed};
+				\node[font=\normalsize] at (4,9) {Input space (domain) $X$};
+
+				% Output (range) Y - made square, same size as domain, moved left
+				\draw[thick, rangegreen, fill=rangegreen] (12,0) rectangle (20,8);
+				\node[text width=6.5cm, align=center, font=\normalsize]
+				at
+				(16,-0.8)
+				{Size: fixed};
+				\node[font=\normalsize] at (16,9) {Output (range) $X$};
+				% Input dots - adjusted positions for square domain
+				\filldraw[circlecolor] (2,7) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,7) -- (14.2,7.4);
+				\pause
+				\filldraw[circlecolor] (14.2,7.4) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,6) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(3,6) -- (18.6,5.3);
+				\pause
+				\filldraw[circlecolor] (18.6,5.3) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,5) -- (13.8,4.2);
+				\pause
+				\filldraw[circlecolor] (13.8,4.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (4,3.5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(4,3.5) -- (17.4,2.2);
+				\pause
+				\filldraw[circlecolor] (17.4,2.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,2) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,2) -- (16.1,6.7);
+				\pause
+				\filldraw[circlecolor] (16.1,6.7) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,1) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(3,1) -- (19.0,1.4);
+				\pause
+				\filldraw[circlecolor] (19.0,1.4) circle (0.3);
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{``Lazy dictionaries'' versus ``lazy permutations''}{Ideal PRF versus ideal PRP}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sslibrary{F}{prf-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{Prf.Query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $L[X] \twoheadleftarrow \bits^m$\\
+						return $L[X]$
+					}{1}
+				}{1}
+			\end{center}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sslibrary{F}{prp-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{Prp.Query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+						\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+						\quad $L[X] \coloneq Y$\\
+						return $L[X]$
+					}{1}
+				}{1}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{``Lazy dictionaries'' versus ``lazy permutations''}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item While the PRF (on the left) just picks random outputs for each input...
+				\item The PRP (on the right) must ensure outputs are never repeated:
+				      \begin{itemize}[<+->]
+					      \item $\mathcal{y}$ tracks all outputs used so far
+					      \item $\setminus$ means ``set difference'' - pick from values not in $\mathcal{y}$
+					      \item $\cup$ means ``set union'' - add the new value to $\mathcal{y}$
+				      \end{itemize}
+				\item This ensures each output appears exactly once - the definition of a permutation
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sslibrary{F}{prp-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{Prp.Query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+						\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+						\quad $L[X] \coloneq Y$\\
+						return $L[X]$
+					}{1}
+				}{1}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Pseudorandom function: definition}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Pseudorandom Function (PRF)}{
+				A function $F: \bits^\lambda \times \bits^n \rightarrow \bits^m$ is a secure pseudorandom function (PRF) if the following two libraries are indistinguishable:
+			}
+			\begin{itemize}
+				\item $n$ the input length of the PRF.
+				\item $m$ the output length of the PRF.
+				\item $\lambda$ is the key size and hence the security parameter.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{F}{prf-real}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{Prf.Query}{X}{
+						return $F(K, X)$
+					}{1}
+				}{1}
+			}{\approxeq}{
+				\sslibrary{F}{prf-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{Prf.Query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $L[X] \twoheadleftarrow \bits^m$\\
+						return $L[X]$
+					}{1}
+				}{1}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Pseudorandom permutation: definition}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Pseudorandom Permutation (PRP)}{
+				A keyed permutation $F^{\pm}$ is a secure pseudorandom permutation (PRP) if the following two libraries are indistinguishable:
+			}
+			\begin{itemize}
+				\item $n$ the input length of the PRF. Also the output length!
+				\item $\lambda$ is the key size and hence the security parameter.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{F}{prp-real}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{Prp.Query}{X}{
+						return $F(K, X)$
+					}{1}
+				}{1}
+			}{\approxeq}{
+				\sslibrary{F}{prp-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{Prp.Query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+						\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+						\quad $L[X] \coloneq Y$\\
+						return $L[X]$
+					}{1}
+				}{1}
+			}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Slides not complete}
