@@ -758,14 +758,16 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item Example: simple substitution cipher. Each letter maps to another letter:
+				\item \textbf{Example}: simple substitution cipher. Each letter maps to another letter:
 				      \begin{align*}
 					      a & \mapsto g,\quad b \mapsto a,\quad c \mapsto r \\
-					      d & \mapsto b,\quad e \mapsto l,\quad f \mapsto e \\
-					      g & \mapsto d,\quad \ldots
+					      d & \mapsto b,\quad e \mapsto l,\quad \ldots
 				      \end{align*}
-				\item Under this permutation: \\
-				      ``cabbage'' $\mapsto$ ``rgaagdl''
+				\item Under this permutation:
+				\begin{itemize}
+					\item ``cabbage'' $\mapsto$ ``rgaagdl''
+					\item ``rgaagdl'' $\mapsto$ ``cabbage''
+				\end{itemize}
 				\item This mapping is reversible because it's a permutation over $\{a,\ldots,z\}$.
 				\item Each letter appears exactly once in the output alphabet.
 			\end{itemize}
