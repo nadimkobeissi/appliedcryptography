@@ -715,12 +715,12 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item If we XOR $Y_1 \oplus Y_2$, the $F(K_1, A)$ terms cancel out
-				\item Similarly, $Y_3 \oplus Y_4$ causes $F(K_1, A')$ to cancel
-				\item \begin{align*}
-					      Y_1 \oplus Y_2 & = F(K_2, B) \oplus F(K_2, B') \\
-					      Y_3 \oplus Y_4 & = F(K_2, B) \oplus F(K_2, B')
-				      \end{align*}
+				\item If we XOR $Y_1 \oplus Y_2$, the $F(K_1, A)$ terms cancel out.
+				\item Similarly, $Y_3 \oplus Y_4$ causes $F(K_1, A')$ to cancel:
+				\begin{itemize}
+					\item $Y_1 \oplus Y_2 = F(K_2, B) \oplus F(K_2, B')$
+     				\item $Y_3 \oplus Y_4 = F(K_2, B) \oplus F(K_2, B')$
+         		\end{itemize}
 				\item So $Y_1 \oplus Y_2 = Y_3 \oplus Y_4$ with probability 1
 				\item With a truly random function, this would only happen with probability $1/2^m$ (extremely unlikely!)
 			\end{itemize}
