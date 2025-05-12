@@ -130,7 +130,7 @@
 		\begin{tikzpicture}
 			\hspace{-1mm}
 			\node[fill=white, anchor=center, inner sep=1mm]{
-				\includegraphics[width=#1, height=0.9\textheight, keepaspectratio]{images/#2}
+				\includegraphics[width=#1, height=0.6\textheight, keepaspectratio]{images/#2}
 			};
 			\node[fit=(current bounding box), inner sep=0.5mm, draw=white, line width=0.5mm] {};
 		\end{tikzpicture}
@@ -189,7 +189,7 @@
 \newcommand{\interchangeable}[1]{\ensuremath{\overset{\ensuremath{#1}}{\equiv}}}
 \newcommand{\bit}[1]{\textcolor{ciphernliteral}{\texttt{#1}}}
 \newcommand{\bits}{\ensuremath{\{\bit{0}, \bit{1}\}}}
-\newcommand{\sssubroutinename}[2]{\ensuremath{\textrm{\textsc{\lowercase{#1}}}\scalebox{1.05}{\ensuremath{(#2)}}}}
+\newcommand{\sssubroutinename}[2]{\ensuremath{\textrm{\textsc{#1}}\scalebox{1.05}{\ensuremath{(#2)}}}}
 
 \newtcolorbox{sslibrarybox}[2][]{
 	colback=white,

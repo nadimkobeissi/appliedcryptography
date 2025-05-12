@@ -27,7 +27,7 @@
 			]
 			\node[dashed box] (adversary) {$adversary$};
 			\node[box, right=2cm of adversary](attack){
-				$\underline{\sssubroutinename{Attack}{M}}$: \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary chooses $M$}} \\
+				$\underline{\sssubroutinename{attack}{M}}$: \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary chooses $M$}} \\
 				\quad $K \twoheadleftarrow \bits^{n}$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim samples $K$}} \\
 				\quad $C \coloneq \textsf{Enc}(K, M)$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim encrypts}} \\
 				\quad return $C$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary sees $C$}}
@@ -72,10 +72,10 @@
 			\begin{center}
 				\sslibrary{}{dice-guess}{
 					$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$ \\[1em]
-					\sslibrarysubroutine{Guess}{G}{
+					\sslibrarysubroutine{guess}{G}{
 						return $D == G$
 					}{1} \\[1em]
-					\sslibrarysubroutine{Reroll}{G}{
+					\sslibrarysubroutine{reroll}{G}{
 						$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$
 					}{1}
 				}{1}
@@ -130,18 +130,18 @@
 		\begin{column}{0.5\textwidth}
 			\sslinked{
 				\ssprogram{}{
-					if \sssubroutinename{Guess}{6}:\\
+					if \sssubroutinename{guess}{6}:\\
 					\quad return true\\
-					\sssubroutinename{Reroll}{}\\
-					return \sssubroutinename{Guess}{6}
+					\sssubroutinename{reroll}{}\\
+					return \sssubroutinename{guess}{6}
 				}{0.95}
 			}{\link}{
 				\sslibrary{}{dice-guess}{
 					$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$ \\[1em]
-					\sslibrarysubroutine{Guess}{G}{
+					\sslibrarysubroutine{guess}{G}{
 						return $D == G$
 					}{1} \\[1em]
-					\sslibrarysubroutine{Reroll}{G}{
+					\sslibrarysubroutine{reroll}{G}{
 						$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$
 					}{1}
 				}{0.95}
@@ -167,7 +167,7 @@
 			\begin{flushright}
 				\sslinked{
 					\sslibrary{}{otp-real}{
-						\sslibrarysubroutine{Otp.Enc}{M}{
+						\sslibrarysubroutine{otp.enc}{M}{
 							$K \twoheadleftarrow \bits^{n}$ \\
 							$C \coloneq K \oplus M$ \\
 							return $C$
@@ -175,7 +175,7 @@
 					}{1}
 				}{\interchangeable{}}{
 					\sslibrary{}{otp-rand}{
-						\sslibrarysubroutine{Otp.Enc}{M}{
+						\sslibrarysubroutine{otp.enc}{M}{
 							$R \twoheadleftarrow \bits^{n}$ \\
 							return $R$
 						}{1}
@@ -199,7 +199,7 @@
 		\begin{column}{0.45\textwidth}
 			\sslinked{
 				\sslibrary{}{a}{
-					\sslibrarysubroutine{Foo}{M}{
+					\sslibrarysubroutine{foo}{M}{
 						$X \twoheadleftarrow \{1, \ldots, n\}$ \\
 						if $X < 0$: \\
 						\quad return $\bit{0}^n$
@@ -207,7 +207,7 @@
 				}{1}
 			}{\interchangeable{?}}{
 				\sslibrary{}{b}{
-					\sslibrarysubroutine{Foo}{M}{
+					\sslibrarysubroutine{foo}{M}{
 						$X \twoheadleftarrow \{1, \ldots, n\}$ \\
 						if $X < 0$: \\
 						\quad return $\bit{0}^1$
@@ -231,24 +231,24 @@
 		\begin{column}{0.45\textwidth}
 			\sslinked{
 				\sslibrary{}{a}{
-					\sslibrarysubroutine{Foo}{A, B}{
+					\sslibrarysubroutine{foo}{A, B}{
 						$Y \twoheadleftarrow \bits^n$\\
-						$C \coloneq \sssubroutinename{Bar}{A}$\\
+						$C \coloneq \sssubroutinename{bar}{A}$\\
 						return $Y$
 					}{1}\\[1em]
-					\sslibrarysubroutine{Bar}{M}{
+					\sslibrarysubroutine{bar}{M}{
 						$X \twoheadleftarrow \bits^n$\\
 						return $X$
 					}{1}
 				}{1}
 			}{\interchangeable{?}}{
 				\sslibrary{}{b}{
-					\sslibrarysubroutine{Foo}{A, B}{
+					\sslibrarysubroutine{foo}{A, B}{
 						$Y \twoheadleftarrow \bits^n$\\
-						$C \coloneq \sssubroutinename{Bar}{B}$\\
+						$C \coloneq \sssubroutinename{bar}{B}$\\
 						return $Y$
 					}{1}\\[1em]
-					\sslibrarysubroutine{Bar}{M}{
+					\sslibrarysubroutine{bar}{M}{
 						$X \twoheadleftarrow \bits^n$\\
 						return $X$
 					}{1}
@@ -275,7 +275,7 @@
 		\begin{column}{0.45\textwidth}
 			\sslinked{
 				\sslibrary{}{a}{
-					\sslibrarysubroutine{Sample}{}{
+					\sslibrarysubroutine{sample}{}{
 						$X \twoheadleftarrow \bits^n$\\
 						$Y \twoheadleftarrow \bits^m$\\
 						return $X \| Y$
@@ -283,7 +283,7 @@
 				}{1}
 			}{\interchangeable{?}}{
 				\sslibrary{}{b}{
-					\sslibrarysubroutine{Sample}{}{
+					\sslibrarysubroutine{sample}{}{
 						$R \twoheadleftarrow \bits^{n+m}$\\
 						return $R$
 					}{1}
@@ -310,14 +310,14 @@
 			\sslinked{
 				\sslibrary{}{a}{
 					$K \twoheadleftarrow \bits^n$\\[1em]
-					\sslibrarysubroutine{Otp.Enc}{M}{
+					\sslibrarysubroutine{otp.enc}{M}{
 						$C \coloneq K \oplus M$ \\
 						return $C$
 					}{1}
 				}{1}
 			}{\interchangeable{?}}{
 				\sslibrary{}{b}{
-					\sslibrarysubroutine{Otp.Enc}{M}{
+					\sslibrarysubroutine{otp.enc}{M}{
 						$C \twoheadleftarrow \bits^n$\\
 						return $C$
 					}{1}
@@ -342,14 +342,14 @@
 			\begin{flushright}
 				\sslinked{
 					\ssprogram{}{
-						$C_1 \coloneq \sssubroutinename{Otp.Enc}{\bit{0}^n}$\\
-						$C_2 \coloneq \sssubroutinename{Otp.Enc}{\bit{0}^n}$\\
+						$C_1 \coloneq \sssubroutinename{otp.enc}{\bit{0}^n}$\\
+						$C_2 \coloneq \sssubroutinename{otp.enc}{\bit{0}^n}$\\
 						return $C_1 == C_2$
 					}{1}
 				}{\link}{
 					\sslibrary{}{a}{
 						$K \twoheadleftarrow \bits^n$\\[1em]
-						\sslibrarysubroutine{Otp.Enc}{M}{
+						\sslibrarysubroutine{otp.enc}{M}{
 							$C \coloneq K \oplus M$ \\
 							return $C$
 						}{1}
@@ -376,13 +376,13 @@
 			\begin{flushright}
 				\sslinked{
 					\ssprogram{}{
-						$C_1 \coloneq \sssubroutinename{Otp.Enc}{\bit{0}^n}$\\
-						$C_2 \coloneq \sssubroutinename{Otp.Enc}{\bit{0}^n}$\\
+						$C_1 \coloneq \sssubroutinename{otp.enc}{\bit{0}^n}$\\
+						$C_2 \coloneq \sssubroutinename{otp.enc}{\bit{0}^n}$\\
 						return $C_1 == C_2$
 					}{1}
 				}{\link}{
 					\sslibrary{}{b}{
-						\sslibrarysubroutine{Otp.Enc}{M}{
+						\sslibrarysubroutine{otp.enc}{M}{
 							$C \twoheadleftarrow \bits^n$\\
 							return $C$
 						}{1}
@@ -413,14 +413,14 @@
 					\ssprogram{}{
 						$M_1 \twoheadleftarrow \bits^n$\\
 						$M_2 \twoheadleftarrow \bits^n$\\
-						$C_1 \coloneq \sssubroutinename{Otp.Enc}{M_1}$\\
-						$C_2 \coloneq \sssubroutinename{Otp.Enc}{M_2}$\\
+						$C_1 \coloneq \sssubroutinename{otp.enc}{M_1}$\\
+						$C_2 \coloneq \sssubroutinename{otp.enc}{M_2}$\\
 						return $C_1 \oplus C_2 == M_1 \oplus M_2$
 					}{0.85}
 				}{\link}{
 					\sslibrary{}{a}{
 						$K \twoheadleftarrow \bits^n$\\[1em]
-						\sslibrarysubroutine{Otp.Enc}{M}{
+						\sslibrarysubroutine{otp.enc}{M}{
 							$C \coloneq K \oplus M$ \\
 							return $C$
 						}{1}
@@ -444,7 +444,7 @@
 			\begin{flushright}
 				\sslinked{
 					\sslibrary{}{xor-samp-1}{
-						\sslibrarysubroutine{Sample}{M}{
+						\sslibrarysubroutine{sample}{M}{
 							$X \twoheadleftarrow \bits^n$ \\
 							$Y \coloneq X \oplus M$ \\
 							return $(X, Y)$
@@ -452,7 +452,7 @@
 					}{1}
 				}{\interchangeable{?}}{
 					\sslibrary{}{xor-samp-2}{
-						\sslibrarysubroutine{Sample}{M}{
+						\sslibrarysubroutine{sample}{M}{
 							$Y \twoheadleftarrow \bits^n$ \\
 							$X \coloneq Y \oplus M$ \\
 							return $(X, Y)$
@@ -474,7 +474,7 @@
 		\begin{column}{0.5\textwidth}
 			\begin{center}
 				\sslibrary{}{xor-samp-1}{
-					\sslibrarysubroutine{Sample}{M}{
+					\sslibrarysubroutine{sample}{M}{
 						$X \twoheadleftarrow \bits^n$ \\
 						$Y \coloneq X \oplus M$ \\
 						return $(X, Y)$
@@ -499,7 +499,7 @@
 		\begin{column}{0.5\textwidth}
 			\begin{center}
 				\sslibrary{}{hyb-1}{
-					\sslibrarysubroutine{Sample}{M}{
+					\sslibrarysubroutine{sample}{M}{
 						$X \twoheadleftarrow \bits^n$ \\
 						$Y \coloneq X \oplus M$ \\
 						\hl{$X' \coloneq Y \oplus M$} \\
@@ -524,7 +524,7 @@
 		\begin{column}{0.5\textwidth}
 			\begin{center}
 				\sslibrary{}{hyb-2}{
-					\sslibrarysubroutine{Sample}{M}{
+					\sslibrarysubroutine{sample}{M}{
 						$X \twoheadleftarrow \bits^n$ \\
 						$Y \coloneq X \oplus M$ \\
 						$X' \coloneq Y \oplus M$ \\
@@ -540,22 +540,22 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item The first two lines of \sssubroutinename{Sample}{M} are the same as \sssubroutinename{Otp.Enc}{M}, so we link it and use it instead.
+				\item The first two lines of \sssubroutinename{sample}{M} are the same as \sssubroutinename{otp.enc}{M}, so we link it and use it instead.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{center}
 				\sslinked{
 					\sslibrary{}{hyb-3-4}{
-						\sslibrarysubroutine{Sample}{M}{
-							\hl{$Y \coloneq \sssubroutinename{Otp.Enc}{M}$} \\
+						\sslibrarysubroutine{sample}{M}{
+							\hl{$Y \coloneq \sssubroutinename{otp.enc}{M}$} \\
 							$X' \coloneq Y \oplus M$ \\
 							return $(X', Y)$
 						}{1}
 					}{1}
 				}{\link}{
 					\sslibrary{}{otp-real}{
-						\sslibrarysubroutine{Otp.Enc}{M}{
+						\sslibrarysubroutine{otp.enc}{M}{
 							$K \twoheadleftarrow \bits^n$ \\
 							$C \coloneq K \oplus M$ \\
 							return $C$
@@ -571,7 +571,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item The first two lines of \sssubroutinename{Sample}{M} are the same as \sssubroutinename{Otp.Enc}{M}, so we link it and use it instead.
+				\item The first two lines of \sssubroutinename{sample}{M} are the same as \sssubroutinename{otp.enc}{M}, so we link it and use it instead.
 				\item Recall that \lib{}{otp-real} \interchangeable{} \lib{}{otp-rand}!
 				\item So, we replace \lib{}{otp-real} with \lib{}{otp-rand}.
 			\end{itemize}
@@ -580,15 +580,15 @@
 			\begin{center}
 				\sslinked{
 					\sslibrary{}{hyb-3-4}{
-						\sslibrarysubroutine{Sample}{M}{
-							$Y \coloneq \sssubroutinename{Otp.Enc}{M}$ \\
+						\sslibrarysubroutine{sample}{M}{
+							$Y \coloneq \sssubroutinename{otp.enc}{M}$ \\
 							$X' \coloneq Y \oplus M$ \\
 							return $(X', Y)$
 						}{1}
 					}{1}
 				}{\link}{
 					\sslibrary{}{otp-rand}{
-						\sslibrarysubroutine{Otp.Enc}{M}{
+						\sslibrarysubroutine{otp.enc}{M}{
 							$R \twoheadleftarrow \bits^{n}$ \\
 							return $R$
 						}{1}
@@ -603,7 +603,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item The first two lines of \sssubroutinename{Sample}{M} are the same as \sssubroutinename{Otp.Enc}{M}, so we link it and use it instead.
+				\item The first two lines of \sssubroutinename{sample}{M} are the same as \sssubroutinename{otp.enc}{M}, so we link it and use it instead.
 				\item Recall that \lib{}{otp-real} \interchangeable{} \lib{}{otp-rand}!
 				\item So, we replace \lib{}{otp-real} with \lib{}{otp-rand}.
 				\item We inline \lib{}{otp-rand} back into our main library.
@@ -612,7 +612,7 @@
 		\begin{column}{0.5\textwidth}
 			\begin{center}
 				\sslibrary{}{hyb-5}{
-					\sslibrarysubroutine{Sample}{M}{
+					\sslibrarysubroutine{sample}{M}{
 						$Y \hl{\twoheadleftarrow \bits^n}$ \\
 						$X' \coloneq Y \oplus M$ \\
 						return $(X', Y)$
@@ -627,7 +627,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item The first two lines of \sssubroutinename{Sample}{M} are the same as \sssubroutinename{Otp.Enc}{M}, so we link it and use it instead.
+				\item The first two lines of \sssubroutinename{sample}{M} are the same as \sssubroutinename{otp.enc}{M}, so we link it and use it instead.
 				\item Recall that \lib{}{otp-real} \interchangeable{} \lib{}{otp-rand}!
 				\item So, we replace \lib{}{otp-real} with \lib{}{otp-rand}.
 				\item We inline \lib{}{otp-rand} back into our main library.
@@ -637,7 +637,7 @@
 		\begin{column}{0.5\textwidth}
 			\begin{center}
 				\sslibrary{}{hyb-6}{
-					\sslibrarysubroutine{Sample}{M}{
+					\sslibrarysubroutine{sample}{M}{
 						$Y \twoheadleftarrow \bits^n$ \\
 						$\hl{X} \coloneq Y \oplus M$ \\
 						return $(\hl{X}, Y)$
@@ -660,7 +660,7 @@
 			\begin{center}
 				\sslinked{
 					\sslibrary{}{hyb-6}{
-						\sslibrarysubroutine{Sample}{M}{
+						\sslibrarysubroutine{sample}{M}{
 							$Y \twoheadleftarrow \bits^n$ \\
 							$X \coloneq Y \oplus M$ \\
 							return $(X, Y)$
@@ -668,7 +668,7 @@
 					}{1}
 				}{\interchangeable{}}{
 					\sslibrary{}{xor-samp-2}{
-						\sslibrarysubroutine{Sample}{M}{
+						\sslibrarysubroutine{sample}{M}{
 							$Y \twoheadleftarrow \bits^n$ \\
 							$X \coloneq Y \oplus M$ \\
 							return $(X, Y)$
@@ -743,7 +743,7 @@
 				\begin{center}
 					\sslinked{
 						\sslibrary{\Sigma}{ots-real}{
-							\sslibrarysubroutine{Ots.Enc}{M}{
+							\sslibrarysubroutine{ots.enc}{M}{
 								$K \twoheadleftarrow \Sigma.\mathcal{K}$ \\
 								$C \coloneq \Sigma.\textsf{Enc}(K, M)$ \\
 								return $C$
@@ -751,7 +751,7 @@
 						}{0.8}
 					}{\interchangeable{}}{
 						\sslibrary{\Sigma}{ots-rand}{
-							\sslibrarysubroutine{Ots.Enc}{M}{
+							\sslibrarysubroutine{ots.enc}{M}{
 								$C \twoheadleftarrow \Sigma.\mathcal{C}$ \\
 								return $C$
 							}{1}
@@ -808,7 +808,7 @@
 				\item Can you write a distinguisher program showing that these libraries are \textbf{not} interchangeable?
 				\item \ssprogram{}{
 					      $M \coloneq \bit{0}^n$\\
-					      $C \coloneq \sssubroutinename{Ots.Enc}{M}$\\
+					      $C \coloneq \sssubroutinename{ots.enc}{M}$\\
 					      return $C == \bit{0}^n$
 				      }{1}
 				\item \prob{A\link\lib{}{ots-real} \Rightarrow \texttt{true}} $= 1$
@@ -819,7 +819,7 @@
 			\begin{center}
 				\sslinked{
 					\sslibrary{}{ots-real}{
-						\sslibrarysubroutine{Ots.Enc}{M}{
+						\sslibrarysubroutine{ots.enc}{M}{
 							$K \twoheadleftarrow \bits^n$ \\
 							$C \coloneq K \land M$ \\
 							return $C$
@@ -827,7 +827,7 @@
 					}{1}
 				}{\interchangeable{?}}{
 					\sslibrary{}{ots-rand}{
-						\sslibrarysubroutine{Ots.Enc}{M}{
+						\sslibrarysubroutine{ots.enc}{M}{
 							$C \twoheadleftarrow \bits^n$ \\
 							return $C$
 						}{1}
@@ -1019,12 +1019,12 @@
 			\begin{itemize}[<+->]
 				\item Many cryptographic algorithms fail if two executions sample the same random value.
 				\item General question: If we take $q$ independent uniform samples from a set of $N$ items, what's the probability some value is chosen more than once?
-				\item This probability is called $\sssubroutinename{Birthday}{q,N}$
+				\item This probability is called $\sssubroutinename{birthday}{q,N}$
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
 			\begin{align*}
-				\sssubroutinename{Birthday}{q,N} = 1 - \prod_{i=1}^{q-1} \left(1 - \frac{i}{N}\right)
+				\sssubroutinename{birthday}{q,N} = 1 - \prod_{i=1}^{q-1} \left(1 - \frac{i}{N}\right)
 			\end{align*}
 			\begin{itemize}[<+->]
 				\item Surprisingly high probability!
