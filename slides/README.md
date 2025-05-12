@@ -17,6 +17,7 @@ I'm still working on the slides. If the checkbox isn't checked, it means you sho
 - [ ] Part 1: Session 9
 - [ ] Part 1: Session 10
 - [ ] Part 1: Session 11
+- [ ] Part 1: Session 12
 
 #### Part 2
 

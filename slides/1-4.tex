@@ -1151,65 +1151,65 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-		\begin{flushright}
-			\scalebox{0.55}{
-			\begin{tikzpicture}[
-					block/.style={rectangle, draw, fill=ciphergray!15, minimum width=2cm, minimum height=0.6cm, align=center, font=\footnotesize},
-					arrow/.style={-stealth, thick},
-					node distance=0.5cm
-				]
-				% Input
-				\node[block] (input) {Plaintext (128 bits)};
+			\begin{flushright}
+				\scalebox{0.55}{
+					\begin{tikzpicture}[
+							block/.style={rectangle, draw, fill=ciphergray!15, minimum width=2cm, minimum height=0.6cm, align=center, font=\footnotesize},
+							arrow/.style={-stealth, thick},
+							node distance=0.5cm
+						]
+						% Input
+						\node[block] (input) {Plaintext (128 bits)};
 
-				% Initial round (just key addition)
-				\node[block, below=0.8cm of input] (addroundkey0) {AddRoundKey};
-				\draw[arrow] (input) -- (addroundkey0);
-				\node[right=0.3cm of addroundkey0, align=left, font=\scriptsize] (roundkey0) {Round Key 0};
-				\draw[arrow] (roundkey0) -- (addroundkey0);
+						% Initial round (just key addition)
+						\node[block, below=0.8cm of input] (addroundkey0) {AddRoundKey};
+						\draw[arrow] (input) -- (addroundkey0);
+						\node[right=0.3cm of addroundkey0, align=left, font=\scriptsize] (roundkey0) {Round Key 0};
+						\draw[arrow] (roundkey0) -- (addroundkey0);
 
-				% Main rounds box
-				\draw[rounded corners, dashed] (-2,-2.2) rectangle (2,-5.2);
-				\node[align=left, font=\scriptsize] at (-1.7,-2.5) {Rounds 1-9};
+						% Main rounds box
+						\draw[rounded corners, dashed] (-2,-2.2) rectangle (2,-5.2);
+						\node[align=left, font=\scriptsize] at (-1.7,-2.5) {Rounds 1-9};
 
-				% Main round operations
-				\node[block, below=0.8cm of addroundkey0] (subbytes) {SubBytes};
-				\draw[arrow] (addroundkey0) -- (subbytes);
+						% Main round operations
+						\node[block, below=0.8cm of addroundkey0] (subbytes) {SubBytes};
+						\draw[arrow] (addroundkey0) -- (subbytes);
 
-				\node[block, below=of subbytes] (shiftrows) {ShiftRows};
-				\draw[arrow] (subbytes) -- (shiftrows);
+						\node[block, below=of subbytes] (shiftrows) {ShiftRows};
+						\draw[arrow] (subbytes) -- (shiftrows);
 
-				\node[block, below=of shiftrows] (mixcolumns) {MixColumns};
-				\draw[arrow] (shiftrows) -- (mixcolumns);
+						\node[block, below=of shiftrows] (mixcolumns) {MixColumns};
+						\draw[arrow] (shiftrows) -- (mixcolumns);
 
-				\node[block, below=of mixcolumns] (addroundkey) {AddRoundKey};
-				\draw[arrow] (mixcolumns) -- (addroundkey);
-				\node[right=0.3cm of addroundkey, align=left, font=\scriptsize] (roundkey) {Round Keys 1-9};
-				\draw[arrow] (roundkey) -- (addroundkey);
+						\node[block, below=of mixcolumns] (addroundkey) {AddRoundKey};
+						\draw[arrow] (mixcolumns) -- (addroundkey);
+						\node[right=0.3cm of addroundkey, align=left, font=\scriptsize] (roundkey) {Round Keys 1-9};
+						\draw[arrow] (roundkey) -- (addroundkey);
 
-				% Final round box
-				\draw[rounded corners, dashed] (-2,-5.8) rectangle (2,-7.8);
-				\node[align=left, font=\scriptsize] at (-1.7,-6.1) {Round 10};
+						% Final round box
+						\draw[rounded corners, dashed] (-2,-5.8) rectangle (2,-7.8);
+						\node[align=left, font=\scriptsize] at (-1.7,-6.1) {Round 10};
 
-				% Final round operations (no MixColumns)
-				\node[block, below=0.8cm of addroundkey] (subbytes2) {SubBytes};
-				\draw[arrow] (addroundkey) -- (subbytes2);
+						% Final round operations (no MixColumns)
+						\node[block, below=0.8cm of addroundkey] (subbytes2) {SubBytes};
+						\draw[arrow] (addroundkey) -- (subbytes2);
 
-				\node[block, below=of subbytes2] (shiftrows2) {ShiftRows};
-				\draw[arrow] (subbytes2) -- (shiftrows2);
+						\node[block, below=of subbytes2] (shiftrows2) {ShiftRows};
+						\draw[arrow] (subbytes2) -- (shiftrows2);
 
-				\node[block, below=of shiftrows2] (addroundkey2) {AddRoundKey};
-				\draw[arrow] (shiftrows2) -- (addroundkey2);
-				\node[right=0.3cm of addroundkey2, align=left, font=\scriptsize] (roundkey2) {Round Key 10};
-				\draw[arrow] (roundkey2) -- (addroundkey2);
+						\node[block, below=of shiftrows2] (addroundkey2) {AddRoundKey};
+						\draw[arrow] (shiftrows2) -- (addroundkey2);
+						\node[right=0.3cm of addroundkey2, align=left, font=\scriptsize] (roundkey2) {Round Key 10};
+						\draw[arrow] (roundkey2) -- (addroundkey2);
 
-				% Output
-				\node[block, below=0.8cm of addroundkey2] (output) {Ciphertext (128 bits)};
-				\draw[arrow] (addroundkey2) -- (output);
+						% Output
+						\node[block, below=0.8cm of addroundkey2] (output) {Ciphertext (128 bits)};
+						\draw[arrow] (addroundkey2) -- (output);
 
-				% Note about final round
-				\node[align=center, font=\scriptsize, color=red] at (3.2,-6.8) {No MixColumns\\in final round};
-			\end{tikzpicture}
-			}
+						% Note about final round
+						\node[align=center, font=\scriptsize, color=red] at (3.2,-6.8) {No MixColumns\\in final round};
+					\end{tikzpicture}
+				}
 			\end{flushright}
 		\end{column}
 	\end{columns}
