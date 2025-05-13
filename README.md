@@ -19,6 +19,7 @@ For a better experience, ignore this repository and access the materials through
 - [ ] An "escape hatch" into more informal proofs should be readily available in the event of running out of time, etc., but should not be too heavily relied upon.
 - [ ] None of the material covers key management. [Alfred Menezes](https://www.youtube.com/watch?v=C9e023bTfes&list=PLA1qgQLL41SRn_23p8zD0vUpKM4qOgt_T&index=6) may come to the rescue.
 - [ ] **Must** be up-front about exam-required materials. Tell students what's required for each exam first thing. That way, you remove anxiety, and allow them to explore the materials at their leisure.
+- [ ] [This website](https://asecuritysite.com/range/age) is full of useful practical examples, here we have range proofs.
 - [ ] [Excalidraw](https://excalidraw.com) might be useful.
 
 ## Author & License

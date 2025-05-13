@@ -717,12 +717,12 @@
 			\begin{itemize}[<+->]
 				\item If we XOR $Y_1 \oplus Y_2$, the $F(K_1, A)$ terms cancel out.
 				\item Similarly, $Y_3 \oplus Y_4$ causes $F(K_1, A')$ to cancel:
-				\begin{itemize}
-					\item $Y_1 \oplus Y_2 = F(K_2, B) \oplus F(K_2, B')$
-     				\item $Y_3 \oplus Y_4 = F(K_2, B) \oplus F(K_2, B')$
-         		\end{itemize}
-				\item So $Y_1 \oplus Y_2 = Y_3 \oplus Y_4$ with probability 1
-				\item With a truly random function, this would only happen with probability $1/2^m$ (extremely unlikely!)
+				      \begin{itemize}
+					      \item $Y_1 \oplus Y_2 = F(K_2, B) \oplus F(K_2, B')$
+					      \item $Y_3 \oplus Y_4 = F(K_2, B) \oplus F(K_2, B')$
+				      \end{itemize}
+				\item So $\prob{Y_1 \oplus Y_2 == Y_3 \oplus Y_4} = 1$
+				\item With a truly random function, $\prob{Y_1 \oplus Y_2 == Y_3 \oplus Y_4} = \frac{1}{2^m}$ (extremely unlikely!)
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -764,10 +764,10 @@
 					      d & \mapsto b,\quad e \mapsto l,\quad \ldots
 				      \end{align*}
 				\item Under this permutation:
-				\begin{itemize}
-					\item ``cabbage'' $\mapsto$ ``rgaagdl''
-					\item ``rgaagdl'' $\mapsto$ ``cabbage''
-				\end{itemize}
+				      \begin{itemize}
+					      \item ``cabbage'' $\mapsto$ ``rgaagdl''
+					      \item ``rgaagdl'' $\mapsto$ ``cabbage''
+				      \end{itemize}
 				\item This mapping is reversible because it's a permutation over $\{a,\ldots,z\}$.
 				\item Each letter appears exactly once in the output alphabet.
 			\end{itemize}
@@ -1114,6 +1114,896 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Pseudorandom permutation: definition}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Pseudorandom Permutation (PRP)}{
+				A keyed permutation $F^{\pm}$ is a secure pseudorandom permutation (PRP) if the following two libraries are indistinguishable:
+			}
+			\begin{itemize}[<+->]
+				\item We obviously can't use \lib{F}{prp-rand} in the real world.
+				\item It doesn't scale. So we need practical approximative alternatives.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{F}{prp-real}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{prp.query}{X}{
+						return $F(K, X)$
+					}{1}
+				}{1}
+			}{\approxeq}{
+				\sslibrary{F}{prp-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{prp.query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+						\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+						\quad $L[X] \coloneq Y$\\
+						return $L[X]$
+					}{1}
+				}{1}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Building a permutation through Feistel ciphers}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item An $r$-round \textbf{Feistel cipher} with \textbf{round functions} $F_1,\ldots,F_r$ is defined as follows:\\
+				      \begin{center}
+					      \sssubroutine{$\mathbb{F}$}{X_{0}\|X_{1}}{
+					      for $i = 1$ to $r$:\\
+					      \quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(X_{i})$\\
+					      return $X_{r}\|X_{r+1}$
+					      }{1}
+				      \end{center}
+				\item A Feistel cipher is always a permutation on $\bits^{2n}$, regardless of its round functions.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{feistel_cipher.png}{Feistel cipher.\\Source: The Joy of Cryptography}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Building a permutation through Feistel ciphers}
+	\definitionbox{Feistel Ciphers Are Permutations}{
+		A Feistel cipher is always a permutation on $\bits^{2n}$, regardless of its round functions.
+	}
+	\begin{itemize}[<+->]
+		\item \textbf{Proof:} Each round of a Feistel cipher computes the next block as:
+		      \begin{itemize}[<+->]
+			      \item $X_{i+1} = X_{i-1} \oplus F_{i}(X_{i})$
+		      \end{itemize}
+		\item To invert this round, we can rearrange the equation to solve for $X_{i-1}$ in terms of $X_{i}$ and $X_{i+1}$:
+		      \begin{itemize}[<+->]
+			      \item $X_{i-1} = X_{i+1} \oplus F_{i}(X_{i})$
+		      \end{itemize}
+		\item $F_i$ itself does not need to have an inverse - both the forward and inverse direction of the Feistel cipher evaluate $F_i$ in the forward direction! $\qed$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Building a permutation through Feistel ciphers}{Inversion}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item $\mathbb{F}^{-1}$ is the \textbf{inversion}, allowing Feistel ciphers to function as PRPs:
+				      \begin{center}
+					      \sssubroutine{$\mathbb{F}^{-1}$}{X_{r}\|X_{r+1}}{
+					      for $i = r$ \hl{down to} $1$:\\
+					      \quad $X_{i-1} \coloneq X_{i+1} \oplus F_{i}(X_{i})$\\
+					      return $X_{0}\|X_{1}$
+					      }{1}
+				      \end{center}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{feistel_cipher_inv.png}{Feistel cipher inversion.\\Source: The Joy of Cryptography}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Forward and backward on one slide}{Just in case it's helpful}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sssubroutine{$\mathbb{F}$}{X_{0}\|X_{1}}{
+				for $i = 1$ to $r$:\\
+				\quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(X_{i})$\\
+				return $X_{r}\|X_{r+1}$
+				}{1.2}
+			\end{center}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sssubroutine{$\mathbb{F}^{-1}$}{X_{r}\|X_{r+1}}{
+				for $i = r$ down to $1$:\\
+				\quad $X_{i-1} \coloneq X_{i+1} \oplus F_{i}(X_{i})$\\
+				return $X_{0}\|X_{1}$
+				}{1.2}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Keyed Feistel ciphers}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item Let's add a key in there. Wow, encryption!
+				\item If each round function $F_i$ uses a distinct key $K_i$, it increases the security of the Feistel network against certain attacks.
+				\item By using a PRF as round function $F_i$, the security of the Feistel cipher would be grounded on the PRF's security basis.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{center}
+				\sssubroutine{$\mathbb{F}$}{K_1\|\cdots\|K_r,\ X_0\|X_1}{
+				for $i = 1$ to $r$:\\
+				\quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(K_{i}, X_{i})$\\
+				return $X_{r}\|X_{r+1}$
+				}{1}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Meet-in-the-middle attacks on Feistel ciphers}
+	\begin{columns}[c]
+		\begin{column}{0.65\textwidth}
+			\begin{itemize}[<+->]
+				\item Using the \textbf{same key} for all rounds creates significant vulnerabilities.
+				\item A meet-in-the-middle attack can break an $r$-round Feistel cipher with complexity much less than $2^r$.
+				\item The attack works by computing partial encryptions from both ends:
+				      \begin{enumerate}[<+->]
+					      \item Forward: Compute halfway through encryption.
+					      \item Backward: Compute halfway through decryption.
+					      \item Look for "meeting points" in the middle.
+				      \end{enumerate}
+				\item For a Feistel cipher with identical round functions, the effective security may be only about \textbf{half} the number of rounds.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.35\textwidth}
+			\begin{center}
+				\sssubroutine{$\mathbb{F}$}{K,\ X_0\|X_1}{
+				for $i = 1$ to $r$:\\
+				\quad $X_{i+1} \coloneq X_{i-1} \oplus F(K, X_{i})$\\
+				return $X_{r}\|X_{r+1}$
+				}{1}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Breaking a 2-round Feistel cipher}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{A 2-round Feistel cipher cannot be a secure PRP.}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sssubroutine{$\mathbb{F}$}{K_1\|K_2,\ X_0\|X_1}{
+				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+				return $X_{2}\|X_{3}$
+				}{1}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Breaking a 2-round Feistel cipher}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}[<+->]
+				\item Once again, real or random?
+				\item We can indeed produce an adversary \prog{} that can distinguish between these two libraries.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{center}
+				\sslinked{
+				\sslibrary{\mathbb{F}}{prp-real}{
+				$K_1\|K_2 \twoheadleftarrow \bits^{2\lambda}$\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+				return $X_{2}\|X_{3}$
+				}{1}
+				}{0.8}
+				}{\cancel{\approxeq}}{
+				\sslibrary{\mathbb{F}}{prp-rand}{
+				$L \coloneq$ [\ ]\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
+				if $L[X]$ undefined:\\
+				\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+				\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+				\quad $L[X] \coloneq Y$\\
+				return $L[X]$
+				}{1}
+				}{0.8}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Breaking a 2-round Feistel cipher}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}[<+->]
+				\item Let's query $(A \| B)$ and $(A' \| B)$ where $A \neq A'$
+				      \begin{itemize}
+					      \item $Y_1 \| Y_2 = \sssubroutinename{prp.query}{A \| B}$
+					      \item $Y_1' \| Y_2' = \sssubroutinename{prp.query}{A' \| B}$
+				      \end{itemize}
+				\item In a 2-round Feistel cipher:
+				      \begin{itemize}
+					      \item $Y_1 = A \oplus F(K_1, B)$
+					      \item $Y_1' = A' \oplus F(K_1, B)$
+					      \item $Y_1 \oplus Y_1' = A \oplus A'$
+				      \end{itemize}
+				\item In a true PRP, \prob{Y_1 \oplus Y_1' == A \oplus A'} is negligible
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{center}
+				\sslinked{
+				\ssprogram{}{
+				$Y_1\|Y_2 = \sssubroutinename{prp.query}{A\|B}$\\
+				$Y^{'}_1\|Y^{'}_2 = \sssubroutinename{prp.query}{A^{'}\|B}$\\
+				return $Y_1 \oplus Y^{'}_1 == A \oplus A^{'}$
+				}{0.8}
+				}{\link}{
+				\sslibrary{\mathbb{F}}{prp-real}{
+				$K_1\|K_2 \twoheadleftarrow \bits^{2\lambda}$\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+				return $X_{2}\|X_{3}$
+				}{1}
+				}{0.8}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{However, a 3+ round Feistel cipher is fine!}
+	\begin{center}
+		\sslinked{
+		\sslinked{
+		\ssprogram{}{
+		$Y_1\|Y_2 = \sssubroutinename{prp.query}{A\|B}$\\
+		$Y^{'}_1\|Y^{'}_2 = \sssubroutinename{prp.query}{A^{'}\|B}$\\
+		return $Y_1 \oplus Y^{'}_1 == A \oplus A^{'}$
+		}{0.7}
+		}{\link}{
+		\sslibrary{\mathbb{F}}{prp-real}{
+		$K_1\|K_2 \twoheadleftarrow \bits^{2\lambda}$\\[1em]
+		\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+		$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+		$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+		return $X_{2}\|X_{3}$
+		}{1}
+		}{0.7}
+		}
+		}{\cancel{\approxeq}}{
+		\sslinked{
+		\ssprogram{}{
+		$Y_1\|Y_2 = \sssubroutinename{prp.query}{A\|B}$\\
+		$Y^{'}_1\|Y^{'}_2 = \sssubroutinename{prp.query}{A^{'}\|B}$\\
+		return $Y_1 \oplus Y^{'}_1 == A \oplus A^{'}$
+		}{0.7}
+		}{\link}{
+		\sslibrary{\mathbb{F}}{prp-real}{
+		$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+		\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+		$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+		$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+		$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+		return $X_{3}\|X_{4}$
+		}{1}
+		}{0.7}
+		}
+		}
+	\end{center}
+\end{frame}
+
+\begin{frame}{However, a 3+ round Feistel cipher is fine!}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}[<+->]
+				\item Luby and Rackoff proved that a 3-round Feistel cipher is indistinguishable from a pseudorandom permutation.\footnote{Link to the paper is available on the course website at \url{https://appliedcryptography.page}, under \textit{Online Readings}.}
+				\item Can we also prove it using our provable security framework?
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{center}
+				\sslinked{
+				\sslibrary{\mathbb{F}}{prp-real}{
+				$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+				$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+				return $X_{3}\|X_{4}$
+				}{1}
+				}{0.8}
+				}{\approxeq}{
+				\sslibrary{\mathbb{F}}{prp-rand}{
+				$L \coloneq$ [\ ]\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
+				if $L[X]$ undefined:\\
+				\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+				\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+				\quad $L[X] \coloneq Y$\\
+				return $L[X]$
+				}{1}
+				}{0.8}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The ``bad event'' proof technique}{Reminder}
+	\definitionbox{Bad Event Technique}{
+		Let \lib{}{1} and \lib{}{2} be libraries that each include a boolean variable named \hl{\texttt{bad}}, and assume that after \texttt{bad} is set to \texttt{true} it remains \texttt{true} forever. We say that the bad event is triggered if the library ever sets \texttt{bad := true}.
+		\\[1em]
+		If \lib{}{1} and \lib{}{2} have identical source code, except for statements reachable only when \texttt{bad := true}, then:
+		\begin{align*}
+			\left| \prob{\prog{} \link \lib{}{1} \Rightarrow \texttt{true}} - \prob{\prog{} \link \lib{}{2} \Rightarrow \texttt{true}} \right| \leq \prob{\prog{} \link \lib{}{1} \sssubroutinename{trigger}{\texttt{bad}}}
+		\end{align*}
+	}
+\end{frame}
+
+\begin{frame}{The ``bad event'' proof technique}{Reminder}
+	\begin{itemize}[<+->]
+		\item \prog{}'s advantage is bounded by \prob{\prog{} \link \lib{}{1} \sssubroutinename{trigger}{\texttt{bad}}}.
+		\item Practical application:
+		      \begin{itemize}[<+->]
+			      \item Define a sequence of hybrid libraries.
+			      \item Identify ``bad events'' between consecutive hybrids.
+			      \item Show these events occur with negligible probability.
+		      \end{itemize}
+		\item Enables us to focus on analyzing specific failure cases rather than full behavior.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The ``end-of-time'' strategy for bad events}{Reminder}
+	\begin{itemize}[<+->]
+		\item Sometimes analyzing bad events can be complex, especially when values are chosen by the adversary.
+		\item The end-of-time strategy:
+		      \begin{enumerate}[<+->]
+			      \item Postpone all bad-event logic to the end of the library execution.
+			      \item Collect information during normal execution.
+			      \item Check for bad events only at the very end.
+		      \end{enumerate}
+		\item Advantages:
+		      \begin{itemize}[<+->]
+			      \item Simplifies analysis by separating normal behavior from bad-event checking.
+			      \item Makes it easier to bound the probability of bad events.
+			      \item Particularly useful for complex cryptographic proofs.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{However, a 3+ round Feistel cipher is fine!}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item Luby and Rackoff proved that a 3-round Feistel cipher is indistinguishable from a pseudorandom permutation.\footnote{Link to the paper is available on the course website at \url{https://appliedcryptography.page}, under \textit{Online Readings}.}
+				\item Can we also prove it using our provable security framework?
+				\item Yes, with the bad events proof technique!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{center}
+				\sslinked{
+				\sslibrary{\mathbb{F}}{prp-real}{
+				$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+				$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+				return $X_{3}\|X_{4}$
+				}{1}
+				}{0.8}
+				}{\approxeq}{
+				\sslibrary{\mathbb{F}}{prp-rand}{
+				$L \coloneq$ [\ ]\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
+				if $L[X]$ undefined:\\
+				\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+				\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+				\quad $L[X] \coloneq Y$\\
+				return $L[X]$
+				}{1}
+				}{0.8}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 1}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item We start at \lib{\mathbb{F}}{prp-real}.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+				$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+				return $X_{3}\|X_{4}$
+				}{1}
+				}{0.8}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 2}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item We add a cache $L[\cdot]$ so that each distinct output is computed only once.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				\hl{if $L[X_0\|X_1]$ undefined:}\\
+				\quad $X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+				\quad $X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+				\quad $X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+				\quad \hl{$L[X_0\|X_1] \coloneq X_3\|X_4$}\\
+				return \hl{$L[X_0\|X_1]$}
+				}{1}
+				}{0.8}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 3}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item We add additional sub-cache $L_i[\cdot]$ for each $F(K_i,\cdot)$
+				\item Since we already assume $F$ to be a secure PRF, we can replace it with the ideal PRF and remove $K$.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad \hl{if $L_1[X_1]$ undefined:}\\
+				\quad \quad \hl{$L_1[X_1] \twoheadleftarrow \bits^\lambda$}\\
+				\quad $X_{2} \coloneq X_{0} \oplus \hl{L_1[X_1]}$\\
+				\quad \hl{if $L_2[X_2]$ undefined:}\\
+				\quad \quad \hl{$L_2[X_2] \twoheadleftarrow \bits^\lambda$}\\
+				\quad $X_{3} \coloneq X_{1} \oplus \hl{L_2[X_2]}$\\
+				\quad \hl{if $L_3[X_3]$ undefined:}\\
+				\quad \quad \hl{$L_3[X_3] \twoheadleftarrow \bits^\lambda$}\\
+				\quad $X_{4} \coloneq X_{2} \oplus \hl{L_3[X_3]}$\\
+				\quad $L[X_0\|X_1] \coloneq X_3\|X_4$\\
+				return $L[X_0\|X_1]$
+				}{1}
+				}{0.8}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 4}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item We expect $X_2$ and $X_3$ to never repeat. So, we can trigger the bad event if they do.
+				\item Later, we must show that the bad event's probability is negligible.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad if $L_1[X_1]$ undefined:\\
+				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+				\quad if $L_2[X_2]$ \hl{defined: $\texttt{bad} \coloneq \texttt{true}$}\\
+				\quad $L_2[X_2] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{3} \coloneq X_{1} \oplus L_2[X_2]$\\
+				\quad if $L_3[X_3]$ \hl{defined: $\texttt{bad} \coloneq \texttt{true}$}\\
+				\quad $L_3[X_3] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{4} \coloneq X_{2} \oplus L_3[X_3]$\\
+				\quad $L[X_0\|X_1] \coloneq X_3\|X_4$\\
+				return $L[X_0\|X_1]$
+				}{1}
+				}{0.8}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 5}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Instead of sampling $L_2[X_2]$ uniformly and then computing $X_3$, we can sample $X_3$ uniformly and compute $L_2[X_2]$.
+				\item Same for $L_3[X_3]$ and $X_4$.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad if $L_1[X_1]$ undefined:\\
+				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad \hl{$X_3 \twoheadleftarrow \bits^\lambda$}\\
+				\quad $L_2[X_2] \hl{\coloneq X_3 \oplus X_1}$\\
+				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad \hl{$X_4 \twoheadleftarrow \bits^\lambda$}\\
+				\quad $L_3[X_3] \hl{\coloneq X_4 \oplus X_2}$\\
+				\quad $L[X_0\|X_1] \coloneq X_3\|X_4$\\
+				return $L[X_0\|X_1]$
+				}{1}
+				}{0.8}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 6}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item We can move the sampling steps to the top since they're no longer dependent on other variables.
+				\item Note how nothing after $L[X_0\|X_1] \coloneq X_3\|X_4$ affects what the adversary sees!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad \hl{$X_3 \twoheadleftarrow \bits^\lambda$}\\
+				\quad \hl{$X_4 \twoheadleftarrow \bits^\lambda$}\\
+				\quad \hl{$L[X_0\|X_1] \coloneq X_3\|X_4$}\\
+				\quad if $L_1[X_1]$ undefined:\\
+				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$\\
+				\hl{return $L[X_0\|X_1]$}
+				}{1}
+				}{0.8}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 7}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item We can move the sampling steps to the top since they're no longer dependent on other variables.
+				\item Note how nothing after $L[X_0\|X_1] \coloneq X_3\|X_4$ affects what the adversary sees!
+				\item So, we can move all bad-event logic to the end of time, without changing the bad event's overall probability.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad \hl{$L[X_0\|X_1] \coloneq \bits^{2\lambda}$}\\
+				\quad \hl{$\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$}\\
+				\quad return $L[X_0\|X_1]$
+				}{1}\\[1em]
+				\sslibrarysubroutine{\hl{end of time}}{}{
+				\hl{for each $X_0\|X_1 \in \mathcal{X}:$}\\
+				\quad \hl{$X_3\|X_4 \coloneq L[X_0\|X_1]$}\\
+				\quad if $L_1[X_1]$ undefined:\\
+				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
+				}{1}
+				}{0.7}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 8}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item We need to analyze the probability of the bad event happening.
+				\item Let's say the adversary makes $q$ queries.
+				\item The bad event happens if:
+				      \begin{itemize}[<+->]
+					      \item $X_2$ value collides with previous $X_2$.
+					      \item $X_3$ value collides with previous $X_3$.
+				      \end{itemize}
+				\item Recall: $X_2 = X_0 \oplus L_1[X_1]$ where $L_1[X_1]$ is chosen randomly.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+				\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
+				\quad return $L[X_0\|X_1]$
+				}{1}\\[1em]
+				\sslibrarysubroutine{end of time}{}{
+				for each $X_0\|X_1 \in \mathcal{X}:$\\
+				\quad $X_3\|X_4 \coloneq L[X_0\|X_1]$\\
+				\quad if $L_1[X_1]$ undefined:\\
+				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
+				}{1}
+				}{0.7}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 9}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item So, we need to analyze when $X_2$ collisions occur.
+				\item If $(X_0, X_1)$ and $(X_0', X_1')$ are two different inputs...
+				\item A collision happens when $X_2 = X_2'$:
+				      \begin{align*}
+					      X_0 \oplus L_1[X_1] = X_0' \oplus L_1[X_1']
+				      \end{align*}
+				\item If $X_1 \neq X_1'$, then $L_1[X_1]$ and $L_1[X_1']$ are independent random values
+				\item The probability of this specific collision is $2^{-\lambda}$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+				\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
+				\quad return $L[X_0\|X_1]$
+				}{1}\\[1em]
+				\sslibrarysubroutine{end of time}{}{
+				for each $X_0\|X_1 \in \mathcal{X}:$\\
+				\quad $X_3\|X_4 \coloneq L[X_0\|X_1]$\\
+				\quad if $L_1[X_1]$ undefined:\\
+				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
+				}{1}
+				}{0.7}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 10 - Total probability analysis}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item For $q$ queries, we have at most $q(q-1)/2$ pairs of queries
+				\item Prob. of any $X_2$ collision across $q$ queries:
+				      $q(q-1)/(2 \cdot 2^{\lambda}) \approx q^2/2^{\lambda+1}$
+				\item Similarly for $X_3$ values: the probability of any $X_3$ collision is at most $q^2/2^{\lambda+1}$.
+				\item Total probability of bad event: at most $q^2/2^{\lambda}$
+				\item With $\lambda \gg \log q$, this probability is negligible.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+				\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
+				\quad return $L[X_0\|X_1]$
+				}{1}\\[1em]
+				\sslibrarysubroutine{end of time}{}{
+				for each $X_0\|X_1 \in \mathcal{X}:$\\
+				\quad $X_3\|X_4 \coloneq L[X_0\|X_1]$\\
+				\quad if $L_1[X_1]$ undefined:\\
+				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
+				}{1}
+				}{0.7}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 11}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item By the bad event technique, the advantage of any adversary is at most $q^2/2^{\lambda}$.
+				\item Without bad events, our last hybrid samples each response randomly.
+				\item Since the sampling logic is all that remains visible to the adversary, this is equivalent to the final simplified library.
+				\item This is indistinguishable from a truly random permutation for $q \ll 2^{\lambda/2}$ queries.
+				\item (The birthday bound tells us that's when collisions become likely)
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+				\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
+				\quad return $L[X_0\|X_1]$
+				}{1}\\[1em]
+				\sslibrarysubroutine{end of time}{}{
+				for each $X_0\|X_1 \in \mathcal{X}:$\\
+				\quad $X_3\|X_4 \coloneq L[X_0\|X_1]$\\
+				\quad if $L_1[X_1]$ undefined:\\
+				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
+				}{1}
+				}{0.7}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Rest of the transition steps are trivial. $\qed$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sslinked{
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+				\quad return $L[X_0\|X_1]$
+				}{1}
+				}{0.7}
+				}{\approxeq}{
+				\sslibrary{\mathbb{F}}{prp-rand}{
+				$L \coloneq$ [\ ]\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
+				if $L[X]$ undefined:\\
+				\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+				\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+				\quad $L[X] \coloneq Y$\\
+				return $L[X]$
+				}{1}
+				}{0.7}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{DES: Feistel in practice}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Data Encryption Standa.rd (DES)} is a classic real-world implementation of the Feistel structure
+				\item Properties:
+				      \begin{itemize}
+					      \item 16 Feistel rounds.
+					      \item 56-bit key (64 bits with parity).
+					      \item 64-bit block size.
+					      \item Standardized in 1977.
+				      \end{itemize}
+				\item Problem: By the 1990s, 56-bit keys became too small for security.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Triple DES (3DES)} replaced it:
+				      \begin{itemize}
+					      \item Uses three DES operations in sequence.
+					      \item $C = E_{K3}(D_{K2}(E_{K1}(P)))$
+					      \item Effectively doubles the key length.
+					      \item Compatible with legacy DES when $K1 = K2 = K3$
+				      \end{itemize}
+				\item 3DES is still used in some legacy systems, but has largely been replaced by AES for performance reasons.
+				\item Lesson: Feistel structure made it possible to adapt DES rather than completely abandon it.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{EFF's ``Deep Crack''}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item In 1998, the Electronic Frontier Foundation built a special-purpose machine called ``Deep Crack''.\footnote{I'm not responsible for any readings into that name.}
+				\item Cost: Only \$250,000 (far less than the NSA budget!)
+				\item Purpose: Prove that 56-bit DES keys were insufficient.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{deep_crack_a.jpg}{EFF's ``Deep Crack''}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{EFF's ``Deep Crack''}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item July 1998: Deep Crack broke a DES challenge in just 56 hours.
+				\item Message revealed: "It's time for those 128-, 192-, and 256-bit keys."
+				\item Impact:
+				      \begin{itemize}
+					      \item Publicly demonstrated DES was obsolete.
+					      \item Accelerated adoption of AES.
+					      \item Made "it's theoretically breakable" a practical reality.
+					      \item Priceless reaction from government officials!.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{deep_crack_b.jpg}{Paul Kocher. He's still active in cryptography today, insanely productive research career, many crazy attacks}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{AES: a good example of a PRP}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -1143,7 +2033,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item Internal structure: substitution-permutation network with multiple rounds.
+				\item Internal structure: substitution-permutation network with multiple rounds.\footnote{Check out this amazing interactive animation of AES's internal structure: \url{https://formaestudio.com/rijndaelinspector/archivos/Rijndael_Animation_v4_eng-html5.html}}
 				      \begin{itemize}[<+->]
 					      \item SubBytes: non-linear substitution
 					      \item ShiftRows: transposition
@@ -1215,120 +2105,6 @@
 			\end{flushright}
 		\end{column}
 	\end{columns}
-\end{frame}
-
-\begin{frame}{Building a permutation through Feistel ciphers}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
-				\item An $r$-round \textbf{Feistel cipher} with \textbf{round functions} $F_1,\ldots,F_r$ is defined as follows:\\
-				\begin{center}
-					\sssubroutine{$\mathbb{F}$}{X_{0}\|X_{1}}{
-						for $i = 1$ to $r$:\\
-						\quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(X_{i})$\\
-						return $X_{r}\|X_{r+1}$
-					}{1}
-				\end{center}
-				\item A Feistel cipher is always a permutation on $\bits^{2n}$, regardless of its round functions.
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\imagewithcaption{feistel_cipher.png}{Feistel cipher.\\Source: The Joy of Cryptography}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Building a permutation through Feistel ciphers}
-	\definitionbox{Feistel Ciphers Are Permutations}{
-		A Feistel cipher is always a permutation on $\bits^{2n}$, regardless of its round functions.
-	}
-	\begin{itemize}[<+->]
-		\item \textbf{Proof:} Each round of a Feistel cipher computes the next block as:
-		\begin{itemize}[<+->]
-			\item $X_{i+1} = X_{i-1} \oplus F_{i}(X_{i})$
-		\end{itemize}
-		\item To invert this round, we can rearrange the equation to solve for $X_{i-1}$ in terms of $X_{i}$ and $X_{i+1}$:
-		\begin{itemize}[<+->]
-			\item $X_{i-1} = X_{i+1} \oplus F_{i}(X_{i})$
-		\end{itemize}
-		\item $F_i$ itself does not need to have an inverse - both the forward and inverse direction of the Feistel cipher evaluate $F_i$ in the forward direction! $\qed$
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Building a permutation through Feistel ciphers}{Inversion}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
-				\item $\mathbb{F}^{-1}$ is the \textbf{inversion}, allowing Feistel ciphers to function as PRPs:
-				\begin{center}
-					\sssubroutine{$\mathbb{F}^{-1}$}{X_{r}\|X_{r+1}}{
-						for $i = r$ \hl{down to} $1$:\\
-						\quad $X_{i-1} \coloneq X_{i+1} \oplus F_{i}(X_{i})$\\
-						return $X_{0}\|X_{1}$
-					}{1}
-				\end{center}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\imagewithcaption{feistel_cipher_inv.png}{Feistel cipher inversion.\\Source: The Joy of Cryptography}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Forward and backward on one slide}{Just in case it's helpful}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{center}
-				\sssubroutine{$\mathbb{F}$}{X_{0}\|X_{1}}{
-					for $i = 1$ to $r$:\\
-					\quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(X_{i})$\\
-					return $X_{r}\|X_{r+1}$
-				}{1.2}
-			\end{center}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{center}
-				\sssubroutine{$\mathbb{F}^{-1}$}{X_{r}\|X_{r+1}}{
-					for $i = r$ down to $1$:\\
-					\quad $X_{i-1} \coloneq X_{i+1} \oplus F_{i}(X_{i})$\\
-					return $X_{0}\|X_{1}$
-				}{1.2}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Keyed Feistel ciphers}
-	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
-				\item Let's add a key in there. Wow, encryption!
-				\item If each round function $F_i$ uses a distinct key $K_i$, it increases the security of the Feistel network against certain attacks.
-				\item By using a PRF as round function $F_i$, the security of the Feistel cipher would be grounded on the PRF's security basis.
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.4\textwidth}
-			\begin{center}
-				\sssubroutine{$\mathbb{F}$}{K_1\|\cdots\|K_r, X_0\|X_1}{
-					for $i = 1$ to $r$:\\
-					\quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(K_{i}, X_{i})$\\
-					return $X_{r}\|X_{r+1}$
-				}{1}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Keyed Feistel ciphers}
-	\begin{itemize}[<+->]
-		\item \textbf{A 2-round Feistel cipher cannot be a secure PRP.}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Slides not complete}
-	\begin{itemize}
-		\item This slide deck is not finished and is missing important material. Do not rely on it yet.
-	\end{itemize}
 \end{frame}
 
 \begin{frame}[plain]

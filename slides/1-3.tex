@@ -403,8 +403,7 @@
 				               & = M_i \oplus M_j
 			\end{align*}
 			\begin{itemize}
-				\item \prob{\prog{}\link\lib{}{a} \Rightarrow \texttt{true}} $= 1$
-				\item Interactive demo: {\scriptsize\url{https://www.douglas.stebila.ca/teaching/visual-one-time-pad/}}
+				\item \prob{\prog{}\link\lib{}{a} \Rightarrow \texttt{true}} $= 1$\footnote{Interactive demo: \url{https://www.douglas.stebila.ca/teaching/visual-one-time-pad/}}
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1054,6 +1053,193 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{The ``bad event'' proof technique}{Definition}
+	\definitionbox{Bad Event Technique}{
+		Let \lib{}{1} and \lib{}{2} be libraries that each include a boolean variable named \hl{\texttt{bad}}, and assume that after \texttt{bad} is set to \texttt{true} it remains \texttt{true} forever. We say that the bad event is triggered if the library ever sets \texttt{bad := true}.
+		\\[1em]
+		If \lib{}{1} and \lib{}{2} have identical source code, except for statements reachable only when \texttt{bad := true}, then:
+		\begin{align*}
+			\left| \prob{\prog{} \link \lib{}{1} \Rightarrow \texttt{true}} - \prob{\prog{} \link \lib{}{2} \Rightarrow \texttt{true}} \right| \leq \prob{\prog{} \link \lib{}{1} \sssubroutinename{trigger}{\texttt{bad}}}
+		\end{align*}
+	}
+\end{frame}
+
+\begin{frame}{The ``bad event'' proof technique}{Key insights}
+	\begin{itemize}[<+->]
+		\item \prog{}'s advantage is bounded by \prob{\prog{} \link \lib{}{1} \sssubroutinename{trigger}{\texttt{bad}}}.
+		\item Practical application:
+		      \begin{itemize}[<+->]
+			      \item Define a sequence of hybrid libraries.
+			      \item Identify ``bad events'' between consecutive hybrids.
+			      \item Show these events occur with negligible probability.
+		      \end{itemize}
+		\item Enables us to focus on analyzing specific failure cases rather than full behavior.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The ``bad event'' proof technique}{Example}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Are these libraries \textbf{computationally indistinguishable?}
+				\item Yes! Let's prove it use the bad event technique.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{}{1}{
+					\sslibrarysubroutine{predict}{x}{
+						$R \twoheadleftarrow \bits^\lambda$\\
+						return $R == X$
+					}{1}
+				}{1}
+			}{\overset{?}{\approxeq}}{
+				\sslibrary{}{2}{
+					\sslibrarysubroutine{predict}{x}{
+						return \texttt{false}
+					}{1}
+				}{1}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The ``bad event'' proof technique}{Example}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Are these libraries \textbf{computationally indistinguishable?}
+				\item Yes! Let's prove it use the bad event technique.
+				\item Note: these libraries are interchangeable with \lib{}{1} and \lib{}{2} (as seen on next slide).
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{'}{1}{
+					\sslibrarysubroutine{predict}{x}{
+						$R \twoheadleftarrow \bits^\lambda$\\
+						if $R == X$:\\
+						\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
+						\quad return \hl{\texttt{true}}\\
+						return \texttt{false}
+					}{1}
+				}{1}
+			}{\overset{?}{\approxeq}}{
+				\sslibrary{'}{2}{
+					\sslibrarysubroutine{predict}{x}{
+						$R \twoheadleftarrow \bits^\lambda$\\
+						if $R == X$:\\
+						\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
+						\quad return \hl{\texttt{false}}\\
+						return \texttt{false}
+					}{1}
+				}{1}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The ``bad event'' proof technique}{Just to be clear}
+	\sslinked{
+		\sslinked{
+			\sslibrary{}{1}{
+				\sslibrarysubroutine{predict}{x}{
+					$R \twoheadleftarrow \bits^\lambda$\\
+					return $R == X$
+				}{1}
+			}{1}
+		}{\interchangeable{}}{
+			\sslibrary{'}{1}{
+				\sslibrarysubroutine{predict}{x}{
+					$R \twoheadleftarrow \bits^\lambda$\\
+					if $R == X$:\\
+					\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
+					\quad return \hl{\texttt{true}}\\
+					return \texttt{false}
+				}{1}
+			}{1}
+		}
+	}{\overset{?}{\approxeq}}{
+		\sslinked{
+			\sslibrary{'}{2}{
+				\sslibrarysubroutine{predict}{x}{
+					$R \twoheadleftarrow \bits^\lambda$\\
+					if $R == X$:\\
+					\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
+					\quad return \hl{\texttt{false}}\\
+					return \texttt{false}
+				}{1}
+			}{1}
+		}{\interchangeable{}}{
+			\sslibrary{}{2}{
+				\sslibrarysubroutine{predict}{x}{
+					return \texttt{false}
+				}{1}
+			}{1}
+		}
+	}
+\end{frame}
+
+\begin{frame}{The ``bad event'' proof technique}{Example}
+	\begin{columns}[c]
+		\begin{column}{0.8\textwidth}
+			\begin{itemize}
+				\item We need to analyze how likely it is that the bad event happens:
+				      \begin{itemize}
+					      \item The bad event occurs when $R == X$.
+					      \item Since $R$ is randomly chosen from a huge set, this match is extremely unlikely.
+					      \item Even if an adversary makes many attempts, the chance of seeing this bad event remains tiny.
+					      \item As we increase the security parameter $\lambda$, the chance becomes vanishingly small.
+				      \end{itemize}
+				\item Therefore, the libraries are computationally indistinguishable!
+				\item For any \prog{}, computationally speaking, we'd get the same distribution of outputs.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.2\textwidth}
+			\sslinked{
+				\sslibrary{'}{1}{
+					\sslibrarysubroutine{predict}{x}{
+						$R \twoheadleftarrow \bits^\lambda$\\
+						if $R == X$:\\
+						\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
+						\quad return \hl{\texttt{true}}\\
+						return \texttt{false}
+					}{1}
+				}{0.4}
+			}{\overset{?}{\approxeq}}{
+				\sslibrary{'}{2}{
+					\sslibrarysubroutine{predict}{x}{
+						$R \twoheadleftarrow \bits^\lambda$\\
+						if $R == X$:\\
+						\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
+						\quad return \hl{\texttt{false}}\\
+						return \texttt{false}
+					}{1}
+				}{0.4}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The ``end-of-time'' strategy for bad events}
+	\begin{itemize}[<+->]
+		\item Sometimes analyzing bad events can be complex, especially when values are chosen by the adversary.
+		\item The end-of-time strategy:
+		      \begin{enumerate}[<+->]
+			      \item Postpone all bad-event logic to the end of the library execution.
+			      \item Collect information during normal execution.
+			      \item Check for bad events only at the very end.
+		      \end{enumerate}
+		\item Advantages:
+		      \begin{itemize}[<+->]
+			      \item Simplifies analysis by separating normal behavior from bad-event checking.
+			      \item Makes it easier to bound the probability of bad events.
+			      \item Particularly useful for complex cryptographic proofs.
+		      \end{itemize}
+		\item We'll use this in the next session!
+	\end{itemize}
 \end{frame}
 
 \begin{frame}[plain]
