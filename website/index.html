@@ -289,24 +289,12 @@
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 1.5</span>
-						<h4 class="session-title"><i class="fas fa-book"></i>Chosen Plaintext Attacks</h4>
-						<p class="session-overview">This session explores symmetric-key encryption schemes that can securely encrypt multiple plaintexts with the same key. It introduces the concept of chosen-plaintext attack (CPA) security, which requires ciphertexts to be indistinguishable from random strings of the same length, acknowledging that encryption cannot hide plaintext length. The chapter demonstrates why deterministic encryption cannot achieve CPA security and presents a randomized PRF-based encryption scheme as a solution. It covers block cipher modes like CBC and CTR for encrypting long messages, explaining why ECB mode is fundamentally insecure (illustrated by the infamous "ECB penguin"). The chapter also addresses practical considerations like padding for non-block-aligned plaintexts and introduces nonce-based encryption as an alternative to randomization, where security depends only on nonces not being reused rather than on unpredictable randomness.</p>
+						<h4 class="session-title"><i class="fas fa-book"></i>Chosen Plaintext &amp; Chosen Ciphertext Attacks</h4>
+						<p class="session-overview">This session explores advanced security models for symmetric-key encryption, beginning with chosen-plaintext attack (CPA) security, where ciphertexts must be indistinguishable from random strings. We'll examine why deterministic encryption cannot achieve this security level and explore solutions including randomized PRF-based schemes and block cipher modes like CBC and CTR, while explaining why ECB mode remains fundamentally insecure. The session then advances to chosen-ciphertext attacks (CCA), where adversaries can decrypt chosen ciphertexts, demonstrating how even CPA-secure schemes like CTR mode remain vulnerable due to their malleability. We'll analyze practical format-oracle attacks that exploit information leakage during decryption to recover entire plaintexts, and examine how preventing adversaries from creating valid modified ciphertexts is essential for achieving comprehensive CCA security in real-world systems.</p>
 						<div class="session-readings">
 							<h5><i class="fas fa-book-open icon"></i>Required Readings</h5>
 							<ul>
 								<li><em>The Joy of Cryptography</em>, Chapter 8: Chosen Plaintext Attacks</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="session">
-						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.6</span>
-						<h4 class="session-title"><i class="fas fa-book"></i>Chosen Ciphertext Attacks</h4>
-						<p class="session-overview">This session explores chosen-ciphertext attacks (CCA), where adversaries can decrypt chosen ciphertexts, and demonstrates how schemes that are only CPA-secure (like CTR mode) are vulnerable to these attacks due to their malleability. The chapter introduces format-oracle attacks, where information leaked during decryption (such as the presence of null characters) can be exploited to recover entire plaintexts. It formally defines CCA security and shows that achieving it requires preventing adversaries from creating valid modified ciphertexts.</p>
-						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i>Required Readings</h5>
-							<ul>
 								<li><em>The Joy of Cryptography</em>, Chapter 9: Chosen Ciphertext Attacks</li>
 							</ul>
 						</div>
@@ -314,9 +302,9 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.7</span>
-						<h4 class="session-title"><i class="fas fa-book"></i>Collision-Resistant Hash Functions</h4>
-						<p class="session-overview">This session explores collision-resistant hash functions, which are deterministic functions that map variable-length inputs to fixed-length outputs where finding two different inputs with the same output ("collisions") should be computationally difficult. The chapter begins by explaining how collisions must exist (by the pigeonhole principle) but should be hard to find, requiring approximately 2<sup>(n/2)</sup> operations for an n-bit hash function. It formalizes collision resistance using salted hash functions to prevent precomputation attacks, and discusses real-world applications like password hashing where salt is critical for security.</p>
+						<span class="session-number">Session 1.6</span>
+						<h4 class="session-title"><i class="fas fa-book"></i>Hash Functions &amp; Authenticated Encryption</h4>
+						<p class="session-overview">This session explores two crucial cryptographic primitives: collision-resistant hash functions and authenticated encryption. We'll examine hash functions as deterministic mappings from variable-length inputs to fixed-length outputs where finding collisions should be computationally difficult, requiring approximately 2<sup>(n/2)</sup> operations for an n-bit hash function. The session then transitions to authenticated encryption, covering how message authentication codes (MACs) like HMAC combine with encryption to provide both confidentiality and integrity. We'll analyze modern authenticated encryption with associated data (AEAD) schemes such as AES-GCM that efficiently provide these security properties simultaneously, examining their internal construction, security properties, and proper implementation in real-world applications.</p>
 						<div class="session-readings">
 							<h5><i class="fas fa-book-open icon"></i>Required Readings</h5>
 							<ul>
@@ -327,20 +315,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.8</span>
-						<h4 class="session-title"><i class="fas fa-book"></i>Authenticated Encryption &amp; Cipher Modes</h4>
-						<p class="session-overview">This session explores authenticated encryption, which simultaneously provides confidentiality, integrity, and authenticity for sensitive data. We'll examine how message authentication codes (MACs), particularly HMAC, can be combined with encryption to secure messages against tampering. The session introduces widely-used authenticated encryption with associated data (AEAD) modes like AES-GCM and AES-GCM-SIV, analyzing their security properties, performance characteristics, and resistance to nonce-reuse attacks. We'll also investigate various block cipher modes of operation, contrasting the security and efficiency of ECB, CBC, CTR, and other approaches while examining their vulnerability to different attack vectors. The session covers practical implementation considerations including padding schemes, initialization vectors, and nonce management that are critical for deploying these primitives securely. Students will understand how different application requirements influence mode selection, the dangers of incorrect implementation, and the evolution of authenticated encryption standards in response to real-world security incidents. Through this exploration, you'll gain the knowledge to make informed decisions about cryptographic primitives for secure communication systems.</p>
-						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i>Required Readings</h5>
-							<ul>
-								<li>TODO</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="session">
-						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.9</span>
+						<span class="session-number">Session 1.7</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Random Oracles and Other Idealized Models</h4>
 						<p class="session-overview">This session explores the Random Oracle Model, a theoretical framework where hash functions are idealized as perfectly random functions that can only be evaluated through queries. We'll examine how this powerful abstraction enables elegant security proofs for practical schemes where traditional analysis fails, including OAEP for RSA and HKDF for key derivation. The session covers the controversy surrounding the model—while random oracles don't exist in reality (leading to theoretical concerns demonstrated by separation results), they often provide reliable security guidance for practical cryptographic design. We'll also discuss other idealized models including the ideal cipher model and the generic group model, which make analogous simplifying assumptions about block ciphers and algebraic groups, respectively. Students will learn when these models are appropriate analytical tools and their limitations when designing real-world cryptographic systems.</p>
 						<div class="session-readings">
@@ -353,7 +328,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.10</span>
+						<span class="session-number">Session 1.8</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Key Exchange</h4>
 						<p class="session-overview">This session introduces the fundamental concept of key exchange, which allows parties to establish shared secret keys over insecure channels. We'll explore the Diffie-Hellman protocol, examining how its elegant mathematical structure enables secure key agreement without prior shared secrets while maintaining security against eavesdroppers. The session covers the discrete logarithm and computational Diffie-Hellman assumptions that underpin the protocol's security, along with practical considerations for parameter selection. Students will understand both the basic protocol and its limitations, including vulnerability to man-in-the-middle attacks when used without authentication. We'll also examine modern applications and variants of key exchange protocols, including their integration into complex systems like TLS and secure messaging platforms, setting the foundation for subsequent discussions of authenticated key exchange.</p>
 						<div class="session-readings">
@@ -366,7 +341,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.11</span>
+						<span class="session-number">Session 1.9</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Public-Key Encryption</h4>
 						<p class="session-overview">This session explores public-key encryption (PKE), a transformative paradigm where encryption and decryption use different keys. Unlike symmetric encryption, PKE allows anyone with a public key to encrypt messages while only the private key holder can decrypt them. We'll examine formal security definitions for PKE schemes, including CPA and CCA security, and prove that any secure single-use PKE scheme remains secure for multiple encryptions. The session introduces El Gamal encryption, which leverages the Diffie-Hellman assumption to create a secure PKE scheme from cyclic group operations. We'll also study the Fujisaki-Okamoto construction, which efficiently transforms any CPA-secure PKE into a CCA-secure one using the random oracle model. Finally, we'll explore hybrid encryption and key encapsulation mechanisms (KEMs) as practical approaches that combine the security advantages of public-key cryptography with the efficiency of symmetric-key methods, enabling real-world applications that require both security and performance.</p>
 						<div class="session-readings">
@@ -379,7 +354,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
-						<span class="session-number">Session 1.12</span>
+						<span class="session-number">Session 1.10</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Digital Signatures</h4>
 						<p class="session-overview">This session explores digital signatures, which allow an entity to cryptographically endorse a message in a way that anyone can verify but only the signer can produce. We'll examine how digital signatures provide the electronic equivalent of handwritten signatures with crucial integrity and non-repudiation properties. The session covers formal security definitions for signatures, including existential unforgeability under chosen-message attacks, and introduces several construction approaches. We'll explore hash-and-sign techniques using trapdoor functions, signature schemes derived from identification protocols, and efficient signature schemes based on the discrete logarithm assumption like DSA and EdDSA. Students will understand both the theoretical foundations and practical implementations of digital signatures, including their critical role in certificate authorities, code signing, and cryptocurrency transactions, as well as the security considerations that affect their deployment in modern systems.</p>
 						<div class="session-readings">
