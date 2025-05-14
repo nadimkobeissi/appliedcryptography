@@ -45,7 +45,7 @@
 				\vskip0.5cm
 				\usebeamercolor[fg]{author}\usebeamerfont{author}\insertauthor\par
 				\vskip0.1cm
-				\usebeamercolor[fg]{cover website}\usebeamerfont{cover website}\insertcoverwebsite\par
+				\usebeamercolor[fg]{cover website}\usebeamerfont{cover website}\url{\insertcoverwebsite}\par
 			\end{beamercolorbox}
 		\end{column}
 	\end{columns}
@@ -100,7 +100,8 @@
 		arc=2mm,
 		left=3mm,right=3mm,top=3mm,bottom=3mm,
 		drop shadow={opacity=0.1},
-		sharp corners=southeast
+		sharp corners=southeast,
+		fontupper=\fontsize{9.5pt}{11pt}\selectfont
 	]
 		#2
 	\end{tcolorbox}

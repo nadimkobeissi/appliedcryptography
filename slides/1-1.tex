@@ -9,7 +9,7 @@
 \coversubtitle{CMPS 297AD/396AI}
 \coverpartname{Part 1: Provable Security}
 \coversessionname{1.1: Introduction}
-\coverwebsite{\url{https://appliedcryptography.page}}
+\coverwebsite{https://appliedcryptography.page}
 
 \begin{document}
 \begin{frame}[plain]
@@ -96,20 +96,15 @@
 
 		\begin{column}{0.5\textwidth}
 			\textbf{Examples}
-			\begin{itemize}
-				\pause
+			\begin{itemize}[<+->]
 				\item \textbf{AES}: Symmetric encryption
 				      \begin{itemize}
 					      \item $\mathsf{Enc}(k, m) = c$, $\mathsf{Dec}(k, c) = m$.
 				      \end{itemize}
-				      \pause
-
 				\item \textbf{SHA-2}: Hash function
 				      \begin{itemize}
 					      \item $\mathsf{H}(m) = h$.
 				      \end{itemize}
-				      \pause
-
 				\item \textbf{Diffie-Hellman}: Public key agreement
 				      \begin{itemize}
 					      \item Allows two parties to agree on a secret key $k$.
@@ -118,6 +113,7 @@
 		\end{column}
 	\end{columns}
 \end{frame}
+
 \begin{frame}{Cryptographic building blocks}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -220,13 +216,12 @@
 \end{frame}
 
 \begin{frame}{No known feasible computation}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item The discrete logarithm problem:
 		      \begin{itemize}
 			      \item Given a finite cyclic group $G$, a generator $g \in G$, and an element
 			            $h \in G$, find the integer $x$ such that $g^{x}=h$
 		      \end{itemize}
-
 		\item In more concrete terms:
 		      \begin{itemize}
 			      \item Let $p$ be a large prime and let $g$ be a generator of the multiplicative
@@ -250,6 +245,7 @@
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
+
 \begin{frame}{Hard problems}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -300,7 +296,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}
 			\definitionbox{Hash Function Properties}{
-				\begin{itemize}\item Takes input of \textbf{any size}
+				\begin{itemize}\item Takes input of \textbf{any size}[<+->]
 					\item Produces output of \textbf{fixed size}
 					\item Is \textbf{deterministic} (same input $\rightarrow$ same output)
 					\item Even a \textbf{tiny change} in input creates completely different output
@@ -324,7 +320,7 @@
 \begin{frame}{Expected properties of a hash function}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item \textbf{Collision resistance}: computationally infeasible to find
 				      two different inputs producing the same hash.
 				\item \textbf{Preimage resistance}: given the output of a hash function,
@@ -334,7 +330,6 @@
 				      producing the same output.
 			\end{itemize}
 		\end{column}
-
 		\begin{column}{0.5\textwidth}
 			\imagewithcaption{sha2.png}{SHA-2 compression function. Source: Wikipedia}
 		\end{column}
@@ -627,13 +622,10 @@
 \end{frame}
 
 \begin{frame}{AES is a block cipher}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item AES takes a 16-byte input, produces a 16-byte output.
-
-		\item Key can be 16, 24 or 32 bytes. \pause
-
-		\item OK, so what if we want to encrypt more than 16 bytes? \pause
-
+		\item Key can be 16, 24 or 32 bytes.
+		\item OK, so what if we want to encrypt more than 16 bytes?
 		\item \textbf{Proposal}: split the plaintext into 16 byte chunks, encrypt
 		      each of them with the same key.
 	\end{itemize}
@@ -677,13 +669,11 @@
 
 		\begin{column}{0.5\textwidth}
 			\textbf{Examples}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item \textbf{Confidentiality}: When you send a private message on Signal,
 				      only you and the recipient can read the content.
-
 				\item \textbf{Authentication}: When you receive an email from your boss,
 				      you can verify it actually came from them.
-
 				\item \textbf{Integrity}: Your computer can verify that software update
 				      downloads haven't been tampered with during transmission.
 			\end{itemize}
@@ -692,19 +682,17 @@
 \end{frame}
 
 \begin{frame}{Security goals: more examples}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item \textbf{TLS (HTTPS)} ensures that data exchanged between the client
 		      and the server is confidential and that parties are authenticated.
 		      \begin{itemize}
 			      \item Allows you to log into gmail.com without your ISP learning your password.
 		      \end{itemize}
-
 		\item \textbf{FileVault 2} ensures data confidentiality and integrity on
 		      your MacBook.
 		      \begin{itemize}
 			      \item Prevents thieves from accessing your data if your MacBook is stolen.
 		      \end{itemize}
-
 		\item \textbf{Signal} implements post-compromise security, an advanced security
 		      goal.
 		      \begin{itemize}

@@ -9,7 +9,7 @@
 \coversubtitle{CMPS 297AD/396AI}
 \coverpartname{Part 1: Provable Security}
 \coversessionname{1.4: Pseudorandomness}
-\coverwebsite{\url{https://appliedcryptography.page}}
+\coverwebsite{https://appliedcryptography.page}
 
 \begin{document}
 \begin{frame}[plain]
@@ -798,6 +798,26 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{Why PRPs are ``better'' than PRFs}
+	\begin{itemize}[<+->]
+		\item \textbf{Invertibility}: PRPs can be efficiently inverted given the key
+		      \begin{itemize}[<+->]
+			      \item Enable both encryption and decryption
+			      \item Can recover input from output (and vice versa)
+		      \end{itemize}
+		\item \textbf{No range collision}: Each input maps to a unique output
+		      \begin{itemize}[<+->]
+			      \item Provides perfect input recovery
+			      \item Reduces vulnerability to collision-based attacks, birthday attacks, and certain forms of differential cryptanalysis
+		      \end{itemize}
+		\item \textbf{Versatility}: A secure PRP can be used as a PRF
+		      \begin{itemize}[<+->]
+			      \item "Downgrade" trivially by ignoring inverse capability
+			      \item The reverse is not true (PRF → PRP conversion is complex)
+		      \end{itemize}
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{$\mathsf{PRF}: F_{k}= X \rightarrow Y$}

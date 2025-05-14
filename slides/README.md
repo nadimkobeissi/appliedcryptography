@@ -4,7 +4,9 @@ Welcome to the slides! Here they are. Isn't that amazing?
 
 ## Readiness status
 
-I'm still working on the slides. If the checkbox isn't checked, it means you shouldn't use them yet:
+I'm still working on the slides. If the checkbox isn't checked, it means you shouldn't use them yet.
+
+#### Part 1
 
 - [x] Part 1: Session 1
 - [x] Part 1: Session 2
