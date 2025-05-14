@@ -168,7 +168,20 @@
 
 \begin{frame}{Non-deterministic encryption isn't hard}
 	\begin{columns}[c]
-
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item AES-CTR turns AES into a non-deterministic PRF...
+				\item AES-GCM even turns it into a non-deterministic authenticated cipher...\footnote{More on these later. An authenticated cipher is one where the ciphertext can't be modified by the adversary without that being detected.}
+				\item We can just as easily make a PRF non-deterministic:
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sssubroutine{enc}{K, M}{
+				$R \twoheadleftarrow \bits^\lambda$\\
+				$S \coloneq F(K, R) \oplus M$\\
+				return $R\|S$
+			}{1}
+		\end{column}
 	\end{columns}
 \end{frame}
 
