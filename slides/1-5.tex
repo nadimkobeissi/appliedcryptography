@@ -9,11 +9,166 @@
 \coversubtitle{CMPS 297AD/396AI}
 \coverpartname{Part 1: Provable Security}
 \coversessionname{1.5: Chosen Plaintext Attacks}
-\coverwebsite{\url{https://appliedcryptography.page}}
+\coverwebsite{https://appliedcryptography.page}
 
 \begin{document}
 \begin{frame}[plain]
 	\titlepage
+\end{frame}
+
+\begin{frame}{CPA Security}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\definitionbox{Security Against Chosen-Plaintext Attacks (CPA Security)}{
+				Let $\Sigma$ be an encryption scheme, and let $\Sigma.\mathcal{C}(\mathcal{l})$ denote the set of possible ciphertexts for plaintexts of length $\mathcal{l}$. If $\Sigma$ supports only plaintexts of a single length, we can simply write $\Sigma.\mathcal{C}$ to denote the entire set of ciphertexts.\footnote{i.e. ``just forget about the length''.}\\[0.5em]
+
+				$\Sigma$ has security against \textbf{chosen-plaintext attacks} if the following two libraries are indistinguishable:
+			}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\sslinked{
+				\sslibrary{\Sigma}{cpa-real}{
+					$K \twoheadleftarrow \Sigma.\mathcal{K}$\\[1em]
+					\sslibrarysubroutine{cpa.enc}{M}{
+						$C \coloneq \Sigma.\texttt{Enc}(K, M)$\\
+						return $C$
+					}{1}
+				}{0.8}
+			}{\approxeq}{
+				\sslibrary{\Sigma}{cpa-rand}{
+					\sslibrarysubroutine{cpa.enc}{M}{
+						$C \twoheadleftarrow \Sigma.\mathcal{C}(|M|)$\\
+						return $C$
+					}{1}
+				}{0.8}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why CPA security matters}
+	\begin{itemize}[<+->]
+		\item CPA security means: \textit{``even if I let you encrypt any message you want, you can't obtain any distinguisher regarding my scheme.''}
+		\item \textbf{Why this matters in real life:}
+		      \begin{itemize}[<+->]
+			      \item Attackers often can trick systems into encrypting data they choose.
+			      \item Without CPA security, seeing these encryptions could reveal your secrets.
+			      \item Example: If bank transactions always encrypt to the same ciphertexts, attackers could identify your purchases.
+		      \end{itemize}
+		\item The only thing that's allowed to leak is the length of messages/ciphertext.
+		\item Most modern encryption is designed to have this important property.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Message length: not important, not unimportant}
+	\begin{itemize}[<+->]
+		\item Even with CPA security, the \textbf{length} of messages is still leaked.
+		\item This seemingly minor leak can reveal surprising information:
+		      \begin{itemize}[<+->]
+			      \item \textbf{Encrypted VoIP calls}: Length patterns can reveal which language is spoken.
+			      \item \textbf{Encrypted web traffic}: Sizes of requests/responses identify websites.
+			      \item \textbf{Encrypted messages}: Length patterns can reveal the type of content (document, image, etc.)
+			      \item \textbf{Encrypted commands}: Length often reveals which command was issued.
+		      \end{itemize}
+		\item Mitigation typically involves padding messages to fixed lengths or standard increments.
+		\item This is why many secure protocols use fixed-size packets or add random padding.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{CPA security is why we avoid deterministic encryption}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Deterministic encryption will always fail CPA security!
+				\item If the same message always encrypts to the same ciphertext:
+				      \begin{itemize}
+					      \item Attacker can recognize repeat messages.
+					      \item Can build a ``dictionary'' of known plaintexts.
+					      \item etc.
+				      \end{itemize}
+				\item ECB mode is a classic example of insecure deterministic encryption.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\ssprogram{}{
+					$M \twoheadleftarrow \mathcal{M}$\\
+					$C_1 \coloneq \sssubroutinename{cpa.enc}{M}$\\
+					$C_2 \coloneq \sssubroutinename{cpa.enc}{M}$\\
+					$return C_1 == C_2$
+				}{1}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AES is a block cipher}{Reminder}
+	\begin{itemize}[<+->]
+		\item AES takes a 16-byte input, produces a 16-byte output.
+		\item Key can be 16, 24 or 32 bytes. \pause
+		\item OK, so what if we want to encrypt more than 16 bytes? \pause
+		\item \textbf{Proposal}: split the plaintext into 16 byte chunks, encrypt
+		      each of them with the same key.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Block cipher examples}
+	\begin{columns}
+		\begin{column}{0.33\textwidth}
+			\imagewithcaption{tux_plaintext.png}{What we start with}
+		\end{column}
+		\pause
+		\begin{column}{0.33\textwidth}
+			\imagewithcaption{tux_encrypted_ecb.png}{What we get}
+		\end{column}
+		\pause
+		\begin{column}{0.33\textwidth}
+			\imagewithcaption{tux_encrypted_ctr.png}{What we actually want}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AES by itself is deterministic}
+	\begin{columns}[c]
+		\begin{column}{0.7\textwidth}
+			\begin{itemize}[<+->]
+				\item AES as a block cipher is inherently \textbf{deterministic}:
+				      \begin{itemize}
+					      \item $\texttt{AES}(K, M) = C$ will always produce the same $C$.
+					      \item This makes raw AES fail CPA security.
+				      \end{itemize}
+				\item What makes AES secure in practice?
+				      \begin{itemize}
+					      \item \textbf{Block cipher modes} (CBC, CTR, GCM) add randomness/state using ``initialization vectors''
+					            \begin{itemize}
+						            \item IV is fancy name for ``random bytes used once''.\footnote{Also referred to as ``nonces'' for ``number used once'', although in some block cipher modes such as AES-CBC, they can technically be used multiple times without problems.}
+					            \end{itemize}
+					      \item IVs ensure the same plaintext encrypts differently each time.
+				      \end{itemize}
+				\item Without a proper mode, AES is like ECB mode: predictable patterns
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+			\begin{center}
+				\ssprogram{AES}{
+					$K \twoheadleftarrow \bits^{\lambda}$\\
+					$M \twoheadleftarrow \mathcal{M}$\\[0.5em]
+					$C_1 \coloneq \texttt{AES}(K, M)$\\
+					$C_2 \coloneq \texttt{AES}(K, M)$\\[0.5em]
+					$C_1 == C_2$
+				}{0.85}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Block cipher modes of operation}
+	\bigimagewithcaption{block_cipher_modes.png}{Source: Wikipedia}
+\end{frame}
+
+\begin{frame}{Non-deterministic encryption isn't hard}
+	\begin{columns}[c]
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Slides not complete}
