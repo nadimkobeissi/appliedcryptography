@@ -1,3 +1,10 @@
 # Materials
 
-I plan to store materials relevant to the course here. Right now it's pretty empty, because I'm still busy working on the slides, which will take a long time. Check back later.
+This folder contains learning materials relevant to the course.
+
+## Contents
+
+- `assignments`: Assignments, graded problem sets.
+- `interactive`: Interactive learning materials.
+- `labs`: Lab session project sheets.
+- `papers`: Papers cited during course sessions.

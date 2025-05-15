@@ -102,6 +102,100 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Non-deterministic encryption isn't hard...}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item AES-CTR turns AES into a non-deterministic PRF...
+				\item AES-GCM even turns it into a non-deterministic authenticated cipher...\footnote{More on these later. An authenticated cipher is one where the ciphertext can't be modified by the adversary without that being detected.}
+				\item We can just as easily make a PRF non-deterministic:
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sssubroutine{enc}{K, M}{
+				$R \twoheadleftarrow \bits^\lambda$\\
+				$S \coloneq F(K, R) \oplus M$\\
+				return $R\|S$
+			}{1}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{...but it can be fragile}
+\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item We switch M and R's places in \lib{}{cpa-real}'s encryption function.
+				\item Is the scheme still secure?
+				\item \textbf{No!}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{}{cpa-real}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{cpa.enc}{M}{
+						$R \twoheadleftarrow \bits^\lambda$\\
+						$S \coloneq F(K, \hl{M}) \oplus \hl{R}$\\
+						return $R\|S$
+					}{1}
+				}{1}
+			}{\overset{?}{\approxeq}}{
+				\sslibrary{}{cpa-rand}{
+					\sslibrarysubroutine{cpa.enc}{M}{
+						$R\|S \twoheadleftarrow \bits^{2\lambda}$\\
+						return $R\|S$
+					}{1}
+				}{1}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The Golden Rule of PRFs}
+	\definitionbox{The Golden Rule of PRFs}{
+		If a PRF $F$ is being used as a component in a larger construction $H$, then security usually rests on how well $H$ can ensure distinct inputs to $F$.
+	}
+	\begin{itemize}[<+->]
+		\item When analyzing PRF security, focus on input uniqueness.
+		\item Repeated inputs to a PRF create exploitable patterns.
+		\item Even if $F$ is secure, $H$ can be broken if it causes $F$ to receive duplicate inputs.
+		\item Don't try to directly distinguish $F$'s outputs from uniform.
+		\item Instead, exploit how $H$ uses $F$ incorrectly.
+		\item Find input patterns that force collisions within $F$.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{...but it can be fragile}
+\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item $F(K, M)$ is now constant.
+				\item \prob{\prog{}\link\lib{}{cpa-real} \Rightarrow \texttt{true}} $ = 1$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\ssprogram{}{
+					$M \twoheadleftarrow \mathcal{M}$\\
+					$R_1\|S_1 \coloneq \sssubroutinename{cpa.enc}{M}$\\
+					$R_2\|S_2 \coloneq \sssubroutinename{cpa.enc}{M}$\\
+					return $S_1 \oplus S_2 == R_1 \oplus R_2$
+				}{0.8}
+			}{\link}{
+				\sslibrary{}{cpa-real}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{cpa.enc}{M}{
+						$R \twoheadleftarrow \bits^\lambda$\\
+						$S \coloneq F(K, \hl{M}) \oplus \hl{R}$\\
+						return $R\|S$
+					}{1}
+				}{0.8}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{AES is a block cipher}{Reminder}
 	\begin{itemize}[<+->]
 		\item AES takes a 16-byte input, produces a 16-byte output.
@@ -164,25 +258,6 @@
 
 \begin{frame}{Block cipher modes of operation}
 	\bigimagewithcaption{block_cipher_modes.png}{Source: Wikipedia}
-\end{frame}
-
-\begin{frame}{Non-deterministic encryption isn't hard}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
-				\item AES-CTR turns AES into a non-deterministic PRF...
-				\item AES-GCM even turns it into a non-deterministic authenticated cipher...\footnote{More on these later. An authenticated cipher is one where the ciphertext can't be modified by the adversary without that being detected.}
-				\item We can just as easily make a PRF non-deterministic:
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\sssubroutine{enc}{K, M}{
-				$R \twoheadleftarrow \bits^\lambda$\\
-				$S \coloneq F(K, R) \oplus M$\\
-				return $R\|S$
-			}{1}
-		\end{column}
-	\end{columns}
 \end{frame}
 
 \begin{frame}{Slides not complete}
