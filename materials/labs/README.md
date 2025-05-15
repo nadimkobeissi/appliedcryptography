@@ -1,10 +1,8 @@
 # Labs
 
-Nothing here yet. TODO:
-
-- [ ] Password Manager
-- [ ] Secure Messenger
-- [ ] [ZK Battleship](https://github.com/nategraf/oscw-zkvms-battleship)
+- [x] Password Manager
+- [x] Secure Messenger
+- [x] [ZK Battleship](https://github.com/nategraf/oscw-zkvms-battleship)
 - [ ] [ProofFrog](https://prooffrog.github.io)
 - [ ] [Verifpal](https://verifpal.com)
 - [ ] [ProVerif](https://proverif.inria.fr) or [Tamarin](https://tamarin-prover.com)

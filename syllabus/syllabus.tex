@@ -1,67 +1,86 @@
 \documentclass[10pt,a4paper,american]{article}
-\usepackage[pdftitle=Applied Cryptography,pdflang=en-US,colorlinks=true,linkcolor=OliveGreen,urlcolor=OliveGreen,bookmarksopen=true]{hyperref}
-\usepackage{xurl,hyperxmp,fontspec,graphicx}
+\usepackage[pdftitle=Applied Cryptography,pdflang=en-US,colorlinks=true,linkcolor=OliveGreen,urlcolor=OliveGreen,citecolor=OliveGreen,bookmarksopen=true]{hyperref}
+\usepackage{xurl,hyperxmp,fontspec,graphicx,unicode-math,array,fancyhdr,bbding,pmboxdraw,listings,acronym,amsthm,bookmark,zref-totpages}
 \usepackage[table]{xcolor}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[inner=3.00cm,outer=3.00cm,top=3.00cm,bottom=3.00cm]{geometry}
-\usepackage{array,kpfonts,graphicx,fancyhdr,bbding,pmboxdraw,listings,acronym,amsthm,bookmark,zref-totpages}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage{titlesec}
+\usepackage[inner=2.50cm,outer=2.50cm,top=2.50cm,bottom=2.50cm]{geometry}
 \usepackage{microtype}
+\setmainfont{Inria Sans}
+\setmonofont{JetBrains Mono}
+\setmathfont{STIX Two Math}
 
+% Enhanced color palette
 \definecolor{OliveGreen}{HTML}{3F7E31}
 \definecolor{EarthBrown}{HTML}{7D4C31}
 \definecolor{LightestGray}{HTML}{EEEEEE}
+\definecolor{DarkGray}{HTML}{5F6368}
 
-\pagestyle{fancyplain}
+% Custom section styling
+\titleformat{\section}
+		{\normalfont\Large\bfseries\color{OliveGreen}}
+		{\thesection}{1em}{}
+\titleformat{\subsection}
+		{\normalfont\large\bfseries\color{EarthBrown}}
+		{\thesubsection}{1em}{}
+
+% Header and footer styling
+\pagestyle{fancy}
 \fancyhf{}
-\lhead{\fancyplain{}{Applied Cryptography}}
-\rhead{\fancyplain{}{\today}}
-\fancyfoot[RO, LE] {Page \thepage\ of \ztotpages}
-\thispagestyle{plain}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+\lhead{\textcolor{OliveGreen}{Applied Cryptography}}
+\rhead{\textcolor{DarkGray}{\today}}
+\lfoot{\textcolor{DarkGray}{CMPS 297AD/396AI}}
+\rfoot{\textcolor{DarkGray}{Page \thepage\ of \ztotpages}}
 
-\newcommand{\schedpart}[3]{
-	\textbf{Part #1: #2} \dotfill ~$\approx$ #3 sessions \\
-}
+% Custom box styles
+\tcbsetforeverylayer{colframe=OliveGreen!20!white,colback=LightestGray,boxrule=0.5pt,arc=2mm,boxsep=5pt,left=6pt,right=6pt,top=6pt,bottom=6pt}
 
-\newcommand{\schedsession}[2]{
-	\setlength{\parindent}{0em}{\color{EarthBrown}{\Rectangle}} ~\textbf{#1}: #2 \\
-}
-
-\newcommand{\schedmaterial}[2]{
-	\setlength{\parindent}{1em}{\color{OliveGreen}{\Rectangle}} ~\textit{#1}, #2 \\
-}
+\thispagestyle{empty}
 \begin{document}
+
+% Document Header
+\begin{tikzpicture}[remember picture, overlay]
+	\fill[OliveGreen!10!white] (current page.north west) rectangle ([yshift=-5cm]current page.north east);
+\end{tikzpicture}
+
+\vspace*{-1.5cm}
+\noindent
+\begin{minipage}[c]{0.35\textwidth}
+	\centering
+	\includegraphics[width=2.5in]{../website/img/aub_black.png}
+\end{minipage}
+\begin{minipage}[c]{0.65\textwidth}
+	\begin{flushright}
+		\vspace{0.3cm}
+		{\fontsize{24}{28}\selectfont\textcolor{OliveGreen}{Applied Cryptography}}
+
+		\vspace{0.2cm}
+		{\large\textcolor{DarkGray}{CMPS 297AD/396AI, Fall 2025}}
+		\vspace{0.2cm}
+	\end{flushright}
+\end{minipage}
+
+\vspace{0.8cm}
+\begin{tcolorbox}[colframe=OliveGreen!70!white,colback=white,arc=1mm]
+	\begin{center}
+		\begin{tabular}{ll}
+			\textbf{Instructor:} Nadim Kobeissi \quad\quad\quad\quad\quad \textbf{Website:} \url{https://appliedcryptography.page}
+		\end{tabular}
+	\end{center}
+\end{tcolorbox}
+
+\setlength{\unitlength}{1in}
+\renewcommand{\arraystretch}{1.5}
+% End Document Header
 
 \urldef{\urlcodeofconduct}\url{https://www.aub.edu.lb/SAO/Documents/student%20code%20of%20conduct.pdf}
 
-\noindent
-\begin{minipage}[c]{0.3\textwidth}
-	\centering
-	\includegraphics[width=2in]{../website/img/aub_red.png}
-\end{minipage}%
-\begin{minipage}[c]{0.7\textwidth}
-	\centering
-	\vspace{0.5cm}
-	\title{Applied Cryptography}
-	{\Large \textsc{Applied Cryptography}}
-
-	CMPS 297AD/396AI, Fall 2025
-	\vspace{0.5cm}
-\end{minipage}
-
-\begin{center}
-	\rule{6in}{0.4pt}
-	\begin{minipage}[t]{.75\textwidth}\begin{tabular}{llcccll}
-			\textbf{Instructor:} & Nadim Kobeissi
-			\textbf{Website:}    & \url{https://appliedcryptography.page}
-		\end{tabular}\end{minipage}
-	\rule{6in}{0.4pt}
-\end{center}
-\vspace{.5cm}
-\setlength{\unitlength}{1in}
-\renewcommand{\arraystretch}{2}
-
-\section{Course Description}
+\section*{Course Syllabus}
 \textit{Applied Cryptography} explores the core theory of modern cryptography and how to apply these fundamental principles to build and analyze real-world secure systems. We start with foundational concepts—such as Kerckhoff's Principle, computational hardness, and provable security—before moving on to key cryptographic primitives like pseudorandom generators, block ciphers, and hash functions. Building on this solid groundwork, we will survey how these technologies power critical real-world deployments such as TLS, secure messaging protocols (e.g., Signal), and post-quantum cryptography. We will also delve into specialized topics like high-assurance cryptographic implementations, elliptic-curve-based systems, and zero-knowledge proofs to give you a complete understanding of contemporary cryptography's scope and impact. By the end of the semester, you will have gained both a rigorous theoretical perspective and practical hands-on experience, enabling you to evaluate, design, and implement cryptographic solutions.
 
 \section{Course Objectives \& Outcomes}
@@ -103,7 +122,7 @@ Overall, these graded components are designed to ensure that you not only grasp 
 The final course grade will be computed using the following breakdown:
 
 \begin{center}
-	\renewcommand{\arraystretch}{1.2}
+	\renewcommand{\arraystretch}{2}
 	\begin{tabular}{|p{2.5in}|c|}
 		\hline
 		\rowcolor{LightestGray} \textbf{Category} & \textbf{Percentage} \\

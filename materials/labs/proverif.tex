@@ -1,0 +1,237 @@
+\documentclass[10pt,a4paper,american]{article}
+\usepackage[pdftitle=Applied Cryptography,pdflang=en-US,colorlinks=true,linkcolor=OliveGreen,urlcolor=OliveGreen,citecolor=OliveGreen,bookmarksopen=true]{hyperref}
+\usepackage{xurl,hyperxmp,fontspec,graphicx,unicode-math,array,fancyhdr,bbding,pmboxdraw,listings,acronym,amsthm,bookmark,zref-totpages}
+\usepackage[table]{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage{titlesec}
+\usepackage[inner=2.50cm,outer=2.50cm,top=2.50cm,bottom=2.50cm]{geometry}
+\usepackage{microtype}
+\setmainfont{Inria Sans}
+\setmonofont{JetBrains Mono}
+\setmathfont{STIX Two Math}
+
+% Enhanced color palette
+\definecolor{OliveGreen}{HTML}{3F7E31}
+\definecolor{EarthBrown}{HTML}{7D4C31}
+\definecolor{LightestGray}{HTML}{EEEEEE}
+\definecolor{DarkGray}{HTML}{5F6368}
+
+% Custom section styling
+\titleformat{\section}
+		{\normalfont\Large\bfseries\color{OliveGreen}}
+		{\thesection}{1em}{}
+\titleformat{\subsection}
+		{\normalfont\large\bfseries\color{EarthBrown}}
+		{\thesubsection}{1em}{}
+
+% Header and footer styling
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+\lhead{\textcolor{OliveGreen}{Applied Cryptography}}
+\rhead{\textcolor{DarkGray}{\today}}
+\lfoot{\textcolor{DarkGray}{CMPS 297AD/396AI}}
+\rfoot{\textcolor{DarkGray}{Page \thepage\ of \ztotpages}}
+
+% Custom box styles
+\tcbsetforeverylayer{colframe=OliveGreen!20!white,colback=LightestGray,boxrule=0.5pt,arc=2mm,boxsep=5pt,left=6pt,right=6pt,top=6pt,bottom=6pt}
+
+\thispagestyle{empty}
+\begin{document}
+
+% Document Header
+\begin{tikzpicture}[remember picture, overlay]
+	\fill[OliveGreen!10!white] (current page.north west) rectangle ([yshift=-5cm]current page.north east);
+\end{tikzpicture}
+
+\vspace*{-1.5cm}
+\noindent
+\begin{minipage}[c]{0.35\textwidth}
+	\centering
+	\includegraphics[width=2.5in]{../../website/img/aub_black.png}
+\end{minipage}
+\begin{minipage}[c]{0.65\textwidth}
+	\begin{flushright}
+		\vspace{0.3cm}
+		{\fontsize{24}{28}\selectfont\textcolor{OliveGreen}{Applied Cryptography}}
+
+		\vspace{0.2cm}
+		{\large\textcolor{DarkGray}{CMPS 297AD/396AI, Fall 2025}}
+		\vspace{0.2cm}
+	\end{flushright}
+\end{minipage}
+
+\vspace{0.8cm}
+\begin{tcolorbox}[colframe=OliveGreen!70!white,colback=white,arc=1mm]
+	\begin{center}
+		\begin{tabular}{ll}
+			\textbf{Instructor:} Nadim Kobeissi \quad\quad\quad\quad\quad \textbf{Website:} \url{https://appliedcryptography.page}
+		\end{tabular}
+	\end{center}
+\end{tcolorbox}
+
+\setlength{\unitlength}{1in}
+\renewcommand{\arraystretch}{1.5}
+% End Document Header
+
+\section*{Lab Assignment: Designing and Verifying a TLS-like Protocol using ProVerif}
+
+\subsection*{Overview}
+In this lab, you will design and formally verify a Transport Layer Security (TLS)-like protocol using ProVerif, a formal verification tool for cryptographic protocols. This represents your first opportunity to apply formal methods to verify the security properties of a complete cryptographic protocol—one that provides confidentiality, integrity, and authentication for network communications. By designing and verifying this protocol, you'll gain practical experience with cryptographic protocol design, formal verification, and security property specification. Future lab assignments will build upon these skills by incorporating more complex cryptographic protocols and verification scenarios.
+
+\subsection*{Learning Objectives}
+After completing this lab, you should be able to:
+\begin{itemize}
+	\item Apply formal verification to analyze security properties of cryptographic protocols.
+	\item Understand and use the ProVerif verification tool.
+	\item Design and specify a cryptographic protocol with proper threat modeling.
+	\item Evaluate protocol security properties such as secrecy, authentication, and forward secrecy.
+\end{itemize}
+
+\subsection*{Background}
+Formal verification tools like ProVerif allow protocol designers to mathematically verify security properties. In the context of a TLS-like protocol:
+\begin{itemize}
+	\item ProVerif models attackers who have complete control over the communication network.
+	\item Security properties can be precisely defined and verified, such as confidentiality of session keys.
+	\item Verification is performed automatically by exploring all possible protocol executions.
+	\item ProVerif uses symbolic cryptography to reason about cryptographic primitives.
+\end{itemize}
+
+\subsection*{Requirements}
+Your TLS-like protocol must implement the following core functionality:
+
+\begin{enumerate}
+	\item \textbf{Protocol Initialization:}
+	      \begin{itemize}
+		      \item Design a secure handshake procedure between client and server.
+		      \item Incorporate key exchange mechanisms (e.g., Diffie-Hellman).
+		      \item Implement proper authentication through digital signatures or certificates.
+	      \end{itemize}
+
+	\item \textbf{Key Exchange:}
+	      \begin{itemize}
+		      \item Establish secure session keys between client and server.
+		      \item Ensure forward secrecy for session communications.
+		      \item Protect against Man-in-the-Middle attacks.
+	      \end{itemize}
+
+	\item \textbf{Secure Communication:}
+	      \begin{itemize}
+		      \item Design mechanisms for encrypting and authenticating messages.
+		      \item Implement protection against replay and reordering attacks.
+		      \item Ensure secure session termination.
+	      \end{itemize}
+
+	\item \textbf{Formal Specification:}
+	      \begin{itemize}
+		      \item Model the protocol in ProVerif's applied pi calculus.
+		      \item Define security properties to be verified.
+		      \item Design appropriate queries to check security properties.
+		      \item Include proper protocol termination and error handling.
+	      \end{itemize}
+\end{enumerate}
+
+\subsection*{Implementation Guidelines}
+
+\subsubsection*{Step 1: Design}
+Begin by creating a threat model for your TLS-like protocol. Consider:
+\begin{itemize}
+	\item Who are the attackers? (Network adversaries, malicious endpoints)
+	\item What assets are you protecting? (Session keys, message confidentiality, authentication)
+	\item What are the attack vectors? (Man-in-the-Middle, replay, downgrade attacks)
+	\item What cryptographic protections will you employ?
+\end{itemize}
+
+Document your design decisions and security assumptions.
+
+\subsubsection*{Step 2: Protocol Specification}
+Design your protocol using formal notation:
+\begin{itemize}
+	\item Define message formats and cryptographic operations.
+	\item Specify the exact sequence of messages exchanged.
+	\item Define the security properties you expect your protocol to satisfy.
+\end{itemize}
+
+\subsubsection*{Step 3: ProVerif Modeling}
+Implement your protocol in ProVerif:
+\begin{itemize}
+	\item Model cryptographic primitives using ProVerif's type system.
+	\item Define processes for client and server roles.
+	\item Formalize security properties as queries.
+	\item Set up the attacker model in ProVerif.
+\end{itemize}
+
+\subsubsection*{Step 4: Verification}
+Verify your protocol's security properties:
+\begin{itemize}
+	\item Run ProVerif to check for secrecy violations.
+	\item Verify authentication properties.
+	\item Test for resistance against replay attacks.
+	\item Verify forward secrecy.
+\end{itemize}
+
+\subsubsection*{Step 5: Protocol Refinement}
+Improve your protocol based on verification results:
+\begin{itemize}
+	\item Address any vulnerabilities discovered.
+	\item Optimize the protocol if possible.
+	\item Document changes and their justifications.
+\end{itemize}
+
+\subsection*{Deliverables}
+Submit the following:
+
+\begin{enumerate}
+	\item Protocol specification including:
+	      \begin{itemize}
+		      \item Formal description of your TLS-like protocol.
+		      \item Message sequence diagrams.
+		      \item Cryptographic primitives used and their roles.
+	      \end{itemize}
+	\item ProVerif code implementing your protocol.
+	\item Design document including:
+	      \begin{itemize}
+		      \item Threat model and security assumptions.
+		      \item Formal security properties being verified.
+		      \item Design decisions and their rationale.
+	      \end{itemize}
+	\item Security analysis discussing:
+	      \begin{itemize}
+		      \item Verification results from ProVerif.
+		      \item Strengths of your protocol design.
+		      \item Limitations and potential vulnerabilities.
+		      \item Suggested improvements for a production version.
+	      \end{itemize}
+\end{enumerate}
+
+\subsection*{Evaluation Criteria}
+Your project will be evaluated based on:
+
+\begin{itemize}
+	\item Correctness of ProVerif specifications and queries.
+	\item Security of the overall protocol design.
+	\item Completeness of required functionality.
+	\item Quality of code and documentation.
+	\item Thoughtfulness of security analysis.
+\end{itemize}
+
+\subsection*{Resources}
+\begin{itemize}
+	\item The course textbook and materials on cryptographic protocols.
+	\item ProVerif documentation and examples.
+	\item TLS 1.3 specification for reference.
+	\item Research papers on formal verification of security protocols (see course website).
+\end{itemize}
+
+\subsection*{Submission Guidelines}
+\begin{itemize}
+	\item Submit your ProVerif code as a ZIP archive or through a Git repository.
+	\item Include all documentation in PDF or Markdown format.
+	\item Presentations: Prepare a 10-minute presentation demonstrating your protocol design and verification results.
+\end{itemize}
+
+\end{document}

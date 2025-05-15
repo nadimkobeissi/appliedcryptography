@@ -536,50 +536,38 @@
 			</div>
 		</section>
 
-		<section id="assignments" class="section">
-			<div class="section-header">
-				<h2 class="section-title">Assignments &amp; Lab Sessions</h2>
+		<div class="subsection">
+			<div class="collapsible-header">
+				<h3 class="subsection-title">Lab Sessions</h3>
+				<i class="fas fa-chevron-down collapsible-icon"></i>
 			</div>
-
-			<div class="two-columns">
-				<div class="card">
-					<h3 class="subsection-title"><i class="fas fa-tasks icon"></i>Problem Sets</h3>
-					<p class="mb-0"><strong>Problem sets</strong> will be assigned periodically throughout the semester to reinforce and deepen your understanding of the lecture material. Each set will include a range of exercises—some focused on theoretical proofs and problem-solving, others requiring short coding tasks or computational experiments. These assignments are designed to bridge the gap between abstract cryptographic concepts and their concrete applications. You are encouraged to start working on each problem set early and to seek guidance during office hours or lab sessions if you encounter difficulties.</p>
+			<div class="collapsible-content">
+				<div class="card mb-3">
+					<h4 class="mb-2"><i class="fas fa-key icon"></i><a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/labs/pdf/password-manager.pdf">Lab 1: Designing a Password Manager</a></h4>
+					<p class="mb-0">In this lab, you will design and implement a secure password manager application. You'll learn about secure password storage techniques, key derivation functions, and encryption methods for sensitive data. The lab will guide you through implementing features such as master password protection, secure password generation, and encrypted storage. You'll also analyze potential vulnerabilities in your system and implement countermeasures to protect against common attacks like password cracking and memory scraping.</p>
 				</div>
 
-				<div class="card">
-					<h3 class="subsection-title"><i class="fas fa-flask icon"></i>Lab Sessions</h3>
-					<p class="mb-0"><strong>Lab sessions</strong> will be held weekly to serve as a hands-on complement to the lectures. During each lab, you will experiment with real-world libraries, and even simulate attacks or vulnerabilities to understand why certain security practices are necessary. These sessions will also help you become comfortable with relevant tools and environments, including formal analysis tools. Attendance is mandatory, and lab participation will be graded based on preparedness, engagement, and the successful completion of in-lab activities. Labs offer an excellent opportunity for collaborative problem-solving and immediate feedback on your work.</p>
+				<div class="card mb-3">
+					<h4 class="mb-2"><i class="fas fa-comments icon"></i><a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/labs/pdf/secure-messenger.pdf">Lab 2: Designing a Secure Messenger</a></h4>
+					<p class="mb-0">This lab focuses on building a secure messaging application implementing end-to-end encryption. You'll work with cryptographic libraries to implement key exchange protocols, message encryption, and authentication mechanisms. The lab covers essential features like perfect forward secrecy, deniability, and secure group messaging. You'll also explore practical challenges such as key verification, metadata protection, and secure key storage on devices. By the end of this lab, you'll understand the cryptographic foundations behind modern secure messaging platforms like Signal.</p>
 				</div>
-			</div>
 
-			<div class="subsection">
-				<div class="collapsible-header">
-					<h3 class="subsection-title">Example Lab Sessions</h3>
-					<i class="fas fa-chevron-down collapsible-icon"></i>
+				<div class="card mb-3">
+					<h4 class="mb-2"><i class="fas fa-shield-alt icon"></i><a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/labs/pdf/proverif.pdf">Lab 3: Protocol Modeling and Verification with Verifpal and Tamarin</a></h4>
+					<p class="mb-0">This lab introduces formal verification of security protocols using two complementary tools: Verifpal and Tamarin. You'll begin with Verifpal, a user-friendly tool designed for students, to model and analyze custom authentication and key exchange protocols. After gaining proficiency in identifying protocol vulnerabilities, you'll advance to Tamarin Prover to perform more sophisticated analyses with temporal properties and unbounded verification. Throughout the lab, you'll apply these tools to real-world protocols like TLS 1.3 fragments and Signal's X3DH, gaining practical experience in formal security verification. By the end of this lab, you'll understand how formal methods can mathematically prove security properties and detect subtle flaws that might otherwise remain hidden in manual security reviews.</p>
 				</div>
-				<div class="collapsible-content">
-					<div class="card mb-3">
-						<h4 class="mb-2"><i class="fas fa-key icon"></i>Lab 1: Designing a Password Manager</h4>
-						<p class="mb-0">In this lab, you will design and implement a secure password manager application. You'll learn about secure password storage techniques, key derivation functions, and encryption methods for sensitive data. The lab will guide you through implementing features such as master password protection, secure password generation, and encrypted storage. You'll also analyze potential vulnerabilities in your system and implement countermeasures to protect against common attacks like password cracking and memory scraping.</p>
-					</div>
 
-					<div class="card mb-3">
-						<h4 class="mb-2"><i class="fas fa-comments icon"></i>Lab 2: Designing a Secure Messenger</h4>
-						<p class="mb-0">This lab focuses on building a secure messaging application implementing end-to-end encryption. You'll work with cryptographic libraries to implement key exchange protocols, message encryption, and authentication mechanisms. The lab covers essential features like perfect forward secrecy, deniability, and secure group messaging. You'll also explore practical challenges such as key verification, metadata protection, and secure key storage on devices. By the end of this lab, you'll understand the cryptographic foundations behind modern secure messaging platforms like Signal.</p>
-					</div>
+				<div class="card mb-3">
+					<h4 class="mb-2"><i class="fas fa-chess-board icon"></i><a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/labs/pdf/zk-battleship.pdf">Lab 4: Designing a Battleship Game Using Zero-Knowledge Systems</a></h4>
+					<p class="mb-0">In this creative lab, you'll implement the classic Battleship game with a cryptographic twist using zero-knowledge proofs. You'll learn how two mutually distrustful parties can play a fair game without revealing their ship placements except when a hit occurs. The lab will guide you through designing commitment schemes, validity proofs for ship placement, and secure mechanisms for torpedo shots and hit verification—all without requiring a trusted third party. This practical application of zero-knowledge techniques demonstrates how cryptography can enable secure computation between untrusting parties in a tangible, engaging context.</p>
+				</div>
 
-					<div class="card mb-3">
-						<h4 class="mb-2"><i class="fas fa-shield-alt icon"></i>Lab 3: Protocol Modeling and Verification with Verifpal and Tamarin</h4>
-						<p class="mb-0">This lab introduces formal verification of security protocols using two complementary tools: Verifpal and Tamarin. You'll begin with Verifpal, a user-friendly tool designed for students, to model and analyze custom authentication and key exchange protocols. After gaining proficiency in identifying protocol vulnerabilities, you'll advance to Tamarin Prover to perform more sophisticated analyses with temporal properties and unbounded verification. Throughout the lab, you'll apply these tools to real-world protocols like TLS 1.3 fragments and Signal's X3DH, gaining practical experience in formal security verification. By the end of this lab, you'll understand how formal methods can mathematically prove security properties and detect subtle flaws that might otherwise remain hidden in manual security reviews.</p>
-					</div>
-
-					<div class="card mb-3">
-						<h4 class="mb-2"><i class="fas fa-chess-board icon"></i>Lab 4: Designing a Battleship Game Using Zero-Knowledge Systems</h4>
-						<p class="mb-0">In this creative lab, you'll implement the classic Battleship game with a cryptographic twist using zero-knowledge proofs. You'll learn how two mutually distrustful parties can play a fair game without revealing their ship placements except when a hit occurs. The lab will guide you through designing commitment schemes, validity proofs for ship placement, and secure mechanisms for torpedo shots and hit verification—all without requiring a trusted third party. This practical application of zero-knowledge techniques demonstrates how cryptography can enable secure computation between untrusting parties in a tangible, engaging context.</p>
-					</div>
+				<div class="card mb-3">
+					<h4 class="mb-2"><i class="fas fa-lightbulb icon"></i>Propose your own lab session!</h4>
+					<p class="mb-0">Take the opportunity to propose and develop your own cryptographic project based on your interests and the concepts covered in the course! You might implement a novel protocol, create a secure application, perform a cryptanalysis of an existing system, or conduct formal verification of a protocol. Your proposal should include your project goals, the cryptographic primitives or techniques you'll explore, implementation details, and how you'll evaluate its security properties. This self-directed project allows you to delve deeper into an area of applied cryptography that particularly interests you while demonstrating your understanding of the course material in a creative and practical context.</p>
 				</div>
 			</div>
+		</div>
 		</section>
 	</div>
 
