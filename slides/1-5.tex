@@ -1018,30 +1018,478 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Encrypt-then-MAC}
-	\begin{itemize}
-		\item This slide deck is not finished and is missing important material. Do not rely on it yet.
+\begin{frame}{PRFs as MACs}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}[<+->]
+				\item A pseudorandom function (PRF) can be used directly as a MAC!
+				\item The MAC key is the PRF key $K$.
+				\item To authenticate a message $X$:
+				      \begin{itemize}
+					      \item Compute the tag $T = F(K, X)$
+					      \item Send both $X$ and $T$ to the recipient
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{flushright}
+				\sslinked{
+					\sslibrary{}{mac-real}{
+						$K \twoheadleftarrow \bits^\lambda$\\[1em]
+						\sslibrarysubroutine{mac.guess}{X, Y}{
+							return $Y == F(K, X)$
+						}{1}\\[1em]
+						\sslibrarysubroutine{mac.reveal}{X}{
+							return $F(K, X)$
+						}{1}
+					}{0.75}
+				}{\approxeq}{
+					\sslibrary{}{mac-ideal}{
+						\sslibrarysubroutine{mac.guess}{X, Y}{
+							if $L[X]$ undefined: return $\texttt{false}$\\
+							return $Y == L[X]$
+						}{1}\\[1em]
+						\sslibrarysubroutine{mac.reveal}{X}{
+							if $L[X]$ undefined: $L[X] \twoheadleftarrow \bits^\lambda$\\
+							return $L[X]$
+						}{1}
+					}{0.75}
+				}
+			\end{flushright}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{From CPA to CCA security}{The Encrypt-then-MAC approach}
+	\begin{itemize}[<+->]
+		\item CPA security isn't enough in the real world.
+		\item We need protection against chosen-ciphertext attacks.
+		\item Solution: combine encryption with a MAC!.
+		\item \textbf{Encrypt-then-MAC}:
+		      \begin{itemize}
+			      \item Encrypt the message normally.
+			      \item Compute a MAC tag of the \textit{ciphertext}.
+			      \item Send both ciphertext and tag.
+			      \item Receiver verifies the tag before decrypting.
+		      \end{itemize}
+		\item This prevents adversaries from creating valid modified ciphertexts.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Encrypt-then-MAC: formal construction}
+	\begin{columns}[c]
+		\begin{column}{0.45\textwidth}
+			\definitionbox{Encrypt-then-MAC Construction}{
+				Let $\Sigma$ be an SKE scheme and $F$ be a PRF with output length $\lambda$ whose domain includes $\Sigma.\mathcal{C}$.
+				Define a new encryption scheme:
+				\begin{align*}
+					\mathcal{K}       & = \Sigma.\mathcal{K} \times \bits^\lambda       \\
+					\mathcal{M}       & = \Sigma.\mathcal{M}                            \\
+					\mathcal{C}(\ell) & = \Sigma.\mathcal{C}(\ell) \times \bits^\lambda
+				\end{align*}
+			}
+		\end{column}
+		\begin{column}{0.55\textwidth}
+			\sssubroutine{Enc}{(K_e, K_m), M}{
+				$C \coloneq \Sigma.\texttt{Enc}(K_e, M)$\\
+				$T \coloneq F(K_m, C)$\\
+				return $C\|T$
+			}{1}
+			\sssubroutine{Dec}{(K_e, K_m), C\|T}{
+				if $F(K_m, C) \neq T$: return $\texttt{err}$\\
+				return $\Sigma.\texttt{Dec}(K_e, C)$
+			}{1}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{CCA security of Encrypt-then-MAC}
+	\begin{columns}[c]
+		\begin{column}{0.45\textwidth}
+			\definitionbox{CCA Security Claim}{
+				If $\Sigma$ is a CPA-secure encryption scheme and $F$ is a secure PRF, then the Encrypt-then-MAC construction is CCA-secure.
+			}
+			\begin{itemize}[<+->]
+				\item Key insight: \textbf{the MAC prevents tampering}
+				\item Without the MAC key, adversary can't create valid tags.
+				\item \textbf{Decryption oracle only returns plaintexts for ciphertexts with valid tags.}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.55\textwidth}
+			\sslinked{
+				\sslibrary{}{cca-real}{
+					$K_e \twoheadleftarrow \Sigma.\mathcal{K}$\\
+					$K_m \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{cca.enc}{M}{
+						$C \coloneq \Sigma.\texttt{Enc}(K_e, M)$\\
+						$T \coloneq F(K_m, C)$\\
+						return $C\|T$
+					}{1}\\[1em]
+					\sslibrarysubroutine{cca.dec}{C\|T}{
+						if $F(K_m, C) \neq T$: return $\texttt{err}$\\
+						return $\Sigma.\texttt{Dec}(K_e, C)$
+					}{1}
+				}{0.65}
+			}{\approxeq}{
+				\sslibrary{}{cca-rand}{
+					$K_e \twoheadleftarrow \Sigma.\mathcal{K}$\\
+					$K_m \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{cca.enc}{M}{
+						$C \twoheadleftarrow \Sigma.\mathcal{C}(|M|)$\\
+						$T \twoheadleftarrow \bits^\lambda$\\
+						$\mathcal{D}[C\|T] \coloneq M$\\
+						return $C\|T$
+					}{1}\\[1em]
+					\sslibrarysubroutine{cca.dec}{C\|T}{
+						if $\mathcal{D}[C\|T]$ defined: return $\mathcal{D}[C\|T]$\\
+						if $F(K_m, C) \neq T$: return $\texttt{err}$\\
+						return $\Sigma.\texttt{Dec}(K_e, C)$
+					}{1}
+				}{0.65}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Combining MACs and encryption}
+	\begin{itemize}[<+->]
+		\item Not every way of combining a MAC and CPA-secure encryption achieves CCA security.
+		\item There are three common approaches to combining them:
+		      \begin{itemize}
+			      \item \textbf{Encrypt-then-MAC}: Encrypt message, then MAC the ciphertext.
+			      \item \textbf{Encrypt-and-MAC}: Encrypt message and MAC the plaintext separately.
+			      \item \textbf{MAC-then-encrypt}: MAC the plaintext, then encrypt both message and tag.
+		      \end{itemize}
+		\item Only one approach guarantees CCA security when using any CPA-secure encryption.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Encrypt-then-MAC}{CCA-secure}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{MAC verifies ciphertext integrity} before decryption.
+				\item Prevents attackers from submitting modified ciphertexts.
+				\item \textbf{Always CCA-secure} if encryption is CPA-secure and MAC is secure.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sssubroutine{Enc}{(K_e, K_m), M}{
+				$C \coloneq \Sigma.\texttt{Enc}(K_e, M)$\\
+				$T \coloneq F(K_m, C)$\\
+				return $C\|T$
+			}{1}
+			\sssubroutine{Dec}{(K_e, K_m), C\|T}{
+				if $F(K_m, C) \neq T$: return $\texttt{err}$\\
+				return $\Sigma.\texttt{Dec}(K_e, C)$
+			}{1}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Encrypt-and-MAC}{Not even CPA-secure!}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{MAC is computed on the plaintext}
+				\item Same plaintext always produces same tag, leaking equality information.
+				\item \textbf{Not even CPA-secure}, let alone CCA-secure.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sssubroutine{Enc}{(K_e, K_m), M}{
+				$C \coloneq \Sigma.\texttt{Enc}(K_e, M)$\\
+				$T \coloneq F(K_m, M)$\\
+				return $C\|T$
+			}{1}
+			\sssubroutine{Dec}{(K_e, K_m), C\|T}{
+				$M \coloneq \Sigma.\texttt{Dec}(K_e, C)$\\
+				if $F(K_m, M) \neq T$: return $\texttt{err}$\\
+				return $M$
+			}{1}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{MAC-then-encrypt}{It's complicated}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Tag is hidden inside the ciphertext}
+				\item Whether this is CCA-secure depends on the specific encryption scheme.
+				\item \textbf{Not generally CCA-secure} for all CPA-secure encryption schemes.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sssubroutine{Enc}{(K_e, K_m), M}{
+				$T \coloneq F(K_m, M)$\\
+				$C \coloneq \Sigma.\texttt{Enc}(K_e, M\|T)$\\
+				return $C$
+			}{1}
+			\sssubroutine{Dec}{(K_e, K_m), C}{
+				$M\|T \coloneq \Sigma.\texttt{Dec}(K_e, C)$\\
+				if $F(K_m, M) \neq T$: return $\texttt{err}$\\
+				return $M$
+			}{1}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Encrypt + MAC security comparison}
+	\begin{center}
+		\begin{tabular}{|l|c|c|}
+			\hline
+			\textbf{Construction} & \textbf{CPA-secure?} & \textbf{CCA-secure?} \\
+			\hline
+			Encrypt-then-MAC      & Yes                  & Yes                  \\
+			\hline
+			Encrypt-and-MAC       & No                   & No                   \\
+			\hline
+			MAC-then-encrypt      & Yes                  & Maybe                \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{1em}
+	\begin{itemize}[<+->]
+		\item \textbf{Encrypt-then-MAC} is the safest option.
+		\item \textbf{Encrypt-and-MAC} should never be used.
+		\item \textbf{MAC-then-encrypt} requires case-by-case analysis.
 	\end{itemize}
 \end{frame}
 
 \subsection{Authenticated Encryption}
 
-\begin{frame}{Encrypt-then-MAC: alternatives}
-	\begin{itemize}
-		\item This slide deck is not finished and is missing important material. Do not rely on it yet.
+\begin{frame}{Authenticated Encryption: beyond CCA security}
+	\begin{itemize}[<+->]
+		\item CCA security is stronger than CPA security, but still not the gold standard.
+		\item CCA security says: adversary-generated ciphertexts won't reveal useful information.
+		\item But CCA security doesn't require that they decrypt to \texttt{err}.
+		\item For many applications, we want a stronger guarantee:
+		      \begin{itemize}
+			      \item Only key-holders can create valid ciphertexts.
+			      \item All other ciphertexts should be rejected as invalid.
+		      \end{itemize}
+		\item This property is called \textbf{Authenticated Encryption (AE)}.
+		\item Authenticated encryption provides both confidentiality and authenticity.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{AEADs: authenticated encryption with associated data}
-	\begin{itemize}
-		\item This slide deck is not finished and is missing important material. Do not rely on it yet.
+\begin{frame}{Authenticated Encryption: formal definition}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\definitionbox{Authenticated Encryption}{
+				A SKE scheme $\Sigma$ is a secure authenticated encryption (AE) scheme if the following two libraries are indistinguishable:
+			}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{flushright}
+				\sslinked{
+					\sslibrary{\Sigma}{ae-real}{
+						$K \twoheadleftarrow \Sigma.\mathcal{K}$\\[1em]
+						\sslibrarysubroutine{ae.enc}{M}{
+							return $\Sigma.\texttt{Enc}(K, M)$
+						}{1}\\[1em]
+						\sslibrarysubroutine{ae.dec}{C}{
+							return $\Sigma.\texttt{Dec}(K, C)$
+						}{1}
+					}{0.75}
+				}{\approxeq}{
+					\sslibrary{\Sigma}{ae-rand}{
+						\sslibrarysubroutine{ae.enc}{M}{
+							$C \twoheadleftarrow \Sigma.\mathcal{C}(|M|)$\\
+							$\mathcal{D}[C] \coloneq M$\\
+							return $C$
+						}{1}\\[1em]
+						\sslibrarysubroutine{ae.dec}{C}{
+							if $\mathcal{D}[C]$ defined: return $\mathcal{D}[C]$\\
+							else: return $\texttt{err}$
+						}{1}
+					}{0.75}
+				}
+			\end{flushright}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AE vs. CCA security}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Key difference: \textbf{how we handle adversary-created ciphertexts}.
+				\item In \lib{\Sigma}{ae-rand}, any ciphertext not created by the library always decrypts to \texttt{err}.
+				\item In \lib{\Sigma}{cca-rand}, such ciphertexts could decrypt to anything (not necessarily \texttt{err}).
+				\item So AE requires:
+				      \begin{itemize}
+					      \item Adversary cannot tell real from random ciphertexts (as in CPA)
+					      \item Adversary cannot create new valid ciphertexts (authentication)
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item AE is \textbf{strictly stronger} than CCA security.
+				\item Every AE scheme is CCA-secure, but not every CCA-secure scheme is an AE.
+				\item Making the distinction explicit helps us design better protocols.
+				\item AE is what you should aim for in practice.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{How Encrypt-then-MAC achieves AE}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item Remember our Encrypt-then-MAC construction:
+				      \begin{itemize}
+					      \item Encrypt the plaintext: $C \coloneq \Sigma.\texttt{Enc}(K_e, M)$
+					      \item MAC the ciphertext: $T \coloneq F(K_m, C)$
+					      \item Send both: $C\|T$
+				      \end{itemize}
+				\item It achieves AE security because:
+				      \begin{itemize}
+					      \item Without $K_m$, adversary can't forge valid tags.
+					      \item Any ciphertext not created by the system will fail MAC verification.
+					      \item MAC verification failures lead to \texttt{err}.
+				      \end{itemize}
+				\item The proof is nearly identical to CCA security proof.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\definitionbox{AE Security of Encrypt-then-MAC}{
+				Encrypt-then-MAC is a secure AE, if the underlying $\Sigma$ is a CPA-secure SKE and $F$ is a secure PRF.
+			}
+			\vspace{0.5em}
+			\definitionbox{AE implies CCA}{
+				If an encryption scheme $\Sigma$ is a secure AE, then it is also CCA-secure.
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Authenticated Encryption: in practice}
+	\begin{itemize}[<+->]
+		\item Modern cryptographic protocols almost always use authenticated encryption.
+		\item Common AE implementations:
+		      \begin{itemize}[<+->]
+			      \item \textbf{AES-GCM} (Galois/Counter Mode): most widely used, combines CTR mode with a MAC.
+			      \item \textbf{ChaCha20-Poly1305}: popular alternative to AES-GCM, especially on devices without AES hardware.
+			      \item \textbf{AES-CBC + HMAC-SHA256}: older approach, uses Encrypt-then-MAC with AES in CBC mode.
+		      \end{itemize}
+		\item Important implementation rule: \textbf{verify before decrypt}!
+		      \begin{itemize}[<+->]
+			      \item Always check the MAC before decrypting.
+			      \item Prevents timing side-channels based on decryption behavior.
+			      \item Helps protect against padding oracle attacks and similar vulnerabilities.
+		      \end{itemize}
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Slides not complete}
+\begin{frame}{Replay attacks}{Step 1: Alice sends original message}
+	\bigimagewithcaption{aead_scenario_1.png}{Source: The Joy of Cryptography}
+\end{frame}
+
+\begin{frame}{Replay attacks}{Step 2: Attacker replays message in a different context}
+	\bigimagewithcaption{aead_scenario_2.png}{Source: The Joy of Cryptography}
+\end{frame}
+
+\begin{frame}{Replay attacks}{Authenticated encryption didn't save us}
 	\begin{itemize}
-		\item This slide deck is not finished and is missing important material. Do not rely on it yet.
+		\item Even with authenticated encryption, context matters!
+		\item Scenario: Alice sends Bob encrypted commands.
+		      \begin{itemize}
+			      \item Each ciphertext contains Alice's genuine intent.
+			      \item Bob trusts any ciphertext that decrypts successfully.
+		      \end{itemize}
+		\item Vulnerability: An adversary can replay legitimate ciphertexts.
+		      \begin{itemize}
+			      \item Alice once sent ``Delete temporary files''.
+			      \item Adversary replays it when Alice meant to say ``Display files''.
+		      \end{itemize}
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Associated data}
+	\begin{itemize}[<+->]
+		\item Solution 1: Include context in the plaintext
+		      \begin{itemize}
+			      \item ``\texttt{ACTION: DISPLAY}'' before the actual message.
+			      \item Inefficient - increases message size.
+			      \item Both parties already know the context.
+		      \end{itemize}
+		\item Better solution: Associated Data (AD)
+		      \begin{itemize}
+			      \item Context that sender and receiver already know.
+			      \item Used during encryption and decryption.
+			      \item Doesn't increase ciphertext size.
+		      \end{itemize}
+		\item How it works:
+		      \begin{itemize}
+			      \item $\texttt{Enc}(K, A, M) \rightarrow C$ where $A$ is associated data.
+			      \item $\texttt{Dec}(K, A, C) \rightarrow M$ or $\texttt{err}$
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{AEAD: formal definition}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{AEAD}{
+				An encryption scheme $\Sigma$ with associated data is a secure authenticated encryption with associated data (AEAD) scheme if the following two libraries are indistinguishable:
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{flushright}
+				\sslinked{
+					\sslibrary{\Sigma}{aead-real}{
+						$K \twoheadleftarrow \Sigma.\mathcal{K}$\\[1em]
+						\sslibrarysubroutine{aead.enc}{A, M}{
+							return $\Sigma.\texttt{Enc}(K, A, M)$
+						}{1}\\[1em]
+						\sslibrarysubroutine{aead.dec}{A, C}{
+							return $\Sigma.\texttt{Dec}(K, A, C)$
+						}{1}
+					}{0.75}
+				}{\approxeq}{
+					\sslibrary{\Sigma}{aead-rand}{
+						\sslibrarysubroutine{aead.enc}{A, M}{
+							$C \twoheadleftarrow \Sigma.\mathcal{C}(|M|)$\\
+							$\mathcal{D}[A, C] \coloneq M$\\
+							return $C$
+						}{1}\\[1em]
+						\sslibrarysubroutine{aead.dec}{A, C}{
+							if $\mathcal{D}[A, C]$ defined:\\
+							\quad return $\mathcal{D}[A, C]$\\
+							else: return $\texttt{err}$
+						}{1}
+					}{0.75}
+				}
+			\end{flushright}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Usefulness of AEADs}
+	\begin{itemize}[<+->]
+		\item AEAD (Authenticated Encryption with Associated Data) scheme guarantees:
+		      \begin{itemize}
+			      \item Ciphertexts reveal nothing about plaintexts (confidentiality).
+			      \item Only ciphertexts created by the legitimate sender will decrypt without error (authenticity).
+			      \item Decryption only succeeds when the correct associated data is used (context binding).
+		      \end{itemize}
+		\item What to use as associated data?
+		      \begin{itemize}
+			      \item Protocol information: ``\texttt{DISPLAY}'' vs ``\texttt{DELETE}''.
+			      \item Session identifiers or timestamps.
+			      \item Previous messages in the conversation.
+			      \item Any contextual information both parties already know.
+		      \end{itemize}
+		\item Use as much associated data as relevant - it's cryptographically ``free''!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Solution: use associated data to provide context}
+	\bigimagewithcaption{aead_scenario_4.png}{Source: The Joy of Cryptography}
 \end{frame}
 
 \begin{frame}[plain]
