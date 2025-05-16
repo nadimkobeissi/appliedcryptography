@@ -101,8 +101,10 @@
 					<h3 class="subsection-title">Course Dates & Times</h3>
 					<div class="card">
 						<ul>
-							<li><strong><i class="fas fa-chalkboard-teacher icon"></i>Lectures:</strong> TODO</li>
-							<li><strong><i class="fas fa-laptop-code icon"></i>Lab:</strong> TODO</li>
+							<li><strong><i class="fas fa-chalkboard-teacher icon"></i>Lecture Times:</strong> TODO</li>
+							<li><strong><i class="fas fa-chalkboard-teacher icon"></i>Lecture Location:</strong> TODO</li>
+							<li><strong><i class="fas fa-laptop-code icon"></i>Lab Times:</strong> TODO</li>
+							<li><strong><i class="fas fa-laptop-code icon"></i>Lab Location:</strong> TODO</li>
 							<li><strong><i class="fas fa-calendar-alt icon"></i>Term Dates:</strong> August 25<sup>th</sup> until December 13<sup>th</sup>, 2025.</li>
 							<li><strong><i class="fas fa-envelope icon"></i>Instructor's Email:</strong> <a href="mailto:cmps-297ad-396ai@nadim.email">cmps-297ad-396ai@nadim.email</a></li>
 							<li><strong><i class="fas fa-building-columns icon"></i>Office Hours:</strong> Email me to make an appointment.</li>
@@ -117,6 +119,7 @@
 						<ul>
 							<li><strong>CMPS 215:</strong> Theory of Computation</li>
 						</ul>
+						<p>If you want to understand whether you have the sufficient background for this course, <a href="https://joyofcryptography.com/pdf/chap0.pdf">review this revision chapter</a> and try to do all the exercises.</p>
 					</div>
 				</div>
 			</div>
@@ -186,6 +189,9 @@
 				<div class="card">
 					<ul>
 						<li>Michael Luby and Charles Rackoff, <a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/papers/luby-rackoff.pdf"><em>How To Construct Pseudorandom Permutations From Pseudorandom Functions</em></a>, Society for Industrial and Applied Mathematics, 1988.</li>
+						<li>Christina Garman, Matthew Green, Gabriel Kaptchuk, Ian Miers and Michael Rushanan, <a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/papers/jhu-imessage.pdf"><em>Dancing on the Lip of the Volcano: Chosen Ciphertext Attacks on Apple iMessage</em></a>, USENIX Security Symposium, 2016.</li>
+						<li>Bodo M&#xF6;ller, Thai Duong, Krzysztof Kotowicz, <a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/papers/google-poodle.pdf"><em>This POODLE Bites: Exploiting the SSL 3.0 Fallback</em></a>, Google, 2014.</li>
+						<li>Nadhem J. Alfardan, Kenneth G. Paterson, <a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/papers/rhul-luckythirteen.pdf"><em>Lucky Thirteen: Breaking the TLS and DTLS Record Protocols</em></a>, IEEE Symposium on Security and Privacy, 2013.</li>
 						<li>Karthikeyan Bhargavan and Ga&euml;tan Leurent, <a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/papers/transcript-collisions.pdf"><em>Transcript Collision Attacks: Breaking Authentication in TLS, IKE and SSH</em></a>, Network and Distributed Systems Security Symposium, 2016.</li>
 						<li><em>More to be added soon!</em></li>
 					</ul>
@@ -287,15 +293,15 @@
 					</div>
 
 					<div class="session">
-						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
+						<a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/slides/pdf/1-5.pdf" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 1.5</span>
-						<h4 class="session-title"><i class="fas fa-book"></i>Chosen Plaintext &amp; Chosen Ciphertext Attacks</h4>
+						<h4 class="session-title"><i class="fas fa-book"></i>Chosen-Plaintext &amp; Chosen-Ciphertext Attacks</h4>
 						<p class="session-overview">This session explores advanced security models for symmetric-key encryption, beginning with chosen-plaintext attack (CPA) security, where ciphertexts must be indistinguishable from random strings. We'll examine why deterministic encryption cannot achieve this security level and explore solutions including randomized PRF-based schemes and block cipher modes like CBC and CTR, while explaining why ECB mode remains fundamentally insecure. The session then advances to chosen-ciphertext attacks (CCA), where adversaries can decrypt chosen ciphertexts, demonstrating how even CPA-secure schemes like CTR mode remain vulnerable due to their malleability. We'll analyze practical format-oracle attacks that exploit information leakage during decryption to recover entire plaintexts, and examine how preventing adversaries from creating valid modified ciphertexts is essential for achieving comprehensive CCA security in real-world systems.</p>
 						<div class="session-readings">
 							<h5><i class="fas fa-book-open icon"></i>Required Readings</h5>
 							<ul>
-								<li><em>The Joy of Cryptography</em>, Chapter 8: Chosen Plaintext Attacks</li>
-								<li><em>The Joy of Cryptography</em>, Chapter 9: Chosen Ciphertext Attacks</li>
+								<li><em>The Joy of Cryptography</em>, Chapter 8: Chosen-Plaintext Attacks</li>
+								<li><em>The Joy of Cryptography</em>, Chapter 9: Chosen-Ciphertext Attacks</li>
 							</ul>
 						</div>
 					</div>
@@ -303,8 +309,8 @@
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 1.6</span>
-						<h4 class="session-title"><i class="fas fa-book"></i>Hash Functions &amp; Authenticated Encryption</h4>
-						<p class="session-overview">This session explores two crucial cryptographic primitives: collision-resistant hash functions and authenticated encryption. We'll examine hash functions as deterministic mappings from variable-length inputs to fixed-length outputs where finding collisions should be computationally difficult, requiring approximately 2<sup>(n/2)</sup> operations for an n-bit hash function. The session then transitions to authenticated encryption, covering how message authentication codes (MACs) like HMAC combine with encryption to provide both confidentiality and integrity. We'll analyze modern authenticated encryption with associated data (AEAD) schemes such as AES-GCM that efficiently provide these security properties simultaneously, examining their internal construction, security properties, and proper implementation in real-world applications.</p>
+						<h4 class="session-title"><i class="fas fa-book"></i>Collision-Resistant Hash Functions</h4>
+						<p class="session-overview">This session explores two crucial cryptographic primitives: collision-resistant hash functions and authenticated encryption. We'll examine hash functions as deterministic mappings from variable-length inputs to fixed-length outputs where finding collisions should be computationally difficult, requiring approximately 2<sup>(n/2)</sup> operations for an n-bit hash function.</p>
 						<div class="session-readings">
 							<h5><i class="fas fa-book-open icon"></i>Required Readings</h5>
 							<ul>

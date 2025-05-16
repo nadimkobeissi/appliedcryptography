@@ -81,6 +81,30 @@
 	\end{frame}
 }
 
+\AtBeginSubsection[]{
+	\begin{frame}[plain]
+		\begin{tikzpicture}[remember picture, overlay]
+			\fill[cipherdarkbg!90] (current page.north west) rectangle (current page.south east);
+			\draw[cipheraccent, line width=1.5pt] (current page.north west) rectangle (current page.south east);
+		\end{tikzpicture}
+
+		\vspace{2cm}
+		\begin{center}
+			\begin{minipage}{0.9\textwidth}
+				\raggedright
+				{\usebeamercolor[fg]{subtitle}\usebeamerfont{subtitle}Section \thesection: \insertsectionhead}\\[2.5em]
+				{\usebeamercolor[fg]{subtitle}\usebeamerfont{subtitle}\Large Subsection \thesection.\thesubsection}\\[0.2em]
+				{\usebeamercolor[fg]{title}\usebeamerfont{title}\fontsize{18}{22}\selectfont\insertsubsectionhead\par}
+			\end{minipage}
+
+			\vspace{1cm}
+			\begin{tikzpicture}
+				\draw[cipheraccent, line width=2.5pt] (0,0) -- (6,0);
+			\end{tikzpicture}
+		\end{center}
+	\end{frame}
+}
+
 % Custom commands
 \newcommand{\coversubtitle}[1]{\def\insertcoversubtitle{#1}}
 \newcommand{\coversessionname}[1]{\def\insertcoversessionname{#1}}
@@ -90,38 +114,38 @@
 
 \newcommand{\definitionbox}[2]{%
 	\begin{tcolorbox}[
-		enhanced,
-		colback=cipherprimary!5!cipherlight,
-		colframe=cipherprimary,
-		colbacktitle=cipherprimary!40!white,
-		title=#1,
-		fonttitle=\bfseries\sffamily,
-		boxrule=0.4mm,
-		arc=2mm,
-		left=3mm,right=3mm,top=3mm,bottom=3mm,
-		drop shadow={opacity=0.1},
-		sharp corners=southeast,
-		fontupper=\fontsize{9.5pt}{11pt}\selectfont
-	]
+			enhanced,
+			colback=cipherprimary!5!cipherlight,
+			colframe=cipherprimary,
+			colbacktitle=cipherprimary!40!white,
+			title=#1,
+			fonttitle=\bfseries\sffamily,
+			boxrule=0.4mm,
+			arc=2mm,
+			left=3mm,right=3mm,top=3mm,bottom=3mm,
+			drop shadow={opacity=0.1},
+			sharp corners=southeast,
+			fontupper=\fontsize{9.5pt}{11pt}\selectfont
+		]
 		#2
 	\end{tcolorbox}
 }
 
 \newcommand{\alertbox}[2]{%
 	\begin{tcolorbox}[
-		enhanced,
-		colback=red!5!cipherlight,
-		colframe=red!70!black,
-		colbacktitle=red!30!white,
-		title=#1,
-		fonttitle=\bfseries\sffamily,
-		boxrule=0.4mm,
-		arc=2mm,
-		left=3mm,right=3mm,top=3mm,bottom=3mm,
-		drop shadow={opacity=0.1},
-		sharp corners=southeast,
-		fontupper=\fontsize{9.5pt}{11pt}\selectfont
-	]
+			enhanced,
+			colback=red!5!cipherlight,
+			colframe=red!70!black,
+			colbacktitle=red!30!white,
+			title=#1,
+			fonttitle=\bfseries\sffamily,
+			boxrule=0.4mm,
+			arc=2mm,
+			left=3mm,right=3mm,top=3mm,bottom=3mm,
+			drop shadow={opacity=0.1},
+			sharp corners=southeast,
+			fontupper=\fontsize{9.5pt}{11pt}\selectfont
+		]
 		#2
 	\end{tcolorbox}
 }

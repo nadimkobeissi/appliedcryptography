@@ -1,3 +1,9 @@
+all:
+	@make password-manager
+	@make secure-messenger
+	@make zk-battleship
+	@make proverif
+
 password-manager:
 	@tectonic -o pdf "password-manager.tex"
 
