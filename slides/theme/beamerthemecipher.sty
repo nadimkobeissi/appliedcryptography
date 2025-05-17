@@ -1,22 +1,18 @@
 \ProvidesPackage{theme/beamerthemecipher}[2025/05/04 v1.0 Cipher Beamer Theme]
 
 % Load required packages
-\RequirePackage{tikz}
-\RequirePackage{xcolor}
-\RequirePackage[most]{tcolorbox}
 \RequirePackage{
-	mathtools,fontspec,unicode-math,tcolorbox,
+	mathtools,fontspec,unicode-math,
 	amsmath,amsthm,amssymb,amsfonts,graphicx,setspace,cancel,
-	etoolbox,hyperref,xstring,fancybox,varwidth,xspace,titlecaps
+	etoolbox,hyperref,xstring,fancybox,xspace,titlecaps
 }
 \RequirePackage{microtype}
-\RequirePackage[auto]{contour}
 
 % TikZ libraries
-\usetikzlibrary{shadows, arrows.meta, positioning, shapes, calc, fit, shapes.geometric}
 
 % Load dependent themes
 \usecolortheme{cipher}
 \usefonttheme{cipher}
 \useinnertheme{cipher}
 \useoutertheme{cipher}
+\RequirePackage{./joc}
