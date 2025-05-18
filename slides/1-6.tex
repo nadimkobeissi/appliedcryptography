@@ -94,12 +94,12 @@
 
 				\vspace{0.2cm}
 
-				\texttt{Input 1: "document.pdf"}\\
+				\texttt{Input 1: document.pdf}\\
 				$\mathsf{SHA256} = \texttt{a1b2c3...}$
 
 				\vspace{0.2cm}
 
-				\texttt{Input 2: "malware.exe"}\\
+				\texttt{Input 2: malware.exe}\\
 				$\mathsf{SHA256} = \texttt{a1b2c3...}$
 
 				\vspace{0.2cm}
@@ -130,12 +130,12 @@
 
 				\vspace{0.2cm}
 
-				\texttt{Input 1: "document.pdf"}\\
+				\texttt{Input 1: document.pdf}\\
 				$\mathsf{SHA256} = \texttt{a1b2c3...}$
 
 				\vspace{0.2cm}
 
-				\texttt{Input 2: "malware.exe"}\\
+				\texttt{Input 2: malware.exe}\\
 				$\mathsf{SHA256} = \texttt{a1b2c3...}$
 
 				\vspace{0.2cm}
@@ -398,7 +398,7 @@
 
 \begin{frame}{Hash functions in the real world}
 	\begin{itemize}[<+->]
-		\item Hash functions you encounter "in the wild" are \textbf{standardized} as \textbf{unsalted} functions.
+		\item Hash functions you encounter ``in the wild'' are \textbf{standardized} as \textbf{unsalted} functions.
 		\item They have only a single input argument: a string to be hashed.
 	\end{itemize}
 \end{frame}
@@ -414,7 +414,7 @@
 		      \begin{itemize}
 			      \item Forces attacker to choose which user to attack.
 			      \item Attacking two victims requires twice the effort.
-			      \item No more "attack all users for the price of one".
+			      \item No more ``attack all users for the price of one''.
 		      \end{itemize}
 		\item Even if attacker obtains both hash and salt, they still need to brute-force each password individually.
 	\end{itemize}
@@ -440,13 +440,13 @@
 		\item Consider a web API using:
 		      \begin{itemize}
 			      \item URL: \texttt{api.com/data?val=foo\&hash=123abc}
-			      \item Hash calculated as: $H(\texttt{secret} \| \texttt{"val=foo"})$
+			      \item Hash calculated as: $H(\texttt{secret} \| \texttt{val=foo})$
 			      \item Server verifies request by checking if hash matches
 		      \end{itemize}
 		\item An attacker can:
 		      \begin{itemize}
 			      \item Take a valid \texttt{hash} value
-			      \item Compute a new hash for \texttt{"val=foo\&malicious=true"}
+			      \item Compute a new hash for \texttt{val=foo\&malicious=true}
 			      \item Without knowing the secret!
 		      \end{itemize}
 	\end{itemize}
@@ -543,7 +543,6 @@
 			\begin{itemize}[<+->]
 				\item In 2017, Google and CWI Amsterdam researchers demonstrated the first practical collision for SHA-1.\footnote{\url{https://appliedcryptography.page/papers/\#shattered-sha1}}
 				\item Created two different PDF files with identical SHA-1 hashes.
-				\item Named "SHAttered" attack.
 				\item Required about 6,500 CPU years and 110 GPU years of computation.
 				\item Cost estimate: approximately \$110,000 using cloud computing.
 				\item Proved that SHA-1 should no longer be used for security-critical applications.
@@ -718,7 +717,7 @@
 		      \end{itemize}
 		\item Common passwords are instantly recognized:
 		      \begin{itemize}
-			      \item $H(\texttt{"password123"})$ is well-known.
+			      \item $H(\texttt{password123})$ is well-known.
 			      \item Attacker doesn't even need to compute hashes for common passwords.
 		      \end{itemize}
 	\end{itemize}
@@ -948,7 +947,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{"Migrate to stronger algorithms?"}{Introducing protocol agility}
+\begin{frame}{``Migrate to stronger algorithms?''}{Introducing protocol agility}
 	\begin{itemize}[<+->]
 		\item Cryptographic algorithms have limited lifespans:
 		      \begin{itemize}
