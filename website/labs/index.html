@@ -1,12 +1,12 @@
 <html>
 	<head>
-		<title>Applied Cryptography: Slides Redirector</title>
+		<title>Applied Cryptography: Labs Redirector</title>
 		<script>
 			window.addEventListener(`load`, () => {
 				const anchor = window.location.hash.substring(1);
-				if (anchor && /^\d-\d{1,2}$/.test(anchor)) {
+				if (anchor && /^\w{1,32}(-\w{1,32})?$/.test(anchor)) {
 					setTimeout(() => {
-						const redirectUrl = `https://github.com/nadimkobeissi/appliedcryptography/blob/main/slides/pdf/${anchor}.pdf`;
+						const redirectUrl = `https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/labs/pdf/${anchor}.pdf`;
 						window.location.href = redirectUrl;
 					}, 2000);
 				}

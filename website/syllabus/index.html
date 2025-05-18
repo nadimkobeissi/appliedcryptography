@@ -1,15 +1,12 @@
 <html>
 	<head>
-		<title>Applied Cryptography: Slides Redirector</title>
+		<title>Applied Cryptography: Syllabus Redirector</title>
 		<script>
 			window.addEventListener(`load`, () => {
-				const anchor = window.location.hash.substring(1);
-				if (anchor && /^\d-\d{1,2}$/.test(anchor)) {
-					setTimeout(() => {
-						const redirectUrl = `https://github.com/nadimkobeissi/appliedcryptography/blob/main/slides/pdf/${anchor}.pdf`;
-						window.location.href = redirectUrl;
-					}, 2000);
-				}
+				setTimeout(() => {
+					const redirectUrl = `https://github.com/nadimkobeissi/appliedcryptography/blob/main/syllabus/pdf/syllabus.pdf`;
+					window.location.href = redirectUrl;
+				}, 2000);
 			});
 		</script>
 	</head>

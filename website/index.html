@@ -188,11 +188,11 @@
 				<h3 class="subsection-title">Online Readings</h3>
 				<div class="card">
 					<ul>
-						<li>Michael Luby and Charles Rackoff, <a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/papers/luby-rackoff.pdf"><em>How To Construct Pseudorandom Permutations From Pseudorandom Functions</em></a>, Society for Industrial and Applied Mathematics, 1988.</li>
-						<li>Christina Garman, Matthew Green, Gabriel Kaptchuk, Ian Miers and Michael Rushanan, <a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/papers/jhu-imessage.pdf"><em>Dancing on the Lip of the Volcano: Chosen Ciphertext Attacks on Apple iMessage</em></a>, USENIX Security Symposium, 2016.</li>
-						<li>Bodo M&#xF6;ller, Thai Duong, Krzysztof Kotowicz, <a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/papers/google-poodle.pdf"><em>This POODLE Bites: Exploiting the SSL 3.0 Fallback</em></a>, Google, 2014.</li>
-						<li>Nadhem J. Alfardan, Kenneth G. Paterson, <a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/papers/rhul-luckythirteen.pdf"><em>Lucky Thirteen: Breaking the TLS and DTLS Record Protocols</em></a>, IEEE Symposium on Security and Privacy, 2013.</li>
-						<li>Karthikeyan Bhargavan and Ga&euml;tan Leurent, <a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/papers/transcript-collisions.pdf"><em>Transcript Collision Attacks: Breaking Authentication in TLS, IKE and SSH</em></a>, Network and Distributed Systems Security Symposium, 2016.</li>
+						<li>Michael Luby and Charles Rackoff, <a href="papers/#luby-rackoff"><em>How To Construct Pseudorandom Permutations From Pseudorandom Functions</em></a>, Society for Industrial and Applied Mathematics, 1988.</li>
+						<li>Bodo M&#xF6;ller, Thai Duong, Krzysztof Kotowicz, <a href="papers/#google-poodle"><em>This POODLE Bites: Exploiting the SSL 3.0 Fallback</em></a>, Google, 2014.</li>
+						<li>Nadhem J. Alfardan, Kenneth G. Paterson, <a href="papers/#rhul-luckythirteen"><em>Lucky Thirteen: Breaking the TLS and DTLS Record Protocols</em></a>, IEEE Symposium on Security and Privacy, 2013.</li>
+						<li>Christina Garman, Matthew Green, Gabriel Kaptchuk, Ian Miers and Michael Rushanan, <a href="papers/#jhu-imessage"><em>Dancing on the Lip of the Volcano: Chosen Ciphertext Attacks on Apple iMessage</em></a>, USENIX Security Symposium, 2016.</li>
+						<li>Karthikeyan Bhargavan and Ga&euml;tan Leurent, <a href="papers/#inria-collisions"><em>Transcript Collision Attacks: Breaking Authentication in TLS, IKE and SSH</em></a>, Network and Distributed Systems Security Symposium, 2016.</li>
 						<li><em>More to be added soon!</em></li>
 					</ul>
 				</div>
@@ -222,7 +222,7 @@
 
 			<div class="alert">
 				<p class="mb-0">
-					<strong><i class="fas fa-file-pdf icon"></i></strong> A <a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/syllabus/pdf/syllabus.pdf">PDF copy</a> of the Fall 2025 syllabus is available.
+					<strong><i class="fas fa-file-pdf icon"></i></strong> A <a href="syllabus/">PDF copy</a> of the Fall 2025 syllabus is available.
 				</p>
 			</div>
 
@@ -237,7 +237,7 @@
 					</p>
 
 					<div class="session">
-						<a href="https://appliedcryptography.page/slides/#1-1" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
+						<a href="slides/#1-1" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 1.1</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Introduction</h4>
 						<p class="session-overview">This introductory session establishes the foundation for the entire course by covering the scope, objectives, and structure of applied cryptography. We'll discuss key themes that will recur throughout the semester, including the balance between theory and practice, the importance of formal security definitions, and the evolution of cryptographic thinking. Students will gain a clear understanding of what to expect from the course and how the various topics connect to form a coherent framework for secure system design.</p>
@@ -250,7 +250,7 @@
 					</div>
 
 					<div class="session">
-						<a href="https://appliedcryptography.page/slides/#1-2" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
+						<a href="slides/#1-2" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 1.2</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>One-Time Pad &amp; The Provable Security Mindset</h4>
 						<p class="session-overview">This session introduces the concept of perfect secrecy through the One-Time Pad (OTP) encryption system and explores its mathematical proof of unconditional security. While theoretically unbreakable, we'll examine the severe practical limitations that make OTP challenging to deploy in real-world systems, including key generation, distribution, and management problems. The session then transitions to Kerckhoff's fundamental principle—that a cryptosystem should remain secure even if everything about the system, except the key, is public knowledge. We'll discuss how this principle has shaped modern cryptographic design philosophy and why security through obscurity fails as a long-term strategy for protecting sensitive information.</p>
@@ -264,7 +264,7 @@
 					</div>
 
 					<div class="session">
-						<a href="https://appliedcryptography.page/slides/#1-3" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
+						<a href="slides/#1-3" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 1.3</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Provable Security &amp; Computational Cryptography</h4>
 						<p class="session-overview">This session begins by delving into the rigorous mathematical frameworks that allow cryptographers to provide formal security guarantees for cryptographic schemes. We'll examine how precise definitions of security properties create a foundation for meaningful analysis, and explore various adversarial models that capture different threat scenarios. The concept of reduction—proving that breaking a scheme is at least as hard as solving some well-studied mathematical problem—will be thoroughly explored. We then transition to modern computational cryptography, moving from unconditional security to a more practical approach where security is defined against computationally bounded adversaries. Students will learn about indistinguishability as a fundamental security concept, the bad-event technique for security proofs, and birthday probabilities in cryptographic attacks. The session provides essential mathematical foundations for understanding modern cryptographic security, including quantitative intuition about large numbers (like 2<sup>128</sup>) and tiny probabilities (like 2<sup>-80</sup>) that define practical security boundaries, preparing students for subsequent topics in pseudorandomness.</p>
@@ -278,7 +278,7 @@
 					</div>
 
 					<div class="session">
-						<a href="https://appliedcryptography.page/slides/#1-4" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
+						<a href="slides/#1-4" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 1.4</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Pseudorandomness</h4>
 						<p class="session-overview">This session explores three fundamental pseudorandom primitives that enable practical cryptography. Pseudorandom generators (PRGs) solve one-time pad's key length limitation by expanding short seeds into longer outputs indistinguishable from random. Pseudorandom functions (PRFs) extend this by creating massive virtual dictionaries mapping inputs to pseudorandom outputs, allowing parties with a shared secret to derive unlimited pseudorandom data. Pseudorandom permutations (PRPs), also called block ciphers, provide both forward and inverse operations indistinguishable from random permutations. We'll examine key constructions including GGM (building PRFs from PRGs), the Feistel network (building invertible PRPs from non-invertible PRFs), and the PRF-PRP switching lemma that enables interchangeability in security proofs. Throughout, we'll emphasize crucial security principles like the PRF "Golden Rule" of preventing input repetition.</p>
@@ -293,7 +293,7 @@
 					</div>
 
 					<div class="session">
-						<a href="https://appliedcryptography.page/slides/#1-5" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
+						<a href="slides/#1-5" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 1.5</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Chosen-Plaintext &amp; Chosen-Ciphertext Attacks</h4>
 						<p class="session-overview">This session explores advanced security models for symmetric-key encryption, beginning with chosen-plaintext attack (CPA) security, where ciphertexts must be indistinguishable from random strings. We'll examine why deterministic encryption cannot achieve this security level and explore solutions including randomized PRF-based schemes and block cipher modes like CBC and CTR, while explaining why ECB mode remains fundamentally insecure. The session then advances to chosen-ciphertext attacks (CCA), where adversaries can decrypt chosen ciphertexts, demonstrating how even CPA-secure schemes like CTR mode remain vulnerable due to their malleability. We'll analyze practical format-oracle attacks that exploit information leakage during decryption to recover entire plaintexts, and examine how preventing adversaries from creating valid modified ciphertexts is essential for achieving comprehensive CCA security in real-world systems.</p>
@@ -549,7 +549,7 @@
 
 			<div class="alert">
 				<p class="mb-0">
-					<strong><i class="fas fa-file-pdf icon"></i></strong> Check the <a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/syllabus/pdf/syllabus.pdf">Syllabus</a> for detailed information on class grading criteria, as well as how lab sessions, problem sets and exams will be designed and presented.
+					<strong><i class="fas fa-file-pdf icon"></i></strong> Check the <a href="syllabus/">Syllabus</a> for detailed information on class grading criteria, as well as how lab sessions, problem sets and exams will be designed and presented.
 				</p>
 			</div>
 
@@ -572,7 +572,7 @@
 				</div>
 				<div class="collapsible-content">
 					<div class="card mb-3">
-						<h4 class="mb-2"><i class="fas fa-tasks icon"></i><a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/problem-sets/pdf/problem-set-1.pdf">Problem Set 1: Provable Security Foundations</a></h4>
+						<h4 class="mb-2"><i class="fas fa-tasks icon"></i><a href="problem-sets/#1">Problem Set 1: Provable Security Foundations</a></h4>
 						<p class="mb-0">This problem set focuses on the fundamental concepts of provable security covered in the first three sessions of the course. It consists of four main sections: Cryptographic Foundations, which tests your understanding of basic security goals and perfect secrecy; Provable Security, which explores library interchangeability and formal security proofs; Computational Cryptography, which examines computational security concepts, distinguishability, and the bad events technique; and Application of Cryptographic Principles, which challenges you to analyze block cipher modes, evaluate real-world implementations, and design secure protocols. The assignments blend theoretical analysis with practical applications, requiring you to demonstrate both mathematical reasoning and applied cryptographic thinking. A bonus challenge on the discrete logarithm problem offers extra credit for those wanting to explore advanced concepts.</p>
 					</div>
 
@@ -590,22 +590,22 @@
 				</div>
 				<div class="collapsible-content">
 					<div class="card mb-3">
-						<h4 class="mb-2"><i class="fas fa-key icon"></i><a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/labs/pdf/password-manager.pdf">Lab 1: Designing a Password Manager</a></h4>
+						<h4 class="mb-2"><i class="fas fa-key icon"></i><a href="labs/#password-manager">Lab 1: Designing a Password Manager</a></h4>
 						<p class="mb-0">In this lab, you will design and implement a secure password manager application. You'll learn about secure password storage techniques, key derivation functions, and encryption methods for sensitive data. The lab will guide you through implementing features such as master password protection, secure password generation, and encrypted storage. You'll also analyze potential vulnerabilities in your system and implement countermeasures to protect against common attacks like password cracking and memory scraping.</p>
 					</div>
 
 					<div class="card mb-3">
-						<h4 class="mb-2"><i class="fas fa-comments icon"></i><a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/labs/pdf/secure-messenger.pdf">Lab 2: Designing a Secure Messenger</a></h4>
+						<h4 class="mb-2"><i class="fas fa-comments icon"></i><a href="labs/#secure-messenger">Lab 2: Designing a Secure Messenger</a></h4>
 						<p class="mb-0">This lab focuses on building a secure messaging application implementing end-to-end encryption. You'll work with cryptographic libraries to implement key exchange protocols, message encryption, and authentication mechanisms. The lab covers essential features like perfect forward secrecy, deniability, and secure group messaging. You'll also explore practical challenges such as key verification, metadata protection, and secure key storage on devices. By the end of this lab, you'll understand the cryptographic foundations behind modern secure messaging platforms like Signal.</p>
 					</div>
 
 					<div class="card mb-3">
-						<h4 class="mb-2"><i class="fas fa-shield-alt icon"></i><a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/labs/pdf/proverif.pdf">Lab 3: Protocol Modeling and Verification with Verifpal and Tamarin</a></h4>
+						<h4 class="mb-2"><i class="fas fa-shield-alt icon"></i><a href="labs/#proverif">Lab 3: Protocol Modeling and Verification with Verifpal and Tamarin</a></h4>
 						<p class="mb-0">This lab introduces formal verification of security protocols using two complementary tools: Verifpal and Tamarin. You'll begin with Verifpal, a user-friendly tool designed for students, to model and analyze custom authentication and key exchange protocols. After gaining proficiency in identifying protocol vulnerabilities, you'll advance to Tamarin Prover to perform more sophisticated analyses with temporal properties and unbounded verification. Throughout the lab, you'll apply these tools to real-world protocols like TLS 1.3 fragments and Signal's X3DH, gaining practical experience in formal security verification. By the end of this lab, you'll understand how formal methods can mathematically prove security properties and detect subtle flaws that might otherwise remain hidden in manual security reviews.</p>
 					</div>
 
 					<div class="card mb-3">
-						<h4 class="mb-2"><i class="fas fa-chess-board icon"></i><a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/labs/pdf/zk-battleship.pdf">Lab 4: Designing a Battleship Game Using Zero-Knowledge Systems</a></h4>
+						<h4 class="mb-2"><i class="fas fa-chess-board icon"></i><a href="labs/#zk-battleship">Lab 4: Designing a Battleship Game Using Zero-Knowledge Systems</a></h4>
 						<p class="mb-0">In this creative lab, you'll implement the classic Battleship game with a cryptographic twist using zero-knowledge proofs. You'll learn how two mutually distrustful parties can play a fair game without revealing their ship placements except when a hit occurs. The lab will guide you through designing commitment schemes, validity proofs for ship placement, and secure mechanisms for torpedo shots and hit verification—all without requiring a trusted third party. This practical application of zero-knowledge techniques demonstrates how cryptography can enable secure computation between untrusting parties in a tangible, engaging context.</p>
 					</div>
 

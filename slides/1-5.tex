@@ -286,7 +286,7 @@
 
 \begin{frame}{CBC mode: a closer look}
 	\vspace{-0.3cm}
-	\bigimagewithcaption{cbc_mode.pdf}{Source: The Joy of Cryptography}
+	\bigimagewithcaption{cbc_with_dec.pdf}{Source: The Joy of Cryptography}
 \end{frame}
 
 \begin{frame}{CTR mode: a closer look}
@@ -313,7 +313,7 @@
 \end{frame}
 
 \begin{frame}{CTR mode: a closer look}
-	\bigimagewithcaption{ctr_mode.pdf}{Source: The Joy of Cryptography}
+	\bigimagewithcaption{ctr_with_dec.pdf}{Source: The Joy of Cryptography}
 \end{frame}
 
 \section{Chosen-Ciphertext Attacks}
@@ -640,7 +640,7 @@
 				\item This exposes an oracle that tells attackers: ``Does $\texttt{Dec}(K, C)$ have valid padding?''
 				\item Attackers can systematically exploit this to decrypt arbitrary ciphertexts.
 				\item Has led to major vulnerabilities in SSH and SSL/TLS protocols.
-				\item Example: POODLE attack against SSL 3.0 affected millions of websites.\footnote{Check out the full paper, available in the \textit{Online Readings} section of the course website: \url{https://appliedcryptography.page}}
+				\item Example: POODLE attack against SSL 3.0 affected millions of websites.\footnote{\url{https://appliedcryptography.page/papers/\#google-poodle}}
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -655,7 +655,7 @@
 				\item Response time reveals approximate numerical values inside $\texttt{Dec}(K, C)$.
 				\item Extremely subtle - even microsecond differences can leak information.
 				\item Successfully used to break older SSH and SSL/TLS implementations.
-				\item Example: Lucky Thirteen attack against TLS revealed message contents through timing differences.\footnote{Check out the full paper, available in the \textit{Online Readings} section of the course website: \url{https://appliedcryptography.page}}
+				\item Example: Lucky Thirteen attack against TLS revealed message contents through timing differences.\footnote{\url{https://appliedcryptography.page/papers/\#rhul-luckythirteen}}
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -671,7 +671,7 @@
 					      \item A valid gzip file (processed normally)
 					      \item An invalid gzip file (error reported)
 				      \end{itemize}
-				\item This created an oracle revealing: ``Is $\texttt{Dec}(K, C)$ a valid gzip file?''\footnote{Check out the full paper, available in the \textit{Online Readings} section of the course website: \url{https://appliedcryptography.page}}
+				\item This created an oracle revealing: ``Is $\texttt{Dec}(K, C)$ a valid gzip file?''\footnote{\url{https://appliedcryptography.page/papers/\#jhu-imessage}}
 				\item Attackers who understood the gzip format could exploit this to:
 				      \begin{itemize}
 					      \item Silently recover private messages
