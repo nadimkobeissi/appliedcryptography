@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<title>Applied Cryptography: Slides Redirector</title>
+		<script>
+			window.addEventListener(`load`, () => {
+				const anchor = window.location.hash.substring(1);
+				if (anchor && /^\d-\d{1,2}$/.test(anchor)) {
+					setTimeout(() => {
+						const redirectUrl =
+							"https://github.com/nadimkobeissi/appliedcryptography/blob/main/slides/pdf/" +
+							anchor +
+							".pdf";
+						window.location.href = redirectUrl;
+					}, 2000);
+				}
+			});
+		</script>
+	</head>
+	<body style="background-color:#f6f9f1">
+		<img
+			src="waiting.gif"
+			alt=""
+			style="display: block; margin: 7% auto 0 auto; image-rendering: pixelated; image-rendering: crisp-edges; image-rendering: -moz-crisp-edges; image-rendering: -webkit-crisp-edges;"
+		/>
+	</body>
+</html>

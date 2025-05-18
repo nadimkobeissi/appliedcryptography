@@ -237,7 +237,7 @@
 					</p>
 
 					<div class="session">
-						<a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/slides/pdf/1-1.pdf" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
+						<a href="https://appliedcryptography.page/slides/#1-1" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 1.1</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Introduction</h4>
 						<p class="session-overview">This introductory session establishes the foundation for the entire course by covering the scope, objectives, and structure of applied cryptography. We'll discuss key themes that will recur throughout the semester, including the balance between theory and practice, the importance of formal security definitions, and the evolution of cryptographic thinking. Students will gain a clear understanding of what to expect from the course and how the various topics connect to form a coherent framework for secure system design.</p>
@@ -250,7 +250,7 @@
 					</div>
 
 					<div class="session">
-						<a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/slides/pdf/1-2.pdf" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
+						<a href="https://appliedcryptography.page/slides/#1-2" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 1.2</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>One-Time Pad &amp; The Provable Security Mindset</h4>
 						<p class="session-overview">This session introduces the concept of perfect secrecy through the One-Time Pad (OTP) encryption system and explores its mathematical proof of unconditional security. While theoretically unbreakable, we'll examine the severe practical limitations that make OTP challenging to deploy in real-world systems, including key generation, distribution, and management problems. The session then transitions to Kerckhoff's fundamental principle—that a cryptosystem should remain secure even if everything about the system, except the key, is public knowledge. We'll discuss how this principle has shaped modern cryptographic design philosophy and why security through obscurity fails as a long-term strategy for protecting sensitive information.</p>
@@ -264,7 +264,7 @@
 					</div>
 
 					<div class="session">
-						<a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/slides/pdf/1-3.pdf" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
+						<a href="https://appliedcryptography.page/slides/#1-3" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 1.3</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Provable Security &amp; Computational Cryptography</h4>
 						<p class="session-overview">This session begins by delving into the rigorous mathematical frameworks that allow cryptographers to provide formal security guarantees for cryptographic schemes. We'll examine how precise definitions of security properties create a foundation for meaningful analysis, and explore various adversarial models that capture different threat scenarios. The concept of reduction—proving that breaking a scheme is at least as hard as solving some well-studied mathematical problem—will be thoroughly explored. We then transition to modern computational cryptography, moving from unconditional security to a more practical approach where security is defined against computationally bounded adversaries. Students will learn about indistinguishability as a fundamental security concept, the bad-event technique for security proofs, and birthday probabilities in cryptographic attacks. The session provides essential mathematical foundations for understanding modern cryptographic security, including quantitative intuition about large numbers (like 2<sup>128</sup>) and tiny probabilities (like 2<sup>-80</sup>) that define practical security boundaries, preparing students for subsequent topics in pseudorandomness.</p>
@@ -278,7 +278,7 @@
 					</div>
 
 					<div class="session">
-						<a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/slides/pdf/1-4.pdf" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
+						<a href="https://appliedcryptography.page/slides/#1-4" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 1.4</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Pseudorandomness</h4>
 						<p class="session-overview">This session explores three fundamental pseudorandom primitives that enable practical cryptography. Pseudorandom generators (PRGs) solve one-time pad's key length limitation by expanding short seeds into longer outputs indistinguishable from random. Pseudorandom functions (PRFs) extend this by creating massive virtual dictionaries mapping inputs to pseudorandom outputs, allowing parties with a shared secret to derive unlimited pseudorandom data. Pseudorandom permutations (PRPs), also called block ciphers, provide both forward and inverse operations indistinguishable from random permutations. We'll examine key constructions including GGM (building PRFs from PRGs), the Feistel network (building invertible PRPs from non-invertible PRFs), and the PRF-PRP switching lemma that enables interchangeability in security proofs. Throughout, we'll emphasize crucial security principles like the PRF "Golden Rule" of preventing input repetition.</p>
@@ -293,7 +293,7 @@
 					</div>
 
 					<div class="session">
-						<a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/slides/pdf/1-5.pdf" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
+						<a href="https://appliedcryptography.page/slides/#1-5" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 1.5</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Chosen-Plaintext &amp; Chosen-Ciphertext Attacks</h4>
 						<p class="session-overview">This session explores advanced security models for symmetric-key encryption, beginning with chosen-plaintext attack (CPA) security, where ciphertexts must be indistinguishable from random strings. We'll examine why deterministic encryption cannot achieve this security level and explore solutions including randomized PRF-based schemes and block cipher modes like CBC and CTR, while explaining why ECB mode remains fundamentally insecure. The session then advances to chosen-ciphertext attacks (CCA), where adversaries can decrypt chosen ciphertexts, demonstrating how even CPA-secure schemes like CTR mode remain vulnerable due to their malleability. We'll analyze practical format-oracle attacks that exploit information leakage during decryption to recover entire plaintexts, and examine how preventing adversaries from creating valid modified ciphertexts is essential for achieving comprehensive CCA security in real-world systems.</p>
@@ -562,6 +562,24 @@
 				<div class="card">
 					<h3 class="subsection-title"><i class="fas fa-flask icon"></i>Lab Sessions</h3>
 					<p class="mb-0"><strong>Lab sessions</strong> will be held weekly to serve as a hands-on complement to the lectures. During each lab, you will experiment with real-world libraries, and even simulate attacks or vulnerabilities to understand why certain security practices are necessary. These sessions will also help you become comfortable with relevant tools and environments, including formal analysis tools. Attendance is mandatory, and lab participation will be graded based on preparedness, engagement, and the successful completion of in-lab activities. Labs offer an excellent opportunity for collaborative problem-solving and immediate feedback on your work.</p>
+				</div>
+			</div>
+
+			<div class="subsection">
+				<div class="collapsible-header">
+					<h3 class="subsection-title">Problem Sets</h3>
+					<i class="fas fa-chevron-down collapsible-icon"></i>
+				</div>
+				<div class="collapsible-content">
+					<div class="card mb-3">
+						<h4 class="mb-2"><i class="fas fa-tasks icon"></i><a href="https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/problem-sets/pdf/problem-set-1.pdf">Problem Set 1: Provable Security Foundations</a></h4>
+						<p class="mb-0">This problem set focuses on the fundamental concepts of provable security covered in the first three sessions of the course. It consists of four main sections: Cryptographic Foundations, which tests your understanding of basic security goals and perfect secrecy; Provable Security, which explores library interchangeability and formal security proofs; Computational Cryptography, which examines computational security concepts, distinguishability, and the bad events technique; and Application of Cryptographic Principles, which challenges you to analyze block cipher modes, evaluate real-world implementations, and design secure protocols. The assignments blend theoretical analysis with practical applications, requiring you to demonstrate both mathematical reasoning and applied cryptographic thinking. A bonus challenge on the discrete logarithm problem offers extra credit for those wanting to explore advanced concepts.</p>
+					</div>
+
+					<div class="card mb-3">
+						<p class="mb-0"><p><em>More to be added soon!</em></p></p>
+					</div>
+
 				</div>
 			</div>
 
