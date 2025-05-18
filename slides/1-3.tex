@@ -1012,6 +1012,37 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Birthday paradox}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item In a classroom of 50 students, what's the probability that at least two share a birthday?
+				      \begin{itemize}
+					      \item 2\%?
+					      \item 20\%?
+					      \item 50\%?
+					      \item 97\%?
+				      \end{itemize}
+				\item Many people guess around 15-20\%, but the actual probability is about 97\%!
+				\item This is counterintuitive because \textbf{we're not looking for a specific birthday - we're looking for \textit{any} match among all possible pairs}.
+				\item With 50 students, we have $\binom{50}{2} = 1,225$ possible pairs to check!\footnote{$\binom{50}{2}$ is a binomial coefficient. It means: \textit{``how many ways can I choose two different items from a set of 50?''}}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Birthday paradox}
+	\begin{itemize}[<+->]
+		\item With just 23 people, probability exceeds 50\%
+		\item Formula for $n$ people:
+		      \begin{align*}
+			      P = 1 - \frac{365!}{(365-n)! \cdot 365^n}
+		      \end{align*}
+		\item Implication: Finding collisions in a space of size $N$ happens with roughly $\sqrt{N}$ samples.
+		\item This is why many cryptographic systems need large output spaces!
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{Birthday probabilities}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}

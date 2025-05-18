@@ -192,6 +192,7 @@
 						<li>Bodo M&#xF6;ller, Thai Duong, Krzysztof Kotowicz, <a href="papers/#google-poodle"><em>This POODLE Bites: Exploiting the SSL 3.0 Fallback</em></a>, Google, 2014.</li>
 						<li>Nadhem J. Alfardan, Kenneth G. Paterson, <a href="papers/#rhul-luckythirteen"><em>Lucky Thirteen: Breaking the TLS and DTLS Record Protocols</em></a>, IEEE Symposium on Security and Privacy, 2013.</li>
 						<li>Christina Garman, Matthew Green, Gabriel Kaptchuk, Ian Miers and Michael Rushanan, <a href="papers/#jhu-imessage"><em>Dancing on the Lip of the Volcano: Chosen Ciphertext Attacks on Apple iMessage</em></a>, USENIX Security Symposium, 2016.</li>
+						<li>Marc Stevens, Elie Bursztein, Pierre Karpman, Ange Albertini and Yarik Markov, <a href="papers/#shattered-sha1"><em>The First Collision for Full SHA-1</em></a>, 37th Annual International Cryptology Conference, 2017.</li>
 						<li>Karthikeyan Bhargavan and Ga&euml;tan Leurent, <a href="papers/#inria-collisions"><em>Transcript Collision Attacks: Breaking Authentication in TLS, IKE and SSH</em></a>, Network and Distributed Systems Security Symposium, 2016.</li>
 						<li><em>More to be added soon!</em></li>
 					</ul>
@@ -307,10 +308,10 @@
 					</div>
 
 					<div class="session">
-						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i>Slides</a>
+						<a href="slides/#1-6" class="session-slides-btn"><i class="fas fa-download"></i>Slides</a>
 						<span class="session-number">Session 1.6</span>
 						<h4 class="session-title"><i class="fas fa-book"></i>Collision-Resistant Hash Functions</h4>
-						<p class="session-overview">This session explores two crucial cryptographic primitives: collision-resistant hash functions and authenticated encryption. We'll examine hash functions as deterministic mappings from variable-length inputs to fixed-length outputs where finding collisions should be computationally difficult, requiring approximately 2<sup>(n/2)</sup> operations for an n-bit hash function.</p>
+						<p class="session-overview">This session explores collision-resistant hash functions, cryptographic primitives that convert arbitrary-length inputs to fixed-length outputs while making it computationally infeasible to find colliding inputs. We'll examine three essential properties—collision resistance, preimage resistance, and second preimage resistance—while exploring practical applications in password storage, data integrity verification, and proof-of-work systems. The session introduces the counterintuitive birthday paradox, demonstrating why collisions can be found after approximately square-root-many attempts rather than brute force. We'll survey hash function evolution from broken algorithms like MD5 and SHA-1 to modern standards like SHA-2, SHA-3, and BLAKE3, while analyzing vulnerabilities including precomputation attacks using rainbow tables and length extension weaknesses in Merkle–Damg&#xE5;rd constructions. The session covers critical defensive techniques including properly salting hashes and implementing specialized password hashing algorithms like PBKDF2 and memory-hard functions such as Scrypt, which resist hardware acceleration attacks by requiring significant memory resources, providing comprehensive guidance for secure hash function implementation in real-world systems.</p>
 						<div class="session-readings">
 							<h5><i class="fas fa-book-open icon"></i>Required Readings</h5>
 							<ul>
@@ -577,7 +578,9 @@
 					</div>
 
 					<div class="card mb-3">
-						<p class="mb-0"><p><em>More to be added soon!</em></p></p>
+						<p class="mb-0">
+						<p><em>More to be added soon!</em></p>
+						</p>
 					</div>
 
 				</div>

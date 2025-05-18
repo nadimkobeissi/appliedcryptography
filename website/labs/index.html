@@ -1,23 +1,22 @@
 <html>
-	<head>
-		<title>Applied Cryptography: Labs Redirector</title>
-		<script>
-			window.addEventListener(`load`, () => {
-				const anchor = window.location.hash.substring(1);
-				if (anchor && /^\w{1,32}(-\w{1,32})?$/.test(anchor)) {
-					setTimeout(() => {
-						const redirectUrl = `https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/labs/pdf/${anchor}.pdf`;
-						window.location.href = redirectUrl;
-					}, 2000);
-				}
-			});
-		</script>
-	</head>
-	<body style="background-color: #f6f9f1">
-		<img
-			src="/img/waiting.gif"
-			alt=""
-			style="
+
+<head>
+	<title>Applied Cryptography: Labs Redirector</title>
+	<script>
+		window.addEventListener(`load`, () => {
+			const anchor = window.location.hash.substring(1);
+			if (anchor && /^\w{1,32}(-\w{1,32})?$/.test(anchor)) {
+				setTimeout(() => {
+					const redirectUrl = `https://github.com/nadimkobeissi/appliedcryptography/blob/main/materials/labs/pdf/${anchor}.pdf`;
+					window.location.href = redirectUrl;
+				}, 1000);
+			}
+		});
+	</script>
+</head>
+
+<body style="background-color: #f6f9f1">
+	<img src="/img/waiting.gif" alt="" style="
 				display: block;
 				position: absolute;
 				top: 50%;
@@ -29,7 +28,7 @@
 				image-rendering: crisp-edges;
 				image-rendering: -moz-crisp-edges;
 				image-rendering: -webkit-crisp-edges;
-			"
-		/>
-	</body>
+			" />
+</body>
+
 </html>
