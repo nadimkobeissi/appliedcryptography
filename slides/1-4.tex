@@ -57,7 +57,7 @@
 
 \begin{frame}{Requirements for Key Expansion}
 	\begin{itemize}[<+->]
-		\item Our method would need to be \textbf{deterministic}, so that both the sender and receiver can expand their key in the same way.
+		\item Our method would need to be \textbf{deterministic}, so that both the sender and receiver can expand their key in the same way (to encrypt/decrypt).
 		\item Its output distribution would need to be \textbf{uniform}, since that is a crucial property for the security of OTP.
 		\item Unfortunately, it's \textbf{not possible} to achieve both of these properties simultaneously.
 		      \begin{itemize}[<+->]
@@ -116,7 +116,7 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
 				\item We don't know how to make PRGs, or even if they exist.
-				\item So we simply invent functions that we think act close enough to PRGs (when subjected to statistical and mathematical analysis), and hope for the best.
+				\item So we simply invent functions that we think act close enough to PRGs (when subjected to statistical and mathematical analysis).
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -723,6 +723,7 @@
 				      \end{itemize}
 				\item So $\prob{Y_1 \oplus Y_2 == Y_3 \oplus Y_4} = 1$
 				\item With a truly random function, $\prob{Y_1 \oplus Y_2 == Y_3 \oplus Y_4} = \frac{1}{2^m}$ (extremely unlikely!)
+				\item Also, Given $Y_{1\cdots3}$, we can predict $Y_4$!
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -800,7 +801,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Why PRPs are ``better'' than PRFs}
+\begin{frame}{PRPs compared to PRFs}
 	\begin{itemize}[<+->]
 		\item \textbf{Invertibility}: PRPs can be efficiently inverted given the key
 		      \begin{itemize}[<+->]
@@ -1106,7 +1107,7 @@
 				A keyed permutation $F^{\pm}$ is a secure pseudorandom permutation (PRP) if the following two libraries are indistinguishable:
 			}
 			\begin{itemize}[<+->]
-				\item $n$ the input length of the PRF. Also the output length!
+				\item $n$ the input length of the PRP. Also the output length!
 				\item $\lambda$ is the key size and hence the security parameter.
 			\end{itemize}
 		\end{column}
@@ -1255,6 +1256,7 @@
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}[<+->]
 				\item Let's add a key in there. Wow, encryption!
+				\item $K_{1\cdots i}$ called is the \textbf{key schedule}.
 				\item If each round function $F_i$ uses a distinct key $K_i$, it increases the security of the Feistel network against certain attacks.
 				\item By using a PRF as round function $F_i$, the security of the Feistel cipher would be grounded on the PRF's security basis.
 			\end{itemize}
@@ -1271,19 +1273,19 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Meet-in-the-middle attacks on Feistel ciphers}
+\begin{frame}{Meet-in-the-middle attacks on Feistel ciphers}{Why use a key schedule and not the same key?}
 	\begin{columns}[c]
 		\begin{column}{0.65\textwidth}
 			\begin{itemize}[<+->]
 				\item Using the \textbf{same key} for all rounds creates significant vulnerabilities.
-				\item A meet-in-the-middle attack can break an $r$-round Feistel cipher with complexity much less than $2^r$.
+				\item A meet-in-the-middle attack can break an $r$-round Feistel cipher with complexity $> \frac{2^{|K|}}{2}$.
 				\item The attack works by computing partial encryptions from both ends:
 				      \begin{enumerate}[<+->]
 					      \item Forward: Compute halfway through encryption.
 					      \item Backward: Compute halfway through decryption.
 					      \item Look for ``meeting points'' in the middle.
 				      \end{enumerate}
-				\item For a Feistel cipher with identical round functions, the effective security may be only about \textbf{half} the number of rounds.
+				\item With identical round functions, effective security may be only \textbf{half} the number of rounds.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.35\textwidth}
@@ -2125,6 +2127,34 @@
 			\end{flushright}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{AES: security and attacks over time}
+ \begin{columns}[c]
+  \begin{column}{0.5\textwidth}
+   \begin{itemize}[<+->]
+    \item AES has been heavily analyzed for over 20 years.
+    \item Best attacks against full AES have gradually improved:
+          \begin{itemize}[<+->]
+           \item 2011: Biclique attack (Bogdanov et al.) reduced complexity to $2^{126.1}$ for AES-128.
+           \item Various side-channel attacks developed (power analysis, cache timing).\footnote{This is the main way to attack AES in practice. Side-channel attacks will be discussed in more depth later in the course.}
+           \item Advances in meet-in-the-middle and related-key techniques.
+          \end{itemize}
+   \end{itemize}
+  \end{column}
+  \begin{column}{0.5\textwidth}
+   \begin{itemize}[<+->]
+    \item Despite these advances:
+          \begin{itemize}[<+->]
+           \item No practical attacks on full AES-128.
+           \item Best attacks still require $\approx 2^{126}$ operations.
+           \item At this complexity, attacks remain purely theoretical.
+           \item Would require resources far exceeding global computing power.
+          \end{itemize}
+    \item Even quantum computers offer only modest advantage (Grover's algorithm reduces security to $2^{64}$ operations).\footnote{More on quantum computers and how they affect cryptography later in the course.}
+   \end{itemize}
+  \end{column}
+ \end{columns}
 \end{frame}
 
 \begin{frame}[plain]
