@@ -21,6 +21,7 @@ For a better experience, ignore this repository and access the materials through
 - [ ] **Must** be up-front about exam-required materials. Tell students what's required for each exam first thing. That way, you remove anxiety, and allow them to explore the materials at their leisure.
 - [ ] [This website](https://asecuritysite.com/range/age) is full of useful practical examples, here we have range proofs.
 - [ ] Not enough attack labs.
+- [ ] Might be fun to cover QUIC, HTTP/3, Passkeys...
 - [ ] [Excalidraw](https://excalidraw.com) might be useful.
 
 ## Author & License
