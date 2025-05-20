@@ -1384,6 +1384,166 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{AES-GCM: Galois/Counter Mode}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item AES-GCM (Galois/Counter Mode) is the most widely used AEAD scheme.
+				\item Combines AES in CTR mode (for encryption) with GMAC (for authentication).
+				\item Extremely efficient:
+				      \begin{itemize}
+					      \item Single pass over the data.
+					      \item Parallelizable.
+					      \item Hardware acceleration widely available.
+				      \end{itemize}
+				\item Used in: TLS 1.2/1.3, IPsec, SSH, and many other protocols.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{center}
+				\sssubroutine{AES-GCM.Enc}{K, N, A, M}{
+					$H \coloneq \texttt{AES}(K, 0^{128})$\\
+					$\text{for } i=0 \text{ to } \lceil|M|/128\rceil-1:$\\
+					$\quad C_i \coloneq M_i \oplus \texttt{AES}(K, N\|i)$\\
+					$T \coloneq \texttt{GHASH}_H(A, C) \oplus$\\
+					$\quad\quad \texttt{AES}(K, N\|0)$\\
+					$\textbf{return } C\|T$
+				}{0.87}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AES-GCM: Galois/Counter Mode}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Inputs}:
+				      \begin{itemize}
+					      \item Key $K$ (128, 192, or 256 bits)
+					      \item Nonce $N$ (usually 96 bits)
+					      \item Associated data $A$ (optional)
+					      \item Plaintext $M$
+				      \end{itemize}
+				\item \textbf{Encryption process}:
+				      \begin{itemize}
+					      \item AES-CTR for confidentiality.
+					      \item GHASH (Galois field multiplication) for authentication.
+				      \end{itemize}
+				\item Authentication tag $T$ protects both ciphertext and associated data.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{gcm.pdf}{Source: The Joy of Cryptography}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AES-GCM: Galois/Counter Mode}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Security strengths}:
+				      \begin{itemize}
+					      \item Provides confidentiality, integrity, and authenticity
+					      \item Formally proven secure (assuming AES is secure)
+					      \item Fast and widely trusted
+				      \end{itemize}
+				\item \textbf{Critical implementation requirements}:
+				      \begin{itemize}
+					      \item \textbf{Never reuse a nonce} with the same key!
+					      \item A repeated nonce can lead to complete loss of confidentiality and authentication
+					      \item 96-bit nonces are recommended (other sizes are less efficient)
+					      \item Authentication tag should be at least 128 bits long
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Key commitment in authenticated encryption}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Key commitment}: a ciphertext should only decrypt to a valid plaintext under the key used to generate it.
+				\item Most AEAD schemes (including AES-GCM) don't guarantee this property!\footnote{\url{https://appliedcryptography.page/papers/\#key-commitment}}
+				\item Attack scenario:
+				      \begin{enumerate}
+					      \item Attacker creates special ciphertext $C$.
+					      \item When decrypted with key $K_1$: harmless message.
+					      \item When decrypted with key $K_2$: malicious content!
+					      \item Enables plausible deniability, content smuggling, etc.
+				      \end{enumerate}
+				\item Practical impact:
+				      \begin{itemize}
+					      \item Attacker can create ciphertexts that decrypt differently under different keys.
+					      \item Enables attacks in multi-recipient contexts.
+					      \item Affects real applications (e.g., messaging, encrypted files).
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{ChaCha20-Poly1305}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item ChaCha20-Poly1305 is a modern AEAD construction:
+				      \begin{itemize}
+					      \item ChaCha20 stream cipher for encryption.
+					      \item Poly1305 MAC for authentication.
+				      \end{itemize}
+				\item Designed by Daniel J. Bernstein.\footnote{Does the class want to hear about Bernstein vs. United States?}
+				\item Key characteristics:
+				      \begin{itemize}
+					      \item No table lookups (better resistance to timing attacks)
+					      \item Excellent performance on devices without AES hardware.
+				      \end{itemize}
+				\item Widely used in TLS 1.3, Signal, WireGuard...
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{center}
+				\sssubroutine{ChaCha20-Poly1305.Enc}{K, N, A, M}{
+				$\text{key}_p \coloneq \texttt{ChaCha20}(K, N, 0)_{0..31}$\\
+				$C \coloneq M \oplus \texttt{ChaCha20}(K, N, 1)$\\
+				$\text{data} \coloneq \text{pad}(A) \| \text{pad}(C) \|$\\
+				$\quad\quad \text{len}(A) \| \text{len}(C)$\\
+				$T \coloneq \texttt{Poly1305}_{\text{key}_p}(\text{data})$\\
+				$\textbf{return } C\|T$
+				}{0.87}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Comparing AEAD implementations}
+	\begin{center}
+		\begin{tabular}{|l|c|c|c|}
+			\hline
+			\textbf{Property}       & \textbf{AES-GCM}  & \textbf{ChaCha20-Poly1305} & \textbf{AES+HMAC} \\
+			\hline
+			Performance (HW accel.) & Excellent         & Good                       & Good              \\
+			\hline
+			Performance (no accel.) & Poor              & Excellent                  & Moderate          \\
+			\hline
+			Security level          & 128-256 bits      & 256 bits                   & 128-256 bits      \\
+			\hline
+			Side-channel resistance & Moderate          & Excellent                  & Moderate          \\
+			\hline
+			Parallelizable          & Yes               & Partially                  & No                \\
+			\hline
+			Nonce sensitivity       & Very high         & High                       & Moderate          \\
+			\hline
+			Overhead                & Low (single pass) & Low (single pass)          & Higher (two pass) \\
+			\hline
+			Implem. complexity      & Moderate          & Low                        & High              \\
+			\hline
+		\end{tabular}
+	\end{center}
+\end{frame}
+
 \begin{frame}{Replay attacks}{Step 1: Alice sends original message}
 	\bigimagewithcaption{aead_scenario_1.pdf}{Source: The Joy of Cryptography}
 \end{frame}
