@@ -18,8 +18,15 @@ const updatedInit = () => {
 					undefined,
 					options,
 				);
-				document.getElementById("lastUpdated").innerText =
-					formattedDate + ".";
+				const updatedLink = document.createElement("a");
+				updatedLink.href =
+					"https://github.com/nadimkobeissi/appliedcryptography/commits/main/";
+				updatedLink.innerText = formattedDate;
+				const period = document.createElement("span");
+				period.innerText = ".";
+				document.getElementById("lastUpdated").innerHTML = "";
+				document.getElementById("lastUpdated").appendChild(updatedLink);
+				document.getElementById("lastUpdated").appendChild(period);
 			}
 		})
 		.catch((error) => console.error("Error fetching commit data:", error));
