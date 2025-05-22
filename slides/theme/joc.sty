@@ -81,7 +81,7 @@
 \newcommand{\sslinked}[3]{
 	\begin{tikzpicture}[baseline]
 		\node[inner sep=0pt, outer sep=0pt] (left) {\begin{varwidth}{\textwidth}#1\end{varwidth}};
-		\node[inner sep=0pt, outer sep=0pt, anchor=west] (middle) at (left.east) {\begin{varwidth}{\textwidth}{\Large\ensuremath{\ #2\ }}\end{varwidth}};
+		\node[inner sep=0pt, outer sep=0pt, anchor=west] (middle) at (left.east) {\begin{varwidth}{\textwidth}{\large\ensuremath{\ #2\ }}\end{varwidth}};
 		\node[inner sep=0pt, outer sep=0pt, anchor=west] (right) at (middle.east) {\begin{varwidth}{\textwidth}#3\end{varwidth}};
 	\end{tikzpicture}
 }

@@ -947,7 +947,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{``Migrate to stronger algorithms?''}{Introducing protocol agility}
+\begin{frame}{``Migrate to stronger algorithms?''}
 	\begin{itemize}[<+->]
 		\item Cryptographic algorithms have limited lifespans:
 		      \begin{itemize}
@@ -969,6 +969,87 @@
 		      \end{itemize}
 		\item We'll talk a lot more about all of this in Part 2 of the course.
 	\end{itemize}
+\end{frame}
+
+\section{The Random Oracle Model}
+
+\begin{frame}{Hash functions can't be truly pseudorandom}
+	\begin{itemize}[<+->]
+		\item Any deterministic algorithm cannot produce truly random output.
+		\item Hash functions only statistically approximate pseudorandomness:
+		      \begin{itemize}
+			      \item They attempt to distribute outputs uniformly across their range,
+			      \item They aim to make outputs appear uncorrelated with inputs,
+			      \item But they remain deterministic functions.
+		      \end{itemize}
+		\item But we analyze hash functions as if they were truly random oracles!
+		      \begin{itemize}
+			      \item This creates a gap between theory and implementation.
+			      \item Implementations can only ever approximate ideal properties.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The Random Oracle Model}
+	\definitionbox{Random Oracle Model}{
+		The \textbf{Random Oracle Model} is a theoretical framework that models hash functions as truly random functions that can be queried by all parties.
+	}
+	\begin{itemize}[<+->]
+		\item A random oracle is an idealized black box that:
+		      \begin{itemize}
+			      \item Responds to new queries with truly random outputs.
+			      \item Consistently returns the same output when queried with the same input.
+			      \item Can be accessed by all parties (both honest and adversarial).
+		      \end{itemize}
+		\item Provides a mathematical abstraction that's easier to analyze than actual hash functions
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Using the Random Oracle Model}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Used to prove security of cryptographic protocols:
+				      \begin{itemize}
+					      \item Allows rigorous mathematical analysis.
+					      \item Simplifies proofs that would otherwise be intractable.
+					      \item Many important schemes are proven secure in this model.
+				      \end{itemize}
+				\item Example: OAEP for RSA encryption.
+				\item Provides confidence in schemes before deployment.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Proving in the ROM:}
+				      \begin{enumerate}
+					      \item Replace hash function with random oracle
+					      \item Show adversary has negligible advantage.
+					      \item Conclude the scheme is secure (assuming the hash function behaves like a random oracle).
+				      \end{enumerate}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Limitations of the Random Oracle Model}
+	\begin{columns}
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Gap between theory and practice}:
+				      \begin{itemize}
+					      \item No real hash function can perfectly implement a random oracle.
+					      \item Schemes secure in the RO model might be insecure when implemented with real hash functions.
+				      \end{itemize}
+				\item \textbf{Artificial counterexamples exist}:
+				      \begin{itemize}
+					      \item Researchers have constructed schemes that are:
+					      \item Provably secure in the RO model, but,
+					      \item Provably insecure with any real hash function.\footnote{\url{https://appliedcryptography.page/papers/\#rom-methodology}}
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}[plain]

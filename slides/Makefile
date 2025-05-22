@@ -8,8 +8,6 @@ all:
 	@make 1-7
 	@make 1-8
 	@make 1-9
-	@make 1-10
-	@make 1-11
 	@make 2-1
 	@make 2-2
 	@make 2-3
@@ -20,6 +18,8 @@ all:
 	@make 2-8
 	@make 2-9
 	@make 2-10
+	@make 2-11
+	@make 2-12
 
 clean:
 	@$(RM) pdf/*.aux pdf/*.nav pdf/*synctex.gz
@@ -51,15 +51,6 @@ clean:
 1-9:
 	@tectonic -o pdf "1-9.tex"
 
-1-10:
-	@tectonic -o pdf "1-10.tex"
-
-1-11:
-	@tectonic -o pdf "1-11.tex"
-
-1-12:
-	@tectonic -o pdf "1-12.tex"
-
 2-1:
 	@tectonic -o pdf "2-1.tex"
 
@@ -89,3 +80,9 @@ clean:
 
 2-10:
 	@tectonic -o pdf "2-10.tex"
+
+2-11:
+	@tectonic -o pdf "2-11.tex"
+
+2-12:
+	@tectonic -o pdf "2-12.tex"

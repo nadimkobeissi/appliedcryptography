@@ -22,6 +22,8 @@ For a better experience, ignore this repository and access the materials through
 - [ ] [This website](https://asecuritysite.com/range/age) is full of useful practical examples, here we have range proofs.
 - [ ] Not enough attack labs.
 - [ ] Might be fun to cover QUIC, HTTP/3, Passkeys...
+- [ ] Session on side-channels?
+- [ ] Integrate Verifpal as learning tool
 - [ ] [Excalidraw](https://excalidraw.com) might be useful.
 
 ## Author & License
