@@ -24,6 +24,7 @@ For a better experience, ignore this repository and access the materials through
 - [ ] Might be fun to cover QUIC, HTTP/3, Passkeys...
 - [ ] Session on side-channels?
 - [ ] Integrate Verifpal as learning tool
+- [ ] [Amazing teaching style](https://www.youtube.com/watch?v=fOGdb1CTu5c)
 - [ ] [Excalidraw](https://excalidraw.com) might be useful.
 
 ## Author & License
