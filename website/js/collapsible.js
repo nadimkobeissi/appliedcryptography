@@ -5,9 +5,11 @@ const collapsibleInit = () => {
 			header.classList.toggle("active");
 			const content = header.nextElementSibling;
 			if (header.classList.contains("active")) {
-				content.style.maxHeight = content.scrollHeight + "px";
+				content.style.maxHeight = `${content.scrollHeight + 14}px`;
+				content.style.height = `${content.scrollHeight + 14}px`;
 			} else {
-				content.style.maxHeight = "0px";
+				content.style.maxHeight = `0px`;
+				content.style.height = `0px`;
 			}
 		});
 	});

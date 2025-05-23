@@ -19,7 +19,7 @@
 	--shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
 	--shadow-lg:
 		0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-	--transition: all 0.3s ease;
+	--transition: all 0.5s ease;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -770,9 +770,7 @@ strong {
 
 .collapsible-icon {
 	font-size: 1.2rem;
-	transition:
-		transform 0.3s ease,
-		color 0.3s ease;
+	transition: var(--transition);
 	color: var(--primary-dark);
 	width: 24px;
 	height: 24px;
@@ -798,7 +796,7 @@ strong {
 .collapsible-content {
 	max-height: 0;
 	overflow: hidden;
-	transition: max-height 0.5s ease-out;
+	transition: var(--transition);
 	padding: 0 1rem;
 }
 
