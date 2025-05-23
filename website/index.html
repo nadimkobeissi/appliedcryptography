@@ -205,6 +205,7 @@
 							<li>Joël Alwen, Binyi Chen, Krzysztof Pietrzak, Leonid Reyzin and Stefano Tessaro, <a href="papers/#scrypt-memory"><em>Scrypt Is Maximally Memory-Hard</em></a>, IACR EUROCRYPT, 2017.</li>
 							<li>Ange Albertini, Thai Duong, Shay Gueron, Stefan K&#xF6;lbl, Atul Luykx, and Sophie Schmieg, <a href="papers/#key-commitment"><em>How to Abuse and Fix Authenticated Encryption Without Key Commitment</em></a>, USENIX Security Symposium, 2022.</li>
 							<li>Ran Canetti, Oded Goldreich, Shai Halevi, <a href="papers/#rom-methodology"><em>The Random Oracle Model Methodology, Revisited</em></a>, Journal of the ACM, 2004.</li>
+							<li>Kiarash Sedghighadikolaei and Attila Altay Yavuz, <a href="papers/#threshold-signatures"><em>A Comprehensive Survey of Threshold Digital Signatures: NIST Standards, Post-Quantum Cryptography, Exotic Techniques, and Real-World Applications</em></a>, University of South Florida, 2024.</li>
 							<li>Karthikeyan Bhargavan and Ga&euml;tan Leurent, <a href="papers/#inria-collisions"><em>Transcript Collision Attacks: Breaking Authentication in TLS, IKE and SSH</em></a>, Network and Distributed Systems Security Symposium, 2016.</li>
 							<li><em>More to be added soon!</em></li>
 						</ul>
@@ -342,12 +343,12 @@
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
 						<span class="session-number">Session 1.7</span>
-						<h4 class="session-title"><i class="fas fa-book"></i> Key Exchange</h4>
-						<p class="session-overview">This session introduces the fundamental concept of key exchange, which allows parties to establish shared secret keys over insecure channels. We'll explore the Diffie-Hellman protocol, examining how its elegant mathematical structure enables secure key agreement without prior shared secrets while maintaining security against eavesdroppers. The session covers the discrete logarithm and computational Diffie-Hellman assumptions that underpin the protocol's security, along with practical considerations for parameter selection. Students will understand both the basic protocol and its limitations, including vulnerability to man-in-the-middle attacks when used without authentication. We'll also examine modern applications and variants of key exchange protocols, including their integration into complex systems like TLS and secure messaging platforms, setting the foundation for subsequent discussions of authenticated key exchange.</p>
+						<h4 class="session-title"><i class="fas fa-book"></i>Hard Problems</h4>
+						<p class="session-overview">This session explores computational hardness problems, the cornerstone of modern cryptography. We'll examine how complexity theory provides a framework for classifying problems based on their computational difficulty, distinguishing between polynomial-time (efficient) and superpolynomial-time (inefficient) algorithms. The session covers fundamental complexity classes including P, NP, and NP-complete, examining the famous unsolved P vs. NP problem and its profound implications for cryptography. We'll analyze the factoring problem—the foundation of RSA security—and the discrete logarithm problem, investigating their complexity, known algorithms, and position relative to NP-hardness. The session concludes by examining practical considerations that can undermine theoretical security, including improperly generated parameters, weaknesses in specific number structures, and the risk of using cryptographic primitives with insufficient security margins. Throughout, we'll connect abstract computational hardness to concrete cryptographic applications, demonstrating why certain problems make suitable foundations for secure systems.</p>
 						<div class="session-readings">
 							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
 							<ul>
-								<li><em>The Joy of Cryptography</em>, Chapter 13: Key Exchange</li>
+								<li>Jean-Philippe Aumasson, <em>Serious Cryptography, 2<sup>nd</sup> Edition. Chapter 9: Hard Problems</em>, No Starch Press, 2024.</li>
 							</ul>
 						</div>
 					</div>
@@ -355,12 +356,12 @@
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
 						<span class="session-number">Session 1.8</span>
-						<h4 class="session-title"><i class="fas fa-book"></i> Public-Key Encryption</h4>
-						<p class="session-overview">This session explores public-key encryption (PKE), a transformative paradigm where encryption and decryption use different keys. Unlike symmetric encryption, PKE allows anyone with a public key to encrypt messages while only the private key holder can decrypt them. We'll examine formal security definitions for PKE schemes, including CPA and CCA security, and prove that any secure single-use PKE scheme remains secure for multiple encryptions. The session introduces El Gamal encryption, which leverages the Diffie-Hellman assumption to create a secure PKE scheme from cyclic group operations. We'll also study the Fujisaki-Okamoto construction, which efficiently transforms any CPA-secure PKE into a CCA-secure one using the random oracle model. Finally, we'll explore hybrid encryption and key encapsulation mechanisms (KEMs) as practical approaches that combine the security advantages of public-key cryptography with the efficiency of symmetric-key methods, enabling real-world applications that require both security and performance.</p>
+						<h4 class="session-title"><i class="fas fa-book"></i> Diffie-Hellman</h4>
+						<p class="session-overview">This session explores the Diffie-Hellman (DH) protocol, a revolutionary cryptographic method that enables two parties to establish a shared secret over an insecure channel. We'll examine the mathematical foundations of DH using modular exponentiation in prime fields, analyzing how secure parameter selection (including "safe primes") affects security. The session covers computational hardness assumptions—specifically the computational Diffie-Hellman (CDH) and decisional Diffie-Hellman (DDH) problems—that underpin DH security. We'll investigate three key protocol variants: anonymous DH (vulnerable to man-in-the-middle attacks), authenticated DH (which incorporates digital signatures), and Menezes-Qu-Vanstone (MQV), evaluating their security properties against different attack models including network attackers, data leaks, and breaches. The session addresses critical security goals including authentication, key control, forward secrecy, and resistance to key-compromise impersonation. Finally, we'll analyze common implementation pitfalls such as failing to hash shared secrets, using anonymous DH in vulnerable contexts, and implementing unsafe group parameters, providing practical guidance for deploying secure DH-based systems.</p>
 						<div class="session-readings">
 							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
 							<ul>
-								<li><em>The Joy of Cryptography</em>, Chapter 14: Public-Key Encryption</li>
+								<li>Jean-Philippe Aumasson, <em>Serious Cryptography, 2<sup>nd</sup> Edition. Chapter 11: Diffie-Hellman</em>, No Starch Press, 2024.</li>
 							</ul>
 						</div>
 					</div>
@@ -368,12 +369,13 @@
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
 						<span class="session-number">Session 1.9</span>
-						<h4 class="session-title"><i class="fas fa-book"></i> Digital Signatures</h4>
-						<p class="session-overview">This session explores digital signatures, which allow an entity to cryptographically endorse a message in a way that anyone can verify but only the signer can produce. We'll examine how digital signatures provide the electronic equivalent of handwritten signatures with crucial integrity and non-repudiation properties. The session covers formal security definitions for signatures, including existential unforgeability under chosen-message attacks, and introduces several construction approaches. We'll explore hash-and-sign techniques using trapdoor functions, signature schemes derived from identification protocols, and efficient signature schemes based on the discrete logarithm assumption like DSA and EdDSA. Students will understand both the theoretical foundations and practical implementations of digital signatures, including their critical role in certificate authorities, code signing, and cryptocurrency transactions, as well as the security considerations that affect their deployment in modern systems.</p>
+						<h4 class="session-title"><i class="fas fa-book"></i> Elliptic Curves &amp; Digital Signatures</h4>
+						<p class="session-overview">This session explores elliptic curve cryptography (ECC), an approach that provides stronger security with smaller keys than traditional cryptosystems like RSA. We'll examine the mathematical foundations of elliptic curves and their group structure supporting point addition and scalar multiplication operations. The session covers the elliptic curve discrete logarithm problem (ECDLP) that underpins ECC's security, and how it enables efficient implementations of key exchange (ECDH) and digital signatures (ECDSA and EdDSA/Ed25519). We'll analyze the advantages of ECC, including faster signing operations and significantly shorter keys and signatures compared to RSA, while examining critical implementation considerations that affect security. The session concludes with guidance on selecting appropriate curves, comparing standardized options like NIST curves and Curve25519, and exploring potential vulnerabilities including invalid curve attacks, randomness failures, and interoperability challenges in modern ECC deployments.</p>
 						<div class="session-readings">
 							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
 							<ul>
-								<li><em>The Joy of Cryptography</em>, Chapter 16: Digital Signatures</li>
+								<li>Jean-Philippe Aumasson, <em>Serious Cryptography, 2<sup>nd</sup> Edition. Chapter 12: Elliptic Curves</em>, No Starch Press, 2024.</li>
+								<li>Kiarash Sedghighadikolaei and Attila Altay Yavuz, <a href="papers/#threshold-signatures"><em>A Comprehensive Survey of Threshold Digital Signatures: NIST Standards, Post-Quantum Cryptography, Exotic Techniques, and Real-World Applications</em></a>, University of South Florida, 2024.</li>
 							</ul>
 						</div>
 					</div>
