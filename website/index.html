@@ -201,15 +201,20 @@
 					<div class="card">
 						<ul>
 							<li>Michael Luby and Charles Rackoff, <a href="papers/#luby-rackoff"><em>How To Construct Pseudorandom Permutations From Pseudorandom Functions</em></a>, Society for Industrial and Applied Mathematics, 1988.</li>
-							<li>Bodo M&#xF6;ller, Thai Duong, Krzysztof Kotowicz, <a href="papers/#google-poodle"><em>This POODLE Bites: Exploiting the SSL 3.0 Fallback</em></a>, Google, 2014.</li>
-							<li>Nadhem J. Alfardan, Kenneth G. Paterson, <a href="papers/#rhul-luckythirteen"><em>Lucky Thirteen: Breaking the TLS and DTLS Record Protocols</em></a>, IEEE Symposium on Security and Privacy, 2013.</li>
+							<li>Bodo M&#xF6;ller, Thai Duong and Krzysztof Kotowicz, <a href="papers/#google-poodle"><em>This POODLE Bites: Exploiting the SSL 3.0 Fallback</em></a>, Google, 2014.</li>
+							<li>Nadhem J. Alfardan and Kenneth G. Paterson, <a href="papers/#rhul-luckythirteen"><em>Lucky Thirteen: Breaking the TLS and DTLS Record Protocols</em></a>, IEEE Symposium on Security and Privacy, 2013.</li>
 							<li>Christina Garman, Matthew Green, Gabriel Kaptchuk, Ian Miers and Michael Rushanan, <a href="papers/#jhu-imessage"><em>Dancing on the Lip of the Volcano: Chosen Ciphertext Attacks on Apple iMessage</em></a>, USENIX Security Symposium, 2016.</li>
 							<li>Marc Stevens, Elie Bursztein, Pierre Karpman, Ange Albertini and Yarik Markov, <a href="papers/#shattered-sha1"><em>The First Collision for Full SHA-1</em></a>, IACR CRYPTO, 2017.</li>
 							<li>Joël Alwen, Binyi Chen, Krzysztof Pietrzak, Leonid Reyzin and Stefano Tessaro, <a href="papers/#scrypt-memory"><em>Scrypt Is Maximally Memory-Hard</em></a>, IACR EUROCRYPT, 2017.</li>
 							<li>Ange Albertini, Thai Duong, Shay Gueron, Stefan K&#xF6;lbl, Atul Luykx, and Sophie Schmieg, <a href="papers/#key-commitment"><em>How to Abuse and Fix Authenticated Encryption Without Key Commitment</em></a>, USENIX Security Symposium, 2022.</li>
-							<li>Ran Canetti, Oded Goldreich, Shai Halevi, <a href="papers/#rom-methodology"><em>The Random Oracle Model Methodology, Revisited</em></a>, Journal of the ACM, 2004.</li>
+							<li>Ran Canetti, Oded Goldreich and Shai Halevi, <a href="papers/#rom-methodology"><em>The Random Oracle Model Methodology, Revisited</em></a>, Journal of the ACM, 2004.</li>
 							<li>Kiarash Sedghighadikolaei and Attila Altay Yavuz, <a href="papers/#threshold-signatures"><em>A Comprehensive Survey of Threshold Digital Signatures: NIST Standards, Post-Quantum Cryptography, Exotic Techniques, and Real-World Applications</em></a>, University of South Florida, 2024.</li>
+							<li>David Adrian, Karthikeyan Bhargavan, Zakir Durumeric, Pierrick Gaudry, Matthew Green, J. Alex Halderman, Nadia Heninger, Drew Springall, Emmanuel Thomé, Luke Valenta, Benjamin VanderSloot, Eric Wustrow, Santiago Zanella-Béguelin and Paul Zimmermann, <a href="papers/#imperfect-dh"><em>Imperfect Forward Secrecy: How Diffie-Hellman Fails in Practice</em></a>, ACM CCS, 2015.</li>
+							<li>Karthikeyan Bhargavan, Antoine Delignat-Lavaud, Cédric Fournet, Alfredo Pironti and Pierre-Yves Strub, <a href="papers/#triple-handshakes"><em>Triple Handshakes and Cookie Cutters: Breaking and Fixing Authentication over TLS</em></a>, IEEE Symposium on Security and Privacy, 2014.</li>
+							<li>Benjamin Beurdouche, Karthikeyan Bhargavan, Antoine Delignat-Lavaud, Cédric Fournet, Markulf Kohlweiss, Alfredo Pironti, Pierre-Yves Strub and Jean-Karim Zinzindohoué, <a href="papers/#smack-tls"><em>A Messy State of the Union: Taming the Composite State Machines of TLS</em></a>, IEEE Symposium on Security and Privacy, 2015.</li>
+							<li>Karthikeyan Bhargavan and Ga&euml;tan Leurent, <a href="papers/#inria-sweet32"><em>On the Practical (In-)Security of 64-bit Block Ciphers</em></a>, ACM CCS, 2016.</li>
 							<li>Karthikeyan Bhargavan and Ga&euml;tan Leurent, <a href="papers/#inria-collisions"><em>Transcript Collision Attacks: Breaking Authentication in TLS, IKE and SSH</em></a>, Network and Distributed Systems Security Symposium, 2016.</li>
+							<li>Zakir Durumeric, James Kasten, David Adrian, J. Alex Halderman, Michael Bailey, Frank Li, Nicholas Weaver, Johanna Amann, Jethro Beekman, Mathias Payer and Vern Paxson, <a href="papers/#matter-heartbleed"><em>The Matter of Heartbleed</em></a>, ACM IMC, 2014.</li>
 							<li><em>More to be added soon!</em></li>
 						</ul>
 					</div>
@@ -268,7 +273,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Introduction</h4>
 						<p class="session-overview">This introductory session establishes the foundation for the entire course by covering the scope, objectives, and structure of applied cryptography. We'll discuss key themes that will recur throughout the semester, including the balance between theory and practice, the importance of formal security definitions, and the evolution of cryptographic thinking. Students will gain a clear understanding of what to expect from the course and how the various topics connect to form a coherent framework for secure system design.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li><em>The Joy of Cryptography</em>, Chapter 0: Review of Concepts &amp; Notation</li>
 							</ul>
@@ -281,7 +286,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> One-Time Pad &amp; The Provable Security Mindset</h4>
 						<p class="session-overview">This session introduces the concept of perfect secrecy through the One-Time Pad (OTP) encryption system and explores its mathematical proof of unconditional security. While theoretically unbreakable, we'll examine the severe practical limitations that make OTP challenging to deploy in real-world systems, including key generation, distribution, and management problems. The session then transitions to Kerckhoff's fundamental principle—that a cryptosystem should remain secure even if everything about the system, except the key, is public knowledge. We'll discuss how this principle has shaped modern cryptographic design philosophy and why security through obscurity fails as a long-term strategy for protecting sensitive information.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li><em>The Joy of Cryptography</em>, Chapter 0: Review of Concepts &amp; Notation</li>
 								<li><em>The Joy of Cryptography</em>, Chapter 1: One-Time Pad &amp; The Provable Security Mindset</li>
@@ -295,7 +300,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Provable Security &amp; Computational Cryptography</h4>
 						<p class="session-overview">This session begins by delving into the rigorous mathematical frameworks that allow cryptographers to provide formal security guarantees for cryptographic schemes. We'll examine how precise definitions of security properties create a foundation for meaningful analysis, and explore various adversarial models that capture different threat scenarios. The concept of reduction—proving that breaking a scheme is at least as hard as solving some well-studied mathematical problem—will be thoroughly explored. We then transition to modern computational cryptography, moving from unconditional security to a more practical approach where security is defined against computationally bounded adversaries. Students will learn about indistinguishability as a fundamental security concept, the bad-event technique for security proofs, and birthday probabilities in cryptographic attacks. The session provides essential mathematical foundations for understanding modern cryptographic security, including quantitative intuition about large numbers (like 2<sup>128</sup>) and tiny probabilities (like 2<sup>-80</sup>) that define practical security boundaries, preparing students for subsequent topics in pseudorandomness.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li><em>The Joy of Cryptography</em>, Chapter 2: Rudiments of Provable Security</li>
 								<li><em>The Joy of Cryptography</em>, Chapter 4: Modern Computational Cryptography</li>
@@ -309,7 +314,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Pseudorandomness</h4>
 						<p class="session-overview">This session explores three fundamental pseudorandom primitives that enable practical cryptography. Pseudorandom generators (PRGs) solve one-time pad's key length limitation by expanding short seeds into longer outputs indistinguishable from random. Pseudorandom functions (PRFs) extend this by creating massive virtual dictionaries mapping inputs to pseudorandom outputs, allowing parties with a shared secret to derive unlimited pseudorandom data. Pseudorandom permutations (PRPs), also called block ciphers, provide both forward and inverse operations indistinguishable from random permutations. We'll examine key constructions including GGM (building PRFs from PRGs), the Feistel network (building invertible PRPs from non-invertible PRFs), and the PRF-PRP switching lemma that enables interchangeability in security proofs. Throughout, we'll emphasize crucial security principles like the PRF "Golden Rule" of preventing input repetition.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li><em>The Joy of Cryptography</em>, Chapter 5: Pseudorandom Generators</li>
 								<li><em>The Joy of Cryptography</em>, Chapter 6: Pseudorandom Functions</li>
@@ -324,7 +329,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Chosen-Plaintext &amp; Chosen-Ciphertext Attacks</h4>
 						<p class="session-overview">This session explores advanced security models for symmetric-key encryption, beginning with chosen-plaintext attack (CPA) security, where ciphertexts must be indistinguishable from random strings. We'll examine why deterministic encryption cannot achieve this security level and explore solutions including randomized PRF-based schemes and block cipher modes like CBC and CTR, while explaining why ECB mode remains fundamentally insecure. The session then advances to chosen-ciphertext attacks (CCA), where adversaries can decrypt chosen ciphertexts, demonstrating how even CPA-secure schemes like CTR mode remain vulnerable due to their malleability. We'll analyze practical format-oracle attacks that exploit information leakage during decryption to recover entire plaintexts, and examine how preventing adversaries from creating valid modified ciphertexts is essential for achieving comprehensive CCA security in real-world systems.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li><em>The Joy of Cryptography</em>, Chapter 8: Chosen-Plaintext Attacks</li>
 								<li><em>The Joy of Cryptography</em>, Chapter 9: Chosen-Ciphertext Attacks</li>
@@ -338,7 +343,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Collision-Resistant Hash Functions</h4>
 						<p class="session-overview">This session explores collision-resistant hash functions, cryptographic primitives that convert arbitrary-length inputs to fixed-length outputs while making it computationally infeasible to find colliding inputs. We'll examine three essential properties—collision resistance, preimage resistance, and second preimage resistance—while exploring practical applications in password storage, data integrity verification, and proof-of-work systems. The session introduces the counterintuitive birthday paradox, demonstrating why collisions can be found after approximately square-root-many attempts rather than brute force. We'll survey hash function evolution from broken algorithms like MD5 and SHA-1 to modern standards like SHA-2, SHA-3, and BLAKE3, while analyzing vulnerabilities including precomputation attacks using rainbow tables and length extension weaknesses in Merkle–Damg&#xE5;rd constructions. The session covers critical defensive techniques including properly salting hashes and implementing specialized password hashing algorithms like PBKDF2 and memory-hard functions such as Scrypt, which resist hardware acceleration attacks by requiring significant memory resources, providing comprehensive guidance for secure hash function implementation in real-world systems.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li><em>The Joy of Cryptography</em>, Chapter 10: Collision-Resistant Hash Functions</li>
 								<li><em>The Joy of Cryptography</em>, Chapter 12: Random Oracles and Other Idealized Models</li>
@@ -352,7 +357,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i>Hard Problems</h4>
 						<p class="session-overview">This session explores computational hardness problems, the cornerstone of modern cryptography. We'll examine how complexity theory provides a framework for classifying problems based on their computational difficulty, distinguishing between polynomial-time (efficient) and superpolynomial-time (inefficient) algorithms. The session covers fundamental complexity classes including P, NP, and NP-complete, examining the famous unsolved P vs. NP problem and its profound implications for cryptography. We'll analyze the factoring problem—the foundation of RSA security—and the discrete logarithm problem, investigating their complexity, known algorithms, and position relative to NP-hardness. The session concludes by examining practical considerations that can undermine theoretical security, including improperly generated parameters, weaknesses in specific number structures, and the risk of using cryptographic primitives with insufficient security margins. Throughout, we'll connect abstract computational hardness to concrete cryptographic applications, demonstrating why certain problems make suitable foundations for secure systems.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li>Jean-Philippe Aumasson, <em>Serious Cryptography, 2<sup>nd</sup> Edition. Chapter 9: Hard Problems</em>, No Starch Press, 2024.</li>
 							</ul>
@@ -365,7 +370,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Diffie-Hellman</h4>
 						<p class="session-overview">This session explores the Diffie-Hellman (DH) protocol, a revolutionary cryptographic method that enables two parties to establish a shared secret over an insecure channel. We'll examine the mathematical foundations of DH using modular exponentiation in prime fields, analyzing how secure parameter selection (including "safe primes") affects security. The session covers computational hardness assumptions—specifically the computational Diffie-Hellman (CDH) and decisional Diffie-Hellman (DDH) problems—that underpin DH security. We'll investigate three key protocol variants: anonymous DH (vulnerable to man-in-the-middle attacks), authenticated DH (which incorporates digital signatures), and Menezes-Qu-Vanstone (MQV), evaluating their security properties against different attack models including network attackers, data leaks, and breaches. The session addresses critical security goals including authentication, key control, forward secrecy, and resistance to key-compromise impersonation. Finally, we'll analyze common implementation pitfalls such as failing to hash shared secrets, using anonymous DH in vulnerable contexts, and implementing unsafe group parameters, providing practical guidance for deploying secure DH-based systems.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li>Jean-Philippe Aumasson, <em>Serious Cryptography, 2<sup>nd</sup> Edition. Chapter 11: Diffie-Hellman</em>, No Starch Press, 2024.</li>
 							</ul>
@@ -378,7 +383,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Elliptic Curves &amp; Digital Signatures</h4>
 						<p class="session-overview">This session explores elliptic curve cryptography (ECC), an approach that provides stronger security with smaller keys than traditional cryptosystems like RSA. We'll examine the mathematical foundations of elliptic curves and their group structure supporting point addition and scalar multiplication operations. The session covers the elliptic curve discrete logarithm problem (ECDLP) that underpins ECC's security, and how it enables efficient implementations of key exchange (ECDH) and digital signatures (ECDSA and EdDSA/Ed25519). We'll analyze the advantages of ECC, including faster signing operations and significantly shorter keys and signatures compared to RSA, while examining critical implementation considerations that affect security. The session concludes with guidance on selecting appropriate curves, comparing standardized options like NIST curves and Curve25519, and exploring potential vulnerabilities including invalid curve attacks, randomness failures, and interoperability challenges in modern ECC deployments.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li>Jean-Philippe Aumasson, <em>Serious Cryptography, 2<sup>nd</sup> Edition. Chapter 12: Elliptic Curves</em>, No Starch Press, 2024.</li>
 								<li>Kiarash Sedghighadikolaei and Attila Altay Yavuz, <a href="papers/#threshold-signatures"><em>A Comprehensive Survey of Threshold Digital Signatures: NIST Standards, Post-Quantum Cryptography, Exotic Techniques, and Real-World Applications</em></a>, University of South Florida, 2024.</li>
@@ -401,12 +406,13 @@
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
 						<span class="session-number">Session 2.1</span>
-						<h4 class="session-title"><i class="fas fa-book"></i> Encrypted Messaging &amp; Ratcheting</h4>
+						<h4 class="session-title"><i class="fas fa-book"></i> Secure Messaging</h4>
 						<p class="session-overview">This session explores modern encrypted messaging protocols, focusing on how forward secrecy and post-compromise security are achieved through cryptographic "ratcheting" mechanisms. We'll examine how protocols like Signal protect user communications even when devices are compromised. The session begins with the concept of forward secrecy, which ensures that compromised keys cannot decrypt past messages, implemented through symmetric ratchets that continually evolve encryption keys. We then explore post-compromise security, which protects future messages after a compromise through asymmetric ratcheting based on Diffie-Hellman key exchanges. The combination of these techniques in Signal's double ratchet offers robust protections against both passive and active adversaries. Finally, we'll examine how these concepts extend to group messaging in the Messaging Layer Security (MLS) protocol, where ratchet trees efficiently manage forward secrecy and post-compromise security for multiple participants. Throughout, we'll analyze the security properties, limitations, and real-world considerations of these messaging systems that protect billions of daily communications.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li><em>The Joy of Cryptography</em>, Chapter 17: Encrypted Messaging &amp; Ratcheting</li>
+								<li>TODO</li>
 							</ul>
 						</div>
 					</div>
@@ -417,7 +423,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Authenticated Key Exchange</h4>
 						<p class="session-overview">This session explores authenticated key exchange (AKE), which secures communications by ensuring parties establish shared keys only with their intended partners. We'll examine the fundamental challenge of authentication in key exchange protocols and the vulnerabilities of unauthenticated approaches like basic Diffie-Hellman to person-in-the-middle attacks. The session covers two distinct approaches to AKE: explicit authentication using digital signatures (including the SIGMA protocol that underpins TLS 1.3) and implicit authentication based on combining long-term and ephemeral keys (as seen in Triple Diffie-Hellman used in Signal). We'll analyze the security properties of these protocols, including forward secrecy, protection against key compromise impersonation attacks, and deniability, while exploring how these properties manifest in real-world protocols like TLS and Signal. Students will gain insight into the subtleties of cryptographic authentication and understand the careful protocol design required to achieve these crucial security properties.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li><em>The Joy of Cryptography</em>, Chapter 18: Authenticated Key Exchange</li>
 							</ul>
@@ -430,7 +436,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Zero-Knowledge Proofs</h4>
 						<p class="session-overview">This session explores zero-knowledge proofs, which enable proving possession of secret information without revealing anything about the secret itself. We'll examine how these interactive protocols can authenticate a party's identity while maintaining deniability—allowing someone to prove they know a private key without creating evidence that could later convince others. The session begins with the Schnorr identification protocol, which demonstrates this paradoxical capability through a clever three-move interaction. We'll then generalize to sigma protocols, a powerful class of interactive proofs with completeness, special soundness, and honest-verifier zero-knowledge properties. The session covers several practical examples, including proofs of discrete log equality and complex logical conditions using AND/OR compositions. Finally, we'll explore how interactive proofs can be transformed into non-interactive proofs and digital signatures through the Fiat-Shamir transformation, which replaces the verifier with a cryptographic hash function. This transformation creates powerful primitives like Schnorr signatures but necessarily sacrifices the deniability property that makes interactive zero-knowledge proofs unique.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li><em>The Joy of Cryptography</em>, Chapter 19: Zero-Knowledge Proofs</li>
 							</ul>
@@ -443,7 +449,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Post-Quantum Cryptography</h4>
 						<p class="session-overview">This session explores post-quantum cryptography, which addresses the threat quantum computers pose to current cryptographic systems. We'll examine how quantum algorithms like Shor's can break widely-used public-key cryptography based on factoring and discrete logarithms, while Grover's algorithm reduces symmetric-key security by effectively halving key lengths. The session introduces the Learning With Errors (LWE) problem as a foundation for post-quantum cryptography, explaining how its computational hardness against quantum attacks makes it suitable for building secure cryptographic primitives. We'll analyze practical LWE-based key exchange protocols that form the basis for NIST's standardized post-quantum schemes like ML-KEM. Students will understand both the theoretical foundation of quantum-resistant cryptography and the practical considerations for implementing these systems in real-world applications, preparing them for the transition to a post-quantum cryptographic landscape.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li><em>The Joy of Cryptography</em>, Chapter 20: Post-Quantum Cryptography</li>
 							</ul>
@@ -456,9 +462,17 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Transport Layer Security</h4>
 						<p class="session-overview">This session examines the Transport Layer Security (TLS) protocol, the backbone of secure communication on the internet that secures billions of connections daily. We'll explore the evolution from SSL to modern TLS 1.3, analyzing the protocol architecture, handshake process, and the cryptographic primitives deployed at each stage. The session covers key exchange mechanisms, authentication methods, and the cipher suites that provide confidentiality and integrity protections. Students will learn about certificate validation, trust models, and the public key infrastructure (PKI) that underpins TLS security. We'll also investigate significant vulnerabilities that have affected TLS implementations throughout its history, including BEAST, CRIME, Heartbleed, and POODLE, analyzing how these vulnerabilities arose and the mitigations developed in response. The session concludes with practical deployment considerations, performance optimizations like session resumption and 0-RTT, and the security trade-offs encountered when configuring TLS in production environments.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
-								<li>TODO</li>
+								<li>Jean-Philippe Aumasson, <em>Serious Cryptography, 2<sup>nd</sup> Edition. Chapter 13: TLS</em>, No Starch Press, 2024.</li>
+								<li>Bodo M&#xF6;ller, Thai Duong and Krzysztof Kotowicz, <a href="papers/#google-poodle"><em>This POODLE Bites: Exploiting the SSL 3.0 Fallback</em></a>, Google, 2014.</li>
+								<li>Nadhem J. Alfardan and Kenneth G. Paterson, <a href="papers/#rhul-luckythirteen"><em>Lucky Thirteen: Breaking the TLS and DTLS Record Protocols</em></a>, IEEE Symposium on Security and Privacy, 2013.</li>
+								<li>David Adrian, Karthikeyan Bhargavan, Zakir Durumeric, Pierrick Gaudry, Matthew Green, J. Alex Halderman, Nadia Heninger, Drew Springall, Emmanuel Thomé, Luke Valenta, Benjamin VanderSloot, Eric Wustrow, Santiago Zanella-Béguelin and Paul Zimmermann, <a href="papers/#imperfect-dh"><em>Imperfect Forward Secrecy: How Diffie-Hellman Fails in Practice</em></a>, ACM CCS, 2015.</li>
+								<li>Karthikeyan Bhargavan, Antoine Delignat-Lavaud, Cédric Fournet, Alfredo Pironti and Pierre-Yves Strub, <a href="papers/#triple-handshakes"><em>Triple Handshakes and Cookie Cutters: Breaking and Fixing Authentication over TLS</em></a>, IEEE Symposium on Security and Privacy, 2014.</li>
+								<li>Benjamin Beurdouche, Karthikeyan Bhargavan, Antoine Delignat-Lavaud, Cédric Fournet, Markulf Kohlweiss, Alfredo Pironti, Pierre-Yves Strub and Jean-Karim Zinzindohoué, <a href="papers/#smack-tls"><em>A Messy State of the Union: Taming the Composite State Machines of TLS</em></a>, IEEE Symposium on Security and Privacy, 2015.</li>
+								<li>Karthikeyan Bhargavan and Ga&euml;tan Leurent, <a href="papers/#inria-sweet32"><em>On the Practical (In-)Security of 64-bit Block Ciphers</em></a>, ACM CCS, 2016.</li>
+								<li>Karthikeyan Bhargavan and Ga&euml;tan Leurent, <a href="papers/#inria-collisions"><em>Transcript Collision Attacks: Breaking Authentication in TLS, IKE and SSH</em></a>, Network and Distributed Systems Security Symposium, 2016.</li>
+								<li>Zakir Durumeric, James Kasten, David Adrian, J. Alex Halderman, Michael Bailey, Frank Li, Nicholas Weaver, Johanna Amann, Jethro Beekman, Mathias Payer and Vern Paxson, <a href="papers/#matter-heartbleed"><em>The Matter of Heartbleed</em></a>, ACM IMC, 2014.</li>
 							</ul>
 						</div>
 					</div>
@@ -469,7 +483,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Applied Cryptography in Cloud Security</h4>
 						<p class="session-overview">This session explores how cryptographic principles and techniques are applied to secure cloud computing environments, focusing on the unique challenges of protecting data and applications in distributed, multi-tenant infrastructures. We'll examine key management strategies for distributed systems, including hierarchical key management, key rotation policies, and hardware security modules (HSMs) in cloud deployments. The session covers confidential computing technologies that use hardware-based trusted execution environments and memory encryption to protect data in use. Students will learn about tokenization systems that replace sensitive data with non-sensitive equivalents, and encryption schemes optimized for cloud storage including convergent encryption and client-side encryption models. We'll investigate secret management at scale, analyzing secure vaults, dynamic credential generation, and secure secret distribution in containerized environments. The session also explores cryptographic access control mechanisms like attribute-based encryption and practical implementations of end-to-end encryption in cloud services, examining how these technologies can maintain confidentiality even when the cloud provider itself isn't fully trusted.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li>TODO</li>
 							</ul>
@@ -482,7 +496,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Cryptographic Protocol Failures &amp; Lessons Learned</h4>
 						<p class="session-overview">This session examines significant historical failures in cryptographic protocols and implementations, analyzing what went wrong and extracting valuable lessons for future secure system design. We'll investigate major vulnerabilities such as Heartbleed (OpenSSL buffer over-read), Logjam (weaknesses in Diffie-Hellman parameters), POODLE (padding oracle attacks on SSL), and ROCA (weak key generation in cryptographic libraries), exploring their technical details, exploitation mechanisms, and real-world impact. The session covers common categories of cryptographic failures including protocol design flaws, implementation errors, side-channel vulnerabilities, and weaknesses in random number generation. Students will learn how these vulnerabilities were discovered, the disclosure processes that followed, and the industry response to each incident. We'll also analyze the root causes behind these failures, including insufficient formal verification, legacy compatibility issues, economic factors, and the challenges of correctly implementing theoretical cryptography. The session concludes with a systematic approach to learning from past mistakes, examining how modern cryptographic libraries, formal verification techniques, and secure development practices have evolved in response to these historical failures to build more resilient systems.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li>TODO</li>
 							</ul>
@@ -495,7 +509,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Formal Verification of Cryptographic Protocols</h4>
 						<p class="session-overview">This session explores how formal methods and automated tools can rigorously verify security properties of cryptographic protocols beyond traditional manual analysis. We'll examine both symbolic and computational approaches to protocol verification, including the Dolev-Yao attacker model, applied pi-calculus, and game-based security proofs. The session covers automated verification tools such as ProVerif, Tamarin Prover, and CryptoVerif, analyzing their modeling languages, verification techniques, and capabilities for discovering vulnerabilities. Students will learn how to formally specify security properties including authentication, confidentiality, forward secrecy, and resistance to various attacks using these frameworks. We'll explore case studies where formal verification has discovered critical flaws in widely-deployed protocols like TLS, Signal, and key exchange mechanisms that manual analysis missed. The session concludes with a discussion of current limitations in formal verification approaches, including abstraction boundaries, computational resource constraints, and the gap between verified models and actual implementations. We'll also examine emerging techniques that aim to bridge formal verification with implementation correctness through verified compilation and executable specifications.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li>TODO</li>
 							</ul>
@@ -508,7 +522,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> High Assurance Cryptography</h4>
 						<p class="session-overview">This session examines methodologies for developing cryptographic implementations with high assurance of correctness and security, moving beyond traditional testing approaches to formal verification and rigorous proof techniques. We'll explore the spectrum of formal methods applied to cryptography, from lightweight verification using refinement types to comprehensive mathematical proofs of functional correctness and security properties. The session covers verification frameworks and tools including F*, Coq, Lean, and ProVerif, examining how they can be applied to verify cryptographic implementations against their specifications and security definitions. Students will learn about verified cryptographic libraries like HACL*, EverCrypt, and initiatives from organizations like Cryspen that bring formal verification to practical cryptography. We'll also discuss the challenges in formally verifying cryptographic code, including the gap between mathematical specifications and efficient implementations, side-channel resistance verification, and performance considerations. The session concludes with case studies of successful verification projects that have produced high-assurance cryptographic implementations deployed in critical systems.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li><em>TODO:</em> Cryspen, Lean, F-Star, ProVerif</li>
 							</ul>
@@ -521,7 +535,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Cryptocurrency Cryptography</h4>
 						<p class="session-overview">This session explores the cryptographic foundations of blockchain systems and cryptocurrencies, examining how traditional cryptographic primitives are combined in novel ways to create decentralized trust systems. We'll investigate the core components of blockchain protocols, including hash functions in proof-of-work mechanisms, digital signatures for transaction authentication, and Merkle trees for efficient verification. The session covers the cryptographic aspects of Bitcoin, Ethereum, and other significant blockchain platforms, analyzing their security models, consensus mechanisms, and vulnerability mitigations. Students will learn about specialized cryptographic constructions in cryptocurrencies, including zero-knowledge proofs for privacy coins, threshold signatures for multi-signature wallets, and timelock puzzles for conditional transactions. We'll also discuss emerging cryptographic challenges in blockchain systems, including quantum resistance considerations, layer-2 scaling solutions with unique security properties, and the cryptographic foundations of newer consensus mechanisms like proof-of-stake that aim to address energy consumption concerns while maintaining security guarantees.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li>TODO</li>
 							</ul>
@@ -534,7 +548,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Secure Multiparty Computation</h4>
 						<p class="session-overview">This session explores Secure Multiparty Computation (MPC), a powerful cryptographic paradigm that enables multiple parties to jointly compute functions over their private inputs without revealing those inputs to each other. We'll examine the theoretical foundations of MPC, including feasibility results, security models, and the distinctions between semi-honest and malicious adversaries. The session covers core MPC techniques including Yao's garbled circuits, secret sharing schemes like Shamir's threshold method, and oblivious transfer protocols that enable secure two-party computation. Students will learn about practical MPC frameworks and implementations such as SCALE-MAMBA, MP-SPDZ, and EMP-toolkit, analyzing their performance characteristics and security guarantees. We'll investigate applications of MPC across various domains, including private data analysis, secure auctions, privacy-preserving machine learning, and confidential financial systems. The session also addresses performance optimizations like preprocessing, circuit minimization, and communication-efficient protocols that make MPC increasingly practical for real-world use. We'll conclude with case studies of deployed MPC systems, examining how these technologies overcome real-world implementation challenges to enable secure collaboration while maintaining strict privacy guarantees.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li>TODO</li>
 							</ul>
@@ -547,7 +561,7 @@
 						<h4 class="session-title"><i class="fas fa-book"></i> Privacy-Preserving Technologies</h4>
 						<p class="session-overview">This session explores cryptographic technologies designed to preserve privacy in various digital contexts, examining how mathematical techniques can protect sensitive information while still enabling useful computation and communication. We'll investigate anonymous communication networks like Tor, analyzing their onion routing architecture, circuit establishment protocols, and defenses against traffic analysis. The session covers differential privacy frameworks that enable statistical analysis of datasets while providing formal privacy guarantees about individual records, including the mathematical foundations, privacy budget concepts, and practical implementation considerations. Students will learn about advanced privacy technologies including private information retrieval, secure multi-party computation, homomorphic encryption, and their applications in areas like private data analysis, secure outsourced computation, and privacy-preserving machine learning. We'll also examine mix networks, anonymous credentials, and attribute-based authentication systems that enable selective disclosure of information without revealing complete identities. The session concludes with a discussion of the challenges in deploying privacy technologies at scale, including performance limitations, usability concerns, and the fundamental tradeoffs between utility, privacy, and efficiency in different application contexts.</p>
 						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Required Readings</h5>
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li>TODO</li>
 							</ul>
