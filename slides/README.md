@@ -36,11 +36,6 @@ I'm still working on the slides. If the checkbox isn't checked, it means you sho
 
 You'll need to first have [Tectonic](https://tectonic-typesetting.github.io/en-US/) installed. The good news is that this means that you don't need to install LaTeX!
 
-Use the Makefile:
-
-- `make <part>-<session>`: compile a single slide deck with the output in `pdf/`. Example: `make 1-3`.
-- `make all`: make every slide deck, place output in `pdf/`.
-
 ## Notes
 
 ### Regarding handout mode

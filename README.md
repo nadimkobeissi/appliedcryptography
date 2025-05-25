@@ -2,13 +2,13 @@
 
 # Applied Cryptography (CMPS 297AD/396AI)
 
-This repository contains the course materials for Applied Cryptography (CMPS 297AD/396AI) at the American University of Beirut.
+This repository contains source code course materials for Applied Cryptography (CMPS 297AD/396AI) at the American University of Beirut.
 
-For a better experience, ignore this repository and access the materials through the course website: [appliedcryptography.page](https://appliedcryptography.page)
+There is no point in browsing this repository, since it only contains uncompiled sources. For a better experience, ignore this repository and access the materials through the course website: [appliedcryptography.page](https://appliedcryptography.page)
 
 ## Contents
 
-- `materials`: Readings, assignments and lab sessions relevant to the course.
+- `assignments`: Course assignments and lab sessions.
 - `slides`: Course slides.
 - `syllabus`: Course syllabus.
 - `website`: [Course website](https://appliedcryptography.page).
