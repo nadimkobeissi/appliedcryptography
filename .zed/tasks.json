@@ -1,0 +1,11 @@
+[
+	{
+		"label": "tectonic",
+		"command": "tectonic",
+		"args": ["-o=pdf", "$ZED_FILENAME"],
+		"cwd": "$ZED_DIRNAME",
+		"reveal": "always",
+		"hide": "on_success",
+		"tags": ["latex-build"]
+	}
+]

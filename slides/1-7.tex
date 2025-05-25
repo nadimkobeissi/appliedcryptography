@@ -1,0 +1,410 @@
+\documentclass[aspectratio=169, lualatex, handout]{beamer}
+\makeatletter\def\input@path{{theme/}}\makeatother\usetheme{cipher}
+
+\title{Applied Cryptography}
+\author{Nadim Kobeissi}
+\institute{American University of Beirut}
+\instituteimage{images/aub_white.png}
+\date{\today}
+\coversubtitle{CMPS 297AD/396AI}
+\coverpartname{Part 1: Provable Security}
+\coversessionname{1.7: Hard Problems}
+\coverwebsite{https://appliedcryptography.page}
+
+\begin{document}
+\begin{frame}[plain]
+	\titlepage
+\end{frame}
+
+\begin{frame}{How it's made}
+	\bigimagewithcaption{fischer.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
+\end{frame}
+
+\begin{frame}{Cryptographic building blocks}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Security goals}
+			\begin{itemize}[<+->]
+				\item \textbf{Confidentiality}: Data exchanged between Client and Server
+				      is only known to those parties.
+				\item \textbf{Authentication}: If Server receives data from Client,
+				      then Client sent it to Server.
+				\item \textbf{Integrity}: If Server modifies data owned by Client,
+				      Client can find out.
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\textbf{Examples}
+			\begin{itemize}[<+->]
+				\item \textbf{Confidentiality}: When you send a private message on Signal,
+				      only you and the recipient can read the content.
+				\item \textbf{Authentication}: When you receive an email from your boss,
+				      you can verify it actually came from them.
+				\item \textbf{Integrity}: Your computer can verify that software update
+				      downloads haven't been tampered with during transmission.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Security goals: more examples}
+	\begin{itemize}[<+->]
+		\item \textbf{TLS (HTTPS)} ensures that data exchanged between the client
+		      and the server is confidential and that parties are authenticated.
+		      \begin{itemize}
+			      \item Allows you to log into gmail.com without your ISP learning your password.
+		      \end{itemize}
+		\item \textbf{FileVault 2} ensures data confidentiality and integrity on
+		      your MacBook.
+		      \begin{itemize}
+			      \item Prevents thieves from accessing your data if your MacBook is stolen.
+		      \end{itemize}
+		\item \textbf{Signal} implements post-compromise security, an advanced security
+		      goal.
+		      \begin{itemize}
+			      \item Allows a conversation to ``heal'' in the event of a temporary key
+			            compromise.
+			      \item More on that later in the course.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why bother?}
+	\begin{itemize}[<+->]
+		\item Can't we just use access control?
+		\item Strictly speaking, usernames and passwords can be implemented
+		      without cryptography\ldots
+		\item Server checks if the password matches, or if the IP address matches,
+		      etc. before granting access.
+		\item What's so bad about that?
+	\end{itemize}
+	\definitionbox{The Problem with Traditional Access Control}{
+		\begin{itemize}[<+->]
+			\item Requires trusting the server completely
+			\item No protection during transmission
+			\item No way to verify integrity
+			\item No way to establish trust between strangers
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}[c]{The magic of cryptography}
+	\begin{center}
+		\Large\textbf{Cryptography lets us achieve what seems impossible}
+		\vspace{1cm}
+		\begin{itemize}[<+->]
+			\item Secure communication over insecure channels
+			\item Verification without revealing secrets
+			\item Proof of computation without redoing it
+		\end{itemize}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Hard problems}
+	\begin{itemize}[<+->]
+		\item Cryptography is largely about equating the security of a system to the
+		      difficulty of solving a math problem that is thought to be computationally
+		      very expensive.
+		\item With cryptography, we get security systems that we can literally
+		      mathematically prove as secure (under assumptions).
+		\item Also, this allows for actual magic.
+		      \begin{itemize}[<+->]
+			      \item Alice and Bob meet for the first time in the same room as you.
+			      \item You are listening to everything they are saying.
+			      \item Can they exchange a secret without you learning it?
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Time for actual magic}
+	\bigimagewithcaption{dh.png}{}
+\end{frame}
+
+\begin{frame}{No known feasible computation}
+	\begin{itemize}[<+->]
+		\item The discrete logarithm problem:
+		      \begin{itemize}
+			      \item Given a finite cyclic group $G$, a generator $g \in G$, and an element
+			            $h \in G$, find the integer $x$ such that $g^{x}=h$
+		      \end{itemize}
+		\item In more concrete terms:
+		      \begin{itemize}
+			      \item Let $p$ be a large prime and let $g$ be a generator of the multiplicative
+			            group $\mathbb{Z}_{p}^{*}$ (all nonzero integers modulo $p$).
+
+			      \item Given:
+			            \begin{itemize}
+				            \item $g \in \mathbb{Z}_{p}^{*}$, $h \in \mathbb{Z}_{p}^{*}$
+
+				            \item Find $x \in \{0, 1, \ldots, p-2\}$ such that $g^{x} \equiv h \pmod
+					                  {p}$
+			            \end{itemize}
+
+			      \item This problem is believed to be computationally hard when $p$ is large
+			            and $g$ is a primitive root modulo $p$.
+			            \begin{itemize}
+				            \item ``Believed to be'' = we don't know of any way to do it that doesn't
+				                  take forever, unless we have a strong, stable quantum computer (Shor's
+				                  algorithm)
+			            \end{itemize}
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Time for more actual magic}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Zero-knowledge proofs} allow you to prove that you know
+				      a secret without revealing any information about it.
+				\item They built ``zero-knowledge virtual machines'' where you can execute
+				      an entire program that runs as a zero-knowledge proof.
+				\item ZKP battleship game: server proves to the players that its
+				      output to their battleship guesses is correct, without revealing any
+				      additional information (e.g. ship location).
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{battleship.jpg}{Battleship board game. Source: Hasbro}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Hard problems}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Asymmetric Primitives}
+			\begin{itemize}[<+->]
+				\item Diffie-Hellman, RSA, ML-KEM, etc.
+				\item ``Asymmetric'' because there is a ``public key'' and a ``private
+				      key'' for each party.
+				\item Algebraic, assume the hardness of mathematical problems (as seen
+				      just now.)
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\textbf{Symmetric Primitives}
+			\begin{itemize}[<+->]
+				\item AES, SHA-2, ChaCha20, HMAC\ldots
+				\item ``Symmetric'' because there is one secret key.
+				\item Not algebraic but unstructured, but on their understood
+				      resistance to $n$ years of cryptanalysis.
+				\item Can act as substitutes for assumptions in security proofs!
+				      \begin{itemize}
+					      \item Example: hash function assumed to be a ``random oracle''
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Hard problems}
+	\begin{itemize}[<+->]
+		\item Hard computational problems are the cornerstone of modern cryptography.
+		\item These are problems for which even the best algorithms wouldn't find a solution before the sun burns out.
+		\item They provide the security foundation for cryptographic schemes.
+		\item Without hard problems, most of our encryption systems would collapse.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The rise of computational complexity theory}
+	\definitionbox{Computational Complexity Theory}{Complexity theory provides the mathematical framework to understand what makes problems ``hard''.}
+	\begin{itemize}
+		\item In the 1970s, rigorous study of hard problems led to computational complexity theory.
+		\item This field has had dramatic impacts beyond cryptography:
+		      \begin{itemize}
+			      \item \textbf{Economics}: Computational complexity of finding Nash equilibria in game theory.
+			      \item \textbf{Physics}: Simulating quantum many-body systems with exponential complexity.
+			      \item \textbf{Biology}: Protein folding prediction and DNA sequence alignment algorithms.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Computational problems}
+	\definitionbox{Computational Problem}{
+		A question that can be answered by performing a computation.
+		\begin{itemize}
+			\item \textbf{Decision problems}: Questions with ``yes'' or ``no'' answers
+			      \begin{itemize}
+				      \item Example: ``Is 217 a prime number?''
+			      \end{itemize}
+			\item \textbf{Search problems}: Questions that require finding a specific value
+			      \begin{itemize}
+				      \item Example: ``How many instances of \textit{`i'}s appear in \textit{`incomprehensibilities'}?''
+			      \end{itemize}
+		\end{itemize}
+	}
+	\begin{itemize}[<+->]
+		\item Computational problems form the foundation of theoretical computer science.
+		\item Different types of problems require different algorithmic approaches.
+		\item The difficulty of solving these problems is central to cryptography.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Computational hardness}
+	\definitionbox{Computational Hardness}{
+		The property of computational problems for which no algorithm exists that can solve the problem in a reasonable amount of time.
+		\begin{itemize}
+			\item Also called \textbf{intractable problems}.
+			\item Hardness is independent of the computing device used.
+			\item All standard computing models are equivalent in terms of what they can compute efficiently.
+			\item \textbf{Exception}: Quantum computers for certain problems.
+		\end{itemize}
+	}
+	\begin{itemize}[<+->]
+		\item Hardness is a fundamental concept in computational complexity theory.
+		\item Cryptography deliberately uses hard problems to create security.
+		\item What's ``hard'' should remain hard regardless of hardware advances.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Measuring algorithm complexity}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}[<+->]
+				\item To evaluate computational hardness, we need to measure an algorithm's running time.
+				\item We typically use \textbf{asymptotic analysis} to express complexity.
+				\item Common notation:
+				      \begin{itemize}
+					      \item $O(n)$: Linear time.
+					      \item $O(n^2)$: Quadratic time.
+					      \item $O(2^n)$: Exponential time.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\imagewithcaption{complexity.png}{Complexity classes growth. Source: Serious Cryptography}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Measuring algorithm complexity}
+	\begin{itemize}
+		\item To evaluate computational hardness, we need to measure an algorithm's running time.
+		\item We typically use \textbf{asymptotic analysis} to express complexity.
+		\item Common notation:
+		      \begin{itemize}
+			      \item $O(n)$: Linear time.
+			      \item $O(n^2)$: Quadratic time.
+			      \item $O(2^n)$: Exponential time.
+		      \end{itemize}
+		\item We care about how the running time grows as the input size increases.
+		\item \textbf{Example}: An algorithm that takes $n^2$ operations for input size $n$ becomes impractical as $n$ grows large.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Categorizing computational hardness}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Easy Problems}
+			\begin{itemize}[<+->]
+				\item Solvable in polynomial time.
+				\item \textbf{Examples}: Sorting, searching.
+				\item Running time: $O(n^c)$ for some constant $c$
+				\item Generally scales reasonably with input size.
+				\item Class P (Polynomial time).
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Hard Problems}
+			\begin{itemize}[<+->]
+				\item No known polynomial-time solution.
+				\item \textbf{Example}: Factorizing product of two large primes.
+				\item Running time: Often exponential, e.g., $O(2^n)$
+				\item Becomes impractical quickly as input grows.
+				\item Includes NP-hard, NP-complete classes.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Hard problems in practice}
+	\begin{itemize}
+		\item Public-key cryptography relies on specific hard problems:
+		      \begin{itemize}
+			      \item RSA: Integer factorization problem.
+			      \item Diffie-Hellman: Discrete logarithm problem.
+		      \end{itemize}
+		\item Cryptography leverages these problems to maximize security assurance,
+		\item The security of these schemes depends on the continued hardness of these problems.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Quantum vulnerability of hard problems}
+	\begin{itemize}[<+->]
+		\item The hard problems we rely on today (factoring, discrete logarithm) are vulnerable to quantum computers.
+		\item Shor's algorithm (1994) can efficiently solve both problems on a sufficiently powerful quantum computer.
+		\item This has motivated the search for \textbf{``post-quantum''} hard problems:
+		      \begin{itemize}[<+->]
+			      \item Lattice-based cryptography (e.g., ML-KEM, formerly CRYSTALS-Kyber).
+			      \item Hash-based cryptography.
+			      \item Code-based cryptography.
+			      \item Multivariate cryptography.
+			      \item Isogeny-based cryptography.
+		      \end{itemize}
+		\item NIST is currently standardizing post-quantum cryptographic algorithms to replace our vulnerable systems.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What is NIST?}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{NIST} stands for the National Institute of Standards and Technology.
+				\item It's a U.S. government agency that develops technology standards.
+				\item In cryptography, NIST:
+				      \begin{itemize}
+					      \item Sets security standards used worldwide.
+					      \item Evaluates and approves cryptographic algorithms.
+					      \item Currently leading the standardization of post-quantum cryptography.
+				      \end{itemize}
+				\item When NIST standardizes an algorithm, it often becomes the global industry standard.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{nist_peanut.png}{NIST's ``Standard Reference Peanut Butter'', available for only \$1,217 USD!}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Funny things standardized by NIST}
+	\begin{itemize}[<+->]
+		\item \textbf{Standard Reference Peanut Butter}: for calibrating food testing equipment.
+		\item \textbf{The ``Odor Unit''}: for standardizing measurements of smell intensity in environmental monitoring.
+		\item \textbf{The Standard Banana Equivalent Dose (BED)}: for comparing radiation exposure levels to the natural radiation in a banana.
+		\item \textbf{Toilet Paper Testing}: for measuring strength, absorbency, and softness of toilet paper products.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Cryptographic algorithms standardized by NIST}
+	\begin{itemize}[<+->]
+		\item \textbf{AES (Advanced Encryption Standard)}: Selected in 2001 to replace DES, now the worldwide standard for symmetric encryption.
+		\item \textbf{SHA-2 and SHA-3 (Secure Hash Algorithms)}: Cryptographic hash functions used for digital signatures and data integrity.
+		\item \textbf{DSA and ECDSA}: Digital Signature Algorithms based on the discrete logarithm problem.
+		\item \textbf{Triple DES}: An interim standard before AES that enhanced the security of the original DES.
+		\item \textbf{ML-KEM and ML-DSA}: Recently standardized post-quantum public-key cryptography and signature schemes.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why hard problems matter}
+	\begin{itemize}
+		\item Hard problems \textbf{create asymmetry between legitimate users and attackers}.
+		\item Easy in one direction, difficult in the reverse.
+		\item Example: Easy to multiply large primes, hard to factor the product.
+		\item This asymmetry is what enables secure communication!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Slides not complete}
+	\begin{itemize}
+		\item This slide deck is not finished and is missing important material. Do not rely on it yet.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[plain]
+	\titlepage
+\end{frame}
+\end{document}
