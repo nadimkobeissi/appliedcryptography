@@ -27,7 +27,7 @@ __latex*
 *.vrb
 
 # Compiled materials
-website/slides/*
-website/labs/*
-website/problem-sets/*
+website/slides/*.pdf
+website/labs/*.pdf
+website/problem-sets/*.pdf
 website/syllabus.pdf
