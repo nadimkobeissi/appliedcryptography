@@ -21,61 +21,61 @@ all:
 	@make 2-11
 
 1-1:
-	@tectonic -o ../website/slides "1-1.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "1-1.tex"
 
 1-2:
-	@tectonic -o ../website/slides "1-2.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "1-2.tex"
 
 1-3:
-	@tectonic -o ../website/slides "1-3.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "1-3.tex"
 
 1-4:
-	@tectonic -o ../website/slides "1-4.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "1-4.tex"
 
 1-5:
-	@tectonic -o ../website/slides "1-5.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "1-5.tex"
 
 1-6:
-	@tectonic -o ../website/slides "1-6.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "1-6.tex"
 
 1-7:
-	@tectonic -o ../website/slides "1-7.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "1-7.tex"
 
 1-8:
-	@tectonic -o ../website/slides "1-8.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "1-8.tex"
 
 1-9:
-	@tectonic -o ../website/slides "1-9.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "1-9.tex"
 
 2-1:
-	@tectonic -o ../website/slides "2-1.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "2-1.tex"
 
 2-2:
-	@tectonic -o ../website/slides "2-2.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "2-2.tex"
 
 2-3:
-	@tectonic -o ../website/slides "2-3.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "2-3.tex"
 
 2-4:
-	@tectonic -o ../website/slides "2-4.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "2-4.tex"
 
 2-5:
-	@tectonic -o ../website/slides "2-5.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "2-5.tex"
 
 2-6:
-	@tectonic -o ../website/slides "2-6.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "2-6.tex"
 
 2-7:
-	@tectonic -o ../website/slides "2-7.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "2-7.tex"
 
 2-8:
-	@tectonic -o ../website/slides "2-8.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "2-8.tex"
 
 2-9:
-	@tectonic -o ../website/slides "2-9.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "2-9.tex"
 
 2-10:
-	@tectonic -o ../website/slides "2-10.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "2-10.tex"
 
 2-11:
-	@tectonic -o ../website/slides "2-11.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "2-11.tex"

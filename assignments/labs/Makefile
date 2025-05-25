@@ -5,13 +5,13 @@ all:
 	@make proverif
 
 password-manager:
-	@tectonic -o ../../website/labs "password-manager.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../../website/labs "password-manager.tex"
 
 secure-messenger:
-	@tectonic -o ../../website/labs "secure-messenger.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../../website/labs "secure-messenger.tex"
 
 zk-battleship:
-	@tectonic -o ../../website/labs "zk-battleship.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../../website/labs "zk-battleship.tex"
 
 proverif:
-	@tectonic -o ../../website/labs "proverif.tex"
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../../website/labs "proverif.tex"
