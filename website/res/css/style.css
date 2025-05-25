@@ -165,7 +165,7 @@ strong {
 	position: relative;
 	background-image:
 		linear-gradient(var(--hero-overlay-dark), var(--hero-overlay-light)),
-		url("../img/cedar.webp");
+		url("../res/img/cedar.webp");
 	background-size: cover;
 	background-position: center;
 	min-height: 40vh;
@@ -781,9 +781,11 @@ strong {
 }
 
 .collapsible-header.active {
-	background: linear-gradient(to bottom,
-			var(--gray-dark) 0%,
-			transparent 100%);
+	background: linear-gradient(
+		to bottom,
+		var(--gray-dark) 0%,
+		transparent 100%
+	);
 	box-shadow: none;
 	border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
