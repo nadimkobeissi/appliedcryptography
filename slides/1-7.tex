@@ -466,6 +466,298 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{The class NP (Nondeterministic Polynomial time)}
+	\definitionbox{Class NP}{
+		The class of decision problems for which you can \textbf{verify} a solution in polynomial time, even if finding the solution is hard.
+	}
+	\begin{itemize}[<+->]
+		\item \textbf{Key insight}: Easy to check, hard to find!
+		\item Given a potential solution, you can run a polynomial-time algorithm to verify if it's correct.
+		\item You don't need to find the solution efficiently—only verify it efficiently.
+		\item \textbf{Relationship}: $P \subseteq NP$ (if you can solve it quickly, you can certainly verify it quickly)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{NP: A cryptographic example}
+	\textbf{Problem}: Given plaintext $P$ and ciphertext $C$, does there exist a key $K$ such that $C = E(K, P)$?
+	\begin{itemize}[<+->]
+		\item \textbf{Finding the solution}: Could take exponential time (brute-force key search)
+		\item \textbf{Verifying a candidate solution}: Given a potential key $K_0$:
+		      \begin{enumerate}
+			      \item Compute $E(K_0, P)$
+			      \item Check if $E(K_0, P) = C$
+			      \item Return ``yes'' if they match, ``no'' otherwise
+		      \end{enumerate}
+		\item This verification runs in polynomial time!
+		\item Therefore, this key recovery problem is in NP.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What's NOT in NP?}
+	\begin{itemize}[<+->]
+		\item \textbf{Known-ciphertext attacks}: You only have $E(K, P)$ values for random unknown plaintexts $P$.
+		      \begin{itemize}
+			      \item How do you verify if candidate key $K_0$ is correct?
+			      \item You don't know what the plaintexts should be!
+			      \item Can't express this as a decision problem with efficient verification.
+		      \end{itemize}
+		\item \textbf{Proving absence of solutions}: ``Does there exist NO solution to this problem?''
+		      \begin{itemize}
+			      \item To verify ``no solution exists,'' you might need to check all possible inputs.
+			      \item If there are exponentially many inputs, this takes exponential time.
+			      \item Therefore, proving non-existence is generally not in NP.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{NP-complete problems}
+	\definitionbox{NP-Complete Problems}{
+		The hardest decision problems in the class NP.
+		\begin{itemize}
+			\item No known polynomial-time algorithms exist for worst-case instances.
+			\item If any NP-complete problem can be solved efficiently, then \textbf{all} problems in NP can be solved efficiently.
+		\end{itemize}
+	}
+	\begin{itemize}[<+->]
+		\item Discovered in the 1970s during the development of complexity theory.
+		\item \textbf{Remarkable discovery}: All NP-complete problems are fundamentally equally hard!
+		\item Examples: Boolean satisfiability (SAT), traveling salesman problem, graph coloring.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why are NP-complete problems equally hard?}
+	\begin{itemize}[<+->]
+		\item \textbf{Key insight}: You can \textit{reduce} any NP-complete problem to any other NP-complete problem.
+		\item \textbf{Reduction}: Transform one problem into another in polynomial time.
+		      \begin{itemize}
+			      \item If you can solve problem B efficiently, you can solve problem A efficiently too.
+		      \end{itemize}
+		\item \textbf{Mathematical equivalence}: Different NP-complete problems may look completely different but are fundamentally the same from a computational perspective.
+		\item \textbf{Consequence}: Solving any single NP-complete problem efficiently would solve \textit{all} problems in NP efficiently!
+		      \begin{itemize}
+			      \item This would prove that P = NP (one of the biggest open questions in computer science).
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The remarkable equivalence of NP-complete problems}
+	\begin{center}
+		\Large\textbf{These problems look completely different...}
+		\vspace{0.5cm}
+
+		\begin{columns}[c]
+			\begin{column}{0.33\textwidth}
+				\textbf{Boolean Logic}\\
+				\small Can you set variables to make this formula true?\\
+				$(x_1 \lor \neg x_2) \land (x_2 \lor x_3) \land \ldots$
+			\end{column}
+			\begin{column}{0.33\textwidth}
+				\textbf{Travel Planning}\\
+				\small What's the shortest route visiting all cities exactly once?
+			\end{column}
+			\begin{column}{0.33\textwidth}
+				\textbf{Sudoku Puzzles}\\
+				\small Can you fill this 9×9 grid following the rules?
+			\end{column}
+		\end{columns}
+
+		\vspace{1cm}
+		\pause
+		\Large\textbf{...but they're computationally identical!}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Concrete examples of equivalent problems}
+	\begin{itemize}[<+->]
+		\item \textbf{3-SAT} (Boolean satisfiability): Given a logical formula, can you set the variables to make it true?
+		      \begin{itemize}
+			      \item Example: $(x_1 \lor \neg x_2 \lor x_3) \land (\neg x_1 \lor x_2 \lor \neg x_3) \land \ldots$
+		      \end{itemize}
+		\item \textbf{Traveling Salesman Problem}: Given cities and distances, what's the shortest route visiting each city exactly once?
+		      \begin{itemize}
+			      \item Looks like a geometry/optimization problem!
+		      \end{itemize}
+		\item \textbf{Graph Coloring}: Can you color a graph's vertices with $k$ colors so no adjacent vertices share a color?
+		      \begin{itemize}
+			      \item Looks like a combinatorial puzzle!
+		      \end{itemize}
+		\item \textbf{Subset Sum}: Given a set of integers, is there a subset that sums to exactly $k$?
+		      \begin{itemize}
+			      \item Looks like an arithmetic problem!
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The magic of reductions}
+	\definitionbox{Problem Reduction}{
+		A polynomial-time transformation that converts any instance of problem A into an equivalent instance of problem B.
+	}
+	\begin{itemize}[<+->]
+		\item You can transform \textbf{any} Sudoku puzzle into a Boolean logic formula!
+		      \begin{itemize}
+			      \item The Sudoku has a solution $\Leftrightarrow$ the formula is satisfiable
+		      \end{itemize}
+		\item You can transform \textbf{any} traveling salesman instance into a graph coloring problem!
+		\item You can transform \textbf{any} Boolean formula into a subset sum problem!
+		\item These transformations preserve the ``yes/no'' answer and run in polynomial time.
+		\item \textbf{Mind-blowing consequence}: Solve Sudoku efficiently = solve all of theoretical computer science!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Real-world impact of this equivalence}
+	\begin{itemize}[<+->]
+		\item \textbf{Good news}: Any algorithmic breakthrough on one NP-complete problem immediately applies to thousands of others!
+		      \begin{itemize}
+			      \item Better SAT solvers $\Rightarrow$ better protein folding, circuit design, AI planning...
+		      \end{itemize}
+		\item \textbf{Sobering reality}: 50+ years of computer science research suggests these problems are fundamentally hard.
+		      \begin{itemize}
+			      \item Despite massive incentives (millions in prize money, practical applications worth billions)
+		      \end{itemize}
+		\item \textbf{Cryptographic relevance}: We rely on NP-complete problems being hard for certain security models.
+		      \begin{itemize}
+			      \item Though most practical cryptography uses different hard problems (factoring, discrete log)
+		      \end{itemize}
+		\item \textbf{Universal truth}: The computational universe has these deep, hidden connections that unite seemingly unrelated problems.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The P vs. NP Problem}
+	\definitionbox{The P vs. NP Problem}{
+		One of the most important unsolved problems in computer science and mathematics.
+		\begin{itemize}
+			\item \textbf{Question}: Does P = NP?
+			\item \textbf{Translation}: Are there problems that are easy to verify but fundamentally hard to solve?
+		\end{itemize}
+	}
+	\begin{itemize}[<+->]
+		\item If you could solve \textbf{any} NP-complete problem in polynomial time, then you could solve \textbf{all} NP problems in polynomial time.
+		\item This would mean P = NP.
+		\item \textbf{Intuition says}: Surely some problems are easy to check but hard to find!
+		\item \textbf{Example}: Brute-force key recovery seems inherently exponential-time...
+		\item \textbf{Reality}: No one has proved this mathematically!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The million-dollar question}
+	\begin{itemize}[<+->]
+		\item The \textbf{Clay Mathematics Institute} offers \$1,000,000 for solving P vs. NP.
+		\item One of seven ``Millennium Prize Problems''.
+		\item Renowned complexity theorist Scott Aaronson called it \textit{``one of the deepest questions that human beings have ever asked''}.
+		\item \textbf{To win}: Prove either P = NP or P ≠ NP.
+		\item Over 50 years of research, no solution yet!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What if P = NP?}
+	\begin{center}
+		\Large\textbf{The cryptographic apocalypse scenario}
+	\end{center}
+	\begin{itemize}[<+->]
+		\item If P = NP, then \textbf{any easily checked solution would also be easy to find}.
+		\item \textbf{Symmetric cryptography} would be completely broken:
+		      \begin{itemize}
+			      \item Key recovery becomes polynomial-time.
+			      \item AES, ChaCha20, all symmetric ciphers become useless.
+		      \end{itemize}
+		\item \textbf{Hash functions} would be invertible in polynomial time:
+		      \begin{itemize}
+			      \item Finding preimages becomes easy.
+			      \item Digital signatures, password storage, all broken.
+		      \end{itemize}
+		\item \textbf{All of modern cryptography} would collapse overnight!
+		\item \textbf{But also}: We could solve protein folding, optimize supply chains perfectly, solve climate modeling...
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why we don't panic}
+	\begin{itemize}[<+->]
+		\item \textbf{Overwhelming consensus}: Most complexity theorists believe P ≠ NP.
+		\item \textbf{Intuitive reasoning}: Problems that look hard actually \textbf{are} hard.
+		\item \textbf{The structure of reality}: Easy-to-verify but hard-to-solve problems seem fundamental to the universe.
+		\item \textbf{50+ years of evidence}: Despite massive incentives, no polynomial-time algorithms found for NP-complete problems.
+		\item \textbf{Current belief}: P is a strict subset of NP, with NP-complete problems outside P.
+	\end{itemize}
+	\pause
+	\definitionbox{The Challenge}{
+		\begin{itemize}
+			\item \textbf{Proving P = NP}: Need only one polynomial-time algorithm for one NP-complete problem
+			\item \textbf{Proving P ≠ NP}: Must prove no such algorithm can \textbf{ever} exist—much harder!
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}{Why NP-complete problems don't work for cryptography}
+	\begin{itemize}[<+->]
+		\item \textbf{Tempting idea}: Base cryptography on NP-complete problems for provable security!
+		\item \textbf{The dream}: Prove that breaking some cipher is NP-hard.
+		      \begin{itemize}
+			      \item Security would be guaranteed as long as P ≠ NP.
+		      \end{itemize}
+		\item \textbf{Reality is disappointing}: NP-complete problems are hard in the \textbf{worst case}, not the \textbf{average case}
+		      \begin{itemize}
+			      \item The structure that makes them hard can make specific instances easy.
+			      \item Cryptography needs problems that are hard for \textbf{random} instances.
+		      \end{itemize}
+		\item \textbf{What we actually use}: Problems that are probably \textbf{not} NP-hard.
+		      \begin{itemize}
+			      \item Factoring, discrete logarithm, lattice problems.
+			      \item Believed hard on average, but not proven NP-complete.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Average-case vs. worst-case hardness}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Worst-case hardness (NP-complete)}
+			\begin{itemize}[<+->]
+				\item Some instances of the problem are very hard.
+				\item Other instances might be easy.
+				\item \textbf{Example}: 3-SAT has hard instances, but also trivial ones.
+				\item Not suitable for cryptography.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Average-case hardness (Crypto)}
+			\begin{itemize}[<+->]
+				\item Random instances are typically hard.
+				\item Few (if any) easy instances.
+				\item \textbf{Example}: Factoring random large integers.
+				\item Perfect for cryptographic applications.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\pause
+	\vspace{0.5cm}
+	\definitionbox{Hard Problems for Cryptography}{
+		We need problems where almost every instance is hard, not just the worst ones.
+	}
+\end{frame}
+
+\begin{frame}{NP-complete vs. NP-hard}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{NP-Complete Problems}
+			\begin{itemize}[<+->]
+				\item Must be decision problems (yes/no answers)
+				\item You can verify solutions in polynomial time
+				\item \textbf{Examples}: 3-SAT, graph coloring, subset sum
+				\item The ``sweet spot'' of hardness
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{NP-Hard Problems}
+			\begin{itemize}[<+->]
+				\item Can be any type of problem (optimization, etc.)
+				\item May not have polynomial-time verification
+				\item \textbf{Examples}: Traveling salesman optimization, halting problem
+				\item Can be even harder than NP-complete!
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Slides not complete}
 	\begin{itemize}
 		\item This slide deck is not finished and is missing important material. Do not rely on it yet.
