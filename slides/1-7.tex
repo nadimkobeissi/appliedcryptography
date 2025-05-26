@@ -971,6 +971,102 @@
 	\textbf{Shared secret}: $S = 9$ (which equals $2^{6 \times 10} \bmod 17$)
 \end{frame}
 
+\begin{frame}{The computational Diffie-Hellman (CDH) problem}
+	\definitionbox{Computational Diffie-Hellman (CDH) Problem}{
+		Given $g^a \bmod p$ and $g^b \bmod p$, compute the shared secret $g^{ab} \bmod p$ without knowing the secret values $a$ and $b$.
+	}
+	\begin{itemize}[<+->]
+		\item \textbf{Motivation}: Even if an eavesdropper captures the public values $g^a$ and $g^b$, they shouldn't be able to determine the shared secret $g^{ab}$.
+		\item \textbf{Example}: Given $A = 13$ and $B = 4$ from our earlier example, can you compute $S = 9$?
+		      \begin{itemize}
+			      \item Without knowing $a = 6$ and $b = 10$, this becomes very difficult!
+		      \end{itemize}
+		\item \textbf{Real-world relevance}: This is exactly what an attacker faces when trying to break Diffie-Hellman.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{CDH vs. DLP: the relationship}
+	\begin{itemize}[<+->]
+		\item \textbf{Key insight}: If you can solve DLP, then you can also solve CDH.
+		      \begin{itemize}
+			      \item Given $g^a$ and $g^b$, use DLP to find $a$ and $b$
+			      \item Then compute $g^{ab}$ directly
+		      \end{itemize}
+		\item \textbf{Mathematical relationship}: DLP is \textbf{at least as hard} as CDH.
+		      \begin{itemize}
+			      \item CDH $\leq$ DLP (CDH reduces to DLP)
+		      \end{itemize}
+		\item \textbf{Open question}: Is CDH at least as hard as DLP?
+		      \begin{itemize}
+			      \item We don't know if solving CDH allows you to solve DLP!
+			      \item Maybe there's a clever way to compute $g^{ab}$ without finding $a$ and $b$
+		      \end{itemize}
+		\item \textbf{Security assumption}: We assume CDH is hard even if it's easier than DLP.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The decisional Diffie-Hellman (DDH) problem}
+	\definitionbox{Decisional Diffie-Hellman (DDH) Problem}{
+		Given $g^a \bmod p$, $g^b \bmod p$, and a value $X$ that is either:
+		\begin{itemize}
+			\item $g^{ab} \bmod p$ (the real shared secret), or
+			\item $g^c \bmod p$ for some random $c$
+		\end{itemize}
+		...determine which one $X$ is (each choice has probability 1/2).
+	}
+	\begin{itemize}[<+->]
+		\item \textbf{Why do we need this?} Indistinguishability!
+		      \begin{itemize}
+			      \item What if an attacker can compute the first 32 bits of $g^{ab}$?
+			      \item CDH isn't completely broken, but the attacker learned something.
+			      \item This partial information might compromise application security.
+		      \end{itemize}
+		\item \textbf{DDH ensures}: The shared secret $g^{ab}$ is \textbf{indistinguishable} from a random group element.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{DDH vs. CDH: the hierarchy}
+	\begin{itemize}[<+->]
+		\item \textbf{Key relationship}: If you can solve CDH, then you can solve DDH.
+		      \begin{itemize}
+			      \item Given $(g^a, g^b, X)$, use CDH to compute $g^{ab}$
+			      \item Check if $X = g^{ab}$; if yes, then $X$ is the real shared secret
+		      \end{itemize}
+		\item \textbf{Hardness hierarchy}: DDH $\leq$ CDH $\leq$ DLP
+		      \begin{itemize}
+			      \item DDH is fundamentally \textbf{easier} than CDH.
+			      \item CDH is (probably) easier than DLP.
+		      \end{itemize}
+		\item \textbf{Surprising fact}: DDH is \textbf{not hard} in certain groups!
+		      \begin{itemize}
+			      \item In $\mathbb{Z}_p^*$, DDH can be broken using pairing-based techniques.
+			      \item But CDH remains hard in the same group.
+		      \end{itemize}
+		\item \textbf{Solution}: Use elliptic curve groups where DDH is believed hard.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why DDH matters in cryptography}
+	\begin{itemize}[<+->]
+		\item \textbf{Indistinguishability}: DDH ensures that shared secrets ``look random''.
+		      \begin{itemize}
+			      \item Critical for encryption schemes and key derivation.
+			      \item Prevents attackers from learning partial information.
+		      \end{itemize}
+		\item \textbf{Security proofs}: Many cryptographic protocols prove security under DDH.
+		      \begin{itemize}
+			      \item ElGamal encryption.
+			      \item Cramer-Shoup cryptosystem.
+			      \item Various authenticated key exchange protocols.
+		      \end{itemize}
+		\item \textbf{Real-world impact}: Even though DDH is ``weaker'' than CDH, it's one of the most studied and used assumptions.
+		      \begin{itemize}
+			      \item Provides stronger security guarantees for applications.
+			      \item Enables more sophisticated cryptographic constructions.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{Real-world Diffie-Hellman}
 	\begin{itemize}[<+->]
 		\item \textbf{TLS/HTTPS}: Your browser uses Diffie-Hellman to establish secure connections.
