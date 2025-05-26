@@ -398,6 +398,74 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{What are complexity classes?}
+	\definitionbox{Complexity Class}{
+		A group of computational problems that share similar resource requirements (time, memory, etc.).
+	}
+	\begin{itemize}[<+->]
+		\item \textbf{Example}: All problems solvable in $O(n^2)$ time form one class.
+		\item Different classes represent different levels of computational difficulty.
+		\item Understanding these classes helps us categorize cryptographic problems.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TIME complexity classes}
+	\begin{itemize}[<+->]
+		\item \textbf{TIME}$(f(n))$ = class of problems solvable in time $O(f(n))$
+		\item Examples:
+		      \begin{itemize}
+			      \item \textbf{TIME}$(n^2)$ = problems solvable in $O(n^2)$ time
+			      \item \textbf{TIME}$(n^3)$ = problems solvable in $O(n^3)$ time
+			      \item \textbf{TIME}$(2^n)$ = problems solvable in $O(2^n)$ time
+		      \end{itemize}
+		\item \textbf{Key insight}: If you can solve a problem in $O(n^2)$ time, you can also solve it in $O(n^3)$ time.
+		\item Therefore: \textbf{TIME}$(n^2) \subseteq$ \textbf{TIME}$(n^3) \subseteq$ \textbf{TIME}$(n^4) \subseteq \ldots$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The class P (Polynomial time)}
+	\definitionbox{Class P}{
+		The union of all \textbf{TIME}$(n^k)$ classes for all constants $k$.
+		\begin{itemize}
+			\item P = \textbf{TIME}$(n) \cup$ \textbf{TIME}$(n^2) \cup$ \textbf{TIME}$(n^3) \cup \ldots$
+			\item Contains all problems solvable in polynomial time.
+			\item Generally considered ``efficiently solvable''.
+		\end{itemize}
+	}
+	\begin{itemize}[<+->]
+		\item Most practical algorithms we use daily are in class P.
+		\item Examples: Sorting, searching, basic arithmetic.
+		\item Cryptography often relies on problems \textbf{not} in P!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{SPACE complexity classes}
+	\begin{itemize}[<+->]
+		\item Time isn't everything—memory usage matters too!
+		\item A single memory access can be orders of magnitude slower than CPU operations.
+		\item \textbf{SPACE}$(f(n))$ = class of problems solvable using $O(f(n))$ bits of memory
+		\item Examples:
+		      \begin{itemize}
+			      \item \textbf{SPACE}$(n)$ = problems using $O(n)$ memory
+			      \item \textbf{SPACE}$(n^2)$ = problems using $O(n^2)$ memory
+		      \end{itemize}
+		\item \textbf{PSPACE} = union of all \textbf{SPACE}$(n^k)$ for constants $k$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Relationship between TIME and SPACE}
+	\begin{itemize}[<+->]
+		\item \textbf{Key insight}: Any algorithm running in time $f(n)$ uses at most $f(n)$ memory.
+		\item Why? You can write at most one bit per time unit.
+		\item Therefore: \textbf{TIME}$(f(n)) \subseteq$ \textbf{SPACE}$(f(n))$
+		\item This gives us: $P \subseteq PSPACE$
+		\item \textbf{Important}: Low memory doesn't guarantee fast execution!
+		      \begin{itemize}
+			      \item Example: Brute-force key search uses little memory but takes forever.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{Slides not complete}
 	\begin{itemize}
 		\item This slide deck is not finished and is missing important material. Do not rely on it yet.
