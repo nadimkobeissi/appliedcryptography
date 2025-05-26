@@ -200,7 +200,6 @@
 					</p>
 					<div class="card">
 						<ul>
-							<li>Kiarash Sedghighadikolaei and Attila Altay Yavuz, <a href="papers/threshold-signatures.pdf"><em>A Comprehensive Survey of Threshold Digital Signatures: NIST Standards, Post-Quantum Cryptography, Exotic Techniques, and Real-World Applications</em></a>, University of South Florida, 2024.</li>
 							<li>Benjamin Beurdouche, Karthikeyan Bhargavan, Antoine Delignat-Lavaud, Cédric Fournet, Markulf Kohlweiss, Alfredo Pironti, Pierre-Yves Strub and Jean-Karim Zinzindohoué, <a href="papers/smack-tls.pdf"><em>A Messy State of the Union: Taming the Composite State Machines of TLS</em></a>, IEEE Symposium on Security and Privacy, 2015.</li>
 							<li>David Evans, Vladimir Kolesnikov and Mike Rosulek, <a href="papers/pragmatic-mpc.pdf"><em>A Pragmatic Introduction to Secure Multi-Party Computation</em></a>, NOW Publishers, 2020.</li>
 							<li>Christina Garman, Kenneth G. Paterson and Thyla Van der Merwe, <a href="papers/rc4-attacks.pdf"><em>Attacks Only Get Better: Password Recovery Attacks Against RC4 in TLS</em></a>, USENIX Security Symposium, 2015.</li>
@@ -357,28 +356,15 @@
 							</ul>
 						</div>
 					</div>
-
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
 						<span class="session-number">Session 1.7</span>
-						<h4 class="session-title"><i class="fas fa-book"></i>Hard Problems</h4>
-						<p class="session-overview">This session explores computational hardness problems, the cornerstone of modern cryptography. We'll examine how complexity theory provides a framework for classifying problems based on their computational difficulty, distinguishing between polynomial-time (efficient) and superpolynomial-time (inefficient) algorithms. The session covers fundamental complexity classes including P, NP, and NP-complete, examining the famous unsolved P vs. NP problem and its profound implications for cryptography. We'll analyze the factoring problem—the foundation of RSA security—and the discrete logarithm problem, investigating their complexity, known algorithms, and position relative to NP-hardness. The session concludes by examining practical considerations that can undermine theoretical security, including improperly generated parameters, weaknesses in specific number structures, and the risk of using cryptographic primitives with insufficient security margins. Throughout, we'll connect abstract computational hardness to concrete cryptographic applications, demonstrating why certain problems make suitable foundations for secure systems.</p>
+						<h4 class="session-title"><i class="fas fa-book"></i> Hard Problems &amp; Diffie-Hellman</h4>
+						<p class="session-overview">This session explores computational hardness problems that form the cornerstone of modern public-key cryptography, with particular focus on the discrete logarithm problem that underpins Diffie-Hellman key exchange. We'll examine how complexity theory provides a framework for classifying problems based on their computational difficulty, covering fundamental complexity classes including P, NP, and the famous unsolved P vs. NP problem. The session then investigates the discrete logarithm problem in detail, analyzing its computational complexity and known algorithms, before exploring how this hard problem enables the revolutionary Diffie-Hellman protocol that allows two parties to establish a shared secret over an insecure channel. We'll examine the mathematical foundations of DH using modular exponentiation in prime fields, the computational hardness assumptions (CDH and DDH) that underpin its security, and protocol variants including anonymous and authenticated DH. The session concludes by analyzing practical implementation considerations, security pitfalls, and how theoretical hardness assumptions translate into real-world cryptographic security.</p>
 						<div class="session-readings">
 							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li>Jean-Philippe Aumasson, <em>Serious Cryptography, 2<sup>nd</sup> Edition. Chapter 9: Hard Problems</em>, No Starch Press, 2024.</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="session">
-						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
-						<span class="session-number">Session 1.8</span>
-						<h4 class="session-title"><i class="fas fa-book"></i> Diffie-Hellman</h4>
-						<p class="session-overview">This session explores the Diffie-Hellman (DH) protocol, a revolutionary cryptographic method that enables two parties to establish a shared secret over an insecure channel. We'll examine the mathematical foundations of DH using modular exponentiation in prime fields, analyzing how secure parameter selection (including "safe primes") affects security. The session covers computational hardness assumptions—specifically the computational Diffie-Hellman (CDH) and decisional Diffie-Hellman (DDH) problems—that underpin DH security. We'll investigate three key protocol variants: anonymous DH (vulnerable to man-in-the-middle attacks), authenticated DH (which incorporates digital signatures), and Menezes-Qu-Vanstone (MQV), evaluating their security properties against different attack models including network attackers, data leaks, and breaches. The session addresses critical security goals including authentication, key control, forward secrecy, and resistance to key-compromise impersonation. Finally, we'll analyze common implementation pitfalls such as failing to hash shared secrets, using anonymous DH in vulnerable contexts, and implementing unsafe group parameters, providing practical guidance for deploying secure DH-based systems.</p>
-						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
-							<ul>
 								<li>Jean-Philippe Aumasson, <em>Serious Cryptography, 2<sup>nd</sup> Edition. Chapter 11: Diffie-Hellman</em>, No Starch Press, 2024.</li>
 							</ul>
 						</div>
@@ -386,14 +372,13 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
-						<span class="session-number">Session 1.9</span>
+						<span class="session-number">Session 1.8</span>
 						<h4 class="session-title"><i class="fas fa-book"></i> Elliptic Curves &amp; Digital Signatures</h4>
 						<p class="session-overview">This session explores elliptic curve cryptography (ECC), an approach that provides stronger security with smaller keys than traditional cryptosystems like RSA. We'll examine the mathematical foundations of elliptic curves and their group structure supporting point addition and scalar multiplication operations. The session covers the elliptic curve discrete logarithm problem (ECDLP) that underpins ECC's security, and how it enables efficient implementations of key exchange (ECDH) and digital signatures (ECDSA and EdDSA/Ed25519). We'll analyze the advantages of ECC, including faster signing operations and significantly shorter keys and signatures compared to RSA, while examining critical implementation considerations that affect security. The session concludes with guidance on selecting appropriate curves, comparing standardized options like NIST curves and Curve25519, and exploring potential vulnerabilities including invalid curve attacks, randomness failures, and interoperability challenges in modern ECC deployments.</p>
 						<div class="session-readings">
 							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li>Jean-Philippe Aumasson, <em>Serious Cryptography, 2<sup>nd</sup> Edition. Chapter 12: Elliptic Curves</em>, No Starch Press, 2024.</li>
-								<li>Kiarash Sedghighadikolaei and Attila Altay Yavuz, <a href="papers/threshold-signatures.pdf"><em>A Comprehensive Survey of Threshold Digital Signatures: NIST Standards, Post-Quantum Cryptography, Exotic Techniques, and Real-World Applications</em></a>, University of South Florida, 2024.</li>
 							</ul>
 						</div>
 					</div>
