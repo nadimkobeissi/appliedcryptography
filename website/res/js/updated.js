@@ -1,4 +1,8 @@
 const updatedInit = () => {
+	const lastUpdatedElement = document.getElementById("lastUpdated");
+	const updatedLink = document.createElement("a");
+	updatedLink.href =
+		"https://github.com/nadimkobeissi/appliedcryptography/commits/main/";
 	fetch(
 			"https://api.github.com/repos/nadimkobeissi/appliedcryptography/commits?per_page=1&sha=main",
 		)
@@ -18,16 +22,18 @@ const updatedInit = () => {
 					undefined,
 					options,
 				);
-				const updatedLink = document.createElement("a");
-				updatedLink.href =
-					"https://github.com/nadimkobeissi/appliedcryptography/commits/main/";
 				updatedLink.innerText = formattedDate;
+				lastUpdatedElement.innerHTML = "";
+				lastUpdatedElement.appendChild(updatedLink);
 				const period = document.createElement("span");
 				period.innerText = ".";
-				document.getElementById("lastUpdated").innerHTML = "";
-				document.getElementById("lastUpdated").appendChild(updatedLink);
-				document.getElementById("lastUpdated").appendChild(period);
+				lastUpdatedElement.appendChild(period);
 			}
 		})
-		.catch((error) => console.error("Error fetching commit data:", error));
+		.catch((error) => {
+			console.error("Error fetching commit data:", error);
+			updatedLink.innerText = "View history";
+			lastUpdatedElement.innerHTML = "";
+			lastUpdatedElement.appendChild(updatedLink);
+		});
 };
