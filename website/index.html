@@ -398,20 +398,6 @@
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
 						<span class="session-number">Session 2.1</span>
-						<h4 class="session-title"><i class="fas fa-book"></i> Secure Messaging</h4>
-						<p class="session-overview">This session explores modern encrypted messaging protocols, focusing on how forward secrecy and post-compromise security are achieved through cryptographic "ratcheting" mechanisms. We'll examine how protocols like Signal protect user communications even when devices are compromised. The session begins with the concept of forward secrecy, which ensures that compromised keys cannot decrypt past messages, implemented through symmetric ratchets that continually evolve encryption keys. We then explore post-compromise security, which protects future messages after a compromise through asymmetric ratcheting based on Diffie-Hellman key exchanges. The combination of these techniques in Signal's double ratchet offers robust protections against both passive and active adversaries. Finally, we'll examine how these concepts extend to group messaging in the Messaging Layer Security (MLS) protocol, where ratchet trees efficiently manage forward secrecy and post-compromise security for multiple participants. Throughout, we'll analyze the security properties, limitations, and real-world considerations of these messaging systems that protect billions of daily communications.</p>
-						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
-							<ul>
-								<li><em>The Joy of Cryptography</em>, Chapter 17: Encrypted Messaging &amp; Ratcheting</li>
-								<li><em>More to be added soon!</em></li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="session">
-						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
-						<span class="session-number">Session 2.2</span>
 						<h4 class="session-title"><i class="fas fa-book"></i> Authenticated Key Exchange</h4>
 						<p class="session-overview">This session explores authenticated key exchange (AKE), which secures communications by ensuring parties establish shared keys only with their intended partners. We'll examine the fundamental challenge of authentication in key exchange protocols and the vulnerabilities of unauthenticated approaches like basic Diffie-Hellman to person-in-the-middle attacks. The session covers two distinct approaches to AKE: explicit authentication using digital signatures (including the SIGMA protocol that underpins TLS 1.3) and implicit authentication based on combining long-term and ephemeral keys (as seen in Triple Diffie-Hellman used in Signal). We'll analyze the security properties of these protocols, including forward secrecy, protection against key compromise impersonation attacks, and deniability, while exploring how these properties manifest in real-world protocols like TLS and Signal. Students will gain insight into the subtleties of cryptographic authentication and understand the careful protocol design required to achieve these crucial security properties.</p>
 						<div class="session-readings">
@@ -424,33 +410,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
-						<span class="session-number">Session 2.3</span>
-						<h4 class="session-title"><i class="fas fa-book"></i> Zero-Knowledge Proofs</h4>
-						<p class="session-overview">This session explores zero-knowledge proofs, which enable proving possession of secret information without revealing anything about the secret itself. We'll examine how these interactive protocols can authenticate a party's identity while maintaining deniability—allowing someone to prove they know a private key without creating evidence that could later convince others. The session begins with the Schnorr identification protocol, which demonstrates this paradoxical capability through a clever three-move interaction. We'll then generalize to sigma protocols, a powerful class of interactive proofs with completeness, special soundness, and honest-verifier zero-knowledge properties. The session covers several practical examples, including proofs of discrete log equality and complex logical conditions using AND/OR compositions. Finally, we'll explore how interactive proofs can be transformed into non-interactive proofs and digital signatures through the Fiat-Shamir transformation, which replaces the verifier with a cryptographic hash function. This transformation creates powerful primitives like Schnorr signatures but necessarily sacrifices the deniability property that makes interactive zero-knowledge proofs unique.</p>
-						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
-							<ul>
-								<li><em>The Joy of Cryptography</em>, Chapter 19: Zero-Knowledge Proofs</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="session">
-						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
-						<span class="session-number">Session 2.4</span>
-						<h4 class="session-title"><i class="fas fa-book"></i> Post-Quantum Cryptography</h4>
-						<p class="session-overview">This session explores post-quantum cryptography, which addresses the threat quantum computers pose to current cryptographic systems. We'll examine how quantum algorithms like Shor's can break widely-used public-key cryptography based on factoring and discrete logarithms, while Grover's algorithm reduces symmetric-key security by effectively halving key lengths. The session introduces the Learning With Errors (LWE) problem as a foundation for post-quantum cryptography, explaining how its computational hardness against quantum attacks makes it suitable for building secure cryptographic primitives. We'll analyze practical LWE-based key exchange protocols that form the basis for NIST's standardized post-quantum schemes like ML-KEM. Students will understand both the theoretical foundation of quantum-resistant cryptography and the practical considerations for implementing these systems in real-world applications, preparing them for the transition to a post-quantum cryptographic landscape.</p>
-						<div class="session-readings">
-							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
-							<ul>
-								<li><em>The Joy of Cryptography</em>, Chapter 20: Post-Quantum Cryptography</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="session">
-						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
-						<span class="session-number">Session 2.5</span>
+						<span class="session-number">Session 2.2</span>
 						<h4 class="session-title"><i class="fas fa-book"></i> Transport Layer Security</h4>
 						<p class="session-overview">This session examines the Transport Layer Security (TLS) protocol, the backbone of secure communication on the internet that secures billions of connections daily. We'll explore the evolution from SSL to modern TLS 1.3, analyzing the protocol architecture, handshake process, and the cryptographic primitives deployed at each stage. The session covers key exchange mechanisms, authentication methods, and the cipher suites that provide confidentiality and integrity protections. Students will learn about certificate validation, trust models, and the public key infrastructure (PKI) that underpins TLS security. We'll also investigate significant vulnerabilities that have affected TLS implementations throughout its history, including FREAK, Logjam, Heartbleed, and POODLE, analyzing how these vulnerabilities arose and the mitigations developed in response. The session concludes with practical deployment considerations, performance optimizations like session resumption and 0-RTT, and the security trade-offs encountered when configuring TLS in production environments.</p>
 						<div class="session-readings">
@@ -471,7 +431,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
-						<span class="session-number">Session 2.6</span>
+						<span class="session-number">Session 2.3</span>
 						<h4 class="session-title"><i class="fas fa-book"></i> The Story of RC4</h4>
 						<p class="session-overview">This session presents a biographical narrative of RC4 (Rivest Cipher 4), tracing its remarkable journey from promising youth to eventual downfall in cryptographic history. We'll examine RC4's birth as a proprietary stream cipher at RSA Security in 1987, its meteoric rise to become the most widely deployed stream cipher in the world, and its golden era powering protocols like WEP, SSL, and TLS due to its simplicity and performance advantages. The session then chronicles RC4's gradual decline as researchers uncovered a series of increasingly devastating weaknesses, starting with the 2001 Fluhrer-Mantin-Shamir attack on WEP, through the 2013 discovery of extensive biases in RC4-generated keystreams that enabled practical attacks against TLS, culminating in the 2015 "Bar Mitzvah" and RC4 NOMORE attacks that could recover passwords and other sensitive information from encrypted connections. We'll analyze how the security community responded to these revelations, including browser vendors' gradual restriction of RC4 ciphersuites and the IETF's eventual formal prohibition of RC4 in TLS in 2015, while drawing broader lessons about cryptographic lifecycle management, the importance of formal security analysis, and how the story of RC4 exemplifies both the evolution of cryptanalytic techniques and the challenges of maintaining backward compatibility in security protocols.</p>
 						<div class="session-readings">
@@ -487,7 +447,21 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
-						<span class="session-number">Session 2.7</span>
+						<span class="session-number">Session 2.4</span>
+						<h4 class="session-title"><i class="fas fa-book"></i> Secure Messaging</h4>
+						<p class="session-overview">This session explores modern encrypted messaging protocols, focusing on how forward secrecy and post-compromise security are achieved through cryptographic "ratcheting" mechanisms. We'll examine how protocols like Signal protect user communications even when devices are compromised. The session begins with the concept of forward secrecy, which ensures that compromised keys cannot decrypt past messages, implemented through symmetric ratchets that continually evolve encryption keys. We then explore post-compromise security, which protects future messages after a compromise through asymmetric ratcheting based on Diffie-Hellman key exchanges. The combination of these techniques in Signal's double ratchet offers robust protections against both passive and active adversaries. Finally, we'll examine how these concepts extend to group messaging in the Messaging Layer Security (MLS) protocol, where ratchet trees efficiently manage forward secrecy and post-compromise security for multiple participants. Throughout, we'll analyze the security properties, limitations, and real-world considerations of these messaging systems that protect billions of daily communications.</p>
+						<div class="session-readings">
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
+							<ul>
+								<li><em>The Joy of Cryptography</em>, Chapter 17: Encrypted Messaging &amp; Ratcheting</li>
+								<li><em>More to be added soon!</em></li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="session">
+						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
+						<span class="session-number">Session 2.5</span>
 						<h4 class="session-title"><i class="fas fa-book"></i> Applied Cryptography in Cloud Security</h4>
 						<p class="session-overview">This session explores how cryptographic principles and techniques are applied to secure cloud computing environments, focusing on the unique challenges of protecting data and applications in distributed, multi-tenant infrastructures. We'll examine key management strategies for distributed systems, including hierarchical key management, key rotation policies, and hardware security modules (HSMs) in cloud deployments. The session covers confidential computing technologies that use hardware-based trusted execution environments and memory encryption to protect data in use. Students will learn about tokenization systems that replace sensitive data with non-sensitive equivalents, and encryption schemes optimized for cloud storage including convergent encryption and client-side encryption models. We'll investigate secret management at scale, analyzing secure vaults, dynamic credential generation, and secure secret distribution in containerized environments. The session also explores cryptographic access control mechanisms like attribute-based encryption and practical implementations of end-to-end encryption in cloud services, examining how these technologies can maintain confidentiality even when the cloud provider itself isn't fully trusted.</p>
 						<div class="session-readings">
@@ -501,7 +475,7 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
-						<span class="session-number">Session 2.8</span>
+						<span class="session-number">Session 2.6</span>
 						<h4 class="session-title"><i class="fas fa-book"></i> High Assurance Cryptography</h4>
 						<p class="session-overview">This session examines methodologies for developing cryptographic implementations with high assurance of correctness and security, moving beyond traditional testing approaches to formal verification and rigorous proof techniques. We'll explore the spectrum of formal methods applied to cryptography, from lightweight verification using refinement types to comprehensive mathematical proofs of functional correctness and security properties. The session covers verification frameworks and tools including F*, Coq, Lean, and ProVerif, examining how they can be applied to verify cryptographic implementations against their specifications and security definitions. Students will learn about verified cryptographic libraries like HACL*, EverCrypt, and initiatives from organizations like Cryspen that bring formal verification to practical cryptography. We'll also discuss the challenges in formally verifying cryptographic code, including the gap between mathematical specifications and efficient implementations, side-channel resistance verification, and performance considerations. The session concludes with case studies of successful verification projects that have produced high-assurance cryptographic implementations deployed in critical systems.</p>
 						<div class="session-readings">
@@ -515,13 +489,39 @@
 
 					<div class="session">
 						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
-						<span class="session-number">Session 2.9</span>
+						<span class="session-number">Session 2.7</span>
 						<h4 class="session-title"><i class="fas fa-book"></i> Cryptocurrency Cryptography</h4>
 						<p class="session-overview">This session explores the cryptographic foundations of blockchain systems and cryptocurrencies, examining how traditional cryptographic primitives are combined in novel ways to create decentralized trust systems. We'll investigate the core components of blockchain protocols, including hash functions in proof-of-work mechanisms, digital signatures for transaction authentication, and Merkle trees for efficient verification. The session covers the cryptographic aspects of Bitcoin, Ethereum, and other significant blockchain platforms, analyzing their security models, consensus mechanisms, and vulnerability mitigations. Students will learn about specialized cryptographic constructions in cryptocurrencies, including zero-knowledge proofs for privacy coins, threshold signatures for multi-signature wallets, and timelock puzzles for conditional transactions. We'll also discuss emerging cryptographic challenges in blockchain systems, including quantum resistance considerations, layer-2 scaling solutions with unique security properties, and the cryptographic foundations of newer consensus mechanisms like proof-of-stake that aim to address energy consumption concerns while maintaining security guarantees.</p>
 						<div class="session-readings">
 							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
 							<ul>
 								<li>Jean-Philippe Aumasson, <em>Serious Cryptography, 2<sup>nd</sup> Edition. Chapter 15: Cryptocurrency Cryptography</em>, No Starch Press, 2024.</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="session">
+						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
+						<span class="session-number">Session 2.8</span>
+						<h4 class="session-title"><i class="fas fa-book"></i> Post-Quantum Cryptography</h4>
+						<p class="session-overview">This session explores post-quantum cryptography, which addresses the threat quantum computers pose to current cryptographic systems. We'll examine how quantum algorithms like Shor's can break widely-used public-key cryptography based on factoring and discrete logarithms, while Grover's algorithm reduces symmetric-key security by effectively halving key lengths. The session introduces the Learning With Errors (LWE) problem as a foundation for post-quantum cryptography, explaining how its computational hardness against quantum attacks makes it suitable for building secure cryptographic primitives. We'll analyze practical LWE-based key exchange protocols that form the basis for NIST's standardized post-quantum schemes like ML-KEM. Students will understand both the theoretical foundation of quantum-resistant cryptography and the practical considerations for implementing these systems in real-world applications, preparing them for the transition to a post-quantum cryptographic landscape.</p>
+						<div class="session-readings">
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
+							<ul>
+								<li><em>The Joy of Cryptography</em>, Chapter 20: Post-Quantum Cryptography</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="session">
+						<a href="#" class="session-slides-btn session-slides-not-available"><i class="fas fa-download"></i> Slides</a>
+						<span class="session-number">Session 2.9</span>
+						<h4 class="session-title"><i class="fas fa-book"></i> Zero-Knowledge Proofs</h4>
+						<p class="session-overview">This session explores zero-knowledge proofs, which enable proving possession of secret information without revealing anything about the secret itself. We'll examine how these interactive protocols can authenticate a party's identity while maintaining deniability—allowing someone to prove they know a private key without creating evidence that could later convince others. The session begins with the Schnorr identification protocol, which demonstrates this paradoxical capability through a clever three-move interaction. We'll then generalize to sigma protocols, a powerful class of interactive proofs with completeness, special soundness, and honest-verifier zero-knowledge properties. The session covers several practical examples, including proofs of discrete log equality and complex logical conditions using AND/OR compositions. Finally, we'll explore how interactive proofs can be transformed into non-interactive proofs and digital signatures through the Fiat-Shamir transformation, which replaces the verifier with a cryptographic hash function. This transformation creates powerful primitives like Schnorr signatures but necessarily sacrifices the deniability property that makes interactive zero-knowledge proofs unique.</p>
+						<div class="session-readings">
+							<h5><i class="fas fa-book-open icon"></i> Readings</h5>
+							<ul>
+								<li><em>The Joy of Cryptography</em>, Chapter 19: Zero-Knowledge Proofs</li>
 							</ul>
 						</div>
 					</div>
