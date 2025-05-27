@@ -562,9 +562,8 @@
 				\small Can you fill this 9×9 grid following the rules?
 			\end{column}
 		\end{columns}
+		\vspace{0.5cm}
 
-		\vspace{1cm}
-		\pause
 		\Large\textbf{...but they're computationally identical!}
 	\end{center}
 \end{frame}
@@ -624,6 +623,29 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Fun fact: Nintendo games are NP-hard!}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Games proven NP-hard\footnote{\url{https://appliedcryptography.page/papers/nintendo-hard.pdf}}}:
+				      \begin{itemize}
+					      \item Super Mario Bros. 1–3, The Lost Levels, Super Mario World
+					      \item Donkey Kong Country 1–3
+					      \item All classic Legend of Zelda games
+					      \item All classic Metroid games
+					      \item All classic Pokémon role-playing games
+				      \end{itemize}
+				\item \textbf{The catch}: ``Generalized versions'' with arbitrarily large levels.
+				      \begin{itemize}
+					      \item Real Nintendo levels are designed to be solvable by humans.
+					      \item But the \textbf{mathematical structure} of these games is inherently complex.
+				      \end{itemize}
+				\item \textbf{Cool insight}: Video games naturally encode complex computational problems!
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{The P vs. NP Problem}
 	\definitionbox{The P vs. NP Problem}{
 		One of the most important unsolved problems in computer science and mathematics.
@@ -646,7 +668,7 @@
 		\item The \textbf{Clay Mathematics Institute} offers \$1,000,000 for solving P vs. NP.
 		\item One of seven ``Millennium Prize Problems''.
 		\item Renowned complexity theorist Scott Aaronson called it \textit{``one of the deepest questions that human beings have ever asked''}.
-		\item \textbf{To win}: Prove either P = NP or P ≠ NP.
+		\item \textbf{To win}: Prove either $P = NP$ or $P \neq NP$.
 		\item Over 50 years of research, no solution yet!
 	\end{itemize}
 \end{frame}
@@ -674,17 +696,16 @@
 
 \begin{frame}{Why we don't panic}
 	\begin{itemize}[<+->]
-		\item \textbf{Overwhelming consensus}: Most complexity theorists believe P ≠ NP.
+		\item \textbf{Overwhelming consensus}: Most complexity theorists believe $P \neq NP$.
 		\item \textbf{Intuitive reasoning}: Problems that look hard actually \textbf{are} hard.
 		\item \textbf{The structure of reality}: Easy-to-verify but hard-to-solve problems seem fundamental to the universe.
 		\item \textbf{50+ years of evidence}: Despite massive incentives, no polynomial-time algorithms found for NP-complete problems.
 		\item \textbf{Current belief}: P is a strict subset of NP, with NP-complete problems outside P.
 	\end{itemize}
-	\pause
 	\definitionbox{The Challenge}{
 		\begin{itemize}
-			\item \textbf{Proving P = NP}: Need only one polynomial-time algorithm for one NP-complete problem
-			\item \textbf{Proving P ≠ NP}: Must prove no such algorithm can \textbf{ever} exist—much harder!
+			\item \textbf{Proving $P = NP$}: Need only one polynomial-time algorithm for one NP-complete problem
+			\item \textbf{Proving $P \neq NP$}: Must prove no such algorithm can \textbf{ever} exist—much harder!
 		\end{itemize}
 	}
 \end{frame}
@@ -694,7 +715,7 @@
 		\item \textbf{Tempting idea}: Base cryptography on NP-complete problems for provable security!
 		\item \textbf{The dream}: Prove that breaking some cipher is NP-hard.
 		      \begin{itemize}
-			      \item Security would be guaranteed as long as P ≠ NP.
+			      \item Security would be guaranteed as long as $P \neq NP$.
 		      \end{itemize}
 		\item \textbf{Reality is disappointing}: NP-complete problems are hard in the \textbf{worst case}, not the \textbf{average case}
 		      \begin{itemize}
@@ -753,7 +774,6 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\pause
 	\vspace{0.5cm}
 	\definitionbox{Hard Problems for Cryptography}{
 		We need problems where almost every instance is hard, not just the worst ones.
@@ -774,7 +794,6 @@
 		\item Traditional approach: meet in person, exchange keys physically.
 		\item \textbf{Problem}: This doesn't scale for the internet!
 	\end{itemize}
-	\pause
 	\definitionbox{The Challenge}{
 		Create a shared secret between two parties who have never communicated before, even when an eavesdropper can see everything they send to each other.
 	}
@@ -787,7 +806,6 @@
 		\item Uses the \textbf{discrete logarithm problem} as its foundation.
 		\item Allows two strangers to create a shared secret in public!
 	\end{itemize}
-	\pause
 	\vspace{0.5cm}
 	\begin{center}
 		\Large\textbf{This was the birth of modern cryptography}
@@ -866,7 +884,6 @@
 		      \end{itemize}
 		\item \textbf{Associativity}: $(a \times b) \times c = a \times (b \times c)$
 	\end{itemize}
-	\pause
 	\vspace{0.5cm}
 	\textbf{Why care?} These rules guarantee that our cryptographic operations will behave predictably!
 \end{frame}
@@ -923,7 +940,6 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\pause
 	\vspace{1cm}
 	\begin{itemize}[<+->]
 		\item \textbf{Security equivalence}: $n$-bit factoring $\approx$ $n$-bit discrete logarithm
@@ -942,7 +958,6 @@
 		\item \textbf{Alice}: Computes shared secret $S = B^a \bmod p = (g^b)^a \bmod p = g^{ab} \bmod p$
 		\item \textbf{Bob}: Computes shared secret $S = A^b \bmod p = (g^a)^b \bmod p = g^{ab} \bmod p$
 	\end{enumerate}
-	\pause
 	\vspace{0.5cm}
 	\textbf{Result}: Alice and Bob both have $S = g^{ab} \bmod p$ without ever sharing $a$ or $b$!
 \end{frame}
@@ -967,7 +982,6 @@
 			      \item Bob: $S = 13^{10} \bmod 17 = \ldots = 9$
 		      \end{itemize}
 	\end{enumerate}
-	\pause
 	\textbf{Shared secret}: $S = 9$ (which equals $2^{6 \times 10} \bmod 17$)
 \end{frame}
 
@@ -1074,7 +1088,6 @@
 		\item \textbf{SSH}: Secure shell connections use Diffie-Hellman for key agreement.
 		\item \textbf{VPNs}: Many VPN protocols rely on Diffie-Hellman for establishing tunnels.
 	\end{itemize}
-	\pause
 	\vspace{0.5cm}
 	\definitionbox{Modern Diffie-Hellman Variants}{
 		\begin{itemize}
@@ -1124,7 +1137,6 @@
 		\item \textbf{Key derivation}: The shared secret is used to derive encryption keys
 		\item \textbf{Secure communication}: All further messages are encrypted with these keys
 	\end{enumerate}
-	\pause
 	\vspace{0.5cm}
 	\textbf{Result}: Your password is encrypted before leaving your computer!
 \end{frame}
@@ -1191,7 +1203,6 @@
 		      \end{itemize}
 		\item \textbf{Communication}: Alice encrypts with $g^{am}$, Mallory decrypts, reads/modifies, re-encrypts with $g^{bm}$ for Bob
 	\end{enumerate}
-	\pause
 	\vspace{0.5cm}
 	\textbf{Alice and Bob never know they've been compromised!}
 \end{frame}
@@ -1252,7 +1263,6 @@
 		\item \textbf{If verification passes}: You know you're really talking to Gmail
 		\item \textbf{If verification fails}: Browser shows scary warnings!
 	\end{enumerate}
-	\pause
 	\textbf{Result}: MITM attacks become much harder (but not impossible!)
 \end{frame}
 
@@ -1303,7 +1313,6 @@
 		      \end{itemize}
 		\item \textbf{User authentication}: Usually with passwords or public keys
 	\end{itemize}
-	\pause
 	\textbf{Weakness}: TOFU is vulnerable on the very first connection!
 \end{frame}
 
@@ -1328,7 +1337,6 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\pause
 	\vspace{0.5cm}
 	\begin{itemize}[<+->]
 		\item \textbf{Popular curves}: P-256, P-384, X25519, X448
@@ -1397,7 +1405,6 @@
 		\item \textbf{Cryptographic innovation}: Diffie-Hellman key exchange leverages this hardness.
 		\item \textbf{Real-world impact}: Secure communication for billions of people daily.
 	\end{enumerate}
-	\pause
 	\vspace{1cm}
 	\textbf{This is the power of applied cryptography}: transforming abstract mathematical problems into tools that help people and protect our digital lives.
 \end{frame}
