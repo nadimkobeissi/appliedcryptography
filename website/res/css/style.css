@@ -406,6 +406,8 @@ strong {
 .icon {
 	margin-right: 0.5rem;
 	color: var(--primary-dark);
+	transform: scale(1.25);
+	display: inline-block;
 }
 
 .footer {
@@ -769,7 +771,7 @@ strong {
 }
 
 .collapsible-icon {
-	font-size: 1.2rem;
+	font-size: 1.6rem;
 	transition: var(--transition);
 	color: var(--primary-dark);
 	width: 24px;
@@ -778,6 +780,7 @@ strong {
 	align-items: center;
 	justify-content: center;
 	border-radius: 50%;
+	display: inline-block;
 }
 
 .collapsible-header.active {
@@ -792,7 +795,7 @@ strong {
 
 .collapsible-header.active .collapsible-icon {
 	transform: rotate(180deg);
-	color: var(--white);
+	opacity: 0.5;
 }
 
 .collapsible-content {

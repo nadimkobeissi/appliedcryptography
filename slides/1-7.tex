@@ -1076,12 +1076,315 @@
 	\end{itemize}
 	\pause
 	\vspace{0.5cm}
-	\definitionbox{Modern variants}{
+	\definitionbox{Modern Diffie-Hellman Variants}{
 		\begin{itemize}
 			\item \textbf{Elliptic Curve Diffie-Hellman (ECDH)}: Same idea, different mathematical group.
 			\item \textbf{Post-quantum alternatives}: New key exchange methods for the quantum era.
 		\end{itemize}
+		\vspace{0.1em}
+		\begin{center}
+			More on both of the above in future course sessions!
+		\end{center}
 	}
+\end{frame}
+
+\begin{frame}{Diffie-Hellman key exchange in practice}
+	\begin{center}
+		\Large\textbf{How does this actually work in the real world?}
+	\end{center}
+	\vspace{0.5cm}
+	\begin{enumerate}[<+->]
+		\item \textbf{Parameter generation}: Choose secure values for $p$ and $g$
+		      \begin{itemize}
+			      \item $p$ must be a large prime (2048+ bits)
+			      \item $g$ must be a generator of a large subgroup
+		      \end{itemize}
+		\item \textbf{Key generation}: Each party picks a random secret
+		      \begin{itemize}
+			      \item Alice picks $a$ randomly from $\{1, 2, \ldots, p-2\}$
+			      \item Bob picks $b$ randomly from $\{1, 2, \ldots, p-2\}$
+		      \end{itemize}
+		\item \textbf{Public key computation}: Each party computes their public value
+		\item \textbf{Key exchange}: Public values are sent over the network
+		\item \textbf{Shared secret derivation}: Each party computes the final shared secret
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{TLS handshake: Diffie-Hellman in action}
+	\textbf{When you visit https://gmail.com, here's what happens:}
+	\vspace{0.5cm}
+	\begin{enumerate}[<+->]
+		\item \textbf{Client Hello}: Your browser says ``I want to talk securely''
+		\item \textbf{Server Hello}: Gmail's server responds with its certificate and DH parameters
+		      \begin{itemize}
+			      \item Includes $p$, $g$, and server's public value $g^b \bmod p$
+		      \end{itemize}
+		\item \textbf{Client Key Exchange}: Your browser generates its own secret $a$ and sends $g^a \bmod p$
+		\item \textbf{Secret computation}: Both sides compute $g^{ab} \bmod p$
+		\item \textbf{Key derivation}: The shared secret is used to derive encryption keys
+		\item \textbf{Secure communication}: All further messages are encrypted with these keys
+	\end{enumerate}
+	\pause
+	\vspace{0.5cm}
+	\textbf{Result}: Your password is encrypted before leaving your computer!
+\end{frame}
+
+\begin{frame}{Signal's double ratchet: DH everywhere}
+	\begin{columns}[c]
+		\begin{column}{0.7\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Initial key exchange}: Uses X3DH (Extended Triple DH)
+				      \begin{itemize}
+					      \item Combines \textbf{three} DH key exchanges for security.
+					      \item Works even when recipient is offline (\textit{``asynchronous''} protocol).\footnote{Everything on this slide will be covered in much more detail later in the course.}
+				      \end{itemize}
+				\item \textbf{Ongoing communication}: Uses Double Ratchet
+				      \begin{itemize}
+					      \item New DH key exchange for every message!
+					      \item Provides ``forward secrecy'' and ``post-compromise security''.
+					      \item If your phone gets compromised today, yesterday's messages remain secure.
+					      \item If your phone recovers from compromise, tomorrow's messages are secure again.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+			\imagewithcaption{signal.jpg}{Signal uses DH key exchange dozens, hundreds of times per conversation.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The dark side: unauthenticated Diffie-Hellman}
+	\begin{center}
+		\Large\textbf{But there's a serious problem...}
+	\end{center}
+	\vspace{0.5cm}
+	\begin{itemize}[<+->]
+		\item \textbf{The vulnerability}: Basic DH has no authentication
+		      \begin{itemize}
+			      \item Alice can't verify she's talking to Bob
+			      \item Bob can't verify he's talking to Alice
+		      \end{itemize}
+		\item \textbf{The attack}: Man-in-the-middle (MITM)
+		      \begin{itemize}
+			      \item Mallory sits between Alice and Bob
+			      \item Alice does DH with Mallory, thinking it's Bob
+			      \item Bob does DH with Mallory, thinking it's Alice
+			      \item Mallory can read and modify everything!
+		      \end{itemize}
+		\item \textbf{Real-world impact}: This attack is practical and devastating!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Man-in-the-middle attack on DH}
+	\textbf{How Mallory breaks ``secure'' communication:}
+	\vspace{0.5cm}
+	\begin{enumerate}[<+->]
+		\item \textbf{Alice $\rightarrow$ Mallory}: Alice sends $g^a$ (thinking it goes to Bob)
+		\item \textbf{Mallory $\rightarrow$ Bob}: Mallory sends $g^m$ (Bob thinks it's from Alice)
+		\item \textbf{Bob $\rightarrow$ Mallory}: Bob sends $g^b$ (thinking it goes to Alice)
+		\item \textbf{Mallory $\rightarrow$ Alice}: Mallory sends $g^m$ (Alice thinks it's from Bob)
+		\item \textbf{Result}:
+		      \begin{itemize}
+			      \item Alice and Mallory share secret $g^{am}$
+			      \item Bob and Mallory share secret $g^{bm}$
+			      \item Alice and Bob don't share any secret!
+		      \end{itemize}
+		\item \textbf{Communication}: Alice encrypts with $g^{am}$, Mallory decrypts, reads/modifies, re-encrypts with $g^{bm}$ for Bob
+	\end{enumerate}
+	\pause
+	\vspace{0.5cm}
+	\textbf{Alice and Bob never know they've been compromised!}
+\end{frame}
+
+\begin{frame}{Why MITM attacks succeed}
+	\begin{itemize}[<+->]
+		\item \textbf{Public values look random}: $g^a$ and $g^m$ are indistinguishable.
+		      \begin{itemize}
+			      \item Both appear to be random group elements.
+			      \item No way to tell if they come from the intended party.
+		      \end{itemize}
+		\item \textbf{No identity verification}: DH only establishes a shared secret.
+		      \begin{itemize}
+			      \item Doesn't prove who you're sharing it with!
+			      \item Like agreeing on a secret handshake with someone wearing a mask.
+		      \end{itemize}
+		\item \textbf{Active vs. passive attacks}:
+		      \begin{itemize}
+			      \item DH protects against \textbf{passive} eavesdropping.
+			      \item Does nothing against \textbf{active} manipulation.
+		      \end{itemize}
+		\item \textbf{Historical impact}: This attack has compromised real systems for decades.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Solution: Authenticated Key Exchange}
+	\definitionbox{Authenticated Key Exchange (AKE)}{
+		Key exchange that verifies the identity of the parties involved, preventing man-in-the-middle attacks.
+	}
+	\begin{itemize}[<+->]
+		\item \textbf{Core idea}: Combine DH with authentication mechanisms
+		\item \textbf{Common approaches}:
+		      \begin{itemize}
+			      \item \textbf{Digital signatures}: Sign the DH public values (TLS).
+			      \item \textbf{Pre-shared keys}: Use existing shared secrets (IPsec).
+			      \item \textbf{Certificates}: Use a trusted third party (Certificate Authority in HTTPS).
+			      \item \textbf{Password-based}: Derive authentication from passwords (SRP protocols).
+		      \end{itemize}
+		\item \textbf{Goal}: Ensure that Alice and Bob can verify they're really talking to each other.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS: authenticated DH with certificates}
+	\textbf{How HTTPS prevents MITM attacks:}
+	\begin{enumerate}[<+->]
+		\item \textbf{Server authentication}: Gmail sends its certificate along with $g^b$
+		      \begin{itemize}
+			      \item Certificate proves ``this DH value really came from gmail.com''
+			      \item Signed by a trusted Certificate Authority (CA)
+		      \end{itemize}
+		\item \textbf{Certificate verification}: Your browser checks:
+		      \begin{itemize}
+			      \item Is the signature valid?
+			      \item Is the CA trusted?
+			      \item Does the certificate match ``gmail.com''?
+			      \item Has the certificate expired?
+		      \end{itemize}
+		\item \textbf{If verification passes}: You know you're really talking to Gmail
+		\item \textbf{If verification fails}: Browser shows scary warnings!
+	\end{enumerate}
+	\pause
+	\textbf{Result}: MITM attacks become much harder (but not impossible!)
+\end{frame}
+
+\begin{frame}{Signal: authenticated DH with fingerprints}
+	\begin{columns}[c]
+		\begin{column}{0.7\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{The bootstrapping problem}: How do Alice and Bob initially authenticate?
+				      \begin{itemize}
+					      \item No pre-existing certificates.
+					      \item No trusted third parties.
+				      \end{itemize}
+				\item \textbf{Signal's solution}: Security numbers (fingerprints)
+				      \begin{itemize}
+					      \item Each conversation gets a unique 60-digit number.
+					      \item Derived from both parties' long-term identity keys.
+				      \end{itemize}
+				\item \textbf{Manual verification}: Users compare numbers out-of-band.
+				      \begin{itemize}
+					      \item Read over the phone\ldots
+					      \item Show in person\ldots
+					      \item Send via different app\ldots
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+			\imagewithcaption{signal_verification.png}{Signal security number verification screen.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{SSH: authenticated DH with host keys}
+	\textbf{How SSH prevents server impersonation:}
+	\begin{itemize}[<+->]
+		\item \textbf{First connection}: Server presents its ``host key'' along with DH public value
+		      \begin{itemize}
+			      \item SSH shows you a fingerprint: \texttt{SHA256:ABC123...}
+			      \item You're supposed to verify this out-of-band (but nobody does!)
+		      \end{itemize}
+		\item \textbf{Trust on first use (TOFU)}: Client remembers the host key
+		      \begin{itemize}
+			      \item Stored in \texttt{\~{}/.ssh/known\_hosts}
+		      \end{itemize}
+		\item \textbf{Subsequent connections}: Client checks if host key matches
+		      \begin{itemize}
+			      \item If different, gives you a heart attack: \texttt{WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!}
+			      \item If same: Connection proceeds normally
+		      \end{itemize}
+		\item \textbf{User authentication}: Usually with passwords or public keys
+	\end{itemize}
+	\pause
+	\textbf{Weakness}: TOFU is vulnerable on the very first connection!
+\end{frame}
+
+\begin{frame}{Modern implementations: elliptic curves}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Traditional DH}
+			\begin{itemize}[<+->]
+				\item Uses $\mathbb{Z}_p^*$ (integers mod $p$)
+				\item Requires 2048+ bit numbers
+				\item Slower computations
+				\item Larger public keys
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Elliptic Curve DH (ECDH)}
+			\begin{itemize}[<+->]
+				\item Uses elliptic curve groups
+				\item 256-bit keys ≈ 2048-bit traditional DH
+				\item Much faster computations
+				\item Smaller public keys, less bandwidth
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\pause
+	\vspace{0.5cm}
+	\begin{itemize}[<+->]
+		\item \textbf{Popular curves}: P-256, P-384, X25519, X448
+		\item \textbf{Same security}: Based on elliptic curve discrete logarithm problem
+		\item \textbf{Real-world adoption}: ECDH is now standard in TLS, Signal, etc.
+		\item \textbf{Performance matters}: Especially important for mobile devices and IoT
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The quantum threat to Diffie-Hellman}
+	\begin{center}
+		\Large\textbf{All DH variants are doomed...}
+	\end{center}
+	\vspace{0.1cm}
+	\begin{itemize}[<+->]
+		\item \textbf{Shor's algorithm} (1994) can break DH on quantum computers.
+		      \begin{itemize}
+			      \item Solves discrete logarithm in polynomial time.
+			      \item Works for both traditional DH and ECDH.
+		      \end{itemize}
+		\item \textbf{Timeline concerns}:
+		      \begin{itemize}
+			      \item Large quantum computers don't exist yet.
+			      \item But adversaries might store encrypted data now, decrypt later.
+			      \item ``Harvest now, decrypt later'' attacks.
+		      \end{itemize}
+		\item \textbf{Post-quantum key exchange}: New algorithms under development.
+		      \begin{itemize}
+			      \item ML-KEM (based on lattice problems)
+			      \item SIDH/SIKE (based on isogenies, but recently broken!)
+			      \item Code-based and hash-based alternatives
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Lessons from 50 years of Diffie-Hellman}
+	\begin{itemize}[<+->]
+		\item \textbf{Elegant mathematics}: Simple idea with profound implications.
+		      \begin{itemize}
+			      \item Two numbers raised to secret powers in a mathematical group.
+		      \end{itemize}
+		\item \textbf{Security requires more than math}: Authentication is crucial.
+		      \begin{itemize}
+			      \item Pure DH is vulnerable to active attacks.
+			      \item Real systems need identity verification.
+		      \end{itemize}
+		\item \textbf{Efficiency drives adoption}: Elliptic curves made DH practical everywhere.
+		      \begin{itemize}
+			      \item Performance improvements enable new applications.
+		      \end{itemize}
+		\item \textbf{Future challenges}: Quantum computers will force reinvention.
+		      \begin{itemize}
+			      \item But the core insight—shared secrets from public exchanges—will survive.
+		      \end{itemize}
+		\item \textbf{Cryptography is a living field}: Continuous evolution and adaptation.
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{From hard problems to real-world security}
@@ -1097,12 +1400,6 @@
 	\pause
 	\vspace{1cm}
 	\textbf{This is the power of applied cryptography}: transforming abstract mathematical problems into tools that help people and protect our digital lives.
-\end{frame}
-
-\begin{frame}{Slides not complete}
-	\begin{itemize}
-		\item This slide deck is not finished and is missing important material. Do not rely on it yet.
-	\end{itemize}
 \end{frame}
 
 \begin{frame}[plain]
