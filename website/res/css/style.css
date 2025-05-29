@@ -589,6 +589,7 @@ strong {
 	box-shadow: var(--shadow);
 	transition: var(--transition);
 	overflow: hidden;
+	filter: sepia(0.4) opacity(0.9);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -615,6 +616,10 @@ strong {
 	padding: 0.25rem 0.75rem;
 	border-radius: 0 var(--border-radius) 0 var(--border-radius);
 	letter-spacing: 1px;
+}
+
+.news-entry.new {
+	filter: none;
 }
 
 .news-date {
