@@ -16,26 +16,19 @@
 	<meta property="og:url" content="https://appliedcryptography.page" />
 	<meta property="og:image" content="https://appliedcryptography.page/res/img/og.jpg" />
 	<meta property="og:locale" content="en_US" />
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
 	<link rel="icon" href="res/img/favicon.png" type="image/png" />
 	<link rel="apple-touch-icon" href="res/img/favicon.png" sizes="180x180" />
 	<link rel="icon" href="res/img/favicon.png" sizes="32x32" type="image/png" />
 	<link rel="icon" href="res/img/favicon.png" sizes="16x16" type="image/png" />
-	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/duotone/style.css" />
+	<link rel="stylesheet" href="res/fonts/phosphor/phosphor.css" />
+	<link rel="stylesheet" href="res/fonts/google/google.css" />
 	<link rel="stylesheet" href="res/css/style.css" />
+	<link rel="preload" as="image" href="res/img/cedar.webp" />
 	<script defer data-domain="appliedcryptography.page" data-api="https://restless-block-0a1e.symbolicsoft.workers.dev/oil-ocean/event" src="https://restless-block-0a1e.symbolicsoft.workers.dev/emerald-hill/script.js"></script>
 	<script src="res/js/menu.js"></script>
 	<script src="res/js/collapsible.js"></script>
 	<script src="res/js/updated.js"></script>
-	<script>
-		window.addEventListener(`load`, () => {
-			menuInit()
-			collapsibleInit()
-			updatedInit()
-		})
-	</script>
+	<script src="res/js/main.js"></script>
 </head>
 
 <body>
@@ -670,9 +663,12 @@
 
 	<footer class="footer">
 		<div class="container">
-			<p>
-				<a property="dct:title" rel="cc:attributionURL" href="https://appliedcryptography.page">Applied Cryptography at the American University of Beirut</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/nadimkobeissi/appliedcryptography">Nadim Kobeissi</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt=""></a>
-			</p>
+			<div style="display: flex; align-items: center; gap: 10px;">
+				<img src="res/img/by-nc-sa.svg" alt="Creative Commons BY-NC-SA badge"/>
+				<p style="margin: 0;">
+					<a property="dct:title" rel="cc:attributionURL" href="https://appliedcryptography.page">Applied Cryptography at the American University of Beirut</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/nadimkobeissi/appliedcryptography">Nadim Kobeissi</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a>
+				</p>
+			</div>
 			<strong>Inspiration Aid:</strong> <a href="https://www.youtube.com/watch?v=Vjg0aHySHAs">A</a> &bull; <a href="https://www.youtube.com/watch?v=-NpjhFj7rzE">B</a> &bull; <a href="https://www.youtube.com/watch?v=oN7RnZ3-zF4">C</a>
 		</div>
 	</footer>
