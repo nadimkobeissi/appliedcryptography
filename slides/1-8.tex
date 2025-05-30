@@ -430,8 +430,8 @@
 			\begin{itemize}[<+->]
 				\item Mathematical relationship:
 				      \begin{align*}
-					      Q & = u \cdot G + v \cdot P\\
-					        & = u \cdot G + v \cdot d \cdot G\\
+					      Q & = u \cdot G + v \cdot P         \\
+					        & = u \cdot G + v \cdot d \cdot G \\
 					        & = (u + vd) \cdot G
 				      \end{align*}
 				\item When signature is valid:
@@ -591,18 +591,23 @@
 \section{Elliptic Curves: Practice}
 
 \begin{frame}{Choosing the right elliptic curve}
-	\begin{itemize}[<+->]
-		\item \textbf{Not all elliptic curves are created equal:} Choosing coefficients $a$ and $b$ in $y^2 = x^3 + ax + b$ requires careful consideration.
-		\item \textbf{Security implications:} Poor curve choice can make ECDLP much easier to solve.
-		\item \textbf{In practice:} You'll use established curves, but understanding what makes a curve safe helps you:
-		      \begin{itemize}
-			      \item Choose among available options.
-			      \item Better understand associated risks.
-			      \item Evaluate new curve proposals.
-		      \end{itemize}
-		\item The mathematical structure of the curve directly impacts cryptographic security.
-		\item Comprehensive comparison of elliptic curves: \url{https://safecurves.cr.yp.to}
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Not all elliptic curves are created equal:} The mathematical structure of the curve directly impacts cryptographic security.
+				\item \textbf{Security implications:} Poor curve choice can make ECDLP much easier to solve.
+				\item \textbf{In practice:} You'll use established curves, but understanding what makes a curve safe helps you:
+				      \begin{itemize}
+					      \item Choose among available options.
+					      \item Better understand associated risks.
+					      \item Evaluate new curve proposals.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{safecurves.png}{Elliptic curves have many distinct and complex security criteria.\\Source: \url{https://safecurves.cr.yp.to}}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Criteria for safe elliptic curves}
