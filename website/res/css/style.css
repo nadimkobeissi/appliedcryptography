@@ -432,6 +432,17 @@ strong {
 	color: var(--white);
 }
 
+.footer-license {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.footer-license p {
+	margin: 0;
+	max-width: 600px;
+}
+
 .two-columns {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
