@@ -82,6 +82,8 @@
 	\end{columns}
 \end{frame}
 
+\section{Transport Layer Security}
+
 \begin{frame}{Primary applications that drove TLS development}
 	\begin{itemize}[<+->]
 		\item \textbf{E-commerce websites}
@@ -259,6 +261,582 @@
 		      \end{itemize}
 		\item \textbf{Result}: TLS 1.3 is more secure, efficient, and simpler.
 		\item TLS 1.3 = ``mature TLS''.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Fantastic resource on understanding TLS}{And secure channel protocol design in general}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item The Illustrated TLS 1.2 connection: \url{https://tls12.xargs.org}
+				\item The Illustrated TLS 1.3 connection: \url{https://tls13.xargs.org}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{tls_illustrated}{}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{TLS architecture: Two main protocols}
+	\begin{itemize}[<+->]
+		\item \textbf{Handshake Protocol}
+		      \begin{itemize}
+			      \item Determines secret keys shared between client and server.
+			      \item Handles authentication and key exchange.
+			      \item Runs once at the beginning of a connection.
+		      \end{itemize}
+		\item \textbf{Record Protocol}
+		      \begin{itemize}
+			      \item Describes how to use established keys to protect data.
+			      \item Processes data packets called \textbf{records}.
+			      \item Defines packet format for encapsulating higher-layer data.
+		      \end{itemize}
+		\item Think of it as: handshake = setup, record = ongoing protection.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The TLS handshake: Basic flow}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Step 1}: Client initiates secure connection.
+				      \begin{itemize}
+					      \item Sends \texttt{ClientHello} message.
+					      \item Includes supported ciphers and other parameters.
+				      \end{itemize}
+				\item \textbf{Step 2}: Server responds.
+				      \begin{itemize}
+					      \item Checks client's message and parameters.
+					      \item Responds with \texttt{ServerHello} message.
+					      \item Selects cipher suite and provides certificate.
+				      \end{itemize}
+				\item \textbf{Step 3}: Key establishment.
+				      \begin{itemize}
+					      \item Both parties process each other's messages.
+					      \item Establish session keys for encryption.
+				      \end{itemize}
+				\item \textbf{Result}: Ready to exchange encrypted data!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{tls_handshake.png}{TLS handshake overview.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Critical step: Certificate validation}
+	\begin{itemize}[<+->]
+		\item \textbf{The crux of TLS security}: Server authenticates itself to client
+		\item \textbf{What is a certificate?}
+		      \begin{itemize}
+			      \item A public key + signature of that key
+			            \begin{itemize}
+				            \item Encoded in an insanely asinine byte format
+			            \end{itemize}
+			      \item Associated information (domain name, organization, etc.)
+			      \item Essentially says: ``I am google.com, and my public key is [key]''
+		      \end{itemize}
+		\item \textbf{Certificate validation process}:
+		      \begin{enumerate}
+			      \item Browser receives certificate from server
+			      \item Verifies the certificate's signature
+			      \item If signature is valid \rightarrow certificate and public key are trusted
+			      \item Browser proceeds with connection
+		      \end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Certificate Authorities: The trust foundation}
+	\begin{itemize}[<+->]
+		\item \textbf{Problem}: How does the browser know which public key to use for verification?
+		\item \textbf{Solution}: Certificate Authorities (CAs)
+		      \begin{itemize}
+			      \item Public keys hardcoded in your browser/OS.
+			      \item Trusted organizations that issue certificates.
+			      \item Act as trusted third parties.
+		      \end{itemize}
+		\item \textbf{CA's role}:
+		      \begin{itemize}
+			      \item Verify that public keys belong to claimed entities.
+			      \item Sign certificates with their private keys.
+			      \item Protect their private keys from compromise.
+		      \end{itemize}
+		\item \textbf{Without CAs}: No way to distinguish legitimate servers from MITM attackers!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Certificate chains in practice}
+	\begin{itemize}[<+->]
+		\item \textbf{Real-world example}: Connecting to \texttt{www.google.com}
+		\item \textbf{Certificate chain structure}:
+		      \begin{itemize}
+			      \item \textbf{Certificate 0}: \texttt{www.google.com}'s certificate.
+			      \item \textbf{Certificate 1}: Intermediate CA (Google Trust Services).
+			      \item \textbf{Certificate 2}: Root CA (GlobalSign).
+		      \end{itemize}
+		\item \textbf{Verification process}:
+		      \begin{enumerate}
+			      \item Check Google's signature on Certificate 0.
+			      \item Check GlobalSign's signature on Certificate 1.
+			      \item Trust GlobalSign's root certificate (pre-installed).
+		      \end{enumerate}
+		\item \textbf{Chain of trust}: Each certificate vouches for the next.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Exploring certificates with OpenSSL}
+	\begin{itemize}[<+->]
+		\item \textbf{Connect and view certificate}:
+		      \begin{itemize}
+			      \item \texttt{openssl s\_client -connect www.google.com:443}
+			      \item Shows certificate chain and raw certificate data
+		      \end{itemize}
+		\item \textbf{Parse certificate details}:
+		      \begin{itemize}
+			      \item \texttt{openssl x509 -text -noout}
+			      \item Reveals subject, issuer, validity dates, algorithms
+		      \end{itemize}
+		\item \textbf{Certificate markers}:
+		      \begin{itemize}
+			      \item \texttt{s:} = subject (who the certificate is for)
+			      \item \texttt{i:} = issuer (who signed the certificate)
+		      \end{itemize}
+		\item Try this at home! Great way to understand the certificate ecosystem.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS Record Protocol: The data transport layer}
+	\begin{itemize}[<+->]
+		\item \textbf{What is the Record Protocol?}
+		      \begin{itemize}
+			      \item Transport protocol for all TLS data.
+			      \item Agnostic to the meaning of transported data.
+			      \item Makes TLS suitable for any application.
+		      \end{itemize}
+		\item \textbf{Two main phases}:
+		      \begin{enumerate}
+			      \item \textbf{During handshake}: Carries handshake messages.
+			      \item \textbf{After handshake}: Carries encrypted application data.
+		      \end{enumerate}
+		\item \textbf{Key insight}: Like TCP, doesn't care about upper layers!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS Record: Basic structure}
+	\begin{itemize}[<+->]
+		\item \textbf{TLS Record = chunk of data ≤ 16KB}
+		\item \textbf{Simple header structure}:
+		      \begin{itemize}
+			      \item Only 3 fields (vs. 14 in IPv4, 13 in TCP)
+			      \item 5-byte header + payload
+		      \end{itemize}
+		\item \textbf{Visual representation}:
+	\end{itemize}
+	\pause
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			\textbf{ContentType} & \textbf{ProtocolVersion} & \textbf{Length} & \textbf{Payload} \\
+			\hline
+			1 byte               & 2 bytes                  & 2 bytes         & ≤ 16KB           \\
+			\hline
+		\end{tabular}
+	\end{center}
+\end{frame}
+
+\begin{frame}{TLS Record fields breakdown}
+	\begin{itemize}[<+->]
+		\item \textbf{Byte 1 - ContentType}:
+		      \begin{itemize}
+			      \item \texttt{22} = Handshake data
+			      \item \texttt{23} = Encrypted application data
+			      \item \texttt{21} = Alerts (error messages)
+		      \end{itemize}
+		\item \textbf{Bytes 2-3 - ProtocolVersion}:
+		      \begin{itemize}
+			      \item Always \texttt{03 01} (historical reasons)
+			      \item Same across TLS versions (confusing!)
+		      \end{itemize}
+		\item \textbf{Bytes 4-5 - Length}:
+		      \begin{itemize}
+			      \item 16-bit integer encoding payload length
+			      \item Maximum: $2^{14}$ bytes = 16KB
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{ContentType: What's in this record?}
+	\begin{center}
+		\begin{tabular}{|c|c|l|}
+			\hline
+			\textbf{Value} & \textbf{Name}    & \textbf{Contains}                         \\
+			\hline
+			21             & Alert            & Error messages, warnings                  \\
+			\hline
+			22             & Handshake        & \parbox[t]{3cm}{ClientHello, ServerHello, \\Certificate, etc.} \\
+			\hline
+			23             & Application Data & \parbox[t]{3cm}{Encrypted user data       \\(HTTP, email, etc.)} \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\pause
+	\begin{itemize}
+		\item \textbf{Key point}: ContentType tells receiver how to process the payload.
+		\item \textbf{During handshake}: Mostly type 22 records.
+		\item \textbf{After handshake}: Mostly type 23 records.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Encrypted records (ContentType = 23)}
+	\begin{itemize}[<+->]
+		\item \textbf{When ContentType = 23}:
+		      \begin{itemize}
+			      \item Payload is encrypted and authenticated.
+			      \item Contains: ciphertext + authentication tag.
+		      \end{itemize}
+		\item \textbf{How does receiver know how to decrypt?}
+		      \begin{itemize}
+			      \item Cipher and key established during handshake.
+			      \item ``Magic of TLS'': if you receive encrypted data, you already have the key!
+		      \end{itemize}
+		\item \textbf{Decryption process}:
+		      \begin{enumerate}
+			      \item Verify authentication tag.
+			      \item Decrypt ciphertext.
+			      \item Process decrypted application data.
+		      \end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Nonces: Ensuring unique encryption}
+	\begin{itemize}[<+->]
+		\item \textbf{Problem}: Each record needs a unique nonce for encryption.
+		\item \textbf{TLS solution}: Derive nonces from sequence numbers.
+		      \begin{itemize}
+			      \item Each party maintains 64-bit sequence number.
+			      \item Incremented for each new record.
+			      \item Starts at 0, goes 1, 2, 3, ...
+		      \end{itemize}
+		\item \textbf{Nonce derivation}:
+		      \begin{itemize}
+			      \item Client: \texttt{sequence\_number $\oplus$ client\_write\_iv}
+			      \item Server: \texttt{sequence\_number $\oplus$ server\_write\_iv}
+		      \end{itemize}
+		\item \textbf{No nonce reuse}: Different IVs and keys per direction.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Example: Sequence numbers in action}
+	\begin{center}
+		\textbf{Client sending records:}
+		\begin{tabular}{|c|c|}
+			\hline
+			\textbf{Record \#} & \textbf{Sequence Number} \\
+			\hline
+			1st record         & 0                        \\
+			\hline
+			2nd record         & 1                        \\
+			\hline
+			3rd record         & 2                        \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\pause
+	\begin{center}
+		\textbf{Client receiving records:}
+		\begin{tabular}{|c|c|}
+			\hline
+			\textbf{Record \#} & \textbf{Sequence Number} \\
+			\hline
+			1st record         & 0                        \\
+			\hline
+			2nd record         & 1                        \\
+			\hline
+			3rd record         & 2                        \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\pause
+	\begin{itemize}
+		\item \textbf{Safe to reuse numbers}: Different keys and IVs per direction!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Zero padding: Defeating traffic analysis}
+	\begin{itemize}[<+->]
+		\item \textbf{Traffic analysis attack}:
+		      \begin{itemize}
+			      \item Attackers observe encrypted traffic patterns.
+			      \item Extract info from timing, message sizes, etc.
+			      \item Ciphertext size ≈ plaintext size (reveals message length).
+		      \end{itemize}
+		\item \textbf{TLS 1.3 solution}: Zero padding
+		      \begin{itemize}
+			      \item Add zeros to plaintext before encryption.
+			      \item Inflates ciphertext size.
+			      \item Hides true message length from observers.
+		      \end{itemize}
+		\item \textbf{Example}: 100-byte message + 900 zero bytes = looks like 1000-byte message.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Zero padding example}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Without padding:}
+			\begin{itemize}
+				\item Short message \rightarrow\ small ciphertext
+				\item Long message \rightarrow\ large ciphertext
+				\item Attacker learns message sizes
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{With padding:}
+			\begin{itemize}
+				\item Short message + padding \rightarrow\ large ciphertext
+				\item Long message + padding \rightarrow\ large ciphertext
+				\item All messages look the same size!
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\pause
+	\begin{center}
+		\textbf{Trade-off}: Security vs. bandwidth efficiency
+	\end{center}
+\end{frame}
+
+\begin{frame}{TLS: the handshake protocol}
+	\begin{itemize}[<+->]
+		\item \textbf{The crux of TLS}: Process to establish shared secret keys.
+		\item \textbf{Goal}: Initiate secure communications between client and server.
+		\item \textbf{Key outcome}: Both parties agree on:
+		      \begin{itemize}
+			      \item TLS version to use
+			      \item Cipher suite for encryption
+			      \item Shared secret keys for protection
+		      \end{itemize}
+		\item \textbf{Interoperability requirement}: Any TLS 1.3 client must work with any TLS 1.3 server.
+		      \begin{itemize}
+			      \item Achieved through standardized message formats.
+			      \item Works regardless of implementation or programming language.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS: the handshake protocol}
+	\bigimagewithcaption{tls_13_handshake}{TLS 1.3 handshake protocol. Source: Serious Cryptography}
+\end{frame}
+
+\begin{frame}{Client vs. Server: Different roles in the handshake}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Client's role:}
+			\begin{itemize}[<+->]
+				\item \textbf{Proposes} configurations
+				\item Lists supported TLS versions
+				\item Lists supported cipher suites
+				\item Orders preferences (most preferred first)
+				\item Generates Diffie-Hellman key pair
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Server's role:}
+			\begin{itemize}[<+->]
+				\item \textbf{Chooses} final configuration
+				\item Selects TLS version to use
+				\item Picks cipher suite from client's list
+				\item Should follow client's preferences
+				\item Responds with its own DH public key
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\pause
+	\begin{center}
+		\textbf{Think of it like ordering at a restaurant:}\\
+		Client: ``Here's what I like...'' \quad Server: ``We'll go with this option.''
+	\end{center}
+\end{frame}
+
+\begin{frame}{ClientHello: ``I want to establish a TLS connection''}
+	\begin{itemize}[<+->]
+		\item \textbf{Client's opening message to server}
+		\item \textbf{Key contents}:
+		      \begin{itemize}
+			      \item List of supported cipher suites (in order of preference)
+			      \item Diffie-Hellman public key (generated just for this session!)
+			      \item 32-byte random value
+			      \item Optional extensions and parameters
+		      \end{itemize}
+		\item \textbf{Critical security detail}: DH private key stays with client.
+		\item \textbf{Format requirement}: Must follow exact byte format from TLS 1.3 spec.
+		      \begin{itemize}
+			      \item Ensures any server can parse any client's message.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{ServerHello: ``Here's what we'll use and who I am''}
+	\begin{itemize}[<+->]
+		\item \textbf{Server's response}: Packed with crucial information!
+		\item \textbf{Configuration decisions}:
+		      \begin{itemize}
+			      \item Selected cipher suite (from client's list)
+			      \item Server's Diffie-Hellman public key
+			      \item 32-byte random value
+		      \end{itemize}
+		\item \textbf{Authentication materials}:
+		      \begin{itemize}
+			      \item Certificate (contains server's public key)
+			      \item Signature of ClientHello + ServerHello contents
+			      \item MAC of all the above information
+		      \end{itemize}
+		\item \textbf{Crypto magic}: MAC uses key derived from DH shared secret!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Client verification: ``Can I trust this server?''}
+	\begin{itemize}[<+->]
+		\item \textbf{When client receives ServerHello}:
+		\item \textbf{Step 1}: Certificate validation
+		      \begin{itemize}
+			      \item Check certificate chain to trusted CA
+			      \item Verify certificate hasn't expired
+			      \item Confirm certificate matches domain name
+		      \end{itemize}
+		\item \textbf{Step 2}: Signature verification
+		      \begin{itemize}
+			      \item Use certificate's public key to verify signature
+			      \item Ensures server controls the private key
+		      \end{itemize}
+		\item \textbf{Step 3}: Derive shared secrets
+		      \begin{itemize}
+			      \item Compute DH shared secret: $g^{ab} \bmod p$
+			      \item Derive symmetric keys from shared secret
+		      \end{itemize}
+		\item \textbf{Step 4}: MAC verification
+		      \begin{itemize}
+			      \item Verify MAC using derived symmetric key
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{All checks pass: Ready for encrypted communication!}
+	\begin{center}
+		\textbf{After successful verification:}
+	\end{center}
+	\begin{itemize}[<+->]
+		\item Client is confident it's talking to the legitimate server.
+		\item Both parties have the same shared secret keys.
+		\item Ready to send encrypted application data!
+		\item \textbf{Security achieved}:
+		      \begin{itemize}
+			      \item \textbf{Confidentiality}: Traffic is encrypted
+			      \item \textbf{Integrity}: Traffic is authenticated
+			      \item \textbf{Authentication}: Server identity verified
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Real-world example: Visiting \texttt{aub.edu.lb}}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Step 1}: Browser sends ClientHello
+			\begin{itemize}[<+->]
+				\item Lists supported ciphers
+				\item Includes DH public key
+				\item Adds random nonce
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Step 2}: Server responds
+			\begin{itemize}[<+->]
+				\item Sends ServerHello
+				\item Provides certificate for ``\texttt{aub.edu.lb}''
+				\item Includes signature and MAC
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\pause
+	\begin{center}
+		\textbf{Step 3}: Browser verification
+	\end{center}
+	\begin{itemize}[<+->]
+		\item Certificate validated using browser's built-in CA certificates
+		\item Must be signed by trusted certificate authority
+		\item Certificate must match domain name: ``\texttt{aub.edu.lb}''
+		\item All cryptographic checks must pass
+	\end{itemize}
+	\pause
+	\begin{center}
+		\textbf{Step 4}: Browser requests initial page over encrypted channel!
+	\end{center}
+\end{frame}
+
+\begin{frame}{Security guarantees after successful TLS 1.3 handshake}
+	\begin{itemize}[<+->]
+		\item \textbf{All communications are encrypted and authenticated}
+		\item \textbf{What an eavesdropper can see}:
+		      \begin{itemize}
+			      \item Client IP address
+			      \item Server IP address
+			      \item Encrypted content (but can't read it!)
+			      \item Traffic patterns and timing
+		      \end{itemize}
+		\item \textbf{What an eavesdropper CANNOT do}:
+		      \begin{itemize}
+			      \item Read the underlying plaintext
+			      \item Modify messages without detection
+			      \item Impersonate either party
+		      \end{itemize}
+		\item \textbf{Authentication guarantee}: If messages are tampered with, receiving party will detect it!
+		\item \textbf{Bottom line}: Enough security for most applications.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS 1.3 extensions and variations}
+	\begin{itemize}[<+->]
+		\item \textbf{TLS 1.3 supports many options}:
+		      \begin{itemize}
+			      \item Client certificate authentication
+			      \item Preshared key handshakes
+			      \item Various extensions for specific needs
+		      \end{itemize}
+		\item \textbf{Client certificate authentication}:
+		      \begin{itemize}
+			      \item Server can require client to prove its identity
+			      \item Mutual authentication (both parties verified)
+			      \item Common in enterprise environments
+		      \end{itemize}
+		\item \textbf{Preshared keys (PSK)}:
+		      \begin{itemize}
+			      \item Skip certificate verification
+			      \item Use pre-established shared secrets
+			      \item Faster handshake, but requires prior key distribution
+		      \end{itemize}
+		\item \textbf{Flexibility}: TLS 1.3 adapts to different security requirements.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Slides not complete}
+	\begin{itemize}
+		\item This slide deck is not finished and is missing important material. Do not rely on it yet.
+	\end{itemize}
+\end{frame}
+
+\section{Attacks on TLS}
+
+\begin{frame}{Slides not complete}
+	\begin{itemize}
+		\item This slide deck is not finished and is missing important material. Do not rely on it yet.
+	\end{itemize}
+\end{frame}
+
+\section{How TLS 1.3 Transformed Protocol Design}
+
+\begin{frame}{Supported cryptographic algorithms}
+	\begin{itemize}
+		\item ABC
 	\end{itemize}
 \end{frame}
 
