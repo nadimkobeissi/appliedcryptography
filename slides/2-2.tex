@@ -16,8 +16,250 @@
 	\titlepage
 \end{frame}
 
+\begin{frame}{Why we're interested in TLS}
+	\begin{itemize}[<+->]
+		\item Encrypts all your web traffic (the \textbf{S} in HTTP\textbf{S}!)
+		\item Great way to introduce \textbf{authenticated key exchange}.
+		\item Great way to make you hate certificates and certificate authorities.
+		\item How TLS handles \textbf{authentication} and key exchange.
+		\item A comprehensive survey of \textbf{TLS 1.2 attacks}:
+		      \begin{itemize}
+			      \item POODLE (Padding Oracle On Downgraded Legacy Encryption)
+			      \item Lucky Thirteen timing attack
+			      \item SMACK (State Machine AttaCK)
+			      \item FREAK (Factoring RSA Export Keys)
+			      \item Logjam attack on Diffie-Hellman
+			      \item And many more...
+		      \end{itemize}
+		\item How these attacks informed the design of \textbf{TLS 1.3}.
+		\item Lessons learned for building secure protocols.
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{TLS attacks timeline (to 2015)}
 	\bigimagewithcaption{tls_attacks_timeline_2015.png}{TLS attacks up until 2015.}
+\end{frame}
+
+\begin{frame}{TLS isn't very interesting}
+	\begin{itemize}
+		\item Too complicated for no good reason.
+		\item Doesn't accomplish properties as interesting as those of more modern protocols, or even Signal.
+		\item Certificate authorities.
+		\item Very important however to understand, basically a golden door into the world of protocols.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{...and yet...}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Web browsing (HTTPS)
+				\item Email (IMAPS, POP3S, SMTPS)
+				\item Instant messaging (WhatsApp, Telegram)
+				\item Video conferencing (Zoom, Teams)
+				\item Online banking
+				\item Social media (Facebook, Twitter)
+				\item Cloud storage (Dropbox, Google Drive)
+				\item VPN connections
+				\item Mobile app communication
+				\item Medical devices
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Streaming services (Netflix, Spotify)
+				\item IoT device communication
+				\item Remote desktop protocols
+				\item Voice over IP (VoIP)
+				\item Software updates
+				\item Database connections
+				\item Git repositories (GitHub, GitLab)
+				\item Real-time communication (WebRTC)
+				\item Cryptocurrency wallets
+				\item Smart home devices
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Primary applications that drove TLS development}
+	\begin{itemize}[<+->]
+		\item \textbf{E-commerce websites}
+		      \begin{itemize}
+			      \item Credit card numbers
+			      \item Personal information
+			      \item Purchase history
+		      \end{itemize}
+		\item \textbf{Online banking}
+		      \begin{itemize}
+			      \item Account credentials
+			      \item Financial transactions
+			      \item Sensitive financial data
+		      \end{itemize}
+		\item \textbf{General web browsing}
+		      \begin{itemize}
+			      \item User credentials
+			      \item Private communications
+			      \item Personal data protection
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Key security goal: Defeating man-in-the-middle attacks}
+	\begin{itemize}[<+->]
+		\item \textbf{MITM attack scenario:}
+		      \begin{enumerate}
+			      \item Attacker intercepts encrypted traffic.
+			      \item Decrypts the traffic to read content.
+			      \item Re-encrypts and forwards to destination.
+		      \end{enumerate}
+		\item \textbf{How TLS defeats MITM:}
+		      \begin{itemize}
+			      \item Server authentication using \textbf{certificates}.
+			      \item Trusted \textbf{certificate authorities} (CAs).
+			      \item Optional client authentication.
+		      \end{itemize}
+		\item Without proper authentication, encryption alone is \textbf{not enough}!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Four requirements for wide TLS adoption}
+	\begin{itemize}[<+->]
+		\item \textbf{Efficiency}
+		      \begin{itemize}
+			      \item Minimize performance penalty vs. unencrypted connections.
+		      \end{itemize}
+		\item \textbf{Interoperability}
+		      \begin{itemize}
+			      \item Work on any hardware and operating system.
+		      \end{itemize}
+		\item \textbf{Extensibility}
+		      \begin{itemize}
+			      \item Support additional features and algorithms.
+		      \end{itemize}
+		\item \textbf{Versatility}
+		      \begin{itemize}
+			      \item Not bound to specific applications.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Notice how we're mentioning design requirements now?}
+	\bigimagewithcaption{fischer.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
+\end{frame}
+
+\begin{frame}{Notice how we're mentioning design requirements now?}
+	\begin{center}
+		\bigimagewithcaption{fischer_sectioned.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Efficiency and interoperability}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Efficiency matters for:}
+			\begin{itemize}[<+->]
+				\item \textbf{Servers}
+				      \begin{itemize}
+					      \item Reduce hardware costs
+					      \item Handle more connections
+				      \end{itemize}
+				\item \textbf{Clients}
+				      \begin{itemize}
+					      \item Avoid perceptible delays
+					      \item Preserve battery life
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Interoperability ensures:}
+			\begin{itemize}[<+->]
+				\item Works across different:
+				      \begin{itemize}
+					      \item Hardware platforms
+					      \item Operating systems
+					      \item Software implementations
+				      \end{itemize}
+				\item Universal compatibility
+				\item No vendor lock-in
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Extensibility and versatility}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Extensibility allows:}
+			\begin{itemize}[<+->]
+				\item Adding new cryptographic algorithms
+				\item Supporting new features
+				\item Adapting to security threats
+				\item Protocol evolution over time
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Versatility means:}
+			\begin{itemize}[<+->]
+				\item Application-agnostic design
+				\item Like TCP: doesn't care about upper layers
+				\item Can secure any application protocol
+				\item Reusable security infrastructure
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The confusing SSL/TLS naming}
+	\begin{itemize}[<+->]
+		\item \textbf{1995}: Netscape develops SSL (Secure Sockets Layer).
+		\item \textbf{SSL 2.0 and SSL 3.0}: Both had serious security flaws.
+		\item \textbf{Confusing terminology}: People still call TLS ``SSL''.
+		      \begin{itemize}
+			      \item Even security experts do this!
+			      \item ``SSL certificate'' really means ``TLS certificate''
+		      \end{itemize}
+		\item TLS = Transport Layer Security (SSL's successor)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS version evolution}
+	\begin{itemize}[<+->]
+		\item \textbf{TLS 1.0 (1999)}
+		      \begin{itemize}
+			      \item Least secure TLS version.
+			      \item Still better than SSL 3.0.
+		      \end{itemize}
+		\item \textbf{TLS 1.1 (2006)}
+		      \begin{itemize}
+			      \item Better, but includes weak algorithms.
+		      \end{itemize}
+		\item \textbf{TLS 1.2 (2008)}
+		      \begin{itemize}
+			      \item Much better, but very complex.
+			      \item High security only if configured correctly.
+			      \item Supports vulnerable features (e.g., AES-CBC with padding oracles).
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS 1.3: The great cleanup}
+	\begin{itemize}[<+->]
+		\item \textbf{Problem}: TLS 1.2 inherited decades of legacy features.
+		      \begin{itemize}
+			      \item Suboptimal security and performance.
+			      \item Complex and error-prone configurations.
+			      \item High risk of implementation bugs.
+		      \end{itemize}
+		\item \textbf{Solution}: Complete redesign for TLS 1.3.
+		      \begin{itemize}
+			      \item Kept only the good parts.
+			      \item Added modern security features.
+			      \item Simplified the bloated design.
+		      \end{itemize}
+		\item \textbf{Result}: TLS 1.3 is more secure, efficient, and simpler.
+		\item TLS 1.3 = ``mature TLS''.
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{Slides not complete}
