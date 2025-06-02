@@ -818,6 +818,310 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{How things can go wrong with TLS}
+	\begin{itemize}[<+->]
+		\item \textbf{Common TLS failure scenarios:}
+		      \begin{itemize}
+			      \item Even with the most secure ciphers, TLS can be compromised
+			      \item Security relies on assumptions about honest behavior
+		      \end{itemize}
+		\item \textbf{Key assumption}: All three parties behave honestly
+		      \begin{itemize}
+			      \item Client
+			      \item Server
+			      \item Certificate Authority (CA)
+		      \end{itemize}
+		\item \textbf{Reality check}: What if one party is compromised?
+		\item \textbf{Implementation matters}: Poor TLS implementations create vulnerabilities
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Compromised Certificate Authority}
+	\begin{itemize}[<+->]
+		\item \textbf{Root CAs}: Organizations that browsers trust to validate certificates
+		\item \textbf{Normal process}:
+		      \begin{itemize}
+			      \item CA verifies legitimacy of certificate owner.
+			      \item CA signs certificate with their private key.
+			      \item Browser trusts CA's signature.
+		      \end{itemize}
+		\item \textbf{Attack scenario}: CA's private key is compromised
+		      \begin{itemize}
+			      \item Attacker can create certificates for \textbf{any domain}.
+			      \item No approval needed from actual domain owner.
+			      \item Can impersonate legitimate servers.
+		      \end{itemize}
+		\item \textbf{Attack capabilities}:
+		      \begin{itemize}
+			      \item Create fake certificates for \texttt{google.com}, \texttt{instagram.com}, etc.
+			      \item Intercept user credentials and communications.
+			      \item Man-in-the-middle attacks become trivial.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Real-world example: DigiNotar}
+	\begin{itemize}[<+->]
+		\item \textbf{What happened}:
+		      \begin{itemize}
+			      \item Dutch certificate authority DigiNotar was hacked.
+			      \item Attackers gained access to CA's private keys.
+			      \item Created fake certificates for Google services.
+		      \end{itemize}
+		\item \textbf{Impact}:
+		      \begin{itemize}
+			      \item Users unknowingly connected to malicious servers.
+			      \item Credentials and communications intercepted.
+			      \item Trust in entire CA system questioned.
+		      \end{itemize}
+		\item \textbf{Aftermath}:
+		      \begin{itemize}
+			      \item DigiNotar went bankrupt.
+			      \item All major browsers removed DigiNotar certificates.
+			      \item Led to improved CA monitoring and transparency.
+		      \end{itemize}
+		\item \textbf{Lesson}: CAs are high-value targets for attackers!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Real-world example: Kazakhstan government certificate}
+	\begin{columns}[c]
+		\begin{column}{0.8\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{2015}: Kazakhstan government creates ``national security certificate''
+				      \begin{itemize}
+					      \item Root certificate that could enable MITM attacks.
+					      \item Would allow government to intercept HTTPS traffic.
+					      \item Required manual installation on users' devices.
+				      \end{itemize}
+				\item \textbf{July 2019}: Government mandates certificate installation
+				      \begin{itemize}
+					      \item ISPs instructed users to install ``Qaznet Trust Certificate''.
+					      \item Issued by state CA: Qaznet Trust Network.
+					      \item Initial targets: Google, Facebook, Twitter.
+				      \end{itemize}
+				\item \textbf{August 2019}: Browser vendors fight back
+				      \begin{itemize}
+					      \item Mozilla (Firefox) and Google (Chrome) block the certificate.
+					      \item Apple (Safari) joins the blocking effort.
+					      \item Microsoft reiterates certificate not in trusted root store.
+				      \end{itemize}
+				\item \textbf{December 2020}: Government tries again, browsers block again
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.2\textwidth}
+			\imagewithcaption{tls_borat.jpg}{}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Kazakhstan case: Lessons for TLS security}
+	\begin{itemize}[<+->]
+		\item \textbf{Government-level MITM attempts are real}
+		      \begin{itemize}
+			      \item Nation-states can create sophisticated infrastructure.
+			      \item Legal pressure on ISPs and users.
+			      \item ``National security'' justifications.
+		      \end{itemize}
+		\item \textbf{Browser vendors as guardians}:
+		      \begin{itemize}
+			      \item Coordinate to protect users from malicious CAs.
+			      \item Can override user certificate installations.
+			      \item Technical measures against political pressure.
+		      \end{itemize}
+		\item \textbf{Certificate transparency importance}:
+		      \begin{itemize}
+			      \item Public logs make rogue certificates detectable.
+			      \item Community monitoring of CA behavior.
+			      \item Enables coordinated responses to threats.
+		      \end{itemize}
+		\item \textbf{Bottom line}: Even governments can't easily break modern TLS
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Critical examination: Are browser vendors truly neutral?}
+	\begin{itemize}[<+->]
+		\item \textbf{Browser vendors as gatekeepers}:
+		      \begin{itemize}
+			      \item Google (Chrome), Mozilla (Firefox), Apple (Safari), Microsoft (Edge).
+			      \item Unilateral power to accept/reject certificates.
+			      \item Who watches the watchers?
+		      \end{itemize}
+		\item \textbf{Political and economic pressures}:
+		      \begin{itemize}
+			      \item Companies have business interests and government relations.
+			      \item What if a government pressures Google/Apple directly?
+			      \item Corporate decisions affecting global internet security.
+		      \end{itemize}
+		\item \textbf{The CA model's fundamental problems}:
+		      \begin{itemize}
+			      \item \textbf{Single point of failure}: Any CA can issue certificates for any domain.
+			      \item \textbf{Asymmetric trust}: Must trust \textbf{all} CAs, not just one.
+			      \item \textbf{Centralized control}: Small number of entities control global trust.
+			      \item \textbf{Economic incentives}: CAs profit from issuing more certificates.
+		      \end{itemize}
+		\item \textbf{Question}: Is this the best we can do for global internet security?
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Thinking beyond: Decentralized trust alternatives}
+	\begin{itemize}[<+->]
+		\item \textbf{Why consider alternatives?}
+		      \begin{itemize}
+			      \item Reduce single points of failure.
+			      \item Eliminate centralized gatekeepers.
+			      \item Increase transparency and auditability.
+		      \end{itemize}
+		\item \textbf{Blockchain-based certificate systems}:
+		      \begin{itemize}
+			      \item Certificates recorded on public blockchain.
+			      \item Cryptographic proof of certificate history.
+			      \item Examples: Namecoin, Ethereum Name Service (ENS)
+			      \item \textbf{Trade-offs}: Scalability, energy consumption, governance.
+		      \end{itemize}
+		\item \textbf{Web of Trust models}:
+		      \begin{itemize}
+			      \item Users vouch for each other's identities (like PGP).
+			      \item Decentralized reputation systems.
+			      \item \textbf{Trade-offs}: User complexity, bootstrap problem
+		      \end{itemize}
+		\item \textbf{DNS-based alternatives}: DANE (DNS-based Authentication of Named Entities)
+		\item \textbf{Your turn}: What other models could work? What are the trade-offs?
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Compromised Server}
+	\begin{itemize}[<+->]
+		\item \textbf{Worst-case scenario}: Server is fully controlled by attacker
+		\item \textbf{What the attacker gains}:
+		      \begin{itemize}
+			      \item Session keys (server is TLS termination point)
+			      \item All transmitted data \textbf{before} encryption
+			      \item All received data \textbf{after} decryption
+			      \item Server's private key
+		      \end{itemize}
+		\item \textbf{Attack capabilities}:
+		      \begin{itemize}
+			      \item Read all user communications in plaintext
+			      \item Impersonate the legitimate server
+			      \item Use private key to create malicious servers
+		      \end{itemize}
+		\item \textbf{Bottom line}: TLS won't save you if the server is compromised!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Server compromise: Mitigation strategies}
+	\begin{itemize}[<+->]
+		\item \textbf{Good news}: High-profile services are well-protected
+		      \begin{itemize}
+			      \item Gmail, iCloud, major banks
+			      \item Multiple layers of security
+		      \end{itemize}
+		\item \textbf{Hardware Security Modules (HSMs)}:
+		      \begin{itemize}
+			      \item Store private keys in separate, tamper-resistant hardware
+			      \item Even if server is compromised, keys may remain safe
+		      \end{itemize}
+		\item \textbf{Key Management Systems (KMS)}:
+		      \begin{itemize}
+			      \item Centralized key storage and management
+			      \item Limits exposure of private keys
+		      \end{itemize}
+		\item \textbf{More common threats}: Web application vulnerabilities
+		      \begin{itemize}
+			      \item SQL injection, cross-site scripting (XSS)
+			      \item Carried out \textbf{over} legitimate TLS connections
+			      \item Independent of TLS security
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Compromised Client}
+	\begin{itemize}[<+->]
+		\item \textbf{Attack scenario}: Browser or client application is compromised
+		\item \textbf{What the attacker gains}:
+		      \begin{itemize}
+			      \item Session keys from compromised client
+			      \item All decrypted data visible to client
+			      \item Ability to modify client behavior
+		      \end{itemize}
+		\item \textbf{Advanced attack}: Installing rogue CA certificates
+		      \begin{itemize}
+			      \item Add malicious CA to client's trusted store
+			      \item Client silently accepts invalid certificates
+			      \item Enables seamless man-in-the-middle attacks
+		      \end{itemize}
+		\item \textbf{Scope difference}:
+		      \begin{itemize}
+			      \item Compromised CA/server: affects \textbf{all} clients
+			      \item Compromised client: affects \textbf{only that} client
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Client compromise: Attack techniques}
+	\begin{itemize}[<+->]
+		\item \textbf{Malware installation}:
+		      \begin{itemize}
+			      \item Trojans, viruses, browser plugins
+			      \item Can intercept data before encryption
+		      \end{itemize}
+		\item \textbf{Certificate store manipulation}:
+		      \begin{itemize}
+			      \item Add attacker's CA certificate to trusted store
+			      \item Modify certificate validation logic
+		      \end{itemize}
+		\item \textbf{Browser hijacking}:
+		      \begin{itemize}
+			      \item Redirect traffic through attacker's proxy
+			      \item Modify DNS settings
+		      \end{itemize}
+		\item \textbf{Protection strategies}:
+		      \begin{itemize}
+			      \item Keep browsers and OS updated
+			      \item Use reputable antivirus software
+			      \item Certificate pinning (for developers)
+			      \item Monitor certificate store changes
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS security: A chain is only as strong as its weakest link}
+	\begin{center}
+		\textbf{Three points of failure in the TLS trust model:}
+	\end{center}
+	\begin{columns}[c]
+		\begin{column}{0.33\textwidth}
+			\textbf{Certificate Authority}
+			\begin{itemize}
+				\item Must protect private keys
+				\item Must verify identities correctly
+				\item Must not issue rogue certificates
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.33\textwidth}
+			\textbf{Server}
+			\begin{itemize}
+				\item Must protect private keys
+				\item Must maintain secure infrastructure
+				\item Must handle session keys safely
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.33\textwidth}
+			\textbf{Client}
+			\begin{itemize}
+				\item Must validate certificates properly
+				\item Must protect trusted CA store
+				\item Must remain malware-free
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\pause
+	\begin{center}
+		\textbf{Compromise any one component} \rightarrow\ \textbf{TLS security fails!}
+	\end{center}
+\end{frame}
+
 \begin{frame}{Slides not complete}
 	\begin{itemize}
 		\item This slide deck is not finished and is missing important material. Do not rely on it yet.
