@@ -1,4 +1,4 @@
-window.addEventListener(`load`, () => {
+document.addEventListener(`load`, () => {
 	menuInit();
 	collapsibleInit();
 	updatedInit();

@@ -600,7 +600,6 @@ strong {
 	box-shadow: var(--shadow);
 	transition: var(--transition);
 	overflow: hidden;
-	filter: sepia(0.4) opacity(0.9);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -817,6 +816,10 @@ strong {
 	overflow: hidden;
 	transition: var(--transition);
 	padding: 0 1rem;
+}
+
+.collapsible-content.active {
+	max-height: fit-content;
 }
 
 @media (prefers-color-scheme: dark) {
