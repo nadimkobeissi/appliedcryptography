@@ -12,17 +12,16 @@ I'm still working on the slides. If the checkbox isn't checked, it means you sho
 
 #### Part 2
 
-- [ ] Part 2: Session 1
-- [ ] Part 2: Session 2
-- [ ] Part 2: Session 3
-- [ ] Part 2: Session 4
-- [ ] Part 2: Session 5
-- [ ] Part 2: Session 6
-- [ ] Part 2: Session 7
-- [ ] Part 2: Session 8
-- [ ] Part 2: Session 9
-- [ ] Part 2: Session 10
-- [ ] Part 2: Session 11
+- [x] Part 2: Topic 1
+- [ ] Part 2: Topic 2
+- [ ] Part 2: Topic 3
+- [ ] Part 2: Topic 4
+- [ ] Part 2: Topic 5
+- [ ] Part 2: Topic 6
+- [ ] Part 2: Topic 7
+- [ ] Part 2: Topic 8
+- [ ] Part 2: Topic 9
+- [ ] Part 2: Topic 10
 
 ## Compiling the slides
 

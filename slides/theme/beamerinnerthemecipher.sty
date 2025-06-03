@@ -41,7 +41,7 @@
 				\vskip0.3cm
 				\usebeamercolor[fg]{part name}\usebeamerfont{part name}\insertcoverpartname\par
 				\vskip0cm
-				\usebeamercolor[fg]{session name}\usebeamerfont{session name}\insertcoversessionname\par
+				\usebeamercolor[fg]{topic name}\usebeamerfont{topic name}\insertcovertopicname\par
 				\vskip0.3cm
 				\usebeamercolor[fg]{author}\usebeamerfont{author}\insertauthor\par
 				\vskip0cm
@@ -107,7 +107,7 @@
 
 % Custom commands
 \newcommand{\coversubtitle}[1]{\def\insertcoversubtitle{#1}}
-\newcommand{\coversessionname}[1]{\def\insertcoversessionname{#1}}
+\newcommand{\covertopicname}[1]{\def\insertcovertopicname{#1}}
 \newcommand{\coverpartname}[1]{\def\insertcoverpartname{#1}}
 \newcommand{\coverwebsite}[1]{\def\insertcoverwebsite{#1}}
 \newcommand{\instituteimage}[1]{\def\insertinstituteimage{#1}}
@@ -186,3 +186,6 @@
 		\end{minipage}
 	\end{center}
 }
+
+\newcommand\fstar{\textsf{F}\ensuremath{^\star}\xspace}
+\newcommand\haclstar{\textsf{HACL}\ensuremath{^\star}\xspace}

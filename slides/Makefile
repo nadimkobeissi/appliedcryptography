@@ -17,7 +17,6 @@ all:
 	@make 2-8
 	@make 2-9
 	@make 2-10
-	@make 2-11
 
 1-1:
 	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "1-1.tex"
@@ -72,6 +71,3 @@ all:
 
 2-10:
 	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "2-10.tex"
-
-2-11:
-	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../website/slides "2-11.tex"
