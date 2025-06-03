@@ -445,7 +445,7 @@
 					</div>
 
 					<div class="topic">
-						<a href="#" class="topic-slides-btn session-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
 						<span class="topic-number">Topic 2.2</span>
 						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>The Story of RC4</h4>
 						<p class="topic-overview">This topic presents a biographical narrative of RC4 (Rivest Cipher 4), tracing its remarkable journey from promising youth to eventual downfall in cryptographic history. We'll examine RC4's birth as a proprietary stream cipher at RSA Security in 1987, its meteoric rise to become the most widely deployed stream cipher in the world, and its golden era powering protocols like WEP, SSL, and TLS due to its simplicity and performance advantages. The topic then chronicles RC4's gradual decline as researchers uncovered a series of increasingly devastating weaknesses, starting with the 2001 Fluhrer-Mantin-Shamir attack on WEP, through the 2013 discovery of extensive biases in RC4-generated keystreams that enabled practical attacks against TLS, culminating in the 2015 "Bar Mitzvah" and RC4 NOMORE attacks that could recover passwords and other sensitive information from encrypted connections. We'll analyze how the security community responded to these revelations, including browser vendors' gradual restriction of RC4 ciphersuites and the IETF's eventual formal prohibition of RC4 in TLS in 2015, while drawing broader lessons about cryptographic lifecycle management, the importance of formal security analysis, and how the story of RC4 exemplifies both the evolution of cryptanalytic techniques and the challenges of maintaining backward compatibility in security protocols.</p>
@@ -461,7 +461,7 @@
 					</div>
 
 					<div class="topic">
-						<a href="#" class="topic-slides-btn session-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
 						<span class="topic-number">Topic 2.3</span>
 						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Secure Messaging</h4>
 						<p class="topic-overview">This topic explores modern encrypted messaging protocols, focusing on how forward secrecy and post-compromise security are achieved through cryptographic "ratcheting" mechanisms. We'll examine how protocols like Signal protect user communications even when devices are compromised. The topic begins with the concept of forward secrecy, which ensures that compromised keys cannot decrypt past messages, implemented through symmetric ratchets that continually evolve encryption keys. We then explore post-compromise security, which protects future messages after a compromise through asymmetric ratcheting based on Diffie-Hellman key exchanges. The combination of these techniques in Signal's double ratchet offers robust protections against both passive and active adversaries. Finally, we'll examine how these concepts extend to group messaging in the Messaging Layer Security (MLS) protocol, where ratchet trees efficiently manage forward secrecy and post-compromise security for multiple participants. Throughout, we'll analyze the security properties, limitations, and real-world considerations of these messaging systems that protect billions of daily communications.</p>
@@ -475,7 +475,7 @@
 					</div>
 
 					<div class="topic">
-						<a href="#" class="topic-slides-btn session-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
 						<span class="topic-number">Topic 2.4</span>
 						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Applied Cryptography in Cloud Security</h4>
 						<p class="topic-overview">This topic explores how cryptographic principles and techniques are applied to secure cloud computing environments, focusing on the unique challenges of protecting data and applications in distributed, multi-tenant infrastructures. We'll examine key management strategies for distributed systems, including hierarchical key management, key rotation policies, and hardware security modules (HSMs) in cloud deployments. The topic covers confidential computing technologies that use hardware-based trusted execution environments and memory encryption to protect data in use. Students will learn about tokenization systems that replace sensitive data with non-sensitive equivalents, and encryption schemes optimized for cloud storage including convergent encryption and client-side encryption models. We'll investigate secret management at scale, analyzing secure vaults, dynamic credential generation, and secure secret distribution in containerized environments. The topic also explores cryptographic access control mechanisms like attribute-based encryption and practical implementations of end-to-end encryption in cloud services, examining how these technologies can maintain confidentiality even when the cloud provider itself isn't fully trusted.</p>
@@ -489,7 +489,7 @@
 					</div>
 
 					<div class="topic">
-						<a href="#" class="topic-slides-btn session-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
 						<span class="topic-number">Topic 2.5</span>
 						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>High Assurance Cryptography</h4>
 						<p class="topic-overview">This topic examines methodologies for developing cryptographic implementations with high assurance of correctness and security, moving beyond traditional testing approaches to formal verification and rigorous proof techniques. We'll explore the spectrum of formal methods applied to cryptography, from lightweight verification using refinement types to comprehensive mathematical proofs of functional correctness and security properties. The topic covers verification frameworks and tools including F*, Coq, Lean, and ProVerif, examining how they can be applied to verify cryptographic implementations against their specifications and security definitions. Students will learn about verified cryptographic libraries like HACL*, EverCrypt, and initiatives from organizations like Cryspen that bring formal verification to practical cryptography. We'll also discuss the challenges in formally verifying cryptographic code, including the gap between mathematical specifications and efficient implementations, side-channel resistance verification, and performance considerations. The topic concludes with case studies of successful verification projects that have produced high-assurance cryptographic implementations deployed in critical systems.</p>
@@ -503,7 +503,7 @@
 					</div>
 
 					<div class="topic">
-						<a href="#" class="topic-slides-btn session-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
 						<span class="topic-number">Topic 2.6</span>
 						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Cryptocurrency Cryptography</h4>
 						<p class="topic-overview">This topic explores the cryptographic foundations of blockchain systems and cryptocurrencies, examining how traditional cryptographic primitives are combined in novel ways to create decentralized trust systems. We'll investigate the core components of blockchain protocols, including hash functions in proof-of-work mechanisms, digital signatures for transaction authentication, and Merkle trees for efficient verification. The topic covers the cryptographic aspects of Bitcoin, Ethereum, and other significant blockchain platforms, analyzing their security models, consensus mechanisms, and vulnerability mitigations. Students will learn about specialized cryptographic constructions in cryptocurrencies, including zero-knowledge proofs for privacy coins, threshold signatures for multi-signature wallets, and timelock puzzles for conditional transactions. We'll also discuss emerging cryptographic challenges in blockchain systems, including quantum resistance considerations, layer-2 scaling solutions with unique security properties, and the cryptographic foundations of newer consensus mechanisms like proof-of-stake that aim to address energy consumption concerns while maintaining security guarantees.</p>
@@ -516,7 +516,7 @@
 					</div>
 
 					<div class="topic">
-						<a href="#" class="topic-slides-btn session-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
 						<span class="topic-number">Topic 2.7</span>
 						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Post-Quantum Cryptography</h4>
 						<p class="topic-overview">This topic explores post-quantum cryptography, which addresses the threat quantum computers pose to current cryptographic systems. We'll examine how quantum algorithms like Shor's can break widely-used public-key cryptography based on factoring and discrete logarithms, while Grover's algorithm reduces symmetric-key security by effectively halving key lengths. The topic introduces the Learning With Errors (LWE) problem as a foundation for post-quantum cryptography, explaining how its computational hardness against quantum attacks makes it suitable for building secure cryptographic primitives. We'll analyze practical LWE-based key exchange protocols that form the basis for NIST's standardized post-quantum schemes like ML-KEM. Students will understand both the theoretical foundation of quantum-resistant cryptography and the practical considerations for implementing these systems in real-world applications, preparing them for the transition to a post-quantum cryptographic landscape.</p>
@@ -534,7 +534,7 @@
 					</div>
 
 					<div class="topic">
-						<a href="#" class="topic-slides-btn session-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
 						<span class="topic-number">Topic 2.8</span>
 						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Zero-Knowledge Proofs</h4>
 						<p class="topic-overview">This topic explores zero-knowledge proofs, which enable proving possession of secret information without revealing anything about the secret itself. We'll examine how these interactive protocols can authenticate a party's identity while maintaining deniability—allowing someone to prove they know a private key without creating evidence that could later convince others. The topic begins with the Schnorr identification protocol, which demonstrates this paradoxical capability through a clever three-move interaction. We'll then generalize to sigma protocols, a powerful class of interactive proofs with completeness, special soundness, and honest-verifier zero-knowledge properties. The topic covers several practical examples, including proofs of discrete log equality and complex logical conditions using AND/OR compositions. Finally, we'll explore how interactive proofs can be transformed into non-interactive proofs and digital signatures through the Fiat-Shamir transformation, which replaces the verifier with a cryptographic hash function. This transformation creates powerful primitives like Schnorr signatures but necessarily sacrifices the deniability property that makes interactive zero-knowledge proofs unique.</p>
@@ -547,7 +547,7 @@
 					</div>
 
 					<div class="topic">
-						<a href="#" class="topic-slides-btn session-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
 						<span class="topic-number">Topic 2.9</span>
 						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Secure Multiparty Computation</h4>
 						<p class="topic-overview">This topic explores Secure Multiparty Computation (MPC), a powerful cryptographic paradigm that enables multiple parties to jointly compute functions over their private inputs without revealing those inputs to each other. We'll examine the theoretical foundations of MPC, including feasibility results, security models, and the distinctions between semi-honest and malicious adversaries. The topic covers core MPC techniques including Yao's garbled circuits, secret sharing schemes like Shamir's threshold method, and oblivious transfer protocols that enable secure two-party computation. Students will learn about practical MPC frameworks and implementations such as SCALE-MAMBA, MP-SPDZ, and EMP-toolkit, analyzing their performance characteristics and security guarantees. We'll investigate applications of MPC across various domains, including private data analysis, secure auctions, privacy-preserving machine learning, and confidential financial systems. The topic also addresses performance optimizations like preprocessing, circuit minimization, and communication-efficient protocols that make MPC increasingly practical for real-world use. We'll conclude with case studies of deployed MPC systems, examining how these technologies overcome real-world implementation challenges to enable secure collaboration while maintaining strict privacy guarantees.</p>
@@ -560,7 +560,7 @@
 					</div>
 
 					<div class="topic">
-						<a href="#" class="topic-slides-btn session-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
 						<span class="topic-number">Topic 2.10</span>
 						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Creative Cryptography</h4>
 						<p class="topic-overview">This topic explores timelock encryption, a fascinating cryptographic innovation that enables messages to be encrypted such that they can only be decrypted after a predetermined time has elapsed. We'll examine both the theoretical foundations and practical implementation of timelock encryption using the League of Entropy, an existing threshold network that implements threshold BLS signatures within Boneh and Franklin's identity-based encryption (IBE) framework. The topic demonstrates how this network, which broadcasts BLS signatures for each time interval (round number), effectively functions as a decentralized key custodian that periodically publishes private keys for an IBE system where identities correspond to specific time periods. We'll analyze the elegant design that requires cryptographic operations only from encryptors and decryptors while allowing the threshold network to remain unmodified and unaware of the timelock functionality. Students will gain hands-on experience with an open-source implementation of this scheme and explore a production-ready web interface utilizing the League of Entropy's distributed randomness beacon service. This creative application of cryptography showcases how existing cryptographic primitives can be combined in innovative ways to enable entirely new functionalities, inspiring students to think beyond conventional applications as they develop their own cryptographic solutions.</p>
