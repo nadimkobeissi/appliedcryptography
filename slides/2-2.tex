@@ -1122,6 +1122,53 @@
 	\end{center}
 \end{frame}
 
+\begin{frame}{Forward Secrecy: Protecting past communications}
+	\begin{itemize}[<+->]
+		\item \textbf{The problem}: What if a server's private key is compromised?
+		      \begin{itemize}
+			      \item Attacker could decrypt \textbf{all past} TLS sessions.
+			      \item Years of stored encrypted traffic becomes readable.
+			      \item Example: NSA's alleged collection of encrypted internet traffic.
+		      \end{itemize}
+		\item \textbf{Forward secrecy (Perfect Forward Secrecy - PFS)}:
+		      \begin{itemize}
+			      \item Ensures past sessions remain secure even if long-term keys are compromised.
+			      \item Each session uses unique, \textbf{ephemeral keys}.
+			            \begin{itemize}
+				            \item \textit{ephemeral: ``lasting a very short time''}
+			            \end{itemize}
+			      \item Session keys are deleted after use.
+		      \end{itemize}
+		\item \textbf{Security guarantee}: ``Even if you compromise me today, you can't read yesterday's traffic.''
+		\item \textbf{Critical for}: Journalists, activists, whistleblowers, ordinary citizens
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{How TLS achieves forward secrecy}
+	\begin{itemize}[<+->]
+		\item \textbf{Ephemeral Diffie-Hellman key exchange}:
+		      \begin{itemize}
+			      \item Server generates fresh DH key pair for each session.
+			      \item Client generates fresh DH key pair for each session.
+			      \item Shared secret computed: $g^{ab} \bmod p$ (then deleted!).
+		      \end{itemize}
+		\item \textbf{Key lifecycle}:
+		      \begin{enumerate}
+			      \item Generate ephemeral keys for handshake.
+			      \item Derive session keys from ephemeral shared secret.
+			      \item \textbf{Delete ephemeral private keys immediately}.
+			      \item Use session keys for encrypted communication.
+			      \item Delete session keys when connection ends.
+		      \end{enumerate}
+		\item \textbf{Server's long-term private key}: Only used to \textbf{sign} the handshake
+		      \begin{itemize}
+			      \item Not used to derive session keys directly.
+			      \item Compromising it doesn't reveal past session keys.
+		      \end{itemize}
+		\item \textbf{Result}: Each TLS session is cryptographically independent.
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{Slides not complete}
 	\begin{itemize}
 		\item This slide deck is not finished and is missing important material. Do not rely on it yet.
