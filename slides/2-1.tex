@@ -1142,13 +1142,13 @@
 				      \begin{itemize}
 					      \item TLS 1.0-1.2 used MAC-then-encrypt with CBC mode
 					      \item Padding oracle attacks exploit timing differences
-					      \item Server takes different time to process valid vs. invalid padding
+					      \item Different MAC verification procedures for valid vs. invalid padding
 				      \end{itemize}
 				\item \textbf{Attack mechanism}:
 				      \begin{enumerate}
 					      \item Attacker modifies ciphertext to create invalid padding
 					      \item Measures server response time
-					      \item Fast response = padding error, slow response = MAC error
+					      \item Timing differences reveal padding validity
 					      \item Uses timing to guess plaintext byte-by-byte
 				      \end{enumerate}
 				\item \textbf{Why ``Lucky Thirteen''?} Attack requires exactly 13 bytes of padding
@@ -1167,9 +1167,9 @@
 		      \end{itemize}
 		\item \textbf{The timing leak}:
 		      \begin{itemize}
-			      \item \textbf{Invalid padding}: Server immediately returns error
-			      \item \textbf{Valid padding}: Server computes MAC, then returns error
-			      \item MAC computation takes measurable time
+			      \item \textbf{Valid padding}: MAC checked on message after padding removal
+			      \item \textbf{Invalid padding}: TLS spec says to check MAC as if padding had zero-length
+			      \item Different amounts of data processed creates timing difference
 		      \end{itemize}
 		\item \textbf{Statistical attack}:
 		      \begin{itemize}
