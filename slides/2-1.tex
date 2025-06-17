@@ -366,6 +366,71 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Traditional CA validation nightmare}
+	\begin{itemize}[<+->]
+		\item \textbf{Getting a certificate before 2015}:
+		      \begin{itemize}
+			      \item Contact a Certificate Authority (Verisign, Thawte, etc.).
+			      \item Pay \$50-300+ per certificate per year.
+			            \begin{itemize}
+				            \item Completely arbitrary extortionate amounts.
+			            \end{itemize}
+			      \item Manual validation process takes days/weeks.
+		      \end{itemize}
+		\item \textbf{Domain Validation (DV) process}:
+		      \begin{enumerate}
+			      \item Submit CSR (Certificate Signing Request).
+			      \item CA sends email to \texttt{admin@domain.com}.
+			      \item Click verification link in email.
+			      \item Wait for manual review and approval.
+			      \item Download and install certificate.
+		      \end{enumerate}
+		\item \textbf{Extended Validation (EV) certificates}:
+		      \begin{itemize}
+			      \item Even more expensive (\$150-1000+/year).
+			      \item Weeks of back-and-forth communication.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Let's Encrypt: revolution in TLS certificates (2015)}
+	\begin{itemize}[<+->]
+		\item \textbf{Game-changing}:
+		      \begin{itemize}
+			      \item \textbf{Free} certificates for everyone.
+			      \item \textbf{Automated} issuance and renewal.
+			      \item \textbf{90-day} certificate lifetime (encourages automation).
+			      \item Open source, non-profit initiative.
+		      \end{itemize}
+		\item \textbf{ACME protocol} (Automated Certificate Management Environment):
+		      \begin{itemize}
+			      \item Domain validation via HTTP or DNS challenges.
+			      \item Prove control of domain programmatically.
+			      \item Certificate issued in seconds, not days.
+			      \item Automatic renewal before expiration.
+		      \end{itemize}
+		\item \textbf{Impact on the web}:
+		      \begin{itemize}
+			      \item HTTPS adoption jumped from 40\% to 90\%+ of web traffic.
+			      \item Eliminated cost barrier for small websites.
+			      \item Made ``HTTPS everywhere'' a reality.
+		      \end{itemize}
+		\item \textbf{Philosophy}: Encryption should be the default, not a luxury.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Let's Encrypt: active certificates}
+	\bigimagewithcaption{letsencrypt_certs.png}{Source: Let's Encrypt}
+\end{frame}
+
+\begin{frame}{Let's Encrypt: certificates issued}
+	\bigimagewithcaption{letsencrypt_issuance.png}{Source: Let's Encrypt}
+\end{frame}
+
+\begin{frame}{Percentage of HTTPS traffic in Firefox}
+	\bigimagewithcaption{letsencrypt_https.png}{Source: Let's Encrypt}
+\end{frame}
+
 \begin{frame}{Certificate chains in practice}
 	\begin{itemize}[<+->]
 		\item \textbf{Real-world example}: Connecting to \texttt{www.google.com}
@@ -942,6 +1007,58 @@
 		      \end{itemize}
 		\item \textbf{Bottom line}: Even governments can't easily break modern TLS
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Certificate Transparency}
+	\begin{itemize}[<+->]
+		\item \textbf{The problem}: CAs can issue certificates without anyone knowing.
+		      \begin{itemize}
+			      \item Rogue certificates for targeted attacks.
+			      \item Compromised CAs issuing malicious certificates.
+			      \item No way to detect misbehavior after the fact.
+		      \end{itemize}
+		\item \textbf{Certificate Transparency (CT) solution} (2013):
+		      \begin{itemize}
+			      \item CAs must submit all certificates to public logs.
+			      \item Logs are cryptographically append-only.
+			      \item Anyone can monitor logs for suspicious certificates.
+		      \end{itemize}
+		\item \textbf{How it works}:
+		      \begin{enumerate}
+			      \item CA issues certificate and submits to CT logs.
+			      \item Log returns Signed Certificate Timestamp (SCT).
+			      \item Certificate includes SCT as proof of logging.
+			      \item Browsers reject certificates without valid SCTs.
+		      \end{enumerate}
+		\item \textbf{Result}: CA misbehavior becomes publicly detectable!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Example: How Let's Encrypt uses CT}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{The Static CT API}: Evolution of Certificate Transparency.
+				      \begin{itemize}
+					      \item Logs represented as simple flat files (``tiles'').
+					      \item Download log data just like downloading files.
+					      \item CDN-friendly, cheaper to operate.
+				      \end{itemize}
+				\item \textbf{Key advantages}:
+				      \begin{itemize}
+					      \item 10x+ cheaper to operate (~\$10k/year vs traditional logs).
+					      \item More reliable (simpler architecture).
+					      \item Easier to download and share data.
+				      \end{itemize}
+				\item \textbf{Sunlight}:
+				      \begin{itemize}
+					      \item Open source CT implementation used by Let's Encrypt.\footnote{\url{https://letsencrypt.org/2025/06/11/reflections-on-a-year-of-sunlight/}}
+					      \item \url{https://sunlight.dev}
+				      \end{itemize}
+				\item \textbf{Status}: Chrome and Safari now accepting Static CT API logs!
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Critical examination: Are browser vendors truly neutral?}
@@ -1916,6 +2033,15 @@
 			      \item Separate hash contexts for different protocols
 		      \end{itemize}
 		\item \textbf{Lesson}: Hash collisions threaten more than just digital signatures
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Qualys SSL Labs}
+	\begin{itemize}
+		\item Free online service to analyze TLS/SSL configuration.
+		\item Tests any public HTTPS server.
+		\item Provides detailed security assessment.
+		\item Available at: \url{https://www.ssllabs.com/ssltest/}
 	\end{itemize}
 \end{frame}
 

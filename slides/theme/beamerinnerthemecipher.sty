@@ -171,11 +171,11 @@
 % Nicely formatted image with caption (big)
 \newcommand{\bigimagewithcaption}[3][1\textwidth]{
 	\begin{center}
-		\vspace{-0.75cm}
+		\vspace{-0.5cm}
 		\begin{tikzpicture}
 			\hspace{-1mm}
 			\node[fill=white, anchor=center, inner sep=1mm]{
-				\includegraphics[width=#1, height=0.8\textheight, keepaspectratio]{images/#2}
+				\includegraphics[width=#1, height=0.75\textheight, keepaspectratio]{images/#2}
 			};
 			\node[fit=(current bounding box), inner sep=0.5mm, draw=white, line width=0.5mm] {};
 		\end{tikzpicture}
