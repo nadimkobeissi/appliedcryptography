@@ -23,7 +23,221 @@
 \end{frame}
 
 \section{The Beginning}
-% PGP
+\begin{frame}{The Dark Ages}
+	\begin{itemize}
+		\item \textbf{Pretty Good Privacy} (PGP) - Created by Phil Zimmermann in 1991
+		\item First widely available strong encryption for everyday people
+		\item Uses public key cryptography for email encryption and digital signatures
+		\item Revolutionary: Previously, strong crypto was government/military only
+		\item Core idea: Each user has a key pair (public key + private key)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{How PGP works}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\textbf{Encryption}
+			\begin{enumerate}
+				\item Alice writes email to Bob
+				\item Gets Bob's public key
+				\item PGP encrypts message with Bob's public key
+				\item Only Bob's private key can decrypt
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Digital Signatures}
+			\begin{enumerate}
+				\item Alice signs with her private key
+				\item Anyone with Alice's public key can verify
+				\item Proves message came from Alice
+				\item Detects tampering
+			\end{enumerate}
+		\end{column}
+	\end{columns}
+	\begin{alertblock}{Hybrid Encryption}
+		Actually uses symmetric crypto for message, asymmetric for key exchange
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{PGP in email clients}
+	\begin{itemize}
+		\item \textbf{Early days}: Command-line tools (1991-1995)
+		      \begin{itemize}
+			      \item Manual encryption/decryption
+			      \item Copy and paste ciphertext into email
+		      \end{itemize}
+		\item \textbf{Integration era}: Plugins and extensions (1995-2010s)
+		      \begin{itemize}
+			      \item Enigmail for Thunderbird
+			      \item GPGTools for Apple Mail
+			      \item Outlook plugins
+		      \end{itemize}
+		\item \textbf{User experience}: Still complex!
+		      \begin{itemize}
+			      \item Key management burden on users
+			      \item Accidental plaintext replies common
+			      \item Attachments often forgotten
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Look at this mess}
+	\bigimagewithcaption{pgp_keyserver.png}{A PGP ``key server''}
+\end{frame}
+
+\begin{frame}{Look at this mess}
+	\bigimagewithcaption{pgp_pubkey.png}{Allegedly my public key. Is it even? I don't know!}
+\end{frame}
+
+\begin{frame}{The Key Distribution Problem}
+	\begin{columns}
+		\begin{column}{0.6\textwidth}
+			\textbf{How do you get someone's public key?}
+			\begin{itemize}
+				\item \textbf{Key servers}: MIT, SKS keyservers
+				      \begin{itemize}
+					      \item Upload your public key
+					      \item Search by email/name
+					      \item Anyone can upload anything!
+				      \end{itemize}
+				\item \textbf{Key fingerprints}: 40-hex-digit identifiers
+				      \begin{itemize}
+					      \item Verify out-of-band (phone, in person)
+					      \item Business cards with fingerprints
+				      \end{itemize}
+				\item \textbf{Web of Trust}: Keys signed by other users
+				      \begin{itemize}
+					      \item ``I trust Alice, Alice trusts Bob''
+					      \item Key signing parties!
+					            \begin{itemize}
+						            \item Such was our decadence, our confusion
+					            \end{itemize}
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{exampleblock}{Example Fingerprint}
+				\ttfamily\scriptsize
+				D745 2D8B 9E3F 4F3D\\
+				7A82 F9B5 1C4A 6E9D\\
+				8B3F 2E4C 9A7D 5F8E
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{PGP: fundamental challenges}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Usability nightmare}
+				      \begin{itemize}
+					      \item ``Why Johnny Can't Encrypt'' (1999) - landmark usability study\footnote{\url{https://appliedcryptography.page/papers/johnny-cant.pdf}}
+					      \item Key management too complex for average users
+					      \item Easy to make catastrophic mistakes
+				      \end{itemize}
+				\item \textbf{No forward secrecy}
+				      \begin{itemize}
+					      \item Compromise private key = decrypt all past messages
+					      \item Keys often used for years or decades
+				      \end{itemize}
+				\item \textbf{Metadata exposed}
+				      \begin{itemize}
+					      \item Subject lines, recipients visible
+					      \item Timing and frequency observable
+				      \end{itemize}
+				\item \textbf{Web of Trust failed in practice}
+				      \begin{itemize}
+					      \item Most users never participated
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why Johnny Can't Encrypt (1999)}
+	\begin{columns}[T]
+		\begin{column}{0.5\textwidth}
+			\textbf{The Study}
+			\begin{itemize}
+				\item Whitten \& Tygar tested PGP 5.0
+				\item 12 educated email users
+				\item 90 minutes to encrypt/sign email
+				\item Had manual + GUI interface
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Results: Catastrophic Failure}
+			\begin{itemize}
+				\item Only 1/3 succeeded
+				\item 1/4 sent secrets in plaintext!
+				\item Didn't understand public keys
+				\item Used own key to encrypt to others
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Core Conclusions}
+			\begin{itemize}
+				\item \textbf{Security $\neq$ normal software}
+				      \begin{itemize}
+					      \item Secondary goal for users
+					      \item Mistakes are irreversible
+					      \item Abstract concepts
+				      \end{itemize}
+				\item \textbf{Good GUI isn't enough}
+				      \begin{itemize}
+					      \item Need security-specific design
+					      \item Must communicate mental model
+				      \end{itemize}
+				\item \textbf{``Usable security'' requires:}
+				      \begin{itemize}
+					      \item Users aware of security tasks
+					      \item Can figure out how to do them
+					      \item Don't make dangerous errors
+					      \item Will continue using it
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why Johnny Still, Still Can't Encrypt (2015)}
+	\begin{columns}[T]
+		\begin{column}{0.5\textwidth}
+			\textbf{The Study - 16 Years Later}
+			\begin{itemize}
+				\item Ruoti et al. tested Mailvelope
+				\item Modern PGP browser extension
+				\item Integrates with webmail (Gmail)
+				\item 20 participants (10 pairs)
+				\item Exchange encrypted email
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Results: Still Catastrophic}
+			\begin{itemize}
+				\item \textbf{Only 1/10 pairs succeeded!}
+				\item That pair took full 45 minutes
+				\item Success only because one knew PKI
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Common Failures}
+			\begin{itemize}
+				\item Encrypted with own public key (7/10)
+				\item Generated keys with friend's info
+				\item Recipients confused by PGP block
+				\item One sent private key + password!
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Pain Points}
+			\begin{itemize}
+				\item No integrated tutorials
+				\item PKI concepts still mystifying
+				\item ``After 5 minutes, I would have just given up and called''
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 % OTR + integration into IRC, Jabber, Adium...
 % Limitations of early approaches
 % Key exchange challenges
