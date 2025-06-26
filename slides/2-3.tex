@@ -166,7 +166,6 @@
 				\item 90 minutes to encrypt/sign email
 				\item Had manual + GUI interface
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Results: Catastrophic Failure}
 			\begin{itemize}
 				\item Only 1/3 succeeded
@@ -212,7 +211,6 @@
 				\item 20 participants (10 pairs)
 				\item Exchange encrypted email
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Results: Still Catastrophic}
 			\begin{itemize}
 				\item \textbf{Only 1/10 pairs succeeded!}
@@ -228,7 +226,6 @@
 				\item Recipients confused by PGP block
 				\item One sent private key + password!
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Pain Points}
 			\begin{itemize}
 				\item No integrated tutorials
@@ -311,7 +308,6 @@
 				\item \textbf{Kopete}: KDE instant messenger
 				\item \textbf{Jitsi}: Voice/video/chat
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Protocol Support}
 			\begin{itemize}
 				\item XMPP/Jabber
@@ -809,7 +805,6 @@
 				\item But only $\approx 2^{252}$ valid points
 				\item AES-256 expects uniform 256-bit keys
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Concrete attack scenario:}
 			\begin{itemize}
 				\item Attacker knows top bits are biased
@@ -825,7 +820,6 @@
 				\item \textbf{Modular reduction}: $x < 2^{255} - 19$
 				\item \textbf{Invalid points}: Half of x-values have no corresponding y
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Real vulnerability}
 				In some protocols, attacker can force specific shared secrets by choosing malicious public keys from small subgroups
 			\end{alertblock}
@@ -866,7 +860,6 @@
 				\item Each had ad-hoc solutions
 				\item Krawczyk (2010) formalized the problem
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{HKDF Design:}
 			\begin{itemize}
 				\item \textbf{Extract}: Concentrate entropy
@@ -912,7 +905,6 @@
 				\item Derive some unique session ID as the salt
 				\item \texttt{HKDF(ikm, info, salt, len)}
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{OTR Key Derivation}
 				\ttfamily\scriptsize
 				c = HKDF(s, "OTR-ENC-Alice", sessionID, 32)\\
@@ -930,7 +922,6 @@
 				\item \textbf{No key reuse}: Different contexts = different keys
 				\item \textbf{Direction-specific}: Alice/Bob get different keys
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Compare to ad-hoc approach:}
 			\begin{itemize}
 				\item No semantic meaning
@@ -992,7 +983,6 @@
 				\item Read messages buffered in memory
 				\item Decrypt future messages (until detected)
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{What the attacker CANNOT do:}
 			\begin{itemize}
 				\item Decrypt your past 30 messages
@@ -1058,7 +1048,6 @@
 				\item But no cryptographic proof for third parties
 				\item \textbf{After conversation:} anyone could have created the transcript
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{OTR's approach:}
 			\begin{itemize}
 				\item \textbf{MACs instead of signatures}
@@ -1098,7 +1087,6 @@
 		\item Lamo saved chat logs, gave to FBI
 		\item \textbf{Used as evidence in court}
 	\end{itemize}
-	\vspace{0.5em}
 	\textbf{Why deniability failed:}
 	\begin{itemize}
 		\item Courts don't require cryptographic proof
@@ -1125,7 +1113,6 @@
 			      \item Users don't understand it
 		      \end{itemize}
 	\end{itemize}
-	\vspace{0.5em}
 	\begin{alertblock}{Open question}
 		Does cryptographic deniability provide meaningful real-world protection?
 	\end{alertblock}
@@ -1179,7 +1166,6 @@
 				\item Exploits MAC key revelation + message ordering
 				\item Requires network control (active attacker)
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Key Insight:}
 			\begin{itemize}
 				\item Alice reveals MAC keys after ``finishing'' with them
@@ -1225,7 +1211,6 @@
 				\item Network delays are common
 				\item No way to detect forgery
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Attack Impact:}
 			\begin{itemize}
 				\item Insert forged messages
@@ -1587,7 +1572,6 @@
 		\item \textbf{User actions:} Restore from backup, reinstall apps
 		\item \textbf{Physical events:} Drop phone in toilet
 	\end{itemize}
-	\vspace{0.5em}
 	\textbf{What happens to your chats when these occur?}
 	\begin{itemize}
 		\item Academic answer: ``You're locked out forever!''
@@ -1619,7 +1603,6 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{block}{The Impossibility Result}
 		If your app must handle state loss (all real apps do), then full conversation-level PCS is \textbf{mathematically impossible}
 	\end{block}
@@ -1632,7 +1615,6 @@
 		\item Each session = tolerance for one ``desync event''
 		\item More sessions = Better usability, Worse security
 	\end{itemize}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{N = 1 (Ultra secure)}
@@ -1676,7 +1658,6 @@
 		\item \textbf{Time limits:} Delete old sessions after time T
 		\item \textbf{UI warnings:} Highlight messages from old sessions
 	\end{itemize}
-	\vspace{0.5em}
 	\textbf{But remember:}
 	\begin{itemize}
 		\item These are band-aids, not cures
@@ -1717,6 +1698,8 @@
 		\end{column}
 	\end{columns}
 \end{frame}
+
+\section{Telegram}
 
 \begin{frame}{What about Telegram?}
 	\begin{columns}
@@ -1809,16 +1792,100 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{alertblock}{Real-world Impact}
 		Pavel Durov can read your Telegram chats at his discretion
 	\end{alertblock}
 \end{frame}
 
-\section{Group Secure Messaging}
-% Group messaging with WhatsApp as example
-% Group messaging challenges
-% MLS
+\section{Group Secure Messaging (WORK IN PROGRESS)}
+
+\begin{frame}{The Group Messaging Problem}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Two-party protocols work great for... two parties}
+			\begin{itemize}
+				\item Signal Protocol: Alice $\leftrightarrow$ Bob
+				\item OTR: Real-time 1-on-1 chat
+				\item X3DH: Asynchronous key agreement
+				\item Double Ratchet: Forward secrecy
+			\end{itemize}
+			\textbf{But what about groups?}
+			\begin{itemize}
+				\item Family group chat (5 people)
+				\item Work team (20 people)
+				\item Community groups (100+ people)
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Security challenges:}
+			\begin{itemize}
+				\item Members join and leave
+				\item Forward secrecy for leavers
+				\item Post-compromise security
+				\item Scalability requirements
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{How Signal/WhatsApp handle groups today}
+	\textbf{The Pairwise Channel Approach}
+	\begin{itemize}
+		\item No true group protocol
+		\item Sender encrypts to each member
+		\item For $n$ members: $n-1$ encryptions
+		\item Each member has separate ratchet
+	\end{itemize}
+	\textbf{Problems with this approach:}
+	\begin{itemize}
+		\item \textbf{Linear scaling:} $O(n)$ work per message
+		\item \textbf{Bandwidth:} Upload grows with group size
+		\item \textbf{Battery drain:} More crypto operations
+		\item \textbf{Consistency:} Members may see different states
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Enter MLS: Messaging Layer Security}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{IETF Standard (RFC 9420, July 2023)}
+			\begin{itemize}
+				\item Designed for efficient group messaging
+				\item Single encryption per message
+				\item Logarithmic scaling: $O(\log n)$
+				\item Native group key agreement
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Group key agreement}: All members share same key
+				\item \textbf{Ratcheting epochs}: Keys evolve over time
+				\item \textbf{Forward secrecy}: Past epochs stay secure
+				\item \textbf{Post-compromise security}: Healing after breach
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+% Sender keys, etc.
+
+\begin{frame}{TreeKEM}
+	\bigimagewithcaption{treekem.pdf}{Source: Joy of Cryptography}
+\end{frame}
+
+\begin{frame}{TreeKEM}
+	\bigimagewithcaption{treekem_update_1.pdf}{Source: Joy of Cryptography}
+\end{frame}
+
+\begin{frame}{TreeKEM}
+	\bigimagewithcaption{treekem_update_2.pdf}{Source: Joy of Cryptography}
+\end{frame}
+
+\begin{frame}{TreeKEM}
+	\bigimagewithcaption{treekem_update_3.pdf}{Source: Joy of Cryptography}
+\end{frame}
+
+% MLS critique
 
 \section{Post-Quantum Secure Messaging}
 % PQ3
