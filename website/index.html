@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Applied Cryptography (CMPS 297AD/396AI) — American University of Beirut</title>
+	<meta name="description" content="Learn modern cryptography principles and applications in this comprehensive course covering cryptographic theory, practical implementations, and real-world security systems at the American University of Beirut." />
+	<meta name="keywords" content="applied cryptography, AUB, American University of Beirut, cryptography course, encryption, cryptographic protocols, cybersecurity education, CMPS 297AD, CMPS 396AI" />
+	<meta name="author" content="Nadim Kobeissi" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, height=device-height">
+	<meta name="robots" content="index, follow" />
+	<link rel="canonical" href="https://appliedcryptography.page/" />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="Applied Cryptography (CMPS 297AD/396AI) — American University of Beirut" />
+	<meta property="og:description" content="Learn modern cryptography principles and applications in this comprehensive course covering cryptographic theory, practical implementations, and real-world security systems at the American University of Beirut." />
+	<meta property="og:url" content="https://appliedcryptography.page" />
+	<meta property="og:image" content="https://appliedcryptography.page/res/img/og.jpg" />
+	<meta property="og:locale" content="en_US" />
+	<link rel="icon" href="res/img/favicon.png" type="image/png" />
+	<link rel="apple-touch-icon" href="res/img/favicon.png" sizes="180x180" />
+	<link rel="icon" href="res/img/favicon.png" sizes="32x32" type="image/png" />
+	<link rel="icon" href="res/img/favicon.png" sizes="16x16" type="image/png" />
+	<link rel="stylesheet" href="res/fonts/phosphor/phosphor.css" />
+	<link rel="stylesheet" href="res/fonts/google/google.css" />
+	<link rel="stylesheet" href="res/css/style.css" />
+	<link rel="preload" as="image" href="res/img/cedar.webp" />
+	<script defer data-domain="appliedcryptography.page" data-api="https://restless-block-0a1e.symbolicsoft.workers.dev/oil-ocean/event" src="https://restless-block-0a1e.symbolicsoft.workers.dev/emerald-hill/script.js"></script>
+	<script src="res/js/menu.js"></script>
+	<script src="res/js/collapsible.js"></script>
+	<script src="res/js/updated.js"></script>
+</head>
+
+<body>
+	<nav class="navbar">
+		<div class="container navbar-container">
+			<a href="#" class="navbar-logo">Applied Cryptography</a>
+			<button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
+				<span class="bar"></span>
+				<span class="bar"></span>
+				<span class="bar"></span>
+			</button>
+			<div class="navbar-links">
+				<a href="#welcome">Overview</a>
+				<a href="#news">News</a>
+				<a href="#materials">Materials</a>
+				<a href="#syllabus">Syllabus</a>
+				<a href="#assignments">Assignments</a>
+			</div>
+		</div>
+	</nav>
+
+	<div class="hero">
+		<div class="hero-content">
+			<h1>Applied Cryptography</h1>
+			<p class="hero-subtitle"><img src="res/img/aub_white.png" alt="American University of Beirut"></p>
+			<div class="hero-course-code">CMPS 297AD/396AI</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<section id="welcome" class="section">
+			<div class="section-header">
+				<h2 class="section-title">Welcome</h2>
+			</div>
+			<div class="card card-highlight">
+				<p>
+					Welcome to the website for the Applied Cryptography course at the American University of Beirut! This page serves as a unified and self-sufficient source of truth on everything concerning your course.
+				</p>
+				<p>
+					<strong><i class="icon ph-duotone ph-bookmark"></i>Bookmark this website for the duration of the course and visit it regularly</strong>. All course news will be kept up to date on this website.
+				</p>
+				<p class="mb-0">
+					<strong><i class="icon ph-duotone ph-clock"></i>Last updated:</strong> <span id="lastUpdated"><em>Loading...</em></span>
+				</p>
+			</div>
+
+			<div class="subsection">
+				<h3 class="subsection-title">Course Description</h3>
+				<p><em>Applied Cryptography</em> explores the core theory of modern cryptography and how to apply these fundamental principles to build and analyze real-world secure systems. We start with foundational concepts—such as Kerckhoff's Principle, computational hardness, and provable security—before moving on to key cryptographic primitives like pseudorandom generators, block ciphers, and hash functions. Building on this solid groundwork, we will survey how these technologies power critical real-world deployments such as TLS, secure messaging protocols (e.g., Signal), and post-quantum cryptography. We will also delve into specialized topics like high-assurance cryptographic implementations, elliptic-curve-based systems, and zero-knowledge proofs to give you a complete understanding of contemporary cryptography's scope and impact. By the end of the semester, you will have gained both a rigorous theoretical perspective and practical hands-on experience, enabling you to evaluate, design, and implement cryptographic solutions.</p>
+			</div>
+
+			<div class="alert">
+				<p><strong><i class="icon ph-duotone ph-info"></i>Note:</strong> This website is an informal resource, and not a substitute for the AUB learning management system.</p>
+			</div>
+
+			<div class="two-columns">
+				<div class="subsection">
+					<h3 class="subsection-title">Course Dates & Times</h3>
+					<div class="card">
+						<ul>
+							<li><strong><i class="icon ph-duotone ph-chalkboard-teacher"></i>Lecture Times:</strong> Tuesdays and Thursdays, 12:30 to 13:45</li>
+							<li><strong><i class="icon ph-duotone ph-chalkboard-teacher"></i>Lecture Location:</strong> Nicely Hall, Room 320</li>
+							<li><strong><i class="icon ph-duotone ph-laptop"></i>Lab Times:</strong> <em>I don't know yet</em></li>
+							<li><strong><i class="icon ph-duotone ph-laptop"></i>Lab Location:</strong> <em>I don't know yet</em></li>
+							<li><strong><i class="icon ph-duotone ph-calendar-dots"></i>Term Dates:</strong> August 25<sup>th</sup> until December 13<sup>th</sup>, 2025.</li>
+							<li><strong><i class="icon ph-duotone ph-envelope"></i>Instructor's Email:</strong> <a href="mailto:cmps-297ad-396ai@nadim.email">cmps-297ad-396ai@nadim.email</a></li>
+							<li><strong><i class="icon ph-duotone ph-office-chair"></i>Office Hours:</strong> Email me to make an appointment.</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="subsection">
+					<h3 class="subsection-title">Course Prerequisites</h3>
+					<div class="card">
+						<p>This course is intended for <strong>senior undergraduate</strong> students. <strong>Graduate students</strong> are also welcome to register provided that they are working on a research topic that is relevant to this course. The following prerequisites are <strong>optional but recommended</strong>:</p>
+						<ul>
+							<li><strong>CMPS 215:</strong> Theory of Computation</li>
+						</ul>
+						<p>If you want to understand whether you have the sufficient background for this course, <a href="https://joyofcryptography.com/pdf/chap0.pdf">review this revision chapter</a> and try to do all the exercises.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="subsection">
+				<h3 class="subsection-title">Important Links</h3>
+				<div class="card">
+					<ul>
+						<li><a href="https://www.aub.edu.lb/Registrar/Documents/calendar2025-26-scheme.pdf"><i class="icon ph-duotone ph-arrow-square-out"></i>AUB Academic Calendar</a></li>
+					</ul>
+				</div>
+			</div>
+		</section>
+
+		<section id="news" class="section">
+			<div class="section-header">
+				<h2 class="section-title">News</h2>
+			</div>
+			<div class="news-entry new">
+				<span class="news-date"><i class="icon ph-duotone ph-calendar-blank"></i>May 28<sup>th</sup>, 2025</span>
+				<h3 class="news-title"><i class="icon ph-duotone ph-confetti"></i>Part 1 materials are complete!</h3>
+				<p class="news-content">The course plan, readings, slides, problem sets and lab session proposals for Part 1 of the course are now all complete and available on this website!</p>
+				<p class="news-content">Things may change during the semester as Part 1 is being taught, but the course is beginning to take real shape, and the materials should at the very least be able to provide prospective students with an idea of what to expect. Also, the course schedule for Part 2 now looks much more mature and substantial, and will likely only change minimally as the course is developed.</p>
+			</div>
+			<div class="subsection mb-4">
+				<div class="collapsible-header">
+					<h3 class="subsection-title"><i class="icon ph-duotone ph-clock-counter-clockwise"></i>Older News</h3>
+					<i class="collapsible-icon ph-duotone ph-caret-circle-down"></i>
+				</div>
+				<div class="collapsible-content">
+					<p><strong>Older news</strong> entries are kept for the academic year for archival purposes.</p>
+					<div class="news-entry">
+						<span class="news-date"><i class="icon ph-duotone ph-calendar-blank"></i>May 1<sup>st</sup>, 2025</span>
+						<h3 class="news-title"><i class="icon ph-duotone ph-newspaper"></i>We have a course number!</h3>
+						<p class="news-content">I'm excited to announce that our course has been officially assigned the course numbers CMPS 297AD (undergraduate) and CMPS 396AI (graduate). Please use these numbers when registering for the class through the university system.</p>
+						<p class="news-content">Please note that <strong>this website is still very much under construction!</strong> I'm not even set on the course schedule yet. Everything isn't final. Some things could be outright wrong. Feedback welcome.</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="materials" class="section">
+			<div class="section-header">
+				<h2 class="section-title">Materials</h2>
+			</div>
+
+			<p>
+				Every lecture will be accompanied by outside readings that expand on what is discussed in class or present the same material in a different way. Neither the readings nor the lectures are a replacement for each other; deeply understanding the material will likely require attendance as well as reading. It is possible to read before or after class, depending on your learning style.
+			</p>
+			<p>
+				Aside from the textbooks and materials, students will also require their own personal computer for various parts of this course. Linux, Mac and Windows computers are all suitable.
+			</p>
+
+			<div class="subsection">
+				<h3 class="subsection-title">Textbook</h3>
+				<div class="card">
+					<div class="book-display">
+						<a href="https://joyofcryptography.com">
+							<img src="res/img/joy.webp" alt="The Joy of Cryptography book cover" class="book-cover">
+						</a>
+						<div>
+							<h4 class="mb-2"><i class="icon ph-duotone ph-book"></i><a href="https://joyofcryptography.com">The Joy of Cryptography</a></h4>
+							<p class="mb-2">Oregon State University, 2021</p>
+							<p class="mb-2">Mike Rosulek</p>
+							<p class="mb-2"><strong>Required</strong>. This textbook is the primary resource for our course and is available free of charge <a href="https://joyofcryptography.com">online</a>.</p>
+							<p class="mb-0"><strong>Note</strong>: For this course, we will be using an updated edition of the textbook that is not yet released to the public. Professor Rosulek has been gracious enough to grant us access in advance — access will be shared privately with students during the course.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="subsection">
+				<div class="collapsible-header">
+					<h3 class="subsection-title"><i class="icon ph-duotone ph-book-open-text"></i>Online Readings</h3>
+					<i class="collapsible-icon ph-duotone ph-caret-circle-down"></i>
+				</div>
+				<div class="collapsible-content">
+					<p>
+						<strong>Online readings</strong> provide essential supplementary material that expands on specific cryptographic concepts, vulnerabilities, and practical implementations discussed throughout the course.
+					</p>
+					<div class="card">
+						<ul>
+							<li><i class="icon ph-duotone ph-scroll"></i>Felix Linker, Ralf Sasse and David Basin, <a href="papers/pq3-analysis.pdf"><em>A Formal Analysis of Apple’s iMessage PQ3 Protocol</em></a>, USENIX Security Symposium, 2025.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Mathy Vanhoef and Frank Piessens, <a href="papers/rc4-biases.pdf"><em>All Your Biases Belong To Us: Breaking RC4 in WPA-TKIP and TLS</em></a>, USENIX Security Symposium, 2015.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Benjamin Beurdouche, Karthikeyan Bhargavan, Antoine Delignat-Lavaud, Cédric Fournet, Markulf Kohlweiss, Alfredo Pironti, Pierre-Yves Strub and Jean-Karim Zinzindohoué, <a href="papers/smack-tls.pdf"><em>A Messy State of the Union: Taming the Composite State Machines of TLS</em></a>, IEEE Symposium on Security and Privacy, 2015.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Martin R. Albrecht and Kenneth G. Paterson, <a href="papers/wild-cryptography.pdf"><em>Analysing Cryptography in the Wild: A Retrospective</em></a>, IEEE Security &amp; Privacy, 2024.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Martin R. Albrecht, Lenka Mareková, Kenneth G. Paterson, Eyal Ronen and Igors Stepanovs, <a href="papers/telegram-exchange.pdf"><em>Analysis of the Telegram Key Exchange</em></a>, IACR Eurocrypt, 2025.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>David Evans, Vladimir Kolesnikov and Mike Rosulek, <a href="papers/pragmatic-mpc.pdf"><em>A Pragmatic Introduction to Secure Multi-Party Computation</em></a>, NOW Publishers, 2020.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Christina Garman, Kenneth G. Paterson and Thyla Van der Merwe, <a href="papers/rc4-attacks.pdf"><em>Attacks Only Get Better: Password Recovery Attacks Against RC4 in TLS</em></a>, USENIX Security Symposium, 2015.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Nadim Kobeissi, Karthikeyan Bhargavan and Bruno Blanchet, <a href="papers/signal-analysis.pdf"><em>Automated Verification for Secure Messaging Protocols and their Implementations: A Symbolic and Computational Approach</em></a>, IEEE European Symposium on Security and Privacy, 2017.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Théophile Wallez, <a href="papers/wallez-thesis.pdf"><em>A Verification Framework for Secure Group Messaging</em></a>, PSL Université Paris, 2025.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Greg Aloupis, Erik D. Demaine, Alan Guo and Giovanni Viglietta, <a href="papers/nintendo-hard.pdf"><em>Classic Nintendo Games are (Computationally) Hard</em></a>, ACM Theoretical Computer Science, 2015.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Platon Kotzias, Abbas Razaghpanah, Johanna Amann, Kenneth G. Paterson, Narseo Vallina-Rodriguez and Juan Caballero, <a href="papers/tls-deployment.pdf"><em>Coming of Age: A Longitudinal Study of TLS Deployment</em></a>, ACM IMC, 2018.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Hugo Krawczyk, <a href="papers/hkdf-scheme.pdf"><em>Cryptographic Extraction and Key Derivation: The HKDF Scheme</em></a>, IACR Crypto, 2010.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Christina Garman, Matthew Green, Gabriel Kaptchuk, Ian Miers and Michael Rushanan, <a href="papers/jhu-imessage.pdf"><em>Dancing on the Lip of the Volcano: Chosen Ciphertext Attacks on Apple iMessage</em></a>, USENIX Security Symposium, 2016.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Joppe W. Bos, J. Alex Halderman, Nadia Heninger, Jonathan Moore, Michael Naehrig and Eric Wustrow, <a href="papers/ecc-practice.pdf"><em>Elliptic Curve Cryptography in Practice</em></a>, Financial Cryptography and Data Security, 2014.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Joseph Bonneau and Andrew Morrison, <a href="papers/otr-analysis.pdf"><em>Finite-State Security Analysis of OTR Version 2</em></a>, Stanford Computer Security Laboratory, 2006.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Martin R. Albrecht, Benjamin Dowling and Daniel Jones, <a href="papers/whatsapp-groups.pdf"><em>Formal Analysis of Multi-Device Group Messaging in WhatsApp</em></a>, IACR Eurocrypt, 2025.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Cas Cremers, Charlie Jacomme and Aurora Naska, <a href="papers/session-handling.pdf"><em>Formal Analysis of Session-Handling in Secure Messaging: Lifting Security from Sessions to Conversations</em></a>, USENIX Security Symposium, 2023.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Karthikeyan Bhargavan, Charlie Jacomme, Franziskus Kiefer and Rolfe Schmidt, <a href="papers/pqxdh-analysis.pdf"><em>Formal Verification of the PQXDH Post-Quantum Key Agreement Protocol for End-to-End Secure Messaging</em></a>, USENIX Security Symposium, 2024.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Ange Albertini, Thai Duong, Shay Gueron, Stefan K&#xF6;lbl, Atul Luykx, and Sophie Schmieg, <a href="papers/key-commitment.pdf"><em>How to Abuse and Fix Authenticated Encryption Without Key Commitment</em></a>, USENIX Security Symposium, 2022.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Michael Luby and Charles Rackoff, <a href="papers/luby-rackoff.pdf"><em>How To Construct Pseudorandom Permutations From Pseudorandom Functions</em></a>, Society for Industrial and Applied Mathematics, 1988.</li>
+							<li><i class="icon ph-duotone ph-arrow-square-out"></i>Nick Sullivan, <a href="https://blog.cloudflare.com/killing-rc4-the-long-goodbye/"><em>Killing RC4: The Long Goodbye</em></a>, Cloudflare Blog, 2014.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>David Adrian, Karthikeyan Bhargavan, Zakir Durumeric, Pierrick Gaudry, Matthew Green, J. Alex Halderman, Nadia Heninger, Drew Springall, Emmanuel Thomé, Luke Valenta, Benjamin VanderSloot, Eric Wustrow, Santiago Zanella-Béguelin and Paul Zimmermann, <a href="papers/imperfect-dh.pdf"><em>Imperfect Forward Secrecy: How Diffie-Hellman Fails in Practice</em></a>, ACM CCS, 2015.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Cas Cremers, Niklas Medinger and Aurora Naska, <a href="papers/pcs-impossibility.pdf"><em>Impossibility Results for Post-Compromise Security in Real-World Communication Systems</em></a>, IEEE Symposium on Security and Privacy, 2025.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Chris Alexander and Ian Goldberg, <a href="papers/otr-auth.pdf"><em>Improved User Authentication in Off-The-Record Messaging</em></a>, Workshop on Privacy in the Electronic Society, 2007.</li>
+							<li><i class="icon ph-duotone ph-arrow-square-out"></i>Henry de Valence, <a href="https://hdevalence.ca/blog/2020-10-04-its-25519am/"><em>It's 255:19AM. Do you know what your validation criteria are?</em></a>, hdevalence.ca, 2020.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Nadhem J. Alfardan and Kenneth G. Paterson, <a href="papers/lucky-thirteen.pdf"><em>Lucky Thirteen: Breaking the TLS and DTLS Record Protocols</em></a>, IEEE Symposium on Security and Privacy, 2013.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Paul Rösler, Christian Mainka and Jörg Schwenk, <a href="papers/group-chats.pdf"><em>More is Less: On the End-to-End Security of Group Chats in Signal, WhatsApp, and Threema</em></a>, IEEE European Symposium on Security and Privacy, 2018.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Nikita Borisov, Ian Goldberg and Eric Brewer, <a href="papers/otr-messaging.pdf"><em>Off-the-Record Communication, or, Why Not To Use PGP</em></a>, Workshop on Privacy in the Electronic Society, 2004.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Karthikeyan Bhargavan and Ga&euml;tan Leurent, <a href="papers/inria-sweet32.pdf"><em>On the Practical (In-)Security of 64-bit Block Ciphers</em></a>, ACM CCS, 2016.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Nadhem AlFardan, Daniel J. Bernstein, Kenneth G. Paterson, Bertram Poettering and Jacob C. N. Schuldt, <a href="papers/rc4-tls.pdf"><em>On the Security of RC4 in TLS</em></a>, USENIX Security Symposium, 2013.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Tibor Jager, Jörg Schwenk and Juraj Somorovsky, <a href="papers/invalid-curve.pdf"><em>Practical Invalid Curve Attacks on TLS-ECDH</em></a>, ESORICS, 2015.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Itsik Mantin<a href="papers/rc4-absab.pdf"><em>Predicting and Distinguishing Attacks on RC4 Keystream Generator</em></a>, IACR Eurocrypt, 2005.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Cas Cremers and Dennis Jackson, <a href="papers/prime-order.pdf"><em>Prime, Order Please! Revisiting Small Subgroup and Invalid Curve Attacks on Protocols using Diffie-Hellman</em></a>, IEEE CSF, 2019.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Project Everest Team, <a href="papers/everest-perspectives.pdf"><em>Project Everest: Perspectives from Developing Industrial-Grade High-Assurance Software</em></a>, Microsoft Research, 2025.</li>
+							<li><i class="icon ph-duotone ph-arrow-square-out"></i>Matthew McPherrin, <a href="https://letsencrypt.org/2025/06/11/reflections-on-a-year-of-sunlight/"><em>Reflections on a Year of Sunlight</em></a>, Let's Encrypt Blog, 2025.</li>
+							<li><i class="icon ph-duotone ph-arrow-square-out"></i>Daniel J. Bernstein and Tanja Lange, <a href="https://safecurves.cr.yp.to"><em>SafeCurves: choosing safe curves for elliptic-curve cryptography</em></a>, SafeCurves, 2017.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Joël Alwen, Binyi Chen, Krzysztof Pietrzak, Leonid Reyzin and Stefano Tessaro, <a href="papers/scrypt-memory.pdf"><em>Scrypt Is Maximally Memory-Hard</em></a>, IACR Eurocrypt, 2017.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Hugo Krawczyk, <a href="papers/sigma-ake.pdf"><em>SIGMA: the 'SIGn-and-MAc' Approach to Authenticated Diffie-Hellman and its Use in the IKE Protocols</em></a>, IACR Crypto, 2003.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao and Bryan Parno, <a href="papers/sok-verif.pdf"><em>SoK: Computer-Aided Cryptography</em></a>, IEEE Symposium on Security and Privacy, 2021.</li>
+							<li><i class="icon ph-duotone ph-arrow-square-out"></i>Tarek Galal, <a href="https://tgalal.com/blog/the-curves-of-zokrates"><em>The Curves of ZoKrates</em></a>, tgalal.com, 2025.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Marc Stevens, Elie Bursztein, Pierre Karpman, Ange Albertini and Yarik Markov, <a href="papers/shattered-sha1.pdf"><em>The First Collision for Full SHA-1</em></a>, IACR Crypto, 2017.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Zakir Durumeric, James Kasten, David Adrian, J. Alex Halderman, Michael Bailey, Frank Li, Nicholas Weaver, Johanna Amann, Jethro Beekman, Mathias Payer and Vern Paxson, <a href="papers/matter-heartbleed.pdf"><em>The Matter of Heartbleed</em></a>, ACM IMC, 2014.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Ran Canetti, Oded Goldreich and Shai Halevi, <a href="papers/rom-methodology.pdf"><em>The Random Oracle Model Methodology, Revisited</em></a>, Journal of the ACM, 2004.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Bodo M&#xF6;ller, Thai Duong and Krzysztof Kotowicz, <a href="papers/google-poodle.pdf"><em>This POODLE Bites: Exploiting the SSL 3.0 Fallback</em></a>, Google, 2014.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Nicolas Gailly, Kelsey Melissaris and Yolan Romailler, <a href="papers/tlock-bls.pdf"><em>tlock: Practical Timelock Encryption from Threshold BLS</em></a>, IACR ePrint Archive, 2023.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Mark Russinovich, Manuel Costa, Cédric Fournet, David Chisnall, Antoine Delignat-Lavaud, Sylvan Clebsch, Kapil Vaswani and Vikas Bhatia, <a href="papers/confidential-cloud.pdf"><em>Toward Confidential Cloud Computing</em></a>, Communications of the ACM, 2021.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Karthikeyan Bhargavan and Ga&euml;tan Leurent, <a href="papers/inria-collisions.pdf"><em>Transcript Collision Attacks: Breaking Authentication in TLS, IKE and SSH</em></a>, Network and Distributed Systems Security Symposium, 2016.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Karthikeyan Bhargavan, Antoine Delignat-Lavaud, Cédric Fournet, Alfredo Pironti and Pierre-Yves Strub, <a href="papers/triple-handshakes.pdf"><em>Triple Handshakes and Cookie Cutters: Breaking and Fixing Authentication over TLS</em></a>, IEEE Symposium on Security and Privacy, 2014.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Yevgeniy Dodis, Daniel Jost, Shuichi Katsumata, Thomas Prest and Rolfe Schmidt, <a href="papers/triple-ratchet.pdf"><em>Triple Ratchet: A Bandwidth Efficient Hybrid-Secure Signal Protocol</em></a>, IACR Eurocrypt, 2025.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Karthikeyan Bhargavan, Bruno Blanchet and Nadim Kobeissi, <a href="papers/tls13-verif.pdf"><em>Verified Models and Reference Implementations for the TLS 1.3 Standard Candidate</em></a>, IEEE Symposium on Security and Privacy, 2017.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Scott Fluhrer, Istik Mantin and Adi Shamir, <a href="papers/rc4-ksa.pdf"><em>Weaknesses in the Key Scheduling Algorithm for RC4</em></a>, Selected Areas in Cryptography, 2001.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Alma Whitten and J. D. Tygar, <a href="papers/johnny-cant.pdf"><em>Why Johnny Can't Encrypt: A Usability Evaluation of PGP 5.0</em></a>, Security and Usability: Designing Secure Systems that People Can Use, O'Reilly, 2005.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Scott Ruoti, Jeff Andersen, Daniel Zappala and Kent Seamons, <a href="papers/johnny-still.pdf"><em>Why Johnny Still, Still Can't Encrypt: Evaluating the Usability of a Modern PGP Client</em></a>, arXiv, 2015.</li>
+							<li><i class="icon ph-duotone ph-scroll"></i>Manuel Barbosa, Deirdre Connolly, João Diogo Duarte, Aaron Kaiser, Peter Schwabe, Karolin Varner and Baas Westerban, <a href="papers/xwing-hybrid.pdf"><em>X-Wing: The Hybrid KEM You’ve Been Looking For</em></a>, IACR Communications in Cryptology, 2024.</li>
+							<li><em>More to be added soon!</em></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="subsection">
+				<div class="collapsible-header">
+					<h3 class="subsection-title"><i class="icon ph-duotone ph-microscope"></i>Interactive Learning Tools</h3>
+					<i class="collapsible-icon ph-duotone ph-caret-circle-down"></i>
+				</div>
+				<div class="collapsible-content">
+					<p>
+						<strong>Interactive learning tools</strong> provide hands-on learning experiences that help reinforce cryptographic concepts through visualization, simulation, and practical application in ways that complement traditional reading materials.
+					</p>
+					<div class="card">
+						<ul>
+							<li><i class="icon ph-duotone ph-arrow-square-out"></i><a href="https://asecuritysite.com">ASecuritySite.com</a>: Tons of informal resources regarding many different encryption schemes and protocols.</li>
+							<li><i class="icon ph-duotone ph-arrow-square-out"></i><a href="https://www.douglas.stebila.ca/teaching/visual-one-time-pad/">Visual One-Time Pad</a>: An interactive tool for understanding the one-time pad encryption algorithm.</li>
+							<li><i class="icon ph-duotone ph-arrow-square-out"></i><a href="https://formaestudio.com/rijndaelinspector/archivos/Rijndael_Animation_v4_eng-html5.html">Rijndael Cipher</a>: animation explaining AES's internal structure.</li>
+							<li><a href="https://verifpal.com"><i class="icon ph-duotone ph-arrow-square-out"></i>Verifpal</a>: Cryptographic protocol analysis for students and engineers.</li>
+							<li><a href="https://prooffrog.github.io"><i class="icon ph-duotone ph-arrow-square-out"></i>ProofFrog</a>: Tool for verifying cryptographic proofs written in the style of <em>The Joy of Cryptography</em>.</li>
+							<li><a href="https://noiseexplorer.com"><i class="icon ph-duotone ph-arrow-square-out"></i>Noise Explorer</a>: an online engine for reasoning about Noise Protocol Framework Handshake Patterns.</li>
+							<li><a href="https://tls13.ulfheim.net/"><i class="icon ph-duotone ph-arrow-square-out"></i>The New Illustrated TLS Connection</a>: Every byte of a TLS connection explained and reproduced.</li>
+							<li><em>More to be added soon!</em></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="syllabus" class="section">
+			<div class="section-header">
+				<h2 class="section-title">Syllabus and Course Schedule</h2>
+			</div>
+
+			<div class="alert">
+				<p class="mb-0">
+					<strong><i class="icon ph-duotone ph-file-pdf"></i></strong> A <a href="syllabus.pdf">PDF copy</a> of the Fall 2025 syllabus is available.
+				</p>
+			</div>
+
+			<div class="subsection">
+				<div class="collapsible-header active">
+					<h3 class="subsection-title"><i class="icon ph-duotone ph-keyhole"></i>Part 1: Provable Security</h3>
+					<i class="collapsible-icon ph-duotone ph-caret-circle-down"></i>
+				</div>
+				<div class="collapsible-content active">
+					<p>
+						<strong>Part 1</strong> explores the theoretical underpinnings of modern cryptography through the lens of provable security. Starting with introductory concepts and perfect secrecy in the one-time pad, we progressively build a rigorous framework for understanding and analyzing cryptographic primitives. We examine fundamental building blocks like pseudorandom generators, functions, and permutations, then advance to encryption schemes secure against increasingly powerful adversaries—from passive eavesdroppers to active attackers who can manipulate ciphertexts. The section also covers essential cryptographic tools including collision-resistant hash functions, digital signatures, and key exchange protocols. Throughout these topics, we emphasize formal security definitions, reduction proofs, and the connections between theoretical security guarantees and practical implementations. By the end of this section, students will have developed a comprehensive understanding of provable security techniques that form the foundation for analyzing and designing secure cryptographic systems.
+					</p>
+
+					<div class="topic">
+						<a href="slides/1-1.pdf" class="topic-slides-btn"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 1.1</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Introduction</h4>
+						<p class="topic-overview">This introduction establishes the foundation for the entire course by covering the scope, objectives, and structure of applied cryptography. We'll discuss key themes that will recur throughout the semester, including the balance between theory and practice, the importance of formal security definitions, and the evolution of cryptographic thinking. Students will gain a clear understanding of what to expect from the course and how the various topics connect to form a coherent framework for secure system design.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-book"></i><em>The Joy of Cryptography</em>, Chapter 0: Review of Concepts &amp; Notation.</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="topic">
+						<a href="slides/1-2.pdf" class="topic-slides-btn"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 1.2</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>One-Time Pad &amp; The Provable Security Mindset</h4>
+						<p class="topic-overview">This topic introduces the concept of perfect secrecy through the One-Time Pad (OTP) encryption system and explores its mathematical proof of unconditional security. While theoretically unbreakable, we'll examine the severe practical limitations that make OTP challenging to deploy in real-world systems, including key generation, distribution, and management problems. The topic then transitions to Kerckhoff's fundamental principle—that a cryptosystem should remain secure even if everything about the system, except the key, is public knowledge. We'll discuss how this principle has shaped modern cryptographic design philosophy and why security through obscurity fails as a long-term strategy for protecting sensitive information.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-book"></i><em>The Joy of Cryptography</em>, Chapter 0: Review of Concepts &amp; Notation.</li>
+								<li><i class="icon ph-duotone ph-book"></i><em>The Joy of Cryptography</em>, Chapter 1: One-Time Pad &amp; The Provable Security Mindset.</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="topic">
+						<a href="slides/1-3.pdf" class="topic-slides-btn"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 1.3</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Provable Security &amp; Computational Cryptography</h4>
+						<p class="topic-overview">This topic begins by delving into the rigorous mathematical frameworks that allow cryptographers to provide formal security guarantees for cryptographic schemes. We'll examine how precise definitions of security properties create a foundation for meaningful analysis, and explore various adversarial models that capture different threat scenarios. The concept of reduction—proving that breaking a scheme is at least as hard as solving some well-studied mathematical problem—will be thoroughly explored. We then transition to modern computational cryptography, moving from unconditional security to a more practical approach where security is defined against computationally bounded adversaries. Students will learn about indistinguishability as a fundamental security concept, the bad-event technique for security proofs, and birthday probabilities in cryptographic attacks. The session provides essential mathematical foundations for understanding modern cryptographic security, including quantitative intuition about large numbers (like 2<sup>128</sup>) and tiny probabilities (like 2<sup>-80</sup>) that define practical security boundaries, preparing students for subsequent topics in pseudorandomness.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-book"></i><em>The Joy of Cryptography</em>, Chapter 2: Rudiments of Provable Security.</li>
+								<li><i class="icon ph-duotone ph-book"></i><em>The Joy of Cryptography</em>, Chapter 4: Modern Computational Cryptography.</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="topic">
+						<a href="slides/1-4.pdf" class="topic-slides-btn"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 1.4</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Pseudorandomness</h4>
+						<p class="topic-overview">This topic explores three fundamental pseudorandom primitives that enable practical cryptography. Pseudorandom generators (PRGs) solve one-time pad's key length limitation by expanding short seeds into longer outputs indistinguishable from random. Pseudorandom functions (PRFs) extend this by creating massive virtual dictionaries mapping inputs to pseudorandom outputs, allowing parties with a shared secret to derive unlimited pseudorandom data. Pseudorandom permutations (PRPs), also called block ciphers, provide both forward and inverse operations indistinguishable from random permutations. We'll examine key constructions including GGM (building PRFs from PRGs), the Feistel network (building invertible PRPs from non-invertible PRFs), and the PRF-PRP switching lemma that enables interchangeability in security proofs. Throughout, we'll emphasize crucial security principles like the PRF "Golden Rule" of preventing input repetition.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-book"></i><em>The Joy of Cryptography</em>, Chapter 5: Pseudorandom Generators.</li>
+								<li><i class="icon ph-duotone ph-book"></i><em>The Joy of Cryptography</em>, Chapter 6: Pseudorandom Functions.</li>
+								<li><i class="icon ph-duotone ph-book"></i><em>The Joy of Cryptography</em>, Chapter 7: Pseudorandom Permutations.</li>
+							</ul>
+							<h5><i class="icon ph-duotone ph-file-plus"></i>Optional Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-scroll"></i>Michael Luby and Charles Rackoff, <a href="papers/luby-rackoff.pdf"><em>How To Construct Pseudorandom Permutations From Pseudorandom Functions</em></a>, Society for Industrial and Applied Mathematics, 1988.</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="topic">
+						<a href="slides/1-5.pdf" class="topic-slides-btn"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 1.5</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Chosen-Plaintext &amp; Chosen-Ciphertext Attacks</h4>
+						<p class="topic-overview">This topic explores advanced security models for symmetric-key encryption, beginning with chosen-plaintext attack (CPA) security, where ciphertexts must be indistinguishable from random strings. We'll examine why deterministic encryption cannot achieve this security level and explore solutions including randomized PRF-based schemes and block cipher modes like CBC and CTR, while explaining why ECB mode remains fundamentally insecure. The topic then advances to chosen-ciphertext attacks (CCA), where adversaries can decrypt chosen ciphertexts, demonstrating how even CPA-secure schemes like CTR mode remain vulnerable due to their malleability. We'll analyze practical format-oracle attacks that exploit information leakage during decryption to recover entire plaintexts, and examine how preventing adversaries from creating valid modified ciphertexts is essential for achieving comprehensive CCA security in real-world systems.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-book"></i><em>The Joy of Cryptography</em>, Chapter 8: Chosen-Plaintext Attacks.</li>
+								<li><i class="icon ph-duotone ph-book"></i><em>The Joy of Cryptography</em>, Chapter 9: Chosen-Ciphertext Attacks.</li>
+							</ul>
+							<h5><i class="icon ph-duotone ph-file-plus"></i>Optional Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-scroll"></i>Bodo M&#xF6;ller, Thai Duong and Krzysztof Kotowicz, <a href="papers/google-poodle.pdf"><em>This POODLE Bites: Exploiting the SSL 3.0 Fallback</em></a>, Google, 2014.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Nadhem J. Alfardan and Kenneth G. Paterson, <a href="papers/lucky-thirteen.pdf"><em>Lucky Thirteen: Breaking the TLS and DTLS Record Protocols</em></a>, IEEE Symposium on Security and Privacy, 2013.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Christina Garman, Matthew Green, Gabriel Kaptchuk, Ian Miers and Michael Rushanan, <a href="papers/jhu-imessage.pdf"><em>Dancing on the Lip of the Volcano: Chosen Ciphertext Attacks on Apple iMessage</em></a>, USENIX Security Symposium, 2016.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Ange Albertini, Thai Duong, Shay Gueron, Stefan K&#xF6;lbl, Atul Luykx, and Sophie Schmieg, <a href="papers/key-commitment.pdf"><em>How to Abuse and Fix Authenticated Encryption Without Key Commitment</em></a>, USENIX Security Symposium, 2022.</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="topic">
+						<a href="slides/1-6.pdf" class="topic-slides-btn"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 1.6</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Collision-Resistant Hash Functions</h4>
+						<p class="topic-overview">This topic explores collision-resistant hash functions, cryptographic primitives that convert arbitrary-length inputs to fixed-length outputs while making it computationally infeasible to find colliding inputs. We'll examine three essential properties—collision resistance, preimage resistance, and second preimage resistance—while exploring practical applications in password storage, data integrity verification, and proof-of-work systems. The topic introduces the counterintuitive birthday paradox, demonstrating why collisions can be found after approximately square-root-many attempts rather than brute force. We'll survey hash function evolution from broken algorithms like MD5 and SHA-1 to modern standards like SHA-2, SHA-3, and BLAKE3, while analyzing vulnerabilities including precomputation attacks using rainbow tables and length extension weaknesses in Merkle–Damg&#xE5;rd constructions. The topic covers critical defensive techniques including properly salting hashes and implementing specialized password hashing algorithms like PBKDF2 and memory-hard functions such as Scrypt, which resist hardware acceleration attacks by requiring significant memory resources, providing comprehensive guidance for secure hash function implementation in real-world systems.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-book"></i><em>The Joy of Cryptography</em>, Chapter 10: Collision-Resistant Hash Functions.</li>
+								<li><i class="icon ph-duotone ph-book"></i><em>The Joy of Cryptography</em>, Chapter 12: Random Oracles and Other Idealized Models.</li>
+							</ul>
+							<h5><i class="icon ph-duotone ph-file-plus"></i>Optional Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-scroll"></i>Marc Stevens, Elie Bursztein, Pierre Karpman, Ange Albertini and Yarik Markov, <a href="papers/shattered-sha1.pdf"><em>The First Collision for Full SHA-1</em></a>, IACR Crypto, 2017.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Joël Alwen, Binyi Chen, Krzysztof Pietrzak, Leonid Reyzin and Stefano Tessaro, <a href="papers/scrypt-memory.pdf"><em>Scrypt Is Maximally Memory-Hard</em></a>, IACR Eurocrypt, 2017.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Ran Canetti, Oded Goldreich and Shai Halevi, <a href="papers/rom-methodology.pdf"><em>The Random Oracle Model Methodology, Revisited</em></a>, Journal of the ACM, 2004.</li>
+							</ul>
+						</div>
+					</div>
+					<div class="topic">
+						<a href="slides/1-7.pdf" class="topic-slides-btn"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 1.7</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Hard Problems &amp; Diffie-Hellman</h4>
+						<p class="topic-overview">This topic explores computational hardness problems that form the cornerstone of modern public-key cryptography, with particular focus on the discrete logarithm problem that underpins Diffie-Hellman key exchange. We'll examine how complexity theory provides a framework for classifying problems based on their computational difficulty, covering fundamental complexity classes including P, NP, and the famous unsolved P vs. NP problem. The topic then investigates the discrete logarithm problem in detail, analyzing its computational complexity and known algorithms, before exploring how this hard problem enables the revolutionary Diffie-Hellman protocol that allows two parties to establish a shared secret over an insecure channel. We'll examine the mathematical foundations of DH using modular exponentiation in prime fields, the computational hardness assumptions (CDH and DDH) that underpin its security, and protocol variants including anonymous and authenticated DH. The topic concludes by analyzing practical implementation considerations, security pitfalls, and how theoretical hardness assumptions translate into real-world cryptographic security.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-book"></i>Jean-Philippe Aumasson, <em>Serious Cryptography, 2<sup>nd</sup> Edition. Chapter 9: Hard Problems</em>, No Starch Press, 2024.</li>
+								<li><i class="icon ph-duotone ph-book"></i>Jean-Philippe Aumasson, <em>Serious Cryptography, 2<sup>nd</sup> Edition. Chapter 11: Diffie-Hellman</em>, No Starch Press, 2024.</li>
+							</ul>
+							<h5><i class="icon ph-duotone ph-file-plus"></i>Optional Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-scroll"></i>Greg Aloupis, Erik D. Demaine, Alan Guo and Giovanni Viglietta, <a href="papers/nintendo-hard.pdf"><em>Classic Nintendo Games are (Computationally) Hard</em></a>, ACM Theoretical Computer Science, 2015.</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="topic">
+						<a href="slides/1-8.pdf" class="topic-slides-btn"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 1.8</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Elliptic Curves &amp; Digital Signatures</h4>
+						<p class="topic-overview">This topic explores elliptic curve cryptography (ECC), an approach that provides stronger security with smaller keys than traditional cryptosystems like RSA. We'll examine the mathematical foundations of elliptic curves and their group structure supporting point addition and scalar multiplication operations. The topic covers the elliptic curve discrete logarithm problem (ECDLP) that underpins ECC's security, and how it enables efficient implementations of key exchange (ECDH) and digital signatures (ECDSA and EdDSA/Ed25519). We'll analyze the advantages of ECC, including faster signing operations and significantly shorter keys and signatures compared to RSA, while examining critical implementation considerations that affect security. The topic concludes with guidance on selecting appropriate curves, comparing standardized options like NIST curves and Curve25519, and exploring potential vulnerabilities including invalid curve attacks, randomness failures, and interoperability challenges in modern ECC deployments.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-book"></i>Jean-Philippe Aumasson, <em>Serious Cryptography, 2<sup>nd</sup> Edition. Chapter 12: Elliptic Curves</em>, No Starch Press, 2024.</li>
+							</ul>
+							<h5><i class="icon ph-duotone ph-file-plus"></i>Optional Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-arrow-square-out"></i>Daniel J. Bernstein and Tanja Lange, <a href="https://safecurves.cr.yp.to"><em>SafeCurves: choosing safe curves for elliptic-curve cryptography</em></a>, SafeCurves, 2017.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Tibor Jager, Jörg Schwenk and Juraj Somorovsky, <a href="papers/invalid-curve.pdf"><em>Practical Invalid Curve Attacks on TLS-ECDH</em></a>, ESORICS, 2015.</li>
+								<li><i class="icon ph-duotone ph-arrow-square-out"></i>Henry de Valence, <a href="https://hdevalence.ca/blog/2020-10-04-its-25519am/"><em>It's 255:19AM. Do you know what your validation criteria are?</em></a>, hdevalence.ca, 2020.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Joppe W. Bos, J. Alex Halderman, Nadia Heninger, Jonathan Moore, Michael Naehrig and Eric Wustrow, <a href="papers/ecc-practice.pdf"><em>Elliptic Curve Cryptography in Practice</em></a>, Financial Cryptography and Data Security, 2014.</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="subsection">
+				<div class="collapsible-header active">
+					<h3 class="subsection-title"><i class="icon ph-duotone ph-gear"></i>Part 2: Real-World Cryptography</h3>
+					<i class="collapsible-icon ph-duotone ph-caret-circle-down"></i>
+				</div>
+				<div class="collapsible-content active">
+					<p>
+						<strong>Part 2</strong> shifts from theoretical foundations to practical applications, examining how cryptographic principles are implemented in real-world systems. We begin with secure messaging protocols that provide forward secrecy and post-compromise security through ratcheting mechanisms, then explore authenticated key exchange protocols that secure communications against active adversaries. The section covers advanced concepts like zero-knowledge proofs that enable proving knowledge without revealing secrets, and post-quantum cryptography designed to resist attacks from quantum computers. We examine critical infrastructure protocols like TLS that secure internet communications, cloud security applications of cryptography, and analyze significant cryptographic failures to extract valuable design lessons. The course then investigates formal verification and high-assurance implementations that provide mathematical guarantees of security, specialized cryptography in cryptocurrencies, secure multiparty computation enabling joint computation without revealing inputs, and privacy-preserving technologies that protect sensitive information while enabling useful computation. By connecting theoretical foundations to practical systems, students will develop the knowledge needed to evaluate, implement, and design secure cryptographic solutions for complex real-world environments.
+					</p>
+
+					<div class="topic">
+						<a href="slides/2-1.pdf" class="topic-slides-btn"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 2.1</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Transport Layer Security</h4>
+						<p class="topic-overview">This topic examines the Transport Layer Security (TLS) protocol, the backbone of secure communication on the internet that secures billions of connections daily. We'll explore the evolution from SSL to modern TLS 1.3, analyzing the protocol architecture, handshake process, and the cryptographic primitives deployed at each stage. The session covers key exchange mechanisms, authentication methods, and the cipher suites that provide confidentiality and integrity protections. Students will learn about certificate validation, trust models, and the public key infrastructure (PKI) that underpins TLS security. We'll also investigate significant vulnerabilities that have affected TLS implementations throughout its history, including FREAK, Logjam, Heartbleed, and POODLE, analyzing how these vulnerabilities arose and the mitigations developed in response. The topic concludes with practical deployment considerations, performance optimizations like session resumption and 0-RTT, and the security trade-offs encountered when configuring TLS in production environments.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-book"></i>Jean-Philippe Aumasson, <em>Serious Cryptography, 2<sup>nd</sup> Edition. Chapter 13: TLS</em>, No Starch Press, 2024.</li>
+							</ul>
+							<h5><i class="icon ph-duotone ph-file-plus"></i>Optional Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-arrow-square-out"></i>Matthew McPherrin, <a href="https://letsencrypt.org/2025/06/11/reflections-on-a-year-of-sunlight/"><em>Reflections on a Year of Sunlight</em></a>, Let's Encrypt Blog, 2025.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Bodo M&#xF6;ller, Thai Duong and Krzysztof Kotowicz, <a href="papers/google-poodle.pdf"><em>This POODLE Bites: Exploiting the SSL 3.0 Fallback</em></a>, Google, 2014.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Nadhem J. Alfardan and Kenneth G. Paterson, <a href="papers/lucky-thirteen.pdf"><em>Lucky Thirteen: Breaking the TLS and DTLS Record Protocols</em></a>, IEEE Symposium on Security and Privacy, 2013.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>David Adrian, Karthikeyan Bhargavan, Zakir Durumeric, Pierrick Gaudry, Matthew Green, J. Alex Halderman, Nadia Heninger, Drew Springall, Emmanuel Thomé, Luke Valenta, Benjamin VanderSloot, Eric Wustrow, Santiago Zanella-Béguelin and Paul Zimmermann, <a href="papers/imperfect-dh.pdf"><em>Imperfect Forward Secrecy: How Diffie-Hellman Fails in Practice</em></a>, ACM CCS, 2015.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Karthikeyan Bhargavan, Antoine Delignat-Lavaud, Cédric Fournet, Alfredo Pironti and Pierre-Yves Strub, <a href="papers/triple-handshakes.pdf"><em>Triple Handshakes and Cookie Cutters: Breaking and Fixing Authentication over TLS</em></a>, IEEE Symposium on Security and Privacy, 2014.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Benjamin Beurdouche, Karthikeyan Bhargavan, Antoine Delignat-Lavaud, Cédric Fournet, Markulf Kohlweiss, Alfredo Pironti, Pierre-Yves Strub and Jean-Karim Zinzindohoué, <a href="papers/smack-tls.pdf"><em>A Messy State of the Union: Taming the Composite State Machines of TLS</em></a>, IEEE Symposium on Security and Privacy, 2015.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Karthikeyan Bhargavan and Ga&euml;tan Leurent, <a href="papers/inria-sweet32.pdf"><em>On the Practical (In-)Security of 64-bit Block Ciphers</em></a>, ACM CCS, 2016.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Karthikeyan Bhargavan and Ga&euml;tan Leurent, <a href="papers/inria-collisions.pdf"><em>Transcript Collision Attacks: Breaking Authentication in TLS, IKE and SSH</em></a>, Network and Distributed Systems Security Symposium, 2016.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Zakir Durumeric, James Kasten, David Adrian, J. Alex Halderman, Michael Bailey, Frank Li, Nicholas Weaver, Johanna Amann, Jethro Beekman, Mathias Payer and Vern Paxson, <a href="papers/matter-heartbleed.pdf"><em>The Matter of Heartbleed</em></a>, ACM IMC, 2014.</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="topic">
+						<a href="slides/2-2.pdf" class="topic-slides-btn"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 2.2</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>The Story of RC4</h4>
+						<p class="topic-overview">This topic presents a biographical narrative of RC4 (Rivest Cipher 4), tracing its remarkable journey from promising youth to eventual downfall in cryptographic history. We'll examine RC4's birth as a proprietary stream cipher at RSA Security in 1987, its meteoric rise to become the most widely deployed stream cipher in the world, and its golden era powering protocols like WEP, SSL, and TLS due to its simplicity and performance advantages. The topic then chronicles RC4's gradual decline as researchers uncovered a series of increasingly devastating weaknesses, starting with the 2001 Fluhrer-Mantin-Shamir attack on WEP, through the 2013 discovery of extensive biases in RC4-generated keystreams that enabled practical attacks against TLS, culminating in the 2015 "Bar Mitzvah" and RC4 NOMORE attacks that could recover passwords and other sensitive information from encrypted connections. We'll analyze how the security community responded to these revelations, including browser vendors' gradual restriction of RC4 ciphersuites and the IETF's eventual formal prohibition of RC4 in TLS in 2015, while drawing broader lessons about cryptographic lifecycle management, the importance of formal security analysis, and how the story of RC4 exemplifies both the evolution of cryptanalytic techniques and the challenges of maintaining backward compatibility in security protocols.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li>None.</li>
+							</ul>
+							<h5><i class="icon ph-duotone ph-file-plus"></i>Optional Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-scroll"></i>Scott Fluhrer, Istik Mantin and Adi Shamir, <a href="papers/rc4-ksa.pdf"><em>Weaknesses in the Key Scheduling Algorithm for RC4</em></a>, Selected Areas in Cryptography, 2001.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Itsik Mantin<a href="papers/rc4-absab.pdf"><em>Predicting and Distinguishing Attacks on RC4 Keystream Generator</em></a>, IACR Eurocrypt, 2005.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Platon Kotzias, Abbas Razaghpanah, Johanna Amann, Kenneth G. Paterson, Narseo Vallina-Rodriguez and Juan Caballero, <a href="papers/tls-deployment.pdf"><em>Coming of Age: A Longitudinal Study of TLS Deployment</em></a>, ACM IMC, 2018.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Nadhem AlFardan, Daniel J. Bernstein, Kenneth G. Paterson, Bertram Poettering and Jacob C. N. Schuldt, <a href="papers/rc4-tls.pdf"><em>On the Security of RC4 in TLS</em></a>, USENIX Security Symposium, 2013.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Christina Garman, Kenneth G. Paterson and Thyla Van der Merwe, <a href="papers/rc4-attacks.pdf"><em>Attacks Only Get Better: Password Recovery Attacks Against RC4 in TLS</em></a>, USENIX Security Symposium, 2015.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Bodo M&#xF6;ller, Thai Duong and Krzysztof Kotowicz, <a href="papers/google-poodle.pdf"><em>This POODLE Bites: Exploiting the SSL 3.0 Fallback</em></a>, Google, 2014.</li>
+								<li><i class="icon ph-duotone ph-arrow-square-out"></i>Nick Sullivan, <a href="https://blog.cloudflare.com/killing-rc4-the-long-goodbye/"><em>Killing RC4: The Long Goodbye</em></a>, Cloudflare Blog, 2014.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Mathy Vanhoef and Frank Piessens, <a href="papers/rc4-biases.pdf"><em>All Your Biases Belong To Us: Breaking RC4 in WPA-TKIP and TLS</em></a>, USENIX Security Symposium, 2015.</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="topic">
+						<a href="slides/2-3.pdf" class="topic-slides-btn"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 2.3</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Secure Messaging</h4>
+						<p class="topic-overview">This topic traces the evolution of secure messaging from early failures to modern protocols, examining how cryptographic innovation has shaped private communication. We begin with PGP's usability challenges and fundamental limitations, understanding why "Johnny Can't Encrypt" despite decades of effort. The topic then explores Off-the-Record (OTR) messaging's revolutionary features—forward secrecy through ephemeral keys, deniable authentication via MACs instead of signatures, and automatic key exchange—demonstrating how synchronous protocols solved many of PGP's problems. We dive deep into authenticated key exchange protocols like SIGMA, examining how they prevent man-in-the-middle attacks while maintaining identity protection. The discussion covers proper key derivation functions (HKDF) for deriving multiple keys from shared secrets, addressing the shortcomings of ad-hoc approaches. We then transition to Signal's asynchronous messaging architecture, analyzing X3DH key exchange and the Double Ratchet's elegant combination of symmetric and Diffie-Hellman ratcheting. The topic critically examines post-compromise security's promises versus reality, revealing through formal analysis why perfect healing is impossible in practical systems that must handle state loss. We also contrast Signal's approach with alternatives like Telegram's controversial design choices. Throughout, we'll analyze the fundamental trade-offs between security guarantees, usability, and real-world deployment constraints that shape how billions of messages are protected daily. We'll also examine modern extensions including secure group messaging protocols like MLS (Messaging Layer Security) that scale encrypted conversations to thousands of participants, and post-quantum secure messaging advances such as Apple's PQ3 and Signal's PQXDH that protect against future quantum attackers.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-book"></i><em>The Joy of Cryptography</em>, Chapter 17: Encrypted Messaging &amp; Ratcheting.</li>
+								<li><em>More to be added soon!</em></li>
+							</ul>
+							<h5><i class="icon ph-duotone ph-file-plus"></i>Optional Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-scroll"></i>Alma Whitten and J. D. Tygar, <a href="papers/johnny-cant.pdf"><em>Why Johnny Can't Encrypt: A Usability Evaluation of PGP 5.0</em></a>, Security and Usability: Designing Secure Systems that People Can Use, O'Reilly, 2005.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Scott Ruoti, Jeff Andersen, Daniel Zappala and Kent Seamons, <a href="papers/johnny-still.pdf"><em>Why Johnny Still, Still Can't Encrypt: Evaluating the Usability of a Modern PGP Client</em></a>, arXiv, 2015.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Nikita Borisov, Ian Goldberg and Eric Brewer, <a href="papers/otr-messaging.pdf"><em>Off-the-Record Communication, or, Why Not To Use PGP</em></a>, Workshop on Privacy in the Electronic Society, 2004.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Hugo Krawczyk, <a href="papers/sigma-ake.pdf"><em>SIGMA: the 'SIGn-and-MAc' Approach to Authenticated Diffie-Hellman and its Use in the IKE Protocols</em></a>, IACR Crypto, 2003.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Hugo Krawczyk, <a href="papers/hkdf-scheme.pdf"><em>Cryptographic Extraction and Key Derivation: The HKDF Scheme</em></a>, IACR Crypto, 2010.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Joseph Bonneau and Andrew Morrison, <a href="papers/otr-analysis.pdf"><em>Finite-State Security Analysis of OTR Version 2</em></a>, Stanford Computer Security Laboratory, 2006.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Chris Alexander and Ian Goldberg, <a href="papers/otr-auth.pdf"><em>Improved User Authentication in Off-The-Record Messaging</em></a>, Workshop on Privacy in the Electronic Society, 2007.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Nadim Kobeissi, Karthikeyan Bhargavan and Bruno Blanchet, <a href="papers/signal-analysis.pdf"><em>Automated Verification for Secure Messaging Protocols and their Implementations: A Symbolic and Computational Approach</em></a>, IEEE European Symposium on Security and Privacy, 2017.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Cas Cremers, Charlie Jacomme and Aurora Naska, <a href="papers/session-handling.pdf"><em>Formal Analysis of Session-Handling in Secure Messaging: Lifting Security from Sessions to Conversations</em></a>, USENIX Security Symposium, 2023.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Cas Cremers, Niklas Medinger and Aurora Naska, <a href="papers/pcs-impossibility.pdf"><em>Impossibility Results for Post-Compromise Security in Real-World Communication Systems</em></a>, IEEE Symposium on Security and Privacy, 2025.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Martin R. Albrecht, Lenka Mareková, Kenneth G. Paterson, Eyal Ronen and Igors Stepanovs, <a href="papers/telegram-exchange.pdf"><em>Analysis of the Telegram Key Exchange</em></a>, IACR Eurocrypt, 2025.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Martin R. Albrecht, Benjamin Dowling and Daniel Jones, <a href="papers/whatsapp-groups.pdf"><em>Formal Analysis of Multi-Device Group Messaging in WhatsApp</em></a>, IACR Eurocrypt, 2025.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Paul Rösler, Christian Mainka and Jörg Schwenk, <a href="papers/group-chats.pdf"><em>More is Less: On the End-to-End Security of Group Chats in Signal, WhatsApp, and Threema</em></a>, IEEE European Symposium on Security and Privacy, 2018.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Felix Linker, Ralf Sasse and David Basin, <a href="papers/pq3-analysis.pdf"><em>A Formal Analysis of Apple’s iMessage PQ3 Protocol</em></a>, USENIX Security Symposium, 2025.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Théophile Wallez, <a href="papers/wallez-thesis.pdf"><em>A Verification Framework for Secure Group Messaging</em></a>, PSL Université Paris, 2025.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Karthikeyan Bhargavan, Charlie Jacomme, Franziskus Kiefer and Rolfe Schmidt, <a href="papers/pqxdh-analysis.pdf"><em>Formal Verification of the PQXDH Post-Quantum Key Agreement Protocol for End-to-End Secure Messaging</em></a>, USENIX Security Symposium, 2024.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Yevgeniy Dodis, Daniel Jost, Shuichi Katsumata, Thomas Prest and Rolfe Schmidt, <a href="papers/triple-ratchet.pdf"><em>Triple Ratchet: A Bandwidth Efficient Hybrid-Secure Signal Protocol</em></a>, IACR Eurocrypt, 2025.</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="topic">
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 2.4</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Applied Cryptography in Cloud Security</h4>
+						<p class="topic-overview">This topic explores how cryptographic principles and techniques are applied to secure cloud computing environments, focusing on the unique challenges of protecting data and applications in distributed, multi-tenant infrastructures. We'll examine key management strategies for distributed systems, including hierarchical key management, key rotation policies, and hardware security modules (HSMs) in cloud deployments. The topic covers confidential computing technologies that use hardware-based trusted execution environments and memory encryption to protect data in use. Students will learn about tokenization systems that replace sensitive data with non-sensitive equivalents, and encryption schemes optimized for cloud storage including convergent encryption and client-side encryption models. We'll investigate secret management at scale, analyzing secure vaults, dynamic credential generation, and secure secret distribution in containerized environments. The topic also explores cryptographic access control mechanisms like attribute-based encryption and practical implementations of end-to-end encryption in cloud services, examining how these technologies can maintain confidentiality even when the cloud provider itself isn't fully trusted.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-scroll"></i>Mark Russinovich, Manuel Costa, Cédric Fournet, David Chisnall, Antoine Delignat-Lavaud, Sylvan Clebsch, Kapil Vaswani and Vikas Bhatia, <a href="papers/confidential-cloud.pdf"><em>Toward Confidential Cloud Computing</em></a>, Communications of the ACM, 2021.</li>
+								<li><em>More to be added soon!</em></li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="topic">
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 2.5</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>High-Assurance Cryptography</h4>
+						<p class="topic-overview">This topic examines methodologies for developing cryptographic implementations with high assurance of correctness and security, moving beyond traditional testing approaches to formal verification and rigorous proof techniques. We'll explore the spectrum of formal methods applied to cryptography, from lightweight verification using refinement types to comprehensive mathematical proofs of functional correctness and security properties. The topic covers verification frameworks and tools including F*, Coq, Lean, and ProVerif, examining how they can be applied to verify cryptographic implementations against their specifications and security definitions. Students will learn about verified cryptographic libraries like HACL*, EverCrypt, and initiatives from organizations like Cryspen that bring formal verification to practical cryptography. We'll also discuss the challenges in formally verifying cryptographic code, including the gap between mathematical specifications and efficient implementations, side-channel resistance verification, and performance considerations. The topic concludes with case studies of successful verification projects that have produced high-assurance cryptographic implementations deployed in critical systems.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-scroll"></i>Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao and Bryan Parno, <a href="papers/sok-verif.pdf"><em>SoK: Computer-Aided Cryptography</em></a>, IEEE Symposium on Security and Privacy, 2021.</li>
+								<li><em>More to be added soon!</em></li>
+							</ul>
+							<h5><i class="icon ph-duotone ph-file-plus"></i>Optional Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-scroll"></i>Project Everest Team, <a href="papers/everest-perspectives.pdf"><em>Project Everest: Perspectives from Developing Industrial-Grade High-Assurance Software</em></a>, Microsoft Research, 2025.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Martin R. Albrecht and Kenneth G. Paterson, <a href="papers/wild-cryptography.pdf"><em>Analysing Cryptography in the Wild: A Retrospective</em></a>, IEEE Security &amp; Privacy, 2024.</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="topic">
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 2.6</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Cryptocurrency Cryptography</h4>
+						<p class="topic-overview">This topic explores the cryptographic foundations of blockchain systems and cryptocurrencies, examining how traditional cryptographic primitives are combined in novel ways to create decentralized trust systems. We'll investigate the core components of blockchain protocols, including hash functions in proof-of-work mechanisms, digital signatures for transaction authentication, and Merkle trees for efficient verification. The topic covers the cryptographic aspects of Bitcoin, Ethereum, and other significant blockchain platforms, analyzing their security models, consensus mechanisms, and vulnerability mitigations. Students will learn about specialized cryptographic constructions in cryptocurrencies, including zero-knowledge proofs for privacy coins, threshold signatures for multi-signature wallets, and timelock puzzles for conditional transactions. We'll also discuss emerging cryptographic challenges in blockchain systems, including quantum resistance considerations, layer-2 scaling solutions with unique security properties, and the cryptographic foundations of newer consensus mechanisms like proof-of-stake that aim to address energy consumption concerns while maintaining security guarantees.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-book"></i>Jean-Philippe Aumasson, <em>Serious Cryptography, 2<sup>nd</sup> Edition. Chapter 15: Cryptocurrency Cryptography</em>, No Starch Press, 2024.</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="topic">
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 2.7</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Post-Quantum Cryptography</h4>
+						<p class="topic-overview">This topic explores post-quantum cryptography, which addresses the threat quantum computers pose to current cryptographic systems. We'll examine how quantum algorithms like Shor's can break widely-used public-key cryptography based on factoring and discrete logarithms, while Grover's algorithm reduces symmetric-key security by effectively halving key lengths. The topic introduces the Learning With Errors (LWE) problem as a foundation for post-quantum cryptography, explaining how its computational hardness against quantum attacks makes it suitable for building secure cryptographic primitives. We'll analyze practical LWE-based key exchange protocols that form the basis for NIST's standardized post-quantum schemes like ML-KEM. Students will understand both the theoretical foundation of quantum-resistant cryptography and the practical considerations for implementing these systems in real-world applications, preparing them for the transition to a post-quantum cryptographic landscape.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-book"></i><em>The Joy of Cryptography</em>, Chapter 20: Post-Quantum Cryptography.</li>
+							</ul>
+							<h5><i class="icon ph-duotone ph-file-plus"></i>Optional Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-scroll"></i>Manuel Barbosa, Deirdre Connolly, João Diogo Duarte, Aaron Kaiser, Peter Schwabe, Karolin Varner and Baas Westerban, <a href="papers/xwing-hybrid.pdf"><em>X-Wing: The Hybrid KEM You’ve Been Looking For</em></a>, IACR Communications in Cryptology, 2024.</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="topic">
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 2.8</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Zero-Knowledge Proofs</h4>
+						<p class="topic-overview">This topic explores zero-knowledge proofs, which enable proving possession of secret information without revealing anything about the secret itself. We'll examine how these interactive protocols can authenticate a party's identity while maintaining deniability—allowing someone to prove they know a private key without creating evidence that could later convince others. The topic begins with the Schnorr identification protocol, which demonstrates this paradoxical capability through a clever three-move interaction. We'll then generalize to sigma protocols, a powerful class of interactive proofs with completeness, special soundness, and honest-verifier zero-knowledge properties. The topic covers several practical examples, including proofs of discrete log equality and complex logical conditions using AND/OR compositions. Finally, we'll explore how interactive proofs can be transformed into non-interactive proofs and digital signatures through the Fiat-Shamir transformation, which replaces the verifier with a cryptographic hash function. This transformation creates powerful primitives like Schnorr signatures but necessarily sacrifices the deniability property that makes interactive zero-knowledge proofs unique.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-book"></i><em>The Joy of Cryptography</em>, Chapter 19: Zero-Knowledge Proofs.</li>
+							</ul>
+							<h5><i class="icon ph-duotone ph-file-plus"></i>Optional Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-arrow-square-out"></i>Tarek Galal, <a href="https://tgalal.com/blog/the-curves-of-zokrates"><em>The Curves of ZoKrates</em></a>, tgalal.com, 2025.</li>
+								<li><i class="icon ph-duotone ph-scroll"></i>Chris Alexander and Ian Goldberg, <a href="papers/otr-auth.pdf"><em>Improved User Authentication in Off-The-Record Messaging</em></a>, Workshop on Privacy in the Electronic Society, 2007.</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="topic">
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 2.9</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Secure Multiparty Computation</h4>
+						<p class="topic-overview">This topic explores Secure Multiparty Computation (MPC), a powerful cryptographic paradigm that enables multiple parties to jointly compute functions over their private inputs without revealing those inputs to each other. We'll examine the theoretical foundations of MPC, including feasibility results, security models, and the distinctions between semi-honest and malicious adversaries. The topic covers core MPC techniques including Yao's garbled circuits, secret sharing schemes like Shamir's threshold method, and oblivious transfer protocols that enable secure two-party computation. Students will learn about practical MPC frameworks and implementations such as SCALE-MAMBA, MP-SPDZ, and EMP-toolkit, analyzing their performance characteristics and security guarantees. We'll investigate applications of MPC across various domains, including private data analysis, secure auctions, privacy-preserving machine learning, and confidential financial systems. The topic also addresses performance optimizations like preprocessing, circuit minimization, and communication-efficient protocols that make MPC increasingly practical for real-world use. We'll conclude with case studies of deployed MPC systems, examining how these technologies overcome real-world implementation challenges to enable secure collaboration while maintaining strict privacy guarantees.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-book"></i>David Evans, Vladimir Kolesnikov and Mike Rosulek, <a href="papers/pragmatic-mpc.pdf"><em>A Pragmatic Introduction to Secure Multi-Party Computation (Chapter 1)</em></a>, NOW Publishers, 2020.</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="topic">
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<span class="topic-number">Topic 2.10</span>
+						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Creative Cryptography</h4>
+						<p class="topic-overview">This topic explores timelock encryption, a fascinating cryptographic innovation that enables messages to be encrypted such that they can only be decrypted after a predetermined time has elapsed. We'll examine both the theoretical foundations and practical implementation of timelock encryption using the League of Entropy, an existing threshold network that implements threshold BLS signatures within Boneh and Franklin's identity-based encryption (IBE) framework. The topic demonstrates how this network, which broadcasts BLS signatures for each time interval (round number), effectively functions as a decentralized key custodian that periodically publishes private keys for an IBE system where identities correspond to specific time periods. We'll analyze the elegant design that requires cryptographic operations only from encryptors and decryptors while allowing the threshold network to remain unmodified and unaware of the timelock functionality. Students will gain hands-on experience with an open-source implementation of this scheme and explore a production-ready web interface utilizing the League of Entropy's distributed randomness beacon service. This creative application of cryptography showcases how existing cryptographic primitives can be combined in innovative ways to enable entirely new functionalities, inspiring students to think beyond conventional applications as they develop their own cryptographic solutions.</p>
+						<div class="topic-readings">
+							<h5><i class="icon ph-duotone ph-book-open-text"></i>Required Readings</h5>
+							<ul>
+								<li><i class="icon ph-duotone ph-scroll"></i>Nicolas Gailly, Kelsey Melissaris and Yolan Romailler, <a href="papers/tlock-bls.pdf"><em>tlock: Practical Timelock Encryption from Threshold BLS</em></a>, IACR ePrint Archive, 2023.</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="assignments" class="section">
+			<div class="section-header">
+				<h2 class="section-title">Assignments &amp; Lab Sessions</h2>
+			</div>
+
+			<div class="alert">
+				<p class="mb-0">
+					<strong><i class="icon ph-duotone ph-file-pdf"></i></strong> Check the <a href="syllabus.pdf">Syllabus</a> for detailed information on class grading criteria, as well as how lab sessions, problem sets and exams will be designed and presented.
+				</p>
+			</div>
+
+			<div class="subsection">
+				<div class="collapsible-header">
+					<h3 class="subsection-title"><i class="icon ph-duotone ph-read-cv-logo"></i>Problem Sets</h3>
+					<i class="collapsible-icon ph-duotone ph-caret-circle-down"></i>
+				</div>
+				<div class="collapsible-content">
+					<p><strong>Problem sets</strong> will be assigned periodically throughout the semester to reinforce and deepen your understanding of the lecture material. Each set will include a range of exercises—some focused on theoretical proofs and problem-solving, others requiring short coding tasks or computational experiments. These assignments are designed to bridge the gap between abstract cryptographic concepts and their concrete applications. You are encouraged to start working on each problem set early and to seek guidance during office hours or lab sessions if you encounter difficulties.</p>
+
+					<div class="card mb-3">
+						<h4 class="mb-2"><i class="icon ph-duotone ph-check-square-offset"></i><a href="problem-sets/problem-set-1.pdf">Problem Set 1: Provable Security Foundations</a></h4>
+						<p class="mb-0">This problem set focuses on the fundamental concepts of provable security covered in the first three topics of the course. It consists of four main sections: Cryptographic Foundations, which tests your understanding of basic security goals and perfect secrecy; Provable Security, which explores library interchangeability and formal security proofs; Computational Cryptography, which examines computational security concepts, distinguishability, and the bad events technique; and Application of Cryptographic Principles, which challenges you to analyze block cipher modes, evaluate real-world implementations, and design secure protocols. The assignments blend theoretical analysis with practical applications, requiring you to demonstrate both mathematical reasoning and applied cryptographic thinking. A bonus challenge on the discrete logarithm problem offers extra credit for those wanting to explore advanced concepts.</p>
+					</div>
+
+					<div class="card mb-3">
+						<h4 class="mb-2"><i class="icon ph-duotone ph-check-square-offset"></i><a href="problem-sets/problem-set-2.pdf">Problem Set 2: Symmetric Cryptography</a></h4>
+						<p class="mb-0">This problem set explores symmetric cryptography fundamentals covered in topics 1.4, 1.5 and 1.6, addressing four key areas: pseudorandomness, encryption security models, hash functions, and practical applications. In pseudorandomness, you'll analyze PRG constructions, PRF security requirements including the "Golden Rule," and Feistel cipher properties. The encryption security section examines why deterministic encryption fails CPA security, format oracle attacks against CPA-secure schemes, and authenticated encryption constructions including AES-GCM. The hash function component investigates collision resistance properties, construction methods like Merkle-Damg&#xE5;rd versus Sponge, and specialized password hashing algorithms including memory-hard functions. Real-world case studies challenge you to apply these concepts to file storage systems, software update verification, and password management implementations.</p>
+					</div>
+
+					<div class="card mb-3">
+						<h4 class="mb-2"><i class="icon ph-duotone ph-check-square-offset"></i><a href="problem-sets/problem-set-3.pdf">Problem Set 3: Asymmetric Cryptography</a></h4>
+						<p class="mb-0">This problem set covers concepts from topics 1.7 and 1.8 of the course, spanning three comprehensive areas: cryptographic hardness foundations, Diffie-Hellman security analysis, and elliptic curve implementation challenges. In cryptographic hardness, you'll analyze real-world implications of mathematical breakthroughs like P=NP and evaluate discrete logarithm security architectures including parameter selection and vulnerability assessment. The Diffie-Hellman section explores attack scenarios in hostile network environments, man-in-the-middle defenses, and protocol design challenges including SSH trust models. Elliptic curve security engineering examines curve selection controversies, invalid curve attacks, mobile performance optimization, and implementation vulnerabilities including side-channel attacks and nonce reuse scenarios. Finally, applied case studies challenge you to design complete key exchange protocols for secure messaging, analyze cryptocurrency signature scheme decisions, and architect enterprise-scale secure communication systems. Throughout, the assignments emphasize both mathematical security analysis and practical deployment considerations, requiring you to bridge theoretical cryptographic principles with real-world system design challenges.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="subsection">
+				<div class="collapsible-header">
+					<h3 class="subsection-title"><i class="icon ph-duotone ph-flask"></i>Lab Sessions</h3>
+					<i class="collapsible-icon ph-duotone ph-caret-circle-down"></i>
+				</div>
+				<div class="collapsible-content">
+					<p><strong>Lab sessions</strong> will be held weekly to serve as a hands-on complement to the lectures. During each lab, you will experiment with real-world libraries, and even simulate attacks or vulnerabilities to understand why certain security practices are necessary. These sessions will also help you become comfortable with relevant tools and environments, including formal analysis tools. Attendance is mandatory, and lab participation will be graded based on preparedness, engagement, and the successful completion of in-lab activities. Labs offer an excellent opportunity for collaborative problem-solving and immediate feedback on your work.</p>
+
+					<div class="card mb-3">
+						<h4 class="mb-2"><i class="icon ph-duotone ph-key"></i><a href="labs/password-manager.pdf">Lab 1: Designing a Password Manager</a></h4>
+						<p class="mb-0">In this lab, you will design and implement a secure password manager application. You'll learn about secure password storage techniques, key derivation functions, and encryption methods for sensitive data. The lab will guide you through implementing features such as master password protection, secure password generation, and encrypted storage. You'll also analyze potential vulnerabilities in your system and implement countermeasures to protect against common attacks like password cracking and memory scraping.</p>
+					</div>
+
+					<div class="card mb-3">
+						<h4 class="mb-2"><i class="icon ph-duotone ph-chats-circle"></i><a href="labs/secure-messenger.pdf">Lab 2: Designing a Secure Messenger</a></h4>
+						<p class="mb-0">This lab focuses on building a secure messaging application implementing end-to-end encryption. You'll work with cryptographic libraries to implement key exchange protocols, message encryption, and authentication mechanisms. The lab covers essential features like perfect forward secrecy, deniability, and secure group messaging. You'll also explore practical challenges such as key verification, metadata protection, and secure key storage on devices. By the end of this lab, you'll understand the cryptographic foundations behind modern secure messaging platforms like Signal.</p>
+					</div>
+
+					<div class="card mb-3">
+						<h4 class="mb-2"><i class="icon ph-duotone ph-seal-check"></i><a href="labs/proverif.pdf">Lab 3: Protocol Modeling and Verification with Verifpal and Tamarin</a></h4>
+						<p class="mb-0">This lab introduces formal verification of security protocols using two complementary tools: Verifpal and Tamarin. You'll begin with Verifpal, a user-friendly tool designed for students, to model and analyze custom authentication and key exchange protocols. After gaining proficiency in identifying protocol vulnerabilities, you'll advance to Tamarin Prover to perform more sophisticated analyses with temporal properties and unbounded verification. Throughout the lab, you'll apply these tools to real-world protocols like TLS 1.3 fragments and Signal's X3DH, gaining practical experience in formal security verification. By the end of this lab, you'll understand how formal methods can mathematically prove security properties and detect subtle flaws that might otherwise remain hidden in manual security reviews.</p>
+					</div>
+
+					<div class="card mb-3">
+						<h4 class="mb-2"><i class="icon ph-duotone ph-boat"></i><a href="labs/zk-battleship.pdf">Lab 4: Designing a Battleship Game Using Zero-Knowledge Systems</a></h4>
+						<p class="mb-0">In this creative lab, you'll implement the classic Battleship game with a cryptographic twist using zero-knowledge proofs. You'll learn how two mutually distrustful parties can play a fair game without revealing their ship placements except when a hit occurs. The lab will guide you through designing commitment schemes, validity proofs for ship placement, and secure mechanisms for torpedo shots and hit verification—all without requiring a trusted third party. This practical application of zero-knowledge techniques demonstrates how cryptography can enable secure computation between untrusting parties in a tangible, engaging context.</p>
+					</div>
+
+					<div class="card mb-3">
+						<h4 class="mb-2"><i class="icon ph-duotone ph-lightbulb"></i>Propose your own lab session!</h4>
+						<p class="mb-0">Take the opportunity to propose and develop your own cryptographic project based on your interests and the concepts covered in the course! You might implement a novel protocol, create a secure application, perform a cryptanalysis of an existing system, or conduct formal verification of a protocol. Your proposal should include your project goals, the cryptographic primitives or techniques you'll explore, implementation details, and how you'll evaluate its security properties. This self-directed project allows you to delve deeper into an area of applied cryptography that particularly interests you while demonstrating your understanding of the course material in a creative and practical context.</p>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+
+	<footer class="footer">
+		<div class="container">
+			<div class="footer-license">
+				<img src="res/img/by-nc-sa.svg" alt="Creative Commons BY-NC-SA badge" />
+				<p>
+					<a property="dct:title" rel="cc:attributionURL" href="https://appliedcryptography.page">Applied Cryptography at the American University of Beirut</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://codeberg.org/nadimkobeissi/appliedcryptography">Nadim Kobeissi</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a>
+				</p>
+			</div>
+			<strong>Inspiration Aid:</strong> <a href="https://www.youtube.com/watch?v=BfItk3-i3eI">A</a> &bull; <a href="https://www.youtube.com/watch?v=2GhWimO54YE">B</a> &bull; <a href="https://www.youtube.com/watch?v=KRJ-Bznn0Pw">C</a> &bull; (<a href="https://www.youtube.com/watch?v=Jp7kfYH4VaE">D<sub>1</sub></a>,<a href="https://www.youtube.com/watch?v=7f1RK1m7qvc">D<sub>2</sub></a>)
+		</div>
+	</footer>
+	<script src="res/js/main.js"></script>
+</body>
+
+</html>

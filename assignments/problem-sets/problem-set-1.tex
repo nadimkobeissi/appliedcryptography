@@ -1,0 +1,342 @@
+\documentclass[10pt,a4paper,american]{article}
+\newcommand{\aublogopath}{../../website/res/img/aub_black.png}
+\usepackage{../../misc/macros/joc}
+\usepackage{../../misc/fonts/fonts}
+\usepackage{../../misc/macros/classhandout}
+
+\begin{document}
+
+\classhandoutheader
+
+\section*{Problem Set 1: Provable Security Foundations}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	\textbf{Instructions:} This problem set covers the foundations of provable security from parts 1.1\footnote{\url{https://appliedcryptography.page/slides/1-1.pdf}}, 1.2\footnote{\url{https://appliedcryptography.page/slides/1-2.pdf}} and 1.3\footnote{\url{https://appliedcryptography.page/slides/1-3.pdf}} of the course. Submit your solutions as a neatly formatted PDF. You are encouraged to collaborate with classmates in studying the material, but your submitted solutions must be your own work. For proofs, clearly state your assumptions, steps, and conclusions.
+\end{tcolorbox}
+
+\section{Cryptographic Foundations (20 points)}
+
+\subsection{Basic Concepts (10 points)}
+
+\begin{enumerate}
+	\item (3 points) Define the three primary security goals of cryptography in your own words and provide a real-world example for each that wasn't explicitly mentioned in the lectures.
+
+	\item (3 points) Explain Kerckhoff's principle and why it remains fundamental to modern cryptography. Provide an example of a security system that violates this principle and describe the potential consequences.
+
+	\item (4 points) Compare and contrast symmetric and asymmetric cryptography:
+	      \begin{enumerate}
+		      \item Explain the fundamental difference in their key management approach.
+		      \item For each type, identify which mathematical or computational assumptions their security typically relies on.
+		      \item Describe a scenario where one would be clearly preferable to the other.
+	      \end{enumerate}
+\end{enumerate}
+
+\subsection{Perfect Secrecy (10 points)}
+
+\begin{enumerate}
+	\item (3 points) Consider a modified one-time pad where we use the bitwise AND ($\land$) operation instead of XOR ($\oplus$):
+
+	      $\textsf{Enc}(K, M) = K \land M$ and $\textsf{Dec}(K, C) = ?$
+
+	      \begin{enumerate}
+		      \item Is this scheme correct? If yes, specify the decryption function. If not, explain why.
+		      \item Does this scheme provide perfect secrecy? Justify your answer.
+	      \end{enumerate}
+
+	\item (4 points) Consider the following variant of a one-time pad operating on decimal digits (0-9):
+
+	      $\textsf{Enc}(K, M) = (K + M) \bmod 10$ and $\textsf{Dec}(K, C) = (C - K) \bmod 10$
+
+	      where $K, M, C \in \{0, 1, 2, \ldots, 9\}$.
+
+	      \begin{enumerate}
+		      \item Prove that this scheme is correct.
+		      \item Prove that this scheme provides perfect secrecy, assuming $K$ is chosen uniformly at random.
+	      \end{enumerate}
+
+	\item (3 points) Consider a one-time pad where the key length is half the message length:
+
+	      $\textsf{Enc}(K, M) = (K \oplus M_1, K \oplus M_2)$ where $M = (M_1, M_2)$ and $|M_1| = |M_2| = |K|$.
+
+	      Provide a specific attack that breaks the confidentiality of this scheme, showing clearly the information an attacker can extract from the ciphertext.
+\end{enumerate}
+
+\section{Provable Security (20 points)}
+
+\subsection{Libraries and Interchangeability (10 points)}
+
+\begin{enumerate}
+	\item (5 points) Consider the following libraries:
+	      \begin{center}
+		      \sslinked{
+			      \sslibrary{}{1}{
+				      \sslibrarysubroutine{init}{}{
+					      $K \twoheadleftarrow \bits^n$
+				      }{1}\\[1em]
+				      \sslibrarysubroutine{query}{M}{
+					      return $K \oplus M$
+				      }{1}
+			      }{1}
+		      }{\approxeq}{
+			      \sslibrary{}{2}{
+				      \sslibrarysubroutine{init}{}{
+					      $R_1 \twoheadleftarrow \bits^n$ \\
+					      $R_2 \twoheadleftarrow \bits^n$
+				      }{1}\\[1em]
+				      \sslibrarysubroutine{query}{M}{
+					      if $M = R_1$ return $R_2$ \\
+					      else return $M \oplus R_1 \oplus R_2$
+				      }{1}
+			      }{1}
+		      }
+	      \end{center}
+	      Are these libraries interchangeable? Either prove they are interchangeable or provide a distinguisher program that can tell them apart with non-negligible probability.
+
+	\item (5 points) For each of the following pairs of libraries, state whether they are interchangeable and briefly justify your answer:
+	      \begin{enumerate}
+		      \item
+		            \begin{center}
+			            \sslinked{
+				            \sslibrary{}{A}{
+					            \sslibrarysubroutine{f}{x}{
+						            $y \twoheadleftarrow \bits^n$ \\
+						            return $y$
+					            }{1}
+				            }{1}
+			            }{\approxeq}{
+				            \sslibrary{}{B}{
+					            \sslibrarysubroutine{f}{x}{
+						            $y \twoheadleftarrow \bits^n$ \\
+						            $z \twoheadleftarrow \bits^n$ \\
+						            return $y$
+					            }{1}
+				            }{1}
+			            }
+		            \end{center}
+
+		      \item
+		            \begin{center}
+			            \sslinked{
+				            \sslibrary{}{C}{
+					            $K \twoheadleftarrow \bits^n$\\[1em]
+					            \sslibrarysubroutine{enc}{M}{
+						            $C \coloneq K \oplus M$ \\
+						            return $C$
+					            }{1}\\[1em]
+					            \sslibrarysubroutine{dec}{C}{
+						            $M \coloneq K \oplus C$ \\
+						            return $M$
+					            }{1}
+				            }{1}
+			            }{\approxeq}{
+				            \sslibrary{}{D}{
+					            \sslibrarysubroutine{enc}{M}{
+						            $C \twoheadleftarrow \bits^n$ \\
+						            return $C$
+					            }{1}\\[1em]
+					            \sslibrarysubroutine{dec}{C}{
+						            $M \twoheadleftarrow \bits^n$ \\
+						            return $M$
+					            }{1}
+				            }{1}
+			            }
+		            \end{center}
+	      \end{enumerate}
+\end{enumerate}
+
+\subsection{Security Proofs (10 points)}
+
+\begin{enumerate}
+	\item (5 points) Let $\Sigma = (\textsf{KeyGen}, \textsf{Enc}, \textsf{Dec})$ be a secure encryption scheme for messages in $\bits^n$. Consider the following modified scheme $\Sigma' = (\textsf{KeyGen}', \textsf{Enc}', \textsf{Dec}')$:
+	      \begin{align*}
+		      \textsf{KeyGen}'()           & = K \twoheadleftarrow \textsf{KeyGen}()                                                                                               \\
+		      \textsf{Enc}'(K, M)          & = (C_1, C_2) \text{ where } C_1 \twoheadleftarrow \textsf{Enc}(K, M) \text{ and } C_2 \twoheadleftarrow \textsf{Enc}(K, M \oplus 1^n) \\
+		      \textsf{Dec}'(K, (C_1, C_2)) & = \textsf{Dec}(K, C_1)
+	      \end{align*}
+
+	      Determine whether $\Sigma'$ is a secure encryption scheme. If it is secure, provide a formal proof. If it is not secure, describe a concrete attack that breaks its confidentiality and explain why the attack works.
+
+	\item (5 points) Consider the following game between a challenger and an adversary $\mathcal{A}$:
+	      \begin{enumerate}
+		      \item The adversary selects two messages $M_0$ and $M_1$ of the same length.
+		      \item The challenger selects a uniform random bit $b \twoheadleftarrow \bits$ and a uniform random key $K \twoheadleftarrow \bits^n$.
+		      \item The challenger computes $C = K \oplus M_b$ and gives $C$ to the adversary.
+		      \item The adversary outputs a bit $b'$ as its guess for $b$.
+	      \end{enumerate}
+
+	      Prove that for any adversary $\mathcal{A}$, the probability that $b' = b$ is exactly $1/2$. Explain what this result tells us about the security of the one-time pad.
+\end{enumerate}
+
+\section{Computational Cryptography (30 points)}
+
+\subsection{Computational Security Concepts (15 points)}
+
+\begin{enumerate}
+	\item (5 points) Explain why computational security is important in practice despite the existence of information-theoretic security. Discuss the limitations of both approaches.
+
+	\item (4 points) Consider a brute-force attack on AES-128:
+	      \begin{enumerate}
+		      \item Using the monetary cost table provided in the lecture, estimate how much it would cost to try all possible keys.
+		      \item Discuss whether the computational approach to security makes sense in light of this cost.
+	      \end{enumerate}
+
+	\item (3 points) Define a negligible function formally. Then determine which of the following functions are negligible (where $\lambda$ is the security parameter):
+	      \begin{enumerate}
+		      \item $f_1(\lambda) = 2^{-\lambda}$
+		      \item $f_2(\lambda) = \lambda^{-\log \lambda}$
+		      \item $f_3(\lambda) = 2^{-\sqrt{\lambda}}$
+		      \item $f_4(\lambda) = \frac{1}{\lambda \cdot 2^{\lambda/2}}$
+	      \end{enumerate}
+
+	\item (3 points) The ``birthday paradox'' is crucial for understanding many cryptographic attacks. If a hash function produces outputs of length $n$ bits:
+	      \begin{enumerate}
+		      \item Approximately how many random inputs would you need to hash before finding a collision with 50\% probability?
+		      \item How many bits of output would a hash function need to be reasonably secure against birthday attacks for the next decade?
+	      \end{enumerate}
+\end{enumerate}
+
+\subsection{Distinguishability and Bad Events (15 points)}
+
+\begin{enumerate}
+	\item (6 points) Consider the following two libraries that implement a 256-bit hash function:
+	      \begin{center}
+		      \sslinked{
+			      \sslibrary{}{real}{
+				      \sslibrarysubroutine{hash}{X}{
+					      return SHA-256(x)
+				      }{1}
+			      }{1}
+		      }{\approxeq}{
+			      \sslibrary{}{rand}{
+				      $L \coloneq$ [\ ]\\[1em]
+				      \sslibrarysubroutine{hash}{X}{
+					      if $L[X]$ undefined:\\
+					      \quad $L[X] \twoheadleftarrow \bits^{256}$\\
+					      return $L[X]$
+				      }{1}
+			      }{1}
+		      }
+	      \end{center}
+
+	      \begin{enumerate}
+		      \item Describe the ``bad event'' that would allow these libraries to be distinguished.
+		      \item If an adversary is limited to $q$ queries, what is the probability of triggering this bad event?
+		      \item Using the ``bad event'' proof technique, show that these libraries are computationally indistinguishable when $q$ is polynomial in the security parameter.
+	      \end{enumerate}
+
+	\item (4 points) Consider the following two libraries:
+	      \begin{center}
+		      \sslinked{
+			      \sslibrary{}{1}{
+				      \sslibrarysubroutine{sample}{}{
+					      $X \twoheadleftarrow \bits^n$ \\
+					      $Y \coloneq X \oplus 1^n$ \\
+					      return $(X, Y)$
+				      }{1}
+			      }{1}
+		      }{\approxeq}{
+			      \sslibrary{}{2}{
+				      \sslibrarysubroutine{sample}{}{
+					      $Y \twoheadleftarrow \bits^n$ \\
+					      $X \coloneq Y \oplus 1^n$ \\
+					      return $(X, Y)$
+				      }{1}
+			      }{1}
+		      }
+	      \end{center}
+	      Use the hybrid proof technique to show these libraries are interchangeable. Clearly describe each intermediate hybrid library.
+
+	\item (5 points) Consider a PRF $F: \bits^n \times \bits^n \rightarrow \bits^n$ and the following two libraries:
+	      \begin{center}
+		      \sslinked{
+			      \sslibrary{}{{\text{PRF}}}{
+				      $K \twoheadleftarrow \bits^n$\\[1em]
+				      \sslibrarysubroutine{query}{x}{
+					      return $F(K, X)$
+				      }{1}
+			      }{1}
+		      }{\approxeq}{
+			      \sslibrary{}{rand}{
+				      $L \coloneq$ [\ ]\\[1em]
+				      \sslibrarysubroutine{query}{x}{
+					      if $L[X]$ undefined:\\
+					      \quad $L[X] \twoheadleftarrow \bits^n$\\
+					      return $L[X]$
+				      }{1}
+			      }{1}
+		      }
+	      \end{center}
+	      Suppose we have a program $\mathcal{A}$ that can distinguish between these libraries with advantage $\varepsilon$. Construct a program $\mathcal{B}$ that uses $\mathcal{A}$ as a subroutine to distinguish a PRF from a truly random function with the same advantage $\varepsilon$.
+\end{enumerate}
+
+\section{Application of Cryptographic Principles (30 points)}
+
+\begin{enumerate}
+	\item (10 points) \textbf{Block Cipher Mode Analysis}
+
+	      The lecture demonstrated how ECB mode reveals patterns in the plaintext. For each of the following block cipher modes, explain:
+	      \begin{enumerate}
+		      \item How the encryption and decryption work.
+		      \item What would happen if the same key and IV (when applicable) were reused for multiple messages.
+		      \item A specific real-world situation where this mode would be most appropriate.
+	      \end{enumerate}
+
+	      Modes to analyze:
+	      \begin{enumerate}
+		      \item Cipher Block Chaining (CBC)
+		      \item Counter Mode (CTR)
+	      \end{enumerate}
+
+	\item (10 points) \textbf{One-Time Pad in the Real World}
+
+	      A startup claims to have developed a ``quantum-resistant ultra-secure messaging system'' based on the one-time pad. They provide the following details:
+
+	      \begin{itemize}
+		      \item The system uses a hardware random number generator to produce one-time pads.
+		      \item Each user receives a 1TB USB drive containing pre-generated pad data during account registration.
+		      \item When sending a message, the app encrypts it with a portion of the pad, marks that portion as used, and sends the ciphertext.
+		      \item When the user has used 80\% of their pad, the app automatically requests a new USB drive.
+	      \end{itemize}
+
+	      Provide a detailed critique of this system:
+	      \begin{enumerate}
+		      \item Identify at least three practical problems with this implementation.
+		      \item Explain how each problem compromises security or usability.
+		      \item Suggest improvements to address each issue while maintaining the theoretical security of OTP.
+	      \end{enumerate}
+
+	\item (10 points) \textbf{Symmetric Encryption Protocol Analysis}
+
+	      A software company is implementing a secure communication protocol for their instant messaging application. They propose the following scheme:
+
+	      \begin{itemize}
+		      \item Each user generates a random 128-bit key $K$ during account creation.
+		      \item To send a message $M$, the sender computes $C = K \oplus M$ and transmits $C$.
+		      \item When two users want to communicate, they first exchange their keys through a ``top secret channel'' established by the company's server.
+		      \item The company claims their protocol is ``as secure as one-time pad'' because they use the XOR operation.
+	      \end{itemize}
+
+	      Address the following aspects of this system:
+	      \begin{enumerate}
+		      \item Using the provable security framework discussed in class, analyze whether this scheme provides the confidentiality properties claimed by the company.
+		      \item Identify at least three major security vulnerabilities in the described approach.
+		      \item The company is considering having users generate new keys daily instead of just once. Explain whether this modification would address the vulnerabilities you identified.
+		      \item Propose a modified protocol that would significantly improve security while still using only symmetric cryptography concepts covered in class so far. Justify your choices using the security principles we've discussed.
+	      \end{enumerate}
+\end{enumerate}
+
+\begin{tcolorbox}[colframe=EarthBrown!30!white,colback=EarthBrown!5!white]
+	\textbf{Bonus Challenge (20 extra points):} The discrete logarithm problem is fundamental to many cryptographic systems. Consider a cyclic group $G$ of prime order $p$ with generator $g$. The discrete logarithm problem is: given $h \in G$, find $x$ such that $g^x = h$.
+
+	Imagine a scenario where the discrete logarithm problem could be solved efficiently. Select one modern cryptographic protocol that relies on the hardness of this problem, and analyze:
+
+	\begin{enumerate}
+		\item The specific impact on the protocol's security.
+		\item How the protocol would need to be modified to remain secure.
+		\item Whether any alternative mathematical problems could serve as suitable replacements.
+	\end{enumerate}
+
+	Your answer should demonstrate deep understanding of both the protocol and the underlying mathematical principles.
+\end{tcolorbox}
+
+\end{document}

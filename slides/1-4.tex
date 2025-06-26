@@ -1,0 +1,2163 @@
+\documentclass[aspectratio=169, lualatex, handout]{beamer}
+\makeatletter\def\input@path{{theme/}}\makeatother\usetheme{cipher}
+
+\title{Applied Cryptography}
+\author{Nadim Kobeissi}
+\institute{American University of Beirut}
+\instituteimage{images/aub_white.png}
+\date{\today}
+\coversubtitle{CMPS 297AD/396AI\\Fall 2025}
+\coverpartname{Part 1: Provable Security}
+\covertopicname{1.4: Pseudorandomness}
+\coverwebsite{https://appliedcryptography.page}
+
+\begin{document}
+\begin{frame}[plain]
+	\titlepage
+\end{frame}
+
+\section{Pseudorandom Generators}
+
+\begin{frame}{Limitations of One-Time Pad}
+	\definitionbox{The Key Length Problem}{
+		One-time pad is not a particularly useful encryption scheme in practice.
+	}
+	\begin{itemize}[<+->]
+		\item The key must be as long as the plaintext!
+		\item This creates a chicken-and-egg situation:
+		      \begin{itemize}[<+->]
+			      \item To privately send $n$ bits of information,
+			      \item We must already privately share $n$ bits of information.
+		      \end{itemize}
+		\item Impractical for most real-world applications.
+		      \begin{itemize}[<+->]
+			      \item Clearly this is not what we're doing when we use HTTPS,
+			      \item or WhatsApp, or pay for something via a debit card...
+		      \end{itemize}
+		\item We need encryption schemes where the key can be smaller than the message.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Idea: find a way to expand the key}
+	\begin{itemize}[<+->]
+		\item Given a key $k_s$ of size $\left|k_s\right| < \left|m\right|$, find a way to obtain $\left|k_e\right| \geq \left|m\right|$
+		\item In the real world, we have two kinds of symmetric encryption schemes:
+		      \begin{itemize}[<+->]
+			      \item \textbf{Block ciphers}: AES, 3DES, etc.
+			      \item \textbf{Stream ciphers}: ChaCha20, RC4, etc.
+		      \end{itemize}
+		\item This is exactly what stream ciphers do!
+		      \begin{itemize}[<+->]
+			      \item Start with a small key $k_s$ of a fixed size $\left|k_s\right| = \lambda$,
+			      \item Magically expand it to $k_e$ where $\left|k_e\right| \geq \left|m\right|$,
+			      \item $\func{enc}{K, M} = K \oplus M$
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Requirements for Key Expansion}
+	\begin{itemize}[<+->]
+		\item Our method would need to be \textbf{deterministic}, so that both the sender and receiver can expand their key in the same way (to encrypt/decrypt).
+		\item Its output distribution would need to be \textbf{uniform}, since that is a crucial property for the security of OTP.
+		\item Unfortunately, it's \textbf{not possible} to achieve both of these properties simultaneously.
+		      \begin{itemize}[<+->]
+			      \item Suppose the expansion method is a deterministic function $G: \bits^n \rightarrow \bits^{n+\ell}$
+			      \item Its outputs are $\ell$ bits longer than its inputs!
+			      \item There are $2^{n+\ell}$ strings of length $n+\ell$ but only (at most) $2^n$ possible outputs of $G$
+			      \item So the outputs of $G$ can never induce a uniform distribution.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Enter pseudorandomness}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item In cryptography, something is \textbf{pseudorandom} if it is indistinguishable from a uniform distribution.\footnote{The Oxford English Dictionary defines the prefix pseudo- as ``apparently but not really.''}
+				\item We need to invent some \textbf{``secure pseudorandom generator'' (PRG)} $G$ that takes a \textbf{seed} $S$ and ends up being indistinguishable from a true uniform distribution when thrown into a library:
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{}{prg-real}{
+					\sslibrarysubroutine{prg.sample}{}{
+						$S \twoheadleftarrow \bits^\lambda$\\
+						return $G(S)$
+					}{1}
+				}{1}
+			}{\approxeq}{
+				\sslibrary{}{prg-rand}{
+					\sslibrarysubroutine{prg.sample}{}{
+						$Y \twoheadleftarrow \bits^{\lambda+\ell}$\\
+						return $Y$
+					}{1}
+				}{1}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Enter pseudorandomness}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item In cryptography, something is \textbf{pseudorandom} if it is indistinguishable from a uniform distribution.\footnote{The Oxford English Dictionary defines the prefix pseudo- as ``apparently but not really.''}
+				\item We need to invent some \textbf{``secure pseudorandom generator'' (PRG)} $G$ that takes a \textbf{seed} $S$ and ends up being indistinguishable from a true uniform distribution when thrown into a library:
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{prg_distributions.pdf}{Source: The Joy of Cryptography}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Enter pseudorandomness}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item We don't know how to make PRGs, or even if they exist.
+				\item So we simply invent functions that we think act close enough to PRGs (when subjected to statistical and mathematical analysis).
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{}{prg-real}{
+					\sslibrarysubroutine{prg.sample}{}{
+						$S \twoheadleftarrow \bits^\lambda$\\
+						return $G(S)$
+					}{1}
+				}{1}
+			}{\approxeq}{
+				\sslibrary{}{prg-rand}{
+					\sslibrarysubroutine{prg.sample}{}{
+						$Y \twoheadleftarrow \bits^{\lambda+\ell}$\\
+						return $Y$
+					}{1}
+				}{1}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{One-time secrecy of a SKE}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{One-time Secrecy for SKE}{
+				An SKE scheme $\Sigma$ has one-time secrecy if the following libraries are interchangeable:
+				\vspace{0.5mm}
+				\begin{center}
+					\sslinked{
+						\sslibrary{\Sigma}{ots-real}{
+							\sslibrarysubroutine{ots.enc}{M}{
+								$K \twoheadleftarrow \Sigma.\mathcal{K}$ \\
+								$C \coloneq \Sigma.\textsf{Enc}(K, M)$ \\
+								return $C$
+							}{1}
+						}{0.8}
+					}{\interchangeable{}}{
+						\sslibrary{\Sigma}{ots-rand}{
+							\sslibrarysubroutine{ots.enc}{M}{
+								$C \twoheadleftarrow \Sigma.\mathcal{C}$ \\
+								return $C$
+							}{1}
+						}{0.8}
+					}
+				\end{center}
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			An encryption scheme has one-time secrecy if its ciphertexts are uniformly distributed, when keys are sampled uniformly, kept secret, and used for only one encryption, and no matter how the plaintexts are chosen.
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Does a PRG-based encryption scheme\\ have one-time secrecy?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			If:
+			\sslinked{
+				\sslibrary{}{prg-real}{
+					\sslibrarysubroutine{ots.enc}{}{
+						$S \twoheadleftarrow \bits^\lambda$\\
+						return $G(S)$
+					}{1}
+				}{1}
+			}{\approxeq}{
+				\sslibrary{}{prg-rand}{
+					\sslibrarysubroutine{ots.enc}{}{
+						$Y \twoheadleftarrow \bits^{\lambda+\ell}$\\
+						return $Y$
+					}{1}
+				}{1}
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			Then:
+			\sslinked{
+				\sslibrary{}{ots-real}{
+					\sslibrarysubroutine{ots.enc}{M}{
+						$K \twoheadleftarrow \bits^\lambda$ \\
+						$Y \coloneq G(K)$ \\
+						$C \coloneq Y \oplus M$ \\
+						return $C$
+					}{1}
+				}{1}
+			}{\approxeq}{
+				\sslibrary{}{ots-rand}{
+					\sslibrarysubroutine{ots.enc}{M}{
+						$C \twoheadleftarrow \bits^{\lambda+\ell}$ \\
+						return $C$
+					}{1}
+				}{1}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Attacking PRGs}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Assume that $G(S)$ is a secure PRG.
+				\item Is \func{h}{S} secure?
+			\end{itemize}
+			\sssubroutine{H}{S}{
+				$A \| B \coloneq G(S)$ \\
+				$C \| D \coloneq G(B)$ \\
+				return $A \| B \| C \| D$
+			}{1}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{H}{prg-real}{
+					\sslibrarysubroutine{ots.enc}{}{
+						$S \twoheadleftarrow \bits^\lambda$ \\
+						$A \| B \coloneq G(S)$ \\
+						$C \| D \coloneq G(B)$ \\
+						return $A \| B \| C \| D$
+					}{1}
+				}{1}
+			}{\overset{?}{\approxeq}}{
+				\sslibrary{H}{prg-rand}{
+					\sslibrarysubroutine{ots.enc}{M}{
+						$Y \twoheadleftarrow \bits^{4\lambda}$ \\
+						return $Y$
+					}{1}
+				}{1}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Attacking PRGs}
+	\begin{columns}[c]
+		\begin{column}{0.45\textwidth}
+			\begin{itemize}[<+->]
+				\item Assume that $G(S)$ is a secure PRG.
+				\item Is \func{h}{S} secure?
+				\item \textbf{No}:
+				\item \prob{\prog{}\link\lib{H}{prg-real} \Rightarrow \texttt{true}} $ = 1$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.55\textwidth}
+			\begin{flushright}
+				\sslinked{
+					\ssprogram{}{
+						$A \| B \| C \| D \coloneq \func{ots.enc}{}$ \\
+						return $G(B) == C \| D$
+					}{0.9}
+				}{\link}{
+					\sslibrary{H}{prg-real}{
+						\sslibrarysubroutine{ots.enc}{}{
+							$S \twoheadleftarrow \bits^\lambda$ \\
+							$A \| B \coloneq G(S)$ \\
+							$C \| D \coloneq G(B)$ \\
+							return $A \| B \| C \| D$
+						}{1}
+					}{0.9}
+				}
+			\end{flushright}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Attacking PRGs}
+	\begin{columns}[c]
+		\begin{column}{0.45\textwidth}
+			\begin{itemize}
+				\item<1-3> Assume that $G(S)$ is a secure PRG.
+				\item<1-3> Is \func{h}{S} secure?
+				\item<1-3> \textbf{No}:
+				\item<1-3> \prob{\prog{}\link\lib{H}{prg-real} \Rightarrow \texttt{true}} $ = 1$
+				\item<2-3> \prob{\prog{}\link\lib{H}{prg-rand} \Rightarrow \texttt{true}} $ = \frac{1}{2^{2\lambda}}$
+				\item<3> Difference certainly not negligible.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.55\textwidth}
+			\begin{flushright}
+				\sslinked{
+					\ssprogram{}{
+						$A \| B \| C \| D \coloneq \func{ots.enc}{}$ \\
+						return $G(B) == C \| D$
+					}{0.9}
+				}{\link}{
+					\sslibrary{H}{prg-rand}{
+						\sslibrarysubroutine{ots.enc}{M}{
+							$Y \twoheadleftarrow \bits^{4\lambda}$ \\
+							return $Y$
+						}{1}
+					}{0.9}
+				}
+			\end{flushright}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Example: RC4 (a stream cipher)}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item Used in WEP, SSL/TLS, and other protocols.
+				\item Simple PRG that takes a seed and produces a keystream.
+				\item Basic operation:
+				      \begin{itemize}[<+->]
+					      \item Initialize S-box with permutation of bytes 0-255.
+					      \item Use key to scramble the S-box.
+					      \item Generate pseudorandom bytes iteratively.
+				      \end{itemize}
+				\item Several weaknesses found over time:
+				      \begin{itemize}[<+->]
+					      \item Statistical biases in initial output.
+					      \item Correlation between key and output bytes.
+					      \item Considered cryptographically broken today.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\alertbox{Security Warning}{
+				RC4 is presented as a historical example only. It should not be used in new applications due to known weaknesses. Modern alternatives include ChaCha20.
+			}
+			\vspace{1em}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{RC4 PRG Algorithm}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\begin{itemize}[<+->]
+				\item RC4 generates a pseudorandom stream of bytes used to encrypt data.
+				\item After key setup (which initializes array S), the algorithm produces keystream bytes:
+				\item Each output byte requires simple operations:
+				      \begin{itemize}[<+->]
+					      \item Array index calculations.
+					      \item Array value swapping.
+					      \item Modular addition.
+				      \end{itemize}
+				\item Fast implementation in software.
+				\item Despite simplicity, it has several cryptographic weaknesses.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\imagewithcaption{rc4_prga_py.png}{RC4 PRG implementation in Python.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\section{Pseudorandom Functions}
+
+\begin{frame}{Pseudorandom function: definition}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Pseudorandom Function (PRF)}{
+				A function $F: \bits^\lambda \times \bits^n \rightarrow \bits^m$ is a secure pseudorandom function (PRF) if the following two libraries are indistinguishable:
+			}
+			\begin{itemize}
+				\item $n$ the input length of the PRF.
+				\item $m$ the output length of the PRF.
+				\item $\lambda$ is the key size and hence the security parameter.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{F}{prf-real}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{prf.query}{X}{
+						return $F(K, X)$
+					}{1}
+				}{1}
+			}{\approxeq}{
+				\sslibrary{F}{prf-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{prf.query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $L[X] \twoheadleftarrow \bits^m$\\
+						return $L[X]$
+					}{1}
+				}{1}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{PRG vs PRF: Key Differences}
+	\begin{columns}[t]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{PRG (Pseudorandom Generator)}:
+				      \begin{itemize}[<+->]
+					      \item Takes short seed, produces longer output
+					      \item Generates entire output as a monolithic string
+					      \item $G: \bits^\lambda \rightarrow \bits^{\lambda+\ell}$
+				      \end{itemize}
+			\end{itemize}
+			\begin{center}
+				\sslibrary{F}{prf-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{prf.query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $L[X] \twoheadleftarrow \bits^m$\\
+						return $L[X]$
+					}{1}
+				}{0.7}
+			\end{center}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{PRF (Pseudorandom Function)}:
+				      \begin{itemize}[<+->]
+					      \item Maps inputs to pseudorandom outputs
+					      \item Provides access to individual blocks of output
+					      \item Can generate output for any input on demand
+					      \item $F: \bits^\lambda \times \bits^n \rightarrow \bits^m$
+				      \end{itemize}
+				\item PRFs enable ``selective access'' to pseudorandom values without generating the entire sequence
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{$\mathsf{PRF}: F_{k}= X \rightarrow Y$}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item We want the mapping to be:
+				      \begin{itemize}
+					      \item One-way
+					      \item ``Randomized''
+					      \item Relations between inputs not reflected in outputs
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.8\textwidth}
+			\begin{tikzpicture}[scale=0.38]
+				% Define colors
+				\definecolor{domaingreen}{RGB}{102, 170, 68}
+				\definecolor{rangegreen}{RGB}{170, 187, 136}
+				\definecolor{circlecolor}{RGB}{235, 137, 85}
+				\definecolor{purplearrow}{RGB}{160, 78, 160}
+				\definecolor{redarrow}{RGB}{237, 50, 36}
+
+				% Input space (domain) X - made square
+				\draw[dashed, thick, domaingreen, fill=domaingreen]
+				(0,0) rectangle (8,8);
+				\node[text width=6.5cm, align=center, font=\normalsize]
+				at
+				(4,-0.8)
+				{Size: infinite!};
+				\node[font=\small] at (4,9) {Input space (domain) $X$};
+
+				% Output (range) Y - made square - moved more to the right
+				\draw[thick, rangegreen, fill=rangegreen] (15,2) rectangle (20,7);
+				\node[text width=4cm, align=center, font=\normalsize]
+				at
+				(17.5,1.2)
+				{Size: fixed};
+				\node[font=\small] at (17.5,8.5) {Output (range) $Y$};
+				% Input dots - adjusted positions for square domain
+				\filldraw[circlecolor] (2,7) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,7) -- (16.2,6.4);
+				\pause
+				\filldraw[circlecolor] (16.2,6.4) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,6) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(3,6) -- (18.6,5.3);
+				\pause
+				\filldraw[circlecolor] (18.6,5.3) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,5) -- (16.8,4.2);
+				\pause
+				\filldraw[circlecolor] (16.8,4.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (4,3.5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(4,3.5) -- (18.4,3.2);
+				\pause
+				\filldraw[circlecolor] (18.4,3.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,2) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,2) -- (17.1,2.7);
+				\pause
+				\filldraw[circlecolor] (17.1,2.7) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,1) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, ultra thick, redarrow]
+				(3,1) -- (16.8,4.2);
+				\node[redarrow, font=\scriptsize\bfseries, rotate=14]
+				at
+				(10,3)
+				{Collisions are inevitable};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{PRFs in the real world: hash functions}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\definitionbox{Hash Function Properties}{
+				\begin{itemize}\item Takes input of \textbf{any size}
+					\item Produces output of \textbf{fixed size}
+					\item Is \textbf{deterministic} (same input $\rightarrow$ same output)
+					\item Even a \textbf{tiny change} in input creates completely different output
+					\item Is \textbf{efficient} to compute\end{itemize}
+			}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\begin{tcolorbox}
+				[colback=black!5!white,colframe=ciphergray] $\mathsf{SHA256}(\texttt{hello}) =$ \\ \texttt{2cf24dba5fb0a30e26e83b2ac5}\\ \texttt{b9e29e1b161e5c1fa7425e7304}\\
+				\texttt{3362938b9824}
+
+				$\mathsf{SHA256}(\texttt{hullo}) =$ \\ \texttt{7835066a1457504217688c8f5d}\\
+				\texttt{06909c6591e0ca78c254ccf174}\\ \texttt{50d0d999cab0}
+			\end{tcolorbox}
+			\textcolor{cipherprimary}{\textbf{Note:} \small One character change $\rightarrow$
+				completely different hash!}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Expected properties of a hash function}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}
+				\item \textbf{Collision resistance}: computationally infeasible to find
+				      two different inputs producing the same hash.
+				\item \textbf{Preimage resistance}: given the output of a hash function,
+				      it is computationally infeasible to reconstruct the original input.
+				\item \textbf{Second preimage resistance}: given an input and an output,
+				      it's computationally infeasible to find another different input
+				      producing the same output.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{sha2.png}{SHA-2 compression function. Source: Wikipedia}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Hash functions: what are they good for?}
+	\begin{itemize}[<+->]
+		\item \textbf{Password storage}: Store the hash of the password on the server,
+		      not the password itself. Then check candidate passwords against the hash.
+		\item \textbf{Data integrity verification}: Hash a file. Later hash it
+		      again and compare hashes to check if the file has changed, suffered storage
+		      degradation, etc.
+		\item \textbf{Proof of work}: Server asks client to hash something a lot of
+		      times before they can access some resource. Useful for anti-spam, Bitcoin
+		      mining, etc.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{An insecure PRF construction}
+	\begin{columns}[c]
+		\begin{column}{0.45\textwidth}
+			\definitionbox{Claim: An Insecure PRF}{
+				The function $F(K, X) = G(K) \oplus X$ is not a secure PRF, even if $G$ is a secure PRG.
+			}
+			\begin{itemize}[<+->]
+				\item This construction fails because:
+				      \begin{itemize}[<+->]
+					      \item The key $K$ is only fed through the PRG once.
+					      \item The same value $G(K)$ is used for all queries.
+					      \item This creates exploitable patterns in outputs.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.55\textwidth}
+			\begin{center}
+				\sslinked{
+					\sslibrary{F}{prf-real}{
+						$K \twoheadleftarrow \bits^\lambda$\\[1em]
+						\sslibrarysubroutine{prf.query}{X}{
+							return $G(K) \oplus X$
+						}{1}
+					}{1}
+				}{\cancel{\approxeq}}{
+					\sslibrary{F}{prf-rand}{
+						$L \coloneq$ [\ ]\\[1em]
+						\sslibrarysubroutine{prf.query}{X}{
+							if $L[X]$ undefined:\\
+							\quad $L[X] \twoheadleftarrow \bits^m$\\
+							return $L[X]$
+						}{1}
+					}{1}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{An insecure PRF construction}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item When an adversary sees two outputs:
+				      \begin{align*}
+					      Y_1 & = G(K) \oplus X_1 \\
+					      Y_2 & = G(K) \oplus X_2
+				      \end{align*}
+				\item Taking $Y_1 \oplus Y_2$ causes $G(K)$ to cancel:
+				      \begin{align*}
+					      Y_1 \oplus Y_2 & = G(K) \oplus X_1 \oplus G(K) \oplus X_2 \\
+					                     & = X_1 \oplus X_2
+				      \end{align*}
+				\item In a truly random function, $Y_1 \oplus Y_2 = X_1 \oplus X_2$ would be extremely unlikely!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{center}
+				\sslinked{
+					\sslibrary{F}{prf-real}{
+						$K \twoheadleftarrow \bits^\lambda$\\[1em]
+						\sslibrarysubroutine{prf.query}{X}{
+							return $G(K) \oplus X$
+						}{1}
+					}{0.7}
+				}{\cancel{\approxeq}}{
+					\sslibrary{F}{prf-rand}{
+						$L \coloneq$ [\ ]\\[1em]
+						\sslibrarysubroutine{prf.query}{X}{
+							if $L[X]$ undefined:\\
+							\quad $L[X] \twoheadleftarrow \bits^m$\\
+							return $L[X]$
+						}{1}
+					}{0.7}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Another insecure PRF construction}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Claim: Another Insecure PRF}{
+				The function $H(K_1 \| K_2, X_1 \| X_2) = F(K_1, X_1) \oplus F(K_2, X_2)$ is not a secure PRF, even if $F$ is a secure PRF.
+			}
+			\begin{itemize}[<+->]
+				\item An unsuccessful attempt to use a PRF with shorter input length to build one with a larger input length.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.55\textwidth}
+			\begin{center}
+				\sslinked{
+					\sslibrary{H}{prf-real}{
+						$K_1 \| K_2 \twoheadleftarrow \bits^{2\lambda}$\\[1em]
+						\sslibrarysubroutine{prf.query}{X_1 \| X_2}{
+							return $F(K_1, X_1) \oplus F(K_2, X_2)$
+						}{1}
+					}{0.7}
+				}{\cancel{\approxeq}}{
+					\sslibrary{H}{prf-rand}{
+						$L \coloneq$ [\ ]\\[1em]
+						\sslibrarysubroutine{prf.query}{X_1 \| X_2}{
+							if $L[X_1 \| X_2]$ undefined:\\
+							\quad $L[X_1 \| X_2] \twoheadleftarrow \bits^m$\\
+							return $L[X_1 \| X_2]$
+						}{1}
+					}{0.7}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why the previous PRF is broken}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item When inputs share the same first half, the corresponding outputs of $H$ have a common term $F(K_1, X_1)$
+				\item Consider querying four inputs: $A\|B$, $A\|B'$, $A'\|B$, $A'\|B'$ (where $A \neq A'$ and $B \neq B'$)
+				      \begin{align*}
+					      Y_1 & = F(K_1, A) \oplus F(K_2, B)   \\
+					      Y_2 & = F(K_1, A) \oplus F(K_2, B')  \\
+					      Y_3 & = F(K_1, A') \oplus F(K_2, B)  \\
+					      Y_4 & = F(K_1, A') \oplus F(K_2, B')
+				      \end{align*}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item If we XOR $Y_1 \oplus Y_2$, the $F(K_1, A)$ terms cancel out.
+				\item Similarly, $Y_3 \oplus Y_4$ causes $F(K_1, A')$ to cancel:
+				      \begin{itemize}
+					      \item $Y_1 \oplus Y_2 = F(K_2, B) \oplus F(K_2, B')$
+					      \item $Y_3 \oplus Y_4 = F(K_2, B) \oplus F(K_2, B')$
+				      \end{itemize}
+				\item So $\prob{Y_1 \oplus Y_2 == Y_3 \oplus Y_4} = 1$
+				\item With a truly random function, $\prob{Y_1 \oplus Y_2 == Y_3 \oplus Y_4} = \frac{1}{2^m}$ (extremely unlikely!)
+				\item Also, Given $Y_{1\cdots3}$, we can predict $Y_4$!
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The Golden Rule of PRFs}
+	\definitionbox{The Golden Rule of PRFs}{
+		If a PRF $F$ is being used as a component in a larger construction $H$, then security usually rests on how well $H$ can ensure distinct inputs to $F$.
+	}
+	\begin{itemize}[<+->]
+		\item When analyzing PRF security, focus on input uniqueness.
+		\item Repeated inputs to a PRF create exploitable patterns.
+		\item Even if $F$ is secure, $H$ can be broken if it causes $F$ to receive duplicate inputs.
+		\item Don't try to directly distinguish $F$'s outputs from uniform.
+		\item Instead, exploit how $H$ uses $F$ incorrectly.
+		\item Find input patterns that force collisions within $F$.
+	\end{itemize}
+\end{frame}
+
+\section{Pseudorandom Permutations}
+
+\begin{frame}{What is a permutation?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Permutation}{
+				A permutation is a rearrangement where each input value maps to exactly one output value, and each possible output appears exactly once.
+			}
+			\begin{itemize}[<+->]
+				\item Permutations rearrange elements rather than transforming them.
+				\item Every element in the domain appears exactly once in the range.
+				\item The function is invertible.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Example}: simple substitution cipher. Each letter maps to another letter:
+				      \begin{align*}
+					      a & \mapsto g,\quad b \mapsto a,\quad c \mapsto r \\
+					      d & \mapsto b,\quad e \mapsto l,\quad \ldots
+				      \end{align*}
+				\item Under this permutation:
+				      \begin{itemize}
+					      \item ``cabbage'' $\mapsto$ ``rgaagdl''
+					      \item ``rgaagdl'' $\mapsto$ ``cabbage''
+				      \end{itemize}
+				\item This mapping is reversible because it's a permutation over $\{a,\ldots,z\}$.
+				\item Each letter appears exactly once in the output alphabet.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{PRF versus PRP}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Pseudo-Random Function (SHA-2)}
+			\begin{itemize}[<+->]
+				\item \textbf{Input} is arbitrary-length,
+				\item \textbf{Output} is fixed-length, looks random (as discussed
+				      earlier).
+				\item Indistinguishable from a truly random function by an adversary with
+				      limited computational power.
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\textbf{Pseudo-Random Permutation (AES)}
+			\begin{itemize}[<+->]
+				\item \textbf{Input and output} are the same length, forming a permutation.
+				\item Each input maps uniquely to one output, allowing invertibility.
+				\item Indistinguishable from a truly random permutation by an adversary
+				      with limited computational power.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{PRPs compared to PRFs}
+	\begin{itemize}[<+->]
+		\item \textbf{Invertibility}: PRPs can be efficiently inverted given the key
+		      \begin{itemize}[<+->]
+			      \item Enable both encryption and decryption
+			      \item Can recover input from output (and vice versa)
+		      \end{itemize}
+		\item \textbf{No range collision}: Each input maps to a unique output
+		      \begin{itemize}[<+->]
+			      \item Provides perfect input recovery
+			      \item Reduces vulnerability to collision-based attacks, birthday attacks, and certain forms of differential cryptanalysis
+		      \end{itemize}
+		\item \textbf{Versatility}: A secure PRP can be used as a PRF
+		      \begin{itemize}[<+->]
+			      \item ``Downgrade'' trivially by ignoring inverse capability
+			      \item The reverse is not true (PRF → PRP conversion is complex)
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{$\mathsf{PRF}: F_{k}= X \rightarrow Y$}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item We want the mapping to be:
+				      \begin{itemize}
+					      \item One-way
+					      \item ``Randomized''
+					      \item Relations between inputs not reflected in outputs
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.8\textwidth}
+			\begin{tikzpicture}[scale=0.38]
+				% Define colors
+				\definecolor{domaingreen}{RGB}{102, 170, 68}
+				\definecolor{rangegreen}{RGB}{170, 187, 136}
+				\definecolor{circlecolor}{RGB}{235, 137, 85}
+				\definecolor{purplearrow}{RGB}{160, 78, 160}
+				\definecolor{redarrow}{RGB}{237, 50, 36}
+
+				% Input space (domain) X - made square
+				\draw[dashed, thick, domaingreen, fill=domaingreen]
+				(0,0) rectangle (8,8);
+				\node[text width=6.5cm, align=center, font=\normalsize]
+				at
+				(4,-0.8)
+				{Size: infinite!};
+				\node[font=\small] at (4,9) {Input space (domain) $X$};
+
+				% Output (range) Y - made square - moved more to the right
+				\draw[thick, rangegreen, fill=rangegreen] (15,2) rectangle (20,7);
+				\node[text width=4cm, align=center, font=\normalsize]
+				at
+				(17.5,1.2)
+				{Size: fixed};
+				\node[font=\small] at (17.5,8.5) {Output (range) $Y$};
+				% Input dots - adjusted positions for square domain
+				\filldraw[circlecolor] (2,7) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,7) -- (16.2,6.4);
+				\pause
+				\filldraw[circlecolor] (16.2,6.4) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,6) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(3,6) -- (18.6,5.3);
+				\pause
+				\filldraw[circlecolor] (18.6,5.3) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,5) -- (16.8,4.2);
+				\pause
+				\filldraw[circlecolor] (16.8,4.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (4,3.5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(4,3.5) -- (18.4,3.2);
+				\pause
+				\filldraw[circlecolor] (18.4,3.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,2) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,2) -- (17.1,2.7);
+				\pause
+				\filldraw[circlecolor] (17.1,2.7) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,1) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, ultra thick, redarrow]
+				(3,1) -- (16.8,4.2);
+				\node[redarrow, font=\scriptsize\bfseries, rotate=14]
+				at
+				(10,3)
+				{Collisions are inevitable};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{$\mathsf{PRP}: F_{k}= X \rightarrow X$}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item \textbf{Bijective} (two-way)
+				      \begin{itemize}
+					      \item \textbf{Injective}: no two inputs map to same output (no
+					            collisions)
+					      \item \textbf{Surjective}: Every output has one corresponding input
+				      \end{itemize}
+				\item ``Randomized''
+				\item Relations between inputs not reflected in outputs
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.8\textwidth}
+			\begin{tikzpicture}[scale=0.38]
+				% Define colors
+				\definecolor{domaingreen}{RGB}{102, 170, 68}
+				\definecolor{rangegreen}{RGB}{102, 170, 68}
+				\definecolor{circlecolor}{RGB}{235, 137, 85}
+				\definecolor{purplearrow}{RGB}{160, 78, 160}
+
+				% Input space (domain) X - made square
+				\draw[dashed, thick, domaingreen, fill=domaingreen]
+				(0,0) rectangle (8,8);
+				\node[text width=6.5cm, align=center, font=\normalsize]
+				at
+				(4,-0.8)
+				{Size: fixed};
+				\node[font=\normalsize] at (4,9) {Input space (domain) $X$};
+
+				% Output (range) Y - made square, same size as domain, moved left
+				\draw[thick, rangegreen, fill=rangegreen] (12,0) rectangle (20,8);
+				\node[text width=6.5cm, align=center, font=\normalsize]
+				at
+				(16,-0.8)
+				{Size: fixed};
+				\node[font=\normalsize] at (16,9) {Output (range) $X$};
+				% Input dots - adjusted positions for square domain
+				\filldraw[circlecolor] (2,7) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,7) -- (14.2,7.4);
+				\pause
+				\filldraw[circlecolor] (14.2,7.4) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,6) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(3,6) -- (18.6,5.3);
+				\pause
+				\filldraw[circlecolor] (18.6,5.3) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,5) -- (13.8,4.2);
+				\pause
+				\filldraw[circlecolor] (13.8,4.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (4,3.5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(4,3.5) -- (17.4,2.2);
+				\pause
+				\filldraw[circlecolor] (17.4,2.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,2) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,2) -- (16.1,6.7);
+				\pause
+				\filldraw[circlecolor] (16.1,6.7) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,1) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(3,1) -- (19.0,1.4);
+				\pause
+				\filldraw[circlecolor] (19.0,1.4) circle (0.3);
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{``Lazy dictionaries'' versus ``lazy permutations''}{Ideal PRF versus ideal PRP}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sslibrary{F}{prf-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{prf.query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $L[X] \twoheadleftarrow \bits^m$\\
+						return $L[X]$
+					}{1}
+				}{1}
+			\end{center}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sslibrary{F}{prp-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{prp.query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+						\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+						\quad $L[X] \coloneq Y$\\
+						return $L[X]$
+					}{1}
+				}{1}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{``Lazy dictionaries'' versus ``lazy permutations''}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item While the PRF (on the left) just picks random outputs for each input...
+				\item The PRP (on the right) must ensure outputs are never repeated:
+				      \begin{itemize}[<+->]
+					      \item $\mathcal{y}$ tracks all outputs used so far
+					      \item $\setminus$ means ``set difference'' - pick from values not in $\mathcal{y}$
+					      \item $\cup$ means ``set union'' - add the new value to $\mathcal{y}$
+				      \end{itemize}
+				\item This ensures each output appears exactly once - the definition of a permutation
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sslibrary{F}{prp-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{prp.query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+						\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+						\quad $L[X] \coloneq Y$\\
+						return $L[X]$
+					}{1}
+				}{1}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Pseudorandom function: definition}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Pseudorandom Function (PRF)}{
+				A function $F: \bits^\lambda \times \bits^n \rightarrow \bits^m$ is a secure pseudorandom function (PRF) if the following two libraries are indistinguishable:
+			}
+			\begin{itemize}
+				\item $n$ the input length of the PRF.
+				\item $m$ the output length of the PRF.
+				\item $\lambda$ is the key size and hence the security parameter.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{F}{prf-real}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{prf.query}{X}{
+						return $F(K, X)$
+					}{1}
+				}{1}
+			}{\approxeq}{
+				\sslibrary{F}{prf-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{prf.query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $L[X] \twoheadleftarrow \bits^m$\\
+						return $L[X]$
+					}{1}
+				}{1}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Pseudorandom permutation: definition}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Pseudorandom Permutation (PRP)}{
+				A keyed permutation $F^{\pm}$ is a secure pseudorandom permutation (PRP) if the following two libraries are indistinguishable:
+			}
+			\begin{itemize}[<+->]
+				\item $n$ the input length of the PRP. Also the output length!
+				\item $\lambda$ is the key size and hence the security parameter.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{F}{prp-real}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{prp.query}{X}{
+						return $F(K, X)$
+					}{1}
+				}{1}
+			}{\approxeq}{
+				\sslibrary{F}{prp-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{prp.query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+						\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+						\quad $L[X] \coloneq Y$\\
+						return $L[X]$
+					}{1}
+				}{1}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Pseudorandom permutation: definition}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Pseudorandom Permutation (PRP)}{
+				A keyed permutation $F^{\pm}$ is a secure pseudorandom permutation (PRP) if the following two libraries are indistinguishable:
+			}
+			\begin{itemize}[<+->]
+				\item We obviously can't use \lib{F}{prp-rand} in the real world.
+				\item It doesn't scale. So we need practical approximative alternatives.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{F}{prp-real}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{prp.query}{X}{
+						return $F(K, X)$
+					}{1}
+				}{1}
+			}{\approxeq}{
+				\sslibrary{F}{prp-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{prp.query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+						\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+						\quad $L[X] \coloneq Y$\\
+						return $L[X]$
+					}{1}
+				}{1}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Building a permutation through Feistel ciphers}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item An $r$-round \textbf{Feistel cipher} with \textbf{round functions} $F_1,\ldots,F_r$ is defined as follows:\\
+				      \begin{center}
+					      \sssubroutine{$\mathbb{F}$}{X_{0}\|X_{1}}{
+					      for $i = 1$ to $r$:\\
+					      \quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(X_{i})$\\
+					      return $X_{r}\|X_{r+1}$
+					      }{1}
+				      \end{center}
+				\item A Feistel cipher is always a permutation on $\bits^{2n}$, regardless of its round functions.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{feistel_cipher.pdf}{Feistel cipher.\\Source: The Joy of Cryptography}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Building a permutation through Feistel ciphers}
+	\definitionbox{Feistel Ciphers Are Permutations}{
+		A Feistel cipher is always a permutation on $\bits^{2n}$, regardless of its round functions.
+	}
+	\begin{itemize}[<+->]
+		\item \textbf{Proof:} Each round of a Feistel cipher computes the next block as:
+		      \begin{itemize}[<+->]
+			      \item $X_{i+1} = X_{i-1} \oplus F_{i}(X_{i})$
+		      \end{itemize}
+		\item To invert this round, we can rearrange the equation to solve for $X_{i-1}$ in terms of $X_{i}$ and $X_{i+1}$:
+		      \begin{itemize}[<+->]
+			      \item $X_{i-1} = X_{i+1} \oplus F_{i}(X_{i})$
+		      \end{itemize}
+		\item $F_i$ itself does not need to have an inverse - both the forward and inverse direction of the Feistel cipher evaluate $F_i$ in the forward direction! $\qed$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Building a permutation through Feistel ciphers}{Inversion}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item $\mathbb{F}^{-1}$ is the \textbf{inversion}, allowing Feistel ciphers to function as PRPs:
+				      \begin{center}
+					      \sssubroutine{$\mathbb{F}^{-1}$}{X_{r}\|X_{r+1}}{
+					      for $i = r$ \hl{down to} $1$:\\
+					      \quad $X_{i-1} \coloneq X_{i+1} \oplus F_{i}(X_{i})$\\
+					      return $X_{0}\|X_{1}$
+					      }{1}
+				      \end{center}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{feistel_cipher_inv.pdf}{Feistel cipher inversion.\\Source: The Joy of Cryptography}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Forward and backward on one slide}{Just in case it's helpful}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sssubroutine{$\mathbb{F}$}{X_{0}\|X_{1}}{
+				for $i = 1$ to $r$:\\
+				\quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(X_{i})$\\
+				return $X_{r}\|X_{r+1}$
+				}{1.2}
+			\end{center}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sssubroutine{$\mathbb{F}^{-1}$}{X_{r}\|X_{r+1}}{
+				for $i = r$ down to $1$:\\
+				\quad $X_{i-1} \coloneq X_{i+1} \oplus F_{i}(X_{i})$\\
+				return $X_{0}\|X_{1}$
+				}{1.2}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Keyed Feistel ciphers}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item Let's add a key in there. Wow, encryption!
+				\item $K_{1\cdots i}$ called is the \textbf{key schedule}.
+				\item If each round function $F_i$ uses a distinct key $K_i$, it increases the security of the Feistel network against certain attacks.
+				\item By using a PRF as round function $F_i$, the security of the Feistel cipher would be grounded on the PRF's security basis.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{center}
+				\sssubroutine{$\mathbb{F}$}{K_1\|\cdots\|K_r,\ X_0\|X_1}{
+				for $i = 1$ to $r$:\\
+				\quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(K_{i}, X_{i})$\\
+				return $X_{r}\|X_{r+1}$
+				}{1}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Meet-in-the-middle attacks on Feistel ciphers}{Why use a key schedule and not the same key?}
+	\begin{columns}[c]
+		\begin{column}{0.65\textwidth}
+			\begin{itemize}[<+->]
+				\item Using the \textbf{same key} for all rounds creates significant vulnerabilities.
+				\item A meet-in-the-middle attack can break an $r$-round Feistel cipher with complexity $> \frac{2^{|K|}}{2}$.
+				\item The attack works by computing partial encryptions from both ends:
+				      \begin{enumerate}[<+->]
+					      \item Forward: Compute halfway through encryption.
+					      \item Backward: Compute halfway through decryption.
+					      \item Look for ``meeting points'' in the middle.
+				      \end{enumerate}
+				\item With identical round functions, effective security may be only \textbf{half} the number of rounds.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.35\textwidth}
+			\begin{center}
+				\sssubroutine{$\mathbb{F}$}{K,\ X_0\|X_1}{
+				for $i = 1$ to $r$:\\
+				\quad $X_{i+1} \coloneq X_{i-1} \oplus F(K, X_{i})$\\
+				return $X_{r}\|X_{r+1}$
+				}{1}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Breaking a 2-round Feistel cipher}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{A 2-round Feistel cipher cannot be a secure PRP.}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sssubroutine{$\mathbb{F}$}{K_1\|K_2,\ X_0\|X_1}{
+				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+				return $X_{2}\|X_{3}$
+				}{1}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Breaking a 2-round Feistel cipher}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}[<+->]
+				\item Once again, real or random?
+				\item We can indeed produce an adversary \prog{} that can distinguish between these two libraries.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{center}
+				\sslinked{
+				\sslibrary{\mathbb{F}}{prp-real}{
+				$K_1\|K_2 \twoheadleftarrow \bits^{2\lambda}$\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+				return $X_{2}\|X_{3}$
+				}{1}
+				}{0.8}
+				}{\cancel{\approxeq}}{
+				\sslibrary{\mathbb{F}}{prp-rand}{
+				$L \coloneq$ [\ ]\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
+				if $L[X]$ undefined:\\
+				\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+				\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+				\quad $L[X] \coloneq Y$\\
+				return $L[X]$
+				}{1}
+				}{0.8}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Breaking a 2-round Feistel cipher}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}[<+->]
+				\item Let's query $(A \| B)$ and $(A' \| B)$ where $A \neq A'$
+				      \begin{itemize}
+					      \item $Y_1 \| Y_2 = \func{prp.query}{A \| B}$
+					      \item $Y_1' \| Y_2' = \func{prp.query}{A' \| B}$
+				      \end{itemize}
+				\item In a 2-round Feistel cipher:
+				      \begin{itemize}
+					      \item $Y_1 = A \oplus F(K_1, B)$
+					      \item $Y_1' = A' \oplus F(K_1, B)$
+					      \item $Y_1 \oplus Y_1' = A \oplus A'$
+				      \end{itemize}
+				\item In a true PRP, \prob{Y_1 \oplus Y_1' == A \oplus A'} is negligible
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{center}
+				\sslinked{
+				\ssprogram{}{
+				$Y_1\|Y_2 = \func{prp.query}{A\|B}$\\
+				$Y^{'}_1\|Y^{'}_2 = \func{prp.query}{A^{'}\|B}$\\
+				return $Y_1 \oplus Y^{'}_1 == A \oplus A^{'}$
+				}{0.8}
+				}{\link}{
+				\sslibrary{\mathbb{F}}{prp-real}{
+				$K_1\|K_2 \twoheadleftarrow \bits^{2\lambda}$\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+				return $X_{2}\|X_{3}$
+				}{1}
+				}{0.8}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{However, a 3+ round Feistel cipher is fine!}
+	\begin{center}
+		\sslinked{
+		\sslinked{
+		\ssprogram{}{
+		$Y_1\|Y_2 = \func{prp.query}{A\|B}$\\
+		$Y^{'}_1\|Y^{'}_2 = \func{prp.query}{A^{'}\|B}$\\
+		return $Y_1 \oplus Y^{'}_1 == A \oplus A^{'}$
+		}{0.7}
+		}{\link}{
+		\sslibrary{\mathbb{F}}{prp-real}{
+		$K_1\|K_2 \twoheadleftarrow \bits^{2\lambda}$\\[1em]
+		\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+		$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+		$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+		return $X_{2}\|X_{3}$
+		}{1}
+		}{0.7}
+		}
+		}{\cancel{\approxeq}}{
+		\sslinked{
+		\ssprogram{}{
+		$Y_1\|Y_2 = \func{prp.query}{A\|B}$\\
+		$Y^{'}_1\|Y^{'}_2 = \func{prp.query}{A^{'}\|B}$\\
+		return $Y_1 \oplus Y^{'}_1 == A \oplus A^{'}$
+		}{0.7}
+		}{\link}{
+		\sslibrary{\mathbb{F}}{prp-real}{
+		$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+		\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+		$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+		$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+		$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+		return $X_{3}\|X_{4}$
+		}{1}
+		}{0.7}
+		}
+		}
+	\end{center}
+\end{frame}
+
+\begin{frame}{However, a 3+ round Feistel cipher is fine!}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}[<+->]
+				\item Luby and Rackoff proved that a 3-round Feistel cipher is indistinguishable from a pseudorandom permutation.\footnote{\url{https://appliedcryptography.page/papers/luby-rackoff.pdf}}
+				\item Can we also prove it using our provable security framework?
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{center}
+				\sslinked{
+				\sslibrary{\mathbb{F}}{prp-real}{
+				$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+				$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+				return $X_{3}\|X_{4}$
+				}{1}
+				}{0.8}
+				}{\approxeq}{
+				\sslibrary{\mathbb{F}}{prp-rand}{
+				$L \coloneq$ [\ ]\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
+				if $L[X]$ undefined:\\
+				\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+				\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+				\quad $L[X] \coloneq Y$\\
+				return $L[X]$
+				}{1}
+				}{0.8}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The ``bad event'' proof technique}{Reminder}
+	\definitionbox{Bad Event Technique}{
+		Let \lib{}{1} and \lib{}{2} be libraries that each include a boolean variable named \hl{\texttt{bad}}, and assume that after \texttt{bad} is set to \texttt{true} it remains \texttt{true} forever. We say that the bad event is triggered if the library ever sets \texttt{bad := true}.
+		\\[1em]
+		If \lib{}{1} and \lib{}{2} have identical source code, except for statements reachable only when \texttt{bad := true}, then:
+		\begin{align*}
+			\left| \prob{\prog{} \link \lib{}{1} \Rightarrow \texttt{true}} - \prob{\prog{} \link \lib{}{2} \Rightarrow \texttt{true}} \right| \leq \prob{\prog{} \link \lib{}{1} \func{trigger}{\texttt{bad}}}
+		\end{align*}
+	}
+\end{frame}
+
+\begin{frame}{The ``bad event'' proof technique}{Reminder}
+	\begin{itemize}[<+->]
+		\item \prog{}'s advantage is bounded by \prob{\prog{} \link \lib{}{1} \func{trigger}{\texttt{bad}}}.
+		\item Practical application:
+		      \begin{itemize}[<+->]
+			      \item Define a sequence of hybrid libraries.
+			      \item Identify ``bad events'' between consecutive hybrids.
+			      \item Show these events occur with negligible probability.
+		      \end{itemize}
+		\item Enables us to focus on analyzing specific failure cases rather than full behavior.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The ``end-of-time'' strategy for bad events}{Reminder}
+	\begin{itemize}[<+->]
+		\item Sometimes analyzing bad events can be complex, especially when values are chosen by the adversary.
+		\item The end-of-time strategy:
+		      \begin{enumerate}[<+->]
+			      \item Postpone all bad-event logic to the end of the library execution.
+			      \item Collect information during normal execution.
+			      \item Check for bad events only at the very end.
+		      \end{enumerate}
+		\item Advantages:
+		      \begin{itemize}[<+->]
+			      \item Simplifies analysis by separating normal behavior from bad-event checking.
+			      \item Makes it easier to bound the probability of bad events.
+			      \item Particularly useful for complex cryptographic proofs.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{However, a 3+ round Feistel cipher is fine!}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item Luby and Rackoff proved that a 3-round Feistel cipher is indistinguishable from a pseudorandom permutation.\footnote{\url{https://appliedcryptography.page/papers/luby-rackoff.pdf}}
+				\item Can we also prove it using our provable security framework?
+				\item Yes, with the bad events proof technique!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{center}
+				\sslinked{
+				\sslibrary{\mathbb{F}}{prp-real}{
+				$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+				$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+				return $X_{3}\|X_{4}$
+				}{1}
+				}{0.8}
+				}{\approxeq}{
+				\sslibrary{\mathbb{F}}{prp-rand}{
+				$L \coloneq$ [\ ]\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
+				if $L[X]$ undefined:\\
+				\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+				\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+				\quad $L[X] \coloneq Y$\\
+				return $L[X]$
+				}{1}
+				}{0.8}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 1}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item We start at \lib{\mathbb{F}}{prp-real}.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+				$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+				return $X_{3}\|X_{4}$
+				}{1}
+				}{0.8}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 2}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item We add a cache $L[\cdot]$ so that each distinct output is computed only once.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				\hl{if $L[X_0\|X_1]$ undefined:}\\
+				\quad $X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+				\quad $X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+				\quad $X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+				\quad \hl{$L[X_0\|X_1] \coloneq X_3\|X_4$}\\
+				return \hl{$L[X_0\|X_1]$}
+				}{1}
+				}{0.8}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 3}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item We add additional sub-cache $L_i[\cdot]$ for each $F(K_i,\cdot)$
+				\item Since we already assume $F$ to be a secure PRF, we can replace it with the ideal PRF and remove $K$.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad \hl{if $L_1[X_1]$ undefined:}\\
+				\quad \quad \hl{$L_1[X_1] \twoheadleftarrow \bits^\lambda$}\\
+				\quad $X_{2} \coloneq X_{0} \oplus \hl{L_1[X_1]}$\\
+				\quad \hl{if $L_2[X_2]$ undefined:}\\
+				\quad \quad \hl{$L_2[X_2] \twoheadleftarrow \bits^\lambda$}\\
+				\quad $X_{3} \coloneq X_{1} \oplus \hl{L_2[X_2]}$\\
+				\quad \hl{if $L_3[X_3]$ undefined:}\\
+				\quad \quad \hl{$L_3[X_3] \twoheadleftarrow \bits^\lambda$}\\
+				\quad $X_{4} \coloneq X_{2} \oplus \hl{L_3[X_3]}$\\
+				\quad $L[X_0\|X_1] \coloneq X_3\|X_4$\\
+				return $L[X_0\|X_1]$
+				}{1}
+				}{0.8}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 4}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item We expect $X_2$ and $X_3$ to never repeat. So, we can trigger the bad event if they do.
+				\item Later, we must show that the bad event's probability is negligible.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad if $L_1[X_1]$ undefined:\\
+				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+				\quad if $L_2[X_2]$ \hl{defined: $\texttt{bad} \coloneq \texttt{true}$}\\
+				\quad $L_2[X_2] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{3} \coloneq X_{1} \oplus L_2[X_2]$\\
+				\quad if $L_3[X_3]$ \hl{defined: $\texttt{bad} \coloneq \texttt{true}$}\\
+				\quad $L_3[X_3] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{4} \coloneq X_{2} \oplus L_3[X_3]$\\
+				\quad $L[X_0\|X_1] \coloneq X_3\|X_4$\\
+				return $L[X_0\|X_1]$
+				}{1}
+				}{0.8}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 5}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Instead of sampling $L_2[X_2]$ uniformly and then computing $X_3$, we can sample $X_3$ uniformly and compute $L_2[X_2]$.
+				\item Same for $L_3[X_3]$ and $X_4$.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad if $L_1[X_1]$ undefined:\\
+				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad \hl{$X_3 \twoheadleftarrow \bits^\lambda$}\\
+				\quad $L_2[X_2] \hl{\coloneq X_3 \oplus X_1}$\\
+				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad \hl{$X_4 \twoheadleftarrow \bits^\lambda$}\\
+				\quad $L_3[X_3] \hl{\coloneq X_4 \oplus X_2}$\\
+				\quad $L[X_0\|X_1] \coloneq X_3\|X_4$\\
+				return $L[X_0\|X_1]$
+				}{1}
+				}{0.8}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 6}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item We can move the sampling steps to the top since they're no longer dependent on other variables.
+				\item Note how nothing after $L[X_0\|X_1] \coloneq X_3\|X_4$ affects what the adversary sees!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad \hl{$X_3 \twoheadleftarrow \bits^\lambda$}\\
+				\quad \hl{$X_4 \twoheadleftarrow \bits^\lambda$}\\
+				\quad \hl{$L[X_0\|X_1] \coloneq X_3\|X_4$}\\
+				\quad if $L_1[X_1]$ undefined:\\
+				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$\\
+				\hl{return $L[X_0\|X_1]$}
+				}{1}
+				}{0.8}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 7}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item We can move the sampling steps to the top since they're no longer dependent on other variables.
+				\item Note how nothing after $L[X_0\|X_1] \coloneq X_3\|X_4$ affects what the adversary sees!
+				\item So, we can move all bad-event logic to the end of time, without changing the bad event's overall probability.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad \hl{$L[X_0\|X_1] \coloneq \bits^{2\lambda}$}\\
+				\quad \hl{$\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$}\\
+				\quad return $L[X_0\|X_1]$
+				}{1}\\[1em]
+				\sslibrarysubroutine{\hl{end of time}}{}{
+				\hl{for each $X_0\|X_1 \in \mathcal{X}:$}\\
+				\quad \hl{$X_3\|X_4 \coloneq L[X_0\|X_1]$}\\
+				\quad if $L_1[X_1]$ undefined:\\
+				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
+				}{1}
+				}{0.7}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 8}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item We need to analyze the probability of the bad event happening.
+				\item Let's say the adversary makes $q$ queries.
+				\item The bad event happens if:
+				      \begin{itemize}[<+->]
+					      \item $X_2$ value collides with previous $X_2$.
+					      \item $X_3$ value collides with previous $X_3$.
+				      \end{itemize}
+				\item Recall: $X_2 = X_0 \oplus L_1[X_1]$ where $L_1[X_1]$ is chosen randomly.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+				\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
+				\quad return $L[X_0\|X_1]$
+				}{1}\\[1em]
+				\sslibrarysubroutine{end of time}{}{
+				for each $X_0\|X_1 \in \mathcal{X}:$\\
+				\quad $X_3\|X_4 \coloneq L[X_0\|X_1]$\\
+				\quad if $L_1[X_1]$ undefined:\\
+				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
+				}{1}
+				}{0.7}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 9}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item So, we need to analyze when $X_2$ collisions occur.
+				\item If $(X_0, X_1)$ and $(X_0', X_1')$ are two different inputs...
+				\item A collision happens when $X_2 = X_2'$:
+				      \begin{align*}
+					      X_0 \oplus L_1[X_1] = X_0' \oplus L_1[X_1']
+				      \end{align*}
+				\item If $X_1 \neq X_1'$, then $L_1[X_1]$ and $L_1[X_1']$ are independent random values
+				\item The probability of this specific collision is $2^{-\lambda}$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+				\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
+				\quad return $L[X_0\|X_1]$
+				}{1}\\[1em]
+				\sslibrarysubroutine{end of time}{}{
+				for each $X_0\|X_1 \in \mathcal{X}:$\\
+				\quad $X_3\|X_4 \coloneq L[X_0\|X_1]$\\
+				\quad if $L_1[X_1]$ undefined:\\
+				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
+				}{1}
+				}{0.7}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 10 - Total probability analysis}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item For $q$ queries, we have at most $q(q-1)/2$ pairs of queries
+				\item Prob. of any $X_2$ collision across $q$ queries:
+				      $q(q-1)/(2 \cdot 2^{\lambda}) \approx q^2/2^{\lambda+1}$
+				\item Similarly for $X_3$ values: the probability of any $X_3$ collision is at most $q^2/2^{\lambda+1}$.
+				\item Total probability of bad event: at most $q^2/2^{\lambda}$
+				\item With $\lambda \gg \log q$, this probability is negligible.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+				\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
+				\quad return $L[X_0\|X_1]$
+				}{1}\\[1em]
+				\sslibrarysubroutine{end of time}{}{
+				for each $X_0\|X_1 \in \mathcal{X}:$\\
+				\quad $X_3\|X_4 \coloneq L[X_0\|X_1]$\\
+				\quad if $L_1[X_1]$ undefined:\\
+				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
+				}{1}
+				}{0.7}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 11}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item By the bad event technique, the advantage of any adversary is at most $q^2/2^{\lambda}$.
+				\item Without bad events, our last hybrid samples each response randomly.
+				\item Since the sampling logic is all that remains visible to the adversary, this is equivalent to the final simplified library.
+				\item This is indistinguishable from a truly random permutation for $q \ll 2^{\lambda/2}$ queries.
+				\item (The birthday bound tells us that's when collisions become likely)
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+				\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
+				\quad return $L[X_0\|X_1]$
+				}{1}\\[1em]
+				\sslibrarysubroutine{end of time}{}{
+				for each $X_0\|X_1 \in \mathcal{X}:$\\
+				\quad $X_3\|X_4 \coloneq L[X_0\|X_1]$\\
+				\quad if $L_1[X_1]$ undefined:\\
+				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
+				}{1}
+				}{0.7}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of security for 3-round Feistel cipher}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Rest of the transition steps are trivial. $\qed$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sslinked{
+				\sslibrary{\mathbb{F}}{prp-real}{
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+				if $L[X_0\|X_1]$ undefined:\\
+				\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+				\quad return $L[X_0\|X_1]$
+				}{1}
+				}{0.7}
+				}{\approxeq}{
+				\sslibrary{\mathbb{F}}{prp-rand}{
+				$L \coloneq$ [\ ]\\[1em]
+				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
+				if $L[X]$ undefined:\\
+				\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+				\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+				\quad $L[X] \coloneq Y$\\
+				return $L[X]$
+				}{1}
+				}{0.7}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{DES: Feistel in practice}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Data Encryption Standard (DES)} is a classic real-world implementation of the Feistel structure
+				\item Properties:
+				      \begin{itemize}
+					      \item 16 Feistel rounds.
+					      \item 56-bit key (64 bits with parity).
+					      \item 64-bit block size.
+					      \item Standardized in 1977.
+				      \end{itemize}
+				\item Problem: By the 1990s, 56-bit keys became too small for security.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Triple DES (3DES)} replaced it:
+				      \begin{itemize}
+					      \item Uses three DES operations in sequence.
+					      \item $C = E_{K3}(D_{K2}(E_{K1}(P)))$
+					      \item Effectively doubles the key length.
+					      \item Compatible with legacy DES when $K1 = K2 = K3$
+				      \end{itemize}
+				\item 3DES still used in legacy systems, but largely replaced by AES for performance reasons.
+				\item Lesson: Feistel structure made it possible to adapt DES rather than abandon it.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{EFF's ``Deep Crack''}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item In 1998, the Electronic Frontier Foundation built a special-purpose machine called ``Deep Crack''.\footnote{I'm not responsible for any readings into that name.}
+				\item Cost: Only \$250,000 (far less than the NSA budget!)
+				\item Purpose: Prove that 56-bit DES keys were insufficient.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{deep_crack_a.jpg}{EFF's ``Deep Crack''}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{EFF's ``Deep Crack''}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item July 1998: Deep Crack broke a DES challenge in just 56 hours.
+				\item Message revealed: ``It's time for those 128-, 192-, and 256-bit keys.''
+				\item Impact:
+				      \begin{itemize}
+					      \item Publicly demonstrated DES was obsolete.
+					      \item Accelerated adoption of AES.
+					      \item Made ``it's theoretically breakable'' a practical reality.
+					      \item Priceless reaction from government officials!
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{deep_crack_b.jpg}{Paul Kocher. He's still active in cryptography today, insanely productive research career, many crazy attacks}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AES: a good example of a PRP}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item AES is the most widely used PRP in the world.
+				\item It works on fixed-size blocks: 128 bits.
+				\item Key sizes: 128, 192, or 256 bits.
+				\item Each AES key defines a specific permutation over the space of all 128-bit values.
+				\item For each key, AES maps each possible 128-bit input to exactly one 128-bit output.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Different keys create different permutations.
+				\item AES is efficiently invertible:
+				      \begin{itemize}[<+->]
+					      \item $\text{Dec}(K, \text{Enc}(K, M)) = M$
+				      \end{itemize}
+				\item AES is believed to be computationally indistinguishable from a random permutation.
+				\item Has withstood extensive cryptanalysis for over 20 years.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AES structure}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Internal structure: substitution-permutation network with multiple rounds.\footnote{Check out this amazing interactive animation of AES's internal structure: \url{https://formaestudio.com/rijndaelinspector/archivos/Rijndael_Animation_v4_eng-html5.html}}
+				      \begin{itemize}[<+->]
+					      \item SubBytes: non-linear substitution
+					      \item ShiftRows: transposition
+					      \item MixColumns: mixing operation
+					      \item AddRoundKey: XOR with round key
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{flushright}
+				\scalebox{0.55}{
+					\begin{tikzpicture}[
+							block/.style={rectangle, draw, fill=ciphergray!15, minimum width=2cm, minimum height=0.6cm, align=center, font=\footnotesize},
+							arrow/.style={-stealth, thick},
+							node distance=0.5cm
+						]
+						% Input
+						\node[block] (input) {Plaintext (128 bits)};
+
+						% Initial round (just key addition)
+						\node[block, below=0.8cm of input] (addroundkey0) {AddRoundKey};
+						\draw[arrow] (input) -- (addroundkey0);
+						\node[right=0.3cm of addroundkey0, align=left, font=\scriptsize] (roundkey0) {Round Key 0};
+						\draw[arrow] (roundkey0) -- (addroundkey0);
+
+						% Main rounds box
+						\draw[rounded corners, dashed] (-2,-2.2) rectangle (2,-5.2);
+						\node[align=left, font=\scriptsize] at (-1.7,-2.5) {Rounds 1-9};
+
+						% Main round operations
+						\node[block, below=0.8cm of addroundkey0] (subbytes) {SubBytes};
+						\draw[arrow] (addroundkey0) -- (subbytes);
+
+						\node[block, below=of subbytes] (shiftrows) {ShiftRows};
+						\draw[arrow] (subbytes) -- (shiftrows);
+
+						\node[block, below=of shiftrows] (mixcolumns) {MixColumns};
+						\draw[arrow] (shiftrows) -- (mixcolumns);
+
+						\node[block, below=of mixcolumns] (addroundkey) {AddRoundKey};
+						\draw[arrow] (mixcolumns) -- (addroundkey);
+						\node[right=0.3cm of addroundkey, align=left, font=\scriptsize] (roundkey) {Round Keys 1-9};
+						\draw[arrow] (roundkey) -- (addroundkey);
+
+						% Final round box
+						\draw[rounded corners, dashed] (-2,-5.8) rectangle (2,-7.8);
+						\node[align=left, font=\scriptsize] at (-1.7,-6.1) {Round 10};
+
+						% Final round operations (no MixColumns)
+						\node[block, below=0.8cm of addroundkey] (subbytes2) {SubBytes};
+						\draw[arrow] (addroundkey) -- (subbytes2);
+
+						\node[block, below=of subbytes2] (shiftrows2) {ShiftRows};
+						\draw[arrow] (subbytes2) -- (shiftrows2);
+
+						\node[block, below=of shiftrows2] (addroundkey2) {AddRoundKey};
+						\draw[arrow] (shiftrows2) -- (addroundkey2);
+						\node[right=0.3cm of addroundkey2, align=left, font=\scriptsize] (roundkey2) {Round Key 10};
+						\draw[arrow] (roundkey2) -- (addroundkey2);
+
+						% Output
+						\node[block, below=0.8cm of addroundkey2] (output) {Ciphertext (128 bits)};
+						\draw[arrow] (addroundkey2) -- (output);
+
+						% Note about final round
+						\node[align=center, font=\scriptsize, color=red] at (3.2,-6.8) {No MixColumns\\in final round};
+					\end{tikzpicture}
+				}
+			\end{flushright}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AES: security and attacks over time}
+ \begin{columns}[c]
+  \begin{column}{0.5\textwidth}
+   \begin{itemize}[<+->]
+    \item AES has been heavily analyzed for over 20 years.
+    \item Best attacks against full AES have gradually improved:
+          \begin{itemize}[<+->]
+           \item 2011: Biclique attack (Bogdanov et al.) reduced complexity to $2^{126.1}$ for AES-128.
+           \item Various side-channel attacks developed (power analysis, cache timing).\footnote{This is the main way to attack AES in practice. Side-channel attacks will be discussed in more depth later in the course.}
+           \item Advances in meet-in-the-middle and related-key techniques.
+          \end{itemize}
+   \end{itemize}
+  \end{column}
+  \begin{column}{0.5\textwidth}
+   \begin{itemize}[<+->]
+    \item Despite these advances:
+          \begin{itemize}[<+->]
+           \item No practical attacks on full AES-128.
+           \item Best attacks still require $\approx 2^{126}$ operations.
+           \item At this complexity, attacks remain purely theoretical.
+           \item Would require resources far exceeding global computing power.
+          \end{itemize}
+    \item Even quantum computers offer only modest advantage (Grover's algorithm reduces security to $2^{64}$ operations).\footnote{More on quantum computers and how they affect cryptography later in the course.}
+   \end{itemize}
+  \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}[plain]
+	\titlepage
+\end{frame}
+\end{document}

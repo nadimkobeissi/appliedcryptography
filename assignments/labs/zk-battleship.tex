@@ -1,0 +1,159 @@
+\documentclass[10pt,a4paper,american]{article}
+\newcommand{\aublogopath}{../../website/res/img/aub_black.png}
+\usepackage{../../misc/macros/joc}
+\usepackage{../../misc/fonts/fonts}
+\usepackage{../../misc/macros/classhandout}
+
+\begin{document}
+
+\classhandoutheader
+
+\section*{Lab Assignment: Building a Zero-Knowledge Battleship Game}
+
+\subsection*{Overview}
+In this lab, you will design and implement a zero-knowledge battleship game using RISC Zero, a zero-knowledge virtual machine (zkVM). This represents your first opportunity to apply zero-knowledge proofs to build a complete cryptographic protocol—one that allows players to validate their moves without revealing the entire game state. Zero-knowledge battleship demonstrates how players can validate that their guesses produced the correct result (hit vs. no hit) while learning nothing about the opponent's board except what is explicitly revealed through gameplay. By building this game, you'll gain practical experience with zero-knowledge proofs, zkVMs, and cryptographic protocol design. Future lab assignments will build upon these skills by incorporating more complex zero-knowledge applications.
+
+\subsection*{Learning Objectives}
+After completing this lab, you should be able to:
+\begin{itemize}
+	\item Apply zero-knowledge proofs to create verifiable computations.
+	\item Understand and use zkVMs, particularly RISC Zero.
+	\item Design and build a cryptographic protocol with proper threat modeling.
+	\item Evaluate the security properties of zero-knowledge applications.
+\end{itemize}
+
+\subsection*{Background}
+Zero-knowledge proofs allow one party (the prover) to prove to another party (the verifier) that a statement is true without revealing any additional information. In the context of a battleship game:
+\begin{itemize}
+	\item Player 1 can prove whether Player 2's guess hit or missed a ship.
+	\item The proof is verifiable by Player 2 without revealing the full board layout.
+	\item The game remains secure against cheating because all moves can be verified.
+	\item zkVMs like RISC Zero allow developers to generate proofs for arbitrary computations.
+\end{itemize}
+
+\subsection*{Requirements}
+Your zero-knowledge battleship game must implement the following core functionality:
+
+\begin{enumerate}
+	\item \textbf{Game Initialization:}
+	      \begin{itemize}
+		      \item Create a secure board setup procedure where players place ships.
+		      \item Generate cryptographic commitments to board layouts.
+		      \item Implement proper validation of initial board configurations.
+	      \end{itemize}
+
+	\item \textbf{Game Rounds:}
+	      \begin{itemize}
+		      \item Generate zero-knowledge proofs for hit/miss responses using RISC Zero.
+		      \item Verify proofs to ensure honest gameplay.
+		      \item Track game state securely throughout the game.
+	      \end{itemize}
+
+	\item \textbf{Game Logic:}
+	      \begin{itemize}
+		      \item Implement standard battleship rules.
+		      \item Detect when a player has won the game.
+		      \item Ensure all game state transitions are verifiable.
+	      \end{itemize}
+
+	\item \textbf{User Interface:}
+	      \begin{itemize}
+		      \item Create a simple CLI interface for gameplay.
+		      \item Display the game boards (with appropriate information hiding).
+		      \item Implement commands for making guesses and viewing game status.
+		      \item Include proper error handling without leaking sensitive information.
+	      \end{itemize}
+\end{enumerate}
+
+\subsection*{Implementation Guidelines}
+
+\subsubsection*{Step 1: Design}
+Begin by creating a threat model for your zero-knowledge battleship game. Consider:
+\begin{itemize}
+	\item Who are the attackers? (Cheating players, observers)
+	\item What assets are you protecting? (Board layouts, game integrity)
+	\item What are the attack vectors? (False claims about hits/misses, board manipulation)
+	\item What cryptographic protections will you employ?
+\end{itemize}
+
+Document your design decisions and security assumptions.
+
+\subsubsection*{Step 2: Cryptographic Building Blocks}
+Implement or properly use RISC Zero for:
+\begin{itemize}
+	\item Creating guest programs to verify hits and misses.
+	\item Generating and verifying zero-knowledge proofs.
+	\item Securing the game state throughout gameplay.
+\end{itemize}
+
+\subsubsection*{Step 3: Core Functionality}
+Implement the core functionality:
+\begin{itemize}
+	\item Board initialization and commitment.
+	\item Move validation with zero-knowledge proofs.
+	\item Game state management and victory detection.
+\end{itemize}
+
+\subsubsection*{Step 4: User Interface}
+Create an interface that balances security and usability:
+\begin{itemize}
+	\item Board visualization showing appropriate information.
+	\item Commands for making guesses.
+	\item Clear indication of proof validation results.
+\end{itemize}
+
+\subsubsection*{Step 5: Security Hardening}
+Add security features like:
+\begin{itemize}
+	\item Verification of all cryptographic proofs.
+	\item Protection against replay and timing attacks.
+	\item Input validation and error handling.
+\end{itemize}
+
+\subsection*{Deliverables}
+Submit the following:
+
+\begin{enumerate}
+	\item Source code for your zero-knowledge battleship game.
+	\item Design document including:
+	      \begin{itemize}
+		      \item Threat model and security assumptions.
+		      \item Description of zero-knowledge mechanisms used.
+		      \item Design decisions and their rationale.
+	      \end{itemize}
+	\item User manual explaining how to play your game.
+	\item Security analysis discussing:
+	      \begin{itemize}
+		      \item Strengths of your implementation.
+		      \item Limitations and potential vulnerabilities.
+		      \item Suggested improvements for a production version.
+	      \end{itemize}
+\end{enumerate}
+
+\subsection*{Evaluation Criteria}
+Your project will be evaluated based on:
+
+\begin{itemize}
+	\item Correctness of zero-knowledge proof implementations.
+	\item Security of the overall design.
+	\item Completeness of required functionality.
+	\item Quality of code and documentation.
+	\item Thoughtfulness of security analysis.
+\end{itemize}
+
+\subsection*{Resources}
+\begin{itemize}
+	\item The course textbook and materials on zero-knowledge proofs.
+	\item RISC Zero documentation and examples.
+	\item Directory structure and README provided for the project.
+	\item Research papers on zero-knowledge applications (see course website).
+\end{itemize}
+
+\subsection*{Submission Guidelines}
+\begin{itemize}
+	\item Submit your code as a ZIP archive or through a Git repository.
+	\item Include all documentation in PDF or Markdown format.
+	\item Presentations: Prepare a 10-minute presentation demonstrating your zero-knowledge battleship game.
+\end{itemize}
+
+\end{document}

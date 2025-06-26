@@ -1,0 +1,98 @@
+\ProvidesPackage{joc}[2025/05/04 v1.0 Nadim's Joy of Cryptography Style Macros]
+
+\RequirePackage{xcolor}
+\RequirePackage[auto]{contour}
+\RequirePackage{varwidth,tikz}
+\RequirePackage[most]{tcolorbox}
+\usetikzlibrary{shadows, arrows.meta, positioning, shapes, calc, fit, shapes.geometric}
+
+\definecolor{jocbitcolor}{HTML}{A91716}
+\definecolor{joctitlecolor}{HTML}{E5E5E5}
+
+% Macro for state-separable proof style subroutines
+\newcommand{\sssubroutine}[4]{
+	\begin{center}
+		\begin{tikzpicture}[box/.style={rectangle, draw, align=left, fill=white, inner sep=7pt, scale=#4, execute at begin node=\setlength{\baselineskip}{1.5em}}]
+			\node[box]{
+				\underline{\func{#1}{#2}}: \\
+				#3
+			};
+		\end{tikzpicture}
+	\end{center}
+}
+
+\newcommand{\sslibrarysubroutine}[4]{
+	\begin{tikzpicture}[box/.style={rectangle, align=left, inner sep=0pt, outer sep=0pt, fill=white, scale=#4, execute at begin node=\setlength{\baselineskip}{1.5em}, inner sep=0pt, outer sep=0pt}]
+		\node[box]{
+			\underline{\func{#1}{#2}}: \\
+			#3
+		};
+	\end{tikzpicture}
+}
+
+\newcommand{\prob}[1]{\ensuremath{\Pr\bigl[\ensuremath{#1}\bigr]}}
+\newcommand{\lib}[2]{\ensuremath{\mathcal{L}^{#1}_\text{#2}}}
+\newcommand{\prog}[1]{\ensuremath{\mathcal{A}_\text{#1}}}
+\newcommand{\link}{\ensuremath{\diamond}}
+\newcommand{\interchangeable}[1]{\ensuremath{\overset{\ensuremath{#1}}{\equiv}}}
+\newcommand{\bit}[1]{\textcolor{jocbitcolor}{\texttt{#1}}}
+\newcommand{\bits}{\ensuremath{\{\bit{0}, \bit{1}\}}}
+\newcommand{\func}[2]{\ensuremath{\textrm{\textsc{#1}}\scalebox{1.05}{\ensuremath{(#2)}}}}
+
+\newtcolorbox{sslibrarybox}[2][]{
+	colback=white,
+	colframe=black,
+	colbacktitle=joctitlecolor,
+	coltitle=black,
+	enhanced,hbox,
+	toptitle=1mm,
+	bottomtitle=1mm,
+	boxrule=0.5pt,
+	titlerule=0pt,
+	left=1mm,
+	right=1mm,
+	top=2mm,
+	bottom=2mm,
+	titlerule style=joctitlecolor,
+	sharp corners,
+	halign title=center,
+	title={#2},
+	#1
+}
+
+\newcommand{\sslibrary}[4]{
+	\begin{sslibrarybox}[scale=#4]{\lib{#1}{#2}}
+		\begin{varwidth}{\textwidth}
+			#3
+		\end{varwidth}
+	\end{sslibrarybox}
+}
+
+\newcommand{\ssprogram}[3]{
+	\begin{sslibrarybox}[scale=#3]{\prog{#1}}
+		\begin{tikzpicture}[box/.style={rectangle, align=left, fill=white, inner sep=0pt, outer sep=0pt, execute at begin node=\setlength{\baselineskip}{1.5em}}]
+			\node[box]{
+				#2
+			};
+		\end{tikzpicture}
+	\end{sslibrarybox}
+}
+
+\newcommand{\sslinked}[3]{
+	\begin{tikzpicture}[baseline]
+		\node[inner sep=0pt, outer sep=0pt] (left) {\begin{varwidth}{\textwidth}#1\end{varwidth}};
+		\node[inner sep=0pt, outer sep=0pt, anchor=west] (middle) at (left.east) {\begin{varwidth}{\textwidth}{\large\ensuremath{\ #2\ }}\end{varwidth}};
+		\node[inner sep=0pt, outer sep=0pt, anchor=west] (right) at (middle.east) {\begin{varwidth}{\textwidth}#3\end{varwidth}};
+	\end{tikzpicture}
+}
+
+\contourlength{1.2pt}
+\newcommand{\hl}[1]{%
+	\relax\ifmmode%
+		{}%
+		\contour{hlbg}{\textcolor{hlfg}{${} #1 {}$}}%
+		{}%
+	\else%
+		\contour{hlbg}{\textcolor{hlfg}{#1}}%
+	\fi%
+}

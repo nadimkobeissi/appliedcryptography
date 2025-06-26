@@ -1,0 +1,33 @@
+# macOS
+.DS_Store
+
+# LaTeX
+*.aux
+*.bcf
+*.idx
+*.log
+*.out
+*.bbl
+*.blg
+*.xml
+*.toc
+*.fls
+*.fdb_latexmk
+*.lot
+*.lof
+*.ind
+*.ilg
+*.xdv
+__latex*
+*synctex*
+*.listing
+*.fmt
+*.nav
+*.snm
+*.vrb
+
+# Compiled materials
+website/slides/*.pdf
+website/labs/*.pdf
+website/problem-sets/*.pdf
+website/syllabus.pdf

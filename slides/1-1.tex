@@ -1,0 +1,806 @@
+\documentclass[aspectratio=169, lualatex, handout]{beamer}
+\makeatletter\def\input@path{{theme/}}\makeatother\usetheme{cipher}
+
+\title{Applied Cryptography}
+\author{Nadim Kobeissi}
+\institute{American University of Beirut}
+\instituteimage{images/aub_white.png}
+\date{\today}
+\coversubtitle{CMPS 297AD/396AI\\Fall 2025}
+\coverpartname{Part 1: Provable Security}
+\covertopicname{1.1: Introduction}
+\coverwebsite{https://appliedcryptography.page}
+
+\begin{document}
+\begin{frame}[plain]
+	\titlepage
+\end{frame}
+
+\begin{frame}{Defining cryptography}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{What is Cryptography?}{\textit{``The science of enabling secure and private computation, communication, verification, and delegation in the presence of untrusted parties, adversarial behavior, and mutually distrustful participants.''}}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{caesar.png}{Source: Serious Cryptography, 2nd Edition}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Defining cryptography}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{What is Cryptography?}{\textit{``The science of enabling secure and private computation, communication, verification, and delegation in the presence of untrusted parties, adversarial behavior, and mutually distrustful participants.''}}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{vigenere.png}{Source: Serious Cryptography, 2nd Edition}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Cryptography is everywhere}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Banking
+				\item Buying stuff from the store
+				\item Any digital payment system
+				\item Messaging (WhatsApp, Signal, iMessage, Telegram)
+				\item Voice calls
+				\item Government and military systems
+				\item SSH
+				\item VPN access
+				\item Visiting most websites (HTTPS)
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Disk encryption
+				\item Cloud storage
+				\item Video conferencing
+				\item Unlocking your (newer) car
+				\item Identity card systems
+				\item Ticketing systems
+				\item DRM solutions
+				\item Private contact discovery
+				\item Cryptocurrencies
+				\item That iPhotos feature that detects similar photos
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{How it's made}
+	\bigimagewithcaption{fischer.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
+\end{frame}
+
+\begin{frame}{How it's made}
+	\begin{center}
+		\bigimagewithcaption{fischer_sectioned.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Cryptographic building blocks}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Components}
+			\begin{itemize}[<+->]
+				\item Cryptography manifests as a set of primitives, from which we
+				      build protocols intended to accomplish well-defined security goals.
+				\item \textbf{Primitives}: AES, RSA, SHA-2, DH\ldots
+				\item \textbf{Protocols}: TLS, Signal, SSH, FileVault 2, BitLocker\ldots
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\textbf{Examples}
+			\begin{itemize}[<+->]
+				\item \textbf{AES}: Symmetric encryption
+				      \begin{itemize}
+					      \item $\mathsf{Enc}(k, m) = c$, $\mathsf{Dec}(k, c) = m$.
+				      \end{itemize}
+				\item \textbf{SHA-2}: Hash function
+				      \begin{itemize}
+					      \item $\mathsf{H}(m) = h$.
+				      \end{itemize}
+				\item \textbf{Diffie-Hellman}: Public key agreement
+				      \begin{itemize}
+					      \item Allows two parties to agree on a secret key $k$.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Cryptographic building blocks}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Security goals}
+			\begin{itemize}[<+->]
+				\item \textbf{Confidentiality}: Data exchanged between Client and Server
+				      is only known to those parties.
+				\item \textbf{Authentication}: If Server receives data from Client,
+				      then Client sent it to Server.
+				\item \textbf{Integrity}: If Server modifies data owned by Client,
+				      Client can find out.
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\textbf{Examples}
+			\begin{itemize}[<+->]
+				\item \textbf{Confidentiality}: When you send a private message on Signal,
+				      only you and the recipient can read the content.
+				\item \textbf{Authentication}: When you receive an email from your boss,
+				      you can verify it actually came from them.
+				\item \textbf{Integrity}: Your computer can verify that software update
+				      downloads haven't been tampered with during transmission.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Security goals: more examples}
+	\begin{itemize}[<+->]
+		\item \textbf{TLS (HTTPS)} ensures that data exchanged between the client
+		      and the server is confidential and that parties are authenticated.
+		      \begin{itemize}
+			      \item Allows you to log into gmail.com without your ISP learning your password.
+		      \end{itemize}
+		\item \textbf{FileVault 2} ensures data confidentiality and integrity on
+		      your MacBook.
+		      \begin{itemize}
+			      \item Prevents thieves from accessing your data if your MacBook is stolen.
+		      \end{itemize}
+		\item \textbf{Signal} implements post-compromise security, an advanced security
+		      goal.
+		      \begin{itemize}
+			      \item Allows a conversation to ``heal'' in the event of a temporary key
+			            compromise.
+			      \item More on that later in the course.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why bother?}
+	\begin{itemize}[<+->]
+		\item Can't we just use access control?
+		\item Strictly speaking, usernames and passwords can be implemented
+		      without cryptography\ldots
+		\item Server checks if the password matches, or if the IP address matches,
+		      etc. before granting access.
+		\item What's so bad about that?
+	\end{itemize}
+	\definitionbox{The Problem with Traditional Access Control}{
+		\begin{itemize}[<+->]
+			\item Requires trusting the server completely
+			\item No protection during transmission
+			\item No way to verify integrity
+			\item No way to establish trust between strangers
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}[c]{The magic of cryptography}
+	\begin{center}
+		\Large\textbf{Cryptography lets us achieve what seems impossible}
+		\vspace{1cm}
+		\begin{itemize}[<+->]
+			\item Secure communication over insecure channels
+			\item Verification without revealing secrets
+			\item Proof of computation without redoing it
+		\end{itemize}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Hard problems}
+	\begin{itemize}[<+->]
+		\item Cryptography is largely about equating the security of a system to the
+		      difficulty of solving a math problem that is thought to be computationally
+		      very expensive.
+		\item With cryptography, we get security systems that we can literally
+		      mathematically prove as secure (under assumptions).
+		\item Also, this allows for actual magic.
+		      \begin{itemize}[<+->]
+			      \item Alice and Bob meet for the first time in the same room as you.
+			      \item You are listening to everything they are saying.
+			      \item Can they exchange a secret without you learning it?
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Time for actual magic}
+	\bigimagewithcaption{dh.png}{}
+\end{frame}
+
+\begin{frame}{No known feasible computation}
+	\begin{itemize}[<+->]
+		\item The discrete logarithm problem:
+		      \begin{itemize}
+			      \item Given a finite cyclic group $G$, a generator $g \in G$, and an element
+			            $h \in G$, find the integer $x$ such that $g^{x}=h$
+		      \end{itemize}
+		\item In more concrete terms:
+		      \begin{itemize}
+			      \item Let $p$ be a large prime and let $g$ be a generator of the multiplicative
+			            group $\mathbb{Z}_{p}^{*}$ (all nonzero integers modulo $p$).
+
+			      \item Given:
+			            \begin{itemize}
+				            \item $g \in \mathbb{Z}_{p}^{*}$, $h \in \mathbb{Z}_{p}^{*}$
+
+				            \item Find $x \in \{0, 1, \ldots, p-2\}$ such that $g^{x} \equiv h \pmod
+					                  {p}$
+			            \end{itemize}
+
+			      \item This problem is believed to be computationally hard when $p$ is large
+			            and $g$ is a primitive root modulo $p$.
+			            \begin{itemize}
+				            \item ``Believed to be'' = we don't know of any way to do it that doesn't
+				                  take forever, unless we have a strong, stable quantum computer (Shor's
+				                  algorithm)
+			            \end{itemize}
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Hard problems}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Asymmetric Primitives}
+			\begin{itemize}[<+->]
+				\item Diffie-Hellman, RSA, ML-KEM, etc.
+				\item ``Asymmetric'' because there is a ``public key'' and a ``private
+				      key'' for each party.
+				\item Algebraic, assume the hardness of mathematical problems (as seen
+				      just now.)
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\textbf{Symmetric Primitives}
+			\begin{itemize}[<+->]
+				\item AES, SHA-2, ChaCha20, HMAC\ldots
+				\item ``Symmetric'' because there is one secret key.
+				\item Not algebraic but unstructured, but on their understood
+				      resistance to $n$ years of cryptanalysis.
+				\item Can act as substitutes for assumptions in security proofs!
+				      \begin{itemize}
+					      \item Example: hash function assumed to be a ``random oracle''
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Kerckhoff's principle}
+	\begin{itemize}[<+->]
+		\item \textit{``A cryptosystem should be secure even if everything about
+			      the system, except the key, is public knowledge.''} — Auguste Kerckhoffs,
+		      1883
+		\item \textbf{Why it matters}:
+		      \begin{itemize}[<+->]
+			      \item No ``security through obscurity''
+			      \item The key is the only secret: the rest can be audited, tested,
+			            trusted
+			      \item Encourages open standards and peer review
+			      \item If your system's security depends on nobody knowing how it works,
+			            it's not secure.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Symmetric primitive example: hash functions}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\definitionbox{Hash Function Properties}{
+				\begin{itemize}\item Takes input of \textbf{any size}[<+->]
+					\item Produces output of \textbf{fixed size}
+					\item Is \textbf{deterministic} (same input $\rightarrow$ same output)
+					\item Even a \textbf{tiny change} in input creates completely different output
+					\item Is \textbf{efficient} to compute\end{itemize}
+			}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\begin{tcolorbox}
+				[colback=black!5!white,colframe=ciphergray] $\mathsf{SHA256}(\texttt{hello}) =$ \\ \texttt{2cf24dba5fb0a30e26e83b2ac5}\\ \texttt{b9e29e1b161e5c1fa7425e7304}\\
+				\texttt{3362938b9824}
+
+				$\mathsf{SHA256}(\texttt{hullo}) =$ \\ \texttt{7835066a1457504217688c8f5d}\\
+				\texttt{06909c6591e0ca78c254ccf174}\\ \texttt{50d0d999cab0}
+			\end{tcolorbox}
+			\textcolor{cipherprimary}{\textbf{Note:} \small One character change $\rightarrow$
+				completely different hash!}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Expected properties of a hash function}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Collision resistance}: computationally infeasible to find
+				      two different inputs producing the same hash.
+				\item \textbf{Preimage resistance}: given the output of a hash function,
+				      it is computationally infeasible to reconstruct the original input.
+				\item \textbf{Second preimage resistance}: given an input and an output,
+				      it's computationally infeasible to find another different input
+				      producing the same output.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{sha2.png}{SHA-2 compression function. Source: Wikipedia}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Hash functions: what are they good for?}
+	\begin{itemize}[<+->]
+		\item \textbf{Password storage}: Store the hash of the password on the server,
+		      not the password itself. Then check candidate passwords against the hash.
+		\item \textbf{Data integrity verification}: Hash a file. Later hash it
+		      again and compare hashes to check if the file has changed, suffered storage
+		      degradation, etc.
+		\item \textbf{Proof of work}: Server asks client to hash something a lot of
+		      times before they can access some resource. Useful for anti-spam, Bitcoin
+		      mining, etc.
+		\item \textbf{Zero knowledge proofs}: time for more actual magic
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Time for more actual magic}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Zero-knowledge proofs} allow you to prove that you know
+				      a secret without revealing any information about it.
+				\item They built ``zero-knowledge virtual machines'' where you can execute
+				      an entire program that runs as a zero-knowledge proof.
+				\item ZKP battleship game: server proves to the players that its
+				      output to their battleship guesses is correct, without revealing any
+				      additional information (e.g. ship location).
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{battleship.jpg}{Battleship board game. Source: Hasbro}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Evaluating a hash function's quality}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Recall}:
+				      \begin{itemize}[<+->]
+					      \item \textbf{Asymmetric primitives} are based on mathematical
+					            problems, can be mathematically proven secure (given assumptions!)
+					      \item \textbf{Symmetric primitives} (encryption, hashing\ldots)
+					            are statistically, empirically, heuristically shown to be secure,
+					            not proven secure.
+					      \item The more cryptanalysis they survive, the higher confidence
+					            we have in their security.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{qiao.png}{Cryptanalysis of AES.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{What about encryption?}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item Symmetric primitive of choice for encryption: \textbf{AES}.
+				\item Not that far off in terms of design process from hash functions,
+				      but:
+				      \begin{itemize}[<+->]
+					      \item AES is a PRP (pseudorandom permutation)
+					      \item HMAC-SHA256 is a PRF (pseudorandom function)
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{aes_subbytes.png}{AES's SubBytes operation. Source: Wikipedia}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{PRF versus PRP}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Pseudo-Random Function (SHA-2)}
+			\begin{itemize}[<+->]
+				\item \textbf{Input} is arbitrary-length,
+				\item \textbf{Output} is fixed-length, looks random (as discussed
+				      earlier).
+				\item Indistinguishable from a truly random function by an adversary with
+				      limited computational power.
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\textbf{Pseudo-Random Permutation (AES)}
+			\begin{itemize}[<+->]
+				\item \textbf{Input and output} are the same length, forming a permutation.
+				\item Each input maps uniquely to one output, allowing invertibility.
+				\item Indistinguishable from a truly random permutation by an adversary
+				      with limited computational power.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{$\mathsf{PRF}: F_{k}= X \rightarrow Y$}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item We want the mapping to be:
+				      \begin{itemize}
+					      \item One-way
+					      \item ``Randomized''
+					      \item Relations between inputs not reflected in outputs
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.8\textwidth}
+			\begin{tikzpicture}[scale=0.38]
+				% Define colors
+				\definecolor{domaingreen}{RGB}{102, 170, 68}
+				\definecolor{rangegreen}{RGB}{170, 187, 136}
+				\definecolor{circlecolor}{RGB}{235, 137, 85}
+				\definecolor{purplearrow}{RGB}{160, 78, 160}
+				\definecolor{redarrow}{RGB}{237, 50, 36}
+
+				% Input space (domain) X - made square
+				\draw[dashed, thick, domaingreen, fill=domaingreen]
+				(0,0) rectangle (8,8);
+				\node[text width=6.5cm, align=center, font=\normalsize]
+				at
+				(4,-0.8)
+				{Size: infinite!};
+				\node[font=\small] at (4,9) {Input space (domain) $X$};
+
+				% Output (range) Y - made square - moved more to the right
+				\draw[thick, rangegreen, fill=rangegreen] (15,2) rectangle (20,7);
+				\node[text width=4cm, align=center, font=\normalsize]
+				at
+				(17.5,1.2)
+				{Size: fixed};
+				\node[font=\small] at (17.5,8.5) {Output (range) $Y$};
+				% Input dots - adjusted positions for square domain
+				\filldraw[circlecolor] (2,7) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,7) -- (16.2,6.4);
+				\pause
+				\filldraw[circlecolor] (16.2,6.4) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,6) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(3,6) -- (18.6,5.3);
+				\pause
+				\filldraw[circlecolor] (18.6,5.3) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,5) -- (16.8,4.2);
+				\pause
+				\filldraw[circlecolor] (16.8,4.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (4,3.5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(4,3.5) -- (18.4,3.2);
+				\pause
+				\filldraw[circlecolor] (18.4,3.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,2) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,2) -- (17.1,2.7);
+				\pause
+				\filldraw[circlecolor] (17.1,2.7) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,1) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, ultra thick, redarrow]
+				(3,1) -- (16.8,4.2);
+				\node[redarrow, font=\scriptsize\bfseries, rotate=14]
+				at
+				(10,3)
+				{Collisions are inevitable};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{$\mathsf{PRP}: F_{k}= X \rightarrow X$}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item \textbf{Bijective} (two-way)
+				      \begin{itemize}
+					      \item \textbf{Injective}: no two inputs map to same output (no
+					            collisions)
+					      \item \textbf{Surjective}: Every output has one corresponding input
+				      \end{itemize}
+				\item ``Randomized''
+				\item Relations between inputs not reflected in outputs
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.8\textwidth}
+			\begin{tikzpicture}[scale=0.38]
+				% Define colors
+				\definecolor{domaingreen}{RGB}{102, 170, 68}
+				\definecolor{rangegreen}{RGB}{102, 170, 68}
+				\definecolor{circlecolor}{RGB}{235, 137, 85}
+				\definecolor{purplearrow}{RGB}{160, 78, 160}
+
+				% Input space (domain) X - made square
+				\draw[dashed, thick, domaingreen, fill=domaingreen]
+				(0,0) rectangle (8,8);
+				\node[text width=6.5cm, align=center, font=\normalsize]
+				at
+				(4,-0.8)
+				{Size: fixed};
+				\node[font=\normalsize] at (4,9) {Input space (domain) $X$};
+
+				% Output (range) Y - made square, same size as domain, moved left
+				\draw[thick, rangegreen, fill=rangegreen] (12,0) rectangle (20,8);
+				\node[text width=6.5cm, align=center, font=\normalsize]
+				at
+				(16,-0.8)
+				{Size: fixed};
+				\node[font=\normalsize] at (16,9) {Output (range) $X$};
+				% Input dots - adjusted positions for square domain
+				\filldraw[circlecolor] (2,7) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,7) -- (14.2,7.4);
+				\pause
+				\filldraw[circlecolor] (14.2,7.4) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,6) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(3,6) -- (18.6,5.3);
+				\pause
+				\filldraw[circlecolor] (18.6,5.3) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,5) -- (13.8,4.2);
+				\pause
+				\filldraw[circlecolor] (13.8,4.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (4,3.5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(4,3.5) -- (17.4,2.2);
+				\pause
+				\filldraw[circlecolor] (17.4,2.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,2) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,2) -- (16.1,6.7);
+				\pause
+				\filldraw[circlecolor] (16.1,6.7) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,1) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(3,1) -- (19.0,1.4);
+				\pause
+				\filldraw[circlecolor] (19.0,1.4) circle (0.3);
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AES is a block cipher}
+	\begin{itemize}[<+->]
+		\item AES takes a 16-byte input, produces a 16-byte output.
+		\item Key can be 16, 24 or 32 bytes.
+		\item OK, so what if we want to encrypt more than 16 bytes?
+		\item \textbf{Proposal}: split the plaintext into 16 byte chunks, encrypt
+		      each of them with the same key.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Block cipher examples}
+	\begin{columns}
+		\begin{column}{0.33\textwidth}
+			\imagewithcaption{tux_plaintext.png}{What we start with}
+		\end{column}
+		\pause
+		\begin{column}{0.33\textwidth}
+			\imagewithcaption{tux_encrypted_ecb.png}{What we get}
+		\end{column}
+		\pause
+		\begin{column}{0.33\textwidth}
+			\imagewithcaption{tux_encrypted_ctr.png}{What we actually want}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Block cipher modes of operation}
+	\bigimagewithcaption{block_cipher_modes.png}{Source: Wikipedia}
+\end{frame}
+
+\begin{frame}{Cryptographic building blocks}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Security goals}
+			\begin{itemize}
+				\item \textbf{Confidentiality}: Data exchanged between Client and Server
+				      is only known to those parties.
+
+				\item \textbf{Authentication}: If Server receives data from Client,
+				      then Client sent it to Server.
+
+				\item \textbf{Integrity}: If Server modifies data owned by Client,
+				      Client can find out.
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\textbf{Examples}
+			\begin{itemize}[<+->]
+				\item \textbf{Confidentiality}: When you send a private message on Signal,
+				      only you and the recipient can read the content.
+				\item \textbf{Authentication}: When you receive an email from your boss,
+				      you can verify it actually came from them.
+				\item \textbf{Integrity}: Your computer can verify that software update
+				      downloads haven't been tampered with during transmission.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Security goals: more examples}
+	\begin{itemize}[<+->]
+		\item \textbf{TLS (HTTPS)} ensures that data exchanged between the client
+		      and the server is confidential and that parties are authenticated.
+		      \begin{itemize}
+			      \item Allows you to log into gmail.com without your ISP learning your password.
+		      \end{itemize}
+		\item \textbf{FileVault 2} ensures data confidentiality and integrity on
+		      your MacBook.
+		      \begin{itemize}
+			      \item Prevents thieves from accessing your data if your MacBook is stolen.
+		      \end{itemize}
+		\item \textbf{Signal} implements post-compromise security, an advanced security
+		      goal.
+		      \begin{itemize}
+			      \item Allows a conversation to ``heal'' in the event of a temporary key
+			            compromise.
+
+			      \item More on that later in the course.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS 1.3: high-level sketch}
+	\bigimagewithcaption{tls_13_sketch}{Source: Mostafa Ibrahim}
+\end{frame}
+
+\begin{frame}{TLS 1.3: high-level sketch}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Public key agreement} (eg. Diffie-Hellman) is used to establish
+				      a shared secret between the client and the server.
+				\item \textbf{AES} is used for encrypting data in transit.
+				\item \textbf{SHA-2} is used for hashing (checking certificates, etc.)
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\bigimagewithcaption{tls_13_sketch}{Source: Mostafa Ibrahim}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{TLS 1.3: high-level sketch}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Through the design, we accomplish the desired \textbf{security
+					      goals} under a well-specified \textbf{threat model}:
+				\item \textbf{Security goals}: confidentiality of data, authentication
+				      of the server towards the client\ldots
+				\item \textbf{Threat model}: malicious Internet Service Provider (ISP),
+				      etc.
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\bigimagewithcaption{tls_13_sketch}{Source: Mostafa Ibrahim}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{How TLS 1.3 was made}
+	\bigimagewithcaption{fischer}{}
+\end{frame}
+
+\begin{frame}{How TLS 1.3 was made}
+	\bigimagewithcaption{fischer_tls_13_bubbles}{}
+\end{frame}
+
+\begin{frame}{From hard problems to real-world security}
+	\begin{center}
+		\Large\textbf{The journey we'll trace}
+	\end{center}
+	\vspace{0.5cm}
+	\begin{enumerate}[<+->]
+		\item \textbf{Mathematical insight}: Discrete logarithm is hard to compute.
+		\item \textbf{Cryptographic innovation}: Diffie-Hellman key exchange leverages this hardness.
+		\item \textbf{Real-world impact}: Secure communication for billions of people daily.
+	\end{enumerate}
+	\vspace{1cm}
+	\textbf{This is the power of applied cryptography}: transforming abstract mathematical problems into tools that help people and protect our digital lives.
+\end{frame}
+
+\begin{frame}{Course goals}
+	\begin{itemize}[<+->]
+		\item Understand the reasoning behind the math of modern cryptography.
+		\item Analyze and prove the security of cryptographic constructions.
+		\item Understand how cryptographic constructions can be composed to build real-world
+		      secure protocols and systems.
+		\item Discern between theoretical cryptography and applied cryptography from
+		      an engineering perspective.
+		\item Critically assess security implementations and evaluate real-world cryptographic
+		      protocols.
+		\item Gain an understanding of the future of cryptography and its role in emerging
+		      technologies.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Course prerequisites}
+	\begin{itemize}
+		\item Good but optional: CMPS 215 (Theory of Computation)
+		\item If you want to understand whether you have the sufficient background for this course, review this revision chapter and try to do all the exercises: \url{https://joyofcryptography.com/pdf/chap0.pdf}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Class materials}
+	\begin{itemize}[<+->]
+		\item \textbf{Joy of Cryptography}: learn how to reason about and prove systems secure.
+		\item \textbf{Attack papers, codebases, labs}: hard engineering perspective.
+		      \vspace{1cm}
+		\item \textbf{Always keep an eye on the website:} Course news, updates,
+		      materials, slides will all be posted there.
+		      \url{https://appliedcryptography.page}
+		\item I am aiming for the most engaging course possible!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[plain]
+	\titlepage
+\end{frame}
+\end{document}

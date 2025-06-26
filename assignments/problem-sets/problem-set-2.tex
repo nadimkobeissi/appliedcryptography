@@ -1,0 +1,259 @@
+\documentclass[10pt,a4paper,american]{article}
+\newcommand{\aublogopath}{../../website/res/img/aub_black.png}
+\usepackage{../../misc/macros/joc}
+\usepackage{../../misc/fonts/fonts}
+\usepackage{../../misc/macros/classhandout}
+
+\begin{document}
+
+\classhandoutheader
+
+\section*{Problem Set 2: Symmetric Cryptography}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	\textbf{Instructions:} This problem set covers topics in provable security from parts 1.4\footnote{\url{https://appliedcryptography.page/slides/1-4.pdf}}, 1.5\footnote{\url{https://appliedcryptography.page/slides/1-5.pdf}} and 1.6\footnote{\url{https://appliedcryptography.page/slides/1-6.pdf}} of the course. Submit your solutions as a neatly formatted PDF. You are encouraged to collaborate with classmates in studying the material, but your submitted solutions must be your own work. For proofs, clearly state your assumptions, steps, and conclusions.
+\end{tcolorbox}
+
+\section{Pseudorandomness (20 points)}
+
+\subsection{Pseudorandom Generators (10 points)}
+
+\begin{enumerate}
+	\item (3 points) Explain the limitations of the one-time pad for practical encryption and why pseudorandom generators (PRGs) are needed in modern cryptographic systems.
+
+	\item (3 points) Analyze the security implications of the following PRG construction, where $G$ is a secure PRG:
+	      \begin{align*}
+		      H(S) = A \| B \| C \| D \text{ where } A \| B = G(S) \text{ and } C \| D = G(B)
+	      \end{align*}
+	      Determine whether $H$ is a secure PRG. If not, provide a distinguisher that can tell apart $H(S)$ from a truly random string with non-negligible advantage.
+
+	\item (4 points) Consider the stream cipher RC4:
+	      \begin{enumerate}
+		      \item Describe the key components of RC4's design and how it generates a pseudorandom keystream.
+		      \item Explain two significant weaknesses that led to RC4 being considered cryptographically broken today.
+		      \item What modern alternatives would you recommend as replacements for RC4, and why?
+	      \end{enumerate}
+\end{enumerate}
+
+\subsection{Pseudorandom Functions and Permutations (10 points)}
+
+\begin{enumerate}
+	\item (3 points) Consider the following PRF construction: $F(K, X) = G(K) \oplus X$, where $G$ is a secure PRG.
+	      \begin{enumerate}
+		      \item Is $F$ a secure PRF? If not, describe a distinguisher that can effectively tell $F$ apart from a random function.
+		      \item Explain how this example illustrates the ``Golden Rule of PRFs.''
+	      \end{enumerate}
+
+	\item (4 points) For Feistel ciphers:
+	      \begin{enumerate}
+		      \item Explain why a 2-round Feistel cipher cannot be a secure pseudorandom permutation (PRP).
+		      \item Prove that Feistel ciphers are always permutations, regardless of the security of their round functions.
+	      \end{enumerate}
+
+	\item (3 points) Compare and contrast PRFs and PRPs:
+	      \begin{enumerate}
+		      \item Explain the key differences in their definitions and properties.
+		      \item Describe how PRPs can be ``downgraded'' to PRFs, but not necessarily vice versa.
+		      \item Explain why collisions are inevitable for PRFs but not for PRPs.
+	      \end{enumerate}
+\end{enumerate}
+
+\section{Chosen-Plaintext and Chosen-Ciphertext Attacks (20 points)}
+
+\subsection{CPA Security (10 points)}
+
+\begin{enumerate}
+	\item (5 points) Consider the CPA security definition:
+	      \begin{center}
+		      \sslinked{
+			      \sslibrary{\Sigma}{cpa-real}{
+				      $K \twoheadleftarrow \Sigma.\mathcal{K}$\\[1em]
+				      \sslibrarysubroutine{cpa.enc}{M}{
+					      $C \coloneq \Sigma.\texttt{Enc}(K, M)$\\
+					      return $C$
+				      }{1}
+			      }{0.8}
+		      }{\approxeq}{
+			      \sslibrary{\Sigma}{cpa-rand}{
+				      \sslibrarysubroutine{cpa.enc}{M}{
+					      $C \twoheadleftarrow \Sigma.\mathcal{C}(|M|)$\\
+					      return $C$
+				      }{1}
+			      }{0.8}
+		      }
+	      \end{center}
+	      \begin{enumerate}
+		      \item Explain why deterministic encryption schemes always fail CPA security.
+		      \item Construct a simple distinguisher program that can break the CPA security of any deterministic encryption scheme.
+		      \item Analyze what practical security vulnerabilities exist in systems that use non-CPA-secure encryption.
+	      \end{enumerate}
+
+	\item (5 points) For each of the following encryption schemes, determine whether it achieves CPA security. If not, provide a specific attack:
+	      \begin{enumerate}
+		      \item $\textsf{Enc}(K, M) = (R, F(K, R) \oplus M)$ where $R \twoheadleftarrow \{0,1\}^{\lambda}$ and $F$ is a secure PRF.
+		      \item $\textsf{Enc}(K, M) = (R, F(K, M) \oplus R)$ where $R \twoheadleftarrow \{0,1\}^{\lambda}$ and $F$ is a secure PRF.
+		      \item AES in Electronic Codebook (ECB) mode.
+		      \item AES in Counter (CTR) mode with a randomly chosen IV.
+	      \end{enumerate}
+\end{enumerate}
+
+\subsection{CCA Security and Authenticated Encryption (10 points)}
+
+\begin{enumerate}
+	\item (3 points) Format oracle attacks:
+	      \begin{enumerate}
+		      \item Explain how the null-oracle attack works against CTR mode encryption and why it's devastating despite CTR mode being CPA-secure.
+		      \item Describe a real-world scenario where a format oracle might be inadvertently exposed in a cryptographic system.
+		      \item Calculate the approximate number of oracle queries needed to recover a 1 KB file using the null-oracle attack, and explain why this is practical for an attacker.
+	      \end{enumerate}
+
+	\item (4 points) For the following encryption scheme constructions, determine whether each provides CCA security and/or authenticated encryption (AE). Justify your answers with brief explanations:
+	      \begin{enumerate}
+		      \item Encrypt-then-MAC: $C = \textsf{Enc}(K_e, M)$, $T = \textsf{MAC}(K_m, C)$, output $(C, T)$
+		      \item Encrypt-and-MAC: $C = \textsf{Enc}(K_e, M)$, $T = \textsf{MAC}(K_m, M)$, output $(C, T)$
+		      \item MAC-then-encrypt: $T = \textsf{MAC}(K_m, M)$, $C = \textsf{Enc}(K_e, M\|T)$, output $C$
+		      \item Explain a scenario where replay attacks could succeed even against a system using authenticated encryption, and how associated data (AD) addresses this vulnerability.
+	      \end{enumerate}
+
+	\item (3 points) AES-GCM (Galois/Counter Mode):
+	      \begin{enumerate}
+		      \item Explain how AES-GCM combines CTR mode encryption with Galois field multiplication for authentication. What security advantages does this provide over using separate encryption and MAC algorithms?
+		      \item Describe the critical security implications of nonce reuse in AES-GCM. What specific vulnerabilities arise when the same nonce is used for multiple messages?
+		      \item AES-GCM is sometimes implemented with different tag lengths. Analyze the security tradeoffs when using 128-bit tags versus 64-bit or 32-bit tags.
+		      \item Aside from nonce reuse, what is an unexpected vulnerability in AES-GCM that developers and engineers might not be aware of, but that might significantly impact the security of their software?
+	      \end{enumerate}
+\end{enumerate}
+
+\section{Collision-Resistant Hash Functions (30 points)}
+
+\subsection{Hash Function Properties (15 points)}
+
+\begin{enumerate}
+	\item (5 points) Collision resistance:
+	      \begin{enumerate}
+		      \item Explain why collisions must exist in any hash function that maps arbitrary-length inputs to fixed-length outputs.
+		      \item Using the birthday paradox, calculate approximately how many hashes must be computed to find a collision with 50\% probability in a 256-bit secure hash function.
+		      \item Describe a practical attack scenario where finding hash collisions would compromise a security system.
+	      \end{enumerate}
+
+	\item (5 points) Hash function construction:
+	      \begin{enumerate}
+		      \item Compare and contrast the Merkle-Damgård construction (used in SHA-2) and the Sponge construction (used in SHA-3).
+		      \item Explain how length extension attacks work against Merkle-Damgård hash functions and why the Sponge construction is resistant to these attacks.
+		      \item Describe the HMAC construction and explain how it protects against length extension attacks.
+	      \end{enumerate}
+
+	\item (5 points) Hash function evolution:
+	      \begin{enumerate}
+		      \item Describe the successful attacks against MD5 and SHA-1 that led to their deprecation.
+		      \item Explain the concept of chosen-prefix collisions and why they are particularly dangerous for certificate authorities.
+		      \item Compare the security of SHA-2 and SHA-3 against known cryptanalytic techniques.
+	      \end{enumerate}
+\end{enumerate}
+
+\subsection{Password Hashing (15 points)}
+
+\begin{enumerate}
+	\item (5 points) For each of the following password storage approaches, analyze the security implications if a server database is compromised:
+	      \begin{enumerate}
+		      \item Storing passwords in plaintext.
+		      \item Encrypting passwords with a key stored on the same server.
+		      \item Storing unsalted SHA-256 hashes of passwords.
+		      \item Storing salted SHA-256 hashes of passwords.
+		      \item Using a specialized password hashing function like Scrypt.
+	      \end{enumerate}
+
+	\item (5 points) Salting:
+	      \begin{enumerate}
+		      \item Explain how salt protects against precomputation attacks like rainbow tables.
+		      \item Calculate the storage requirements for properly salted password hashes, assuming 10,000 users, 16-byte salts, and 32-byte hash outputs.
+		      \item Describe best practices for generating and storing salts.
+	      \end{enumerate}
+
+	\item (5 points) Specialized password hashing functions:
+	      \begin{enumerate}
+		      \item Explain why memory-hard functions like Scrypt provide better protection against specialized hardware attacks compared to PBKDF2.
+		      \item Describe how each of Scrypt's parameters (N, r, p) affect its security and performance.
+		      \item Compare the relative speeds of SHA-256, PBKDF2, and Scrypt for password hashing, and explain the security implications of these speed differences.
+	      \end{enumerate}
+\end{enumerate}
+
+\section{Applied Cryptography Case Studies (30 points)}
+
+\begin{enumerate}
+	\item (10 points) \textbf{Block Cipher Modes Analysis}
+
+	      With reference to the block cipher modes covered in lectures 1-4, 1-5, and 1-6, analyze the following scenarios:
+	      \begin{enumerate}
+		      \item A secure file storage application needs to encrypt user files at rest. Compare CBC, CTR, and AES-GCM modes for this application, discussing:
+		            \begin{itemize}
+			            \item Performance implications for large files.
+			            \item Error propagation if parts of the ciphertext are corrupted.
+			            \item The security implications of IV/nonce reuse.
+			            \item Data integrity guarantees and the advantages of authenticated encryption with AES-GCM.
+		            \end{itemize}
+		      \item A real-time messaging application needs to encrypt short messages with minimal latency. Compare CBC, CTR, and AES-GCM modes for this application, discussing:
+		            \begin{itemize}
+			            \item Parallelizability for encryption/decryption.
+			            \item Suitability for streaming data.
+			            \item Protection against chosen-ciphertext attacks.
+			            \item How AES-GCM addresses authentication needs compared to unauthenticated modes.
+		            \end{itemize}
+		      \item For AES-GCM specifically:
+		            \begin{itemize}
+			            \item Explain the security impact of nonce reuse in AES-GCM compared to nonce reuse in CTR mode.
+			            \item Discuss the performance tradeoffs of AES-GCM compared to using separate encryption (CTR mode) and authentication (HMAC).
+			            \item Explain how AES-GCM's authenticated encryption properties protect against attacks that would succeed against CBC or CTR modes.
+		            \end{itemize}
+	      \end{enumerate}
+
+	\item (10 points) \textbf{Hash Function Security Analysis}
+
+	      A software update system uses hash functions to verify the integrity of downloads. The system works as follows:
+	      \begin{itemize}
+		      \item The software vendor posts SHA-1 hashes of legitimate update files on their HTTPS website.
+		      \item Users download the update file over HTTP (not HTTPS) for bandwidth efficiency.
+		      \item The update client verifies the downloaded file by computing its SHA-1 hash and comparing it to the hash obtained from the HTTPS website.
+		      \item If the hashes match, the update is installed automatically.
+	      \end{itemize}
+
+	      Analyze this system:
+	      \begin{enumerate}
+		      \item Identify at least three security vulnerabilities in this design.
+		      \item For each vulnerability, describe a specific attack scenario.
+		      \item Propose improvements to address each vulnerability while maintaining performance and usability.
+		      \item Design a more secure alternative system using modern cryptographic primitives discussed in class.
+	      \end{enumerate}
+
+	\item (10 points) \textbf{Password Management System Design}
+
+	      You are designing a password management system for a new web application with the following requirements:
+	      \begin{itemize}
+		      \item Users must be able to securely recover their account if they forget their password.
+		      \item The system must be resistant to offline dictionary attacks if the database is compromised.
+		      \item The system must support high-performance authentication for a large user base.
+		      \item The system should detect and prevent credential stuffing attacks.
+	      \end{itemize}
+
+	      Design and analyze a complete solution:
+	      \begin{enumerate}
+		      \item Specify which cryptographic primitives you would use for password storage and why.
+		      \item Describe your password recovery mechanism and analyze its security properties.
+		      \item Explain how your system balances security and performance requirements.
+		      \item Analyze potential vulnerabilities in your design and how they are mitigated.
+	      \end{enumerate}
+\end{enumerate}
+
+\begin{tcolorbox}[colframe=EarthBrown!30!white,colback=EarthBrown!5!white]
+	\textbf{Bonus Challenge (20 extra points):} The security of AES and other block ciphers depends on their resistance to various forms of cryptanalysis. Research and analyze one of the following advanced attacks:
+
+	\begin{enumerate}
+		\item \textbf{Side-channel attacks}: Explain how timing attacks, power analysis, or cache attacks can leak information about encryption keys in practical implementations of AES.
+		\item \textbf{Related-key attacks}: Describe how related-key attacks work against block ciphers and why they are significant even when normal usage involves only unrelated keys.
+		\item \textbf{Quantum attacks}: Analyze the impact of Grover's algorithm on the security of AES with different key sizes (128, 192, 256 bits) and discuss appropriate post-quantum key length recommendations.
+	\end{enumerate}
+
+	Your answer should include: a description of the attack, its practical feasibility, relevant examples of successful implementations against real systems, and appropriate countermeasures.
+\end{tcolorbox}
+
+\end{document}

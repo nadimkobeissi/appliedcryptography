@@ -1,0 +1,169 @@
+\documentclass[10pt,a4paper,american]{article}
+\newcommand{\aublogopath}{../../website/res/img/aub_black.png}
+\usepackage{../../misc/macros/joc}
+\usepackage{../../misc/fonts/fonts}
+\usepackage{../../misc/macros/classhandout}
+
+\begin{document}
+
+\classhandoutheader
+
+\section*{Lab Assignment: Building a Secure Messenger}
+
+\subsection*{Overview}
+In this lab, you will design and implement a secure messaging application from scratch. This represents an opportunity to apply cryptographic primitives to build a complete end-to-end encrypted communication system. Secure messengers enable users to exchange private information over untrusted networks while protecting confidentiality, integrity, and authenticity of messages. By building one, you'll gain practical experience with cryptographic protocols, network security, and security-focused software design principles. This lab will require you to implement secure key exchange, encrypted message transmission, and proper security guarantees such as forward secrecy and deniability.
+
+\subsection*{Learning Objectives}
+After completing this lab, you should be able to:
+\begin{itemize}
+	\item Apply cryptographic primitives such as public key cryptography and authenticated encryption.
+	\item Implement secure communication protocols with proper key exchange.
+	\item Design and build a security-critical networked application with proper threat modeling.
+	\item Evaluate the security properties of end-to-end encrypted communication systems.
+\end{itemize}
+
+\subsection*{Background}
+Secure messaging applications provide private communication over potentially compromised networks. A secure messenger typically:
+\begin{itemize}
+	\item Employs end-to-end encryption to ensure only the intended recipient can read messages.
+	\item Provides forward secrecy so compromise of current keys doesn't expose previous communications.
+	\item Authenticates correspondents to prevent message forgery and man-in-the-middle attacks.
+	\item Protects metadata where possible to minimize surveillance risks.
+	\item Enables secure group communications and file transfers.
+\end{itemize}
+
+\subsection*{Requirements}
+Your secure messenger must implement the following core functionality:
+
+\begin{enumerate}
+	\item \textbf{User Identity and Key Management:}
+	      \begin{itemize}
+		      \item Generate cryptographic identities for users (public/private key pairs).
+		      \item Implement secure storage of private keys.
+		      \item Create a mechanism for key exchange and verification.
+		      \item Support key rotation and revocation.
+	      \end{itemize}
+
+	\item \textbf{Message Encryption:}
+	      \begin{itemize}
+		      \item Implement end-to-end encryption using a recognized protocol (e.g., Signal Protocol).
+		      \item Use authenticated encryption for message confidentiality and integrity.
+		      \item Support forward secrecy through proper key ratcheting.
+		      \item Implement a mechanism for secure message serialization and deserialization.
+	      \end{itemize}
+
+	\item \textbf{Communication Features:}
+	      \begin{itemize}
+		      \item Support one-to-one messaging.
+		      \item Include basic message delivery notifications.
+		      \item Implement message persistence with proper encryption at rest.
+	      \end{itemize}
+
+	\item \textbf{User Interface:}
+	      \begin{itemize}
+		      \item Create a simple CLI or GUI interface for interaction.
+		      \item Implement basic operations: send messages, view conversations, and manage contacts.
+		      \item Include proper authentication and session management.
+		      \item Add timeout for automatic logout.
+		      \item Include proper error handling without leaking sensitive information.
+	      \end{itemize}
+\end{enumerate}
+
+\subsection*{Implementation Guidelines}
+
+\subsubsection*{Step 1: Design}
+Begin by creating a threat model for your secure messenger. Consider:
+\begin{itemize}
+	\item Who are the attackers? (Network adversaries, server operators, malicious contacts)
+	\item What assets are you protecting? (Message content, metadata, contact information)
+	\item What are the attack vectors? (TLS interception, server compromise, client malware)
+	\item What cryptographic protections will you employ?
+\end{itemize}
+
+Document your design decisions and security assumptions.
+
+\subsubsection*{Step 2: Cryptographic Building Blocks}
+Implement or properly use existing libraries for:
+\begin{itemize}
+	\item Public-key cryptography for identity and initial key exchange.
+	\item Symmetric key ratcheting for forward secrecy.
+	\item Authenticated encryption for message protection.
+	\item Secure random number generation.
+\end{itemize}
+
+\subsubsection*{Step 3: Core Functionality}
+Implement the core functionality:
+\begin{itemize}
+	\item User registration and identity establishment.
+	\item Contact discovery and key exchange.
+	\item Message encryption, transmission, and decryption.
+	\item Session management and key ratcheting.
+\end{itemize}
+
+\subsubsection*{Step 4: User Interface}
+Create an interface that balances security and usability:
+\begin{itemize}
+	\item User authentication flow.
+	\item Conversation view and message composition.
+	\item Contact management and verification.
+	\item Security indicators and warnings.
+\end{itemize}
+
+\subsubsection*{Step 5: Security Hardening}
+Add security features like:
+\begin{itemize}
+	\item Memory protection techniques for cryptographic material.
+	\item Protection against replay and message reordering attacks.
+	\item Input validation and error handling.
+	\item Secure deletion of messages when requested.
+\end{itemize}
+
+\subsection*{Deliverables}
+Submit the following:
+
+\begin{enumerate}
+	\item Source code for your secure messenger.
+	\item Design document including:
+	      \begin{itemize}
+		      \item Threat model and security assumptions.
+		      \item Description of cryptographic mechanisms used.
+		      \item Network protocol specifications.
+		      \item Design decisions and their rationale.
+	      \end{itemize}
+	\item User manual explaining how to use your secure messenger.
+	\item Security analysis discussing:
+	      \begin{itemize}
+		      \item Strengths of your implementation.
+		      \item Limitations and potential vulnerabilities.
+		      \item Suggested improvements for a production version.
+	      \end{itemize}
+\end{enumerate}
+
+\subsection*{Evaluation Criteria}
+Your project will be evaluated based on:
+
+\begin{itemize}
+	\item Correctness of cryptographic implementations.
+	\item Security of the overall design and protocol.
+	\item Completeness of required functionality.
+	\item Quality of code and documentation.
+	\item Thoughtfulness of security analysis.
+	\item Robustness against the threats identified in your model.
+\end{itemize}
+
+\subsection*{Resources}
+\begin{itemize}
+	\item The course textbook and materials on public-key cryptography and secure protocols.
+	\item Libraries: libsodium, OpenSSL, Signal Protocol libraries based on your language choice.
+	\item Research papers on secure messaging protocols (see course website).
+	\item Specifications for Signal Protocol, OTR, or Matrix.
+\end{itemize}
+
+\subsection*{Submission Guidelines}
+\begin{itemize}
+	\item Submit your code as a ZIP archive or through a Git repository.
+	\item Include all documentation in PDF or Markdown format.
+	\item Presentations: Prepare a 10-minute presentation demonstrating your secure messenger.
+\end{itemize}
+
+\end{document}

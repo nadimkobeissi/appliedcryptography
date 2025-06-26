@@ -1,0 +1,1657 @@
+\documentclass[aspectratio=169, lualatex, handout]{beamer}
+\makeatletter\def\input@path{{theme/}}\makeatother\usetheme{cipher}
+
+\title{Applied Cryptography}
+\author{Nadim Kobeissi}
+\institute{American University of Beirut}
+\instituteimage{images/aub_white.png}
+\date{\today}
+\coversubtitle{CMPS 297AD/396AI\\Fall 2025}
+\coverpartname{Part 1: Provable Security}
+\covertopicname{1.5: Chosen-Plaintext \& Chosen-Ciphertext Attacks}
+\coverwebsite{https://appliedcryptography.page}
+
+\begin{document}
+\begin{frame}[plain]
+	\titlepage
+\end{frame}
+
+\section{Chosen-Plaintext Attacks}
+
+\begin{frame}{CPA Security}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\definitionbox{Security Against Chosen-Plaintext Attacks (CPA Security)}{
+				Let $\Sigma$ be an encryption scheme, and let $\Sigma.\mathcal{C}(\ell)$ denote the set of possible ciphertexts for plaintexts of length $\ell$. If $\Sigma$ supports only plaintexts of a single length, we can simply write $\Sigma.\mathcal{C}$ to denote the entire set of ciphertexts.\footnote{i.e. ``just forget about the length''.}\\[0.5em]
+
+				$\Sigma$ has security against \textbf{chosen-plaintext attacks} if the following two libraries are indistinguishable:
+			}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\sslinked{
+				\sslibrary{\Sigma}{cpa-real}{
+					$K \twoheadleftarrow \Sigma.\mathcal{K}$\\[1em]
+					\sslibrarysubroutine{cpa.enc}{M}{
+						$C \coloneq \Sigma.\texttt{Enc}(K, M)$\\
+						return $C$
+					}{1}
+				}{0.8}
+			}{\approxeq}{
+				\sslibrary{\Sigma}{cpa-rand}{
+					\sslibrarysubroutine{cpa.enc}{M}{
+						$C \twoheadleftarrow \Sigma.\mathcal{C}(|M|)$\\
+						return $C$
+					}{1}
+				}{0.8}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why CPA security matters}
+	\begin{itemize}[<+->]
+		\item CPA security means: \textit{``even if I let you encrypt any message you want, you can't obtain any distinguisher regarding my scheme.''}
+		\item \textbf{Why this matters in real life:}
+		      \begin{itemize}[<+->]
+			      \item Attackers often can trick systems into encrypting data they choose.
+			      \item Without CPA security, seeing these encryptions could reveal your secrets.
+			      \item Example: If bank transactions always encrypt to the same ciphertexts, attackers could identify your purchases.
+		      \end{itemize}
+		\item The only thing that's allowed to leak is the length of messages/ciphertext.
+		\item Most modern encryption is designed to have this important property.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Message length: not important, not unimportant}
+	\begin{itemize}[<+->]
+		\item Even with CPA security, the \textbf{length} of messages is still leaked.
+		\item This seemingly minor leak can reveal surprising information:
+		      \begin{itemize}[<+->]
+			      \item \textbf{Encrypted VoIP calls}: Length patterns can reveal which language is spoken.
+			      \item \textbf{Encrypted web traffic}: Sizes of requests/responses identify websites.
+			      \item \textbf{Encrypted messages}: Length patterns can reveal the type of content (document, image, etc.)
+			      \item \textbf{Encrypted commands}: Length often reveals which command was issued.
+		      \end{itemize}
+		\item Mitigation typically involves padding messages to fixed lengths or standard increments.
+		\item This is why many secure protocols use fixed-size packets or add random padding.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{CPA security is why we avoid deterministic encryption}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Deterministic encryption will always fail CPA security!
+				\item If the same message always encrypts to the same ciphertext:
+				      \begin{itemize}
+					      \item Attacker can recognize repeat messages.
+					      \item Can build a ``dictionary'' of known plaintexts.
+					      \item etc.
+				      \end{itemize}
+				\item ECB mode is a classic example of insecure deterministic encryption.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\ssprogram{}{
+					$M \twoheadleftarrow \mathcal{M}$\\
+					$C_1 \coloneq \func{cpa.enc}{M}$\\
+					$C_2 \coloneq \func{cpa.enc}{M}$\\
+					return $C_1 == C_2$
+				}{1}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Non-deterministic encryption isn't hard...}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item AES-CTR turns AES into a non-deterministic PRF...
+				\item AES-GCM even turns it into a non-deterministic authenticated cipher...\footnote{More on these later. An authenticated cipher is one where the ciphertext can't be modified by the adversary without that being detected.}
+				\item We can just as easily make a PRF non-deterministic:
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sssubroutine{enc}{K, M}{
+				$R \twoheadleftarrow \bits^\lambda$\\
+				$S \coloneq F(K, R) \oplus M$\\
+				return $R\|S$
+			}{1}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{...but it can be fragile}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item We switch M and R's places in \lib{}{cpa-real}'s encryption function.
+				\item Is the scheme still secure?
+				\item \textbf{No!}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{}{cpa-real}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{cpa.enc}{M}{
+						$R \twoheadleftarrow \bits^\lambda$\\
+						$S \coloneq F(K, \hl{M}) \oplus \hl{R}$\\
+						return $R\|S$
+					}{1}
+				}{1}
+			}{\overset{?}{\approxeq}}{
+				\sslibrary{}{cpa-rand}{
+					\sslibrarysubroutine{cpa.enc}{M}{
+						$R\|S \twoheadleftarrow \bits^{2\lambda}$\\
+						return $R\|S$
+					}{1}
+				}{1}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The Golden Rule of PRFs}
+	\definitionbox{The Golden Rule of PRFs}{
+		If a PRF $F$ is being used as a component in a larger construction $H$, then security usually rests on how well $H$ can ensure distinct inputs to $F$.
+	}
+	\begin{itemize}[<+->]
+		\item When analyzing PRF security, focus on input uniqueness.
+		\item Repeated inputs to a PRF create exploitable patterns.
+		\item Even if $F$ is secure, $H$ can be broken if it causes $F$ to receive duplicate inputs.
+		\item Don't try to directly distinguish $F$'s outputs from uniform.
+		\item Instead, exploit how $H$ uses $F$ incorrectly.
+		\item Find input patterns that force collisions within $F$.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{...but it can be fragile}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item $F(K, M)$ is now constant.
+				\item \prob{\prog{}\link\lib{}{cpa-real} \Rightarrow \texttt{true}} $ = 1$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\ssprogram{}{
+					$M \twoheadleftarrow \mathcal{M}$\\
+					$R_1\|S_1 \coloneq \func{cpa.enc}{M}$\\
+					$R_2\|S_2 \coloneq \func{cpa.enc}{M}$\\
+					return $S_1 \oplus S_2 == R_1 \oplus R_2$
+				}{0.8}
+			}{\link}{
+				\sslibrary{}{cpa-real}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{cpa.enc}{M}{
+						$R \twoheadleftarrow \bits^\lambda$\\
+						$S \coloneq F(K, \hl{M}) \oplus \hl{R}$\\
+						return $R\|S$
+					}{1}
+				}{0.8}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AES is a block cipher}{Reminder}
+	\begin{itemize}[<+->]
+		\item AES takes a 16-byte input, produces a 16-byte output.
+		\item Key can be 16, 24 or 32 bytes. \pause
+		\item OK, so what if we want to encrypt more than 16 bytes? \pause
+		\item \textbf{Proposal}: split the plaintext into 16 byte chunks, encrypt
+		      each of them with the same key.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Block cipher examples}
+	\begin{columns}
+		\begin{column}{0.33\textwidth}
+			\imagewithcaption{tux_plaintext.png}{What we start with}
+		\end{column}
+		\pause
+		\begin{column}{0.33\textwidth}
+			\imagewithcaption{tux_encrypted_ecb.png}{What we get}
+		\end{column}
+		\pause
+		\begin{column}{0.33\textwidth}
+			\imagewithcaption{tux_encrypted_ctr.png}{What we actually want}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AES by itself is deterministic}
+	\begin{columns}[c]
+		\begin{column}{0.7\textwidth}
+			\begin{itemize}[<+->]
+				\item AES as a block cipher is inherently \textbf{deterministic}:
+				      \begin{itemize}
+					      \item $\texttt{AES}(K, M) = C$ will always produce the same $C$.
+					      \item This makes raw AES fail CPA security.
+				      \end{itemize}
+				\item What makes AES secure in practice?
+				      \begin{itemize}
+					      \item \textbf{Block cipher modes} (CBC, CTR, GCM) add randomness/state using ``initialization vectors''
+					            \begin{itemize}
+						            \item IV is fancy name for ``random bytes used once''.\footnote{Also referred to as ``nonces'' for ``number used once'', although in some block cipher modes such as AES-CBC, they can technically be used multiple times without problems.}
+					            \end{itemize}
+					      \item IVs ensure the same plaintext encrypts differently each time.
+				      \end{itemize}
+				\item Without a proper mode, AES is like ECB mode: predictable patterns
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+			\begin{center}
+				\ssprogram{AES}{
+					$K \twoheadleftarrow \bits^{\lambda}$\\
+					$M \twoheadleftarrow \mathcal{M}$\\[0.5em]
+					$C_1 \coloneq \texttt{AES}(K, M)$\\
+					$C_2 \coloneq \texttt{AES}(K, M)$\\[0.5em]
+					$C_1 == C_2$
+				}{0.85}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Block cipher modes of operation}
+	\bigimagewithcaption{block_cipher_modes.png}{Source: Wikipedia}
+\end{frame}
+
+\begin{frame}{CBC mode: a closer look}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item CBC (Cipher Block Chaining) uses previous ciphertext to randomize current block.
+				\item Requires a random initialization vector (IV).
+				\item Each block's encryption depends on all previous blocks.
+				\item Changes to one block affect all subsequent ciphertext blocks.
+				\item Sequential encryption (can't parallelize).
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\sssubroutine{Enc}{K, M_1\|\cdots\|M_\ell}{
+				$C_0 \twoheadleftarrow \bits^\lambda$\\
+				$\text{for } i=1 \text{ to } \ell:$\\
+				$\quad C_i \coloneq F(K, C_{i-1} \oplus M_i)$\\
+				$\textbf{return } C_0\|C_1\|\cdots\|C_\ell$
+			}{1}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{CBC mode: a closer look}
+	\vspace{-0.3cm}
+	\bigimagewithcaption{cbc_with_dec.pdf}{Source: The Joy of Cryptography}
+\end{frame}
+
+\begin{frame}{CTR mode: a closer look}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item CTR (Counter) mode turns a block cipher into a stream cipher.
+				\item Uses a nonce ($C_0$) plus a counter to create unique inputs to $F$.
+				\item Each block's encryption is independent of other blocks.
+				\item Highly parallelizable (unlike CBC).
+				\item The nonce must never be reused with the same key.
+				\item Widely used in modern protocols (TLS, SSH, etc.)
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\sssubroutine{Enc}{K, M_1\|\cdots\|M_\ell}{
+				$C_0 \twoheadleftarrow \bits^\lambda$\\
+				$\text{for } i=1 \text{ to } \ell:$\\
+				$\quad C_i \coloneq F(K, C_0 + i - 1) \oplus M_i$\\
+				$\textbf{return } C_0\|C_1\|\cdots\|C_\ell$
+			}{1}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{CTR mode: a closer look}
+	\bigimagewithcaption{ctr_with_dec.pdf}{Source: The Joy of Cryptography}
+\end{frame}
+
+\section{Chosen-Ciphertext Attacks}
+
+\begin{frame}{Introducing chosen-ciphertext attacks}
+	\begin{itemize}[<+->]
+		\item Imagine this scenario at your company:
+		      \begin{itemize}[<+->]
+			      \item You discover a bug: software crashes when decrypting ciphertexts that yield plaintexts with null characters.
+			      \item You think: ``We never encrypt messages with null bytes, so no problem!''
+		      \end{itemize}
+		\item An attacker can:
+		      \begin{itemize}[<+->]
+			      \item Send specially crafted ciphertexts to your system
+			      \item Observe which ones crash your software (contain null bytes) and which don't
+			      \item Use this information to completely break your encryption scheme!
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Introducing chosen-ciphertext attacks}
+	\begin{itemize}
+		\item This is a \textbf{chosen-ciphertext attack} (CCA):
+		      \begin{itemize}[<+->]
+			      \item Attacker can submit arbitrary ciphertexts for decryption.
+			      \item System leaks information about the decryption results (the crash).
+			      \item Even small information leaks can completely compromise security.
+			      \item All encryption schemes we've seen so far are vulnerable to this!
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Format-oracle attacks \& malleability}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item Scenario: victim using CTR mode decryption reveals if result contains a null character.
+				\item Information can leak through crashes, error messages, or behavior differences.
+				\item A single yes/no bit of information can be enough to break encryption!
+				\item Malleability: many encryption schemes allow attackers to make predictable changes to plaintexts by modifying ciphertexts.
+				\item CTR mode is especially vulnerable because XOR allows targeted bit-flipping.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\sssubroutine{nulloracle}{C}{
+				$M \coloneq \texttt{CTR.Dec}(K, C)$\\
+				if $M$ contains $\bit{0}\bit{0}$ character:\\
+				$\quad$ return $\texttt{true}$\\
+				else return $\texttt{false}$
+			}{1}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why is it called \func{nulloracle}{c}?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item In mythology and colloquial language:
+				      \begin{itemize}
+					      \item An oracle was a mystic who answered questions on behalf of the gods.
+					      \item Often gave enigmatic answers requiring interpretation.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\vspace{-0.4cm}
+			\bigimagewithcaption{oracle_painting_zoom.jpg}{\textit{The Oracle} by Camillo Miola, 1880\footnote{Absolutely beautiful painting, well-worth viewing in high resolution: \url{https://upload.wikimedia.org/wikipedia/commons/9/94/Camillo_Miola_\%28Biacca\%29_-_The_Oracle_-_72.PA.32_-_J._Paul_Getty_Museum.jpg}}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why is it called \func{nulloracle}{c}?}
+	\begin{itemize}[<+->]
+		\item In cryptography and computer science:
+		      \begin{itemize}
+			      \item An oracle is an algorithm that solves a specific problem.
+			      \item You can query it but can't see its internal workings.
+			      \item Oracles are often used as theoretical tools in security proofs.
+		      \end{itemize}
+		\item Our \func{nulloracle}{c} reveals only:
+		      \begin{itemize}
+			      \item Whether a decrypted ciphertext contains null (\bit{0}\bit{0}) characters.
+			      \item Just a single bit of information (yes/no).
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Null-oracle attack}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item An adversary who has access to \func{nulloracle}{C} can efficiently compute \texttt{Dec}$(K, C)$ for any $C$!
+				\item Yes, it really is enough.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\sssubroutine{nulloracle}{C}{
+				$M \coloneq \texttt{CTR.Dec}(K, C)$\\
+				if $M$ contains $\bit{0}\bit{0}$ character:\\
+				$\quad$ return $\texttt{true}$\\
+				else return $\texttt{false}$
+			}{1}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{CTR mode is malleable}{Defining malleability}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Malleability}{
+				An encryption scheme is \textbf{malleable} if, given an encryption $C$ of an unknown plaintext $M$, it is possible to create a new ciphertext $C' \neq C$ where $M' = \texttt{Dec}(K, C')$ is somehow related to $M$, so that $M'$ reveals some information about $M$.
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item In CTR mode: $C_i = F(K, C_0 + i - 1) \oplus M_i$
+				\item Flipping a bit in $C_i$ flips exactly the same bit in $M_i$.
+				\item Attackers can make targeted modifications without knowing the key.
+				\item Example: change ``transfer \$100'' to ``transfer \$900'' by modifying just one byte.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{CTR mode is malleable}{Defining malleability}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item In CTR mode: $C_i = F(K, C_0 + i - 1) \oplus M_i$
+				\item Flipping a bit in $C_i$ flips exactly the same bit in $M_i$.
+				\item Attackers can make targeted modifications without knowing the key.
+				\item Example: change ``transfer \$100'' to ``transfer \$900'' by modifying just one byte.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{ctr_dec.pdf}{CTR mode decryption.\\Source: The Joy of Cryptography}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{CTR mode is malleable}{Defining malleability}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item In CTR mode: $C_i = F(K, C_0 + i - 1) \oplus M_i$
+				\item Flipping a bit in $C_i$ flips exactly the same bit in $M_i$.
+				\item Attackers can make targeted modifications without knowing the key.
+				\item Example: change ``transfer \$100'' to ``transfer \$900'' by modifying just one byte.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{ctr_dec_delta.pdf}{CTR mode decryption.\\Source: The Joy of Cryptography}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{CTR mode is malleable}{The attack}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Suppose adversary captures ciphertext $C$ and wants to find plaintext $M = \texttt{Dec}(K, C)$.
+				\item Let's focus on discovering just the last byte of $M$.
+				\item If the last byte of $M$ is $b$, then $M = M' \| b$.
+				\item What if we modify the ciphertext by XORing the last byte with $b$?
+				\item This would turn the last byte of the plaintext into all zeros (null byte)!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{align*}
+				C \oplus (\ldots \bit{0}\bit{0} \| b) & \text{ decrypts to:}                            \\
+				                                      & M \oplus (\ldots \bit{0}\bit{0} \| b)           \\
+				                                      & = (M' \| b) \oplus (\ldots \bit{0}\bit{0} \| b) \\
+				                                      & = M' \| (b \oplus b)                            \\
+				                                      & = M' \| \bit{0}\bit{0}
+			\end{align*}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{CTR mode is malleable}{Finding one byte}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Problem: We don't know $b$ in advance!
+				\item Solution: Try all 255 possible values for $b$.
+				\item For each guess $g$, we:
+				      \begin{itemize}
+					      \item Create $C' = C \oplus (\ldots \bit{0}\bit{0} \| g)$
+					      \item Send $C'$ to the \func{nulloracle}{}
+					      \item If oracle returns \texttt{true}, then $g = b$!
+				      \end{itemize}
+				\item When we find the right value, we've discovered the last byte of $M$.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				Try these ciphertexts:\\
+				$C \oplus (\ldots \bit{0}\bit{0} \| \bit{0}\bit{1})$\\
+				$C \oplus (\ldots \bit{0}\bit{0} \| \bit{0}\bit{2})$\\
+				$C \oplus (\ldots \bit{0}\bit{0} \| \bit{0}\bit{3})$\\
+				$\vdots$\\
+				$C \oplus (\ldots \bit{0}\bit{0} \| \bit{f}\bit{e})$\\
+				$C \oplus (\ldots \bit{0}\bit{0} \| \bit{f}\bit{f})$
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{CTR mode is malleable}{Finding all bytes}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item We can use the same approach for any byte in the plaintext.
+				\item To find the $i$-th byte:
+				      \begin{itemize}
+					      \item Create a string of all zeros
+					      \item Set only the $i$-th byte to our guess $g$
+					      \item XOR this with the ciphertext
+					      \item Query the oracle
+				      \end{itemize}
+				\item By repeating for all bytes, we can recover the entire plaintext!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\ssprogram{null-oracle}{
+			$n := |C_1\|\cdots\|C_{\ell}|$\\
+			$M := ""$\\
+			\\
+			for $i = 1$ to $n$:\\
+			$\quad$ for each $b \in \{\bit{0}\bit{1}, \ldots, \bit{f}\bit{f}\}$:\\
+			$\quad\quad$ $\Delta := (\bit{0}\bit{0})^n$\\
+			$\quad\quad$ $\Delta[i] := b$\\
+			$\quad\quad$ if $\func{nulloracle}{C \oplus (0^\lambda \| \Delta)}$:\\
+			$\quad\quad\quad$ $M := M \| b$\\
+			$\quad\quad\quad$ next $i$\\
+			return $M$
+			}{0.8}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{CTR mode is malleable}{The power of chosen-ciphertext attacks}
+	\begin{itemize}[<+->]
+		\item With just 255 queries per byte, we can completely decrypt any ciphertext!
+		\item For context: decrypting a 1KB file would take about 250,000 queries.
+		\item This is extremely practical for an attacker.
+		\item All from a single bit of information about the plaintext (contains null or not).
+		\item This attack works because:
+		      \begin{itemize}
+			      \item CTR mode is malleable (we can make predictable changes to plaintext)
+			      \item The system leaks a tiny bit of information about decrypted plaintexts
+			      \item Together, these flaws completely break the encryption
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Is the null-oracle attack just brute-force?}
+	\begin{itemize}[<+->]
+		\item Yes and no!
+		\item It's brute-force on each byte independently:
+		      \begin{itemize}
+			      \item To recover $n$-byte plaintext: at most $255n$ oracle queries
+			      \item True brute-force on entire plaintext: $255^n$ (exponentially worse!)
+		      \end{itemize}
+		\item For a 16-byte message:
+		      \begin{itemize}
+			      \item Null-oracle attack: ~4,080 queries (16 × 255)
+			      \item True brute-force: ~$10^{38}$ queries ($255^{16}$)
+		      \end{itemize}
+		\item This attack is exponentially more efficient than traditional brute-force.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Can we just rate-limit the number of queries?}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item Rate-limiting might help, but:
+				      \begin{itemize}
+					      \item It only increases attack time, doesn't prevent it.
+					      \item Attackers can be patient or use multiple accounts.
+					      \item Legitimate users suffer from the rate-limiting.
+				      \end{itemize}
+				\item Better approach: cryptographic solutions!
+				      \begin{itemize}
+					      \item Fix the fundamental vulnerability, not just limit its exploitation.
+					      \item Create systems that are mathematically proven to resist chosen-ciphertext attacks.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{yoda_meme.jpg}{}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Is fixing the null-byte bug enough?}
+	\begin{itemize}[<+->]
+		\item The null-character bug is just one example of a broader class of attacks.
+		\item Format-oracle attacks can exist without implementation bugs!
+		\item They only need:
+		      \begin{itemize}[<+->]
+			      \item A system that accepts untrusted ciphertexts
+			      \item Decrypts them
+			      \item Behaves differently based on the decryption result
+			      \item In a way the attacker can observe
+		      \end{itemize}
+		\item This behavior can come from:
+		      \begin{itemize}[<+->]
+			      \item Accidental bugs (null-byte crashes)
+			      \item Intentional features (error messages, timing differences)
+			      \item Normal application logic (web app behaving differently based on decrypted data)
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Real-world format-oracle attacks}{Padding oracle}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item CBC mode requires padding to handle plaintexts that aren't block-aligned.
+				\item Many implementations crash when encountering invalid padding.
+				\item This exposes an oracle that tells attackers: ``Does $\texttt{Dec}(K, C)$ have valid padding?''
+				\item Attackers can systematically exploit this to decrypt arbitrary ciphertexts.
+				\item Has led to major vulnerabilities in SSH and SSL/TLS protocols.
+				\item Example: POODLE attack against SSL 3.0 affected millions of websites.\footnote{\url{https://appliedcryptography.page/papers/google-poodle.pdf}}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Real-world format-oracle attacks}{Timing side-channel}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item Victim interprets plaintext as a number $n$ and performs $n$ operations.
+				\item Attackers can measure how long the system takes to respond.
+				\item Response time reveals approximate numerical values inside $\texttt{Dec}(K, C)$.
+				\item Extremely subtle - even microsecond differences can leak information.
+				\item Successfully used to break older SSH and SSL/TLS implementations.
+				\item Example: Lucky Thirteen attack against TLS revealed message contents through timing differences.\footnote{\url{https://appliedcryptography.page/papers/lucky-thirteen.pdf}}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Real-world format-oracle attack}{Apple iMessage}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item Older Apple iMessage versions used gzip compression.
+				\item System responded differently when a ciphertext decrypted to:
+				      \begin{itemize}
+					      \item A valid gzip file (processed normally)
+					      \item An invalid gzip file (error reported)
+				      \end{itemize}
+				\item This created an oracle revealing: ``Is $\texttt{Dec}(K, C)$ a valid gzip file?''\footnote{\url{https://appliedcryptography.page/papers/jhu-imessage.pdf}}
+				\item Attackers who understood the gzip format could exploit this to:
+				      \begin{itemize}
+					      \item Silently recover private messages
+					      \item Bypass encryption entirely
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Real-world format-oracle attack}{XML format Oracles}
+	\begin{itemize}[<+->]
+		\item Many systems decrypt data expecting valid XML format.
+		\item If decrypted data isn't valid XML, system returns an error.
+		\item This exposes an oracle: ``Is $\texttt{Dec}(K, C)$ valid XML?''
+		\item XML has complex syntax rules that attackers can exploit.
+		\item Can allow complete decryption of arbitrary ciphertexts.
+		\item Similar attacks exist for other formats (JSON, HTML, etc.)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{I thought CTR mode was secure?}{CPA vs. CCA security}
+	\begin{itemize}[<+->]
+		\item CTR mode \textit{is} secure against chosen-plaintext attacks (CPA-secure).
+		      \begin{itemize}
+			      \item It uses randomness to ensure identical messages encrypt differently each time.
+			      \item The adversary cannot distinguish encryptions of known plaintexts.
+		      \end{itemize}
+		\item But CPA security isn't enough in many real-world scenarios!
+		      \begin{itemize}
+			      \item CPA security only considers attackers who can request encryptions.
+			      \item It doesn't protect against attackers who can submit chosen ciphertexts.
+		      \end{itemize}
+		\item In the null-oracle attack:
+		      \begin{itemize}
+			      \item The victim decrypts ciphertexts chosen by the adversary.
+			      \item Even leaking one bit about the plaintext (contains nulls or not) is fatal.
+			      \item CPA security doesn't model or prevent this type of attack.
+		      \end{itemize}
+		\item This is why we need stronger security notions (CCA security).
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{CCA Security}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Security Against Chosen-Ciphertext Attacks (CCA Security)}{
+				An encryption scheme $\Sigma$ has security against \textbf{chosen-ciphertext attacks} if the following two libraries are indistinguishable:
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sslinked{
+				\sslibrary{\Sigma}{cca-real}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{cca.enc}{M}{
+						$C \coloneq \Sigma.\texttt{Enc}(K, M)$\\
+						return $C$
+					}{1}\\[1em]
+					\sslibrarysubroutine{cca.dec}{C}{
+						return $\Sigma.\texttt{Dec}(K, C)$
+					}{1}
+				}{0.7}
+			}{\approxeq}{
+				\sslibrary{\Sigma}{cca-rand}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{cca.enc}{M}{
+						$C \twoheadleftarrow \Sigma.\mathcal{C}(|M|)$\\
+						$\mathcal{D}[C] \coloneq M$\\
+						return $C$
+					}{1}\\[1em]
+					\sslibrarysubroutine{cca.dec}{C}{
+						if $\mathcal{D}[C]$ defined: return $\mathcal{D}[C]$\\
+						return $\Sigma.\texttt{Dec}(K, C)$
+					}{1}
+				}{0.7}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Remember our CPA-secure encryption scheme?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Not CCA-secure!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sssubroutine{enc}{K, M}{
+				$R \twoheadleftarrow \bits^\lambda$\\
+				$S \coloneq F(K, R) \oplus M$\\
+				return $R\|S$
+			}{2}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Remember our CPA-secure encryption scheme?}
+	\begin{columns}[c]
+		\begin{column}{0.3\textwidth}
+			\begin{itemize}
+				\item Not CCA-secure!
+				\item In other words, we can trivially distinguish between these libraries:
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.7\textwidth}
+			\sslinked{
+				\sslibrary{}{cca-real}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{cca.enc}{M}{
+						$R \twoheadleftarrow \bits^\lambda$\\
+						$S \coloneq F(K, R) \oplus M$\\
+						return $R\|S$
+					}{1}\\[1em]
+					\sslibrarysubroutine{cca.dec}{R\|S}{
+						$M \coloneq F(K, R) \oplus S$\\
+						return $M$
+					}{1}
+				}{0.9}
+			}{\cancel{\approxeq}}{
+				\sslibrary{}{cca-rand}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{cca.enc}{M}{
+						$R\|S \twoheadleftarrow \bits^{2\lambda}$\\
+						$\mathcal{D}[R\|S] \coloneq M$\\
+						return $R\|S$
+					}{1}\\[1em]
+					\sslibrarysubroutine{cca.dec}{R\|S}{
+						if $\mathcal{D}[R\|S]$ defined: return $\mathcal{D}[R\|S]$\\
+						$M \coloneq F(K, R) \oplus S$\\
+						return $M$
+					}{1}
+				}{0.9}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Malleability strategy}
+	To break the CCA security of a scheme:
+	\begin{enumerate}
+		\item Study the decryption algorithm of the scheme. It often helps to draw a schematic diagram.
+		\item See whether any changes to a ciphertext make a \textit{predictable} change to the plaintext.
+		\item Formalize an attack in which the adversary:
+		      \begin{enumerate}
+			      \item Requests the encryption of a chosen plaintext,
+			      \item Modifies the ciphertext as above,
+			      \item Asks for the modified ciphertext to be decrypted.
+		      \end{enumerate}
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Malleability once again}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Not CCA-secure!
+				\item Here's a distinguisher:
+			\end{itemize}
+			\imagewithcaption{prf_enc_malleable}{Source: The Joy of Cryptography}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\ssprogram{}{
+				$M \twoheadleftarrow \bits^\lambda$\\
+				$\Delta := \text{arbitrary, nonzero, $\lambda$-bit string}$\\
+				$R\|S \coloneq \func{cca.enc}{M}$\\
+				$M' \coloneq \func{cca.dec}{R\|(S \oplus \Delta)}$\\
+				return $M' == M \oplus \Delta$
+			}{1}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Another example}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}
+				\item Let's try a harder challenge.
+			\end{itemize}
+			\imagewithcaption{prf_enc_2}{Source: The Joy of Cryptography}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\sslibrary{}{cca-real}{
+				$K \twoheadleftarrow \bits^\lambda$\\[1em]
+				\sslibrarysubroutine{cca.enc}{M}{
+					$R \twoheadleftarrow \bits^\lambda$\\
+					$S \coloneq F(K, R) \oplus F(K, M)$\\
+					return $R\|S$
+				}{1}\\[1em]
+				\sslibrarysubroutine{cca.dec}{R\|S}{
+					$M \coloneq F^{-1}(K, F(K, R) \oplus S)$\\
+					return $M$
+				}{1}
+			}{0.85}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Another example}
+	\begin{columns}[c]
+		\begin{column}{0.3\textwidth}
+			\begin{itemize}
+				\item Let's try a harder challenge.
+			\end{itemize}
+			\imagewithcaption{prf_enc_2}{Source: The Joy of Cryptography}
+		\end{column}
+		\begin{column}{0.7\textwidth}
+			\sslinked{
+				\sslibrary{}{cca-real}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{cca.enc}{M}{
+						$R \twoheadleftarrow \bits^\lambda$\\
+						$S \coloneq F(K, R) \oplus F(K, M)$\\
+						return $R\|S$
+					}{1}\\[1em]
+					\sslibrarysubroutine{cca.dec}{R\|S}{
+						$M \coloneq F^{-1}(K, F(K, R) \oplus S)$\\
+						return $M$
+					}{1}
+				}{0.85}
+			}{\cancel{\approxeq}}{
+				\sslibrary{}{cca-rand}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{cca.enc}{M}{
+						$R\|S \twoheadleftarrow \bits^{2\lambda}$\\
+						return $R\|S$
+					}{1}\\[1em]
+					\sslibrarysubroutine{cca.dec}{R\|S}{
+						if $\mathcal{D}[R\|S]$ defined: return $\mathcal{D}[R\|S]$\\
+						$M \coloneq F^{-1}(K, F(K, R) \oplus S)$\\
+						return $M$
+					}{1}
+				}{0.85}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Frankenstein strategy}
+	Try the following approach in a chosen-ciphertext attack:
+	\begin{enumerate}
+		\item Request two separate encryptions of chosen plaintexts; it often helps to use the same plaintext.
+		\item Mix and match parts of the resulting ciphertexts to obtain two Frankenstein ciphertexts.
+		\item Ask for the Frankenstein ciphertexts to be decrypted, and see whether anything interesting happens.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Another example}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Not CCA-secure!
+				\item Here's a distinguisher:
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\ssprogram{}{
+				$M \twoheadleftarrow \bits^\lambda$\\
+				$R_1\|S_1 \coloneq \func{cca.enc}{M}$\\
+				$R_2\|S_2 \coloneq \func{cca.enc}{M}$\\
+				$M_1^* \coloneq \func{cca.dec}{R_1\|S_2}$\\
+				$M_2^* \coloneq \func{cca.dec}{R_2\|S_1}$\\
+				return $M_1^* == M_2^*$
+			}{1}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{Message Authentication Codes}
+
+\begin{frame}{Symmetric primitive example: hash functions}{Reminder}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\definitionbox{Hash Function Properties}{
+				\begin{itemize}\item Takes input of \textbf{any size}[<+->]
+					\item Produces output of \textbf{fixed size}
+					\item Is \textbf{deterministic} (same input $\rightarrow$ same output)
+					\item Even a \textbf{tiny change} in input creates completely different output
+					\item Is \textbf{efficient} to compute\end{itemize}
+			}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\begin{tcolorbox}
+				[colback=black!5!white,colframe=ciphergray] $\mathsf{SHA256}(\texttt{hello}) =$ \\ \texttt{2cf24dba5fb0a30e26e83b2ac5}\\ \texttt{b9e29e1b161e5c1fa7425e7304}\\
+				\texttt{3362938b9824}
+
+				$\mathsf{SHA256}(\texttt{hullo}) =$ \\ \texttt{7835066a1457504217688c8f5d}\\
+				\texttt{06909c6591e0ca78c254ccf174}\\ \texttt{50d0d999cab0}
+			\end{tcolorbox}
+			\textcolor{cipherprimary}{\textbf{Note:} \small One character change $\rightarrow$
+				completely different hash!}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Expected properties of a hash function}{Reminder}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Collision resistance}: computationally infeasible to find
+				      two different inputs producing the same hash.
+				\item \textbf{Preimage resistance}: given the output of a hash function,
+				      it is computationally infeasible to reconstruct the original input.
+				\item \textbf{Second preimage resistance}: given an input and an output,
+				      it's computationally infeasible to find another different input
+				      producing the same output.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{sha2.png}{SHA-2 compression function. Source: Wikipedia}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Hash functions: what are they good for?}{Reminder}
+	\begin{itemize}[<+->]
+		\item \textbf{Password storage}: Store the hash of the password on the server,
+		      not the password itself. Then check candidate passwords against the hash.
+		\item \textbf{Data integrity verification}: Hash a file. Later hash it
+		      again and compare hashes to check if the file has changed, suffered storage
+		      degradation, etc.
+		\item \textbf{Proof of work}: Server asks client to hash something a lot of
+		      times before they can access some resource. Useful for anti-spam, Bitcoin
+		      mining, etc.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Message authentication codes}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Message Authentication Code (MAC)}{
+				A MAC is a cryptographic function that takes a key $K$ and a message $M$ and produces a tag $T$ that authenticates the message. Only someone with the same key can verify the tag.
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item A MAC provides \textbf{integrity} and \textbf{authenticity} for messages.
+				\item Unlike hash functions, MACs require a secret key
+				\item MACs address the malleability problem we saw with encryption schemes. Without a MAC, attackers could modify ciphertexts.
+				\item A secure MAC should be unforgeable, even after seeing MACs for chosen messages.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{PRFs as MACs}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}[<+->]
+				\item A pseudorandom function (PRF) can be used directly as a MAC!
+				\item The MAC key is the PRF key $K$.
+				\item To authenticate a message $X$:
+				      \begin{itemize}
+					      \item Compute the tag $T = F(K, X)$
+					      \item Send both $X$ and $T$ to the recipient
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{flushright}
+				\sslinked{
+					\sslibrary{}{mac-real}{
+						$K \twoheadleftarrow \bits^\lambda$\\[1em]
+						\sslibrarysubroutine{mac.guess}{X, Y}{
+							return $Y == F(K, X)$
+						}{1}\\[1em]
+						\sslibrarysubroutine{mac.reveal}{X}{
+							return $F(K, X)$
+						}{1}
+					}{0.75}
+				}{\approxeq}{
+					\sslibrary{}{mac-ideal}{
+						\sslibrarysubroutine{mac.guess}{X, Y}{
+							if $L[X]$ undefined: return $\texttt{false}$\\
+							return $Y == L[X]$
+						}{1}\\[1em]
+						\sslibrarysubroutine{mac.reveal}{X}{
+							if $L[X]$ undefined: $L[X] \twoheadleftarrow \bits^\lambda$\\
+							return $L[X]$
+						}{1}
+					}{0.75}
+				}
+			\end{flushright}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{From CPA to CCA security}{The Encrypt-then-MAC approach}
+	\begin{itemize}[<+->]
+		\item CPA security isn't enough in the real world.
+		\item We need protection against chosen-ciphertext attacks.
+		\item Solution: combine encryption with a MAC!.
+		\item \textbf{Encrypt-then-MAC}:
+		      \begin{itemize}
+			      \item Encrypt the message normally.
+			      \item Compute a MAC tag of the \textit{ciphertext}.
+			      \item Send both ciphertext and tag.
+			      \item Receiver verifies the tag before decrypting.
+		      \end{itemize}
+		\item This prevents adversaries from creating valid modified ciphertexts.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Encrypt-then-MAC: formal construction}
+	\begin{columns}[c]
+		\begin{column}{0.45\textwidth}
+			\definitionbox{Encrypt-then-MAC Construction}{
+				Let $\Sigma$ be an SKE scheme and $F$ be a PRF with output length $\lambda$ whose domain includes $\Sigma.\mathcal{C}$.
+				Define a new encryption scheme:
+				\begin{align*}
+					\mathcal{K}       & = \Sigma.\mathcal{K} \times \bits^\lambda       \\
+					\mathcal{M}       & = \Sigma.\mathcal{M}                            \\
+					\mathcal{C}(\ell) & = \Sigma.\mathcal{C}(\ell) \times \bits^\lambda
+				\end{align*}
+			}
+		\end{column}
+		\begin{column}{0.55\textwidth}
+			\sssubroutine{Enc}{(K_e, K_m), M}{
+				$C \coloneq \Sigma.\texttt{Enc}(K_e, M)$\\
+				$T \coloneq F(K_m, C)$\\
+				return $C\|T$
+			}{1}
+			\sssubroutine{Dec}{(K_e, K_m), C\|T}{
+				if $F(K_m, C) \neq T$: return $\texttt{err}$\\
+				return $\Sigma.\texttt{Dec}(K_e, C)$
+			}{1}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{CCA security of Encrypt-then-MAC}
+	\begin{columns}[c]
+		\begin{column}{0.45\textwidth}
+			\definitionbox{CCA Security Claim}{
+				If $\Sigma$ is a CPA-secure encryption scheme and $F$ is a secure PRF, then the Encrypt-then-MAC construction is CCA-secure.
+			}
+			\begin{itemize}[<+->]
+				\item Key insight: \textbf{the MAC prevents tampering}
+				\item Without the MAC key, adversary can't create valid tags.
+				\item \textbf{Decryption oracle only returns plaintexts for ciphertexts with valid tags.}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.55\textwidth}
+			\sslinked{
+				\sslibrary{}{cca-real}{
+					$K_e \twoheadleftarrow \Sigma.\mathcal{K}$\\
+					$K_m \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{cca.enc}{M}{
+						$C \coloneq \Sigma.\texttt{Enc}(K_e, M)$\\
+						$T \coloneq F(K_m, C)$\\
+						return $C\|T$
+					}{1}\\[1em]
+					\sslibrarysubroutine{cca.dec}{C\|T}{
+						if $F(K_m, C) \neq T$: return $\texttt{err}$\\
+						return $\Sigma.\texttt{Dec}(K_e, C)$
+					}{1}
+				}{0.65}
+			}{\approxeq}{
+				\sslibrary{}{cca-rand}{
+					$K_e \twoheadleftarrow \Sigma.\mathcal{K}$\\
+					$K_m \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{cca.enc}{M}{
+						$C \twoheadleftarrow \Sigma.\mathcal{C}(|M|)$\\
+						$T \twoheadleftarrow \bits^\lambda$\\
+						$\mathcal{D}[C\|T] \coloneq M$\\
+						return $C\|T$
+					}{1}\\[1em]
+					\sslibrarysubroutine{cca.dec}{C\|T}{
+						if $\mathcal{D}[C\|T]$ defined: return $\mathcal{D}[C\|T]$\\
+						if $F(K_m, C) \neq T$: return $\texttt{err}$\\
+						return $\Sigma.\texttt{Dec}(K_e, C)$
+					}{1}
+				}{0.65}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Combining MACs and encryption}
+	\begin{itemize}[<+->]
+		\item Not every way of combining a MAC and CPA-secure encryption achieves CCA security.
+		\item There are three common approaches to combining them:
+		      \begin{itemize}
+			      \item \textbf{Encrypt-then-MAC}: Encrypt message, then MAC the ciphertext.
+			      \item \textbf{Encrypt-and-MAC}: Encrypt message and MAC the plaintext separately.
+			      \item \textbf{MAC-then-encrypt}: MAC the plaintext, then encrypt both message and tag.
+		      \end{itemize}
+		\item Only one approach guarantees CCA security when using any CPA-secure encryption.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Encrypt-then-MAC}{CCA-secure}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{MAC verifies ciphertext integrity} before decryption.
+				\item Prevents attackers from submitting modified ciphertexts.
+				\item \textbf{Always CCA-secure} if encryption is CPA-secure and MAC is secure.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sssubroutine{Enc}{(K_e, K_m), M}{
+				$C \coloneq \Sigma.\texttt{Enc}(K_e, M)$\\
+				$T \coloneq F(K_m, C)$\\
+				return $C\|T$
+			}{1}
+			\sssubroutine{Dec}{(K_e, K_m), C\|T}{
+				if $F(K_m, C) \neq T$: return $\texttt{err}$\\
+				return $\Sigma.\texttt{Dec}(K_e, C)$
+			}{1}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Encrypt-and-MAC}{Not even CPA-secure!}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{MAC is computed on the plaintext}
+				\item Same plaintext always produces same tag, leaking equality information.
+				\item \textbf{Not even CPA-secure}, let alone CCA-secure.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sssubroutine{Enc}{(K_e, K_m), M}{
+				$C \coloneq \Sigma.\texttt{Enc}(K_e, M)$\\
+				$T \coloneq F(K_m, M)$\\
+				return $C\|T$
+			}{1}
+			\sssubroutine{Dec}{(K_e, K_m), C\|T}{
+				$M \coloneq \Sigma.\texttt{Dec}(K_e, C)$\\
+				if $F(K_m, M) \neq T$: return $\texttt{err}$\\
+				return $M$
+			}{1}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{MAC-then-encrypt}{It's complicated}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Tag is hidden inside the ciphertext}
+				\item Whether this is CCA-secure depends on the specific encryption scheme.
+				\item \textbf{Not generally CCA-secure} for all CPA-secure encryption schemes.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sssubroutine{Enc}{(K_e, K_m), M}{
+				$T \coloneq F(K_m, M)$\\
+				$C \coloneq \Sigma.\texttt{Enc}(K_e, M\|T)$\\
+				return $C$
+			}{1}
+			\sssubroutine{Dec}{(K_e, K_m), C}{
+				$M\|T \coloneq \Sigma.\texttt{Dec}(K_e, C)$\\
+				if $F(K_m, M) \neq T$: return $\texttt{err}$\\
+				return $M$
+			}{1}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Encrypt + MAC security comparison}
+	\begin{center}
+		\begin{tabular}{|l|c|c|}
+			\hline
+			\textbf{Construction} & \textbf{CPA-secure?} & \textbf{CCA-secure?} \\
+			\hline
+			Encrypt-then-MAC      & Yes                  & Yes                  \\
+			\hline
+			Encrypt-and-MAC       & No                   & No                   \\
+			\hline
+			MAC-then-encrypt      & Yes                  & Maybe                \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{1em}
+	\begin{itemize}[<+->]
+		\item \textbf{Encrypt-then-MAC} is the safest option.
+		\item \textbf{Encrypt-and-MAC} should never be used.
+		\item \textbf{MAC-then-encrypt} requires case-by-case analysis.
+	\end{itemize}
+\end{frame}
+
+\subsection{Authenticated Encryption}
+
+\begin{frame}{Authenticated Encryption: beyond CCA security}
+	\begin{itemize}[<+->]
+		\item CCA security is stronger than CPA security, but still not the gold standard.
+		\item CCA security says: adversary-generated ciphertexts won't reveal useful information.
+		\item But CCA security doesn't require that they decrypt to \texttt{err}.
+		\item For many applications, we want a stronger guarantee:
+		      \begin{itemize}
+			      \item Only key-holders can create valid ciphertexts.
+			      \item All other ciphertexts should be rejected as invalid.
+		      \end{itemize}
+		\item This property is called \textbf{Authenticated Encryption (AE)}.
+		\item Authenticated encryption provides both confidentiality and authenticity.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Authenticated Encryption: formal definition}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\definitionbox{Authenticated Encryption}{
+				A SKE scheme $\Sigma$ is a secure authenticated encryption (AE) scheme if the following two libraries are indistinguishable:
+			}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{flushright}
+				\sslinked{
+					\sslibrary{\Sigma}{ae-real}{
+						$K \twoheadleftarrow \Sigma.\mathcal{K}$\\[1em]
+						\sslibrarysubroutine{ae.enc}{M}{
+							return $\Sigma.\texttt{Enc}(K, M)$
+						}{1}\\[1em]
+						\sslibrarysubroutine{ae.dec}{C}{
+							return $\Sigma.\texttt{Dec}(K, C)$
+						}{1}
+					}{0.75}
+				}{\approxeq}{
+					\sslibrary{\Sigma}{ae-rand}{
+						\sslibrarysubroutine{ae.enc}{M}{
+							$C \twoheadleftarrow \Sigma.\mathcal{C}(|M|)$\\
+							$\mathcal{D}[C] \coloneq M$\\
+							return $C$
+						}{1}\\[1em]
+						\sslibrarysubroutine{ae.dec}{C}{
+							if $\mathcal{D}[C]$ defined: return $\mathcal{D}[C]$\\
+							else: return $\texttt{err}$
+						}{1}
+					}{0.75}
+				}
+			\end{flushright}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AE vs. CCA security}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Key difference: \textbf{how we handle adversary-created ciphertexts}.
+				\item In \lib{\Sigma}{ae-rand}, any ciphertext not created by the library always decrypts to \texttt{err}.
+				\item In \lib{\Sigma}{cca-rand}, such ciphertexts could decrypt to anything (not necessarily \texttt{err}).
+				\item So AE requires:
+				      \begin{itemize}
+					      \item Adversary cannot tell real from random ciphertexts (as in CPA)
+					      \item Adversary cannot create new valid ciphertexts (authentication)
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item AE is \textbf{strictly stronger} than CCA security.
+				\item Every AE scheme is CCA-secure, but not every CCA-secure scheme is an AE.
+				\item Making the distinction explicit helps us design better protocols.
+				\item AE is what you should aim for in practice.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{How Encrypt-then-MAC achieves AE}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item Remember our Encrypt-then-MAC construction:
+				      \begin{itemize}
+					      \item Encrypt the plaintext: $C \coloneq \Sigma.\texttt{Enc}(K_e, M)$
+					      \item MAC the ciphertext: $T \coloneq F(K_m, C)$
+					      \item Send both: $C\|T$
+				      \end{itemize}
+				\item It achieves AE security because:
+				      \begin{itemize}
+					      \item Without $K_m$, adversary can't forge valid tags.
+					      \item Any ciphertext not created by the system will fail MAC verification.
+					      \item MAC verification failures lead to \texttt{err}.
+				      \end{itemize}
+				\item The proof is nearly identical to CCA security proof.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\definitionbox{AE Security of Encrypt-then-MAC}{
+				Encrypt-then-MAC is a secure AE, if the underlying $\Sigma$ is a CPA-secure SKE and $F$ is a secure PRF.
+			}
+			\vspace{0.5em}
+			\definitionbox{AE implies CCA}{
+				If an encryption scheme $\Sigma$ is a secure AE, then it is also CCA-secure.
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Authenticated Encryption: in practice}
+	\begin{itemize}[<+->]
+		\item Modern cryptographic protocols almost always use authenticated encryption.
+		\item Common AE implementations:
+		      \begin{itemize}[<+->]
+			      \item \textbf{AES-GCM} (Galois/Counter Mode): most widely used, combines CTR mode with a MAC.
+			      \item \textbf{ChaCha20-Poly1305}: popular alternative to AES-GCM, especially on devices without AES hardware.
+			      \item \textbf{AES-CBC + HMAC-SHA256}: older approach, uses Encrypt-then-MAC with AES in CBC mode.
+		      \end{itemize}
+		\item Important implementation rule: \textbf{verify before decrypt}!
+		      \begin{itemize}[<+->]
+			      \item Always check the MAC before decrypting.
+			      \item Prevents timing side-channels based on decryption behavior.
+			      \item Helps protect against padding oracle attacks and similar vulnerabilities.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{AES-GCM: Galois/Counter Mode}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item AES-GCM (Galois/Counter Mode) is the most widely used AEAD scheme.
+				\item Combines AES in CTR mode (for encryption) with GMAC (for authentication).
+				\item Extremely efficient:
+				      \begin{itemize}
+					      \item Single pass over the data.
+					      \item Parallelizable.
+					      \item Hardware acceleration widely available.
+				      \end{itemize}
+				\item Used in: TLS 1.2/1.3, IPsec, SSH, and many other protocols.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{center}
+				\sssubroutine{AES-GCM.Enc}{K, N, A, M}{
+					$H \coloneq \texttt{AES}(K, 0^{128})$\\
+					$\text{for } i=0 \text{ to } \lceil|M|/128\rceil-1:$\\
+					$\quad C_i \coloneq M_i \oplus \texttt{AES}(K, N\|i)$\\
+					$T \coloneq \texttt{GHASH}_H(A, C) \oplus$\\
+					$\quad\quad \texttt{AES}(K, N\|0)$\\
+					$\textbf{return } C\|T$
+				}{0.87}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AES-GCM: Galois/Counter Mode}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Inputs}:
+				      \begin{itemize}
+					      \item Key $K$ (128, 192, or 256 bits)
+					      \item Nonce $N$ (usually 96 bits)
+					      \item Associated data $A$ (optional)
+					      \item Plaintext $M$
+				      \end{itemize}
+				\item \textbf{Encryption process}:
+				      \begin{itemize}
+					      \item AES-CTR for confidentiality.
+					      \item GHASH (Galois field multiplication) for authentication.
+				      \end{itemize}
+				\item Authentication tag $T$ protects both ciphertext and associated data.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{gcm.pdf}{Source: The Joy of Cryptography}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AES-GCM: Galois/Counter Mode}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Security strengths}:
+				      \begin{itemize}
+					      \item Provides confidentiality, integrity, and authenticity
+					      \item Formally proven secure (assuming AES is secure)
+					      \item Fast and widely trusted
+				      \end{itemize}
+				\item \textbf{Critical implementation requirements}:
+				      \begin{itemize}
+					      \item \textbf{Never reuse a nonce} with the same key!
+					      \item A repeated nonce can lead to complete loss of confidentiality and authentication
+					      \item 96-bit nonces are recommended (other sizes are less efficient)
+					      \item Authentication tag should be at least 128 bits long
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Key commitment in authenticated encryption}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Key commitment}: a ciphertext should only decrypt to a valid plaintext under the key used to generate it.
+				\item Most AEAD schemes (including AES-GCM) don't guarantee this property!\footnote{\url{https://appliedcryptography.page/papers/key-commitment.pdf}}
+				\item Attack scenario:
+				      \begin{enumerate}
+					      \item Attacker creates special ciphertext $C$.
+					      \item When decrypted with key $K_1$: harmless message.
+					      \item When decrypted with key $K_2$: malicious content!
+					      \item Enables plausible deniability, content smuggling, etc.
+				      \end{enumerate}
+				\item Practical impact:
+				      \begin{itemize}
+					      \item Attacker can create ciphertexts that decrypt differently under different keys.
+					      \item Enables attacks in multi-recipient contexts.
+					      \item Affects real applications (e.g., messaging, encrypted files).
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{ChaCha20-Poly1305}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item ChaCha20-Poly1305 is a modern AEAD construction:
+				      \begin{itemize}
+					      \item ChaCha20 stream cipher for encryption.
+					      \item Poly1305 MAC for authentication.
+				      \end{itemize}
+				\item Designed by Daniel J. Bernstein.\footnote{Does the class want to hear about Bernstein vs. United States?}
+				\item Key characteristics:
+				      \begin{itemize}
+					      \item No table lookups (better resistance to timing attacks)
+					      \item Excellent performance on devices without AES hardware.
+				      \end{itemize}
+				\item Widely used in TLS 1.3, Signal, WireGuard...
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{center}
+				\sssubroutine{ChaCha20-Poly1305.Enc}{K, N, A, M}{
+				$\text{key}_p \coloneq \texttt{ChaCha20}(K, N, 0)_{0..31}$\\
+				$C \coloneq M \oplus \texttt{ChaCha20}(K, N, 1)$\\
+				$\text{data} \coloneq \text{pad}(A) \| \text{pad}(C) \|$\\
+				$\quad\quad \text{len}(A) \| \text{len}(C)$\\
+				$T \coloneq \texttt{Poly1305}_{\text{key}_p}(\text{data})$\\
+				$\textbf{return } C\|T$
+				}{0.87}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Comparing AEAD implementations}
+	\begin{center}
+		\begin{tabular}{|l|c|c|c|}
+			\hline
+			\textbf{Property}       & \textbf{AES-GCM}  & \textbf{ChaCha20-Poly1305} & \textbf{AES+HMAC} \\
+			\hline
+			Performance (HW accel.) & Excellent         & Good                       & Good              \\
+			\hline
+			Performance (no accel.) & Poor              & Excellent                  & Moderate          \\
+			\hline
+			Security level          & 128-256 bits      & 256 bits                   & 128-256 bits      \\
+			\hline
+			Side-channel resistance & Moderate          & Excellent                  & Moderate          \\
+			\hline
+			Parallelizable          & Yes               & Partially                  & No                \\
+			\hline
+			Nonce sensitivity       & Very high         & High                       & Moderate          \\
+			\hline
+			Overhead                & Low (single pass) & Low (single pass)          & Higher (two pass) \\
+			\hline
+			Implem. complexity      & Moderate          & Low                        & High              \\
+			\hline
+		\end{tabular}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Replay attacks}{Step 1: Alice sends original message}
+	\bigimagewithcaption{aead_scenario_1.pdf}{Source: The Joy of Cryptography}
+\end{frame}
+
+\begin{frame}{Replay attacks}{Step 2: Attacker replays message in a different context}
+	\bigimagewithcaption{aead_scenario_2.pdf}{Source: The Joy of Cryptography}
+\end{frame}
+
+\begin{frame}{Replay attacks}{Authenticated encryption didn't save us}
+	\begin{itemize}
+		\item Even with authenticated encryption, context matters!
+		\item Scenario: Alice sends Bob encrypted commands.
+		      \begin{itemize}
+			      \item Each ciphertext contains Alice's genuine intent.
+			      \item Bob trusts any ciphertext that decrypts successfully.
+		      \end{itemize}
+		\item Vulnerability: An adversary can replay legitimate ciphertexts.
+		      \begin{itemize}
+			      \item Alice once sent ``Delete temporary files''.
+			      \item Adversary replays it when Alice meant to say ``Display files''.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Associated data}
+	\begin{itemize}[<+->]
+		\item Solution 1: Include context in the plaintext
+		      \begin{itemize}
+			      \item ``\texttt{ACTION: DISPLAY}'' before the actual message.
+			      \item Inefficient - increases message size.
+			      \item Both parties already know the context.
+		      \end{itemize}
+		\item Better solution: Associated Data (AD)
+		      \begin{itemize}
+			      \item Context that sender and receiver already know.
+			      \item Used during encryption and decryption.
+			      \item Doesn't increase ciphertext size.
+		      \end{itemize}
+		\item How it works:
+		      \begin{itemize}
+			      \item $\texttt{Enc}(K, A, M) \rightarrow C$ where $A$ is associated data.
+			      \item $\texttt{Dec}(K, A, C) \rightarrow M$ or $\texttt{err}$
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{AEAD: formal definition}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{AEAD}{
+				An encryption scheme $\Sigma$ with associated data is a secure authenticated encryption with associated data (AEAD) scheme if the following two libraries are indistinguishable:
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{flushright}
+				\sslinked{
+					\sslibrary{\Sigma}{aead-real}{
+						$K \twoheadleftarrow \Sigma.\mathcal{K}$\\[1em]
+						\sslibrarysubroutine{aead.enc}{A, M}{
+							return $\Sigma.\texttt{Enc}(K, A, M)$
+						}{1}\\[1em]
+						\sslibrarysubroutine{aead.dec}{A, C}{
+							return $\Sigma.\texttt{Dec}(K, A, C)$
+						}{1}
+					}{0.75}
+				}{\approxeq}{
+					\sslibrary{\Sigma}{aead-rand}{
+						\sslibrarysubroutine{aead.enc}{A, M}{
+							$C \twoheadleftarrow \Sigma.\mathcal{C}(|M|)$\\
+							$\mathcal{D}[A, C] \coloneq M$\\
+							return $C$
+						}{1}\\[1em]
+						\sslibrarysubroutine{aead.dec}{A, C}{
+							if $\mathcal{D}[A, C]$ defined:\\
+							\quad return $\mathcal{D}[A, C]$\\
+							else: return $\texttt{err}$
+						}{1}
+					}{0.75}
+				}
+			\end{flushright}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Usefulness of AEADs}
+	\begin{itemize}[<+->]
+		\item AEAD (Authenticated Encryption with Associated Data) scheme guarantees:
+		      \begin{itemize}
+			      \item Ciphertexts reveal nothing about plaintexts (confidentiality).
+			      \item Only ciphertexts created by the legitimate sender will decrypt without error (authenticity).
+			      \item Decryption only succeeds when the correct associated data is used (context binding).
+		      \end{itemize}
+		\item What to use as associated data?
+		      \begin{itemize}
+			      \item Protocol information: ``\texttt{DISPLAY}'' vs ``\texttt{DELETE}''.
+			      \item Session identifiers or timestamps.
+			      \item Previous messages in the conversation.
+			      \item Any contextual information both parties already know.
+		      \end{itemize}
+		\item Use as much associated data as relevant - it's cryptographically ``free''!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Solution: use associated data to provide context}
+	\bigimagewithcaption{aead_scenario_4.pdf}{Source: The Joy of Cryptography}
+\end{frame}
+
+\begin{frame}[plain]
+	\titlepage
+\end{frame}
+\end{document}

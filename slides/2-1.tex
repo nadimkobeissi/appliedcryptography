@@ -1,0 +1,2633 @@
+\documentclass[aspectratio=169, lualatex, handout]{beamer}
+\makeatletter\def\input@path{{theme/}}\makeatother\usetheme{cipher}
+
+\title{Applied Cryptography}
+\author{Nadim Kobeissi}
+\institute{American University of Beirut}
+\instituteimage{images/aub_white.png}
+\date{\today}
+\coversubtitle{CMPS 297AD/396AI\\Fall 2025}
+\coverpartname{Part 2: Real-World Cryptography}
+\covertopicname{2.1: Transport Layer Security}
+\coverwebsite{https://appliedcryptography.page}
+
+\begin{document}
+\begin{frame}[plain]
+	\titlepage
+\end{frame}
+
+\begin{frame}{Why we're interested in TLS}
+	\begin{itemize}[<+->]
+		\item Encrypts all your web traffic (the \textbf{S} in HTTP\textbf{S}!)
+		\item Great way to introduce \textbf{authenticated key exchange}.
+		\item Great way to make you hate certificates and certificate authorities.
+		\item How TLS handles \textbf{authentication} and key exchange.
+		\item A comprehensive survey of \textbf{TLS 1.2 attacks}:
+		      \begin{itemize}
+			      \item POODLE (Padding Oracle On Downgraded Legacy Encryption)
+			      \item Lucky Thirteen timing attack
+			      \item SMACK (State Machine AttaCK)
+			      \item FREAK (Factoring RSA Export Keys)
+			      \item Logjam attack on Diffie-Hellman
+			      \item And many more...
+		      \end{itemize}
+		\item How these attacks informed the design of \textbf{TLS 1.3}.
+		\item Lessons learned for building secure protocols.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS attacks timeline (to 2015)}
+	\bigimagewithcaption{tls_attacks_timeline_2015.png}{TLS attacks up until 2015.}
+\end{frame}
+
+\begin{frame}{TLS isn't very interesting}
+	\begin{itemize}
+		\item Too complicated for no good reason.
+		\item Doesn't accomplish properties as interesting as those of more modern protocols, or even Signal.
+		\item Certificate authorities.
+		\item Very important however to understand, basically a golden door into the world of protocols.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{...and yet...}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Web browsing (HTTPS)
+				\item Email (IMAPS, POP3S, SMTPS)
+				\item Instant messaging (WhatsApp, Telegram)
+				\item Video conferencing (Zoom, Teams)
+				\item Online banking
+				\item Social media (Facebook, Twitter)
+				\item Cloud storage (Dropbox, Google Drive)
+				\item VPN connections
+				\item Mobile app communication
+				\item Medical devices
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Streaming services (Netflix, Spotify)
+				\item IoT device communication
+				\item Remote desktop protocols
+				\item Voice over IP (VoIP)
+				\item Software updates
+				\item Database connections
+				\item Git repositories (GitHub, GitLab)
+				\item Real-time communication (WebRTC)
+				\item Cryptocurrency wallets
+				\item Smart home devices
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\section{Transport Layer Security}
+
+\begin{frame}{Primary applications that drove TLS development}
+	\begin{itemize}[<+->]
+		\item \textbf{E-commerce websites}
+		      \begin{itemize}
+			      \item Credit card numbers
+			      \item Personal information
+			      \item Purchase history
+		      \end{itemize}
+		\item \textbf{Online banking}
+		      \begin{itemize}
+			      \item Account credentials
+			      \item Financial transactions
+			      \item Sensitive financial data
+		      \end{itemize}
+		\item \textbf{General web browsing}
+		      \begin{itemize}
+			      \item User credentials
+			      \item Private communications
+			      \item Personal data protection
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Passive vs Active Attackers}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\textbf{Passive Attacker}
+			\begin{itemize}
+				\item \textbf{Eavesdropping only}
+				\item Observes network traffic
+				\item Records all messages
+				\item Cannot modify or inject messages
+				\item Examples:
+				      \begin{itemize}
+					      \item ISP logging traffic
+					      \item Government surveillance
+					      \item WiFi sniffing
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Active Attacker}
+			\begin{itemize}
+				\item \textbf{Can modify/inject messages}
+				\item Intercepts and alters traffic
+				\item Can impersonate parties
+				\item Controls network routing
+				\item Examples:
+				      \begin{itemize}
+					      \item Man-in-the-middle attacks
+					      \item Malicious WiFi hotspots
+					      \item Compromised routers
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\begin{alertblock}{Protocol Design Impact}
+		Identity protection works against passive attackers, but active attackers can force identity revelation through protocol manipulation
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{Key security goal: Defeating man-in-the-middle attacks}
+	\begin{itemize}[<+->]
+		\item \textbf{MITM attack scenario:}
+		      \begin{enumerate}
+			      \item Attacker intercepts encrypted traffic.
+			      \item Decrypts the traffic to read content.
+			      \item Re-encrypts and forwards to destination.
+		      \end{enumerate}
+		\item \textbf{How TLS defeats MITM:}
+		      \begin{itemize}
+			      \item Server authentication using \textbf{certificates}.
+			      \item Trusted \textbf{certificate authorities} (CAs).
+			      \item Optional client authentication.
+		      \end{itemize}
+		\item Without proper authentication, encryption alone is \textbf{not enough}!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Four requirements for wide TLS adoption}
+	\begin{itemize}[<+->]
+		\item \textbf{Efficiency}
+		      \begin{itemize}
+			      \item Minimize performance penalty vs. unencrypted connections.
+		      \end{itemize}
+		\item \textbf{Interoperability}
+		      \begin{itemize}
+			      \item Work on any hardware and operating system.
+		      \end{itemize}
+		\item \textbf{Extensibility}
+		      \begin{itemize}
+			      \item Support additional features and algorithms.
+		      \end{itemize}
+		\item \textbf{Versatility}
+		      \begin{itemize}
+			      \item Not bound to specific applications.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Notice how we're mentioning design requirements now?}
+	\bigimagewithcaption{fischer.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
+\end{frame}
+
+\begin{frame}{Notice how we're mentioning design requirements now?}
+	\begin{center}
+		\bigimagewithcaption{fischer_sectioned.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Efficiency and interoperability}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Efficiency matters for:}
+			\begin{itemize}[<+->]
+				\item \textbf{Servers}
+				      \begin{itemize}
+					      \item Reduce hardware costs
+					      \item Handle more connections
+				      \end{itemize}
+				\item \textbf{Clients}
+				      \begin{itemize}
+					      \item Avoid perceptible delays
+					      \item Preserve battery life
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Interoperability ensures:}
+			\begin{itemize}[<+->]
+				\item Works across different:
+				      \begin{itemize}
+					      \item Hardware platforms
+					      \item Operating systems
+					      \item Software implementations
+				      \end{itemize}
+				\item Universal compatibility
+				\item No vendor lock-in
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Extensibility and versatility}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Extensibility allows:}
+			\begin{itemize}[<+->]
+				\item Adding new cryptographic algorithms
+				\item Supporting new features
+				\item Adapting to security threats
+				\item Protocol evolution over time
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Versatility means:}
+			\begin{itemize}[<+->]
+				\item Application-agnostic design
+				\item Like TCP: doesn't care about upper layers
+				\item Can secure any application protocol
+				\item Reusable security infrastructure
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The confusing SSL/TLS naming}
+	\begin{itemize}[<+->]
+		\item \textbf{1995}: Netscape develops SSL (Secure Sockets Layer).
+		\item \textbf{SSL 2.0 and SSL 3.0}: Both had serious security flaws.
+		\item \textbf{Confusing terminology}: People still call TLS ``SSL''.
+		      \begin{itemize}
+			      \item Even security experts do this!
+			      \item ``SSL certificate'' really means ``TLS certificate''
+		      \end{itemize}
+		\item TLS = Transport Layer Security (SSL's successor)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS version evolution}
+	\begin{itemize}[<+->]
+		\item \textbf{TLS 1.0 (1999)}
+		      \begin{itemize}
+			      \item Least secure TLS version.
+			      \item Still better than SSL 3.0.
+		      \end{itemize}
+		\item \textbf{TLS 1.1 (2006)}
+		      \begin{itemize}
+			      \item Better, but includes weak algorithms.
+		      \end{itemize}
+		\item \textbf{TLS 1.2 (2008)}
+		      \begin{itemize}
+			      \item Much better, but very complex.
+			      \item High security only if configured correctly.
+			      \item Supports vulnerable features (e.g., AES-CBC with padding oracles).
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS 1.3: The great cleanup}
+	\begin{itemize}[<+->]
+		\item \textbf{Problem}: TLS 1.2 inherited decades of legacy features.
+		      \begin{itemize}
+			      \item Suboptimal security and performance.
+			      \item Complex and error-prone configurations.
+			      \item High risk of implementation bugs.
+		      \end{itemize}
+		\item \textbf{Solution}: Complete redesign for TLS 1.3.
+		      \begin{itemize}
+			      \item Kept only the good parts.
+			      \item Added modern security features.
+			      \item Simplified the bloated design.
+		      \end{itemize}
+		\item \textbf{Result}: TLS 1.3 is more secure, efficient, and simpler.
+		\item TLS 1.3 = ``mature TLS''.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Fantastic resource on understanding TLS}{And secure channel protocol design in general}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item The Illustrated TLS 1.2 connection: \url{https://tls12.xargs.org}
+				\item The Illustrated TLS 1.3 connection: \url{https://tls13.xargs.org}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{tls_illustrated}{}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{TLS architecture: Two main protocols}
+	\begin{itemize}[<+->]
+		\item \textbf{Handshake Protocol}
+		      \begin{itemize}
+			      \item Determines secret keys shared between client and server.
+			      \item Handles authentication and key exchange.
+			      \item Runs once at the beginning of a connection.
+		      \end{itemize}
+		\item \textbf{Record Protocol}
+		      \begin{itemize}
+			      \item Describes how to use established keys to protect data.
+			      \item Processes data packets called \textbf{records}.
+			      \item Defines packet format for encapsulating higher-layer data.
+		      \end{itemize}
+		\item Think of it as: handshake = setup, record = ongoing protection.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The TLS handshake: Basic flow}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Step 1}: Client initiates secure connection.
+				      \begin{itemize}
+					      \item Sends \texttt{ClientHello} message.
+					      \item Includes supported ciphers and other parameters.
+				      \end{itemize}
+				\item \textbf{Step 2}: Server responds.
+				      \begin{itemize}
+					      \item Checks client's message and parameters.
+					      \item Responds with \texttt{ServerHello} message.
+					      \item Selects cipher suite and provides certificate.
+				      \end{itemize}
+				\item \textbf{Step 3}: Key establishment.
+				      \begin{itemize}
+					      \item Both parties process each other's messages.
+					      \item Establish session keys for encryption.
+				      \end{itemize}
+				\item \textbf{Result}: Ready to exchange encrypted data!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{tls_handshake.png}{TLS handshake overview.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Critical step: Certificate validation}
+	\begin{itemize}[<+->]
+		\item \textbf{The crux of TLS security}: Server authenticates itself to client
+		\item \textbf{What is a certificate?}
+		      \begin{itemize}
+			      \item A public key + signature of that key
+			            \begin{itemize}
+				            \item Encoded in an insanely asinine byte format
+			            \end{itemize}
+			      \item Associated information (domain name, organization, etc.)
+			      \item Essentially says: ``I am google.com, and my public key is [key]''
+		      \end{itemize}
+		\item \textbf{Certificate validation process}:
+		      \begin{enumerate}
+			      \item Browser receives certificate from server
+			      \item Verifies the certificate's signature
+			      \item If signature is valid \rightarrow certificate and public key are trusted
+			      \item Browser proceeds with connection
+		      \end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Certificate Authorities: The trust foundation}
+	\begin{itemize}[<+->]
+		\item \textbf{Problem}: How does the browser know which public key to use for verification?
+		\item \textbf{Solution}: Certificate Authorities (CAs)
+		      \begin{itemize}
+			      \item Public keys hardcoded in your browser/OS.
+			      \item Trusted organizations that issue certificates.
+			      \item Act as trusted third parties.
+		      \end{itemize}
+		\item \textbf{CA's role}:
+		      \begin{itemize}
+			      \item Verify that public keys belong to claimed entities.
+			      \item Sign certificates with their private keys.
+			      \item Protect their private keys from compromise.
+		      \end{itemize}
+		\item \textbf{Without CAs}: No way to distinguish legitimate servers from MITM attackers!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Traditional CA validation nightmare}
+	\begin{itemize}[<+->]
+		\item \textbf{Getting a certificate before 2015}:
+		      \begin{itemize}
+			      \item Contact a Certificate Authority (Verisign, Thawte, etc.).
+			      \item Pay \$50-300+ per certificate per year.
+			            \begin{itemize}
+				            \item Completely arbitrary extortionate amounts.
+			            \end{itemize}
+			      \item Manual validation process takes days/weeks.
+		      \end{itemize}
+		\item \textbf{Domain Validation (DV) process}:
+		      \begin{enumerate}
+			      \item Submit CSR (Certificate Signing Request).
+			      \item CA sends email to \texttt{admin@domain.com}.
+			      \item Click verification link in email.
+			      \item Wait for manual review and approval.
+			      \item Download and install certificate.
+		      \end{enumerate}
+		\item \textbf{Extended Validation (EV) certificates}:
+		      \begin{itemize}
+			      \item Even more expensive (\$150-1000+/year).
+			      \item Weeks of back-and-forth communication.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Let's Encrypt: revolution in TLS certificates (2015)}
+	\begin{itemize}[<+->]
+		\item \textbf{Game-changing}:
+		      \begin{itemize}
+			      \item \textbf{Free} certificates for everyone.
+			      \item \textbf{Automated} issuance and renewal.
+			      \item \textbf{90-day} certificate lifetime (encourages automation).
+			      \item Open source, non-profit initiative.
+		      \end{itemize}
+		\item \textbf{ACME protocol} (Automated Certificate Management Environment):
+		      \begin{itemize}
+			      \item Domain validation via HTTP or DNS challenges.
+			      \item Prove control of domain programmatically.
+			      \item Certificate issued in seconds, not days.
+			      \item Automatic renewal before expiration.
+		      \end{itemize}
+		\item \textbf{Impact on the web}:
+		      \begin{itemize}
+			      \item HTTPS adoption jumped from 40\% to 90\%+ of web traffic.
+			      \item Eliminated cost barrier for small websites.
+			      \item Made ``HTTPS everywhere'' a reality.
+		      \end{itemize}
+		\item \textbf{Philosophy}: Encryption should be the default, not a luxury.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Let's Encrypt: active certificates}
+	\bigimagewithcaption{letsencrypt_certs.png}{Source: Let's Encrypt}
+\end{frame}
+
+\begin{frame}{Let's Encrypt: certificates issued}
+	\bigimagewithcaption{letsencrypt_issuance.png}{Source: Let's Encrypt}
+\end{frame}
+
+\begin{frame}{Percentage of HTTPS traffic in Firefox}
+	\bigimagewithcaption{letsencrypt_https.png}{Source: Let's Encrypt}
+\end{frame}
+
+\begin{frame}{Certificate chains in practice}
+	\begin{itemize}[<+->]
+		\item \textbf{Real-world example}: Connecting to \texttt{www.google.com}
+		\item \textbf{Certificate chain structure}:
+		      \begin{itemize}
+			      \item \textbf{Certificate 0}: \texttt{www.google.com}'s certificate.
+			      \item \textbf{Certificate 1}: Intermediate CA (Google Trust Services).
+			      \item \textbf{Certificate 2}: Root CA (GlobalSign).
+		      \end{itemize}
+		\item \textbf{Verification process}:
+		      \begin{enumerate}
+			      \item Check Google's signature on Certificate 0.
+			      \item Check GlobalSign's signature on Certificate 1.
+			      \item Trust GlobalSign's root certificate (pre-installed).
+		      \end{enumerate}
+		\item \textbf{Chain of trust}: Each certificate vouches for the next.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Exploring certificates with OpenSSL}
+	\begin{itemize}[<+->]
+		\item \textbf{Connect and view certificate}:
+		      \begin{itemize}
+			      \item \texttt{openssl s\_client -connect www.google.com:443}
+			      \item Shows certificate chain and raw certificate data
+		      \end{itemize}
+		\item \textbf{Parse certificate details}:
+		      \begin{itemize}
+			      \item \texttt{openssl x509 -text -noout}
+			      \item Reveals subject, issuer, validity dates, algorithms
+		      \end{itemize}
+		\item \textbf{Certificate markers}:
+		      \begin{itemize}
+			      \item \texttt{s:} = subject (who the certificate is for)
+			      \item \texttt{i:} = issuer (who signed the certificate)
+		      \end{itemize}
+		\item Try this at home! Great way to understand the certificate ecosystem.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS Record Protocol: The data transport layer}
+	\begin{itemize}[<+->]
+		\item \textbf{What is the Record Protocol?}
+		      \begin{itemize}
+			      \item Transport protocol for all TLS data.
+			      \item Agnostic to the meaning of transported data.
+			      \item Makes TLS suitable for any application.
+		      \end{itemize}
+		\item \textbf{Two main phases}:
+		      \begin{enumerate}
+			      \item \textbf{During handshake}: Carries handshake messages.
+			      \item \textbf{After handshake}: Carries encrypted application data.
+		      \end{enumerate}
+		\item \textbf{Key insight}: Like TCP, doesn't care about upper layers!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS Record: Basic structure}
+	\begin{itemize}[<+->]
+		\item \textbf{TLS Record = chunk of data ≤ 16KB}
+		\item \textbf{Simple header structure}:
+		      \begin{itemize}
+			      \item Only 3 fields (vs. 14 in IPv4, 13 in TCP)
+			      \item 5-byte header + payload
+		      \end{itemize}
+		\item \textbf{Visual representation}:
+	\end{itemize}
+	\pause
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			\textbf{ContentType} & \textbf{ProtocolVersion} & \textbf{Length} & \textbf{Payload} \\
+			\hline
+			1 byte               & 2 bytes                  & 2 bytes         & ≤ 16KB           \\
+			\hline
+		\end{tabular}
+	\end{center}
+\end{frame}
+
+\begin{frame}{TLS Record fields breakdown}
+	\begin{itemize}[<+->]
+		\item \textbf{Byte 1 - ContentType}:
+		      \begin{itemize}
+			      \item \texttt{22} = Handshake data
+			      \item \texttt{23} = Encrypted application data
+			      \item \texttt{21} = Alerts (error messages)
+		      \end{itemize}
+		\item \textbf{Bytes 2-3 - ProtocolVersion}:
+		      \begin{itemize}
+			      \item Always \texttt{03 01} (historical reasons)
+			      \item Same across TLS versions (confusing!)
+		      \end{itemize}
+		\item \textbf{Bytes 4-5 - Length}:
+		      \begin{itemize}
+			      \item 16-bit integer encoding payload length
+			      \item Maximum: $2^{14}$ bytes = 16KB
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{ContentType: What's in this record?}
+	\begin{center}
+		\begin{tabular}{|c|c|l|}
+			\hline
+			\textbf{Value} & \textbf{Name}    & \textbf{Contains}                         \\
+			\hline
+			21             & Alert            & Error messages, warnings                  \\
+			\hline
+			22             & Handshake        & \parbox[t]{3cm}{ClientHello, ServerHello, \\Certificate, etc.} \\
+			\hline
+			23             & Application Data & \parbox[t]{3cm}{Encrypted user data       \\(HTTP, email, etc.)} \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\pause
+	\begin{itemize}
+		\item \textbf{Key point}: ContentType tells receiver how to process the payload.
+		\item \textbf{During handshake}: Mostly type 22 records.
+		\item \textbf{After handshake}: Mostly type 23 records.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Encrypted records (ContentType = 23)}
+	\begin{itemize}[<+->]
+		\item \textbf{When ContentType = 23}:
+		      \begin{itemize}
+			      \item Payload is encrypted and authenticated.
+			      \item Contains: ciphertext + authentication tag.
+		      \end{itemize}
+		\item \textbf{How does receiver know how to decrypt?}
+		      \begin{itemize}
+			      \item Cipher and key established during handshake.
+			      \item ``Magic of TLS'': if you receive encrypted data, you already have the key!
+		      \end{itemize}
+		\item \textbf{Decryption process}:
+		      \begin{enumerate}
+			      \item Verify authentication tag.
+			      \item Decrypt ciphertext.
+			      \item Process decrypted application data.
+		      \end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Nonces: Ensuring unique encryption}
+	\begin{itemize}[<+->]
+		\item \textbf{Problem}: Each record needs a unique nonce for encryption.
+		\item \textbf{TLS solution}: Derive nonces from sequence numbers.
+		      \begin{itemize}
+			      \item Each party maintains 64-bit sequence number.
+			      \item Incremented for each new record.
+			      \item Starts at 0, goes 1, 2, 3, ...
+		      \end{itemize}
+		\item \textbf{Nonce derivation}:
+		      \begin{itemize}
+			      \item Client: \texttt{sequence\_number $\oplus$ client\_write\_iv}
+			      \item Server: \texttt{sequence\_number $\oplus$ server\_write\_iv}
+		      \end{itemize}
+		\item \textbf{No nonce reuse}: Different IVs and keys per direction.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Example: Sequence numbers in action}
+	\begin{center}
+		\textbf{Client sending records:}
+		\begin{tabular}{|c|c|}
+			\hline
+			\textbf{Record \#} & \textbf{Sequence Number} \\
+			\hline
+			1st record         & 0                        \\
+			\hline
+			2nd record         & 1                        \\
+			\hline
+			3rd record         & 2                        \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\pause
+	\begin{center}
+		\textbf{Client receiving records:}
+		\begin{tabular}{|c|c|}
+			\hline
+			\textbf{Record \#} & \textbf{Sequence Number} \\
+			\hline
+			1st record         & 0                        \\
+			\hline
+			2nd record         & 1                        \\
+			\hline
+			3rd record         & 2                        \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\pause
+	\begin{itemize}
+		\item \textbf{Safe to reuse numbers}: Different keys and IVs per direction!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Zero padding example}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Without padding:}
+			\begin{itemize}
+				\item Short message \rightarrow\ small ciphertext
+				\item Long message \rightarrow\ large ciphertext
+				\item Attacker learns message sizes
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{With padding:}
+			\begin{itemize}
+				\item Short message + padding \rightarrow\ large ciphertext
+				\item Long message + padding \rightarrow\ large ciphertext
+				\item All messages look the same size!
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\pause
+	\begin{center}
+		\textbf{Trade-off}: Security vs. bandwidth efficiency
+	\end{center}
+\end{frame}
+
+\begin{frame}{TLS: the handshake protocol}
+	\begin{itemize}[<+->]
+		\item \textbf{The crux of TLS}: Process to establish shared secret keys.
+		\item \textbf{Goal}: Initiate secure communications between client and server.
+		\item \textbf{Key outcome}: Both parties agree on:
+		      \begin{itemize}
+			      \item TLS version to use
+			      \item Cipher suite for encryption
+			      \item Shared secret keys for protection
+		      \end{itemize}
+		\item \textbf{Interoperability requirement}: Any TLS 1.3 client must work with any TLS 1.3 server.
+		      \begin{itemize}
+			      \item Achieved through standardized message formats.
+			      \item Works regardless of implementation or programming language.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS: the handshake protocol}
+	\bigimagewithcaption{tls_13_handshake}{TLS 1.3 handshake protocol. Source: Serious Cryptography}
+\end{frame}
+
+\begin{frame}{Client vs. Server: Different roles in the handshake}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Client's role:}
+			\begin{itemize}[<+->]
+				\item \textbf{Proposes} configurations
+				\item Lists supported TLS versions
+				\item Lists supported cipher suites
+				\item Orders preferences (most preferred first)
+				\item Generates Diffie-Hellman key pair
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Server's role:}
+			\begin{itemize}[<+->]
+				\item \textbf{Chooses} final configuration
+				\item Selects TLS version to use
+				\item Picks cipher suite from client's list
+				\item Should follow client's preferences
+				\item Responds with its own DH public key
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\pause
+	\begin{center}
+		\textbf{Think of it like ordering at a restaurant:}\\
+		Client: ``Here's what I like...'' \quad Server: ``We'll go with this option.''
+	\end{center}
+\end{frame}
+
+\begin{frame}{ClientHello: ``I want to establish a TLS connection''}
+	\begin{itemize}[<+->]
+		\item \textbf{Client's opening message to server}
+		\item \textbf{Key contents}:
+		      \begin{itemize}
+			      \item List of supported cipher suites (in order of preference)
+			      \item Diffie-Hellman public key (generated just for this session!)
+			      \item 32-byte random value
+			      \item Optional extensions and parameters
+		      \end{itemize}
+		\item \textbf{Critical security detail}: DH private key stays with client.
+		\item \textbf{Format requirement}: Must follow exact byte format from TLS 1.3 spec.
+		      \begin{itemize}
+			      \item Ensures any server can parse any client's message.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{ServerHello: ``Here's what we'll use and who I am''}
+	\begin{itemize}[<+->]
+		\item \textbf{Server's response}: Packed with crucial information!
+		\item \textbf{Configuration decisions}:
+		      \begin{itemize}
+			      \item Selected cipher suite (from client's list)
+			      \item Server's Diffie-Hellman public key
+			      \item 32-byte random value
+		      \end{itemize}
+		\item \textbf{Authentication materials}:
+		      \begin{itemize}
+			      \item Certificate (contains server's public key)
+			      \item Signature of ClientHello + ServerHello contents
+			      \item MAC of all the above information
+		      \end{itemize}
+		\item \textbf{Crypto magic}: MAC uses key derived from DH shared secret!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Client verification: ``Can I trust this server?''}
+	\begin{itemize}[<+->]
+		\item \textbf{When client receives ServerHello}:
+		\item \textbf{Step 1}: Certificate validation
+		      \begin{itemize}
+			      \item Check certificate chain to trusted CA
+			      \item Verify certificate hasn't expired
+			      \item Confirm certificate matches domain name
+		      \end{itemize}
+		\item \textbf{Step 2}: Signature verification
+		      \begin{itemize}
+			      \item Use certificate's public key to verify signature
+			      \item Ensures server controls the private key
+		      \end{itemize}
+		\item \textbf{Step 3}: Derive shared secrets
+		      \begin{itemize}
+			      \item Compute DH shared secret: $g^{ab} \bmod p$
+			      \item Derive symmetric keys from shared secret
+		      \end{itemize}
+		\item \textbf{Step 4}: MAC verification
+		      \begin{itemize}
+			      \item Verify MAC using derived symmetric key
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{All checks pass: Ready for encrypted communication!}
+	\begin{center}
+		\textbf{After successful verification:}
+	\end{center}
+	\begin{itemize}[<+->]
+		\item Client is confident it's talking to the legitimate server.
+		\item Both parties have the same shared secret keys.
+		\item Ready to send encrypted application data!
+		\item \textbf{Security guarantees achieved}:
+		      \begin{itemize}
+			      \item \textbf{Confidentiality}: Traffic is encrypted
+			      \item \textbf{Integrity}: Traffic is authenticated
+			      \item \textbf{Authentication}: Server identity verified
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Real-world example: Visiting \texttt{aub.edu.lb}}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Step 1}: Browser sends ClientHello
+			\begin{itemize}[<+->]
+				\item Lists supported ciphers
+				\item Includes DH public key
+				\item Adds random nonce
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Step 2}: Server responds
+			\begin{itemize}[<+->]
+				\item Sends ServerHello
+				\item Provides certificate for ``\texttt{aub.edu.lb}''
+				\item Includes signature and MAC
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\pause
+	\begin{center}
+		\textbf{Step 3}: Browser verification
+	\end{center}
+	\begin{itemize}[<+->]
+		\item Certificate validated using browser's built-in CA certificates
+		\item Must be signed by trusted certificate authority
+		\item Certificate must match domain name: ``\texttt{aub.edu.lb}''
+		\item All cryptographic checks must pass
+	\end{itemize}
+	\pause
+	\begin{center}
+		\textbf{Step 4}: Browser requests initial page over encrypted channel!
+	\end{center}
+\end{frame}
+
+\begin{frame}{Security guarantees after successful TLS handshake}
+	\begin{itemize}[<+->]
+		\item \textbf{All communications are encrypted and authenticated}
+		\item \textbf{What an eavesdropper can see}:
+		      \begin{itemize}
+			      \item Client IP address
+			      \item Server IP address
+			      \item Encrypted content (but can't read it!)
+			      \item Traffic patterns and timing
+		      \end{itemize}
+		\item \textbf{What an eavesdropper CANNOT do}:
+		      \begin{itemize}
+			      \item Read the underlying plaintext
+			      \item Modify messages without detection
+			      \item Impersonate either party
+		      \end{itemize}
+		\item \textbf{Authentication guarantee}: If messages are tampered with, receiving party will detect it!
+		\item \textbf{Bottom line}: Enough security for most applications.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Forward Secrecy: Protecting past communications}
+	\begin{itemize}[<+->]
+		\item \textbf{The problem}: What if a server's private key is compromised?
+		      \begin{itemize}
+			      \item Attacker could decrypt \textbf{all past} TLS sessions.
+			      \item Years of stored encrypted traffic becomes readable.
+			      \item Example: NSA's alleged collection of encrypted internet traffic.
+		      \end{itemize}
+		\item \textbf{Forward secrecy (Perfect Forward Secrecy - PFS)}:
+		      \begin{itemize}
+			      \item Ensures past sessions remain secure even if long-term keys are compromised.
+			      \item Each session uses unique, \textbf{ephemeral keys}.
+			            \begin{itemize}
+				            \item \textit{ephemeral: ``lasting a very short time''}
+			            \end{itemize}
+			      \item Session keys are deleted after use.
+		      \end{itemize}
+		\item \textbf{Security guarantee}: ``Even if you compromise me today, you can't read yesterday's traffic.''
+		\item \textbf{Critical for}: Journalists, activists, whistleblowers, ordinary citizens
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{How TLS achieves forward secrecy}
+	\begin{itemize}[<+->]
+		\item \textbf{Ephemeral Diffie-Hellman key exchange}:
+		      \begin{itemize}
+			      \item Server generates fresh DH key pair for each session.
+			      \item Client generates fresh DH key pair for each session.
+			      \item Shared secret computed: $g^{ab} \bmod p$ (then deleted!).
+		      \end{itemize}
+		\item \textbf{Key lifecycle}:
+		      \begin{enumerate}
+			      \item Generate ephemeral keys for handshake.
+			      \item Derive session keys from ephemeral shared secret.
+			      \item \textbf{Delete ephemeral private keys immediately}.
+			      \item Use session keys for encrypted communication.
+			      \item Delete session keys when connection ends.
+		      \end{enumerate}
+		\item \textbf{Server's long-term private key}: Only used to \textbf{sign} the handshake
+		      \begin{itemize}
+			      \item Not used to derive session keys directly.
+			      \item Compromising it doesn't reveal past session keys.
+		      \end{itemize}
+		\item \textbf{Result}: Each TLS session is cryptographically independent.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{How things can go wrong with TLS}
+	\begin{itemize}[<+->]
+		\item \textbf{Common TLS failure scenarios:}
+		      \begin{itemize}
+			      \item Even with the most secure ciphers, TLS can be compromised
+			      \item Security relies on assumptions about honest behavior
+		      \end{itemize}
+		\item \textbf{Key assumption}: All three parties behave honestly
+		      \begin{itemize}
+			      \item Client
+			      \item Server
+			      \item Certificate Authority (CA)
+		      \end{itemize}
+		\item \textbf{Reality check}: What if one party is compromised?
+		\item \textbf{Implementation matters}: Poor TLS implementations create vulnerabilities
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Compromised Certificate Authority}
+	\begin{itemize}[<+->]
+		\item \textbf{Root CAs}: Organizations that browsers trust to validate certificates
+		\item \textbf{Normal process}:
+		      \begin{itemize}
+			      \item CA verifies legitimacy of certificate owner.
+			      \item CA signs certificate with their private key.
+			      \item Browser trusts CA's signature.
+		      \end{itemize}
+		\item \textbf{Attack scenario}: CA's private key is compromised
+		      \begin{itemize}
+			      \item Attacker can create certificates for \textbf{any domain}.
+			      \item No approval needed from actual domain owner.
+			      \item Can impersonate legitimate servers.
+		      \end{itemize}
+		\item \textbf{Attack capabilities}:
+		      \begin{itemize}
+			      \item Create fake certificates for \texttt{google.com}, \texttt{instagram.com}, etc.
+			      \item Intercept user credentials and communications.
+			      \item Man-in-the-middle attacks become trivial.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Real-world example: DigiNotar}
+	\begin{itemize}[<+->]
+		\item \textbf{What happened}:
+		      \begin{itemize}
+			      \item Dutch certificate authority DigiNotar was hacked.
+			      \item Attackers gained access to CA's private keys.
+			      \item Created fake certificates for Google services.
+		      \end{itemize}
+		\item \textbf{Impact}:
+		      \begin{itemize}
+			      \item Users unknowingly connected to malicious servers.
+			      \item Credentials and communications intercepted.
+			      \item Trust in entire CA system questioned.
+		      \end{itemize}
+		\item \textbf{Aftermath}:
+		      \begin{itemize}
+			      \item DigiNotar went bankrupt.
+			      \item All major browsers removed DigiNotar certificates.
+			      \item Led to improved CA monitoring and transparency.
+		      \end{itemize}
+		\item \textbf{Lesson}: CAs are high-value targets for attackers!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Real-world example: Kazakhstan government certificate}
+	\begin{columns}[c]
+		\begin{column}{0.8\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{2015}: Kazakhstan government creates ``national security certificate''
+				      \begin{itemize}
+					      \item Root certificate that could enable MITM attacks.
+					      \item Would allow government to intercept HTTPS traffic.
+					      \item Required manual installation on users' devices.
+				      \end{itemize}
+				\item \textbf{July 2019}: Government mandates certificate installation
+				      \begin{itemize}
+					      \item ISPs instructed users to install ``Qaznet Trust Certificate''.
+					      \item Issued by state CA: Qaznet Trust Network.
+					      \item Initial targets: Google, Facebook, Twitter.
+				      \end{itemize}
+				\item \textbf{August 2019}: Browser vendors fight back
+				      \begin{itemize}
+					      \item Mozilla (Firefox) and Google (Chrome) block the certificate.
+					      \item Apple (Safari) joins the blocking effort.
+					      \item Microsoft reiterates certificate not in trusted root store.
+				      \end{itemize}
+				\item \textbf{December 2020}: Government tries again, browsers block again
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.2\textwidth}
+			\imagewithcaption{tls_borat.jpg}{}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Kazakhstan case: Lessons for TLS security}
+	\begin{itemize}[<+->]
+		\item \textbf{Government-level MITM attempts are real}
+		      \begin{itemize}
+			      \item Nation-states can create sophisticated infrastructure.
+			      \item Legal pressure on ISPs and users.
+			      \item ``National security'' justifications.
+		      \end{itemize}
+		\item \textbf{Browser vendors as guardians}:
+		      \begin{itemize}
+			      \item Coordinate to protect users from malicious CAs.
+			      \item Can override user certificate installations.
+			      \item Technical measures against political pressure.
+		      \end{itemize}
+		\item \textbf{Certificate transparency importance}:
+		      \begin{itemize}
+			      \item Public logs make rogue certificates detectable.
+			      \item Community monitoring of CA behavior.
+			      \item Enables coordinated responses to threats.
+		      \end{itemize}
+		\item \textbf{Bottom line}: Even governments can't easily break modern TLS
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Certificate Transparency}
+	\begin{itemize}[<+->]
+		\item \textbf{The problem}: CAs can issue certificates without anyone knowing.
+		      \begin{itemize}
+			      \item Rogue certificates for targeted attacks.
+			      \item Compromised CAs issuing malicious certificates.
+			      \item No way to detect misbehavior after the fact.
+		      \end{itemize}
+		\item \textbf{Certificate Transparency (CT) solution} (2013):
+		      \begin{itemize}
+			      \item CAs must submit all certificates to public logs.
+			      \item Logs are cryptographically append-only.
+			      \item Anyone can monitor logs for suspicious certificates.
+		      \end{itemize}
+		\item \textbf{How it works}:
+		      \begin{enumerate}
+			      \item CA issues certificate and submits to CT logs.
+			      \item Log returns Signed Certificate Timestamp (SCT).
+			      \item Certificate includes SCT as proof of logging.
+			      \item Browsers reject certificates without valid SCTs.
+		      \end{enumerate}
+		\item \textbf{Result}: CA misbehavior becomes publicly detectable!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Example: How Let's Encrypt uses CT}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{The Static CT API}: Evolution of Certificate Transparency.
+				      \begin{itemize}
+					      \item Logs represented as simple flat files (``tiles'').
+					      \item Download log data just like downloading files.
+					      \item CDN-friendly, cheaper to operate.
+				      \end{itemize}
+				\item \textbf{Key advantages}:
+				      \begin{itemize}
+					      \item 10x+ cheaper to operate (~\$10k/year vs traditional logs).
+					      \item More reliable (simpler architecture).
+					      \item Easier to download and share data.
+				      \end{itemize}
+				\item \textbf{Sunlight}:
+				      \begin{itemize}
+					      \item Open source CT implementation used by Let's Encrypt.\footnote{\url{https://letsencrypt.org/2025/06/11/reflections-on-a-year-of-sunlight/}}
+					      \item \url{https://sunlight.dev}
+				      \end{itemize}
+				\item \textbf{Status}: Chrome and Safari now accepting Static CT API logs!
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Critical examination: Are browser vendors truly neutral?}
+	\begin{itemize}[<+->]
+		\item \textbf{Browser vendors as gatekeepers}:
+		      \begin{itemize}
+			      \item Google (Chrome), Mozilla (Firefox), Apple (Safari), Microsoft (Edge).
+			      \item Unilateral power to accept/reject certificates.
+			      \item Who watches the watchers?
+		      \end{itemize}
+		\item \textbf{Political and economic pressures}:
+		      \begin{itemize}
+			      \item Companies have business interests and government relations.
+			      \item What if a government pressures Google/Apple directly?
+			      \item Corporate decisions affecting global internet security.
+		      \end{itemize}
+		\item \textbf{The CA model's fundamental problems}:
+		      \begin{itemize}
+			      \item \textbf{Single point of failure}: Any CA can issue certificates for any domain.
+			      \item \textbf{Asymmetric trust}: Must trust \textbf{all} CAs, not just one.
+			      \item \textbf{Centralized control}: Small number of entities control global trust.
+			      \item \textbf{Economic incentives}: CAs profit from issuing more certificates.
+		      \end{itemize}
+		\item \textbf{Question}: Is this the best we can do for global internet security?
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Thinking beyond: Decentralized trust alternatives}
+	\begin{itemize}[<+->]
+		\item \textbf{Why consider alternatives?}
+		      \begin{itemize}
+			      \item Reduce single points of failure.
+			      \item Eliminate centralized gatekeepers.
+			      \item Increase transparency and auditability.
+		      \end{itemize}
+		\item \textbf{Blockchain-based certificate systems}:
+		      \begin{itemize}
+			      \item Certificates recorded on public blockchain.
+			      \item Cryptographic proof of certificate history.
+			      \item Examples: Namecoin, Ethereum Name Service (ENS)
+			      \item \textbf{Trade-offs}: Scalability, energy consumption, governance.
+		      \end{itemize}
+		\item \textbf{Web of Trust models}:
+		      \begin{itemize}
+			      \item Users vouch for each other's identities (like PGP).
+			      \item Decentralized reputation systems.
+			      \item \textbf{Trade-offs}: User complexity, bootstrap problem
+		      \end{itemize}
+		\item \textbf{DNS-based alternatives}: DANE (DNS-based Authentication of Named Entities)
+		\item \textbf{Your turn}: What other models could work? What are the trade-offs?
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Compromised Server}
+	\begin{itemize}[<+->]
+		\item \textbf{Worst-case scenario}: Server is fully controlled by attacker
+		\item \textbf{What the attacker gains}:
+		      \begin{itemize}
+			      \item Session keys (server is TLS termination point)
+			      \item All transmitted data \textbf{before} encryption
+			      \item All received data \textbf{after} decryption
+			      \item Server's private key
+		      \end{itemize}
+		\item \textbf{Attack capabilities}:
+		      \begin{itemize}
+			      \item Read all user communications in plaintext
+			      \item Impersonate the legitimate server
+			      \item Use private key to create malicious servers
+		      \end{itemize}
+		\item \textbf{Bottom line}: TLS won't save you if the server is compromised!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Server compromise: Mitigation strategies}
+	\begin{itemize}[<+->]
+		\item \textbf{Good news}: High-profile services are well-protected
+		      \begin{itemize}
+			      \item Gmail, iCloud, major banks
+			      \item Multiple layers of security
+		      \end{itemize}
+		\item \textbf{Hardware Security Modules (HSMs)}:
+		      \begin{itemize}
+			      \item Store private keys in separate, tamper-resistant hardware
+			      \item Even if server is compromised, keys may remain safe
+		      \end{itemize}
+		\item \textbf{Key Management Systems (KMS)}:
+		      \begin{itemize}
+			      \item Centralized key storage and management
+			      \item Limits exposure of private keys
+		      \end{itemize}
+		\item \textbf{More common threats}: Web application vulnerabilities
+		      \begin{itemize}
+			      \item SQL injection, cross-site scripting (XSS)
+			      \item Carried out \textbf{over} legitimate TLS connections
+			      \item Independent of TLS security
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Compromised Client}
+	\begin{itemize}[<+->]
+		\item \textbf{Attack scenario}: Browser or client application is compromised
+		\item \textbf{What the attacker gains}:
+		      \begin{itemize}
+			      \item Session keys from compromised client
+			      \item All decrypted data visible to client
+			      \item Ability to modify client behavior
+		      \end{itemize}
+		\item \textbf{Advanced attack}: Installing rogue CA certificates
+		      \begin{itemize}
+			      \item Add malicious CA to client's trusted store
+			      \item Client silently accepts invalid certificates
+			      \item Enables seamless man-in-the-middle attacks
+		      \end{itemize}
+		\item \textbf{Scope difference}:
+		      \begin{itemize}
+			      \item Compromised CA/server: affects \textbf{all} clients
+			      \item Compromised client: affects \textbf{only that} client
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Client compromise: Attack techniques}
+	\begin{itemize}[<+->]
+		\item \textbf{Malware installation}:
+		      \begin{itemize}
+			      \item Trojans, viruses, browser plugins
+			      \item Can intercept data before encryption
+		      \end{itemize}
+		\item \textbf{Certificate store manipulation}:
+		      \begin{itemize}
+			      \item Add attacker's CA certificate to trusted store
+			      \item Modify certificate validation logic
+		      \end{itemize}
+		\item \textbf{Browser hijacking}:
+		      \begin{itemize}
+			      \item Redirect traffic through attacker's proxy
+			      \item Modify DNS settings
+		      \end{itemize}
+		\item \textbf{Protection strategies}:
+		      \begin{itemize}
+			      \item Keep browsers and OS updated
+			      \item Use reputable antivirus software
+			      \item Certificate pinning (for developers)
+			      \item Monitor certificate store changes
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS security: A chain is only as strong as its weakest link}
+	\begin{center}
+		\textbf{Three points of failure in the TLS trust model:}
+	\end{center}
+	\begin{columns}[c]
+		\begin{column}{0.33\textwidth}
+			\textbf{Certificate Authority}
+			\begin{itemize}
+				\item Must protect private keys
+				\item Must verify identities correctly
+				\item Must not issue rogue certificates
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.33\textwidth}
+			\textbf{Server}
+			\begin{itemize}
+				\item Must protect private keys
+				\item Must maintain secure infrastructure
+				\item Must handle session keys safely
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.33\textwidth}
+			\textbf{Client}
+			\begin{itemize}
+				\item Must validate certificates properly
+				\item Must protect trusted CA store
+				\item Must remain malware-free
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\pause
+	\begin{center}
+		\textbf{Compromise any one component} \rightarrow\ \textbf{TLS security fails!}
+	\end{center}
+\end{frame}
+
+\section{Attacks on TLS}
+
+\begin{frame}{TLS attacks timeline (to 2015)}
+	\bigimagewithcaption{tls_attacks_timeline_2015.png}{TLS attacks up until 2015.}
+\end{frame}
+
+\begin{frame}{Lucky Thirteen (2013)}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Target}: TLS's CBC (Cipher Block Chaining) mode with HMAC
+				\item \textbf{The vulnerability}: Timing differences in MAC verification\footnote{\url{https://appliedcryptography.page/papers/lucky-thirteen.pdf}}
+				      \begin{itemize}
+					      \item TLS 1.0-1.2 used MAC-then-encrypt with CBC mode
+					      \item Padding oracle attacks exploit timing differences
+					      \item Different MAC verification procedures for valid vs. invalid padding
+				      \end{itemize}
+				\item \textbf{Attack mechanism}:
+				      \begin{enumerate}
+					      \item Attacker modifies ciphertext to create invalid padding
+					      \item Measures server response time
+					      \item Timing differences reveal padding validity
+					      \item Uses timing to guess plaintext byte-by-byte
+				      \end{enumerate}
+				\item \textbf{Why ``Lucky Thirteen''?} Attack requires exactly 13 bytes of padding
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Lucky Thirteen: Technical details}
+	\begin{itemize}[<+->]
+		\item \textbf{CBC padding in TLS}:
+		      \begin{itemize}
+			      \item Messages padded to block boundary (16 bytes for AES)
+			      \item Padding bytes contain length of padding
+			      \item Example: \texttt{...data|05|05|05|05|05|05} (5 bytes padding)
+		      \end{itemize}
+		\item \textbf{The timing leak}:
+		      \begin{itemize}
+			      \item \textbf{Valid padding}: MAC checked on message after padding removal
+			      \item \textbf{Invalid padding}: TLS spec says to check MAC as if padding had zero-length
+			      \item Different amounts of data processed creates timing difference
+		      \end{itemize}
+		\item \textbf{Statistical attack}:
+		      \begin{itemize}
+			      \item Send thousands of modified ciphertexts
+			      \item Measure response times
+			      \item Statistical analysis reveals timing patterns
+		      \end{itemize}
+		\item \textbf{Result}: Can decrypt HTTPS cookies, passwords, session tokens
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Lucky Thirteen: Real-world impact}
+	\begin{itemize}[<+->]
+		\item \textbf{Affected systems}: All TLS 1.0-1.2 implementations using CBC
+		      \begin{itemize}
+			      \item OpenSSL, NSS, GnuTLS, SChannel
+			      \item Millions of web servers worldwide
+		      \end{itemize}
+		\item \textbf{Practical exploitation}:
+		      \begin{itemize}
+			      \item Requires man-in-the-middle position
+			      \item Can extract secrets from encrypted sessions
+			      \item Especially dangerous on shared networks (Wi-Fi)
+		      \end{itemize}
+		\item \textbf{Mitigation attempts}:
+		      \begin{itemize}
+			      \item Constant-time implementations (hard to get right)
+			      \item Prefer AEAD ciphers (AES-GCM)
+			      \item Ultimately: abandon CBC mode entirely
+		      \end{itemize}
+		\item \textbf{Legacy}: Demonstrated fundamental flaws in MAC-then-encrypt
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{POODLE (2014): Downgrade attacks strike}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Full name}: Padding Oracle On Downgraded Legacy Encryption\footnote{\url{https://appliedcryptography.page/papers/google-poodle.pdf}}
+				\item \textbf{Target}: SSL 3.0 (ancient protocol from 1996)
+				\item \textbf{The setup}:
+				      \begin{itemize}
+					      \item Browsers support SSL 3.0 for ``compatibility''
+					      \item Attacker forces downgrade from TLS to SSL 3.0
+					      \item SSL 3.0 has weaker padding validation
+				      \end{itemize}
+				\item \textbf{Attack flow}:
+				      \begin{enumerate}
+					      \item Client attempts TLS 1.2 connection
+					      \item Attacker blocks/corrupts TLS handshake
+					      \item Client ``gracefully'' falls back to SSL 3.0
+					      \item Attacker exploits SSL 3.0 padding oracle
+				      \end{enumerate}
+				\item \textbf{Discovered by}: Google Security Team
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{POODLE: The padding oracle vulnerability}
+	\begin{itemize}[<+->]
+		\item \textbf{SSL 3.0 padding flaw}:
+		      \begin{itemize}
+			      \item Padding bytes can contain \textbf{any values}
+			      \item Only padding length is validated
+			      \item Unlike TLS, which requires specific padding patterns
+		      \end{itemize}
+		\item \textbf{Attack technique}:
+		      \begin{itemize}
+			      \item Replace last block of ciphertext with target block
+			      \item If padding is valid, server processes message
+			      \item If padding is invalid, server returns error
+			      \item Use oracle to guess plaintext bytes
+		      \end{itemize}
+		\item \textbf{Efficiency}:
+		      \begin{itemize}
+			      \item Extract one byte per 256 requests (on average)
+			      \item Much faster than previous padding oracle attacks
+		      \end{itemize}
+		\item \textbf{Practical impact}: Steal HTTP cookies, session tokens
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{POODLE: Industry response and lessons}
+	\begin{itemize}[<+->]
+		\item \textbf{Immediate response}:
+		      \begin{itemize}
+			      \item Major browsers disabled SSL 3.0 support
+			      \item Server administrators configured to reject SSL 3.0
+			      \item ``Fallback SCSV'' mechanism introduced
+		      \end{itemize}
+		\item \textbf{Fallback SCSV}: Cryptographic downgrade protection
+		      \begin{itemize}
+			      \item Client signals highest supported version
+			      \item Server detects and rejects artificial downgrades
+			      \item Prevents attacker-induced fallbacks
+		      \end{itemize}
+		\item \textbf{Broader lessons}:
+		      \begin{itemize}
+			      \item Backward compatibility creates security risks
+			      \item Legacy protocols should be completely removed
+			      \item Graceful degradation can be graceful exploitation
+		      \end{itemize}
+		\item \textbf{Long-term impact}: Accelerated retirement of old protocols
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Triple Handshakes and Cookie Cutters (2014)}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Discovered by}: Inria Prosecco team (future TLS 1.3 verifiers!)
+				\item \textbf{Core problem}: TLS handshake can be \textbf{resumed} with different certificates\footnote{\url{https://appliedcryptography.page/papers/triple-handshakes.pdf}}
+				      \begin{itemize}
+					      \item Client connects to Server A, establishes session
+					      \item Session can be resumed with Server B using different certificate
+					      \item Client may not notice certificate change
+				      \end{itemize}
+				\item \textbf{Attack scenario}:
+				      \begin{itemize}
+					      \item Attacker has certificate for \texttt{evil.com}
+					      \item Tricks client into resuming session with \texttt{good.com}
+					      \item Client thinks it's talking to \texttt{good.com}
+					      \item Actually talking to attacker with \texttt{evil.com} certificate
+				      \end{itemize}
+				\item \textbf{Impact}: Breaks TLS authentication guarantees
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Triple Handshakes: The technical attack}
+	\begin{itemize}[<+->]
+		\item \textbf{Session resumption vulnerability}:
+		      \begin{itemize}
+			      \item TLS allows resuming sessions with different certificates
+			      \item Session keys remain the same
+			      \item Client authentication context gets confused
+		      \end{itemize}
+		\item \textbf{``Triple handshake'' attack}:
+		      \begin{enumerate}
+			      \item Handshake 1: Client \leftarrow\ Attacker (using evil certificate)
+			      \item Handshake 2: Attacker \leftarrow\ Server (using good certificate)
+			      \item Handshake 3: Client \leftarrow\ Server (resumed session, confused identity)
+		      \end{enumerate}
+		\item \textbf{Result}: Client sends sensitive data to attacker
+		\item \textbf{Renegotiation attacks}: Similar issues with TLS renegotiation
+		\item \textbf{Cookie cutter}: Attacker can splice different handshakes together
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Triple Handshakes: Fixes and prevention}
+	\begin{itemize}[<+->]
+		\item \textbf{Extended Master Secret (RFC 7627)}:
+		      \begin{itemize}
+			      \item Bind session keys to handshake transcript
+			      \item Prevents session resumption with different handshakes
+			      \item Master secret includes hash of all handshake messages
+		      \end{itemize}
+		\item \textbf{Renegotiation Indication Extension}:
+		      \begin{itemize}
+			      \item Cryptographically bind renegotiated connections
+			      \item Prevents injection of malicious handshakes
+		      \end{itemize}
+		\item \textbf{TLS 1.3 solution}:
+		      \begin{itemize}
+			      \item Completely removes renegotiation
+			      \item Simplified session resumption with PSK
+			      \item Cannot resume with different certificates
+		      \end{itemize}
+		\item \textbf{Significance}: Showed TLS state machine was more complex than realized
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Heartbleed (2014): The bug that broke the internet}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Not a protocol flaw}: Implementation bug in OpenSSL\footnote{\url{https://appliedcryptography.page/papers/matter-heartbleed.pdf}}
+				\item \textbf{The vulnerability}: Buffer over-read in heartbeat extension
+				      \begin{itemize}
+					      \item Heartbeat: ``keep-alive'' mechanism for TLS
+					      \item Client sends data + length field
+					      \item Server echoes data back
+				      \end{itemize}
+				\item \textbf{The bug}: No bounds checking on length field
+				      \begin{itemize}
+					      \item Send 1 byte of data, claim it's 64KB
+					      \item Server copies 64KB from memory
+					      \item Returns server's memory contents to attacker
+				      \end{itemize}
+				\item \textbf{Impact}: Arbitrary memory disclosure
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Heartbleed: What attackers could steal}
+	\begin{itemize}[<+->]
+		\item \textbf{Server's private keys}:
+		      \begin{itemize}
+			      \item TLS private keys used for authentication
+			      \item Allows impersonation of legitimate servers
+			      \item Forward secrecy completely broken
+		      \end{itemize}
+		\item \textbf{Session keys and user data}:
+		      \begin{itemize}
+			      \item Active TLS session keys
+			      \item Usernames, passwords, session cookies
+			      \item Credit card numbers, personal information
+		      \end{itemize}
+		\item \textbf{Memory contents}:
+		      \begin{itemize}
+			      \item Random 64KB chunks of server memory
+			      \item Could contain anything: keys, data, code
+			      \item Repeated requests reveal more memory
+		      \end{itemize}
+		\item \textbf{No evidence of exploitation}: Attack leaves no traces in logs
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Heartbleed: The simple attack}
+	\begin{center}
+		\textbf{Normal heartbeat request:}
+	\end{center}
+	\begin{center}
+		\texttt{Type=1, Length=4, Data="PING"}
+	\end{center}
+	\begin{center}
+		Server responds: \texttt{"PING"}
+	\end{center}
+	\pause
+	\begin{center}
+		\textbf{Malicious heartbeat request:}
+	\end{center}
+	\begin{center}
+		\texttt{Type=1, Length=65535, Data="A"}
+	\end{center}
+	\begin{center}
+		Server responds: \texttt{"A" + 65534 bytes of memory}
+	\end{center}
+	\pause
+	\begin{itemize}[<+->]
+		\item \textbf{One line of C code}: \texttt{memcpy(bp, pl, payload);}
+		\item \textbf{Missing check}: \texttt{if (payload != 1 + 2 + hblen) error();}
+		\item \textbf{Lesson}: Simple bugs can have massive consequences
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Heartbleed: Global impact and response}
+	\begin{itemize}[<+->]
+		\item \textbf{Affected systems}:
+		      \begin{itemize}
+			      \item 17\% of all SSL/TLS web servers (500,000+ sites)
+			      \item Major services: Yahoo, Flickr, Stack Overflow
+			      \item OpenSSL versions 1.0.1 through 1.0.1f
+		      \end{itemize}
+		\item \textbf{Emergency response}:
+		      \begin{itemize}
+			      \item OpenSSL fixed within days
+			      \item Mass certificate revocation and reissuance
+			      \item Users advised to change all passwords
+		      \end{itemize}
+		\item \textbf{Long-term consequences}:
+		      \begin{itemize}
+			      \item Increased funding for OpenSSL development
+			      \item Core Infrastructure Initiative (CII) formed
+			      \item Better security auditing of critical libraries
+		      \end{itemize}
+		\item \textbf{Branding success}: First security vulnerability with logo and website
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{SMACK and FREAK: Two attacks from one paper (2015)}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Research by}: Inria Prosecco team (again!)\footnote{\url{https://appliedcryptography.page/papers/smack-tls.pdf}}
+				\item \textbf{Two major attack classes discovered}:
+				      \begin{itemize}
+					      \item \textbf{SMACK}: State Machine AttaCKs
+					      \item \textbf{FREAK}: Factoring RSA Export Keys
+				      \end{itemize}
+				\item \textbf{SMACK core insight}: TLS implementations have \textbf{state machines}
+				      \begin{itemize}
+					      \item Expected message sequence: ClientHello → ServerHello → Certificate → ...
+					      \item Implementations track current state
+					      \item But different implementations have different state machines!
+				      \end{itemize}
+				\item \textbf{FREAK core insight}: Legacy export-grade RSA still supported
+				      \begin{itemize}
+					      \item 512-bit RSA keys can be factored in hours
+					      \item Downgrade attacks force use of weak keys
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{SMACK: How state machine attacks work}
+	\begin{itemize}[<+->]
+		\item \textbf{Example scenario}: Web server with two TLS libraries
+		      \begin{itemize}
+			      \item Library A handles initial handshake
+			      \item Library B handles application data
+		      \end{itemize}
+		\item \textbf{Attack technique}:
+		      \begin{enumerate}
+			      \item Send duplicate or out-of-order handshake messages
+			      \item Library A and Library B enter different states
+			      \item Library A thinks handshake is complete
+			      \item Library B thinks handshake is still in progress
+		      \end{enumerate}
+		\item \textbf{Result}:
+		      \begin{itemize}
+			      \item Bypass authentication
+			      \item Downgrade security parameters
+			      \item Inject malicious data
+		      \end{itemize}
+		\item \textbf{Discovery method}: Systematic testing with model checking
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{SMACK: How state machine attacks work}
+	\bigimagewithcaption{tls_smack.png}{}
+\end{frame}
+
+\begin{frame}{FREAK: Factoring RSA Export Keys}
+	\begin{itemize}[<+->]
+		\item \textbf{Export-grade cryptography legacy}:
+		      \begin{itemize}
+			      \item 1990s US export restrictions required weak crypto
+			      \item 512-bit RSA keys for international software
+			      \item Restrictions lifted, but support remained in implementations
+		      \end{itemize}
+		\item \textbf{FREAK attack flow}:
+		      \begin{enumerate}
+			      \item Client requests strong RSA key exchange
+			      \item Attacker modifies ClientHello to request export-grade RSA
+			      \item Server responds with 512-bit RSA parameters
+			      \item Attacker factors 512-bit RSA key (8-10 hours)
+			      \item Attacker can decrypt entire TLS session
+		      \end{enumerate}
+		\item \textbf{Vulnerable systems}: 36.7\% of all browser-trusted sites
+		\item \textbf{Impact}: Complete compromise of TLS connections
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{When math was classified as weapons}
+	\begin{itemize}[<+->]
+		\item \textbf{US Export Administration Regulations (1970s-1990s)}:
+		      \begin{itemize}
+			      \item Cryptographic software classified as ``munitions''
+			      \item Same category as tanks, missiles, and fighter jets
+			      \item Export required State Department license (like arms dealing!)
+		      \end{itemize}
+		\item \textbf{The absurd reality}:
+		      \begin{itemize}
+			      \item Mathematical algorithms = weapons of war
+			      \item Publishing crypto code = illegal arms export
+			      \item Explaining RSA algorithm abroad = potential felony
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{When math was classified as weapons}
+	\begin{itemize}[<+->]
+		\item \textbf{Practical impact}:
+		      \begin{itemize}
+			      \item US software artificially weakened for international markets
+			      \item 40-bit keys for ``export grade'' crypto (easily breakable)
+			      \item Non-US developers gained competitive advantage
+		      \end{itemize}
+		\item \textbf{The irony}: Trying to keep crypto weak made \textbf{everyone} less secure
+		      \begin{itemize}
+			      \item Dual-use problem: same algorithms protect banks and terrorists
+			      \item Weak crypto created systemic vulnerabilities
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Bernstein v. United States}
+	\begin{columns}[c]
+		\begin{column}{0.7\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Daniel J. Bernstein}: Graduate student at UC Berkeley (1990s)
+				      \begin{itemize}
+					      \item Developed ``Snuffle'' encryption algorithm
+					      \item Wanted to publish academic paper and source code
+					      \item Government: ``That's illegal arms export!''
+				      \end{itemize}
+				\item \textbf{The lawsuit}: Bernstein v. United States (1995-2003)
+				      \begin{itemize}
+					      \item Argued cryptographic code is protected speech
+					      \item First Amendment covers mathematical expressions
+					      \item Government can't censor academic research
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+			\imagewithcaption{djb.jpg}{Daniel J. Bernstein}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Bernstein v. United States}
+	\begin{columns}[c]
+		\begin{column}{0.7\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Key victories}:
+				      \begin{itemize}
+					      \item 1996: Court rules source code is speech
+					      \item 1999: 9th Circuit affirms First Amendment protection
+					      \item Export controls on publicly available crypto unconstitutional
+				      \end{itemize}
+				\item \textbf{Legacy}: Opened floodgates for strong cryptography
+				      \begin{itemize}
+					      \item TLS, HTTPS, modern secure communications
+					      \item Academic freedom in cryptographic research
+					      \item Foundation for today's digital security
+				      \end{itemize}
+				\item \textbf{Fun fact}: Bernstein later created Curve25519 (used in TLS 1.3!)
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+			\imagewithcaption{djb.jpg}{Daniel J. Bernstein}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{``The Crypto Wars''}
+	\begin{columns}[c]
+		\begin{column}{0.33\textwidth}
+			\imagewithcaption{export_1.jpg}{RSA tattoo}
+		\end{column}
+		\begin{column}{0.33\textwidth}
+			\imagewithcaption{export_2.jpg}{RSA t-shirt}
+		\end{column}
+		\begin{column}{0.33\textwidth}
+			\imagewithcaption{export_3.jpg}{Netscape ``not for export'' floppy}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{FREAK}
+	\bigimagewithcaption{tls_freak.png}{}
+\end{frame}
+
+\begin{frame}{SMACK: Real vulnerabilities found}
+	\begin{itemize}[<+->]
+		\item \textbf{miTLS vs. OpenSSL}:
+		      \begin{itemize}
+			      \item Attacker can skip client authentication
+			      \item Exploit differences in certificate validation
+		      \end{itemize}
+		\item \textbf{NSS (Firefox) vulnerabilities}:
+		      \begin{itemize}
+			      \item Early application data acceptance
+			      \item Certificate validation bypass
+		      \end{itemize}
+		\item \textbf{Java JSSE attacks}:
+		      \begin{itemize}
+			      \item Premature transition to application data
+			      \item Authentication bypass in specific configurations
+		      \end{itemize}
+		\item \textbf{The root cause}: Complex state machines without formal verification
+		\item \textbf{Solution approach}: Model checking and formal verification
+		      \begin{itemize}
+			      \item Systematically test all possible message sequences
+			      \item Verify implementations match specifications
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Logjam: When Diffie-Hellman goes wrong (2015)}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Research team}: 14 researchers from 10 institutions\footnote{\url{https://appliedcryptography.page/papers/imperfect-dh.pdf}}
+				\item \textbf{Target}: Diffie-Hellman key exchange in TLS
+				\item \textbf{Two main attacks}:
+				      \begin{itemize}
+					      \item \textbf{Logjam}: Downgrade to weak 512-bit DH groups
+					      \item \textbf{Precomputation}: Break commonly used 1024-bit groups
+				      \end{itemize}
+				\item \textbf{Context}: 1990s US export restrictions on cryptography
+				      \begin{itemize}
+					      \item ``Export-grade'' crypto limited to weak parameters
+					      \item Legacy support for 512-bit DH groups remained
+				      \end{itemize}
+				\item \textbf{Fundamental question}: Can we still break today's crypto by exploiting legacy weak parameters?
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Logjam: The downgrade attack}
+	\begin{itemize}[<+->]
+		\item \textbf{Attack flow}:
+		      \begin{enumerate}
+			      \item Client offers strong DH groups (2048-bit)
+			      \item Attacker modifies ClientHello to request weak DH (512-bit)
+			      \item Server responds with 512-bit DH parameters
+			      \item Attacker breaks 512-bit DH in real-time
+			      \item Attacker can now decrypt entire session
+		      \end{enumerate}
+		\item \textbf{Breaking 512-bit DH}:
+		      \begin{itemize}
+			      \item Academic cluster: 7 minutes
+			      \item Amazon EC2: under \$100 per connection
+			      \item NSA-level resources: near real-time
+		      \end{itemize}
+		\item \textbf{Vulnerable servers}: 8.4\% of top 1 million HTTPS sites
+		\item \textbf{The irony}: Export restrictions from 1990s still creating vulnerabilities in 2015
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Logjam: The downgrade attack}
+	\bigimagewithcaption{logjam_2.png}{}
+\end{frame}
+
+\begin{frame}{Logjam: Precomputation attacks on 1024-bit groups}
+	\begin{itemize}[<+->]
+		\item \textbf{The number field sieve algorithm}:
+		      \begin{itemize}
+			      \item Most efficient known algorithm for breaking DH
+			      \item Has expensive precomputation phase
+			      \item Once precomputation is done, individual logs are cheaper
+		      \end{itemize}
+		\item \textbf{Attack economics}:
+		      \begin{itemize}
+			      \item Precomputation for 1024-bit group: several months, millions of dollars
+			      \item Individual discrete logs: 30 seconds
+			      \item Amortized cost: profitable for high-value targets
+		      \end{itemize}
+		\item \textbf{Widespread vulnerability}:
+		      \begin{itemize}
+			      \item 18\% of top 1M HTTPS sites use single 1024-bit group
+			      \item 66\% of VPN servers use same group
+			      \item 26\% of SSH servers use same group
+		      \end{itemize}
+		\item \textbf{NSA implications}: Could explain some of NSA's cryptanalytic capabilities
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Logjam: Precomputation attacks on 1024-bit groups}
+	\bigimagewithcaption{logjam_1.png}{}
+\end{frame}
+
+\begin{frame}{Logjam: The ``well-known groups'' problem}
+	\begin{itemize}[<+->]
+		\item \textbf{Common practice}: Everyone uses the same DH parameters
+		      \begin{itemize}
+			      \item RFC 5114 specifies ``standard'' groups
+			      \item Apache mod\_ssl ships with default parameters
+			      \item Easier than generating custom parameters
+		      \end{itemize}
+		\item \textbf{Concentration risk}:
+		      \begin{itemize}
+			      \item Breaking one group breaks many servers
+			      \item Amortizes the cost of precomputation
+			      \item Creates attractive targets for nation-state actors
+		      \end{itemize}
+		\item \textbf{Timeline for 1024-bit groups}:
+		      \begin{itemize}
+			      \item 2015: Academic resources could break with significant effort
+			      \item 2020: Within reach of well-funded adversaries
+			      \item 2025: Potentially routine for state actors
+		      \end{itemize}
+		\item \textbf{Recommendation}: Move to 2048-bit DH or elliptic curves
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Logjam: Intelligence services exploit these issues!}
+	\bigimagewithcaption{logjam_3.png}{}
+\end{frame}
+
+\begin{frame}{Logjam: Countermeasures and lessons}
+	\begin{itemize}[<+->]
+		\item \textbf{Immediate fixes}:
+		      \begin{itemize}
+			      \item Disable export-grade DH entirely
+			      \item Upgrade to 2048-bit or larger DH groups
+			      \item Prefer elliptic curve Diffie-Hellman (ECDH)
+		      \end{itemize}
+		\item \textbf{Browser responses}:
+		      \begin{itemize}
+			      \item Reject connections with weak DH parameters
+			      \item Implement warnings for short DH keys
+		      \end{itemize}
+		\item \textbf{Broader lessons}:
+		      \begin{itemize}
+			      \item Legacy cryptography creates long-term vulnerabilities
+			      \item Export restrictions had lasting negative security impact
+			      \item Centralized parameters create systemic risks
+			      \item Need to plan for cryptographic algorithm transitions
+		      \end{itemize}
+		\item \textbf{Policy implications}: Demonstrated real-world harm from crypto restrictions
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{SWEET32: Birthday attacks on 64-bit block ciphers (2016)}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Researchers}: Karthikeyan Bhargavan and Gaëtan Leurent (Inria)\footnote{\url{https://appliedcryptography.page/papers/inria-sweet32.pdf}}
+				\item \textbf{Target}: 64-bit block ciphers (3DES, Blowfish)
+				\item \textbf{Core vulnerability}: Birthday paradox in block cipher usage
+				      \begin{itemize}
+					      \item 64-bit blocks $\rightarrow$ $2^{32}$ blocks before collisions
+					      \item Long-lived TLS connections can encrypt that much data
+					      \item Collision reveals information about plaintext
+				      \end{itemize}
+				\item \textbf{Attack name}: \textbf{SWEET32} - birthday attacks on block ciphers
+				\item \textbf{Practical scenario}: HTTPS connections sending repetitive data
+				      \begin{itemize}
+					      \item JavaScript making repeated AJAX requests
+					      \item Cookies or authentication tokens repeated in each request
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{SWEET32: The birthday attack mechanics}
+	\begin{itemize}[<+->]
+		\item \textbf{Birthday paradox}:
+		      \begin{itemize}
+			      \item For $n$-bit blocks, expect collision after $2^{n/2}$ blocks
+			      \item 64-bit blocks: collision after $2^{32} = 4$ billion blocks
+			      \item At 1 Mbps: 9 hours, at 10 Mbps: 1 hour
+		      \end{itemize}
+		\item \textbf{Collision exploitation}:
+		      \begin{itemize}
+			      \item When same plaintext block encrypted twice → same ciphertext
+			      \item Attacker identifies when collision occurs
+			      \item Can deduce relationships between plaintext blocks
+		      \end{itemize}
+		\item \textbf{Attack requirements}:
+		      \begin{itemize}
+			      \item Long-lived TLS connection
+			      \item Ability to generate traffic (malicious JavaScript)
+			      \item Repetitive plaintext content (cookies, tokens)
+		      \end{itemize}
+		\item \textbf{Proof of concept}: Extracted HTTP cookies in 30 hours
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{SWEET32: Real-world impact and remediation}
+	\begin{itemize}[<+->]
+		\item \textbf{Vulnerable systems}:
+		      \begin{itemize}
+			      \item Legacy systems still using 3DES
+			      \item Some VPN implementations
+			      \item Older TLS configurations
+		      \end{itemize}
+		\item \textbf{Attack limitations}:
+		      \begin{itemize}
+			      \item Requires very long connections
+			      \item Needs repetitive plaintext patterns
+			      \item Success rate depends on traffic patterns
+		      \end{itemize}
+		\item \textbf{Countermeasures}:
+		      \begin{itemize}
+			      \item Migrate to 128-bit block ciphers (AES)
+			      \item Implement connection limits (rekeying)
+			      \item Disable 3DES in TLS configurations
+		      \end{itemize}
+		\item \textbf{Browser responses}: Disabled 3DES by default
+		\item \textbf{Lesson}: Even ``theoretical'' attacks can become practical
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Transcript Collision Attacks (2016)}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Researchers}: Karthikeyan Bhargavan and Gaëtan Leurent (Inria)\footnote{\url{https://appliedcryptography.page/papers/inria-collisions.pdf}}
+				\item \textbf{Novel attack class}: Hash collision attacks on protocol transcripts
+				\item \textbf{Core idea}:
+				      \begin{itemize}
+					      \item Protocols hash their message transcripts for integrity
+					      \item Find two different transcripts with same hash
+					      \item Substitute one transcript for another
+				      \end{itemize}
+				\item \textbf{Targets}: TLS, IKE (IPsec), SSH
+				\item \textbf{Hash collision research}: Building on advances in MD5 and SHA-1
+				      \begin{itemize}
+					      \item Google's SHA-1 collision (SHAttered) published in 2017
+					      \item But collision attacks were becoming practical by 2016
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Transcript Collision}
+	\bigimagewithcaption{tls_collision.png}{}
+\end{frame}
+
+\begin{frame}{Transcript Collision: Attack on TLS}
+	\begin{itemize}[<+->]
+		\item \textbf{TLS transcript hashing}:
+		      \begin{itemize}
+			      \item TLS computes hash of all handshake messages
+			      \item Used in Finished message for integrity verification
+			      \item Older TLS versions used MD5 and SHA-1
+		      \end{itemize}
+		\item \textbf{Attack scenario}:
+		      \begin{enumerate}
+			      \item Attacker finds two handshake transcripts with same hash
+			      \item First transcript: legitimate client-server handshake
+			      \item Second transcript: attacker's malicious handshake
+			      \item Attacker substitutes malicious transcript
+		      \end{enumerate}
+		\item \textbf{Consequences}:
+		      \begin{itemize}
+			      \item Bypass authentication checks
+			      \item Downgrade security parameters
+			      \item Inject malicious content
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Transcript Collision: Cross-protocol attacks}
+	\begin{itemize}[<+->]
+		\item \textbf{Cross-protocol confusion}:
+		      \begin{itemize}
+			      \item Same hash function used in multiple protocols
+			      \item IKE and TLS both use SHA-1 for transcript hashing
+			      \item Attacker crafts messages that are valid in both protocols
+		      \end{itemize}
+		\item \textbf{Attack example}:
+		      \begin{itemize}
+			      \item Client connects to TLS server
+			      \item Attacker substitutes IKE handshake with same hash
+			      \item Client's TLS stack processes IKE messages
+			      \item Potential for memory corruption or bypass
+		      \end{itemize}
+		\item \textbf{Mitigation strategies}:
+		      \begin{itemize}
+			      \item Use strong hash functions (SHA-256,SHA-384)
+			      \item Protocol-specific message formats
+			      \item Separate hash contexts for different protocols
+		      \end{itemize}
+		\item \textbf{Lesson}: Hash collisions threaten more than just digital signatures
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Qualys SSL Labs}
+	\begin{itemize}
+		\item Free online service to analyze TLS/SSL configuration.
+		\item Tests any public HTTPS server.
+		\item Provides detailed security assessment.
+		\item Available at: \url{https://www.ssllabs.com/ssltest/}
+	\end{itemize}
+\end{frame}
+
+\section{How TLS 1.3 Transformed Protocol Design}
+
+\begin{frame}{TLS 1.3: The great cleanup}
+	\begin{itemize}[<+->]
+		\item \textbf{Problem}: TLS 1.2 inherited decades of legacy features.
+		      \begin{itemize}
+			      \item Suboptimal security and performance.
+			      \item Complex and error-prone configurations.
+			      \item High risk of implementation bugs.
+		      \end{itemize}
+		\item \textbf{Solution}: Complete redesign for TLS 1.3.
+		      \begin{itemize}
+			      \item Kept only the good parts.
+			      \item Added modern security features.
+			      \item Simplified the bloated design.
+		      \end{itemize}
+		\item \textbf{Result}: TLS 1.3 is more secure, efficient, and simpler.
+		\item TLS 1.3 = ``mature TLS''.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS 1.3: Learning from TLS 1.2's mistakes}
+	\begin{itemize}[<+->]
+		\item \textbf{TLS 1.2's legacy problem}:
+		      \begin{itemize}
+			      \item Decades of accumulated features and algorithms
+			      \item Many insecure options still supported for compatibility
+			      \item Complex configurations prone to errors
+		      \end{itemize}
+		\item \textbf{TLS 1.3's philosophy}: \textbf{Remove everything dangerous}
+		      \begin{itemize}
+			      \item If it's been broken, remove it
+			      \item If it's complex and error-prone, simplify it
+			      \item If it's not needed, delete it
+		      \end{itemize}
+		\item \textbf{Result}: A much cleaner, more secure protocol
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS 1.3: Algorithmic spring cleaning}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{TLS 1.2 supported:}
+			\begin{itemize}[<+->]
+				\item MD5 (broken)
+				\item SHA-1 (broken)
+				\item RC4 (broken)
+				\item AES-CBC (padding oracles)
+				\item MAC-then-encrypt
+				\item Various weak ciphers
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{TLS 1.3 only allows:}
+			\begin{itemize}[<+->]
+				\item Strong hash functions only
+				\item Authenticated encryption
+				\item Modern, secure algorithms
+				\item No legacy cruft
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\pause
+	\begin{center}
+		\textbf{Philosophy}: ``If you can configure it wrong, remove the option!''
+	\end{center}
+\end{frame}
+
+\begin{frame}{Authenticated encryption: No more MAC-then-encrypt}
+	\begin{itemize}[<+->]
+		\item \textbf{TLS 1.2 approach}: MAC-then-encrypt
+		      \begin{itemize}
+			      \item Compute MAC over plaintext
+			      \item Encrypt (plaintext + MAC)
+			      \item Vulnerable to padding oracle attacks
+		      \end{itemize}
+		\item \textbf{TLS 1.3 approach}: Authenticated encryption only
+		      \begin{itemize}
+			      \item AES-GCM, ChaCha20-Poly1305
+			      \item Encryption and authentication in one step
+			      \item No padding oracle vulnerabilities
+		      \end{itemize}
+		\item \textbf{Benefits}:
+		      \begin{itemize}
+			      \item More efficient (one cryptographic operation)
+			      \item More secure (no composition attacks)
+			      \item Simpler implementation
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Supported cryptographic algorithms}
+	\begin{itemize}[<+->]
+		\item \textbf{Authenticated Encryption} (only 3 algorithms):
+		      \begin{itemize}
+			      \item AES-GCM (128-bit or 256-bit keys)
+			      \item AES-CCM (128-bit keys, slightly less efficient than GCM)
+			      \item ChaCha20-Poly1305 (256-bit keys, from RFC 7539)
+		      \end{itemize}
+		\item \textbf{Key Derivation Function (KDF)}:
+		      \begin{itemize}
+			      \item HKDF construction based on HMAC (RFC 5869)
+			      \item Uses SHA-256 or SHA-384 hash functions
+		      \end{itemize}
+		\item \textbf{Diffie-Hellman Key Exchange}:
+		      \begin{itemize}
+			      \item \textbf{Elliptic Curves}: 3 NIST curves + Curve25519 + Curve448
+			      \item \textbf{Integer Groups}: 2,048, 3,072, 4,096, 6,144, 8,192 bits (RFC 7919)
+		      \end{itemize}
+		\item \textbf{Security note}: 2,048-bit DH provides $<$100-bit security
+		      \begin{itemize}
+			      \item Inconsistent with other 128-bit security choices
+			      \item Still practically impossible to break
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS 1.3 extensions and variations}
+	\begin{itemize}[<+->]
+		\item \textbf{TLS 1.3 supports many options}:
+		      \begin{itemize}
+			      \item Client certificate authentication
+			      \item Preshared key handshakes
+			      \item Various extensions for specific needs
+		      \end{itemize}
+		\item \textbf{Client certificate authentication}:
+		      \begin{itemize}
+			      \item Server can require client to prove its identity
+			      \item Mutual authentication (both parties verified)
+			      \item Common in enterprise environments
+		      \end{itemize}
+		\item \textbf{Preshared keys (PSK)}:
+		      \begin{itemize}
+			      \item Skip certificate verification
+			      \item Use pre-established shared secrets
+			      \item Faster handshake, but requires prior key distribution
+		      \end{itemize}
+		\item \textbf{Flexibility}: TLS 1.3 adapts to different security requirements.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS 1.3: formal verification during the design phase}
+	\begin{itemize}[<+->]
+		\item \textbf{Revolutionary approach}: Protocol design meets formal methods
+		      \begin{itemize}
+			      \item Traditional approach: Design protocol \rightarrow\ implement \rightarrow\ find bugs \rightarrow\ patch
+			      \item TLS 1.3 approach: Design protocol \rightarrow\ prove correctness \rightarrow\ implement
+		      \end{itemize}
+		\item \textbf{Formal verification}: Mathematical proofs of security properties
+		      \begin{itemize}
+			      \item Prove protocol satisfies security requirements
+			      \item Eliminate entire classes of implementation bugs
+			      \item Higher confidence in security guarantees
+		      \end{itemize}
+		\item \textbf{Industry-academia collaboration}:
+		      \begin{itemize}
+			      \item Inria's Prosecco team (France)
+			      \item Microsoft Research Cambridge (Project Everest)
+			      \item Direct input into IETF standardization process
+		      \end{itemize}
+		\item \textbf{Result}: First cryptographic protocol with machine-checked security proofs \textit{as it was being designed!}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Inria Prosecco: Proving TLS 1.3 security}
+	\begin{itemize}[<+->]
+		\item \textbf{Team Prosecco} (Programming securely with cryptography):
+		      \begin{itemize}
+			      \item Led by Karthikeyan Bhargavan at Inria Paris
+			      \item World-leading experts in cryptographic protocol analysis
+		      \end{itemize}
+		\item \textbf{Key contributions to TLS 1.3}:
+		      \begin{itemize}
+			      \item Formal models of the handshake protocol
+			      \item Machine-checked proofs of key security properties
+			      \item Discovery and prevention of potential attacks
+		      \end{itemize}
+		\item \textbf{Tools and methods}:
+		      \begin{itemize}
+			      \item ProVerif: Automated protocol verification tool
+			      \item Symbolic analysis of cryptographic protocols
+			      \item Found subtle issues before standardization
+		      \end{itemize}
+		\item \textbf{Impact}: Security flaws caught during design, not after deployment
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Project Everest: Verified cryptographic implementations}
+	\begin{itemize}[<+->]
+		\item \textbf{Project Everest}: Microsoft Research Cambridge initiative
+		      \begin{itemize}
+			      \item Goal: Provably secure, high-performance cryptographic code
+			      \item From high-level specifications to assembly language
+		      \end{itemize}
+		\item \textbf{\fstar programming language}:
+		      \begin{itemize}
+			      \item Functional language with dependent types
+			      \item Enables specification and verification of code properties
+			      \item Compiles to efficient C code
+		      \end{itemize}
+		\item \textbf{\haclstar cryptographic library}:
+		      \begin{itemize}
+			      \item Verified implementations of crypto primitives
+			      \item ChaCha20, Poly1305, Curve25519, etc.
+			      \item Mathematical proofs of correctness and security
+		      \end{itemize}
+		\item \textbf{miTLS}: Verified TLS implementation
+		      \begin{itemize}
+			      \item Reference implementation with security proofs
+			      \item Demonstrates that formal verification scales to real protocols
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{ProVerif: Automated protocol verification}
+	\begin{itemize}[<+->]
+		\item \textbf{What is ProVerif?}
+		      \begin{itemize}
+			      \item Automated tool for analyzing cryptographic protocols.
+			            \begin{itemize}
+				            \item \url{https://proverif.inria.fr}
+			            \end{itemize}
+			      \item Developed by Bruno Blanchet at Inria Paris.
+			      \item Uses symbolic model of cryptography.
+		      \end{itemize}
+		\item \textbf{How ProVerif works}:
+		      \begin{itemize}
+			      \item Protocol modeled in applied pi-calculus.
+			      \item Automated search for attacks and proofs.
+			      \item Handles unbounded number of protocol sessions.
+		      \end{itemize}
+		\item \textbf{TLS 1.3 verification with ProVerif}:
+		      \begin{itemize}
+			      \item Modeled complete TLS 1.3 handshake protocol.
+			      \item Proved secrecy of session keys.
+			      \item Proved forward secrecy properties.
+			      \item Found potential attacks on early draft versions.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{\fstar: Functional programming with verification}
+	\begin{itemize}[<+->]
+		\item \textbf{What is \fstar?}
+		      \begin{itemize}
+			      \item Functional programming language with dependent types.
+			      \item Developed by Microsoft Research and Inria.
+			      \item Enables specification and proof of program properties.
+		      \end{itemize}
+		\item \textbf{\fstar key features}:
+		      \begin{itemize}
+			      \item Static type system catches bugs at compile-time.
+			      \item Can express and verify complex security properties.
+			      \item Compiles to efficient C code via KreMLin compiler.
+		      \end{itemize}
+		\item \textbf{TLS 1.3 implementation in \fstar}:
+		      \begin{itemize}
+			      \item \textbf{miTLS}: Complete TLS 1.3 stack with proofs.
+			      \item \textbf{\haclstar}: Verified crypto library (ChaCha20, Poly1305, Curve25519).
+			      \item \textbf{EverCrypt}: Agile crypto provider with algorithm selection.
+		      \end{itemize}
+		\item \textbf{Real-world impact}:
+		      \begin{itemize}
+			      \item \haclstar integrated into Firefox, Python, Linux kernel.
+			      \item Proves that verified code can be practical and fast.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Formal verification benefits for TLS 1.3}
+	\begin{itemize}[<+->]
+		\item \textbf{Design-time bug prevention}:
+		      \begin{itemize}
+			      \item Subtle protocol flaws caught before standardization.
+			      \item Avoided costly post-deployment patches.
+			      \item Higher confidence in initial design.
+		      \end{itemize}
+		\item \textbf{Implementation guidance}:
+		      \begin{itemize}
+			      \item Formal specifications guide implementers.
+			      \item Clear mathematical definitions of security properties.
+			      \item Reduced ambiguity in standard documents.
+		      \end{itemize}
+		\item \textbf{Security assurance}:
+		      \begin{itemize}
+			      \item Mathematical proofs complement traditional security analysis.
+			      \item Machine-checked proofs eliminate human error.
+			      \item Covers complex interaction between protocol components.
+		      \end{itemize}
+		\item \textbf{Industry adoption}:
+		      \begin{itemize}
+			      \item \haclstar used in Firefox, Linux kernel.
+			      \item Proves formal methods can produce practical code.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Removing dangerous features: The CRIME attack example}
+	\begin{itemize}[<+->]
+		\item \textbf{TLS 1.2 feature}: Optional data compression
+		      \begin{itemize}
+			      \item Reduces bandwidth usage
+			      \item Seemed like a good idea...
+		      \end{itemize}
+		\item \textbf{The CRIME attack}: Compression leaks information
+		      \begin{itemize}
+			      \item Compressed length reveals patterns in plaintext
+			      \item Attackers can inject data and observe compression ratios
+			      \item Can extract secrets like authentication cookies
+		      \end{itemize}
+		\item \textbf{TLS 1.3 solution}: Remove compression entirely
+		      \begin{itemize}
+			      \item No compression = no compression-based attacks
+			      \item Security over efficiency
+		      \end{itemize}
+		\item \textbf{Lesson}: Features that seem helpful can create vulnerabilities
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Zero padding: Defeating traffic analysis}
+	\begin{itemize}[<+->]
+		\item \textbf{Traffic analysis attack}:
+		      \begin{itemize}
+			      \item Attackers observe encrypted traffic patterns.
+			      \item Extract info from timing, message sizes, etc.
+			      \item Ciphertext size ≈ plaintext size (reveals message length).
+		      \end{itemize}
+		\item \textbf{TLS 1.3 solution}: Zero padding
+		      \begin{itemize}
+			      \item Add zeros to plaintext before encryption.
+			      \item Inflates ciphertext size.
+			      \item Hides true message length from observers.
+		      \end{itemize}
+		\item \textbf{Example}: 100-byte message + 900 zero bytes = looks like 1000-byte message.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Downgrade protection: Preventing version rollback}
+	\begin{itemize}[<+->]
+		\item \textbf{Downgrade attack scenario}:
+		      \begin{enumerate}
+			      \item Client sends ClientHello supporting TLS 1.3
+			      \item Attacker modifies message to claim only TLS 1.2 support
+			      \item Server responds with weaker TLS 1.2 connection
+			      \item Attacker exploits TLS 1.2 vulnerabilities
+		      \end{enumerate}
+		\item \textbf{TLS 1.3 defense}: Magic values in server random
+		      \begin{itemize}
+			      \item Server encodes connection type in first 8 bytes of random value
+			      \item TLS 1.2: \texttt{44 4F 57 4E 47 52 44 01}
+			      \item TLS 1.1: \texttt{44 4F 57 4E 47 52 44 00}
+			      \item TLS 1.3: Random bytes (no pattern)
+		      \end{itemize}
+		\item \textbf{Attack detection}: Client sees wrong pattern \rightarrow\ knows it's under attack!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The magic downgrade detection values}
+	\begin{center}
+		\textbf{What do those hex values spell?}
+	\end{center}
+	\pause
+	\begin{center}
+		\texttt{44 4F 57 4E 47 52 44 01} = ``\textbf{DOWNGRD}\textbackslash x01''\\
+		\texttt{44 4F 57 4E 47 52 44 00} = ``\textbf{DOWNGRD}\textbackslash x00''
+	\end{center}
+	\pause
+	\begin{itemize}[<+->]
+		\item \textbf{Clever engineering}: Human-readable sentinel values
+		\item \textbf{Easy debugging}: Hex dumps show ``DOWNGRD'' string
+		\item \textbf{Security through visibility}: Makes downgrade attempts obvious
+		\item \textbf{Cryptographic protection}: Random value is signed by server
+		      \begin{itemize}
+			      \item Attacker can't modify it without breaking signature
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Performance boost: Single round-trip handshake}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{TLS 1.2 handshake:}
+			\begin{itemize}[<+->]
+				\item Client \rightarrow\ Server: ClientHello
+				\item Client \leftarrow\ Server: ServerHello + Certificate
+				\item Client \rightarrow\ Server: Key exchange
+				\item Client \leftarrow\ Server: Finished
+				\item \textbf{2 round trips} before encrypted data
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{TLS 1.3 handshake:}
+			\begin{itemize}[<+->]
+				\item Client \rightarrow\ Server: ClientHello + Key exchange
+				\item Client \leftarrow\ Server: ServerHello + Certificate + Finished
+				\item \textbf{1 round trip} before encrypted data
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\pause
+	\begin{center}
+		\textbf{Performance impact}: Hundreds of milliseconds saved per connection
+	\end{center}
+\end{frame}
+
+\begin{frame}{Why single round-trip matters}
+	\begin{itemize}[<+->]
+		\item \textbf{Real-world impact}:
+		      \begin{itemize}
+			      \item High-traffic servers: thousands of connections per second
+			      \item Mobile networks: high latency connections
+			      \item User experience: faster page loads
+		      \end{itemize}
+		\item \textbf{Latency examples}:
+		      \begin{itemize}
+			      \item Local network: 1ms \rightarrow\ savings minimal
+			      \item Cross-country: 50ms \rightarrow\ saves 50ms per connection
+			      \item Satellite internet: 500ms \rightarrow\ saves 500ms per connection!
+		      \end{itemize}
+		\item \textbf{Efficiency gain}: Client sends DH key exchange immediately
+		      \begin{itemize}
+			      \item No waiting for server's algorithm selection
+			      \item Client predicts what server will choose
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Session resumption: Even faster connections}
+	\begin{itemize}[<+->]
+		\item \textbf{The idea}: Reuse keys from previous connections
+		      \begin{itemize}
+			      \item Client and server remember shared \textbf{preshared key (PSK)}
+			      \item Skip certificate validation in subsequent connections
+			      \item Combine PSK with fresh Diffie-Hellman exchange
+		      \end{itemize}
+		\item \textbf{Security benefits}:
+		      \begin{itemize}
+			      \item Forward secrecy maintained (fresh DH keys)
+			      \item Authentication via MAC instead of certificates
+		      \end{itemize}
+		\item \textbf{Performance benefits}:
+		      \begin{itemize}
+			      \item Faster handshake
+			      \item Less CPU usage (no certificate operations)
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{0-RTT}
+	\begin{itemize}[<+->]
+		\item \textbf{Zero Round-Trip Time (0-RTT)}:
+		      \begin{itemize}
+			      \item Client sends encrypted data in \textbf{first message}
+			      \item No waiting for server response
+			      \item Uses PSK from previous session
+		      \end{itemize}
+		\item \textbf{Process}:
+		      \begin{enumerate}
+			      \item Client: ClientHello + PSK + DH key + \textbf{encrypted data}
+			      \item Server: Processes everything, responds with MAC
+			      \item Client: Verifies MAC, knows it's talking to right server
+		      \end{enumerate}
+		\item \textbf{Performance impact}: Eliminates connection setup delay entirely
+		\item \textbf{Use case}: Perfect for frequently-visited websites
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{0-RTT security considerations}
+	\begin{itemize}[<+->]
+		\item \textbf{Replay attack vulnerability}:
+		      \begin{itemize}
+			      \item Attacker records 0-RTT data packet
+			      \item Replays it to server later
+			      \item Server can't distinguish replay from legitimate connection
+			            \begin{itemize}
+				            \item You can probably formally prove that this problem can't be completely solved without a round trip
+			            \end{itemize}
+		      \end{itemize}
+		\item \textbf{Mitigation strategies}:
+		      \begin{itemize}
+			      \item Server remembers recent 0-RTT messages
+			      \item Applications design requests to be replay-safe
+			      \item Don't use 0-RTT for sensitive operations
+		      \end{itemize}
+		\item \textbf{Trade-off}: Performance vs. replay protection
+		      \begin{itemize}
+			      \item Perfect for browsing, reading content
+			      \item Dangerous for payments, account changes
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS 1.3: Summary of improvements}
+	\begin{itemize}[<+->]
+		\item \textbf{Security improvements}:
+		      \begin{itemize}
+			      \item Removed all weak algorithms and dangerous features
+			      \item Authenticated encryption only
+			      \item Downgrade protection
+		      \end{itemize}
+		\item \textbf{Performance improvements}:
+		      \begin{itemize}
+			      \item Single round-trip handshake
+			      \item Session resumption with PSK
+			      \item 0-RTT for repeat connections
+		      \end{itemize}
+		\item \textbf{Simplicity improvements}:
+		      \begin{itemize}
+			      \item Fewer configuration options
+			      \item Standardized elliptic curve formats
+			      \item Cleaner protocol design
+		      \end{itemize}
+		\item \textbf{Result}: More secure, faster, and easier to implement correctly
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The future of protocol design}
+	\begin{itemize}[<+->]
+		\item \textbf{TLS 1.3 as a model}:
+		      \begin{itemize}
+			      \item First major protocol with end-to-end formal verification
+			      \item Demonstrates feasibility of formal methods at scale
+			      \item Sets new standard for protocol security assurance
+		      \end{itemize}
+		\item \textbf{Expanding to other protocols}:
+		      \begin{itemize}
+			      \item Signal Protocol (secure messaging)
+			      \item WireGuard VPN protocol
+			      \item Post-quantum cryptographic protocols
+		      \end{itemize}
+		\item \textbf{Challenges ahead}:
+		      \begin{itemize}
+			      \item Scaling formal methods to larger, more complex protocols
+			      \item Training developers in formal verification techniques
+			      \item Balancing mathematical rigor with practical engineering
+		      \end{itemize}
+		\item \textbf{Vision}: All security-critical protocols designed with formal verification
+		      \begin{itemize}
+			      \item Higher security guarantees for everyone
+			      \item Fewer catastrophic vulnerabilities
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[plain]
+	\titlepage
+\end{frame}
+\end{document}

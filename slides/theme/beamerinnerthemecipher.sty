@@ -1,0 +1,191 @@
+\ProvidesPackage{theme/beamerinnerthemecipher}[2025/05/04 v1.0 Cipher Beamer Theme]
+
+% Cover slide (title page with logo and image)
+\defbeamertemplate*{title page}{cipher}{
+	% Background
+	\begin{tikzpicture}[remember picture, overlay]
+		\fill[cipherdarkbg] (current page.north west) rectangle (current page.south east);
+		\draw[cipheraccent, line width=3pt]
+		(current page.north west) rectangle (current page.south east);
+	\end{tikzpicture}
+
+	% University logo
+	\begin{tikzpicture}[remember picture, overlay]
+		\node[anchor=north west, inner sep=0pt] at ([shift={(0.95cm,-0.6cm)}]current page.north west) {
+			\includegraphics[height=1.6cm]{\insertinstituteimage}
+		};
+	\end{tikzpicture}
+
+	% Grid layout for cover slide
+	\vspace{1cm}
+	\begin{columns}[c,onlytextwidth]
+		% Left column - image
+		\begin{column}{0.45\textwidth}
+			\begin{beamercolorbox}[center]{cover text}
+				\begin{tikzpicture}
+					\node[inner sep=0pt] {
+						\includegraphics[width=\textwidth, height=1\textwidth, keepaspectratio]{images/cedar.jpg}
+					};
+					\draw[white, line width=1mm]
+					(current bounding box.south west) rectangle (current bounding box.north east);
+				\end{tikzpicture}
+			\end{beamercolorbox}
+		\end{column}
+
+		% Right column - text
+		\begin{column}{0.6\textwidth}
+			\begin{beamercolorbox}[wd=\textwidth, leftskip=1.3cm]{title}
+				\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par
+				\vskip0cm
+				\usebeamercolor[fg]{subtitle}\usebeamerfont{subtitle}\insertcoversubtitle\par
+				\vskip0.3cm
+				\usebeamercolor[fg]{part name}\usebeamerfont{part name}\insertcoverpartname\par
+				\vskip0cm
+				\usebeamercolor[fg]{topic name}\usebeamerfont{topic name}\insertcovertopicname\par
+				\vskip0.3cm
+				\usebeamercolor[fg]{author}\usebeamerfont{author}\insertauthor\par
+				\vskip0cm
+				\usebeamercolor[fg]{cover website}\usebeamerfont{cover website}\url{\insertcoverwebsite}\par
+			\end{beamercolorbox}
+		\end{column}
+	\end{columns}
+}
+
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamertemplate{section in toc}[circle]
+\beamertemplatenavigationsymbolsempty
+
+\AtBeginSection[]{
+	\begin{frame}[plain]
+		\begin{tikzpicture}[remember picture, overlay]
+			\fill[cipherdarkbg] (current page.north west) rectangle (current page.south east);
+			\draw[cipheraccent, line width=2pt] (current page.north west) rectangle (current page.south east);
+		\end{tikzpicture}
+
+		\vspace{2cm}
+		\begin{center}
+			\begin{minipage}{0.9\textwidth}
+				\raggedright
+				{\usebeamercolor[fg]{subtitle}\usebeamerfont{subtitle}\Large Section \thesection}
+
+				\vspace{0.5cm}
+				{\usebeamercolor[fg]{title}\usebeamerfont{title}\fontsize{20}{24}\selectfont\insertsectionhead\par}
+			\end{minipage}
+
+			\vspace{1cm}
+			\begin{tikzpicture}
+				\draw[cipheraccent, line width=3pt] (0,0) -- (8,0);
+			\end{tikzpicture}
+		\end{center}
+	\end{frame}
+}
+
+\AtBeginSubsection[]{
+	\begin{frame}[plain]
+		\begin{tikzpicture}[remember picture, overlay]
+			\fill[cipherdarkbg!90] (current page.north west) rectangle (current page.south east);
+			\draw[cipheraccent, line width=1.5pt] (current page.north west) rectangle (current page.south east);
+		\end{tikzpicture}
+
+		\vspace{2cm}
+		\begin{center}
+			\begin{minipage}{0.9\textwidth}
+				\raggedright
+				{\usebeamercolor[fg]{subtitle}\usebeamerfont{subtitle}Section \thesection: \insertsectionhead}\\[2.5em]
+				{\usebeamercolor[fg]{subtitle}\usebeamerfont{subtitle}\Large Subsection \thesection.\thesubsection}\\[0.2em]
+				{\usebeamercolor[fg]{title}\usebeamerfont{title}\fontsize{18}{22}\selectfont\insertsubsectionhead\par}
+			\end{minipage}
+
+			\vspace{1cm}
+			\begin{tikzpicture}
+				\draw[cipheraccent, line width=2.5pt] (0,0) -- (6,0);
+			\end{tikzpicture}
+		\end{center}
+	\end{frame}
+}
+
+% Custom commands
+\newcommand{\coversubtitle}[1]{\def\insertcoversubtitle{#1}}
+\newcommand{\covertopicname}[1]{\def\insertcovertopicname{#1}}
+\newcommand{\coverpartname}[1]{\def\insertcoverpartname{#1}}
+\newcommand{\coverwebsite}[1]{\def\insertcoverwebsite{#1}}
+\newcommand{\instituteimage}[1]{\def\insertinstituteimage{#1}}
+
+\newcommand{\definitionbox}[2]{%
+	\begin{tcolorbox}[
+			enhanced,
+			colback=cipherprimary!5!cipherlight,
+			colframe=cipherprimary,
+			colbacktitle=cipherprimary!40!white,
+			title=#1,
+			fonttitle=\bfseries\sffamily,
+			boxrule=0.4mm,
+			arc=2mm,
+			left=3mm,right=3mm,top=3mm,bottom=3mm,
+			drop shadow={opacity=0.1},
+			sharp corners=southeast,
+			fontupper=\fontsize{9.5pt}{11pt}\selectfont
+		]
+		#2
+	\end{tcolorbox}
+}
+
+\newcommand{\alertbox}[2]{%
+	\begin{tcolorbox}[
+			enhanced,
+			colback=red!5!cipherlight,
+			colframe=red!70!black,
+			colbacktitle=red!30!white,
+			title=#1,
+			fonttitle=\bfseries\sffamily,
+			boxrule=0.4mm,
+			arc=2mm,
+			left=3mm,right=3mm,top=3mm,bottom=3mm,
+			drop shadow={opacity=0.1},
+			sharp corners=southeast,
+			fontupper=\fontsize{9.5pt}{11pt}\selectfont
+		]
+		#2
+	\end{tcolorbox}
+}
+
+% Nicely formatted image with caption
+\newcommand{\imagewithcaption}[3][0.9\textwidth]{
+	\begin{center}
+		\begin{tikzpicture}
+			\hspace{-1mm}
+			\node[fill=white, anchor=center, inner sep=1mm]{
+				\includegraphics[width=#1, height=0.6\textheight, keepaspectratio]{images/#2}
+			};
+			\node[fit=(current bounding box), inner sep=0.5mm, draw=white, line width=0.5mm] {};
+		\end{tikzpicture}
+		\vspace{0.5em}
+		\begin{minipage}{0.7\textwidth}
+			\centering
+			\usebeamerfont{caption}#3
+		\end{minipage}
+	\end{center}
+}
+
+% Nicely formatted image with caption (big)
+\newcommand{\bigimagewithcaption}[3][1\textwidth]{
+	\begin{center}
+		\vspace{-0.5cm}
+		\begin{tikzpicture}
+			\hspace{-1mm}
+			\node[fill=white, anchor=center, inner sep=1mm]{
+				\includegraphics[width=#1, height=0.75\textheight, keepaspectratio]{images/#2}
+			};
+			\node[fit=(current bounding box), inner sep=0.5mm, draw=white, line width=0.5mm] {};
+		\end{tikzpicture}
+		\vspace{0.3em}
+		\begin{minipage}{0.8\textwidth}
+			\centering
+			\usebeamerfont{caption}#3
+		\end{minipage}
+	\end{center}
+}
+
+\newcommand\fstar{\textsf{F}\ensuremath{^\star}\xspace}
+\newcommand\haclstar{\textsf{HACL}\ensuremath{^\star}\xspace}

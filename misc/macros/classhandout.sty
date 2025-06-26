@@ -1,0 +1,61 @@
+\usepackage[pdftitle=Applied Cryptography,pdflang=en-US,colorlinks=true,linkcolor=OliveGreen,urlcolor=OliveGreen,citecolor=OliveGreen,bookmarksopen=true]{hyperref}
+\usepackage{xurl,hyperxmp,graphicx,array,fancyhdr,bbding,pmboxdraw,listings,acronym,amsthm,bookmark,zref-totpages,xcolor,tikz,titlesec,enumitem,amsmath}
+\usepackage[inner=2.50cm,outer=2.50cm,top=2.50cm,bottom=2.50cm]{geometry}
+\usepackage{microtype}
+\renewcommand{\familydefault}{\sfdefault}
+\definecolor{OliveGreen}{HTML}{3F7E31}
+\definecolor{EarthBrown}{HTML}{7D4C31}
+\definecolor{LightestGray}{HTML}{EEEEEE}
+\definecolor{DarkGray}{HTML}{5F6368}
+\titleformat{\section}
+{\normalfont\Large\bfseries\color{OliveGreen}}
+{\thesection}{1em}{}
+\titleformat{\subsection}
+{\normalfont\large\bfseries\color{EarthBrown}}
+{\thesubsection}{1em}{}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+\lhead{\textcolor{OliveGreen}{Applied Cryptography}}
+\rhead{\textcolor{DarkGray}{American University of Beirut}}
+\lfoot{\textcolor{DarkGray}{CMPS 297AD/396AI, Fall 2025}}
+\rfoot{\textcolor{DarkGray}{Page \thepage\ of \ztotpages}}
+\tcbsetforeverylayer{colframe=OliveGreen!20!white,colback=LightestGray,boxrule=0.5pt,arc=2mm,boxsep=5pt,left=6pt,right=6pt,top=6pt,bottom=6pt}
+\thispagestyle{empty}
+\setlist{itemsep=0em}
+
+\newcommand{\classhandoutheader}{
+	\begin{tikzpicture}[remember picture, overlay]
+		\fill[OliveGreen!10!white] (current page.north west) rectangle ([yshift=-5cm]current page.north east);
+	\end{tikzpicture}
+
+	\vspace*{-1.5cm}
+	\noindent
+	\begin{minipage}[c]{0.35\textwidth}
+		\centering
+		\includegraphics[width=2.5in]{\aublogopath}
+	\end{minipage}
+	\begin{minipage}[c]{0.65\textwidth}
+		\begin{flushright}
+			\vspace{0.3cm}
+			{\fontsize{24}{28}\selectfont\textcolor{OliveGreen}{Applied Cryptography}}
+
+			\vspace{0.2cm}
+			{\large\textcolor{DarkGray}{CMPS 297AD/396AI, Fall 2025}}
+			\vspace{0.2cm}
+		\end{flushright}
+	\end{minipage}
+
+	\vspace{0.8cm}
+	\begin{tcolorbox}[colframe=OliveGreen!70!white,colback=white,arc=1mm]
+		\begin{center}
+			\begin{tabular}{ll}
+				\textbf{Instructor:} Nadim Kobeissi \quad\quad\quad\quad\quad \textbf{Website:} \url{https://appliedcryptography.page}
+			\end{tabular}
+		\end{center}
+	\end{tcolorbox}
+
+	\setlength{\unitlength}{1in}
+	\renewcommand{\arraystretch}{1.5}
+}

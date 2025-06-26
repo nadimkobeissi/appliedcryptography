@@ -1,0 +1,5 @@
+(() => {
+	menuInit();
+	collapsibleInit();
+	updatedInit();
+})();
