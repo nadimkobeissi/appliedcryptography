@@ -640,7 +640,7 @@
 				\item This exposes an oracle that tells attackers: ``Does $\texttt{Dec}(K, C)$ have valid padding?''
 				\item Attackers can systematically exploit this to decrypt arbitrary ciphertexts.
 				\item Has led to major vulnerabilities in SSH and SSL/TLS protocols.
-				\item Example: POODLE attack against SSL 3.0 affected millions of websites.\footnote{\url{https://appliedcryptography.page/papers/google-poodle.pdf}}
+				\item Example: POODLE attack against SSL 3.0 affected millions of websites.\footnote{\url{https://appliedcryptography.page/papers/\#google-poodle}}
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -655,7 +655,7 @@
 				\item Response time reveals approximate numerical values inside $\texttt{Dec}(K, C)$.
 				\item Extremely subtle - even microsecond differences can leak information.
 				\item Successfully used to break older SSH and SSL/TLS implementations.
-				\item Example: Lucky Thirteen attack against TLS revealed message contents through timing differences.\footnote{\url{https://appliedcryptography.page/papers/lucky-thirteen.pdf}}
+				\item Example: Lucky Thirteen attack against TLS revealed message contents through timing differences.\footnote{\url{https://appliedcryptography.page/papers/\#lucky-thirteen}}
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -671,7 +671,7 @@
 					      \item A valid gzip file (processed normally)
 					      \item An invalid gzip file (error reported)
 				      \end{itemize}
-				\item This created an oracle revealing: ``Is $\texttt{Dec}(K, C)$ a valid gzip file?''\footnote{\url{https://appliedcryptography.page/papers/jhu-imessage.pdf}}
+				\item This created an oracle revealing: ``Is $\texttt{Dec}(K, C)$ a valid gzip file?''\footnote{\url{https://appliedcryptography.page/papers/\#jhu-imessage}}
 				\item Attackers who understood the gzip format could exploit this to:
 				      \begin{itemize}
 					      \item Silently recover private messages
@@ -1466,7 +1466,7 @@
 		\begin{column}{1\textwidth}
 			\begin{itemize}[<+->]
 				\item \textbf{Key commitment}: a ciphertext should only decrypt to a valid plaintext under the key used to generate it.
-				\item Most AEAD schemes (including AES-GCM) don't guarantee this property!\footnote{\url{https://appliedcryptography.page/papers/key-commitment.pdf}}
+				\item Most AEAD schemes (including AES-GCM) don't guarantee this property!\footnote{\url{https://appliedcryptography.page/papers/\#key-commitment}}
 				\item Attack scenario:
 				      \begin{enumerate}
 					      \item Attacker creates special ciphertext $C$.

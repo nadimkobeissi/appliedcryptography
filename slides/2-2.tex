@@ -292,7 +292,7 @@
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}[<+->]
-				\item \textbf{The Discovery:} Certain key patterns create predictable initial states\footnote{\url{https://appliedcryptography.page/papers/rc4-ksa.pdf}}
+				\item \textbf{The Discovery:} Certain key patterns create predictable initial states\footnote{\url{https://appliedcryptography.page/papers/\#rc4-ksa}}
 				\item \textbf{Weak Key Pattern:} Keys of the form $(K_1, K_2, \ldots, K_n, 3, 255, \ldots)$
 				      \begin{itemize}[<+->]
 					      \item When byte 3 of the key is 3, and byte 4 is 255
@@ -667,7 +667,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}[<+->]
-				\item \textbf{The discovery:} RC4's biases are exploitable in TLS:\footnote{\url{https://appliedcryptography.page/papers/rc4-tls.pdf}}
+				\item \textbf{The discovery:} RC4's biases are exploitable in TLS:\footnote{\url{https://appliedcryptography.page/papers/\#rc4-tls}}
 				      \begin{itemize}[<+->]
 					      \item First 256 bytes of keystream heavily biased
 					      \item Certain byte positions more predictable than others
@@ -728,7 +728,7 @@
 					      \item Took days or weeks to execute
 					      \item Many dismissed it as theoretical
 				      \end{itemize}
-				\item \textbf{Insight:} Target password verifiers, not cookies\footnote{\url{https://appliedcryptography.page/papers/rc4-attacks.pdf}}
+				\item \textbf{Insight:} Target password verifiers, not cookies\footnote{\url{https://appliedcryptography.page/papers/\#rc4-attacks}}
 				      \begin{itemize}[<+->]
 					      \item Basic Authentication sends passwords in every request
 					      \item IMAP/SMTP use similar repeated authentication
@@ -743,7 +743,7 @@
 					      \item Exploit password character distributions
 					      \item Use Mantin's ABSAB bias (positions 1-4)
 					      \item Combine with dictionary attacks
-					      \item Other attack papers use similar techniques, including to break WPA-TKIP, a successor to WEP!\footnote{\url{https://appliedcryptography.page/papers/rc4-biases.pdf}}
+					      \item Other attack papers use similar techniques, including to break WPA-TKIP, a successor to WEP!\footnote{\url{https://appliedcryptography.page/papers/\#rc4-biases}}
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -752,7 +752,7 @@
 
 \begin{frame}{Mantin's ABSAB bias (2005)}
 	\begin{itemize}[<+->]
-		\item \textbf{The discovery:} Certain digraph patterns repeat with anomalous frequency\footnote{\url{https://appliedcryptography.page/papers/rc4-absab.pdf}}
+		\item \textbf{The discovery:} Certain digraph patterns repeat with anomalous frequency\footnote{\url{https://appliedcryptography.page/papers/\#rc4-absab}}
 		      \begin{itemize}[<+->]
 			      \item Pattern: Two characters repeat after a gap (e.g., ABAB, ABCAB)
 			      \item Occurs when value 1 is used to update index $j$ in RC4

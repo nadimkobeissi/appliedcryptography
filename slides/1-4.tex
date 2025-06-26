@@ -1441,7 +1441,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}[<+->]
-				\item Luby and Rackoff proved that a 3-round Feistel cipher is indistinguishable from a pseudorandom permutation.\footnote{\url{https://appliedcryptography.page/papers/luby-rackoff.pdf}}
+				\item Luby and Rackoff proved that a 3-round Feistel cipher is indistinguishable from a pseudorandom permutation.\footnote{\url{https://appliedcryptography.page/papers/\#luby-rackoff}}
 				\item Can we also prove it using our provable security framework?
 			\end{itemize}
 		\end{column}
@@ -1520,7 +1520,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}
-				\item Luby and Rackoff proved that a 3-round Feistel cipher is indistinguishable from a pseudorandom permutation.\footnote{\url{https://appliedcryptography.page/papers/luby-rackoff.pdf}}
+				\item Luby and Rackoff proved that a 3-round Feistel cipher is indistinguishable from a pseudorandom permutation.\footnote{\url{https://appliedcryptography.page/papers/\#luby-rackoff}}
 				\item Can we also prove it using our provable security framework?
 				\item Yes, with the bad events proof technique!
 			\end{itemize}
@@ -2130,31 +2130,31 @@
 \end{frame}
 
 \begin{frame}{AES: security and attacks over time}
- \begin{columns}[c]
-  \begin{column}{0.5\textwidth}
-   \begin{itemize}[<+->]
-    \item AES has been heavily analyzed for over 20 years.
-    \item Best attacks against full AES have gradually improved:
-          \begin{itemize}[<+->]
-           \item 2011: Biclique attack (Bogdanov et al.) reduced complexity to $2^{126.1}$ for AES-128.
-           \item Various side-channel attacks developed (power analysis, cache timing).\footnote{This is the main way to attack AES in practice. Side-channel attacks will be discussed in more depth later in the course.}
-           \item Advances in meet-in-the-middle and related-key techniques.
-          \end{itemize}
-   \end{itemize}
-  \end{column}
-  \begin{column}{0.5\textwidth}
-   \begin{itemize}[<+->]
-    \item Despite these advances:
-          \begin{itemize}[<+->]
-           \item No practical attacks on full AES-128.
-           \item Best attacks still require $\approx 2^{126}$ operations.
-           \item At this complexity, attacks remain purely theoretical.
-           \item Would require resources far exceeding global computing power.
-          \end{itemize}
-    \item Even quantum computers offer only modest advantage (Grover's algorithm reduces security to $2^{64}$ operations).\footnote{More on quantum computers and how they affect cryptography later in the course.}
-   \end{itemize}
-  \end{column}
- \end{columns}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item AES has been heavily analyzed for over 20 years.
+				\item Best attacks against full AES have gradually improved:
+				      \begin{itemize}[<+->]
+					      \item 2011: Biclique attack (Bogdanov et al.) reduced complexity to $2^{126.1}$ for AES-128.
+					      \item Various side-channel attacks developed (power analysis, cache timing).\footnote{This is the main way to attack AES in practice. Side-channel attacks will be discussed in more depth later in the course.}
+					      \item Advances in meet-in-the-middle and related-key techniques.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Despite these advances:
+				      \begin{itemize}[<+->]
+					      \item No practical attacks on full AES-128.
+					      \item Best attacks still require $\approx 2^{126}$ operations.
+					      \item At this complexity, attacks remain purely theoretical.
+					      \item Would require resources far exceeding global computing power.
+				      \end{itemize}
+				\item Even quantum computers offer only modest advantage (Grover's algorithm reduces security to $2^{64}$ operations).\footnote{More on quantum computers and how they affect cryptography later in the course.}
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}[plain]
