@@ -22,6 +22,97 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Perfect security and confidence}
+	\begin{itemize}
+		\item In 1949, Claude Shannon proved that symmetric encryption achieves perfect confidentiality only when the key is longer than the message it encrypts
+		\item In other words, a system in which we may have 100\% confidence in its security must be impractical
+		\item Therefore, because we cannot have complete confidence in the security of practical cryptographic systems, we must rely on other methods to raise our confidence in their security
+		\item Different methods exist depending on the cryptographic system
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Cryptanalysis}
+	\begin{itemize}
+		\item One way is to have many people try to break the cryptographic system
+		\item If no one succeeds after several years, we guess it's probably secure
+		\item This method works for any cryptographic system, but it does not provide the highest level of confidence
+		\item It may be that nobody managed to break the cryptographic system because:
+		      \begin{itemize}
+			      \item We didn't put enough resources into trying to break it
+			      \item Everyone who tried was not clever enough
+		      \end{itemize}
+		\item Thankfully, for many cryptographic systems, we have better ways to raise our confidence
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Proving the absence of some attacks}
+	\begin{itemize}
+		\item A complementary method is to collect general classes of attacks against the cryptographic system under study
+		\item Mathematically prove that these types of attacks do not work
+		\item Example: On symmetric encryption algorithms, it is customary to prove that they resist against differential cryptanalysis
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Reduction proofs}
+	\begin{itemize}
+		\item On some cryptographic systems, especially on cryptographic protocols that assemble other cryptographic components (such as symmetric encryption, signatures, etc)
+		\item We can mathematically prove that the security of the whole system reduces to the security of each cryptographic component
+		\item Informally, the mathematical proof says: if you show me how to efficiently break the security of my cryptographic system, I can use this knowledge to show you how to efficiently break the security of one of its cryptographic components
+		\item Because the cryptographic components are believed to be secure (e.g. because they resisted cryptanalysis so far), this implies that the cryptographic system is also believed to be secure
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Trade-offs in security proofs}
+	\begin{itemize}
+		\item When possible, reduction proofs are considered to be the gold standard
+		\item However, when it is too difficult to do such a proof, it is common to make stronger assumptions about the security of cryptographic components
+		\item Example: the Random Oracle Model assumes that cryptographic hash functions are ``perfect''
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Trade-offs in security proofs}
+	\begin{itemize}
+		\item One may say that cryptographic hash functions are not perfect, therefore these proofs have no value
+		\item However, we argue that a proof with strong assumptions is better than no proof at all
+		\item In the end, this is a trade-off between the strength of the security theorem and the practical doability of its proof
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Symbolic model verification}
+	\begin{itemize}
+		\item If we push the trade-off cursor further and make the strongest assumptions, we obtain what is called the ``symbolic model''
+		\item Informally, security theorems in the symbolic model prove that it is impossible for an adversary to break the whole cryptographic system when the adversary only has black-box access to cryptographic components
+		\item In other words, if we assume that the cryptographic components being used in the system are ``perfect''
+		\item Again, these are strong assumptions, but a proof with strong assumptions is better than no proof at all
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Symbolic model: another perspective}
+	\begin{itemize}
+		\item Another way to understand the symbolic model is that it only considers adversaries that perform logical attacks
+		\item Logical attacks are attacks that only have a black-box use of cryptographic components
+		\item Therefore, the symbolic model proves the absence of the whole class of logical attacks
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Computer-checked proofs}
+	\begin{itemize}
+		\item As we shall see in the next section, mathematical proofs may contain errors and security proofs are no exception
+		\item We can rely on computers to raise our confidence that our mathematical proof is free of errors
+		\item This is done by having the computer mechanically verify each step of the proof
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Intuitive comparison}
+	\bigimagewithcaption{cas_comparison.png}{Source: Cas Cremers}
+\end{frame}
+
+\begin{frame}{Slides not complete and may contain errors}
+	\begin{itemize}
+		\item This slide deck is not finished, may contain errors, and is missing important material. Do not rely on it yet.
+	\end{itemize}
+\end{frame}
+
 \begin{frame}[plain]
 	\titlepage
 \end{frame}
