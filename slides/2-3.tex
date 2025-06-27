@@ -16,12 +16,6 @@
 	\titlepage
 \end{frame}
 
-\begin{frame}{Slides not complete and may contain errors}
-	\begin{itemize}
-		\item This slide deck is not finished, may contain errors, and is missing important material. Do not rely on it yet.
-	\end{itemize}
-\end{frame}
-
 \section{The Dark Ages}
 
 \begin{frame}{The Dark Ages}
@@ -1797,7 +1791,7 @@
 	\end{alertblock}
 \end{frame}
 
-\section{Group Secure Messaging (WORK IN PROGRESS)}
+\section{Group Secure Messaging}
 
 \begin{frame}{The Group Messaging Problem}
 	\begin{columns}[c]
@@ -1929,33 +1923,127 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{TreeKEM}
-	\bigimagewithcaption{treekem.pdf}{Source: Joy of Cryptography}
+\begin{frame}{Quick note: HPKE}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Hybrid Public Key Encryption (RFC 9180)\footnote{\url{https://www.rfc-editor.org/rfc/rfc9180.html}}}
+			\begin{itemize}
+				\item Combines asymmetric + symmetric crypto
+				\item Encrypts to public key, no interaction needed
+				\item Used in TLS 1.3, MLS, and more
+			\end{itemize}
+			\textbf{Two-step process:}
+			\begin{enumerate}
+				\item \textbf{Encapsulation}: Generate shared secret
+				\item \textbf{Seal}: Encrypt data with that secret
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Simple Example:}
+			\begin{exampleblock}{Sender (Alice)}
+				\ttfamily\scriptsize
+				// Bob's public key: pk\_bob\\
+				(enc, ctx) = HPKE.Setup(pk\_bob)\\
+				ciphertext = ctx.Seal("Hello Bob!")\\
+				// Send: (enc, ciphertext)
+			\end{exampleblock}
+			\begin{exampleblock}{Receiver (Bob)}
+				\ttfamily\scriptsize
+				// Bob's private key: sk\_bob\\
+				ctx = HPKE.Setup(enc, sk\_bob)\\
+				plaintext = ctx.Open(ciphertext)\\
+				// plaintext = "Hello Bob!"
+			\end{exampleblock}
+			\textbf{Key benefit:} One-shot encryption without prior key exchange!
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{TreeKEM: use a tree to manage group AKE}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Tree of Subgroups:}
+			\begin{itemize}
+				\item Each node = subgroup with secret (e.g., $s_{abc}$)
+				\item Corresponding public key (e.g., $\texttt{pk}_{abc}$)
+				\item Example: $s_{abcde}$ is the group key
+			\end{itemize}
+			\textbf{Member Knowledge:}
+			\begin{itemize}
+				\item Member $b$ knows: $s_{ab}$, $s_{abc}$, $s_{abcde}$
+				\item Only secrets on path to root
+				\item Cannot compute sibling secrets
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Updating Keys (Commit):}
+			\begin{itemize}
+				\item Member $b$ updates its path:
+				      \begin{itemize}
+					      \item $s_{ab} \rightarrow s'_{ab}$
+					      \item $s_{abc} \rightarrow s'_{abc}$
+					      \item $s_{abcde} \rightarrow s'_{abcde}$
+				      \end{itemize}
+				\item Encrypt to siblings:
+				      \begin{itemize}
+					      \item $\func{hpke}{\texttt{pk}_c, s'_{abc}}$
+					      \item $\func{hpke}{\texttt{pk}_{de}, s'_{abcde}}$
+				      \end{itemize}
+			\end{itemize}
+			\begin{alertblock}{Efficiency Win}
+				For $n$ members: Only $\log(n)$ encryptions!\\
+				Example: 8 members = 3 encryptions
+			\end{alertblock}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{TreeKEM}
-	\bigimagewithcaption{treekem_update_1.pdf}{Source: Joy of Cryptography}
+	\bigimagewithcaption{treekem_a.png}{Source: Théophile Wallez}
 \end{frame}
 
 \begin{frame}{TreeKEM}
-	\bigimagewithcaption{treekem_update_2.pdf}{Source: Joy of Cryptography}
+	\bigimagewithcaption{treekem_b.png}{Source: Théophile Wallez}
 \end{frame}
 
-\begin{frame}{TreeKEM}
-	\bigimagewithcaption{treekem_update_3.pdf}{Source: Joy of Cryptography}
-\end{frame}
-
-% MLS critique
-
-\section{Post-Quantum Secure Messaging}
-% PQ3
-% PQX3DH
-% https://github.com/signalapp/SparsePostQuantumRatchet/
-
-\begin{frame}{Slides not complete and may contain errors}
-	\begin{itemize}
-		\item This slide deck is not finished, may contain errors, and is missing important material. Do not rely on it yet.
-	\end{itemize}
+\begin{frame}{MLS: reality check}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The Complexity Problem:}
+			\begin{itemize}
+				\item \textbf{Massive specification}: RFC 9420 is 132 pages!
+				\item \textbf{Implementation nightmare}:
+				      \begin{itemize}
+					      \item Multiple tree operations
+					      \item Complex state management
+					      \item Intricate error handling
+				      \end{itemize}
+				\item \textbf{Correctness is hard}:
+				      \begin{itemize}
+					      \item Easy to get wrong
+					      \item Subtle security bugs
+					      \item Few complete implementations
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Developer Hostility:}
+			\begin{itemize}
+				\item \textbf{No standard API}:
+				      \begin{itemize}
+					      \item Each implementation different
+					      \item No drop-in replacement
+					      \item Steep learning curve
+				      \end{itemize}
+				\item \textbf{Infrastructure requirements}:
+				      \begin{itemize}
+					      \item Need custom delivery service
+					      \item Complex server-side logic
+					      \item State synchronization issues
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}[plain]
