@@ -334,6 +334,56 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Cipher Suites: The building blocks of TLS security}
+	\begin{itemize}[<+->]
+		\item \textbf{What is a cipher suite?}
+		      \begin{itemize}
+			      \item A combination of cryptographic algorithms used together
+			      \item Defines exactly how data will be secured
+			      \item Like a recipe: specifies all ingredients for secure communication
+		      \end{itemize}
+		\item \textbf{Four components of a cipher suite}:
+		      \begin{enumerate}
+			      \item \textbf{Key exchange algorithm}: How to establish shared keys (RSA, ECDHE, DHE)
+			      \item \textbf{Authentication algorithm}: How to verify identity (RSA, ECDSA)
+			      \item \textbf{Bulk encryption algorithm}: How to encrypt data (AES, ChaCha20)
+			      \item \textbf{MAC algorithm}: How to ensure integrity (SHA256, SHA384, Poly1305)
+		      \end{enumerate}
+		\item \textbf{Example}: \texttt{TLS\_ECDHE\_RSA\_WITH\_AES\_128\_GCM\_SHA256}
+		      \begin{itemize}
+			      \item \texttt{ECDHE}: Elliptic Curve Diffie-Hellman Ephemeral (key exchange)
+			      \item \texttt{RSA}: RSA signatures (authentication)
+			      \item \texttt{AES\_128\_GCM}: AES with 128-bit keys in GCM mode (encryption + MAC)
+			      \item \texttt{SHA256}: SHA-256 for handshake integrity
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Common cipher suites in practice}
+	\begin{itemize}[<+->]
+		\item \textbf{TLS 1.2 cipher suites} (verbose naming):
+		      \begin{itemize}
+			      \item \texttt{TLS\_ECDHE\_RSA\_WITH\_AES\_256\_GCM\_SHA384}
+			      \item \texttt{TLS\_ECDHE\_ECDSA\_WITH\_AES\_128\_GCM\_SHA256}
+			      \item \texttt{TLS\_RSA\_WITH\_AES\_128\_CBC\_SHA256}
+			      \item \texttt{TLS\_DHE\_RSA\_WITH\_AES\_256\_CBC\_SHA256}
+		      \end{itemize}
+		\item \textbf{TLS 1.3 cipher suites} (simplified naming):
+		      \begin{itemize}
+			      \item \texttt{TLS\_AES\_128\_GCM\_SHA256}
+			      \item \texttt{TLS\_AES\_256\_GCM\_SHA384}
+			      \item \texttt{TLS\_CHACHA20\_POLY1305\_SHA256}
+		      \end{itemize}
+		\item \textbf{Why TLS 1.3 names are shorter}:
+		      \begin{itemize}
+			      \item Key exchange is always (EC)DHE (forward secrecy mandatory)
+			      \item Authentication tied to certificate type
+			      \item Only specifies symmetric crypto algorithms
+		      \end{itemize}
+		\item \textbf{Cipher suite negotiation}: Client proposes, server chooses
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{The TLS handshake: Basic flow}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}

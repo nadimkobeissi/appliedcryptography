@@ -1,0 +1,238 @@
+\documentclass[10pt,a4paper,american]{article}
+\newcommand{\aublogopath}{../../website/res/img/aub_black.png}
+\usepackage{../../misc/macros/joc}
+\usepackage{../../misc/fonts/fonts}
+\usepackage{../../misc/macros/classhandout}
+
+\begin{document}
+
+\classhandoutheader
+
+\section*{Problem Set 4: Secure Channel Protocols}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	\textbf{Instructions:} This problem set covers topics in real-world cryptography, and in particular secure channel protocols, from topics 2.1\footnote{\url{https://appliedcryptography.page/slides/\#2-1}}, 2.2\footnote{\url{https://appliedcryptography.page/slides/\#2-2}}, and 2.3\footnote{\url{https://appliedcryptography.page/slides/\#2-3}} of the course. Submit your solutions as a neatly formatted PDF. You are encouraged to collaborate with classmates in studying the material, but your submitted solutions must be your own work. For proofs, clearly state your assumptions, steps, and conclusions.
+\end{tcolorbox}
+
+\section{Transport Layer Security (35 points)}
+
+\subsection{TLS Attack Analysis (20 points)}
+
+\begin{enumerate}
+	\item (10 points) \textbf{The Legacy Downgrade Scenario:}
+	      You are the security engineer for a major e-commerce platform. Your security scan reveals that 15\% of your customers are still using browsers that support SSL 3.0 and TLS 1.0.
+	      \begin{enumerate}
+		      \item Design a migration strategy that balances security and business requirements. How would you phase out support for vulnerable protocols without losing customers?
+		      \item An attacker attempts a POODLE attack by forcing downgrades to SSL 3.0. Explain step-by-step how this attack works and why modern TLS versions prevent it.
+		      \item Your CEO asks: ``Can't we just keep supporting old protocols for compatibility?'' Write a technical risk assessment explaining why this is dangerous, using specific examples from the TLS attack timeline.
+	      \end{enumerate}
+	\item (10 points) \textbf{Certificate Authority Compromise:}
+	      A major Certificate Authority has been compromised, similar to the DigiNotar incident. The attacker has issued valid certificates for your company's domains.
+	      \begin{enumerate}
+		      \item Describe the immediate steps you would take upon discovering this compromise. Consider both technical measures and communication strategies.
+		      \item Design a defense-in-depth strategy using Certificate Transparency, HPKP (HTTP Public Key Pinning), and other mechanisms to prevent future CA-related attacks.
+		      \item Analyze the trade-offs between the CA model and alternative approaches like blockchain-based certificates or DANE. What would need to change for these alternatives to become practical?
+	      \end{enumerate}
+\end{enumerate}
+
+\subsection{TLS 1.3 Design Decisions (15 points)}
+
+\begin{enumerate}
+	\item (5 points) \textbf{Forward Secrecy vs Performance:}
+	      You're designing a high-traffic API service that needs to handle millions of TLS connections per day.
+	      \begin{enumerate}
+		      \item Compare the performance implications of TLS 1.2's two-round-trip handshake versus TLS 1.3's single round-trip design. Quantify the latency savings for different geographic scenarios.
+		      \item Analyze the security trade-offs of 0-RTT resumption. Design a policy for when your service should accept 0-RTT data and when it should refuse it.
+		      \item Your infrastructure team wants to use RSA key exchange for ``simplicity.'' Explain why ephemeral Diffie-Hellman is crucial for forward secrecy, using concrete attack scenarios. Can RSA be used for ephemeral key exchange instead of Diffie-Hellman? Explain your answer.
+	      \end{enumerate}
+	\item (5 points) \textbf{Cryptographic Agility:}
+	      The recent advances in quantum computing have your management worried about long-term security.
+	      \begin{enumerate}
+		      \item Design a hybrid TLS deployment that combines classical and post-quantum algorithms. What are the bandwidth and computational costs?
+		      \item Analyze how TLS 1.3's simplified cipher suite negotiation affects crypto-agility compared to TLS 1.2. Is the trade-off worth it?
+		      \item Propose a timeline for migrating from current algorithms to quantum-resistant ones, considering both security requirements and practical constraints like embedded devices with 10-year lifespans.
+	      \end{enumerate}
+	\item (5 points) \textbf{Enterprise Monitoring and Middleboxes:}
+	      Your organization's security team demands the ability to inspect TLS traffic for data loss prevention and malware detection.
+	      \begin{enumerate}
+		      \item TLS 1.3's encrypted handshake prevents passive monitoring that was possible with TLS 1.2. Compare different approaches for enterprise TLS inspection (proxy with custom CA, TLS interception devices, endpoint agents). What are the security implications of each?
+		      \item Design a solution that balances enterprise security requirements with user privacy. Consider split-tunneling, certificate pinning exceptions, and audit logging. How do you prevent abuse while enabling legitimate monitoring?
+		      \item Analyze the ``TLS Encrypted Client Hello'' (ECH) extension. How does it further complicate enterprise monitoring? Propose a deployment strategy that addresses both privacy advocates' and enterprise administrators' concerns.
+	      \end{enumerate}
+\end{enumerate}
+
+\section{The RC4 Cryptanalysis Story (20 points)}
+
+\subsection{Stream Cipher Vulnerabilities (10 points)}
+
+\begin{enumerate}
+	\item (5 points) \textbf{WEP Forensics Challenge:}
+	      You've been hired to audit a company that claims their ``modified WEP'' implementation fixes the original vulnerabilities by using 256-bit keys instead of 104-bit keys.
+	      \begin{enumerate}
+		      \item Explain why simply increasing the key size doesn't fix WEP's fundamental problems. Focus on the IV structure and its interaction with RC4's weak keys.
+		      \item Design an attack against this ``improved'' WEP that demonstrates key recovery is still feasible. How many packets would you need?
+		      \item The company argues that their network has low traffic, making statistical attacks impractical. Describe how active attacks (packet injection) can accelerate key recovery.
+	      \end{enumerate}
+	\item (5 points) \textbf{RC4 in Modern Protocols:}
+	      Despite RC4's prohibition in TLS, you discover a proprietary VPN protocol still using RC4 ``with modifications.''
+	      \begin{enumerate}
+		      \item The developers claim they ``fixed'' RC4 by discarding the first 3072 bytes of keystream. Analyze whether this prevents the known biases and attacks.
+		      \item Design a broadcast attack scenario against this VPN protocol, assuming you can observe the same message encrypted multiple times. How would you exploit RC4's statistical biases?
+		      \item Compare RC4's failure modes to modern stream ciphers like ChaCha20. What design principles make ChaCha20 resistant to the attacks that broke RC4?
+	      \end{enumerate}
+\end{enumerate}
+
+\subsection{Cryptographic Lifecycle Management (10 points)}
+
+\begin{enumerate}
+	\item (10 points) \textbf{The Deprecation Timeline:}
+	      You're the cryptography lead at a software company with products deployed globally. Management asks you to create a comprehensive plan for deprecating weak algorithms.
+	      \begin{enumerate}
+		      \item Using RC4's history as a case study, create a framework for monitoring cryptographic algorithms for weaknesses. What early warning signs should trigger migration planning?
+		      \item Design a deprecation timeline that considers: academic attacks becoming practical, industry standards changing, and the cost of emergency migrations. Use specific examples from RC4, MD5, and SHA-1.
+		      \item Your legacy product team argues that supporting old algorithms is necessary for backward compatibility. Develop a risk-based approach to determine when compatibility must be sacrificed for security.
+		      \item Create a communication strategy for informing users about algorithm deprecation. How do you balance transparency about vulnerabilities with avoiding panic?
+	      \end{enumerate}
+\end{enumerate}
+
+\section{Secure Messaging Protocols (45 points)}
+
+\subsection{Protocol Design and Analysis (15 points)}
+
+\begin{enumerate}
+	\item (5 points) \textbf{PGP vs Signal Design Philosophy:}
+	      You're consulting for a government agency that needs end-to-end encrypted communications. They're debating between a PGP-based solution and a Signal-based approach.
+	      \begin{enumerate}
+		      \item Compare the threat models of PGP and Signal. Which assumptions does each make about user behavior, key management, and trust establishment?
+		      \item Analyze the usability trade-offs: PGP's explicit key management versus Signal's automatic key exchange. Use specific scenarios to illustrate when each approach fails.
+		      \item Design a hybrid system that combines PGP's explicit trust model with Signal's usability. What compromises are necessary?
+	      \end{enumerate}
+
+	\item (5 points) \textbf{Signal Under Hostile Control:}
+	      Signal has been taken over by a new President, Mischievous Whistletaker, whose intentions are unclear. You're advising journalists and activists who depend on Signal for their safety.
+	      \begin{enumerate}
+		      \item Analyze which components of Signal could be compromised without breaking end-to-end encryption. Consider: metadata collection, client updates, key directory manipulation, and sealed sender weaknesses. How would users detect each type of compromise?
+		      \item Signal's code is open source but lacks reproducible builds. Design a verification strategy that helps users determine if their client matches the published source. What are the limitations of this approach, and what attacks remain undetectable?
+		      \item Evaluate the risk profile for different user groups (casual users, journalists, activists) if Whistletaker implements subtle backdoors. Consider: selective targeting, parallel construction risks, and the difference between passive monitoring and active attacks. What alternative architectures or protocols would provide better resistance to operator compromise?
+	      \end{enumerate}
+
+	\item (5 points) \textbf{Asynchronous Key Agreement:}
+	      You're designing a secure messaging system for humanitarian workers in conflict zones with intermittent connectivity.
+	      \begin{enumerate}
+		      \item Compare X3DH's pre-key approach with alternative designs for asynchronous key agreement. What are the trust assumptions and server requirements?
+		      \item Analyze the security implications of storing pre-keys on a server. How does Signal minimize the trust required in the server?
+		      \item Design a key agreement protocol that works even if the server is compromised. What functionality would you sacrifice?
+	      \end{enumerate}
+\end{enumerate}
+
+\subsection{Authenticated Key Exchange and Ratcheting Analysis (30 points)}
+
+\begin{enumerate}
+	\item (6 points) \textbf{Basic Authentication Properties:}
+	      Analyze the following authenticated key exchange protocols. For each protocol, determine whether it provides mutual authentication, key confirmation, and protection against man-in-the-middle attacks.
+
+	      \textbf{Protocol A:}
+	      \begin{center}
+		      \begin{tikzpicture}[>=Stealth]
+			      \node (A) at (0,0) {$A$};
+			      \node (B) at (8,0) {$B$};
+			      \draw[->] (0.5,0) -- (7.5,0) node[midway,above] {$g^x$};
+			      \draw[<-] (0.5,-1) -- (7.5,-1) node[midway,above] {$g^y$};
+			      \draw[->] (0.5,-2) -- (7.5,-2) node[midway,above] {$\func{sign}{A, (g^x, g^y)}$};
+			      \draw[<-] (0.5,-3) -- (7.5,-3) node[midway,above] {$\func{sign}{B, (g^y, g^x)}$};
+		      \end{tikzpicture}
+	      \end{center}
+	      Both parties compute $K = g^{xy}$ as the shared key.
+
+	      \textbf{Protocol B:}
+	      \begin{center}
+		      \begin{tikzpicture}[>=Stealth]
+			      \node (A) at (0,0) {$A$};
+			      \node (B) at (8,0) {$B$};
+			      \draw[->] (0.5,0) -- (7.5,0) node[midway,above] {$g^x, \func{sign}{A, g^x}$};
+			      \draw[<-] (0.5,-1) -- (7.5,-1) node[midway,above] {$g^y, \func{sign}{B, g^y}$};
+		      \end{tikzpicture}
+	      \end{center}
+	      Both parties compute $K = g^{xy}$ as the shared key.
+
+	\item (8 points) \textbf{Identity Binding and Forward Secrecy:}
+	      The following protocols attempt to provide authenticated key exchange. Identify which protocols are vulnerable to identity misbinding, key compromise impersonation (KCI), replay attacks, or lack perfect forward secrecy.
+
+	      \textbf{Protocol C:}
+	      \begin{center}
+		      \begin{tikzpicture}[>=Stealth]
+			      \node (A) at (0,0) {$A$};
+			      \node (B) at (8,0) {$B$};
+			      \draw[->] (0.5,0) -- (7.5,0) node[midway,above] {$N_A$};
+			      \draw[<-] (0.5,-1) -- (7.5,-1) node[midway,above] {$N_B, g^y, \func{sign}{B, (N_A, N_B, g^y)}$};
+			      \draw[->] (0.5,-2) -- (7.5,-2) node[midway,above] {$g^x, \func{sign}{A, (N_B, N_A, g^x)}$};
+		      \end{tikzpicture}
+	      \end{center}
+	      Where $N_A, N_B$ are nonces and $K = g^{xy}$.
+
+	      \textbf{Protocol D:}
+	      \begin{center}
+		      \begin{tikzpicture}[>=Stealth]
+			      \node (A) at (0,0) {$A$};
+			      \node (B) at (8,0) {$B$};
+			      \draw[->] (0.5,0) -- (7.5,0) node[midway,above] {$A, B, g^x$};
+			      \draw[<-] (0.5,-1) -- (7.5,-1) node[midway,above] {$g^y, \func{enc}{g^{xb}, \func{sign}{B, (g^x, g^y)}}$};
+			      \draw[->] (0.5,-2) -- (7.5,-2) node[midway,above] {$\func{enc}{g^{ya}, \func{sign}{A, (g^y, g^x)}}$};
+		      \end{tikzpicture}
+	      \end{center}
+	      Where $a$ is $A$'s long-term private key, $b$ is $B$'s long-term private key, and the session key is $K = g^{xy}$.
+
+	\item (16 points) \textbf{Broken Ratcheting Protocols:}
+	      The following two ratcheting protocols are used in messaging applications. Both contain subtle flaws that compromise their security properties. For each protocol, identify the vulnerabilities and explain their impact on forward secrecy, backward secrecy (post-compromise security), and message authentication.
+
+	      \textbf{Ratchet Protocol 1: "SimpleSafe"}
+	      \begin{itemize}
+		      \item Initial setup: Alice and Bob share root key $RK_0$ from an authenticated key exchange
+		      \item Message keys are derived as: $MK_i = \func{hmac}{RK_0, i}$ where $i$ is the message counter
+		      \item Every 10 messages, they perform a DH ratchet:
+		            \begin{itemize}
+			            \item Alice sends $g^{a_i}$, Bob sends $g^{b_i}$
+			            \item New root key: $RK_{i+1} = \func{kdf}{RK_i \| g^{a_i b_i}}$
+		            \end{itemize}
+		      \item Messages are encrypted as: $\func{enc}{MK_i, \text{plaintext}} \| i$
+	      \end{itemize}
+
+	      \textbf{Ratchet Protocol 2: "DoubleStep"}
+	      \begin{itemize}
+		      \item Initial setup: Alice and Bob each have DH key pairs $(a_0, g^{a_0})$ and $(b_0, g^{b_0})$
+		      \item Two chains are maintained:
+		            \begin{itemize}
+			            \item Sending chain: $CK^s_i = \func{kdf}{CK^s_{i-1}, \text{``send''}}$
+			            \item Receiving chain: $CK^r_i = \func{kdf}{CK^r_{i-1}, \text{``recv''}}$
+		            \end{itemize}
+		      \item DH ratchet on every message:
+		            \begin{itemize}
+			            \item Sender generates new ephemeral key $e_i$
+			            \item Shared secret: $ss = g^{e_i \cdot b_{current}}$
+			            \item Updates: $CK^s_0 = \func{kdf}{ss, \text{``chain''}}$
+			            \item Message key: $MK = \func{kdf}{CK^s_i, \text{``message''}}$
+		            \end{itemize}
+		      \item Messages include: $g^{e_i} \| \func{enc}{MK, \text{plaintext}}$
+		      \item Receiver's long-term key $b$ is never updated
+	      \end{itemize}
+
+	      For your analysis, consider:
+	      \begin{enumerate}
+		      \item What happens if an attacker compromises a device mid-conversation?
+		      \item Can old messages be decrypted after key compromise?
+		      \item Can an attacker forge future messages after temporary access?
+		      \item Are there any replay or reordering vulnerabilities?
+	      \end{enumerate}
+\end{enumerate}
+
+\begin{tcolorbox}[colframe=EarthBrown!30!white,colback=EarthBrown!5!white]
+	\textbf{Bonus Challenge (30 extra points):} The evolution from SSL to TLS 1.3 represents one of the most important case studies in applied cryptography. Choose one of the following research topics:
+	\begin{enumerate}
+		\item \textbf{Formal Verification Impact}: Analyze how ProVerif, \fstar, and other formal methods influenced TLS 1.3's design. Compare sections of the protocol that were formally verified versus those that weren't. What bugs were caught during design versus after deployment?
+		\item \textbf{The RC4 Retrospective}: Create a detailed timeline of RC4's cryptanalysis from 1994 to 2015. For each major attack, explain: the mathematical insight, the gap between theory and practice, and the community's response. What lessons does RC4 teach about cipher design and deprecation?
+		\item \textbf{Messaging Protocol Convergence}: Compare the security properties achieved by Signal, MLS, and the latest WhatsApp protocols. Are we converging on an ``optimal'' design for secure messaging? What fundamental trade-offs remain unsolved?
+	\end{enumerate}
+	Your analysis should include: references to primary sources, concrete attack scenarios or security proofs, performance measurements or estimates, and actionable recommendations for protocol designers.
+\end{tcolorbox}
+
+\end{document}
