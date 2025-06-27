@@ -2,9 +2,9 @@ const updatedInit = () => {
 	const lastUpdatedElement = document.getElementById("lastUpdated");
 	const updatedLink = document.createElement("a");
 	updatedLink.href =
-		"https://codeberg.org/nadimkobeissi/appliedcryptography/commits/branch/main";
+		"https://git.appliedcryptography.page/nadim/appliedcryptography/commits/branch/main";
 	fetch(
-		"https://codeberg.org/api/v1/repos/nadimkobeissi/appliedcryptography/commits?limit=1&sha=main",
+		"https://git.appliedcryptography.page/api/v1/repos/nadim/appliedcryptography/commits?limit=1&sha=main",
 	)
 		.then((response) => response.json())
 		.then((data) => {
