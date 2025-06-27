@@ -1802,7 +1802,7 @@
 \begin{frame}{The Group Messaging Problem}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Two-party protocols work great for... two parties}
+			\textbf{Two-party protocols work great for\ldots two parties}
 			\begin{itemize}
 				\item Signal Protocol: Alice $\leftrightarrow$ Bob
 				\item OTR: Real-time 1-on-1 chat
@@ -1845,6 +1845,68 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{WhatsApp's approach: sender keys}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{How Sender Keys Work:}
+			\begin{itemize}
+				\item Each group member has a ``sender key''
+				\item Shared with all other members
+				\item One encryption per message (not per recipient!)
+			\end{itemize}
+			\textbf{Sender Key Components:}
+			\begin{itemize}
+				\item $SK = (spk, ck)$
+				\item $spk$: Public signature key
+				\item $ck$: Symmetric chain key
+				\item Chain key ratchets forward
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Sending a Message:}
+			\begin{enumerate}
+				\item Derive message key: $mk = H_1(ck)$
+				\item Encrypt: $c = \func{enc}{mk, m}$
+				\item Sign: $\sigma = \func{sign}{ssk, c}$
+				\item Erase $mk$ immediately
+				\item Ratchet: $ck_{new} = H_2(ck)$
+			\end{enumerate}
+			\textbf{Benefits:}
+			\begin{itemize}
+				\item $O(1)$ encryptions per message
+				\item Handles out-of-order delivery
+				\item Scales to large groups
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{WhatsApp's approach: sender keys}
+	\bigimagewithcaption{sender_keys.png}{Source: David Balbás, Daniel Collins and Phillip Gajland, \textit{WhatsUpp with Sender Keys? Analysis, Improvements and Security Proofs}, IACR Asiacrypt, 2023.}
+\end{frame}
+
+\begin{frame}{Sender keys: trade-offs}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{What we gain:}
+			\begin{itemize}
+				\item \textbf{Efficiency}: Single encryption
+				\item \textbf{Scalability}: Works for 256+ members\footnote{Recently increased to 1,024.}
+				\item \textbf{Battery life}: Less crypto work
+				\item \textbf{Bandwidth}: Constant message size
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{What we lose:}
+			\begin{itemize}
+				\item Weaker forward secrecy
+				\item Weaker post-compromise security
+				\item Malicious server can add/remove parties
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Enter MLS: Messaging Layer Security}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -1866,8 +1928,6 @@
 		\end{column}
 	\end{columns}
 \end{frame}
-
-% Sender keys, etc.
 
 \begin{frame}{TreeKEM}
 	\bigimagewithcaption{treekem.pdf}{Source: Joy of Cryptography}
