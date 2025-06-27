@@ -661,6 +661,104 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Properties to consider: Identity Binding}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\textbf{The Problem}
+			\begin{itemize}
+				\item How do we cryptographically tie messages to identities?
+				\item Prevent substitution attacks
+				\item Ensure ``Bob's key'' really belongs to Bob
+			\end{itemize}
+			\textbf{Identity Binding in SIGMA}
+			\begin{itemize}
+				\item MAC includes identity: $\func{hmac}{K_m, g^B}$
+				\item Signature covers ephemeral keys
+				\item Links identity $\leftrightarrow$ key exchange
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Without proper binding:}
+			\begin{itemize}
+				\item Attacker can claim others' keys
+				\item ``Unknown Key Share'' attacks
+				\item Identity confusion attacks
+			\end{itemize}
+			\textbf{Best practices:}
+			\begin{itemize}
+				\item Include identities in authenticated data
+				\item Sign/MAC the binding
+				\item Verify before accepting keys
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Properties to consider: Replay Attacks}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\textbf{What is a replay attack?}
+			\begin{itemize}
+				\item Attacker records valid protocol messages
+				\item Replays them later to cause confusion
+				\item Messages are cryptographically valid!
+			\end{itemize}
+			\textbf{Example scenarios:}
+			\begin{itemize}
+				\item Replay old ``I love you'' after breakup
+				\item Replay ``Yes, transfer \$1000'' multiple times
+				\item Replay old key exchange messages
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Defenses:}
+			\begin{itemize}
+				\item \textbf{Nonces}: Fresh randomness each time
+				\item \textbf{Timestamps}: Messages expire
+				\item \textbf{Sequence numbers}: Detect duplicates
+				\item \textbf{HKDF}: Context binding
+			\end{itemize}
+			\textbf{In secure messaging:}
+			\begin{itemize}
+				\item OTR: Fresh ephemerals prevent replay
+				\item Signal: Include context in authentication
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Properties to consider: Key Compromise Impersonation}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\textbf{The Scenario:}
+			\begin{itemize}
+				\item Alice's private key is compromised
+				\item \textbf{Expected}: Attacker can impersonate Alice
+				\item \textbf{KCI}: Attacker can also impersonate others \textit{to} Alice!
+			\end{itemize}
+			\textbf{Why this matters:}
+			\begin{itemize}
+				\item Compromise should be contained
+				\item Trust assumptions violated
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Example Attack:}
+			\begin{itemize}
+				\item Attacker has Alice's private key
+				\item Bob starts key exchange with Alice
+				\item Attacker intercepts and responds as ``Alice''
+				\item But also creates fake ``Bob'' messages to Alice!
+			\end{itemize}
+			\textbf{Preventing KCI:}
+			\begin{itemize}
+				\item Don't use static-static DH alone
+				\item Include ephemeral keys
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{OTR version 2: Authenticated Key Exchange}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
