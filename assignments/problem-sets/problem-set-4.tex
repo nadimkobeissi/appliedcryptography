@@ -185,7 +185,7 @@
 	\item (16 points) \textbf{Broken Ratcheting Protocols:}
 	      The following two ratcheting protocols are used in messaging applications. Both contain subtle flaws that compromise their security properties. For each protocol, identify the vulnerabilities and explain their impact on forward secrecy, backward secrecy (post-compromise security), and message authentication.
 
-	      \textbf{Ratchet Protocol 1: "SimpleSafe"}
+	      \textbf{Ratchet Protocol 1: \textit{``SimpleSafe''}}
 	      \begin{itemize}
 		      \item Initial setup: Alice and Bob share root key $RK_0$ from an authenticated key exchange
 		      \item Message keys are derived as: $MK_i = \func{hmac}{RK_0, i}$ where $i$ is the message counter
@@ -197,7 +197,7 @@
 		      \item Messages are encrypted as: $\func{enc}{MK_i, \text{plaintext}} \| i$
 	      \end{itemize}
 
-	      \textbf{Ratchet Protocol 2: "DoubleStep"}
+	      \textbf{Ratchet Protocol 2: \textit{``DoubleStep''}}
 	      \begin{itemize}
 		      \item Initial setup: Alice and Bob each have DH key pairs $(a_0, g^{a_0})$ and $(b_0, g^{b_0})$
 		      \item Two chains are maintained:
