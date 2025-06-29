@@ -1589,13 +1589,119 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{TODO: Sealed Sender}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
+\begin{frame}{Signal's Sealed Sender: the metadata problem}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\textbf{What E2E encryption doesn't hide:}
 			\begin{itemize}
-				\item TODO:
-				\item Sealed sender
-				\item Analysis from 2021\footnote{\url{https://appliedcryptography.page/papers/\#sealed-sender}}
+				\item Message contents are protected
+				\item But service still sees who talks to whom
+				\item Traditional messaging shows:
+				      \begin{itemize}
+					      \item Sender identity (authentication)
+					      \item Recipient identity (routing)
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Why authentication was needed:}
+			\begin{itemize}
+				\item Prevent spoofing
+				\item Enable rate limiting
+				\item Block abuse
+				\item Trace bad actors
+			\end{itemize}
+			\textbf{The challenge:}
+			\begin{itemize}
+				\item How to hide sender from service
+				\item While preventing abuse?
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Signal's Sealed Sender: the solution}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\textbf{Sender Certificates}
+			\begin{itemize}
+				\item Short-lived, signed by service
+				\item Contains:
+				      \begin{itemize}
+					      \item Phone number
+					      \item Identity key
+					      \item Expiry timestamp
+				      \end{itemize}
+				\item Included inside encrypted envelope from Alice to Bob
+				\item Service can see it at issuance, but not while it's inside encrypted envelope.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Delivery Tokens}
+			\begin{itemize}
+				\item 96-bit token derived from profile key
+				\item Required to send sealed messages
+				\item Shared via existing profile system
+				\item Acts as anti-abuse mechanism
+			\end{itemize}
+			\textbf{Trade-off:}
+			\begin{itemize}
+				\item Default: Only contacts can use sealed sender
+				\item Optional: Accept from anyone (more spam risk)
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Sealed Sender: technical details}
+	\textbf{Double Encryption Approach:}
+	\begin{enumerate}
+		\item Message encrypted with Signal Protocol as usual
+		\item Envelope (sender cert + ciphertext) encrypted to recipient's identity key
+		\item Service sees only encrypted blob + delivery token
+	\end{enumerate}
+	\textbf{Envelope Encryption (simplified):}
+	\begin{itemize}
+		\item Generate ephemeral key pair: $(e_{pub}, e_{priv})$
+		\item ECDH with recipient's identity key
+		\item Derive encryption keys via HKDF
+		\item Encrypt sender identity + certificate
+		\item Second layer using sender's identity key for authentication
+	\end{itemize}
+	\begin{alertblock}{Result}
+		Service can route messages without knowing sender identity
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{Sealed Sender: does it really work?}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}
+				\item \textbf{The Attack (2021): Statistical Disclosure}\footnote{\url{https://appliedcryptography.page/papers/\#sealed-sender}}
+				      \begin{itemize}
+					      \item Sealed sender hides who sent the message
+					      \item But delivery receipts create a timing pattern
+					      \item When Bob receives a message, he often replies quickly
+					      \item This creates a ``reply epoch'' - a time window
+				      \end{itemize}
+				\item \textbf{The Clever Observation:}
+				      \begin{itemize}
+					      \item Alice sends to Bob \rightarrow\ Bob likely replies within epoch
+					      \item Other users also send/receive during this time
+					      \item But Alice appears more often in Bob's reply epochs
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item \textbf{The Attack Algorithm:}
+				      \begin{enumerate}
+					      \item Monitor when Bob receives messages
+					      \item Count who receives messages right after (target epochs)
+					      \item Compare to random time windows
+					      \item Alice's count grows, others stay near zero
+					      \item After just a few messages: Bob's contacts revealed!
+				      \end{enumerate}
 			\end{itemize}
 		\end{column}
 	\end{columns}
