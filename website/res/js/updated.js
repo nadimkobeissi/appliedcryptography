@@ -2,9 +2,9 @@ const updatedInit = () => {
 	const lastUpdatedElement = document.getElementById("lastUpdated");
 	const updatedLink = document.createElement("a");
 	updatedLink.href =
-		"https://git.appliedcryptography.page/nadim/appliedcryptography/commits/branch/main";
+		"https://cedarcrypt.org/nadim/appliedcryptography/commits/branch/main";
 	fetch(
-		"https://git.appliedcryptography.page/api/v1/repos/nadim/appliedcryptography/commits?limit=1&sha=main",
+		"https://cedarcrypt.org/api/v1/repos/nadim/appliedcryptography/commits?limit=1&sha=main",
 	)
 		.then((response) => response.json())
 		.then((data) => {
