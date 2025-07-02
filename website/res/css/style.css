@@ -325,7 +325,8 @@ strong {
 	line-height: 1.6;
 }
 
-.topic-number {
+.topic-number,
+.topic-exam-indicator {
 	display: inline-block;
 	font-family: "JetBrains Mono", monospace;
 	font-size: 0.85rem;
@@ -334,6 +335,11 @@ strong {
 	padding: 0.25rem 0.75rem;
 	border-radius: 50px;
 	margin-bottom: 0.75rem;
+}
+
+.topic-exam-indicator {
+	background-color: var(--alert-bg-light);
+	color: var(--dark);
 }
 
 .topic-slides-btn {
@@ -799,9 +805,11 @@ strong {
 }
 
 .collapsible-header.active {
-	background: linear-gradient(to bottom,
-			var(--gray-dark) 0%,
-			transparent 100%);
+	background: linear-gradient(
+		to bottom,
+		var(--gray-dark) 0%,
+		transparent 100%
+	);
 	box-shadow: none;
 	border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
@@ -884,6 +892,10 @@ strong {
 	.topic-number {
 		background-color: var(--badge-bg-dark);
 		color: var(--accent);
+	}
+
+	.topic-exam-indicator {
+		background-color: var(--alert-bg-dark);
 	}
 
 	.collapsible-header .collapsible-icon {
