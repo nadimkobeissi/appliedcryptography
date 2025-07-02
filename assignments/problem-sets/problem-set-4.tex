@@ -38,21 +38,14 @@
 \subsection{TLS 1.3 Design Decisions (15 points)}
 
 \begin{enumerate}
-	\item (5 points) \textbf{Forward Secrecy vs Performance:}
+	\item (7.5 points) \textbf{Forward Secrecy vs Performance:}
 	      You're designing a high-traffic API service that needs to handle millions of TLS connections per day.
 	      \begin{enumerate}
 		      \item Compare the performance implications of TLS 1.2's two-round-trip handshake versus TLS 1.3's single round-trip design. Quantify the latency savings for different geographic scenarios.
 		      \item Analyze the security trade-offs of 0-RTT resumption. Design a policy for when your service should accept 0-RTT data and when it should refuse it.
 		      \item Your infrastructure team wants to use RSA key exchange for ``simplicity.'' Explain why ephemeral Diffie-Hellman is crucial for forward secrecy, using concrete attack scenarios. Can RSA be used for ephemeral key exchange instead of Diffie-Hellman? Explain your answer.
 	      \end{enumerate}
-	\item (5 points) \textbf{Cryptographic Agility:}
-	      The recent advances in quantum computing have your management worried about long-term security.
-	      \begin{enumerate}
-		      \item Design a hybrid TLS deployment that combines classical and post-quantum algorithms. What are the bandwidth and computational costs?
-		      \item Analyze how TLS 1.3's simplified cipher suite negotiation affects crypto-agility compared to TLS 1.2. Is the trade-off worth it?
-		      \item Propose a timeline for migrating from current algorithms to quantum-resistant ones, considering both security requirements and practical constraints like embedded devices with 10-year lifespans.
-	      \end{enumerate}
-	\item (5 points) \textbf{Enterprise Monitoring and Middleboxes:}
+	\item (7.5 points) \textbf{Enterprise Monitoring and Middleboxes:}
 	      Your organization's security team demands the ability to inspect TLS traffic for data loss prevention and malware detection.
 	      \begin{enumerate}
 		      \item TLS 1.3's encrypted handshake prevents passive monitoring that was possible with TLS 1.2. Compare different approaches for enterprise TLS inspection (proxy with custom CA, TLS interception devices, endpoint agents). What are the security implications of each?
