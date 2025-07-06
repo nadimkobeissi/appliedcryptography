@@ -16,7 +16,7 @@ I'm still working on the slides. If the checkbox isn't checked, it means you sho
 - [x] Part 2: Topic 2
 - [x] Part 2: Topic 3
 - [ ] Part 2: Topic 4
-- [ ] Part 2: Topic 5
+- [x] Part 2: Topic 5
 - [ ] Part 2: Topic 6
 - [ ] Part 2: Topic 7
 - [ ] Part 2: Topic 8
