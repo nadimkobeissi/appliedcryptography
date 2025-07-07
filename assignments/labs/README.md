@@ -7,3 +7,4 @@
 - [ ] [Verifpal](https://verifpal.com)
 - [x] [ProVerif](https://proverif.inria.fr) or [Tamarin](https://tamarin-prover.com)
 - [ ] [CTFs](https://ctftime.org/tasks/?tags=crypto&hidden-tags=crypto) if we have time?
+- [x] Post-Quantum Cryptography Migration

@@ -1,0 +1,163 @@
+\documentclass[10pt,a4paper,american]{article}
+\newcommand{\aublogopath}{../../website/res/img/aub_black.png}
+\usepackage{../../misc/macros/joc}
+\usepackage{../../misc/fonts/fonts}
+\usepackage{../../misc/macros/classhandout}
+
+\begin{document}
+
+\classhandoutheader
+
+\section*{Lab Project E: Post-Quantum Cryptography Migration}
+
+\subsection*{Overview}
+In this lab project, you will explore the practical challenges of migrating existing systems to post-quantum cryptography. You'll work with NIST's standardized post-quantum algorithms, integrating ML-KEM (Kyber) for key encapsulation and ML-DSA (Dilithium) for digital signatures. This lab guides you through hybrid approaches that combine classical and post-quantum algorithms, ensuring security against both current and future quantum threats. You will start by choosing a target protocol that you wish to devise a post-quantum migration strategy for. Then, you'll analyze performance impacts, message size increases, and integration challenges when replacing pre-quantum primitives (such as RSA or ECDH) with quantum-resistant alternatives. By completing this lab, you'll gain practical experience in implementing post-quantum designs, developing migration strategies for existing systems, and evaluating the trade-offs between different post-quantum algorithm choices for various use cases.
+
+\subsection*{Learning Objectives}
+After completing this lab, you should be able to:
+\begin{itemize}
+	\item Integrate NIST standardized post-quantum algorithms (ML-KEM and ML-DSA) through the use of existing implementations and cryptographic libraries.
+	\item Design hybrid cryptographic schemes that provide security against both classical and quantum adversaries.
+	\item Analyze performance and compatibility trade-offs in post-quantum migration.
+	\item Develop practical migration strategies for transitioning existing systems to post-quantum security.
+\end{itemize}
+
+\subsection*{Background}
+The advent of quantum computers poses a significant threat to current public-key cryptography. Post-quantum cryptography provides security against both classical and quantum adversaries:
+\begin{itemize}
+	\item ML-KEM (Kyber) provides quantum-resistant key encapsulation based on lattice problems.
+	\item ML-DSA (Dilithium) offers quantum-resistant digital signatures also based on lattice cryptography.
+	\item Hybrid approaches, such as X-Wing\footnote{Manuel Barbosa, Deirdre Connolly, João Diogo Duarte, Aaron Kaiser, Peter Schwabe, Karolin Varner and Baas Westerban, \href{https://appliedcryptography.page/papers/\#xwing-hybrid}{\textit{X-Wing: The Hybrid KEM You’ve Been Looking For}}, IACR Communications in Cryptology, 2024.} combine classical and post-quantum algorithms to hedge against implementation vulnerabilities.
+	\item Migration strategies must consider performance impacts, message size increases, and backward compatibility.
+\end{itemize}
+
+\subsection*{Requirements}
+Your post-quantum migration project must implement the following core functionality:
+
+\begin{enumerate}
+	\item \textbf{Protocol Selection and Analysis:}
+	      \begin{itemize}
+		      \item Choose a target protocol (e.g., TLS, SSH, VPN, or custom protocol) for migration.
+		      \item Document the current cryptographic primitives used in the protocol.
+		      \item Analyze the protocol's security requirements and constraints.
+	      \end{itemize}
+
+	\item \textbf{Post-Quantum Integration:}
+	      \begin{itemize}
+		      \item Integrate ML-KEM (Kyber) for key encapsulation mechanisms.
+		      \item Integrate ML-DSA (Dilithium) for digital signature operations.
+		      \item Create hybrid schemes combining classical and post-quantum algorithms.
+	      \end{itemize}
+
+	\item \textbf{Migration Strategy:}
+	      \begin{itemize}
+		      \item Design a backward-compatible migration path.
+		      \item Implement protocol negotiation for algorithm selection.
+		      \item Ensure graceful fallback to classical algorithms when necessary.
+	      \end{itemize}
+
+	\item \textbf{Performance Analysis:}
+	      \begin{itemize}
+		      \item Measure and compare key generation, encapsulation, and signature times.
+		      \item Analyze message size increases and bandwidth impacts.
+		      \item Evaluate memory usage and computational requirements.
+		      \item Document performance trade-offs for different security levels.
+	      \end{itemize}
+\end{enumerate}
+
+\subsection*{Implementation Guidelines}
+
+\subsubsection*{Step 1: Protocol Analysis}
+Begin by thoroughly analyzing your chosen protocol:
+\begin{itemize}
+	\item What cryptographic primitives does it currently use? (RSA, ECDH, ECDSA, etc.)
+	\item What are the performance requirements and constraints?
+	\item What are the message size limitations?
+	\item How does the protocol handle algorithm negotiation?
+\end{itemize}
+
+Document your findings and justify your choice of target protocol.
+
+\subsubsection*{Step 2: Post-Quantum Integration}
+Implement the post-quantum algorithms:
+\begin{itemize}
+	\item Integrate ML-KEM (Kyber) for key exchange operations.
+	\item Integrate ML-DSA (Dilithium) for signature operations.
+	\item Design and implement hybrid modes that combine classical and post-quantum algorithms.
+\end{itemize}
+
+\subsubsection*{Step 3: Migration Design}
+Develop a comprehensive migration strategy:
+\begin{itemize}
+	\item Protocol negotiation mechanisms for algorithm selection.
+	\item Backward compatibility with non-post-quantum implementations.
+	\item Phased migration approach with risk mitigation.
+\end{itemize}
+
+\subsubsection*{Step 4: Performance Evaluation}
+Conduct thorough performance analysis:
+\begin{itemize}
+	\item Benchmark all cryptographic operations.
+	\item Measure protocol overhead and latency impacts.
+	\item Analyze scalability under various load conditions.
+\end{itemize}
+
+\subsubsection*{Step 5: Security Analysis}
+Evaluate the security of your migration:
+\begin{itemize}
+	\item Analyze the security levels provided by different parameter sets.
+	\item Consider cryptographic agility and future algorithm updates.
+	\item Evaluate risks during the migration period.
+\end{itemize}
+
+\subsection*{Deliverables}
+Submit the following:
+
+\begin{enumerate}
+	\item Source code for your post-quantum migration implementation.
+	\item Design document including:
+	      \begin{itemize}
+		      \item Detailed protocol analysis and migration strategy.
+		      \item Description of hybrid cryptographic schemes implemented.
+		      \item Justification for algorithm choices and parameter selections.
+	      \end{itemize}
+	\item Performance analysis report with:
+	      \begin{itemize}
+		      \item Benchmarking results comparing pre- and post-quantum implementations.
+		      \item Analysis of message size and bandwidth impacts.
+		      \item Recommendations for different use cases.
+	      \end{itemize}
+	\item Security analysis discussing:
+	      \begin{itemize}
+		      \item Security guarantees of the migrated protocol.
+		      \item Potential vulnerabilities during migration.
+		      \item Long-term cryptographic agility considerations.
+	      \end{itemize}
+\end{enumerate}
+
+\subsection*{Evaluation Criteria}
+Your project will be evaluated based on:
+
+\begin{itemize}
+	\item Correctness of post-quantum algorithm integration.
+	\item Quality and practicality of the migration strategy.
+	\item Thoroughness of performance analysis.
+	\item Security considerations and risk mitigation.
+	\item Quality of code and documentation.
+\end{itemize}
+
+\subsection*{Resources}
+\begin{itemize}
+	\item \href{https://csrc.nist.gov/projects/post-quantum-cryptography/post-quantum-cryptography-standardization}{NIST Post-Quantum Cryptography standardization documents} and \href{https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf}{FIPS 203 (ML-KEM)}, \href{https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf}{FIPS 204 (ML-DSA)}.
+	\item Reference implementations: \href{https://github.com/pq-crystals/kyber}{Kyber reference implementation}, \href{https://github.com/symbolicsoft/kyber-k2so}{Kyber Go implementation}, \href{https://github.com/pq-crystals/dilithium}{Dilithium reference implementation}, and \href{https://github.com/open-quantum-safe/liboqs}{Open Quantum Safe library}.
+	\item Course materials on post-quantum cryptography.
+\end{itemize}
+
+\subsection*{Submission Guidelines}
+\begin{itemize}
+	\item Submit your code as a ZIP archive or through a Git repository.
+	\item Include all documentation in PDF or Markdown format.
+	\item Presentations: Prepare a 10-minute presentation demonstrating your post-quantum migration strategy and implementation.
+\end{itemize}
+
+\end{document}

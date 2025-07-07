@@ -3,6 +3,7 @@ all:
 	@make secure-messenger
 	@make zk-battleship
 	@make proverif
+	@make pq-migration
 
 password-manager:
 	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../../website/labs "password-manager.tex"
@@ -15,3 +16,6 @@ zk-battleship:
 
 proverif:
 	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../../website/labs "proverif.tex"
+
+pq-migration:
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../../website/labs "pq-migration.tex"

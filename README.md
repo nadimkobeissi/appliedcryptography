@@ -6,7 +6,7 @@ If you are a student or someone trying to learn from this course's materials, th
 
 ## Contents
 
-- `assignments`: Course assignments and lab sessions.
+- `assignments`: Course assignments and lab projects.
 - `misc`: LaTeX dependencies.
 - `slides`: Course slides.
 - `syllabus`: Course syllabus.
