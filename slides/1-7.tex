@@ -888,9 +888,9 @@
 	\textbf{Why care?} These rules guarantee that our cryptographic operations will behave predictably!
 \end{frame}
 
-\begin{frame}{Generators: the special elements}
+\begin{frame}{Generators: allow exponentiation to target every element in the group}
 	\definitionbox{Generator}{
-		An element $g$ whose powers $g^1, g^2, g^3, \ldots$ produce every element in the group.
+		An element $g$ whose powers $g^1, g^2, g^3, \ldots$ produce \textbf{every element in the group}.
 	}
 	\begin{itemize}[<+->]
 		\item In $\mathbb{Z}_5^*$, let's try $g = 2$:
@@ -918,6 +918,137 @@
 			      \item Easy with small numbers, hard with large ones!
 		      \end{itemize}
 		\item For cryptographic-sized numbers (2048+ bits), no efficient algorithm is known.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why does $p$ need to be prime?}
+	\begin{itemize}[<+->]
+		\item \textbf{Critical requirement}: In Diffie-Hellman, $p$ must be a prime number.
+		\item \textbf{What happens with composite $p$?} Let's see with an example:
+		      \begin{itemize}
+			      \item Suppose $p = 15 = 3 \times 5$ (composite)
+			      \item The group $\mathbb{Z}_{15}^*$ has only 8 elements: $\{1, 2, 4, 7, 8, 11, 13, 14\}$
+			      \item Missing: $\{3, 5, 6, 9, 10, 12\}$ (share factors with 15)
+		      \end{itemize}
+		\item \textbf{With prime $p$}: The group $\mathbb{Z}_p^*$ has exactly $p-1$ elements
+		      \begin{itemize}
+			      \item Every non-zero element has an inverse
+			      \item Clean mathematical structure
+		      \end{itemize}
+		\item \textbf{Small subgroup attacks}: When $p-1$ has small factors, attackers can exploit them!
+		      \begin{itemize}
+			      \item Example: If $p-1 = 2 \times q$ where $q$ is small
+			      \item Attacker can solve DLP in the small subgroup of size $q$
+			      \item This dramatically reduces security!
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why are these elements ``missing''?}
+	\begin{itemize}[<+->]
+		\item \textbf{The key requirement}: Elements in $\mathbb{Z}_n^*$ must be \textbf{coprime} to $n$
+		      \begin{itemize}
+			      \item Coprime means $\gcd(a, n) = 1$ (no common factors)
+			      \item Only coprime elements have multiplicative inverses mod $n$
+		      \end{itemize}
+		\item \textbf{Let's check the missing elements} (with $n = 15 = 3 \times 5$):
+		      \begin{itemize}
+			      \item $\gcd(3, 15) = 3$ (shares factor 3)
+			      \item $\gcd(5, 15) = 5$ (shares factor 5)
+			      \item $\gcd(6, 15) = 3$ (because $6 = 2 \times 3$)
+			      \item $\gcd(9, 15) = 3$ (because $9 = 3^2$)
+			      \item $\gcd(10, 15) = 5$ (because $10 = 2 \times 5$)
+			      \item $\gcd(12, 15) = 3$ (because $12 = 4 \times 3$)
+		      \end{itemize}
+		\item \textbf{Why no inverse?} If $\gcd(a, n) > 1$, then $ax \equiv 1 \pmod{n}$ has no solution
+		      \begin{itemize}
+			      \item Example: $3x \equiv 1 \pmod{15}$ is impossible because $3x$ is always divisible by 3
+			      \item But $1 \bmod 15$ leaves remainder 1, which is not divisible by 3!
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Small subgroup attack: a concrete example}
+	\textbf{Scenario}: Suppose we use a prime $p = 23$ (small for illustration)
+	\begin{itemize}[<+->]
+		\item Note that $p - 1 = 22 = 2 \times 11$
+		\item The group $\mathbb{Z}_{23}^*$ has subgroups of order 2, 11, and 22
+		\item \textbf{The attack}: Force the victim to work in a small subgroup!
+	\end{itemize}
+	\vspace{0.5cm}
+	\textbf{Attack execution}:
+	\begin{enumerate}[<+->]
+		\item \textbf{Attacker finds} an element of order 11: $g = 2$ has order 11 in $\mathbb{Z}_{23}^*$
+		      \begin{itemize}
+			      \item Check: $2^{11} \equiv 1 \pmod{23}$ (so order divides 11)
+			      \item Since 11 is prime, the order is exactly 11
+		      \end{itemize}
+		\item \textbf{Victim picks} secret $x$ and sends $g^x = 2^x \bmod 23$
+		\item \textbf{Problem}: There are only 11 possible values for $g^x$!
+		      \begin{itemize}
+			      \item Instead of checking all $\approx 22$ possible exponents
+			      \item Attacker only needs to check 11 values
+			      \item Security reduced by 50\%!
+		      \end{itemize}
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Prime order groups: immunity to small subgroup attacks}
+	\textbf{Question}: Can we have small subgroup attacks in a prime order group?
+	\begin{itemize}[<+->]
+		\item \textbf{Short answer}: No! Prime order groups have no small subgroups.
+		\item \textbf{Lagrange's theorem}: In a group of order $n$, every subgroup's order divides $n$.
+		\item \textbf{Prime order consequence}: If group order = prime $q$, the only divisors are 1 and $q$.
+		      \begin{itemize}
+			      \item Subgroup of order 1 = $\{1\}$ (just the identity)
+			      \item Subgroup of order $q$ = the entire group
+			      \item \textbf{No other subgroups exist!}
+		      \end{itemize}
+	\end{itemize}
+	\vspace{0.5cm}
+	\textbf{Example}: Consider a group of prime order $q = 11$
+	\begin{itemize}[<+->]
+		\item \textbf{Every non-identity element} generates the whole group!
+		\item Pick any $g \neq 1$: the powers $g^1, g^2, \ldots, g^{10}, g^{11} = 1$ give all 11 elements
+		\item No element can generate a ``small'' subgroup—it's all or nothing
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{$\mathbb{Z}_p^*$ vs. prime order subgroups}
+	\textbf{Important distinction}: $\mathbb{Z}_p^*$ is usually \textbf{not} a prime order group!
+	\begin{itemize}[<+->]
+		\item For prime $p$, the group $\mathbb{Z}_p^*$ has order $p - 1$ (which is even for $p > 2$)
+		\item Example: $\mathbb{Z}_{23}^*$ has order 22 = $2 \times 11$
+		      \begin{itemize}
+			      \item This allows subgroups of order 1, 2, 11, and 22
+			      \item Elements of order 2 or 11 generate small subgroups!
+		      \end{itemize}
+	\end{itemize}
+	\vspace{0.5cm}
+	\textbf{Solution}: Work in a prime-order subgroup of $\mathbb{Z}_p^*$
+	\begin{itemize}[<+->]
+		\item Choose a safe prime: $p = 2q + 1$ where $q$ is also prime
+		\item The subgroup of order $q$ has no small subgroups
+		\item \textbf{Modern practice}: Use a generator of this order-$q$ subgroup
+		\item \textbf{Result}: Automatic immunity to small subgroup attacks!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Small subgroup attack: devastating in practice}
+	\textbf{Real-world example}: LogJam attack (2015)\footnote{Adrian et al., Imperfect Forward Secrecy: How Diffie-Hellman Fails in Practice, CCS 2015}
+	\begin{itemize}[<+->]
+		\item Many servers used 512-bit DH with \textbf{weak primes}
+		\item Primes chosen where $p - 1 = 2 \times q$ with many small factors in $q$
+		\item \textbf{Result}: Nation-state attackers could break ``secure'' connections!
+	\end{itemize}
+	\vspace{0.5cm}
+	\textbf{Defense}: Use safe primes
+	\begin{itemize}[<+->]
+		\item A \textbf{safe prime} is a prime $p$ where $p = 2q + 1$ and $q$ is also prime
+		\item Example: $p = 23 = 2 \times 11 + 1$ (both 23 and 11 are prime)
+		\item This ensures the only subgroups have order 1, 2, $q$, or $2q$
+		\item The subgroup of order $q$ is large, preventing small subgroup attacks
+		\item Modern implementations require safe primes or equivalent protections
 	\end{itemize}
 \end{frame}
 
