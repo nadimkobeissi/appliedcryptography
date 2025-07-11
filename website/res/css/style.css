@@ -349,7 +349,7 @@ strong {
 	background-color: var(--accent);
 	color: var(--dark);
 	font-family: "JetBrains Mono", monospace;
-	font-size: 0.75rem;
+	font-size: 0.85rem;
 	font-weight: 600;
 	padding: 0.25rem 0.75rem;
 	border-radius: 0 var(--border-radius) 0 var(--border-radius);
@@ -357,6 +357,17 @@ strong {
 	display: flex;
 	align-items: center;
 	transition: var(--transition);
+	animation: shine 1s ease-in-out infinite;
+}
+
+@keyframes shine {
+	0%,
+	100% {
+		background-color: var(--accent);
+	}
+	50% {
+		background-color: color-mix(in srgb, var(--accent) 70%, white 80%);
+	}
 }
 
 .topic-slides-btn:hover {
