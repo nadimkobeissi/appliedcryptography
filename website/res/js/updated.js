@@ -4,8 +4,8 @@ const updatedInit = () => {
 	updatedLink.href =
 		"https://cedarcrypt.org/nadim/appliedcryptography/commits/branch/main";
 	fetch(
-		"https://cedarcrypt.org/api/v1/repos/nadim/appliedcryptography/commits?limit=1&sha=main",
-	)
+			"https://cedarcrypt.org/api/v1/repos/nadim/appliedcryptography/commits?limit=1&sha=main",
+		)
 		.then((response) => response.json())
 		.then((data) => {
 			if (Array.isArray(data) && data.length > 0) {

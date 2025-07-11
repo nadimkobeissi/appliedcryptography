@@ -361,10 +361,12 @@ strong {
 }
 
 @keyframes shine {
+
 	0%,
 	100% {
 		background-color: var(--accent);
 	}
+
 	50% {
 		background-color: color-mix(in srgb, var(--accent) 70%, white 80%);
 	}
@@ -816,11 +818,9 @@ strong {
 }
 
 .collapsible-header.active {
-	background: linear-gradient(
-		to bottom,
-		var(--gray-dark) 0%,
-		transparent 100%
-	);
+	background: linear-gradient(to bottom,
+			var(--gray-dark) 0%,
+			transparent 100%);
 	box-shadow: none;
 	border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
