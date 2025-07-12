@@ -16,19 +16,13 @@
 	\titlepage
 \end{frame}
 
-% Bitcoin (explain primitives here)?
-% Ethereum and smart contracts
-% L1 vs L2
-% Zcash
-% Penumbra
+\section{Bitcoin}
 
 \begin{frame}{Slides not complete and may contain errors}
 	\begin{itemize}
 		\item This slide deck is not finished, may contain errors, and is missing important material. Do not rely on it yet.
 	\end{itemize}
 \end{frame}
-
-\section{Bitcoin: The Designer's Perspective}
 
 \begin{frame}{The problem: trust in digital commerce}
 	\begin{itemize}
@@ -93,7 +87,7 @@
 		\item Published October 31, 2008 by Satoshi Nakamoto (pseudonym)
 		\item Built on decades of cryptographic research:
 		      \begin{itemize}
-			      \item Digital signatures (Diffie-Hellman, RSA)
+			      \item Digital signatures (ECDSA)
 			      \item Hashcash proof-of-work (Adam Back, 1997)
 			      \item Cryptographic timestamps (Haber \& Stornetta, 1991)
 			      \item B-money and bit gold proposals (Wei Dai, Nick Szabo)
@@ -121,7 +115,281 @@
 	\end{itemize}
 \end{frame}
 
-\subsection{Coins as digital signature chains}
+\subsection{Proof-of-Work}
+
+\begin{frame}{What is proof-of-work?}
+	\begin{itemize}
+		\item A computational puzzle that takes significant effort to solve.
+		\item Core component of blockchain consensus (for PoW-based chains).
+		\item Properties:
+		      \begin{itemize}
+			      \item Hard to compute (requires many attempts).
+			      \item Easy to verify (single check).
+			      \item Difficulty adjustable.
+		      \end{itemize}
+		\item Creates a cost for participation \rightarrow\ prevents spam/attacks.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{How proof-of-work functions}
+	\begin{itemize}
+		\item PoW is a hash function with:
+		      \begin{itemize}
+			      \item \textbf{Fixed inputs}: Block header data (transactions, timestamp, etc.)
+			      \item \textbf{Variable input}: Nonce (number used once)
+			      \item \textbf{Constraint}: Output must match specific pattern (e.g. start with a specific number of zeroes)
+		      \end{itemize}
+		\item Process:
+		      \begin{enumerate}
+			      \item Hash(fixed inputs + nonce)
+			      \item Check if output meets constraint
+			      \item If not, increment nonce and repeat
+			      \item If yes, you've found the proof!
+		      \end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Bitcoin's proof-of-work constraint}
+	\begin{itemize}
+		\item Bitcoin uses double SHA-256: \func{sha256}{\func{sha256}{\texttt{data}}}
+		\item Constraint: Hash value < target threshold
+		\item Can be visualized as ``leading zeros'':
+		      \begin{itemize}
+			      \item Hash as 256-bit number in big-endian
+			      \item More leading zeros = smaller number
+			      \item More leading zeros = harder to find
+		      \end{itemize}
+		\item Example outputs:
+		      \begin{itemize}
+			      \item \texttt{00000000000000000007b...} (valid - many zeros)
+			      \item \texttt{5fec4ba9f3c2d8a1b9e7...} (invalid - no leading zeros)
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Real Bitcoin difficulty numbers}
+	\begin{itemize}
+		\item Example from 2022:
+		      \begin{itemize}
+			      \item Difficulty: 34,244,331,613,176 (\approx$2^{45}$)
+			      \item Actual target: difficulty \times\ $2^{32}$ = $2^{77}$
+			      \item Hash must be less than $2^{77}$ (out of $2^{256}$ possible)
+		      \end{itemize}
+		\item This means:
+		      \begin{itemize}
+			      \item Network computes \approx$2^{77}$ hashes per block
+			      \item That's 150,000,000,000,000,000,000,000 hashes!
+			      \item All to find one valid nonce
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The mining algorithm}
+	\begin{itemize}
+		\item Input components:
+		      \begin{itemize}
+			      \item Version number
+			      \item Previous block hash
+			      \item Merkle root of transactions
+			      \item Timestamp
+			      \item Difficulty target
+			      \item \textbf{Nonce} (32-bit number)
+		      \end{itemize}
+		\item Mining loop:
+		      \begin{enumerate}
+			      \item Set nonce = 0
+			      \item Compute hash = \func{sha256}{\func{sha256}{\texttt{header}}}
+			      \item If hash < target, success!
+			      \item Else, \texttt{nonce++}, go to step 2
+		      \end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why is proof-of-work necessary?}
+	\begin{itemize}
+		\item Without PoW, blocks could be created instantly:
+		      \begin{itemize}
+			      \item Anyone could rewrite history at will
+			      \item No way to determine ``canonical'' chain
+			      \item Double-spending would be trivial
+		      \end{itemize}
+		\item PoW provides:
+		      \begin{itemize}
+			      \item \textbf{Finality}: Expensive to reverse transactions
+			      \item \textbf{Sybil resistance}: Can't fake computational work
+			      \item \textbf{Fair lottery}: Proportional to hashpower
+			      \item \textbf{Time spacing}: Predictable block intervals
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The double-spending problem revisited}
+	\begin{itemize}
+		\item Without PoW:
+		      \begin{enumerate}
+			      \item Alice sends 1 BTC to Bob (Transaction A)
+			      \item Alice creates alternate history sending same 1 BTC to herself (Transaction B)
+			      \item Both histories equally valid \rightarrow\ no consensus
+		      \end{enumerate}
+		\item With PoW:
+		      \begin{enumerate}
+			      \item Transaction A gets included in block N
+			      \item To double-spend, Alice must:
+			            \begin{itemize}
+				            \item Re-mine block N with Transaction B
+				            \item Re-mine all subsequent blocks
+				            \item Do this faster than honest network
+			            \end{itemize}
+			      \item Cost grows exponentially with confirmations
+		      \end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Proof-of-work as a random lottery}
+	\begin{itemize}
+		\item Each hash attempt is like a lottery ticket:
+		      \begin{itemize}
+			      \item Probability of success = target / $2^{256}$
+			      \item Independent trials (memoryless)
+			      \item No progress - each attempt equally likely
+		      \end{itemize}
+		\item Properties:
+		      \begin{itemize}
+			      \item Can't predict who will win
+			      \item Can't get ``closer'' to solution
+			      \item More hashpower = more tickets/second
+			      \item Fair: winning probability $\propto$ hashpower
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The economics of mining}
+	\begin{itemize}
+		\item Mining costs:
+		      \begin{itemize}
+			      \item Hardware (ASICs, GPUs)
+			      \item Electricity (biggest ongoing cost)
+			      \item Cooling and infrastructure
+			      \item Opportunity cost of capital
+		      \end{itemize}
+		\item Mining rewards:
+		      \begin{itemize}
+			      \item Block subsidy (currently 3.125 BTC)
+			      \item Transaction fees
+		      \end{itemize}
+		\item Equilibrium: Total mining cost ≈ Total mining revenue
+		\item This ensures appropriate security level
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Bitcoin mining at peak consumption}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Peak consumption scenarios}:
+				      \begin{itemize}
+					      \item During 2021 bull run: \approx180 TWh/year\footnote{\url{https://www.statista.com/statistics/881472/worldwide-bitcoin-energy-consumption/}}
+					      \item More than entire power consumption of Argentina (121 TWh)
+					      \item Exceeds Netherlands (117 TWh) + UAE (120 TWh) combined
+				      \end{itemize}
+				\item \textbf{Single mining facilities}:
+				      \begin{itemize}
+					      \item Riot Platforms Texas facility: 700 MW capacity
+					      \item Equivalent to powering 500,000 US homes
+					      \item Marathon Digital: 500+ MW across facilities
+				      \end{itemize}
+				\item \textbf{Regional impacts}:
+				      \begin{itemize}
+					      \item Kazakhstan (2021): 18\% of global hashrate\footnote{\url{https://thediplomat.com/2021/11/kazakhstans-power-shortages-crypto-miners-and-geopolitics/}}
+					      \item Caused nationwide power shortages
+					      \item Government imposed mining restrictions
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{ASIC resistance: Alternative PoW designs}
+	\begin{itemize}
+		\item Problem: Bitcoin mining dominated by specialized hardware (ASICs)
+		\item Goal: Make mining accessible to regular computers
+		\item Approaches:
+		      \begin{itemize}
+			      \item \textbf{Memory-hardness}: Require large amounts of RAM
+			      \item \textbf{Algorithm complexity}: Use operations ASICs struggle with
+			      \item \textbf{Regular changes}: Modify algorithm periodically
+		      \end{itemize}
+		\item Trade-offs:
+		      \begin{itemize}
+			      \item More democratic vs. less efficient
+			      \item Decentralization vs. security
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Memory-hard proof-of-work}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item Example: Ethereum's Ethash (before ``proof-of-stake''\footnote{We will discuss what ``proof-of-stake'' is later in this slideshow.} transition)
+				\item How it works:
+				      \begin{enumerate}
+					      \item Generate large dataset (\approx4GB)
+					      \item Mining requires random access to dataset
+					      \item Can't compute on-the-fly (too slow)
+					      \item Must store entire dataset in memory
+				      \end{enumerate}
+				\item Why it resists ASICs:
+				      \begin{itemize}
+					      \item Memory is expensive (can't optimize much)
+					      \item Memory bandwidth becomes bottleneck
+					      \item Levels playing field between ASICs and GPUs
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Virtual machine based PoW}
+	\begin{itemize}
+		\item Example: RandomX (used by Monero)
+		\item Concept:
+		      \begin{itemize}
+			      \item Create custom instruction set
+			      \item PoW executes random program
+			      \item Optimized for CPU architecture
+		      \end{itemize}
+		\item Implementation:
+		      \begin{enumerate}
+			      \item Generate random program from block data
+			      \item Execute program many times
+			      \item Result must meet difficulty target
+		      \end{enumerate}
+		\item Advantage: CPUs excel at general computation
+		\item Disadvantage: More complex, harder to verify
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{From proof-of-work to consensus}
+	\begin{itemize}
+		\item PoW doesn't directly create consensus
+		\item Instead, it enables consensus through:
+		      \begin{enumerate}
+			      \item Making blocks expensive to create
+			      \item Creating unforgeable chain of work
+			      \item Allowing objective comparison of chains
+			      \item Economically punishing dishonest behavior
+		      \end{enumerate}
+		\item The ``longest chain rule'' works because:
+		      \begin{itemize}
+			      \item Longest = most cumulative work
+			      \item Most work = most resources spent
+			      \item Rational miners extend longest chain
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\subsection{Coins as Digital Signature Chains}
 
 \begin{frame}{Electronic coins as digital signatures}
 	\begin{itemize}
@@ -165,6 +433,64 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{The coinbase transaction in detail}
+	\begin{itemize}
+		\item \textbf{Structure of coinbase transaction}:
+		      \begin{itemize}
+			      \item No inputs (creates coins ex nihilo).
+			      \item Single output to miner's address.
+			      \item Can include arbitrary data in coinbase field.
+			      \item Must be first transaction in block.
+		      \end{itemize}
+		\item \textbf{Mining process}:
+		      \begin{enumerate}
+			      \item Miner collects pending transactions from mempool.
+			      \item Creates coinbase transaction paying themselves.
+			      \item Builds block with coinbase tx + other transactions.
+			      \item Searches for valid proof-of-work nonce. \leftarrow\ (this is what ``mining'' is about)
+			      \item Broadcasts valid block to network.
+		      \end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{From nonce to Bitcoin: the complete process}
+	\begin{itemize}
+		\item \textbf{Step 1: Block construction}
+		      \begin{itemize}
+			      \item Miner creates coinbase transaction paying themselves.
+			      \item Adds other pending transactions from mempool.
+			      \item Builds Merkle tree of all transactions.
+			      \item Constructs block header with Merkle root.
+		      \end{itemize}
+		\item \textbf{Step 2: Finding valid nonce}
+		      \begin{itemize}
+			      \item Block header includes: prev hash, Merkle root, timestamp, nonce.
+			      \item Miner increments nonce, computes \func{sha256}{\func{sha256}{\texttt{header}}}.
+			      \item Continues until hash meets difficulty target.
+			      \item Valid nonce makes entire block valid.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{From nonce to Bitcoin: the complete process}
+	\begin{itemize}
+		\item \textbf{The nonce validates the entire block}:
+		      \begin{itemize}
+			      \item Block header contains Merkle root of all transactions.
+			      \item Coinbase transaction is part of this Merkle tree.
+			      \item Valid proof-of-work makes coinbase transaction valid.
+		      \end{itemize}
+		\item \textbf{Network acceptance}:
+		      \begin{itemize}
+			      \item Miner broadcasts valid block to network.
+			      \item Other nodes verify proof-of-work and all transactions.
+			      \item If valid, nodes add block to their blockchain.
+			      \item Coinbase output becomes spendable after 100 blocks.
+		      \end{itemize}
+		\item \textbf{Result}: Miner now owns newly created Bitcoin!
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{How are coins created?}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
@@ -172,8 +498,8 @@
 				\item Bitcoin's monetary policy:
 				      \begin{itemize}
 					      \item Started at 50 BTC per block (2009).
-					      \item Halves every 210,000 blocks (~4 years).
-					      \item Current reward: 6.25 BTC per block.
+					      \item Halves every 210,000 blocks (\approx4 years).
+					      \item Current reward: \approx3.125 BTC per block.\footnote{\url{https://www.bitcoinblockhalf.com}}
 					      \item Maximum supply: 21 million BTC.
 				      \end{itemize}
 				\item This serves dual purpose:
@@ -184,6 +510,226 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{How miners know what to mine}
+	\begin{itemize}
+		\item There's no central authority distributing mining challenges.
+		\item Instead, miners create their own challenges based on:
+		      \begin{itemize}
+			      \item Current blockchain state (latest block).
+			      \item Network-agreed difficulty target.
+			      \item Pending transactions in their mempool.
+		      \end{itemize}
+		\item The ``challenge'' is self-generated: find a valid nonce for your block.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The mining race begins}
+	\begin{itemize}
+		\item When a new block is found:
+		      \begin{enumerate}
+			      \item Winning miner broadcasts block to network.
+			      \item Other nodes verify and accept the block.
+			      \item All miners immediately start working on next block.
+			      \item Previous work becomes irrelevant - must start fresh.
+		      \end{enumerate}
+		\item This creates a continuous race:
+		      \begin{itemize}
+			      \item No downtime between blocks.
+			      \item Miners constantly compete.
+			      \item First valid solution wins.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Determining the next challenge}
+	\begin{itemize}
+		\item Each miner independently:
+		      \begin{enumerate}
+			      \item Takes hash of latest accepted block.
+			      \item Creates new block template with this as ``previous hash''.
+			      \item Includes their coinbase transaction.
+			      \item Selects pending transactions from mempool.
+			      \item Begins searching for valid nonce.
+		      \end{enumerate}
+		\item Key point: Every miner works on slightly different block!
+		      \begin{itemize}
+			      \item Different transaction selection.
+			      \item Different coinbase recipient (themselves).
+			      \item Same previous block reference.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What is Bitcoin halving?}
+	\begin{itemize}
+		\item \textbf{Halving}: The periodic reduction of block rewards by 50\%.
+		\item Occurs every 210,000 blocks (\approx4 years).
+		\item Timeline of halvings:
+		      \begin{itemize}
+			      \item 2009-2012: \approx50 BTC per block
+			      \item 2012-2016: \approx25 BTC per block
+			      \item 2016-2020: \approx12.5 BTC per block
+			      \item 2020-2024: \approx6.25 BTC per block
+			      \item 2024-2028: \approx3.125 BTC per block (current)
+		      \end{itemize}
+		\item Purpose:
+		      \begin{itemize}
+			      \item Controls Bitcoin's inflation rate
+			      \item Creates predictable monetary policy
+			      \item Ensures finite supply (21 million BTC maximum)
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Does halving make Bitcoin slower?}
+	\begin{itemize}
+		\item \textbf{Common misconception}: ``If rewards halve, mining becomes slower''
+		\item \textbf{Reality}: Block production speed remains constant!
+		\item Key distinction:
+		      \begin{itemize}
+			      \item Block reward amount \neq\ Block production speed
+			      \item Target: 1 block every 10 minutes (always)
+			      \item Difficulty adjustment maintains this target
+		      \end{itemize}
+		\item What halving actually affects:
+		      \begin{itemize}
+			      \item Miner profitability (lower rewards)
+			      \item Bitcoin's inflation rate (new supply slows)
+			      \item Some miners may stop if unprofitable
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The difficulty target}
+	\begin{itemize}
+		\item Network maintains a shared difficulty target.
+		\item Expressed as: \textbf{``Block hash must be less than target value''}.
+		\item Example targets:
+		      \begin{itemize}
+			      \item Easy: Hash < \texttt{0x00FFFFFFFFFFFFFF...} (2 leading zero bytes).
+			      \item Hard: Hash < \texttt{0x00000000000000000FFF...} (17 leading zero bytes).
+			      \item Current Bitcoin: \approx19 leading zero bytes!
+		      \end{itemize}
+		\item All miners use same target - ensures fair competition.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{How Bitcoin maintains constant speed}
+	\begin{itemize}
+		\item \textbf{Difficulty adjustment mechanism}:
+		      \begin{itemize}
+			      \item Recalibrates every 2,016 blocks (\approx2 weeks)
+			      \item If blocks too fast \rightarrow\ increase difficulty
+			      \item If blocks too slow \rightarrow\ decrease difficulty
+			      \item Keeps 10-minute average regardless of total hashpower
+		      \end{itemize}
+		\item \textbf{Economic sustainability}:
+		      \begin{itemize}
+			      \item Transaction fees supplement block rewards
+			      \item As rewards decrease, fees become more important
+			      \item Market price can offset reduced rewards
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Bitcoin's actual speed limitations}
+	\begin{itemize}
+		\item \textbf{Transaction throughput}: \approx7 transactions per second
+		\item Limited by:
+		      \begin{itemize}
+			      \item Block size limit (1MB base + 3MB witness data)
+			      \item 10-minute block time (by design)
+			      \item NOT limited by block rewards or halvings
+		      \end{itemize}
+		\item These are fundamental design choices:
+		      \begin{itemize}
+			      \item Smaller blocks = easier to run full node
+			      \item Longer block time = more security per confirmation
+			      \item Trade-off: Decentralization vs. throughput
+		      \end{itemize}
+		\item Scalability solutions work around these limits (Lightning Network, sidechains)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{How difficulty target is shared}
+	\begin{itemize}
+		\item Difficulty target stored in every block header.
+		\item Adjusted every 2016 blocks (\approx2 weeks):
+		      \begin{enumerate}
+			      \item Calculate time for last 2016 blocks.
+			      \item Compare to target (2016 \times\ 10 minutes).
+			      \item Adjust proportionally:
+			            \begin{itemize}
+				            \item Too fast \rightarrow\ increase difficulty.
+				            \item Too slow \rightarrow\ decrease difficulty.
+			            \end{itemize}
+		      \end{enumerate}
+		\item New difficulty propagates as part of block 2016, 4032, etc.
+		\item All nodes calculate same adjustment \rightarrow\ consensus on difficulty.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{No central coordination needed}
+	\begin{itemize}
+		\item Bitcoin's elegant design:
+		      \begin{itemize}
+			      \item No one assigns mining tasks.
+			      \item No one distributes nonces to try.
+			      \item No one coordinates between miners.
+		      \end{itemize}
+		\item Instead:
+		      \begin{itemize}
+			      \item Latest block defines starting point.
+			      \item Difficulty target defines the challenge.
+			      \item Miners independently race to find solution.
+			      \item First to broadcast valid block wins.
+		      \end{itemize}
+		\item Network consensus emerges from simple rules + self-interest.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What happens when two miners find blocks simultaneously?}
+	\begin{itemize}
+		\item Temporary fork in the blockchain:
+		      \begin{itemize}
+			      \item Some nodes receive block A first.
+			      \item Other nodes receive block B first.
+			      \item Network is temporarily split.
+		      \end{itemize}
+		\item Resolution through the next block:
+		      \begin{itemize}
+			      \item Miners choose which block to build on.
+			      \item Next block found extends one branch.
+			      \item Longer chain becomes accepted chain.
+			      \item Orphaned block's miner loses reward.
+		      \end{itemize}
+		\item This self-resolves without central authority!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{How miners choose which block to build on}
+	\begin{itemize}
+		\item \textbf{Default behavior}: Build on first valid block received
+		      \begin{itemize}
+			      \item Network latency determines which block arrives first
+			      \item Miner immediately starts working on next block
+			      \item No time to wait and compare options
+		      \end{itemize}
+		\item \textbf{Economic incentive}: Want to build on eventual winning chain
+		      \begin{itemize}
+			      \item Mining on orphaned chain = wasted work
+			      \item If their block extends losing chain, they lose reward too
+			      \item Rational strategy: Follow majority
+		      \end{itemize}
+		\item \textbf{Switching chains}:
+		      \begin{itemize}
+			      \item If alternative chain becomes longer, switch immediately
+			      \item Abandon current work and start fresh on longer chain
+			      \item This ensures convergence to single chain
+		      \end{itemize}
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{How ownership works}
@@ -204,6 +750,31 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{The UTXO Model}
+	\begin{itemize}
+		\item \textbf{UTXO}: Unspent Transaction Output
+		\item Bitcoin's approach to tracking ownership:
+		      \begin{itemize}
+			      \item No accounts or balances
+			      \item Only transaction outputs that haven't been spent
+			      \item Your ``balance'' = sum of all UTXOs you can spend
+		      \end{itemize}
+		\item How it works:
+		      \begin{itemize}
+			      \item Transactions consume entire UTXOs as inputs
+			      \item Create new UTXOs as outputs
+			      \item Change returned as new UTXO to yourself
+		      \end{itemize}
+		\item Example: You have 5 BTC UTXO, want to send 2 BTC:
+		      \begin{itemize}
+			      \item Input: 5 BTC UTXO (consumed entirely)
+			      \item Output 1: 2 BTC to recipient
+			      \item Output 2: 2.9 BTC back to you (change)
+			      \item 0.1 BTC difference = transaction fee
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{Verification process}
 	\begin{itemize}
 		\item To verify a transaction, nodes check:
@@ -221,7 +792,7 @@
 	\end{itemize}
 \end{frame}
 
-\subsection{Solving double-spending}
+\subsection{Solving Double-Spending}
 
 \begin{frame}{The double-spending verification problem}
 	\begin{itemize}
@@ -299,65 +870,13 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Proof-of-work: the key innovation}
-	\begin{itemize}
-		\item Based on Adam Back's Hashcash (1997).
-		\item Core idea: Make block creation computationally expensive.
-		\item Process:
-		      \begin{itemize}
-			      \item Find a nonce value.
-			      \item When hashed with block data, result must have specific pattern.
-			      \item Pattern: Hash must start with certain number of zeros.
-		      \end{itemize}
-		\item Example: Find nonce where \func{sha256}{\texttt{blockData \| nonce}} starts with \texttt{0000}\ldots
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{How proof-of-work works}
-	\begin{itemize}
-		\item The mining process:
-		      \begin{enumerate}
-			      \item Collect pending transactions into block.
-			      \item Add block header (previous hash, timestamp, etc.).
-			      \item Try nonce = 0, compute hash.
-			      \item If hash doesn't match pattern, increment nonce, repeat.
-			      \item Continue until valid hash found.
-		      \end{enumerate}
-		\item Properties:
-		      \begin{itemize}
-			      \item Hard to find (requires many attempts).
-			      \item Easy to verify (single hash computation).
-			      \item Probabilistic: can't predict how long it will take.
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Why GPU mining farms exist}
-	\begin{itemize}
-		\item CPUs designed for general-purpose computation:
-		      \begin{itemize}
-			      \item Few cores optimized for complex sequential tasks.
-			      \item Large caches, branch prediction, out-of-order execution.
-			      \item Typically 4-16 cores in consumer CPUs.
-		      \end{itemize}
-		\item GPUs designed for parallel computation:
-		      \begin{itemize}
-			      \item Thousands of simple cores.
-			      \item Optimized for same operation on many data points.
-			      \item Perfect for hash computations (try many nonces in parallel).
-			      \item Modern GPUs: 10,000+ cores, 100x+ faster than CPU for mining.
-		      \end{itemize}
-		\item Result: Industrial-scale GPU farms dominate Bitcoin mining.
-	\end{itemize}
-\end{frame}
-
 \begin{frame}{Difficulty and computational cost}
 	\begin{itemize}
 		\item Required zeros determine difficulty:
 		      \begin{itemize}
 			      \item Each additional zero bit doubles the work.
-			      \item 4 zeros: ~16 attempts on average.
-			      \item 20 zeros: ~1 million attempts.
+			      \item 4 zeros: \approx16 attempts on average.
+			      \item 20 zeros: \approx1 million attempts.
 			      \item 76 zeros: current Bitcoin difficulty!
 		      \end{itemize}
 		\item Work required grows exponentially with zeros.
@@ -446,20 +965,6 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Why proof-of-work matters}
-	\begin{itemize}
-		\item Solves Byzantine Generals Problem without pre-existing trust.
-		\item Creates unforgeable costliness:
-		      \begin{itemize}
-			      \item Real resources (electricity, hardware) consumed.
-			      \item Can't fake the work done.
-			      \item Cost makes attacks expensive.
-		      \end{itemize}
-		\item Enables truly decentralized consensus.
-		\item Trade-off: Security through energy expenditure.
-	\end{itemize}
-\end{frame}
-
 \begin{frame}{The scalability challenge}
 	\begin{itemize}
 		\item Bitcoin blocks contain many transactions (typically 1000-3000).
@@ -470,7 +975,7 @@
 	\end{itemize}
 \end{frame}
 
-\subsection{Merkle trees}
+\subsection{Merkle Trees}
 
 \begin{frame}{What is a Merkle tree?}
 	\begin{itemize}
@@ -586,7 +1091,7 @@
 			      \item Compare with known Merkle root.
 		      \end{enumerate}
 		\item Path length: $\log_2(n)$ for $n$ transactions.
-		\item Example: 1000 transactions need only ~10 hashes.
+		\item Example: 1000 transactions need only \approx10 hashes.
 	\end{itemize}
 \end{frame}
 
@@ -636,7 +1141,7 @@
 			      \item Compute Root = \func{hash}{H0123 \| H4567}
 			      \item Check if computed root matches block header
 		      \end{enumerate}
-		\item Total data needed: ~100 bytes instead of entire block (~1MB)
+		\item Total data needed: \approx100 bytes instead of entire block (\approx1MB)
 	\end{itemize}
 \end{frame}
 
@@ -650,8 +1155,8 @@
 		      \end{itemize}
 		\item Storage requirement:
 		      \begin{itemize}
-			      \item Full node: ~500GB (all transactions)
-			      \item SPV client: ~60MB (headers only)
+			      \item Full node: \approx500GB (all transactions)
+			      \item SPV client: \approx60MB (headers only)
 		      \end{itemize}
 		\item Trade-off: Trust that longest chain is valid.
 	\end{itemize}
@@ -715,22 +1220,1406 @@
 			      \item Certificate Transparency: Merkle tree of SSL certificates
 			      \item Git: Similar structure for version control
 			      \item IPFS: Content-addressed storage
+			      \item MLS (TreeKEM): As seen in our Secure Messaging topic!
 		      \end{itemize}
 		\item Key primitive for authenticated data structures.
 		\item Enables efficient cryptographic commitments at scale.
 	\end{itemize}
 \end{frame}
 
-\section{Bitcoin: More Intuitively}
+\section{Ethereum, Smart Contracts and Layer 2s}
 
-\begin{frame}{Or, looking at it more intuitively...}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-		\end{column}
-	\end{columns}
+\begin{frame}{Beyond digital cash: The limitations of Bitcoin}
+	\begin{itemize}
+		\item Bitcoin solved digital cash, but is intentionally limited:
+		      \begin{itemize}
+			      \item Script language is not Turing-complete
+			      \item Can only express simple spending conditions
+			      \item No loops, limited opcodes, minimal state
+		      \end{itemize}
+		\item What if we could do more than just payments?
+		      \begin{itemize}
+			      \item Financial contracts (loans, derivatives, escrow)
+			      \item Decentralized organizations (DAOs)
+			      \item Digital property rights
+			      \item Programmable money with complex logic
+		      \end{itemize}
+	\end{itemize}
 \end{frame}
+
+\begin{frame}{Ethereum: A world computer}
+	\begin{itemize}
+		\item Proposed by Vitalik Buterin and friends
+		\item Core insight: Blockchain + Turing-complete programming
+		      \begin{itemize}
+			      \item The blockchain would store virtual machine instructions that nodes would execute!
+			      \item These VM instructions would be compiled from a Turing-complete programming language.
+			      \item We call them ``smart contracts''.
+		      \end{itemize}
+		\item Vision: ``World computer'' that can execute any computation
+		\item Key properties:
+		      \begin{itemize}
+			      \item Decentralized like Bitcoin
+			      \item But programmable with arbitrary logic
+			      \item Global shared state machine
+			      \item Trustless code execution
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{From transactions to state transitions}
+	\begin{itemize}
+		\item Bitcoin: Transaction-based ledger
+		      \begin{itemize}
+			      \item Tracks coin ownership via UTXO model
+			      \item Transactions consume and create outputs
+			      \item Limited scripting for spending conditions
+		      \end{itemize}
+		\item Ethereum: Account-based state machine
+		      \begin{itemize}
+			      \item Every address has a state (balance, code, storage)
+			      \item Transactions trigger state transitions
+			      \item State transitions can execute arbitrary code
+			      \item Result: Programmable blockchain
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The Ethereum Virtual Machine (EVM)}
+	\begin{itemize}
+		\item Decentralized computation engine
+		\item Properties:
+		      \begin{itemize}
+			      \item Stack-based virtual machine
+			      \item 256-bit word size (matches cryptographic operations)
+			      \item Deterministic execution (same input \rightarrow\ same output)
+			      \item Isolated sandbox environment
+		      \end{itemize}
+		\item Every node runs the EVM:
+		      \begin{itemize}
+			      \item Executes smart contract code
+			      \item Updates global state
+			      \item Ensures consensus on computation results
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Accounts in Ethereum}
+	\begin{itemize}
+		\item Two types of accounts:
+		      \begin{itemize}
+			      \item \textbf{Externally Owned Accounts (EOAs)}:
+			            \begin{itemize}
+				            \item Controlled by private keys
+				            \item Can initiate transactions
+				            \item Like Bitcoin addresses
+			            \end{itemize}
+			      \item \textbf{Contract Accounts}:
+			            \begin{itemize}
+				            \item Controlled by code
+				            \item Have associated bytecode
+				            \item Can store persistent data
+				            \item Can't initiate transactions
+			            \end{itemize}
+		      \end{itemize}
+		\item Both can hold ETH and interact with other accounts
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The gas mechanism}
+	\begin{itemize}
+		\item Problem: How to prevent infinite loops and spam?
+		\item Solution: ``Gas'' - computational fuel
+		\item How it works:
+		      \begin{itemize}
+			      \item Every operation costs gas (ADD: 3, MUL: 5, SSTORE: 20,000)
+			      \item Users specify gas limit and gas price
+			      \item Transaction fee = gas used × gas price
+			      \item If gas runs out, transaction reverts
+		      \end{itemize}
+		\item Benefits:
+		      \begin{itemize}
+			      \item Halting problem solved economically
+			      \item DoS protection
+			      \item Fair resource pricing
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{State storage in Ethereum}
+	\begin{itemize}
+		\item Each account has:
+		      \begin{itemize}
+			      \item \textbf{Nonce}: Transaction counter (replay protection)
+			      \item \textbf{Balance}: Amount of ETH
+			      \item \textbf{Code}: Contract bytecode (if contract account)
+			      \item \textbf{Storage}: Key-value store (if contract account)
+		      \end{itemize}
+		\item Storage is persistent:
+		      \begin{itemize}
+			      \item Survives between transactions
+			      \item 256-bit keys \rightarrow\ 256-bit values
+			      \item Expensive to write (20,000 gas)
+			      \item Cheap to read (200 gas)
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Ethereum's Merkle Patricia Trie}
+	\begin{itemize}
+		\item Bitcoin uses Merkle trees for transactions only
+		\item Ethereum needs to store entire state efficiently
+		\item Solution: Modified Merkle Patricia Trie
+		      \begin{itemize}
+			      \item Combines trie structure with Merkle proofs
+			      \item Efficient updates (only change affected path)
+			      \item Compact storage (shared prefixes)
+			      \item Cryptographic proofs of state
+		      \end{itemize}
+		\item Enables light clients to verify account states
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Transaction types in Ethereum}
+	\begin{itemize}
+		\item \textbf{Simple transfer}: Send ETH between accounts
+		\item \textbf{Contract creation}: Deploy new smart contract
+		      \begin{itemize}
+			      \item Transaction data contains contract bytecode
+			      \item Creates new contract account at computed address
+		      \end{itemize}
+		\item \textbf{Contract interaction}: Call smart contract function
+		      \begin{itemize}
+			      \item Transaction data contains function selector + arguments
+			      \item Triggers code execution in EVM
+		      \end{itemize}
+		\item All require gas and can transfer ETH
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The blockchain trilemma}
+	\begin{itemize}
+		\item Three desirable properties:
+		      \begin{itemize}
+			      \item \textbf{Decentralization}: Many independent validators
+			      \item \textbf{Security}: Resistant to attacks
+			      \item \textbf{Scalability}: High transaction throughput
+		      \end{itemize}
+		\item The trilemma: Hard to achieve all three
+		\item Bitcoin's choice: Decentralization + Security
+		\item Early Ethereum: Same choice, but worse scalability
+		      \begin{itemize}
+			      \item More complex state transitions
+			      \item Larger state size
+			      \item Result: \approx15 transactions per second
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Ethereum's evolution: From PoW to PoS}
+	\begin{itemize}
+		\item Originally used Proof-of-Work like Bitcoin
+		\item September 2022: ``The Merge'' to Proof-of-Stake
+		\item Proof-of-Stake mechanism:
+		      \begin{itemize}
+			      \item Validators ``stake'' 32 ETH as collateral
+			      \item Selected randomly to propose blocks
+			      \item Misbehavior results in ``slashing'' (losing stake)
+			      \item No mining, drastically lower energy use
+		      \end{itemize}
+		\item Benefits:
+		      \begin{itemize}
+			      \item 99.95\% reduction in energy consumption
+			      \item Better finality guarantees
+			      \item Foundation for future scaling
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why Ethereum matters}
+	\begin{itemize}
+		\item Enabled entirely new applications:
+		      \begin{itemize}
+			      \item \textbf{DeFi}: Decentralized finance (\approx\$50B locked)
+			      \item \textbf{NFTs}: Digital ownership and art (depending on your perspective)
+			      \item \textbf{DAOs}: Decentralized autonomous organizations
+			      \item \textbf{Stablecoins}: Crypto-native stable currencies
+		      \end{itemize}
+		\item Inspired countless innovations:
+		      \begin{itemize}
+			      \item Alternative Layer 1 blockchains
+			      \item Layer 2 scaling solutions
+			      \item Cross-chain bridges
+			      \item Zero-knowledge applications
+		      \end{itemize}
+		\item Created a platform for permissionless innovation
+	\end{itemize}
+\end{frame}
+
+\subsection{Proof of Stake}
+
+\begin{frame}{What is Proof of Stake?}
+	\begin{itemize}
+		\item Alternative consensus mechanism to Proof of Work
+		\item Instead of computational power, uses economic stake
+		\item Core concept:
+		      \begin{itemize}
+			      \item Validators lock up cryptocurrency as collateral
+			      \item Selected to create blocks based on stake size
+			      \item Misbehavior punished by losing stake (``slashing'')
+			      \item No mining or energy-intensive computations
+		      \end{itemize}
+		\item ``Skin in the game'' security model
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{How Proof of Stake works}
+	\begin{itemize}
+		\item \textbf{Becoming a validator}:
+		      \begin{itemize}
+			      \item Deposit required stake (32 ETH for Ethereum)
+			      \item Run validator software
+			      \item Stay online and participate honestly
+		      \end{itemize}
+		\item \textbf{Block production}:
+		      \begin{itemize}
+			      \item Validators randomly selected to propose blocks
+			      \item Selection weighted by stake amount
+			      \item Other validators attest to block validity
+			      \item Consensus reached through attestations
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Ethereum's long road to PoS}
+	\begin{itemize}
+		\item 2014: PoS mentioned in Ethereum whitepaper
+		\item 2015-2020: Research and development
+		      \begin{itemize}
+			      \item Solving ``nothing at stake'' problem
+			      \item Designing slashing conditions
+			      \item Finality mechanisms (Casper FFG)
+			      \item Fork choice rules (LMD-GHOST)
+		      \end{itemize}
+		\item December 2020: Beacon Chain launches
+		      \begin{itemize}
+			      \item PoS chain running parallel to PoW
+			      \item Validators start staking
+			      \item No transactions yet, just consensus
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The Merge: Technical achievement}
+	\begin{itemize}
+		\item September 15, 2022: The Merge executed
+		\item Unprecedented technical feat:
+		      \begin{itemize}
+			      \item Swapped consensus engine while running
+			      \item Like ``changing jet engine mid-flight''
+			      \item Zero downtime
+			      \item \$200B+ value at stake
+		      \end{itemize}
+		\item Two chains became one:
+		      \begin{itemize}
+			      \item Execution layer (former PoW chain)
+			      \item Consensus layer (Beacon Chain)
+			      \item Seamless transition at block 15,537,394
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why the switch mattered: Environmental impact}
+	\begin{itemize}
+		\item \textbf{Energy reduction}: 99.95\% decrease
+		      \begin{itemize}
+			      \item Before: \approx78 TWh/year (Austria's consumption)
+			      \item After: \approx0.01 TWh/year
+			      \item From 13,000 US households to 10 households equivalent
+		      \end{itemize}
+		\item \textbf{Carbon footprint}:
+		      \begin{itemize}
+			      \item Eliminated \approx11 million tons CO2/year
+			      \item Equivalent to removing 2.4 million cars
+		      \end{itemize}
+		\item Made Ethereum environmentally sustainable
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why the switch mattered: Security model}
+	\begin{itemize}
+		\item \textbf{Economic security}:
+		      \begin{itemize}
+			      \item \approx\$40B worth of ETH staked
+			      \item Attack cost: Need 51\% of stake
+			      \item Attackers lose their stake if caught
+		      \end{itemize}
+		\item \textbf{Better finality}:
+		      \begin{itemize}
+			      \item Blocks become ``finalized'' after 2 epochs (\approx13 minutes)
+			      \item Finalized blocks cannot be reverted
+			      \item Stronger guarantees than probabilistic PoW finality
+		      \end{itemize}
+		\item \textbf{Slashing conditions}:
+		      \begin{itemize}
+			      \item Double signing: Lose stake
+			      \item Being offline: Gradual penalties
+			      \item Censorship: Future slashing conditions planned
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Validator economics}
+	\begin{itemize}
+		\item \textbf{Rewards}:
+		      \begin{itemize}
+			      \item Block proposals: \approx0.05 ETH per block
+			      \item Attestations: Small continuous rewards
+			      \item MEV tips: Additional profits from transaction ordering
+			      \item Annual yield: \approx4-5\% currently
+		      \end{itemize}
+		\item \textbf{Penalties}:
+		      \begin{itemize}
+			      \item Offline penalties: Small, proportional to downtime
+			      \item Slashing: 1 ETH minimum + ejection
+			      \item Correlated slashing: Up to 100\% of stake
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Results: Network statistics}
+	\begin{itemize}
+		\item \textbf{Validator participation}:
+		      \begin{itemize}
+			      \item Over 900,000 active validators
+			      \item \approx30 million ETH staked (25\% of supply)
+			      \item Distributed across 7,000+ unique entities
+			      \item 99.9\%+ network uptime maintained
+		      \end{itemize}
+		\item \textbf{Performance improvements}:
+		      \begin{itemize}
+			      \item Block time: Consistent 12 seconds
+			      \item Finality: 13 minutes (vs never in PoW)
+			      \item Predictable block production
+			      \item Lower fee volatility
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Results: Ecosystem impact}
+	\begin{itemize}
+		\item \textbf{Staking services emerged}:
+		      \begin{itemize}
+			      \item Liquid staking protocols (Lido, Rocket Pool)
+			      \item Institutional staking services
+			      \item Distributed validator technology
+		      \end{itemize}
+		\item \textbf{New economic dynamics}:
+		      \begin{itemize}
+			      \item ETH became yield-bearing asset
+			      \item Staking derivatives (stETH) as DeFi collateral
+			      \item MEV markets formalized
+		      \end{itemize}
+		\item \textbf{Development velocity}:
+		      \begin{itemize}
+			      \item Faster protocol upgrades possible
+			      \item Foundation for future scaling (sharding)
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Criticisms and trade-offs}
+	\begin{itemize}
+		\item \textbf{Centralization concerns}:
+		      \begin{itemize}
+			      \item 32 ETH requirement excludes many users
+			      \item Liquid staking protocols control large stakes
+			      \item Economies of scale favor large operators
+		      \end{itemize}
+		\item \textbf{Complexity}:
+		      \begin{itemize}
+			      \item More complex than PoW conceptually
+			      \item Harder to reason about security
+			      \item Requires active participation
+		      \end{itemize}
+		\item \textbf{New attack vectors}:
+		      \begin{itemize}
+			      \item MEV exploitation
+			      \item Stake grinding attacks
+			      \item Social layer attacks
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Future developments}
+	\begin{itemize}
+		\item \textbf{Protocol improvements}:
+		      \begin{itemize}
+			      \item Single slot finality (seconds vs minutes)
+			      \item Distributed validator technology standard
+			      \item Anti-correlation penalties
+			      \item Secret leader election
+		      \end{itemize}
+		\item \textbf{Scaling benefits}:
+		      \begin{itemize}
+			      \item Enables data availability sampling
+			      \item Foundation for sharding
+			      \item Better light client support
+		      \end{itemize}
+		\item \textbf{Broader adoption}:
+		      \begin{itemize}
+			      \item Many chains following Ethereum's lead
+			      \item PoS becoming dominant consensus mechanism
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\subsection{Smart Contracts}
+
+\begin{frame}{What are smart contracts?}
+	\begin{itemize}
+		\item Self-executing code deployed on blockchain
+		\item Key properties:
+		      \begin{itemize}
+			      \item \textbf{Immutable}: Code cannot be changed after deployment
+			      \item \textbf{Deterministic}: Same input always produces same output
+			      \item \textbf{Autonomous}: Execute without intermediaries
+			      \item \textbf{Transparent}: Code is public and verifiable
+		      \end{itemize}
+		\item Not really ``smart'' or legal ``contracts''
+		      \begin{itemize}
+			      \item Better term: Persistent scripts
+			      \item But ``smart contracts'' name stuck
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{From vending machines to world computer}
+	\begin{itemize}
+		\item Nick Szabo's vending machine analogy (1997):
+		      \begin{itemize}
+			      \item Insert coin \rightarrow\ get product
+			      \item No human intermediary needed
+			      \item Rules encoded in mechanism
+		      \end{itemize}
+		\item Smart contracts extend this concept:
+		      \begin{itemize}
+			      \item Arbitrary complex logic
+			      \item Multiple parties
+			      \item Conditional execution
+			      \item Automatic enforcement
+		      \end{itemize}
+		\item Examples: Escrow, auctions, loans, insurance, governance
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{How smart contracts work}
+	\begin{itemize}
+		\item \textbf{Deployment}:
+		      \begin{enumerate}
+			      \item Write contract code (usually Solidity)
+			      \item Compile to EVM bytecode
+			      \item Send deployment transaction
+			      \item Contract gets unique address
+		      \end{enumerate}
+		\item \textbf{Interaction}:
+		      \begin{enumerate}
+			      \item Users send transactions to contract address
+			      \item Transaction includes function call + parameters
+			      \item All nodes execute the code
+			      \item State changes recorded on blockchain
+		      \end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Contract lifecycle}
+	\begin{itemize}
+		\item \textbf{Birth}: Contract deployed to blockchain
+		      \begin{itemize}
+			      \item Constructor runs once
+			      \item Initial state set
+			      \item Address determined by deployer + nonce
+		      \end{itemize}
+		\item \textbf{Life}: Users interact with contract
+		      \begin{itemize}
+			      \item Functions called via transactions
+			      \item State updated
+			      \item Events emitted
+		      \end{itemize}
+		\item \textbf{Death} (optional): Contract self-destructs
+		      \begin{itemize}
+			      \item \texttt{selfdestruct} opcode (deprecated)
+			      \item Sends remaining ETH to specified address
+			      \item Contract code removed
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Solidity: The language of smart contracts}
+	\begin{itemize}
+		\item High-level language for EVM
+		\item Created by Gavin Wood (Ethereum co-founder)
+		\item Design influences:
+		      \begin{itemize}
+			      \item JavaScript (syntax)
+			      \item C++ (types)
+			      \item Python (modifiers)
+		      \end{itemize}
+		\item Statically typed, supports:
+		      \begin{itemize}
+			      \item Inheritance
+			      \item Libraries
+			      \item Complex types
+			      \item Inline assembly
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Your first smart contract}
+	\begin{verbatim}
+pragma solidity ^0.8.0;
+contract SimpleStorage {
+    uint256 public storedNumber;
+    function store(uint256 _number) public {
+        storedNumber = _number;
+    }
+    function retrieve() public view returns (uint256) {
+        return storedNumber;
+    }
+}
+ \end{verbatim}
+\end{frame}
+
+\begin{frame}{Anatomy of a Solidity contract}
+	\begin{itemize}
+		\item \textbf{Pragma}: Compiler version requirement
+		\item \textbf{Contract keyword}: Defines contract scope
+		\item \textbf{State variables}: Persistent storage
+		\item \textbf{Functions}: Contract behavior
+		\item \textbf{Visibility modifiers}:
+		      \begin{itemize}
+			      \item \texttt{public}: Callable by anyone
+			      \item \texttt{private}: Only within contract
+			      \item \texttt{internal}: Within contract + inherited
+			      \item \texttt{external}: Only from outside
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{State mutability and gas optimization}
+	\begin{itemize}
+		\item Function modifiers indicate state access:
+		      \begin{itemize}
+			      \item \texttt{view}: Reads state, no modifications
+			      \item \texttt{pure}: No state access at all
+			      \item (default): Can modify state
+		      \end{itemize}
+		\item Why this matters:
+		      \begin{itemize}
+			      \item \texttt{view}/\texttt{pure} functions free when called externally
+			      \item State modifications cost gas
+			      \item Compiler can optimize based on mutability
+		      \end{itemize}
+		\item Best practice: Use most restrictive modifier possible
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{A more realistic example: Simple token}
+	\scriptsize
+	\begin{verbatim}
+contract SimpleToken {
+    mapping(address => uint256) public balances;
+    uint256 public totalSupply;
+
+    constructor(uint256 _initialSupply) {
+        balances[msg.sender] = _initialSupply;
+        totalSupply = _initialSupply;
+    }
+
+    function transfer(address _to, uint256 _amount)
+        public returns (bool) {
+        require(balances[msg.sender] >= _amount);
+        balances[msg.sender] -= _amount;
+        balances[_to] += _amount;
+        return true;
+    }
+}
+\end{verbatim}
+\end{frame}
+
+\begin{frame}{Key Solidity concepts}
+	\begin{itemize}
+		\item \textbf{\texttt{msg.sender}}: Address calling the function
+		\item \textbf{Mappings}: Key-value storage (like hash tables)
+		\item \textbf{Constructor}: Runs once at deployment
+		\item \textbf{\texttt{require()}}: Reverts transaction if condition false
+		\item \textbf{State changes}: Automatic and persistent
+		\item Transaction atomicity: All or nothing execution
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The magic of \texttt{msg.sender}}
+	\begin{itemize}
+		\item Every function call has context:
+		      \begin{itemize}
+			      \item \texttt{msg.sender}: Who called this function
+			      \item \texttt{msg.value}: ETH sent with call
+			      \item \texttt{msg.data}: Complete calldata
+			      \item \texttt{block.timestamp}: Current block time
+			      \item \texttt{block.number}: Current block height
+		      \end{itemize}
+		\item This enables:
+		      \begin{itemize}
+			      \item Authentication without passwords
+			      \item Payment handling
+			      \item Time-based logic
+			      \item Access control
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Events: The blockchain's logs}
+	\begin{itemize}
+		\item Smart contracts can emit events:
+		      \begin{itemize}
+			      \item Cheap way to store data (not in state)
+			      \item Searchable and filterable
+			      \item Used by dApps to track activity
+		      \end{itemize}
+		\item Example:
+		      \begin{verbatim}
+event Transfer(address indexed from,
+               address indexed to,
+               uint256 value);
+
+emit Transfer(msg.sender, _to, _amount);
+        \end{verbatim}
+		\item \texttt{indexed} parameters can be searched efficiently
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Contract interactions}
+	\begin{itemize}
+		\item Contracts can call other contracts:
+		      \begin{itemize}
+			      \item Direct calls: \texttt{otherContract.function()}
+			      \item Low-level calls: \texttt{address.call()}
+			      \item Delegate calls: \texttt{address.delegatecall()}
+			      \item Static calls: \texttt{address.staticcall()}
+		      \end{itemize}
+		\item Creates composability:
+		      \begin{itemize}
+			      \item DeFi ``money legos''
+			      \item Protocols built on protocols
+			      \item Complex interactions possible
+		      \end{itemize}
+		\item But also security risks...
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Smart contract security: The DAO hack}
+	\begin{itemize}
+		\item June 2016: The DAO (Decentralized Autonomous Organization)
+		\item Raised \$150M worth of ETH
+		\item Reentrancy vulnerability exploited:
+		      \begin{enumerate}
+			      \item Attacker calls withdraw function
+			      \item Contract sends ETH before updating balance
+			      \item Receiving contract calls back into withdraw
+			      \item Balance not yet updated, withdrawal succeeds again
+			      \item Repeat until drained
+		      \end{enumerate}
+		\item Result: \$60M stolen, Ethereum hard fork
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Reentrancy vulnerability example}
+	\begin{verbatim}
+// VULNERABLE CODE - DO NOT USE
+contract Vulnerable {
+    mapping(address => uint) balances;
+    function withdraw() public {
+        uint balance = balances[msg.sender];
+        // External call BEFORE state update
+        (bool success,) = msg.sender.call{value: balance}("");
+        require(success);
+        // State update happens AFTER external call
+        balances[msg.sender] = 0;
+    }
+}
+ \end{verbatim}
+\end{frame}
+
+\begin{frame}{Common smart contract vulnerabilities}
+	\begin{itemize}
+		\item \textbf{Reentrancy}: External calls before state updates
+		\item \textbf{Integer overflow/underflow}: Fixed in Solidity 0.8+
+		\item \textbf{Access control}: Missing permission checks
+		\item \textbf{Front-running}: Transaction order manipulation
+		\item \textbf{Gas griefing}: Forcing out-of-gas errors
+		\item \textbf{Timestamp dependence}: Miners can manipulate
+		\item \textbf{Unchecked return values}: Silent failures
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Security best practices}
+	\begin{itemize}
+		\item \textbf{Checks-Effects-Interactions pattern}:
+		      \begin{enumerate}
+			      \item Check conditions (require statements)
+			      \item Update state (effects)
+			      \item External calls (interactions) last
+		      \end{enumerate}
+		\item \textbf{Use established patterns}:
+		      \begin{itemize}
+			      \item OpenZeppelin contracts
+			      \item Pull over push payments
+			      \item Reentrancy guards
+		      \end{itemize}
+		\item \textbf{Testing and auditing}:
+		      \begin{itemize}
+			      \item Comprehensive test suites
+			      \item Formal verification
+			      \item Professional audits
+			      \item Bug bounties
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The immutability dilemma}
+	\begin{itemize}
+		\item Code is law... but what if code has bugs?
+		\item Upgradeability patterns emerged:
+		      \begin{itemize}
+			      \item \textbf{Proxy patterns}: Logic/storage separation
+			      \item \textbf{Diamond pattern}: Multiple implementation contracts
+			      \item \textbf{Create2}: Deterministic addresses
+		      \end{itemize}
+		\item Trade-offs:
+		      \begin{itemize}
+			      \item Upgradeable = centralization risk
+			      \item Immutable = can't fix bugs
+			      \item Timelock = compromise solution
+		      \end{itemize}
+		\item Community debate continues...
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Gas optimization techniques}
+	\begin{itemize}
+		\item Storage is expensive (20,000 gas to store)
+		      \begin{itemize}
+			      \item Pack structs efficiently
+			      \item Use events for logs, not storage
+			      \item Delete unused storage
+		      \end{itemize}
+		\item Computation tips:
+		      \begin{itemize}
+			      \item Use \texttt{unchecked} blocks when safe
+			      \item Short-circuit conditions
+			      \item Batch operations
+		      \end{itemize}
+		\item Design patterns:
+		      \begin{itemize}
+			      \item Merkle proofs instead of storing lists
+			      \item IPFS for large data
+			      \item Off-chain computation, on-chain verification
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Real-world smart contract applications}
+	\begin{itemize}
+		\item \textbf{DeFi protocols}:
+		      \begin{itemize}
+			      \item Uniswap: Automated market maker
+			      \item Aave: Lending and borrowing
+			      \item MakerDAO: Stablecoin system
+		      \end{itemize}
+		\item \textbf{NFT standards}:
+		      \begin{itemize}
+			      \item ERC-721: Non-fungible tokens
+			      \item ERC-1155: Multi-token standard
+		      \end{itemize}
+		\item \textbf{Infrastructure}:
+		      \begin{itemize}
+			      \item ENS: Ethereum Name Service
+			      \item Gnosis Safe: Multi-signature wallets
+			      \item Chainlink: Oracle networks
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Development tools and ecosystem}
+	\begin{itemize}
+		\item \textbf{Development frameworks}:
+		      \begin{itemize}
+			      \item Hardhat: Testing and deployment
+			      \item Foundry: Fast, Rust-based toolkit
+			      \item Truffle: Original framework
+		      \end{itemize}
+		\item \textbf{Testing tools}:
+		      \begin{itemize}
+			      \item Fuzzing frameworks
+			      \item Property-based testing
+			      \item Fork testing against mainnet
+		      \end{itemize}
+		\item \textbf{Security tools}:
+		      \begin{itemize}
+			      \item Slither: Static analysis
+			      \item Mythril: Symbolic execution
+			      \item Echidna: Smart fuzzer
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The future of smart contracts}
+	\begin{itemize}
+		\item \textbf{Language evolution}:
+		      \begin{itemize}
+			      \item Move (Aptos/Sui): Resource-oriented
+			      \item Vyper: Python-like, security-focused
+			      \item Fe: Rust-inspired for EVM
+			      \item Cairo: For STARK-based systems
+		      \end{itemize}
+		\item \textbf{Cross-chain contracts}:
+		      \begin{itemize}
+			      \item Bridge protocols
+			      \item Interoperability standards
+			      \item Multi-chain applications
+		      \end{itemize}
+		\item \textbf{Zero-knowledge integration}:
+		      \begin{itemize}
+			      \item Private smart contracts
+			      \item Efficient verification
+			      \item New application possibilities
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\subsection{Layer 1s vs. Layer 2s}
+
+\begin{frame}{The scaling problem}
+	\begin{itemize}
+		\item Ethereum processes \approx15 transactions per second
+		\item Visa processes \approx65,000 transactions per second
+		\item The gap: 4,000x
+		\item Why so slow?
+		      \begin{itemize}
+			      \item Every node processes every transaction
+			      \item Every node stores entire state
+			      \item Decentralization requires broad participation
+			      \item Can't just use bigger servers
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Layer 1 vs Layer 2: Definitions}
+	\begin{itemize}
+		\item \textbf{Layer 1 (L1)}: The base blockchain
+		      \begin{itemize}
+			      \item Bitcoin, Ethereum mainnet
+			      \item Handles consensus and security
+			      \item Final settlement layer
+			      \item Limited throughput by design
+		      \end{itemize}
+		\item \textbf{Layer 2 (L2)}: Built on top of L1
+		      \begin{itemize}
+			      \item Inherits security from L1
+			      \item Processes transactions off-chain
+			      \item Periodically settles to L1
+			      \item Can achieve much higher throughput
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The Layer 2 insight}
+	\begin{itemize}
+		\item Key realization: Not every node needs to execute every transaction
+		\item Instead:
+		      \begin{itemize}
+			      \item Execute transactions elsewhere
+			      \item Post compressed results to L1
+			      \item Provide cryptographic proofs of correctness
+			      \item L1 validates proofs, not transactions
+		      \end{itemize}
+		\item Benefits:
+		      \begin{itemize}
+			      \item Inherit L1 security
+			      \item Dramatically lower costs
+			      \item Much higher throughput
+			      \item Specialized execution environments
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Types of Layer 2 solutions}
+	\begin{itemize}
+		\item \textbf{State Channels}
+		      \begin{itemize}
+			      \item Oldest L2 concept (Lightning Network)
+			      \item Off-chain transactions between fixed parties
+		      \end{itemize}
+		\item \textbf{Sidechains}
+		      \begin{itemize}
+			      \item Independent blockchains with bridges
+			      \item Own consensus mechanism
+		      \end{itemize}
+		\item \textbf{Plasma}
+		      \begin{itemize}
+			      \item Child chains with fraud proofs
+			      \item Largely abandoned due to UX issues
+		      \end{itemize}
+		\item \textbf{Rollups}
+		      \begin{itemize}
+			      \item Current dominant approach
+			      \item Two main types: Optimistic and ZK
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{State channels: Lightning Network}
+	\begin{itemize}
+		\item Bitcoin's Layer 2 solution
+		\item How it works:
+		      \begin{itemize}
+			      \item Two parties lock funds in multi-sig
+			      \item Exchange signed transactions off-chain
+			      \item Only final state posted to blockchain
+		      \end{itemize}
+		\item Advantages:
+		      \begin{itemize}
+			      \item Instant transactions
+			      \item Minimal fees
+			      \item High privacy
+		      \end{itemize}
+		\item Limitations:
+		      \begin{itemize}
+			      \item Need channel with counterparty
+			      \item Capital locked in channels
+			      \item Limited to payments
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Sidechains: Polygon PoS}
+	\begin{itemize}
+		\item Separate blockchain with bridge to Ethereum
+		\item Architecture:
+		      \begin{itemize}
+			      \item Own validator set (100 validators)
+			      \item Modified Proof of Stake consensus
+			      \item Checkpoints to Ethereum periodically
+		      \end{itemize}
+		\item Trade-offs:
+		      \begin{itemize}
+			      \item \mycheckmark\ High throughput (65,000 TPS theoretical)
+			      \item \mycheckmark\ Low fees (\approx\$0.01 per transaction)
+			      \item \times\ Weaker security (own validator set)
+			      \item \times\ Bridge risk (wrapped assets)
+		      \end{itemize}
+		\item \$2B+ total value locked
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The rollup revolution}
+	\begin{itemize}
+		\item Core idea: Computation off-chain, data on-chain
+		\item All transactions posted to L1 (compressed)
+		\item Anyone can reconstruct full state
+		\item Two approaches to ensure correctness:
+		      \begin{itemize}
+			      \item \textbf{Optimistic}: Assume correct, allow challenges
+			      \item \textbf{Zero-knowledge}: Provide cryptographic proofs
+		      \end{itemize}
+		\item Currently processing more transactions than Ethereum L1
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Optimistic rollups: How they work}
+	\begin{itemize}
+		\item ``Optimistic'' = assume transactions are valid
+		\item Fraud proof mechanism:
+		      \begin{enumerate}
+			      \item Sequencer posts state root to L1
+			      \item 7-day challenge period
+			      \item Anyone can challenge with fraud proof
+			      \item If fraud proven, sequencer loses bond
+		      \end{enumerate}
+		\item State posted to L1 as calldata
+		\item Full nodes execute all transactions
+		\item Users trust either by running node or 1-of-N assumption
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Optimistic rollups: Arbitrum}
+	\begin{itemize}
+		\item Largest optimistic rollup by TVL (\approx\$15B)
+		\item Technical design:
+		      \begin{itemize}
+			      \item Interactive fraud proofs (multi-round)
+			      \item AVM: Custom virtual machine
+			      \item Nitro upgrade: WASM-based execution
+		      \end{itemize}
+		\item Performance:
+		      \begin{itemize}
+			      \item \approx40,000 TPS capacity
+			      \item \approx\$0.10-0.50 per transaction
+			      \item 7-day withdrawal period
+		      \end{itemize}
+		\item ``EVM equivalent'' - easy to port dApps
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Optimistic rollups: Optimism}
+	\begin{itemize}
+		\item Second largest optimistic rollup (\approx\$7B TVL)
+		\item Technical differences from Arbitrum:
+		      \begin{itemize}
+			      \item Single-round fraud proofs
+			      \item Cannon: Fault proof system using MIPS
+			      \item Bedrock: Modular architecture
+		      \end{itemize}
+		\item Innovations:
+		      \begin{itemize}
+			      \item OP Stack: Framework for building L2s
+			      \item Superchain vision: Network of L2s
+			      \item Retroactive public goods funding
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{ZK rollups: The endgame?}
+	\begin{itemize}
+		\item Use zero-knowledge proofs for validity
+		\item Every state transition includes proof
+		\item No need for challenge period
+		\item Benefits:
+		      \begin{itemize}
+			      \item Instant finality (no 7-day wait)
+			      \item Better capital efficiency
+			      \item Lower long-term costs
+			      \item No need to trust sequencer
+		      \end{itemize}
+		\item Challenges:
+		      \begin{itemize}
+			      \item Complex to build
+			      \item Expensive to generate proofs
+			      \item Harder to achieve EVM compatibility
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{ZK rollups: Technical approaches}
+	\begin{itemize}
+		\item Two main proof systems:
+		\item \textbf{SNARKs} (Succinct Non-interactive Arguments of Knowledge)
+		      \begin{itemize}
+			      \item Smaller proofs (\approx200 bytes)
+			      \item Requires trusted setup
+			      \item Faster verification
+		      \end{itemize}
+		\item \textbf{STARKs} (Scalable Transparent Arguments of Knowledge)
+		      \begin{itemize}
+			      \item Larger proofs (\approx100 KB)
+			      \item No trusted setup
+			      \item Post-quantum secure
+			      \item Better for complex computations
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{ZK rollup example: zkSync Era}
+	\begin{itemize}
+		\item First ZK rollup to achieve ``EVM compatibility''
+		\item Architecture:
+		      \begin{itemize}
+			      \item Custom VM with different opcodes
+			      \item Solidity/Vyper compiler for their VM
+			      \item SNARK proofs (Plonk)
+			      \item State diffs instead of transaction data
+		      \end{itemize}
+		\item Innovations:
+		      \begin{itemize}
+			      \item Account abstraction native
+			      \item Paymasters (gasless transactions)
+			      \item \approx2,000 TPS current capacity
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{ZK rollup example: StarkNet}
+	\begin{itemize}
+		\item Built by StarkWare using STARKs
+		\item Unique approach:
+		      \begin{itemize}
+			      \item Cairo: Custom programming language
+			      \item Not EVM compatible by design
+			      \item Built for proof efficiency
+		      \end{itemize}
+		\item Features:
+		      \begin{itemize}
+			      \item Native account abstraction
+			      \item Fractal scaling (L3s possible)
+			      \item Volition: Choose between rollup/validium
+		      \end{itemize}
+		\item Trade-off: Better performance, harder adoption
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{ZK rollup example: Polygon zkEVM}
+	\begin{itemize}
+		\item ``True'' EVM equivalence approach
+		\item Technical design:
+		      \begin{itemize}
+			      \item Proves actual EVM execution
+			      \item No custom VM or language
+			      \item Uses combination of STARK + SNARK
+		      \end{itemize}
+		\item Benefits:
+		      \begin{itemize}
+			      \item Perfect compatibility
+			      \item No code changes needed
+			      \item Existing tools work
+		      \end{itemize}
+		\item Cost: More expensive proofs
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The data availability problem}
+	\begin{itemize}
+		\item Rollups post data to Ethereum
+		\item But Ethereum calldata is expensive
+		\item Cost breakdown for rollup transaction:
+		      \begin{itemize}
+			      \item \approx90\%: L1 data costs
+			      \item \approx10\%: L2 execution costs
+		      \end{itemize}
+		\item Solutions emerging:
+		      \begin{itemize}
+			      \item EIP-4844 ``Proto-Danksharding'': Blob space
+			      \item Validiums: Data off-chain
+			      \item Alternative DA layers
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Validiums and volitions}
+	\begin{itemize}
+		\item \textbf{Validium}: ZK rollup with off-chain data
+		      \begin{itemize}
+			      \item Only state root and proof on L1
+			      \item Data stored elsewhere (committee, IPFS)
+			      \item Much cheaper but trust assumptions
+		      \end{itemize}
+		\item \textbf{Volition}: User chooses data availability
+		      \begin{itemize}
+			      \item Rollup mode: Full security, higher cost
+			      \item Validium mode: Lower security, lower cost
+			      \item Same state tree, different guarantees
+		      \end{itemize}
+		\item Examples: StarkEx, zkPorter
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Alternative data availability}
+	\begin{itemize}
+		\item \textbf{Celestia}: Purpose-built DA blockchain
+		      \begin{itemize}
+			      \item Optimized for data availability only
+			      \item No execution, just ordered data
+			      \item Data availability sampling
+		      \end{itemize}
+		\item \textbf{EigenDA}: Ethereum staker network
+		      \begin{itemize}
+			      \item Reuses Ethereum validator set
+			      \item Slashing for data withholding
+		      \end{itemize}
+		\item Trade-offs:
+		      \begin{itemize}
+			      \item Lower cost than Ethereum
+			      \item Different security model
+			      \item Fragmented ecosystem
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Layer 2 interoperability challenges}
+	\begin{itemize}
+		\item Each L2 is its own ``island''
+		\item Moving between L2s requires:
+		      \begin{itemize}
+			      \item Withdraw to L1 (7 days for optimistic)
+			      \item Bridge to new L2
+			      \item High cost and time
+		      \end{itemize}
+		\item Solutions being developed:
+		      \begin{itemize}
+			      \item Shared sequencers
+			      \item Cross-rollup communication
+			      \item Superchains/Hyperchains
+			      \item Fast bridge protocols
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The L2 landscape (2024)}
+	\begin{itemize}
+		\item \textbf{By Total Value Locked}:
+		      \begin{itemize}
+			      \item Arbitrum: \approx\$15B
+			      \item Optimism: \approx\$7B
+			      \item Base: \approx\$5B
+			      \item Polygon zkEVM: \approx\$1B
+		      \end{itemize}
+		\item \textbf{By transaction volume}:
+		      \begin{itemize}
+			      \item L2s process 5-10x more than Ethereum L1
+			      \item Costs 10-100x lower
+		      \end{itemize}
+		\item Over 50 L2s in production or development
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Application-specific rollups}
+	\begin{itemize}
+		\item General purpose isn't always optimal
+		\item Specialized rollups emerging:
+		      \begin{itemize}
+			      \item \textbf{dYdX}: Trading-optimized chain
+			      \item \textbf{Immutable X}: NFT/gaming focused
+			      \item \textbf{Loopring}: DEX-specific rollup
+			      \item \textbf{Fuel}: Parallel execution rollup
+		      \end{itemize}
+		\item Benefits of specialization:
+		      \begin{itemize}
+			      \item Optimized VM for use case
+			      \item Better performance
+			      \item Custom features
+			      \item Predictable costs
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The rollup-centric future}
+	\begin{itemize}
+		\item Ethereum becomes ``settlement layer''
+		\item Most users interact via L2s
+		\item L1 provides:
+		      \begin{itemize}
+			      \item Security and finality
+			      \item Data availability
+			      \item Cross-rollup coordination
+		      \end{itemize}
+		\item Benefits:
+		      \begin{itemize}
+			      \item 1000x scaling potential
+			      \item Preserves decentralization
+			      \item Enables experimentation
+			      \item Maintains composability
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Beyond Layer 2: Layer 3?}
+	\begin{itemize}
+		\item Fractal scaling: L3s built on L2s
+		\item Use cases:
+		      \begin{itemize}
+			      \item Privacy-focused chains
+			      \item Application-specific chains
+			      \item Ultra-low cost chains
+			      \item Experimental features
+		      \end{itemize}
+		\item Examples:
+		      \begin{itemize}
+			      \item zkSync's hyperchains
+			      \item Arbitrum Orbit chains
+			      \item StarkNet's L3 vision
+		      \end{itemize}
+		\item Question: How many layers do we need?
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Criticisms of the L2 approach}
+	\begin{itemize}
+		\item \textbf{Fragmentation}:
+		      \begin{itemize}
+			      \item Liquidity split across chains
+			      \item Complex user experience
+			      \item Bridging risks
+		      \end{itemize}
+		\item \textbf{Centralization concerns}:
+		      \begin{itemize}
+			      \item Single sequencer (currently)
+			      \item Upgrade keys held by teams
+			      \item MEV extraction
+		      \end{itemize}
+		\item \textbf{Parasitic argument}:
+		      \begin{itemize}
+			      \item L2s capture fees from L1
+			      \item May reduce L1 security budget
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The path to decentralized L2s}
+	\begin{itemize}
+		\item Current state: ``Training wheels''
+		      \begin{itemize}
+			      \item Centralized sequencers
+			      \item Upgrade capabilities
+			      \item Emergency pause functions
+		      \end{itemize}
+		\item Roadmap to decentralization:
+		      \begin{itemize}
+			      \item Shared/decentralized sequencers
+			      \item Proof systems mature
+			      \item Remove upgrade keys
+			      \item Community governance
+		      \end{itemize}
+		\item L2Beat tracks progress with ``stages''
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why L2s matter}
+	\begin{itemize}
+		\item Enable mass adoption:
+		      \begin{itemize}
+			      \item Sub-cent transaction fees
+			      \item Fast confirmations
+			      \item Familiar user experience
+		      \end{itemize}
+		\item Preserve decentralization:
+		      \begin{itemize}
+			      \item L1 stays accessible
+			      \item Anyone can validate
+			      \item No compromise on security
+		      \end{itemize}
+		\item Innovation playground:
+		      \begin{itemize}
+			      \item New VM designs
+			      \item Novel cryptography
+			      \item Experimental features
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Slides not complete and may contain errors}
+	\begin{itemize}
+		\item This slide deck is not finished, may contain errors, and is missing important material. Do not rely on it yet.
+	\end{itemize}
+\end{frame}
+
+\section{Zcash}
+
+\begin{frame}{Slides not complete and may contain errors}
+	\begin{itemize}
+		\item This slide deck is not finished, may contain errors, and is missing important material. Do not rely on it yet.
+	\end{itemize}
+\end{frame}
+
+\section{Penumbra}
 
 \begin{frame}{Slides not complete and may contain errors}
 	\begin{itemize}

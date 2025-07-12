@@ -1134,7 +1134,7 @@
 				      \end{itemize}
 				\item \textbf{Key advantages}:
 				      \begin{itemize}
-					      \item 10x+ cheaper to operate (~\$10k/year vs traditional logs).
+					      \item 10x+ cheaper to operate (\approx\$10k/year vs traditional logs).
 					      \item More reliable (simpler architecture).
 					      \item Easier to download and share data.
 				      \end{itemize}
@@ -1652,7 +1652,7 @@
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}[<+->]
-				\item \textbf{Research by}: Inria Prosecco team (again!)\footnote{\url{https://appliedcryptography.page/papers/\#smack-tls}}
+				\item \textbf{Research by}: Inria Prosecco team (again!)
 				\item \textbf{Two major attack classes discovered}:
 				      \begin{itemize}
 					      \item \textbf{SMACK}: State Machine AttaCKs
@@ -1660,7 +1660,7 @@
 				      \end{itemize}
 				\item \textbf{SMACK core insight}: TLS implementations have \textbf{state machines}
 				      \begin{itemize}
-					      \item Expected message sequence: ClientHello → ServerHello → Certificate → ...
+					      \item Expected message sequence: ClientHello \rightarrow\ ServerHello \rightarrow\ Certificate \rightarrow\ ...
 					      \item Implementations track current state
 					      \item But different implementations have different state machines!
 				      \end{itemize}
@@ -2078,7 +2078,7 @@
 		      \end{itemize}
 		\item \textbf{Collision exploitation}:
 		      \begin{itemize}
-			      \item When same plaintext block encrypted twice → same ciphertext
+			      \item When same plaintext block encrypted twice \rightarrow\ same ciphertext
 			      \item Attacker identifies when collision occurs
 			      \item Can deduce relationships between plaintext blocks
 		      \end{itemize}
