@@ -1,26 +1,25 @@
 const updatedInit = () => {
 	const lastUpdatedElement = document.getElementById("lastUpdated");
 	const updatedLink = document.createElement("a");
-	updatedLink.href =
+	const repoUri =
 		"https://cedarcrypt.org/nadim/appliedcryptography/commits/branch/main";
-	fetch(
-			"https://cedarcrypt.org/api/v1/repos/nadim/appliedcryptography/commits?limit=1&sha=main",
-		)
+	const apiUri =
+		"https://cedarcrypt.org/api/v1/repos/nadim/appliedcryptography/commits?limit=1&sha=main";
+	updatedLink.href = repoUri;
+	fetch(apiUri)
 		.then((response) => response.json())
 		.then((data) => {
 			if (Array.isArray(data) && data.length > 0) {
 				const latestCommitDate = new Date(data[0].commit.author.date);
-				const options = {
-					year: "numeric",
-					month: "long",
-					day: "numeric",
-					hour: "numeric",
-					minute: "numeric",
-					hour12: true,
-				};
 				const formattedDate = latestCommitDate.toLocaleString(
-					undefined,
-					options,
+					undefined, {
+						year: "numeric",
+						month: "long",
+						day: "numeric",
+						hour: "numeric",
+						minute: "numeric",
+						hour12: true,
+					},
 				);
 				updatedLink.innerText = formattedDate;
 				lastUpdatedElement.innerHTML = "";
