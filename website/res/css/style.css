@@ -357,18 +357,6 @@ strong {
 	display: flex;
 	align-items: center;
 	transition: var(--transition);
-	animation: shine 1s ease-in-out infinite;
-}
-
-@keyframes shine {
-	0%,
-	100% {
-		background-color: var(--accent);
-	}
-
-	50% {
-		background-color: color-mix(in srgb, var(--accent) 70%, white 80%);
-	}
 }
 
 .topic-slides-btn:hover {
