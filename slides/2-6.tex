@@ -22,9 +22,1525 @@
 	\end{itemize}
 \end{frame}
 
+\section{Why Go Post-Quantum?}
+
+\begin{frame}{The quantum threat}
+	\begin{itemize}
+		\item \textbf{Quantum computers} are fundamentally different from classical computers
+		\item They exploit quantum mechanical phenomena: superposition and entanglement
+		\item Can solve certain problems exponentially faster than classical computers
+		\item \textbf{Critical insight}: Many cryptographic algorithms rely on problems that quantum computers can solve efficiently
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{How quantum computers work}
+	\begin{itemize}
+		\item \textbf{Classical bits}: Can be either 0 or 1
+		\item \textbf{Quantum bits (qubits)}: Can be in \textit{superposition} of 0 and 1 simultaneously
+		\item \textbf{Superposition}: A qubit can represent both states at once
+		      \begin{itemize}
+			      \item $n$ classical bits: Store one of $2^n$ possible values
+			      \item $n$ qubits: Can represent all $2^n$ values simultaneously
+		      \end{itemize}
+		\item \textbf{Entanglement}: Qubits can be correlated in ways impossible classically
+		      \begin{itemize}
+			      \item Measuring one qubit instantly affects others
+			      \item Enables parallel computation across exponentially many states
+		      \end{itemize}
+		\item \textbf{Quantum parallelism}: Process all possibilities at once, extract answer through interference
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Building quantum computers: the engineering challenge}
+	\begin{itemize}
+		\item \textbf{Multiple approaches being pursued}:
+		      \begin{itemize}
+			      \item Superconducting circuits (IBM, Google)
+			      \item Trapped ions (IonQ, Honeywell)
+			      \item Topological qubits (Microsoft)
+			      \item Photonic qubits (Xanadu, PsiQuantum)
+			      \item Neutral atoms (QuEra, Pasqal)
+		      \end{itemize}
+		\item \textbf{Common requirement}: Maintain quantum coherence
+		      \begin{itemize}
+			      \item Qubits must remain in superposition
+			      \item Any interaction with environment causes \textit{decoherence}
+			      \item Current coherence times: microseconds to milliseconds
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Physical challenges: Why qubits are so difficult}
+	\begin{itemize}
+		\item \textbf{Size requirements}: Qubits must be smaller than atoms
+		      \begin{itemize}
+			      \item Individual photons, electrons, or atomic nuclei
+			      \item Impossible to manipulate with conventional tools
+			      \item Require laser beams or electromagnetic fields for control
+		      \end{itemize}
+		\item \textbf{Temperature requirements}: Near absolute zero (-273°C)
+		      \begin{itemize}
+			      \item Even tiny amounts of heat destroy quantum states
+			      \item Requires dilution refrigerators costing millions
+			      \item More cooling power needed as system scales
+		      \end{itemize}
+		\item \textbf{Isolation from environment}:
+		      \begin{itemize}
+			      \item Magnetic fields, vibrations, cosmic rays all cause errors
+			      \item Need multiple layers of shielding
+			      \item Even observation destroys quantum states!
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The coherence problem: Racing against time}
+	\begin{itemize}
+		\item \textbf{Coherence time}: How long qubits maintain their quantum state
+		      \begin{itemize}
+			      \item Current record: A few seconds at best
+			      \item Most systems: Microseconds to milliseconds
+			      \item Breaking crypto needs: Days to weeks of computation
+		      \end{itemize}
+		\item \textbf{Error rates}: Quantum operations are inherently noisy
+		      \begin{itemize}
+			      \item Classical computers: 1 error per $10^{17}$ operations
+			      \item Current quantum computers: 1 error per $10^{3}$ operations
+			      \item Need massive improvement to be useful
+		      \end{itemize}
+		\item \textbf{Quantum error correction}:
+		      \begin{itemize}
+			      \item Can't copy quantum states (no-cloning theorem)
+			      \item Need 100-1000 physical qubits to make 1 logical qubit
+			      \item Turns ``millions of qubits'' into ``billions of physical qubits''
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What makes current cryptography vulnerable?}
+	\begin{itemize}
+		\item \textbf{RSA}: Based on factoring large integers
+		\item \textbf{Diffie-Hellman}: Based on discrete logarithm problem
+		\item \textbf{Elliptic Curve Cryptography}: Also based on discrete logarithm problem
+		\item These are \textit{hard} for classical computers but \textit{easy} for quantum computers
+		\item \textbf{Shor's algorithm} (1994): Polynomial-time quantum algorithm for factoring and discrete log
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Grover's algorithm: formal description}
+	\begin{itemize}
+		\item \textbf{Grover's algorithm}: Quantum algorithm for searching unsorted databases
+		\item \textbf{Classical search}: $O(2^n)$ time to search $2^n$ items
+		\item \textbf{Quantum search}: $O(2^{n/2})$ time with Grover's algorithm
+		\item \textbf{Formal claim}: Given $F: \{0,1\}^n \rightarrow \{0,1\}$, Grover's algorithm makes $O(2^{n/2})$ quantum evaluations of $F$ and outputs $X \in \{0,1\}^n$ such that $F(X) = 1$, if such $X$ exists
+		\item \textbf{Intuition}: Finding needles in haystacks
+		      \begin{itemize}
+			      \item Haystack: $\{0,1\}^n$ (all possible inputs)
+			      \item Needle: Special input $X$ where $F(X) = 1$
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Grover's algorithm: attacking symmetric cryptography}
+	\begin{itemize}
+		\item \textbf{Attack setup}: Obtain known plaintext-ciphertext pairs
+		      \begin{itemize}
+			      \item $C_1 = \text{Enc}(K, M_1)$, $C_2 = \text{Enc}(K, M_2)$, ..., $C_m = \text{Enc}(K, M_m)$
+		      \end{itemize}
+		\item \textbf{Define search function}:
+		      \begin{align*}
+			      F(K) = \begin{cases}
+				             1 & \text{if } \text{Dec}(K, C_i) = M_i \text{ for all } i \\
+				             0 & \text{otherwise}
+			             \end{cases}
+		      \end{align*}
+		\item \textbf{Result}: Grover finds the correct key in $O(2^{\lambda/2})$ time
+		\item \textbf{Defense}: Double the key size
+		      \begin{itemize}
+			      \item AES-128 $\rightarrow$ AES-256 (to maintain 128-bit security)
+			      \item SHA-256 $\rightarrow$ SHA-512 (for collision resistance)
+		      \end{itemize}
+		\item \textbf{Note}: Grover's algorithm is inherently sequential (cannot be parallelized efficiently)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Shor's algorithm: formal description}
+	\begin{itemize}
+		\item In 1994, Peter Shor demonstrated that quantum computers could break most asymmetric-key cryptography in polynomial time
+		\item \textbf{Claim}: There are quantum algorithms for the following tasks, whose running time is polynomial in $k$:
+		      \begin{itemize}
+			      \item Factoring $k$-bit numbers
+			      \item Solving the discrete logarithm problem in any cyclic group of order $< 2^k$, even groups based on elliptic curves
+		      \end{itemize}
+		\item Both algorithms use a common approach called \textit{Shor's algorithm}
+		\item \textbf{Implication}: All public-key cryptography based on factoring (RSA) or discrete logarithm (Diffie-Hellman, El Gamal, Schnorr) can be broken by quantum computers
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Shor's algorithm: impact}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Classical factoring: Best known algorithm takes exponential time
+				\item Quantum factoring with Shor's: Takes polynomial time
+				\item Example: Factoring a 2048-bit RSA key
+				      \begin{itemize}
+					      \item Classical: Billions of years
+					      \item Quantum: Hours to days (with a large enough quantum computer)
+				      \end{itemize}
+				\item \textbf{Impact}: Complete break of RSA, ECC, and DH key exchange
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{tikzpicture}[scale=1]
+				\begin{axis}[
+						xlabel={Problem Size},
+						ylabel={Time},
+						xmin=0, xmax=10,
+						ymin=0, ymax=100,
+						legend pos=north west,
+						legend style={font=\scriptsize, align=left},
+						grid=major,
+						width=7cm,
+						height=6cm,
+					]
+					\addplot[red, thick, domain=0:10, samples=100] {2^x};
+					\addlegendentry{Exponential ($O(2^n)$)}
+					\addplot[blue, thick, domain=0:10, samples=100] {x^2};
+					\addlegendentry{Polynomial ($O(n^2)$)}
+					\addplot[green!70!black, thick, domain=0:10] {x};
+					\addlegendentry{Linear ($O(n)$)}
+				\end{axis}
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Not all cryptography is equally vulnerable}
+	\begin{itemize}
+		\item \textbf{Asymmetric cryptography}: Severely impacted by quantum computers
+		      \begin{itemize}
+			      \item RSA, ECC, DH $\rightarrow$ Completely broken by Shor's algorithm
+		      \end{itemize}
+		\item \textbf{Symmetric cryptography}: Less impacted
+		      \begin{itemize}
+			      \item AES, SHA-256 $\rightarrow$ Weakened but not broken
+			      \item Grover's algorithm: Provides quadratic speedup
+			      \item Solution: Double the key size (AES-128 $\rightarrow$ AES-256)
+		      \end{itemize}
+		\item \textbf{Hash functions}: Similar to symmetric crypto
+		      \begin{itemize}
+			      \item Need larger output sizes to maintain security
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Timeline: when will quantum computing arrive?}
+	\begin{itemize}
+		\item \textbf{Current state}: Small quantum computers exist (100s of qubits)
+		\item \textbf{Required for cryptanalysis}: Millions of error-corrected qubits
+		\item \textbf{Expert predictions}: 10-30 years until cryptographically relevant quantum computers (depending on who you ask)
+		\item \textbf{But consider}:
+		      \begin{itemize}
+			      \item Technological breakthroughs could accelerate timeline
+			      \item Nation-states investing billions in quantum research
+			      \item Progress has been faster than expected in recent years
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Reality check: Current quantum factorization records}
+	\begin{itemize}
+		\item \textbf{2001}: IBM factored $15 = 3 \times 5$ using Shor's algorithm
+		\item \textbf{2012}: Factored $21 = 3 \times 7$
+		\item \textbf{2019}: Attempted to factor $35 = 5 \times 7$
+		\item \textbf{In 24 years}: Progress from 15 to 21
+		\item \textbf{For context}: A 1981 VIC-20 home computer can factor these numbers instantly
+		\item These aren't even true applications of Shor's algorithm - they use ``compiled'' versions with prior knowledge of the answer
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The sleight-of-hand problem}
+	\begin{itemize}
+		\item Most quantum factorization claims use specially constructed ``sleight-of-hand'' numbers
+		\item \textbf{Example}: RSA-2048 ``factorization'' claims
+		      \begin{itemize}
+			      \item Factors chosen to differ by only 2 or 6
+			      \item Real RSA keys require factors to differ by >100 bits
+			      \item Can be factored with simple square root calculation
+		      \end{itemize}
+		\item \textbf{Common tricks}:
+		      \begin{itemize}
+			      \item Numbers with special binary patterns (mostly zeros)
+			      \item Preprocessing on classical computers
+			      \item ``Compiled'' algorithms that know the answer in advance
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Alternative ``quantum'' factorization methods}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item Recent paper\footnote{\url{https://appliedcryptography.page/papers/\#quantum-dog}} demonstrates matching all quantum factorization records using:
+				      \begin{itemize}
+					      \item \textbf{VIC-20}: 8-bit computer from 1981 (538 bytes of code)
+					      \item \textbf{Abacus}: Ancient counting device
+					      \item \textbf{Dog}: Trained to bark 3 times (factors 15 and 21)
+				      \end{itemize}
+				\item All methods successfully factor every number claimed by quantum computers
+				\item The VIC-20 can factor the RSA-2048 ``quantum'' examples in 16.5 seconds
+				\item \textbf{Conclusion}: Current quantum computers offer no practical advantage
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The gap between hype and reality}
+	\begin{itemize}
+		\item \textbf{Claimed}: ``Quantum computers will break all encryption''
+		\item \textbf{Reality}: Can't reliably factor 35 after 24 years of research
+		\item \textbf{Claimed}: ``RSA-2048 factored by quantum computer''
+		\item \textbf{Reality}: Used specially constructed weak keys, solvable on 1980s hardware
+		\item \textbf{Estimated timeline}: 10-30 years to cryptographically relevant quantum computers
+		\item \textbf{Historical note}: Similar timeline estimates have been made for decades
+		\item \textbf{Critical question}: Should we redesign all cryptography based on devices that can't outperform a dog?
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Harvest now, decrypt later}
+	\begin{itemize}
+		\item \textbf{The problem}: Adversaries can store encrypted data today
+		\item Wait for quantum computers to become available
+		\item Decrypt all previously recorded communications
+		\item \textbf{Implications}:
+		      \begin{itemize}
+			      \item Data encrypted today may be decrypted in 10-20 years
+			      \item Long-term secrets are already at risk
+			      \item Medical records, government communications, trade secrets
+		      \end{itemize}
+		\item \textbf{This attack is happening NOW}
+		\item This is why some argue that we can't just not do anything because quantum computers seem impractical \textit{today}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why transition now?}
+	\begin{itemize}
+		\item \textbf{Migration takes time}: Historical crypto transitions took 10-20 years
+		      \begin{itemize}
+			      \item Recall the transition away from RC4, seen earlier in the course!
+		      \end{itemize}
+		\item \textbf{Complex systems}: Need to update protocols, libraries, hardware
+		\item \textbf{Backward compatibility}: Must support both old and new systems
+		\item \textbf{Unknown vulnerabilities}: New algorithms need time for analysis
+		\item \textbf{Compliance and standards}: Regulations take years to update
+		\item \textbf{Bottom line}: If we wait until quantum computers exist, it's too late
+	\end{itemize}
+\end{frame}
+
+\section{Going Post-Quantum}
+
+\begin{frame}{Post-quantum cryptography: the solution}
+	\begin{itemize}
+		\item \textbf{Definition}: Cryptographic algorithms that are secure against both classical and quantum computers
+		\item Based on mathematical problems believed to be hard even for quantum computers:
+		      \begin{itemize}
+			      \item Lattice-based problems
+			      \item Code-based problems
+			      \item Hash-based signatures
+			      \item Multivariate polynomial equations
+			      \item Isogeny-based problems
+		      \end{itemize}
+		\item \textbf{Goal}: Deploy these before quantum computers arrive
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The NIST Post-Quantum Cryptography Competition}
+	\begin{itemize}
+		\item Started in 2016 to standardize post-quantum algorithms
+		\item 69 initial submissions $\rightarrow$ Multiple rounds of analysis
+		\item \textbf{2022}: First algorithms standardized
+		      \begin{itemize}
+			      \item \textbf{CRYSTALS-Kyber}: Key encapsulation (KEM)
+			      \item \textbf{CRYSTALS-Dilithium}: Digital signatures
+			      \item \textbf{FALCON}: Digital signatures
+			      \item \textbf{SPHINCS+}: Hash-based signatures
+		      \end{itemize}
+		\item Global effort: Cryptographers worldwide analyzing security
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Real-world impact: who needs to care?}
+	\begin{itemize}
+		\item \textbf{Financial institutions}: Protecting transactions and customer data
+		\item \textbf{Healthcare}: Medical records must remain private for decades
+		\item \textbf{Government}: National security and citizen privacy
+		\item \textbf{Technology companies}: Secure communications and data storage
+		\item \textbf{Critical infrastructure}: Power grids, water systems, transportation
+		\item \textbf{Everyone}: Personal communications, passwords, private data
+	\end{itemize}
+\end{frame}
+
+\subsection{Learning with Errors}
+
+\begin{frame}{The Learning with Errors (LWE) Problem}
+	\begin{itemize}
+		\item \textbf{Key insight}: Some mathematical problems remain hard even for quantum computers
+		\item \textbf{LWE}: Based on solving noisy systems of linear equations
+		\item \textbf{Security foundation}: The difficulty of distinguishing random noise from structured noise
+		\item Forms the basis for many post-quantum cryptographic schemes
+		\item First, let's see why regular linear equations are easy...
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Solving linear equations: the easy case}
+	\begin{itemize}
+		\item Consider solving for unknowns $s_1, s_2, s_3, s_4, s_5$ in:
+	\end{itemize}
+	\begin{align*}
+		3 & = s_1 + 2s_2 - 2s_3 + 6s_5         \\
+		1 & = 4s_1 + 3s_2 - 4s_3 - 3s_4 + 6s_5 \\
+		4 & = -s_1 - s_2 + 4s_3 + 3s_4 - 3s_5  \\
+		1 & = s_1 - s_2 + 2s_3 + 3s_4 + s_5    \\
+		5 & = 4s_1 + 5s_2 + 5s_3 + 3s_4 + s_5
+	\end{align*}
+	\begin{itemize}
+		\item We know an efficient algorithm for this
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Matrix form of linear equations}
+	The system can be written as:
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{align*}
+				3 & = s_1 + 2s_2 - 2s_3 + 6s_5         \\
+				1 & = 4s_1 + 3s_2 - 4s_3 - 3s_4 + 6s_5 \\
+				4 & = -s_1 - s_2 + 4s_3 + 3s_4 - 3s_5  \\
+				1 & = s_1 - s_2 + 2s_3 + 3s_4 + s_5    \\
+				5 & = 4s_1 + 5s_2 + 5s_3 + 3s_4 + s_5
+			\end{align*}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\[
+				\begin{bmatrix}
+					3 \\ 1 \\ 4 \\ 1 \\ 5
+				\end{bmatrix}
+				=
+				\begin{bmatrix}
+					1  & 2  & -2 & 0  & 6  \\
+					4  & 3  & -4 & -3 & 6  \\
+					-1 & -1 & 4  & 3  & -3 \\
+					1  & -1 & 2  & 3  & 1  \\
+					4  & 5  & 5  & 3  & 1
+				\end{bmatrix}
+				\begin{bmatrix}
+					s_1 \\ s_2 \\ s_3 \\ s_4 \\ s_5
+				\end{bmatrix}
+			\]
+		\end{column}
+	\end{columns}
+	\vspace{5mm}
+	\begin{itemize}
+		\item Solution: Invert the matrix and multiply
+		\item Polynomial time algorithm exists
+		\item Adding more constraints (rows) doesn't make it harder
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What is Gaussian elimination?}
+	\begin{itemize}
+		\item \textbf{Goal}: Solve systems of linear equations systematically
+		\item \textbf{Basic idea}: Transform the system into a simpler form that's easy to solve
+		\item \textbf{Method}: Use row operations to eliminate variables step by step
+		\item \textbf{Notation}:
+		      \begin{itemize}
+			      \item $R_1$ = Row 1 (first equation)
+			      \item $R_2$ = Row 2 (second equation)
+			      \item $R_3$ = Row 3 (third equation), etc.
+		      \end{itemize}
+		\item We'll work with an \textbf{augmented matrix}: the coefficient matrix with the constants column attached
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Step 1: Set up the augmented matrix}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			Start with the system:
+			\begin{align*}
+				3 & = s_1 + 2s_2 - 2s_3 + 6s_5         \\
+				1 & = 4s_1 + 3s_2 - 4s_3 - 3s_4 + 6s_5 \\
+				4 & = -s_1 - s_2 + 4s_3 + 3s_4 - 3s_5  \\
+				1 & = s_1 - s_2 + 2s_3 + 3s_4 + s_5    \\
+				5 & = 4s_1 + 5s_2 + 5s_3 + 3s_4 + s_5
+			\end{align*}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			Create augmented matrix $[A|b]$:
+			\[
+				\left[\begin{array}{ccccc|c}
+						1  & 2  & -2 & 0  & 6  & 3 \\
+						4  & 3  & -4 & -3 & 6  & 1 \\
+						-1 & -1 & 4  & 3  & -3 & 4 \\
+						1  & -1 & 2  & 3  & 1  & 1 \\
+						4  & 5  & 5  & 3  & 1  & 5
+					\end{array}\right]
+			\]
+			Each row represents one equation
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{What are row operations?}
+	\textbf{Three allowed operations} (these don't change the solution):
+	\begin{enumerate}
+		\item \textbf{Multiply a row by a non-zero constant}
+		      \begin{itemize}
+			      \item Example: $R_1 \leftarrow 2R_1$ means ``multiply Row 1 by 2''
+		      \end{itemize}
+		\item \textbf{Add/subtract a multiple of one row to another}
+		      \begin{itemize}
+			      \item Example: $R_2 \leftarrow R_2 - 4R_1$ means ``subtract 4 times Row 1 from Row 2''
+		      \end{itemize}
+		\item \textbf{Swap two rows}
+		      \begin{itemize}
+			      \item Example: Swap $R_2$ and $R_3$
+		      \end{itemize}
+	\end{enumerate}
+	\textbf{Our strategy}: Use these operations to create zeros below the diagonal
+\end{frame}
+
+\begin{frame}{Step 2a: Understanding the first elimination}
+	\textbf{Goal}: Make all entries in column 1 (below row 1) equal to zero
+
+	Current matrix:
+	\[
+		\left[\begin{array}{ccccc|c}
+				\boxed{1}           & 2  & -2 & 0  & 6  & 3 \\
+				\textcolor{red}{4}  & 3  & -4 & -3 & 6  & 1 \\
+				\textcolor{red}{-1} & -1 & 4  & 3  & -3 & 4 \\
+				\textcolor{red}{1}  & -1 & 2  & 3  & 1  & 1 \\
+				\textcolor{red}{4}  & 5  & 5  & 3  & 1  & 5
+			\end{array}\right]
+	\]
+
+	\begin{itemize}
+		\item The boxed 1 is our \textbf{pivot} (the element we use to eliminate others)
+		\item We want to turn the red numbers into zeros
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Step 2b: Performing the eliminations}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			To eliminate the 4 in Row 2: subtract 4 times Row 1 from Row 2
+			\begin{itemize}
+				\item $R_2 \leftarrow R_2 - 4R_1$ means: $(4, 3, -4, -3, 6 | 1) - 4(1, 2, -2, 0, 6 | 3)$
+				\item This gives: $(0, -5, 4, -3, -18 | -11)$
+			\end{itemize}
+
+			Similarly:
+			\begin{itemize}
+				\item $R_3 \leftarrow R_3 + R_1$ (add Row 1 to Row 3 to eliminate the -1)
+				\item $R_4 \leftarrow R_4 - R_1$ (subtract Row 1 from Row 4 to eliminate the 1)
+				\item $R_5 \leftarrow R_5 - 4R_1$ (subtract 4 times Row 1 from Row 5)
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			Result:
+			\[
+				\left[\begin{array}{ccccc|c}
+						1 & 2  & -2 & 0  & 6   & 3   \\
+						0 & -5 & 4  & -3 & -18 & -11 \\
+						0 & 1  & 2  & 3  & 3   & 7   \\
+						0 & -3 & 4  & 3  & -5  & -2  \\
+						0 & -3 & 13 & 3  & -23 & -7
+					\end{array}\right]
+			\]
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{What is a pivot and why swap rows?}
+	\textbf{Pivot}: The number we use to eliminate entries below it
+
+	Looking at column 2:
+	\[
+		\left[\begin{array}{ccccc|c}
+				1 & 2                   & -2 & 0  & 6   & 3   \\
+				0 & \boxed{-5}          & 4  & -3 & -18 & -11 \\
+				0 & \textcolor{blue}{1} & 2  & 3  & 3   & 7   \\
+				0 & -3                  & 4  & 3  & -5  & -2  \\
+				0 & -3                  & 13 & 3  & -23 & -7
+			\end{array}\right]
+	\]
+
+	\begin{itemize}
+		\item We could use -5 as our pivot, but that requires fractions
+		\item The blue 1 is simpler! (No fractions needed)
+		\item So we swap rows 2 and 3 to make 1 our pivot
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Step 3: Second column elimination}
+	After swapping rows 2 and 3:
+	\[
+		\left[\begin{array}{ccccc|c}
+				1 & 2                   & -2 & 0  & 6   & 3   \\
+				0 & \boxed{1}           & 2  & 3  & 3   & 7   \\
+				0 & \textcolor{red}{-5} & 4  & -3 & -18 & -11 \\
+				0 & \textcolor{red}{-3} & 4  & 3  & -5  & -2  \\
+				0 & \textcolor{red}{-3} & 13 & 3  & -23 & -7
+			\end{array}\right]
+	\]
+
+	Now eliminate the red entries:
+	\begin{itemize}
+		\item $R_3 \leftarrow R_3 + 5R_2$ (add 5 times Row 2 to eliminate -5)
+		\item $R_4 \leftarrow R_4 + 3R_2$ (add 3 times Row 2 to eliminate -3)
+		\item $R_5 \leftarrow R_5 + 3R_2$ (add 3 times Row 2 to eliminate -3)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What is row echelon form?}
+	After continuing this process:
+	\[
+		\left[\begin{array}{ccccc|c}
+				1 & 2 & -2 & 0  & 6   & 3  \\
+				0 & 1 & 2  & 3  & 3   & 7  \\
+				0 & 0 & 14 & 12 & -3  & 24 \\
+				0 & 0 & 10 & 12 & 4   & 19 \\
+				0 & 0 & 19 & 12 & -14 & 14
+			\end{array}\right]
+	\]
+
+	\textbf{Row echelon form} has:
+	\begin{itemize}
+		\item Leading entry (first non-zero) in each row is to the right of the one above
+		\item All zeros below each leading entry
+		\item Forms a ``staircase'' pattern
+	\end{itemize}
+
+	We continue until we get this form for all columns
+\end{frame}
+
+\begin{frame}{Back substitution: solving from the bottom up}
+	Once in row echelon form, we can solve:
+	\begin{itemize}
+		\item \textbf{Last equation}: Gives us one variable directly
+		\item \textbf{Second-to-last}: Substitute known value, solve for next variable
+		\item \textbf{Continue upward}: Each equation gives us one more variable
+	\end{itemize}
+
+	\textbf{Example} (simplified):
+	\begin{align*}
+		x + 2y + 3z & = 10 \\
+		y + 2z      & = 5  \\
+		z           & = 1
+	\end{align*}
+
+	From bottom: $z = 1$, then $y = 5 - 2(1) = 3$, then $x = 10 - 2(3) - 3(1) = 1$
+\end{frame}
+
+\begin{frame}{Why is this process efficient?}
+	\textbf{Key observation}: Gaussian elimination is:
+	\begin{itemize}
+		\item \textbf{Deterministic}: Same steps work every time
+		\item \textbf{Polynomial time}: About $n^3$ operations for $n$ equations
+		      \begin{itemize}
+			      \item Compare to trying all possible solutions: $2^n$ operations!
+		      \end{itemize}
+		\item \textbf{Works modulo $q$}: Can solve equations in finite fields
+		\item \textbf{Always finds the solution} (if one exists)
+	\end{itemize}
+
+	\textbf{This is why exact linear equations are easy!}
+
+	Computers can solve systems with millions of variables in seconds.
+\end{frame}
+
+\begin{frame}{Making it hard: approximate equations}
+	Now consider \textit{approximate} equations:
+	\begin{align*}
+		2 & \approx s_1 + 2s_2 - 2s_3 + 6s_5         \\
+		7 & \approx 4s_1 + 3s_2 - 4s_3 - 3s_4 + 6s_5 \\
+		1 & \approx -s_1 - s_2 + 4s_3 + 3s_4 - 3s_5  \\
+		8 & \approx s_1 - s_2 + 2s_3 + 3s_4 + s_5    \\
+		2 & \approx 4s_1 + 5s_2 + 5s_3 + 3s_4 + s_5  \\
+		8 & \approx 2s_1 + s_3 - s_4 + 2s_5
+	\end{align*}
+	\ldots where $\approx$ means ``equal up to small error'' (e.g., $\pm 1$). \textbf{This breaks Gaussian elimination} by introducing small errors that destroy the exact cancellations we rely on!
+\end{frame}
+
+\begin{frame}{The Learning with Errors formulation}
+	We can rewrite approximate equations exactly by adding error terms:
+	\[
+		\begin{bmatrix}
+			2 \\ 7 \\ 1 \\ 8 \\ 2 \\ 8 \\ \vdots
+		\end{bmatrix}
+		=
+		\begin{bmatrix}
+			1      & 2      & -2     & 0      & 6      \\
+			4      & 3      & -4     & -3     & 6      \\
+			-1     & -1     & 4      & 3      & -3     \\
+			1      & -1     & 2      & 3      & 1      \\
+			4      & 5      & 5      & 3      & 1      \\
+			2      & 0      & 1      & -1     & 2      \\
+			\vdots & \vdots & \vdots & \vdots & \vdots
+		\end{bmatrix}
+		\begin{bmatrix}
+			s_1 \\ s_2 \\ s_3 \\ s_4 \\ s_5
+		\end{bmatrix}
+		+
+		\begin{bmatrix}
+			e_1 \\ e_2 \\ e_3 \\ e_4 \\ e_5 \\ e_6 \\ \vdots
+		\end{bmatrix}
+	\]
+	where error vector $\vec{e} = (e_1, e_2, e_3, \ldots)$ has small entries from $\{-1, 0, +1\}$
+\end{frame}
+
+\begin{frame}{Why LWE is hard}
+	\begin{itemize}
+		\item \textbf{The dichotomy}:
+		      \begin{itemize}
+			      \item With many equations (tall matrix), there's usually at most one solution
+			      \item But finding that solution appears to be extremely hard!
+		      \end{itemize}
+		\item \textbf{All known algorithms require exponential time}
+		      \begin{itemize}
+			      \item This includes quantum algorithms
+			      \item No \textbf{known} quantum speedup like Shor's algorithm
+		      \end{itemize}
+		\item \textbf{Intuition}: Small errors destroy the algebraic structure
+		      \begin{itemize}
+			      \item Can't simply invert the matrix anymore
+			      \item Errors interact in complex ways
+			      \item Finding the secret requires distinguishing structure from noise
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{LWE for cryptography}
+	\begin{itemize}
+		\item \textbf{Public key}: Matrix $A$ and noisy products $b = As + e$
+		\item \textbf{Secret key}: The secret vector $s$
+		\item \textbf{Security}: Based on hardness of recovering $s$ from $(A, b)$
+		\item \textbf{Parameters}:
+		      \begin{itemize}
+			      \item Dimension $n$: Size of secret vector
+			      \item Modulus $q$: Work in $\mathbb{Z}_q$
+			      \item Error distribution: Typically Gaussian with small standard deviation
+		      \end{itemize}
+		\item \textbf{Applications}: Key exchange (Kyber), signatures (Dilithium), fully homomorphic encryption
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Learning with Errors (LWE): The core idea}
+	\begin{itemize}
+		\item \textbf{Recall}: We saw that approximate linear equations are hard to solve
+		\item \textbf{LWE}: A cryptographic problem based on this hardness
+		\item \textbf{Setup}: Given matrix $M$ and vector $\vec{x} = M\vec{s} + \vec{e}$
+		      \begin{itemize}
+			      \item $\vec{s}$: Secret vector (sampled uniformly)
+			      \item $\vec{e}$: Error/noise vector (sampled from distribution of ``small'' values)
+			      \item All arithmetic performed modulo $q$
+		      \end{itemize}
+		\item \textbf{The challenge}: Distinguish LWE samples from random vectors
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{LWE: Mathematical formulation}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{LWE sample generation:}
+			\begin{enumerate}
+				\item Sample matrix $M \in \mathbb{Z}_q^{m \times n}$
+				\item Sample secret $\vec{s} \in \mathbb{Z}_q^n$
+				\item Sample noise $\vec{e} \in \mathbb{Z}_q^m$ (small)
+				\item Compute: $\vec{x} = M\vec{s} + \vec{e}$
+				\item Output: $(M, \vec{x})$
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Visual representation:}
+			\[
+				\underbrace{\begin{bmatrix}
+						x_1    \\
+						x_2    \\
+						\vdots \\
+						x_m
+					\end{bmatrix}}_{\vec{x}}
+				=
+				\underbrace{\begin{bmatrix}
+						\text{---} & \text{row 1} & \text{---} \\
+						\text{---} & \text{row 2} & \text{---} \\
+						           & \vdots       &            \\
+						\text{---} & \text{row m} & \text{---}
+					\end{bmatrix}}_{M}
+				\underbrace{\begin{bmatrix}
+						s_1    \\
+						s_2    \\
+						\vdots \\
+						s_n
+					\end{bmatrix}}_{\vec{s}}
+				+
+				\underbrace{\begin{bmatrix}
+						e_1    \\
+						e_2    \\
+						\vdots \\
+						e_m
+					\end{bmatrix}}_{\vec{e}}
+			\]
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Understanding ``small'' in modular arithmetic}
+	\begin{columns}[c]
+		\begin{column}{0.65\textwidth}
+			\begin{itemize}
+				\item \textbf{Working modulo $q$}: Think of $\mathbb{Z}_q$ as a circle
+				\item \textbf{``small'' means ``close to 0''} — in either direction!
+				      \begin{itemize}
+					      \item Example: If $q = 11$, then $10 \equiv -1 \pmod{11}$ is ``small''
+				      \end{itemize}
+				\item \textbf{Centered representation}: Instead of $\{0, 1, \ldots, q-1\}$, use:
+				      \[
+					      \left\{-\left\lfloor\frac{q-1}{2}\right\rfloor, \ldots, -1, 0, 1, \ldots, \left\lceil\frac{q-1}{2}\right\rceil\right\}
+				      \]
+				\item \textbf{Common noise distributions}:
+				      \begin{itemize}
+					      \item Discrete Gaussian (bell curve centered at 0)
+					      \item Uniform over $\{-c, -c+1, \ldots, c-1, c\}$ for small $c$
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.35\textwidth}
+			\begin{center}
+				\textbf{Discrete Gaussian}\\[2mm]
+				\begin{tikzpicture}[scale=0.7]
+					\begin{axis}[
+							ybar,
+							bar width=8pt,
+							xlabel={Value},
+							ylabel={Probability},
+							ymin=0, ymax=0.25,
+							xmin=-5.5, xmax=5.5,
+							xtick={-4,-2,0,2,4},
+							width=6cm,
+							height=4cm,
+							grid=major,
+						]
+						\addplot[fill=blue!60,draw=blue] coordinates {
+								(-5,0.01) (-4,0.03) (-3,0.06) (-2,0.12) (-1,0.18)
+								(0,0.20) (1,0.18) (2,0.12) (3,0.06) (4,0.03) (5,0.01)
+							};
+					\end{axis}
+				\end{tikzpicture}
+				\\
+				\textbf{Uniform}\\[2mm]
+				\begin{tikzpicture}[scale=0.7]
+					\begin{axis}[
+							ybar,
+							bar width=12pt,
+							xlabel={Value},
+							ylabel={Probability},
+							ymin=0, ymax=0.25,
+							xmin=-3.5, xmax=3.5,
+							xtick={-3,-2,-1,0,1,2,3},
+							width=6cm,
+							height=4cm,
+							grid=major,
+						]
+						\addplot[fill=green!60,draw=green] coordinates {
+								(-3,0.143) (-2,0.143) (-1,0.143) (0,0.143)
+								(1,0.143) (2,0.143) (3,0.143)
+							};
+					\end{axis}
+				\end{tikzpicture}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The LWE hardness assumption}
+	\begin{center}
+		\sslinked{
+			\sslibrary{n,m,q}{lwe-real}{
+				\sslibrarysubroutine{lwe.sample}{}{
+					$M \twoheadleftarrow (\mathbb{Z}_q)^{m \times n}$\\
+					$\vec{s} \twoheadleftarrow (\mathbb{Z}_q)^n$\\
+					$\vec{e} \twoheadleftarrow \mathcal{E}^m$\\
+					$\vec{x} = M \cdot \vec{s} + \vec{e}$\\
+					return $(M, \vec{x})$
+				}{1}
+			}{0.8}
+		}{\approxeq}{
+			\sslibrary{n,m,q}{lwe-rand}{
+				\sslibrarysubroutine{lwe.sample}{}{
+					$M \twoheadleftarrow (\mathbb{Z}_q)^{m \times n}$\\
+					$\vec{x} \twoheadleftarrow (\mathbb{Z}_q)^m$\\
+					return $(M, \vec{x})$
+				}{1}
+			}{0.8}
+		}
+	\end{center}
+	\vspace{5mm}
+	\begin{itemize}
+		\item \textbf{The LWE assumption}: These two distributions are computationally indistinguishable \textbf{even for quantum computers}: no known quantum speedup.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{From LWE to key exchange}
+	\begin{itemize}
+		\item \textbf{Key insight}: Both parties can compute ``approximately'' the same value
+		\item \textbf{Alice's view}: $M\vec{s} + \vec{e}_A \approx M\vec{s}$
+		\item \textbf{Bob's view}: $\vec{s}^T M + \vec{e}_B^T \approx \vec{s}^T M$
+		\item \textbf{The magic}: $M\vec{s} = \vec{s}^T M^T$ (without errors)
+		\item With small errors, both parties get values that are ``close''
+		\item \textbf{Reconciliation}: Extract identical keys from close-but-not-equal values
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Simple LWE key exchange}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Public parameters:}
+			\begin{itemize}
+				\item Matrix $A \in \mathbb{Z}_q^{n \times n}$
+				\item Modulus $q$ (e.g., 3329)
+				\item Error distribution $\mathcal{E}$
+			\end{itemize}
+
+			\textbf{Alice:}
+			\begin{enumerate}
+				\item Sample $\vec{s}_A, \vec{e}_A \leftarrow \mathcal{E}^n$
+				\item Compute $\vec{b}_A = A\vec{s}_A + \vec{e}_A$
+				\item Send $\vec{b}_A$ to Bob
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Bob:}
+			\begin{enumerate}
+				\item Sample $\vec{s}_B, \vec{e}_B \leftarrow \mathcal{E}^n$
+				\item Compute $\vec{b}_B = A^T\vec{s}_B + \vec{e}_B$
+				\item Send $\vec{b}_B$ to Alice
+			\end{enumerate}
+
+			\textbf{Shared secret:}
+			\begin{itemize}
+				\item Alice: $k_A = \vec{s}_A^T \vec{b}_B$
+				\item Bob: $k_B = \vec{s}_B^T \vec{b}_A$
+				\item Note: $k_A \approx k_B$ (differ by small error)
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why the shared secrets are close}
+	\begin{align*}
+		k_A & = \vec{s}_A^T \vec{b}_B = \vec{s}_A^T (A^T\vec{s}_B + \vec{e}_B) \\
+		    & = \vec{s}_A^T A^T \vec{s}_B + \vec{s}_A^T \vec{e}_B              \\
+		\\
+		k_B & = \vec{s}_B^T \vec{b}_A = \vec{s}_B^T (A\vec{s}_A + \vec{e}_A)   \\
+		    & = \vec{s}_B^T A \vec{s}_A + \vec{s}_B^T \vec{e}_A                \\
+		    & = \vec{s}_A^T A^T \vec{s}_B + \vec{s}_B^T \vec{e}_A
+	\end{align*}
+
+	\begin{itemize}
+		\item The main terms $\vec{s}_A^T A^T \vec{s}_B$ are identical!
+		\item Difference: $k_A - k_B = \vec{s}_A^T \vec{e}_B - \vec{s}_B^T \vec{e}_A$ (small)
+		\item Use reconciliation to extract identical keys from close values
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Reconciliation: Getting exact agreement}
+	\begin{itemize}
+		\item \textbf{Problem}: Alice and Bob have close but not identical values
+		\item \textbf{Solution}: Round to nearest ``significant'' bits
+		\item \textbf{Simple approach}:
+		      \begin{enumerate}
+			      \item Divide $\mathbb{Z}_q$ into regions (e.g., 4 regions for 2-bit key)
+			      \item Bob sends ``hint'' bits to help Alice round correctly
+			      \item Both extract same bits from their rounded values
+		      \end{enumerate}
+		\item \textbf{Example} (if $q = 12$):
+		      \begin{itemize}
+			      \item Regions: $[0,2], [3,5], [6,8], [9,11]$ $\rightarrow$ bits: 00, 01, 10, 11
+			      \item Alice has 5, Bob has 4 $\rightarrow$ both round to region $[3,5]$ $\rightarrow$ key bits: 01
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{From theory to practice: Kyber}
+	\begin{itemize}
+		\item \textbf{CRYSTALS-Kyber}: NIST-standardized LWE-based KEM
+		\item \textbf{Key improvements over basic scheme}:
+		      \begin{itemize}
+			      \item Uses structured matrices (polynomial rings) for efficiency
+			      \item Module-LWE instead of plain LWE
+			      \item Careful parameter selection for security/performance balance
+			      \item CCA-secure construction using Fujisaki-Okamoto transform
+		      \end{itemize}
+		\item \textbf{Performance}: Competitive with current elliptic curve cryptography
+		\item \textbf{Already deployed}: Chrome, Cloudflare, AWS, and others
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{LWE/Lattice-based crypto: The trade-offs}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Advantages:}
+			\begin{itemize}
+				\item[\mycheckmark] Fast operations
+				\item[\mycheckmark] Both encryption \& signatures
+				\item[\mycheckmark] NIST standardized
+				\item[\mycheckmark] Efficient implementations
+				\item[\mycheckmark] Flexible parameters
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Disadvantages:}
+			\begin{itemize}
+				\item[$\times$] Newer assumptions (20 years)
+				\item[$\times$] Larger than classical crypto
+				\item[$\times$] Complex parameter selection
+				\item[$\times$] Implementation pitfalls
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{5mm}
+	\begin{center}
+		\textbf{Bottom line}: Leading choice for general-purpose post-quantum crypto
+	\end{center}
+\end{frame}
+
+\subsection{Code-Based Cryptography}
+
+\begin{frame}{Another PQ candidate: Code-based cryptography}
+	\begin{itemize}
+		\item \textbf{Different foundation}: Based on error-correcting codes
+		\item \textbf{Long history}: Theory dates back to 1950s
+		\item \textbf{Battle-tested}: McEliece cryptosystem (1978) still unbroken after 45+ years!
+		\item \textbf{The trade-off}: Very secure, but public keys are large (100+ KB)
+		\item \textbf{Modern perspective}: Is 100 KB really too big when average webpage is 2 MB?
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What are error-correcting codes?}
+	\begin{columns}[c]
+		\begin{column}{0.7\textwidth}
+			\begin{itemize}
+				\item \textbf{The problem}: Transmitting data over noisy channels
+				      \begin{itemize}
+					      \item You send: \texttt{010}
+					      \item Channel flips a bit (hardware fault, solar flare\ldots)
+					      \item Receiver gets: \texttt{011} (wrong!)
+				      \end{itemize}
+				\item \textbf{The solution}: Add redundancy to detect and correct errors
+				\item \textbf{Real-world applications}:
+				      \begin{itemize}
+					      \item CDs and DVDs (scratches don't destroy data)
+					      \item Deep space communication (signals from Mars rovers)
+					      \item QR codes (work even when partially damaged)
+					      \item Computer memory (cosmic rays can flip bits!)
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+			\imagewithcaption{qr_code.png}{Thanks to error correction, this QR code will still work even if you cover \textit{any} small part of it with your hand. Try it!}
+		\end{column}
+	\end{columns}
+
+\end{frame}
+
+\begin{frame}{The simplest code: Repetition}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\textbf{Basic idea}: Repeat each bit multiple times
+			\begin{itemize}
+				\item Original: \texttt{010}
+				\item Encoded: \texttt{000 111 000}
+				\item Each bit repeated 3 times
+			\end{itemize}
+
+			\textbf{Decoding}: Take majority vote
+			\begin{itemize}
+				\item Received: \texttt{100 110 111}
+				\item Decode: \texttt{0} (two \texttt{0}s) \texttt{1} (two \texttt{1}s) \texttt{1} (three \texttt{1}s)
+				\item Result: \texttt{011}
+			\end{itemize}
+
+			\textbf{Limitation}: Can only correct 1 error per 3-bit chunk
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Linear codes: More sophisticated error correction}
+	\begin{itemize}
+		\item \textbf{Key idea}: Use linear algebra instead of simple repetition
+		\item \textbf{Encoding process}:
+		      \begin{enumerate}
+			      \item Start with $n$-bit message vector $\vec{v}$
+			      \item Multiply by generator matrix $G$ (size $m \times n$, where $m > n$)
+			      \item Get codeword: $\vec{w} = \vec{v} \cdot G$
+		      \end{enumerate}
+		\item \textbf{The magic}: Matrix $G$ is designed so that:
+		      \begin{itemize}
+			      \item Codewords are spread far apart in ``code space''
+			      \item Can correct up to $t$ errors (designer's choice)
+			      \item More errors $\rightarrow$ larger codewords needed
+		      \end{itemize}
+		\item \textbf{Efficiency}: Much better than repetition codes!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Visualizing linear codes}
+	\begin{center}
+		\begin{tikzpicture}[scale=1]
+			\draw[->] (0,0) -- (5,0) node[right] {Code space};
+			\draw[->] (0,0) -- (0,4);
+			\filldraw[blue] (1,1) circle (3pt) node[above left] {Codeword 1};
+			\filldraw[blue] (3.5,2.5) circle (3pt) node[above right] {Codeword 2};
+			\filldraw[blue] (2,3.5) circle (3pt) node[above] {Codeword 3};
+			\filldraw[blue] (4,0.8) circle (3pt) node[below right] {Codeword 4};
+			\draw[dashed,red] (1,1) circle (0.6);
+			\draw[dashed,red] (3.5,2.5) circle (0.6);
+			\draw[dashed,red] (2,3.5) circle (0.6);
+			\draw[dashed,red] (4,0.8) circle (0.6);
+			\filldraw[green!70!black] (1.3,1.4) circle (2pt);
+			\draw[->,green!70!black,thick] (1.3,1.4) -- (1,1);
+			\node[green!70!black,right] at (1.3,1.4) {\small Received};
+			\node[red] at (2.5,-0.5) {Error correction radius};
+		\end{tikzpicture}
+	\end{center}
+	\begin{itemize}
+		\item Codewords are far apart
+		\item Errors move you within the ``sphere''
+		\item Decode to nearest codeword
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The McEliece cryptosystem (1978)}
+	\begin{itemize}
+		\item \textbf{Revolutionary idea}: Use error correction for encryption!
+		\item \textbf{Public key}: Generator matrix $G = ABC$ (looks random)
+		      \begin{itemize}
+			      \item $A, B, C$ are special matrices (kept secret)
+			      \item Product looks like random matrix
+		      \end{itemize}
+		\item \textbf{Encryption}:
+		      \begin{enumerate}
+			      \item Encode message: $\vec{w} = \vec{m} \cdot G$
+			      \item Add controlled errors: $\vec{c} = \vec{w} + \vec{e}$
+			      \item $\vec{e}$ has exactly $t$ bits set to 1
+		      \end{enumerate}
+		\item \textbf{Decryption}: Only possible if you know $A, B, C$
+		      \begin{itemize}
+			      \item Use secret structure to remove errors
+			      \item Recover original message
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why is McEliece secure?}
+	\begin{itemize}
+		\item \textbf{The underlying problem}: Decoding random linear codes
+		      \begin{itemize}
+			      \item Given: Random-looking matrix and noisy codeword
+			      \item Find: Original message
+			      \item This is NP-hard! (No efficient algorithm known)
+		      \end{itemize}
+		\item \textbf{Quantum resistance}:
+		      \begin{itemize}
+			      \item No quantum algorithm gives significant speedup
+			      \item Unlike factoring (Shor's algorithm)
+			      \item 45+ years of cryptanalysis, still secure
+		      \end{itemize}
+		\item \textbf{Important caveat}: Not all instances of NP-hard problems are hard
+		      \begin{itemize}
+			      \item Need careful parameter selection
+			      \item Decades of research have refined secure choices
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Code-based crypto: Pros and cons}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Advantages:}
+			\begin{itemize}
+				\item[\mycheckmark] Long history (45+ years)
+				\item[\mycheckmark] Well-understood security
+				\item[\mycheckmark] Fast operations
+				\item[\mycheckmark] Simple to implement
+				\item[\mycheckmark] Quantum resistant
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Disadvantages:}
+			\begin{itemize}
+				\item[$\times$] Large public keys (100+ KB)
+				\item[$\times$] Not selected by NIST (yet)
+				\item[$\times$] Less deployment experience
+			\end{itemize}
+
+			\vspace{5mm}
+			\textbf{Perspective}: Is 100 KB really too big in 2024?
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{Hash-Based Cryptography}
+
+\begin{frame}{Hash-based cryptography: A different approach}
+	\begin{itemize}
+		\item \textbf{Fundamental difference}: Not based on hard mathematical problems!
+		\item \textbf{Instead}: Based on security of cryptographic hash functions
+		\item \textbf{Key insight}: Quantum computers don't break hash functions
+		      \begin{itemize}
+			      \item No known quantum algorithm for finding collisions
+			      \item No quantum speedup for finding preimages (beyond Grover's)
+		      \end{itemize}
+		\item \textbf{Security foundation}: If you can't invert hashes, you can't forge signatures
+		\item \textbf{History}: Ideas date back to 1979 (Lamport, Winternitz)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The building block: One-time signatures}
+	\begin{itemize}
+		\item \textbf{One-time signature}: Can sign only ONE message with each key
+		\item \textbf{Why accept this limitation?}
+		      \begin{itemize}
+			      \item Extremely simple construction
+			      \item Provably secure (if hash is secure)
+			      \item Building block for multi-use schemes
+		      \end{itemize}
+		\item \textbf{Real-world analogy}: Like a wax seal
+		      \begin{itemize}
+			      \item Break the seal to verify authenticity
+			      \item Can't reuse it for another letter
+			      \item Need a new seal for each message
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Winternitz One-Time Signature (WOTS)}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\textbf{Setup (for messages 0 to $w-1$):}
+			\begin{itemize}
+				\item Private key: Random string $K$
+				\item Public key: $\text{Hash}^w(K)$
+				      \begin{itemize}
+					      \item Apply hash $w$ times
+				      \end{itemize}
+			\end{itemize}
+
+			\textbf{To sign message $M$:}
+			\begin{itemize}
+				\item Signature: $\text{Hash}^M(K)$
+				\item Apply hash $M$ times to $K$
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{WOTS verification: Why it works}
+	\begin{itemize}
+		\item \textbf{Given}: Signature $S = \text{Hash}^M(K)$ for message $M$
+		\item \textbf{Verification}: Check if $\text{Hash}^{w-M}(S) = \text{Public Key}$
+		\item \textbf{Why this works}:
+		      \begin{align*}
+			      \text{Hash}^{w-M}(S) & = \text{Hash}^{w-M}(\text{Hash}^M(K)) \\
+			                           & = \text{Hash}^{(w-M)+M}(K)            \\
+			                           & = \text{Hash}^w(K)                    \\
+			                           & = \text{Public Key} \mycheckmark
+		      \end{align*}
+		\item \textbf{Security}: Can't go backwards in the hash chain!
+		      \begin{itemize}
+			      \item Given $\text{Hash}^5(K)$, can't compute $\text{Hash}^3(K)$
+			      \item Would require inverting the hash function
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{WOTS limitation 1: Signature forgery}
+	\begin{itemize}
+		\item \textbf{Critical flaw}: Can forge signatures for larger messages!
+		\item \textbf{Example}:
+		      \begin{itemize}
+			      \item You sign message $M = 3$: $S = \text{Hash}^3(K)$
+			      \item Attacker computes: $\text{Hash}(S) = \text{Hash}^4(K)$
+			      \item This is a valid signature for message $M = 4$!
+		      \end{itemize}
+		\item \textbf{General attack}: From signature of $M$, can forge any $M' > M$
+		\item \textbf{Fix}: Sign both $M$ and $w-M$ using two keys
+		      \begin{itemize}
+			      \item Signature: $(\text{Hash}^M(K_1), \text{Hash}^{w-M}(K_2))$
+			      \item Now increasing $M$ requires decreasing $w-M$
+			      \item But you can't go backwards in hash chains!
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{WOTS limitation 2: Message length}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\textbf{The problem with long messages:}
+			\begin{itemize}
+				\item 8-bit message: $M \in [0, 255]$
+				      \begin{itemize}
+					      \item Need up to 255 hash operations
+					      \item Manageable
+				      \end{itemize}
+				\item 32-bit message: $M \in [0, 2^{32}-1]$
+				      \begin{itemize}
+					      \item Need up to 4 billion hashes!
+					      \item Impractical
+				      \end{itemize}
+				\item 128-bit message: $M \in [0, 2^{128}-1]$
+				      \begin{itemize}
+					      \item Need up to $2^{128}$ hashes
+					      \item Impossible
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\textbf{Solution}: Split into chunks
+			\begin{itemize}
+				\item Break 32-bit message into four 8-bit chunks
+				\item Sign each chunk independently
+				\item Need 4 key pairs instead of 1
+				\item Maximum 255 hashes per chunk
+			\end{itemize}
+
+			\textbf{Trade-off}:
+			\begin{itemize}
+				\item More keys = larger signatures
+				\item But computation stays feasible
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{WOTS limitation 3: The one-time problem}
+	\begin{itemize}
+		\item \textbf{Critical security requirement}: Never reuse a key!
+		\item \textbf{What happens if you sign two messages?}
+		      \begin{itemize}
+			      \item Sign $M_1 = 2$: Reveal $\text{Hash}^2(K)$
+			      \item Sign $M_2 = 7$: Reveal $\text{Hash}^7(K)$
+			      \item Attacker can now compute $\text{Hash}^x(K)$ for any $x \in [2,7]$
+			      \item Can forge signatures for messages 3, 4, 5, 6!
+		      \end{itemize}
+		\item \textbf{With the two-key fix}: Even worse
+		      \begin{itemize}
+			      \item Multiple signatures reveal different points on both chains
+			      \item Attacker gains more forgery capabilities
+		      \end{itemize}
+		\item \textbf{No simple fix}: This is inherent to the construction
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{From one-time to many-time: Merkle trees}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The idea}: Use many OTS keys
+			\begin{itemize}
+				\item Generate $2^h$ one-time key pairs
+				\item Build a Merkle tree of public keys
+				\item Tree root = master public key
+				\item Each leaf = one signature
+			\end{itemize}
+
+			\textbf{To sign}:
+			\begin{itemize}
+				\item Use next unused OTS key
+				\item Include path to root as proof
+				\item Mark key as used (stateful!)
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{tikzpicture}[scale=0.7]
+				\node[draw,circle] (root) at (4,3) {Root};
+				\node[draw,circle] (n1) at (2,2) {};
+				\node[draw,circle] (n2) at (6,2) {};
+				\node[draw,circle] (n3) at (1,1) {};
+				\node[draw,circle] (n4) at (3,1) {};
+				\node[draw,circle] (n5) at (5,1) {};
+				\node[draw,circle] (n6) at (7,1) {};
+				\node[draw,rectangle] (pk1) at (0,0) {$PK_1$};
+				\node[draw,rectangle] (pk2) at (2,0) {$PK_2$};
+				\node[draw,rectangle] (pk3) at (4,0) {$PK_3$};
+				\node[draw,rectangle] (pk4) at (6,0) {$PK_4$};
+
+				\draw (root) -- (n1);
+				\draw (root) -- (n2);
+				\draw (n1) -- (n3);
+				\draw (n1) -- (n4);
+				\draw (n2) -- (n5);
+				\draw (n2) -- (n6);
+				\draw (n3) -- (pk1);
+				\draw (n3) -- (pk2);
+				\draw (n4) -- (pk3);
+				\draw (n4) -- (pk4);
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Modern hash-based signatures}
+	\begin{itemize}
+		\item \textbf{XMSS (eXtended Merkle Signature Scheme)}:
+		      \begin{itemize}
+			      \item Stateful: Must track which keys are used
+			      \item Smaller signatures than SPHINCS+
+			      \item Risk: Reusing state breaks security
+		      \end{itemize}
+		\item \textbf{SPHINCS+ (NIST standard: SLH-DSA)}:
+		      \begin{itemize}
+			      \item Stateless: No need to track used keys
+			      \item Larger signatures (tens of KB)
+			      \item Uses sophisticated tree structures
+			      \item ``Few-time'' signatures instead of one-time
+		      \end{itemize}
+		\item \textbf{Key limitation}: Signatures only!
+		      \begin{itemize}
+			      \item Hash functions are one-way
+			      \item Can't build encryption from one-way functions alone
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Hash-based crypto: The trade-offs}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Advantages:}
+			\begin{itemize}
+				\item[\mycheckmark] Simplest security assumption
+				\item[\mycheckmark] Well-understood (40+ years)
+				\item[\mycheckmark] Quantum resistant
+				\item[\mycheckmark] Fast verification
+				\item[\mycheckmark] Can be stateless
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Disadvantages:}
+			\begin{itemize}
+				\item[$\times$] Large signatures (10-50 KB)
+				\item[$\times$] Signatures only (no encryption)
+				\item[$\times$] Complex key generation
+				\item[$\times$] Stateful variants risky
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{5mm}
+	\begin{center}
+		\textbf{Bottom line}: Most conservative choice for long-term signatures
+	\end{center}
+\end{frame}
+
+\section{Today's Post-Quantum Protocols}
+
+\begin{frame}{NIST PQ standardization: The winners}
+	\begin{itemize}
+		\item \textbf{August 2024}: NIST released final standards after 8-year process
+		\item \textbf{Three primary standards} (with new names):
+	\end{itemize}
+
+	\begin{center}
+		\begin{tabular}{|l|l|l|}
+			\hline
+			\textbf{Original Name} & \textbf{Standard Name} & \textbf{Hard Problem} \\
+			\hline
+			\hline
+			\multicolumn{3}{|c|}{\textit{Key Encapsulation}}                        \\
+			\hline
+			CRYSTALS-Kyber         & ML-KEM                 & Module LWE            \\
+			\hline
+			\hline
+			\multicolumn{3}{|c|}{\textit{Digital Signatures}}                       \\
+			\hline
+			CRYSTALS-Dilithium     & ML-DSA                 & Module LWE            \\
+			FALCON                 & FN-DSA                 & NTRU lattice          \\
+			SPHINCS+               & SLH-DSA                & Hash functions        \\
+			\hline
+		\end{tabular}
+	\end{center}
+
+	\begin{itemize}
+		\item \textbf{ML}: Module Lattice
+		\item \textbf{FN}: Fast Fourier transform over NTRU
+		\item \textbf{SLH}: Stateless Hash-based
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Key Agreement vs Key Encapsulation}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Shared Secret Agreement (DH-style):}
+			\begin{itemize}
+				\item Both parties contribute randomness
+				\item Alice: $g^a$, Bob: $g^b$
+				\item Shared secret: $g^{ab}$
+				\item \textbf{Interactive}: Both parties actively compute
+				\item Traditional approach (RSA, ECDH)
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Key Encapsulation (KEM):}
+			\begin{itemize}
+				\item One party generates the key
+				\item Alice: Generates random key $k$
+				\item Alice: Encapsulates $k$ \rightarrow\ ciphertext $c$
+				\item Bob: Decapsulates $c$ \rightarrow\ key $k$
+				\item \textbf{Asymmetric}: One generates, one recovers
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{5mm}
+	\begin{center}
+		\textbf{Both achieve the same goal}: Establish a shared secret key
+	\end{center}
+\end{frame}
+
+\begin{frame}{KEMs use public/private key pairs}
+	\begin{itemize}
+		\item \textbf{KEMs still use asymmetric cryptography}:
+		      \begin{itemize}
+			      \item Bob has a public/private key pair $(pk_B, sk_B)$
+			      \item Bob's public key is shared openly
+			      \item Bob's private key is kept secret
+		      \end{itemize}
+		\item \textbf{The KEM process}:
+		      \begin{enumerate}
+			      \item Alice obtains Bob's public key $pk_B$
+			      \item Alice generates random shared secret $k$
+			      \item Alice encapsulates: $c = \text{Encaps}(pk_B, k)$
+			      \item Alice sends ciphertext $c$ to Bob
+			      \item Bob decapsulates: $k = \text{Decaps}(sk_B, c)$
+		      \end{enumerate}
+		\item \textbf{Security guarantee}: Only Bob (with $sk_B$) can recover $k$ from $c$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why KEMs for Post-Quantum?}{Why not do shared secret agreement like Diffie-Hellman?}
+	\begin{itemize}
+		\item \textbf{Efficiency with lattices/codes}:
+		      \begin{itemize}
+			      \item Natural fit: ``Encrypt'' a random key with public key
+			      \item Avoid complex reconciliation mechanisms
+			      \item Better bandwidth usage
+		      \end{itemize}
+		\item \textbf{There are probably other reasons and I should research what they are, TODO}
+	\end{itemize}
+\end{frame}
+
+\subsection{Post-Quantum TLS}
+
 % https://blog.cloudflare.com/pq-2024/
 
-\section{Post-Quantum Secure Messaging}
+\subsection{Post-Quantum Secure Messaging}
 % PQ3
 \begin{frame}{Apple iMessage: PQ3}
 	\bigimagewithcaption{pq3_apple.png}{Source: Apple Security Engineering and Architecture (SEAR)}
@@ -38,6 +1554,374 @@
 \begin{frame}{Slides not complete and may contain errors}
 	\begin{itemize}
 		\item This slide deck is not finished, may contain errors, and is missing important material. Do not rely on it yet.
+	\end{itemize}
+\end{frame}
+
+\section{How Things Can Go Wrong}
+
+\begin{frame}{Reality check: Post-quantum isn't perfect}
+	\begin{itemize}
+		\item \textbf{Post-quantum $\neq$ unbreakable}
+		\item \textbf{Fundamental challenge}: These schemes are newer
+		      \begin{itemize}
+			      \item RSA: 40+ years of cryptanalysis
+			      \item Elliptic curves: 30+ years
+			      \item Most PQ schemes: 10-20 years
+		      \end{itemize}
+		\item \textbf{Limited understanding brings risks}:
+		      \begin{itemize}
+			      \item Security levels harder to quantify
+			      \item Implementation pitfalls less understood
+			      \item Potential for unexpected attacks
+		      \end{itemize}
+		\item Let's explore what can go wrong\ldots
+	\end{itemize}
+\end{frame}
+
+\subsection{Unclear Security Levels}
+
+\begin{frame}{The deceptive strength problem}
+	\begin{itemize}
+		\item \textbf{Some schemes look incredibly strong on paper\ldots}
+		\item \textbf{Example}: Ring-LWE (Learning with Errors over polynomial rings)
+		      \begin{itemize}
+			      \item Can be proven as hard as NP-hard problems!
+			      \item Sounds amazing: NP-hard = practically unbreakable
+		      \end{itemize}
+		\item \textbf{But there's a catch}: ``If it looks too good to be true...''
+		\item \textbf{Real-world complications}:
+		      \begin{itemize}
+			      \item Security proofs only work for certain parameters
+			      \item Practical implementations use different parameters
+			      \item The gap between theory and practice can be exploited
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Asymptotic vs. concrete security}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Asymptotic security:}
+			\begin{itemize}
+				\item ``Secure as $n \rightarrow \infty$''
+				\item Mathematical proofs assume large parameters
+				\item Example: ``Secure for lattice dimension $> 10^6$''
+			\end{itemize}
+			\textbf{Concrete security:}
+			\begin{itemize}
+				\item What we actually use: $n = 512$
+				\item May be far from asymptotic regime
+				\item Security at practical parameters unclear
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.6]
+					\draw[->] (0,0) -- (8,0) node[right] {Parameter};
+					\draw[->] (0,0) -- (0,4) node[above] {Security};
+					\draw[thick,blue] (0,0.5) -- (7,3.5);
+					\draw[thick,red,dashed] (0,0.5) -- (2,1.5);
+					\draw[thick,red] (2,1.5) -- (2,0.3);
+					\filldraw[red] (2,0.3) circle (2pt);
+					\draw[<->] (0,-0.5) -- (2,-0.5) node[midway,below] {Practical};
+					\draw[<->] (5,-0.5) -- (7,-0.5) node[midway,below] {Asymptotic};
+					\node[blue] at (5,2.5) {Theory};
+					\node[red] at (3,0.8) {Reality?};
+				\end{tikzpicture}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The unknown attack landscape}
+	\begin{itemize}
+		\item \textbf{With RSA}: We know the best attacks
+		      \begin{itemize}
+			      \item Number Field Sieve for factoring
+			      \item Decades of optimization
+			      \item Can estimate security precisely
+		      \end{itemize}
+		\item \textbf{With lattice-based crypto}: Still discovering attacks
+		      \begin{itemize}
+			      \item New attack improvements regularly published
+			      \item Hard to predict future improvements
+			      \item Security estimates keep changing
+		      \end{itemize}
+		\item \textbf{Example}: NIST Round 2 eliminations
+		      \begin{itemize}
+			      \item Several ``secure'' schemes broken during competition
+			      \item Some had security proofs!
+			      \item Proofs were correct, but assumptions weren't
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\subsection{When Quantum Computers Arrive}
+
+\begin{frame}{Breaking news from 2048\ldots}
+	\begin{itemize}
+		\item \textbf{The nightmare scenario}: Large quantum computer suddenly exists
+		\item \textbf{All classical crypto broken overnight}
+		\item But not all cryptographic uses are equally doomed...
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Digital signatures: The recoverable disaster}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\textbf{If quantum computers break your signatures:}
+			\begin{enumerate}
+				\item Generate new PQ key pairs
+				\item Re-sign all your documents
+				\item Revoke old (broken) public keys
+				\item Distribute new public keys
+			\end{enumerate}
+
+			\textbf{Why this works:}
+			\begin{itemize}
+				\item Signatures prove authenticity \textit{now}
+				\item Can create new proof of authenticity
+				\item Old signatures being broken is bad, but fixable
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\textbf{Timeline:}
+			\begin{tikzpicture}[scale=0.7]
+				\draw[->] (0,0) -- (0,5);
+				\draw[thick,red] (0,0) -- (0,2) node[right,pos=0.5] {Classical sigs};
+				\filldraw[red] (0,2) circle (3pt) node[right] {QC arrives};
+				\draw[thick,green!70!black] (0,2) -- (0,5) node[right,pos=0.5] {PQ sigs};
+				\node[left] at (0,0) {Past};
+				\node[left] at (0,5) {Future};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Encryption: The unrecoverable disaster}
+	\begin{itemize}
+		\item \textbf{The fundamental problem}: Encryption protects \textit{past} data
+		\item \textbf{If quantum computers break your encryption}:
+		      \begin{itemize}
+			      \item All recorded ciphertexts can be decrypted
+			      \item Original plaintext is revealed
+			      \item Can't ``un-reveal'' information
+			      \item Re-encrypting with PQ crypto is pointless
+		      \end{itemize}
+		\item \textbf{Real impact}:
+		      \begin{itemize}
+			      \item Medical records from 2020s exposed
+			      \item Government secrets from decades past revealed
+			      \item Corporate communications laid bare
+		      \end{itemize}
+		\item \textbf{This is why ``harvest now, decrypt later'' matters!}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Key agreement: It's complicated}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\textbf{Simple Diffie-Hellman:}
+			\begin{itemize}
+				\item Alice: $g^a$, Bob: $g^b$
+				\item Shared: $g^{ab}$
+				\item \textcolor{red}{Quantum computer recovers $a$ or $b$}
+				\item \textcolor{red}{All past communications compromised}
+			\end{itemize}
+
+			\textbf{Modern protocols (Signal):}
+			\begin{itemize}
+				\item New DH for each message
+				\item Keys depend on message history
+				\item Even with QC, need full conversation
+				\item \textcolor{green!70!black}{Much harder to break retroactively}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{Implementation Vulnerabilities}
+
+\begin{frame}{The implementation gap}
+	\begin{center}
+		\begin{tikzpicture}[scale=1]
+			\node[draw,rectangle,minimum width=3cm,minimum height=1.5cm,fill=blue!20] (theory) at (0,0) {Perfect Algorithm};
+			\node[draw,rectangle,minimum width=3cm,minimum height=1.5cm,fill=red!20] (practice) at (6,0) {Real Implementation};
+			\draw[->,thick] (theory) -- (practice) node[midway,above] {Translation};
+			\draw[->,thick,red] (3,-1) -- (practice) node[near start,below] {Bugs};
+			\draw[->,thick,red] (3,1) -- (practice) node[near start,above] {Side channels};
+			\draw[->,thick,red] (7,1) -- (practice) node[near start,right] {Optimization errors};
+		\end{tikzpicture}
+	\end{center}
+	\begin{itemize}
+		\item \textbf{Theory}: Algorithm is perfectly secure
+		\item \textbf{Practice}: Implementation has vulnerabilities
+		\item \textbf{The gap}: Where security breaks down
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{A cautionary tale: The semicolon bug}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\textbf{Actual bug in Apple's SSL/TLS (2014):}
+			\begin{verbatim}
+if ((err = SSLHashSHA1.update(&hashCtx,
+      &signedParams)) != 0)
+    goto fail;
+    goto fail;  // <-- Extra goto!
+// This code always skipped:
+if ((err = SSLHashSHA1.final(&hashCtx,
+      &hashOut)) != 0)
+    goto fail;
+   \end{verbatim}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\textbf{Impact:}
+			\begin{itemize}
+				\item Signature verification bypassed
+				\item Any certificate accepted
+				\item Complete security failure
+				\item From one duplicated line!
+			\end{itemize}
+
+			\textbf{Lesson:} Even ``unbreakable'' crypto fails with implementation bugs
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Side-channel attacks: The hidden threat}
+	\begin{itemize}
+		\item \textbf{What are side channels?}
+		      \begin{itemize}
+			      \item Information leaked during computation
+			      \item Not through the algorithm itself
+			      \item Through physical effects
+		      \end{itemize}
+		\item \textbf{Common side channels}:
+		      \begin{itemize}
+			      \item \textbf{Timing}: Operations take different times
+			      \item \textbf{Power}: Different operations use different power
+			      \item \textbf{Cache}: Memory access patterns reveal secrets
+			      \item \textbf{Electromagnetic}: EM emissions during computation
+		      \end{itemize}
+		\item \textbf{Why PQ crypto is vulnerable}: Complex mathematical operations
+		      \begin{itemize}
+			      \item Matrix multiplications (lattice-based)
+			      \item Polynomial operations (code-based)
+			      \item Many conditional branches
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{KyberSlash: A real-world PQ vulnerability}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{What}: Timing attack on Kyber implementations\footnote{\url{https://appliedcryptography.page/papers/\#kyber-slash}} (Dec 2023)
+				\item \textbf{Affected}: Multiple ``production-ready'' Kyber libraries
+				\item \textbf{The vulnerability}:
+				      \begin{itemize}
+					      \item Division operations in decoding took variable time
+					      \item Time depended on secret polynomial coefficients
+					      \item Attacker measures decryption times
+					      \item Recovers secret key within a couple million queries
+				      \end{itemize}
+				\item \textbf{Impact}: Complete key recovery in ``secure'' implementations!
+				\item \textbf{Lesson}: Even NIST-standardized PQ crypto had critical flaws
+				      \begin{itemize}
+					      \item Years of review missed this
+					      \item ``Constant-time'' code wasn't
+					      \item Shows immaturity of PQ implementations
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Timing attacks on post-quantum crypto}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Example: Gaussian sampling in lattices}
+			\begin{itemize}
+				\item Need to sample from discrete Gaussian
+				\item Rejection sampling: variable time
+				\item Time depends on secret values!
+			\end{itemize}
+
+			\textbf{Attack scenario:}
+			\begin{enumerate}
+				\item Measure decryption times
+				\item Infer error vector properties
+				\item Recover secret key
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.8]
+					\begin{axis}[
+							xlabel={Secret value},
+							ylabel={Time (cycles)},
+							xmin=0, xmax=10,
+							ymin=800, ymax=1200,
+							width=7cm,
+							height=5cm,
+							grid=major,
+						]
+						\addplot[blue, thick, mark=*, mark size=2pt] coordinates {
+								(1,850) (2,890) (3,950) (4,1050)
+								(5,1100) (6,1080) (7,1020) (8,940)
+								(9,880) (10,860)
+							};
+					\end{axis}
+				\end{tikzpicture}
+
+				Timing reveals secret information!
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The ironic twist}
+	\begin{itemize}
+		\item \textbf{The paradox}: PQ schemes may initially be LESS secure than classical!
+		\item \textbf{Why?}
+		      \begin{itemize}
+			      \item RSA/ECC: 40 years of implementation hardening
+			      \item Constant-time implementations well understood
+			      \item Side-channel protections mature
+		      \end{itemize}
+		\item \textbf{Post-quantum crypto}:
+		      \begin{itemize}
+			      \item New implementations = new bugs
+			      \item Complex operations = more side channels
+			      \item Less implementation experience
+		      \end{itemize}
+		\item \textbf{Timeline of maturity}:
+		      \begin{itemize}
+			      \item Years 1-5: Discovering vulnerabilities
+			      \item Years 5-10: Developing countermeasures
+			      \item Years 10+: Mature, hardened implementations
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Lessons learned}
+	\begin{itemize}
+		\item \textbf{Post-quantum $\neq$ post-security-concerns}
+		\item \textbf{Key challenges remain}:
+		      \begin{enumerate}
+			      \item Unclear concrete security levels
+			      \item Implementation vulnerabilities
+			      \item Side-channel attacks
+			      \item The ``harvest now, decrypt later'' threat
+		      \end{enumerate}
+		\item \textbf{Best practices}:
+		      \begin{itemize}
+			      \item Use conservative parameters
+			      \item Implement hybrid solutions (classical + PQ)
+			      \item Invest in secure implementations
+			      \item Plan for crypto-agility
+		      \end{itemize}
 	\end{itemize}
 \end{frame}
 
