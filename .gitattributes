@@ -7,7 +7,7 @@
 *.svg filter=lfs diff=lfs merge=lfs -text
 *.ico filter=lfs diff=lfs merge=lfs -text
 website/view/** filter=lfs diff=lfs merge=lfs -text linguist-vendored
-website/fonts/** filter=lfs diff=lfs merge=lfs -text linguist-vendored
+website/res/fonts/** filter=lfs diff=lfs merge=lfs -text linguist-vendored
 misc/fonts/*.ttf filter=lfs diff=lfs merge=lfs -text linguist-vendored
 misc/fonts/*.otf filter=lfs diff=lfs merge=lfs -text linguist-vendored
 misc/fonts/*.woff filter=lfs diff=lfs merge=lfs -text linguist-vendored
