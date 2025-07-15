@@ -1651,6 +1651,39 @@
 	\bigimagewithcaption{aead_scenario_4.pdf}{Source: The Joy of Cryptography}
 \end{frame}
 
+\begin{frame}{The Fujisaki-Okamoto Transform}{From CPA to CCA in public-key encryption}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item What about public-key encryption?
+				\item Many public-key schemes (RSA, ElGamal) are only CPA-secure.
+				\item The \textbf{Fujisaki-Okamoto (FO) transform} converts CPA-secure PKE to CCA-secure PKE.
+				\item Basic idea:
+				      \begin{itemize}
+					      \item Use randomness derived from the message itself.
+					      \item Add redundancy that can be verified during decryption.
+					      \item Invalid ciphertexts will fail verification.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\definitionbox{FO Transform (simplified)}{
+				Given CPA-secure PKE scheme $\Pi$:
+				\begin{itemize}
+					\item $\texttt{Enc}_{FO}(pk, M)$:
+					      \begin{enumerate}
+						      \item $R \coloneq H(M)$
+						      \item $C_1 \coloneq \Pi.\texttt{Enc}(pk, M; R)$
+						      \item $C_2 \coloneq G(M) \oplus R'$
+						      \item Return $(C_1, C_2)$
+					      \end{enumerate}
+					\item Decryption verifies consistency
+				\end{itemize}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}[plain]
 	\titlepage
 \end{frame}
