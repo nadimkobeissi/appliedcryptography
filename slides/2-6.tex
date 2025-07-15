@@ -66,15 +66,16 @@
 
 \begin{frame}{Physical challenges: Why qubits are so difficult}
 	\begin{itemize}
-		\item \textbf{Size requirements}: Qubits must be smaller than atoms
+		\item \textbf{Size requirements}: Qubits are difficult to physically manipulate
 		      \begin{itemize}
 			      \item Individual photons, electrons, or atomic nuclei
+			      \item Some approaches (superconducting) have larger qubits
 			      \item Impossible to manipulate with conventional tools
 			      \item Require laser beams or electromagnetic fields for control
 		      \end{itemize}
 		\item \textbf{Temperature requirements}: Near absolute zero (-273\degree\ C)
 		      \begin{itemize}
-			      \item Even tiny amounts of heat destroy quantum states
+			      \item For some quantum systems, tiny amounts of heat destroy quantum states
 			      \item Requires dilution refrigerators costing millions
 			      \item More cooling power needed as system scales
 		      \end{itemize}
@@ -135,26 +136,29 @@
 \end{frame}
 
 \begin{frame}{Grover's algorithm: attacking symmetric cryptography}
-	\begin{itemize}
-		\item \textbf{Attack setup}: Obtain known plaintext-ciphertext pairs
-		      \begin{itemize}
-			      \item $C_1 = \text{Enc}(K, M_1)$, $C_2 = \text{Enc}(K, M_2)$, ..., $C_m = \text{Enc}(K, M_m)$
-		      \end{itemize}
-		\item \textbf{Define search function}:
-		      \begin{align*}
-			      F(K) = \begin{cases}
-				             1 & \text{if } \text{Dec}(K, C_i) = M_i \text{ for all } i \\
-				             0 & \text{otherwise}
-			             \end{cases}
-		      \end{align*}
-		\item \textbf{Result}: Grover finds the correct key in $O(2^{\lambda/2})$ time
-		\item \textbf{Defense}: Double the key size
-		      \begin{itemize}
-			      \item AES-128 $\rightarrow$ AES-256 (to maintain 128-bit security)
-			      \item SHA-256 $\rightarrow$ SHA-512 (for collision resistance)
-		      \end{itemize}
-		\item \textbf{Note}: Grover's algorithm is inherently sequential (cannot be parallelized efficiently)
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Attack setup}: Obtain known plaintext-ciphertext pairs
+				      \begin{itemize}
+					      \item $C_1 = \text{Enc}(K, M_1)$, $C_2 = \text{Enc}(K, M_2)$, ..., $C_m = \text{Enc}(K, M_m)$
+				      \end{itemize}
+				\item \textbf{Define search function}:
+				      \begin{align*}
+					      F(K) = \begin{cases}
+						             1 & \text{if } \text{Dec}(K, C_i) = M_i \text{ for all } i \\
+						             0 & \text{otherwise}
+					             \end{cases}
+				      \end{align*}
+				\item \textbf{Result}: Grover finds the correct key in $O(2^{\lambda/2})$ time\footnote{Note: Grover's algorithm is inherently sequential (cannot be parallelized efficiently)}
+				\item \textbf{Defense}: Double the key size\footnote{Cryptographers argue about this recommendation in different points, some thinking it's too simplistic, others thinking that with hash functions, you may not need to go from SHA-256 to SHA-512 with SHA-384 being enough, etc.}
+				      \begin{itemize}
+					      \item AES-128 $\rightarrow$ AES-256 (to maintain 128-bit security)
+					      \item SHA-256 $\rightarrow$ SHA-512 (for collision resistance)
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Shor's algorithm: summary}
@@ -210,22 +214,26 @@
 \end{frame}
 
 \begin{frame}{Not all cryptography is equally vulnerable}
-	\begin{itemize}
-		\item \textbf{Asymmetric cryptography}: Severely impacted by quantum computers
-		      \begin{itemize}
-			      \item RSA, ECC, DH $\rightarrow$ Completely broken by Shor's algorithm
-		      \end{itemize}
-		\item \textbf{Symmetric cryptography}: Less impacted
-		      \begin{itemize}
-			      \item AES, SHA-256 $\rightarrow$ Weakened but not broken
-			      \item Grover's algorithm: Provides quadratic speedup
-			      \item Solution: Double the key size (AES-128 $\rightarrow$ AES-256)
-		      \end{itemize}
-		\item \textbf{Hash functions}: Similar to symmetric crypto
-		      \begin{itemize}
-			      \item Need larger output sizes to maintain security
-		      \end{itemize}
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Asymmetric cryptography}: Severely impacted by quantum computers
+				      \begin{itemize}
+					      \item RSA, ECC, DH $\rightarrow$ Completely broken by Shor's algorithm
+				      \end{itemize}
+				\item \textbf{Symmetric cryptography}: Less impacted
+				      \begin{itemize}
+					      \item AES, SHA-256 $\rightarrow$ Weakened but not broken
+					      \item Grover's algorithm: Provides quadratic speedup
+					      \item Solution: Double the key size (AES-128 $\rightarrow$ AES-256)\footnote{Cryptographers argue about this recommendation in different points, some thinking it's too simplistic, others thinking that with hash functions, you may not need to go from SHA-256 to SHA-512 with SHA-384 being enough, etc.}
+				      \end{itemize}
+				\item \textbf{Hash functions}: Similar to symmetric crypto
+				      \begin{itemize}
+					      \item Need larger output sizes to maintain security
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Timeline: when will quantum computing arrive?}
@@ -244,6 +252,10 @@
 
 \begin{frame}{Timeline: when will quantum computing arrive?}
 	\bigimagewithcaption{quantum_threat.png}{Source: Michele Mosca and Marco Piani, Quantum Threat Timeline Report, Global Risk Institute, 2024.}
+\end{frame}
+
+\begin{frame}{Timeline: according to Sam Jaques}
+	\bigimagewithcaption{quantum_timeline.png}{Source: Sam Jaques}
 \end{frame}
 
 \begin{frame}{Reality check: Current quantum factorization records}
@@ -295,8 +307,6 @@
 
 \begin{frame}{The gap between hype and reality}
 	\begin{itemize}
-		\item \textbf{Claimed}: ``Quantum computers will break all encryption''
-		\item \textbf{Reality}: Can't reliably factor 35 after 24 years of research
 		\item \textbf{Claimed}: ``RSA-2048 factored by quantum computer''
 		\item \textbf{Reality}: Used specially constructed weak keys, solvable on 1980s hardware
 		\item \textbf{Estimated timeline}: 10-30 years to cryptographically relevant quantum computers
@@ -1578,13 +1588,39 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{X-Wing: An optimized hybrid KEM}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{What is X-Wing?}
+				      \begin{itemize}
+					      \item Purpose-built hybrid KEM combining X25519 and ML-KEM-768\footnote{\url{https://appliedcryptography.page/papers/\#xwing-hybrid}}
+					      \item Designed to be ``the sensible choice for most applications''
+				      \end{itemize}
+				\item \textbf{Efficiency gains}:
+				      \begin{itemize}
+					      \item Tailored construction beats generic KEM combiners
+					      \item Takes advantage of specific properties of X25519 and ML-KEM-768
+				      \end{itemize}
+				\item \textbf{Security guarantees}:
+				      \begin{itemize}
+					      \item Secure if \textbf{either} X25519 OR ML-KEM-768 remains secure
+					      \item Classical security: IND-CCA if strong DH holds (proven in ROM)
+					      \item Post-quantum security: IND-CCA if ML-KEM-768 is IND-CCA (standard model)
+				      \end{itemize}
+				\item Concrete choices enable both optimizations and stronger proofs!
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \subsection{Post-Quantum TLS}
 
 \begin{frame}{TLS migration timeline}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
-				\item \textbf{February 2024}: TLS 1.3 adoption reaches critical mass\footnote{Much of the slides in this subsection are based on Bas Westerbaan's excellent blog post over at Cloudflare, but have been updated to account for developments in 2024 and 2025: \url{https://blog.cloudflare.com/pq-2024/}}
+				\item \textbf{February 2024}: PQ TLS 1.3 adoption reaches critical mass\footnote{Much of the slides in this subsection are based on Bas Westerbaan's excellent blog post over at Cloudflare, but have been updated to account for developments in 2024 and 2025: \url{https://blog.cloudflare.com/pq-2024/}}
 				\item \textbf{QUIC protocol}: Uses TLS 1.3 under the hood
 				      \begin{itemize}
 					      \item Modern transport protocol by Google
@@ -1684,6 +1720,9 @@
 		      \begin{itemize}
 			      \item NTRU-HRSS: Good performance, similar to ML-KEM
 			      \item SIKE: Small keys but slow, \textcolor{red}{completely broken in 2022}
+			            \begin{itemize}
+				            \item Good argument for hybrid cryptosystems that combine both classical and PQ crypto!
+			            \end{itemize}
 			      \item Handshake times nearly identical to classical crypto
 		      \end{itemize}
 		\item \textbf{But}: Compatibility issues emerged...
@@ -1729,10 +1768,7 @@
 			\textbf{Browsers have begun implementing PQ TLS:}
 			\begin{itemize}
 				\item Started with Chrome, now others following
-				\item In total, now 38\% of all TLS connections
-				      \begin{itemize}
-					      \item Estimate privately shared by an industry source
-				      \end{itemize}
+				\item In total, now 38\% of all TLS connection\footnote{\url{https://radar.cloudflare.com/adoption-and-usage\#post-quantum-encryption-adoption}}
 			\end{itemize}
 			\textbf{Other browsers:}
 			\begin{itemize}
@@ -2298,6 +2334,10 @@
 	\bigimagewithcaption{quantum_threat.png}{Source: Michele Mosca and Marco Piani, Quantum Threat Timeline Report, Global Risk Institute, 2024.}
 \end{frame}
 
+\begin{frame}{Timeline: according to Sam Jaques}
+	\bigimagewithcaption{quantum_timeline.png}{Source: Sam Jaques}
+\end{frame}
+
 \begin{frame}{Threat actors: Who gets QC first?}
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}
@@ -2400,12 +2440,14 @@
 \begin{frame}{The deceptive strength problem}
 	\begin{itemize}
 		\item \textbf{Some schemes look incredibly strong on paper\ldots}
-		\item \textbf{Example}: Ring-LWE (Learning with Errors over polynomial rings)
+		\item \textbf{Example}: McEliece (hardness of decoding a linear code with insufficient information)
 		      \begin{itemize}
-			      \item Can be proven as hard as NP-hard problems!
-			      \item Sounds amazing: NP-hard = practically unbreakable
+			      \item In the worst case, some argue could be proven NP-hard
+			      \item Sounds amazing: NP-hard = practically unbreakable!
+			      \item But cryptographic problems are based on the average case, not the worst case\ldots
+			      \item And the claim of NP-hardness even here is debated\ldots
 		      \end{itemize}
-		\item \textbf{But there's a catch}: ``If it looks too good to be true...''
+		\item \textbf{Tthere's a catch}: ``If it looks too good to be true...''
 		\item \textbf{Real-world complications}:
 		      \begin{itemize}
 			      \item Security proofs only work for certain parameters
@@ -2442,8 +2484,8 @@
 					\filldraw[red] (2,0.3) circle (2pt);
 					\draw[<->] (0,-0.5) -- (2,-0.5) node[midway,below] {Practical};
 					\draw[<->] (5,-0.5) -- (7,-0.5) node[midway,below] {Asymptotic};
-					\node[blue] at (5,2.5) {Theory};
-					\node[red] at (3,0.8) {Reality?};
+					\node[blue] at (5,3.5) {Theory};
+					\node[red] at (3.5,0.8) {Reality?};
 				\end{tikzpicture}
 			\end{center}
 		\end{column}
@@ -2474,65 +2516,187 @@
 \end{frame}
 
 \subsection{When Quantum Computers Arrive}
-
 \begin{frame}{Breaking news from 2048\ldots}
 	\begin{itemize}
 		\item \textbf{The nightmare scenario}: Large quantum computer suddenly exists
 		\item \textbf{All classical crypto broken overnight}
-		\item But not all cryptographic uses are equally doomed...
+		\item \textbf{Common misconception}: ``Signatures are recoverable, encryption isn't''
+		\item \textbf{Reality}: It depends on where the crypto lives...
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Digital signatures: The recoverable disaster}
+\begin{frame}{Digital signatures: Not always recoverable}
 	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
-			\textbf{If quantum computers break your signatures:}
-			\begin{enumerate}
-				\item Generate new PQ key pairs
-				\item Re-sign all your documents
-				\item Revoke old (broken) public keys
-				\item Distribute new public keys
-			\end{enumerate}
-
-			\textbf{Why this works:}
+		\begin{column}{0.5\textwidth}
+			\textbf{Software signatures:}
 			\begin{itemize}
-				\item Signatures prove authenticity \textit{now}
-				\item Can create new proof of authenticity
-				\item Old signatures being broken is bad, but fixable
+				\item Generate new PQ keys
+				\item Re-sign and re-deploy
+				\item Revoke old keys
+				\item \textcolor{green!70!black}{Recoverable}
+			\end{itemize}
+			\vspace{3mm}
+			\textbf{Hardware signatures:}
+			\begin{itemize}
+				\item Keys burned in ROM/fuses
+				\item Can't update silicon
+				\item Foundation of all security
+				\item \textcolor{red}{Permanently broken}
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.4\textwidth}
-			\textbf{Timeline:}
-			\begin{tikzpicture}[scale=0.7]
-				\draw[->] (0,0) -- (0,5);
-				\draw[thick,red] (0,0) -- (0,2) node[right,pos=0.5] {Classical sigs};
-				\filldraw[red] (0,2) circle (3pt) node[right] {QC arrives};
-				\draw[thick,green!70!black] (0,2) -- (0,5) node[right,pos=0.5] {PQ sigs};
-				\node[left] at (0,0) {Past};
-				\node[left] at (0,5) {Future};
-			\end{tikzpicture}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.8]
+					\draw[thick] (0,0) rectangle (4,1) node[midway] {Application};
+					\draw[thick] (0,-1.2) rectangle (4,-0.2) node[midway] {OS};
+					\draw[thick] (0,-2.4) rectangle (4,-1.4) node[midway] {Bootloader};
+					\draw[thick,red] (0,-3.6) rectangle (4,-2.6) node[midway] {ROM/Hardware};
+					\draw[<-,red,thick] (4.2,-3.1) -- (5.5,-3.1) node[right] {Immutable!};
+				\end{tikzpicture}
+			\end{center}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Encryption: The unrecoverable disaster}
+\begin{frame}{The hardware root of trust problem}
 	\begin{itemize}
-		\item \textbf{The fundamental problem}: Encryption protects \textit{past} data
-		\item \textbf{If quantum computers break your encryption}:
+		\item \textbf{Every device starts with hardware-based security:}
 		      \begin{itemize}
-			      \item All recorded ciphertexts can be decrypted
-			      \item Original plaintext is revealed
-			      \item Can't ``un-reveal'' information
-			      \item Re-encrypting with PQ crypto is pointless
+			      \item ROM code executes first
+			      \item Public keys in fuses/OTP memory
+			      \item Hardware crypto accelerators
+			      \item Debug unlock mechanisms
 		      \end{itemize}
-		\item \textbf{Real impact}:
+		\item \textbf{Secure boot chain}: Each stage verifies the next
 		      \begin{itemize}
-			      \item Medical records from 2020s exposed
-			      \item Government secrets from decades past revealed
-			      \item Corporate communications laid bare
+			      \item ROM verifies bootloader signature
+			      \item Bootloader verifies OS signature
+			      \item OS verifies application signatures
 		      \end{itemize}
-		\item \textbf{This is why ``store now, decrypt later'' matters!}
+		\item \textbf{If ROM keys are broken}: \textcolor{red}{Entire chain collapses}
+		      \begin{itemize}
+			      \item Can install any bootloader
+			      \item Bypass all security checks
+			      \item Device permanently compromised
+		      \end{itemize}
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Long-lived infrastructure: The real disaster}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\textbf{Consumer devices:}
+			\begin{itemize}
+				\item Phones: 2-3 year lifecycle
+				\item Laptops: 3-5 years
+				\item \textcolor{green!70!black}{Painful but manageable}
+			\end{itemize}
+			\vspace{3mm}
+			\textbf{Critical infrastructure:}
+			\begin{itemize}
+				\item Power plants: 30-50 years?
+				\item Aircraft: 20-30 years?
+				\item Satellites: 10-15 years?
+				\item Military systems: 20-40 years?
+				\item \textcolor{red}{Replacement = \$billions}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\textbf{The \$20 chip problem:}
+			\begin{itemize}
+				\item Cheap secure element
+				\item Deeply embedded everywhere
+				\item Controls \$1M+ equipment
+				\item Can't extract and replace
+			\end{itemize}
+			\vspace{3mm}
+			\textbf{Example}: Car ECUs
+			\begin{itemize}
+				\item Cars may have multiple ECUs
+				\item Each has secure boot
+				\item Cars last 10-20 years
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Encryption vs signatures: Both can be catastrophic}
+	\begin{center}
+		\begin{tabular}{|l|c|c|}
+			\hline
+			\textbf{Attack Type}     & \textbf{Encryption}      & \textbf{Signatures}        \\
+			\hline
+			\hline
+			\textbf{Past data}       & \textcolor{red}{Exposed} & Historical record damaged  \\
+			\hline
+			\textbf{Future security} & Can use PQ crypto        & \textcolor{red}{HW broken} \\
+			\hline
+			\textbf{Recovery cost}   & Re-encrypt (if possible) & Replace hardware           \\
+			\hline
+			\textbf{Timeline}        & Immediate exposure       & Permanent vulnerability    \\
+			\hline
+			\textbf{Worst case}      & Secrets revealed         & Infrastructure compromised \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{3mm}
+	\begin{center}
+		\textbf{Reality}: Both are potential disasters with different characteristics
+	\end{center}
+\end{frame}
+
+\begin{frame}{Real-world impact of broken hardware signatures}
+	\begin{itemize}
+		\item \textbf{Secure boot bypass}: Install any firmware
+		      \begin{itemize}
+			      \item Persistent malware
+			      \item Undetectable rootkits
+			      \item Complete device control
+		      \end{itemize}
+		\item \textbf{Debug interface unlock}: Full hardware access
+		      \begin{itemize}
+			      \item Extract all secrets
+			      \item Modify hardware behavior
+			      \item Bypass all protections
+		      \end{itemize}
+		\item \textbf{Supply chain attacks}: Counterfeit components
+		      \begin{itemize}
+			      \item Fake firmware updates
+			      \item Trojan hardware accepted as genuine
+			      \item No way to verify authenticity
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The true cost of ``Q-day'' for signatures}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Software systems:}
+			\begin{itemize}
+				\item Cost: Engineering time
+				\item Timeline: Weeks to months
+				\item Impact: Service disruption
+			\end{itemize}
+			\vspace{5mm}
+			\textbf{Hardware systems:}
+			\begin{itemize}
+				\item Cost: Full replacement
+				\item Timeline: Years to decades
+				\item Impact: Systemic failure
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Cost estimates:}
+			\begin{itemize}
+				\item Power grid: Billions?
+				\item Military fleet: Billions?
+				\item Global auto industry: Trillions?
+				\item Satellite constellation: Who knows
+			\end{itemize}
+			\vspace{3mm}
+			\textbf{Bottom line}: Potentially massive cost
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Key agreement: It's complicated}
