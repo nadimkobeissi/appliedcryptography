@@ -72,7 +72,7 @@
 			      \item Impossible to manipulate with conventional tools
 			      \item Require laser beams or electromagnetic fields for control
 		      \end{itemize}
-		\item \textbf{Temperature requirements}: Near absolute zero (-273°C)
+		\item \textbf{Temperature requirements}: Near absolute zero (-273\degree\ C)
 		      \begin{itemize}
 			      \item Even tiny amounts of heat destroy quantum states
 			      \item Requires dilution refrigerators costing millions
@@ -120,7 +120,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Grover's algorithm: formal description}
+\begin{frame}{Grover's algorithm: summary}
 	\begin{itemize}
 		\item \textbf{Grover's algorithm}: Quantum algorithm for searching unsorted databases
 		\item \textbf{Classical search}: $O(2^n)$ time to search $2^n$ items
@@ -157,7 +157,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Shor's algorithm: formal description}
+\begin{frame}{Shor's algorithm: summary}
 	\begin{itemize}
 		\item In 1994, Peter Shor demonstrated that quantum computers could break most asymmetric-key cryptography in polynomial time
 		\item \textbf{Claim}: There are quantum algorithms for the following tasks, whose running time is polynomial in $k$:
@@ -257,24 +257,6 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{The sleight-of-hand problem}
-	\begin{itemize}
-		\item Most quantum factorization claims use specially constructed ``sleight-of-hand'' numbers
-		\item \textbf{Example}: RSA-2048 ``factorization'' claims
-		      \begin{itemize}
-			      \item Factors chosen to differ by only 2 or 6
-			      \item Real RSA keys require factors to differ by >100 bits
-			      \item Can be factored with simple square root calculation
-		      \end{itemize}
-		\item \textbf{Common tricks}:
-		      \begin{itemize}
-			      \item Numbers with special binary patterns (mostly zeros)
-			      \item Preprocessing on classical computers
-			      \item ``Compiled'' algorithms that know the answer in advance
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
 \begin{frame}{Alternative ``quantum'' factorization methods}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
@@ -291,6 +273,24 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{The sleight-of-hand problem}
+	\begin{itemize}
+		\item Most quantum factorization claims use specially constructed ``sleight-of-hand'' numbers
+		\item \textbf{Example}: RSA-2048 ``factorization'' claims
+		      \begin{itemize}
+			      \item Factors chosen to differ by only 2 or 6
+			      \item Real RSA keys require factors to differ by >100 bits
+			      \item Can be factored with simple square root calculation
+		      \end{itemize}
+		\item \textbf{Common tricks}:
+		      \begin{itemize}
+			      \item Numbers with special binary patterns (mostly zeros)
+			      \item Preprocessing on classical computers
+			      \item ``Compiled'' algorithms that know the answer in advance
+		      \end{itemize}
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{The gap between hype and reality}
@@ -984,6 +984,38 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{The Fujisaki-Okamoto Transform}{Reminder}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item Many public-key schemes (RSA, ElGamal) are only CPA-secure.
+				\item The \textbf{Fujisaki-Okamoto (FO) transform} converts CPA-secure PKE to CCA-secure PKE.
+				\item Basic idea:
+				      \begin{itemize}
+					      \item Use randomness derived from the message itself.
+					      \item Add redundancy that can be verified during decryption.
+					      \item Invalid ciphertexts will fail verification.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\definitionbox{FO Transform (simplified)}{
+				Given CPA-secure PKE scheme $\Pi$:
+				\begin{itemize}
+					\item $\texttt{Enc}_{FO}(pk, M)$:
+					      \begin{enumerate}
+						      \item $R \coloneq H(M)$
+						      \item $C_1 \coloneq \Pi.\texttt{Enc}(pk, M; R)$
+						      \item $C_2 \coloneq G(M) \oplus R'$
+						      \item Return $(C_1, C_2)$
+					      \end{enumerate}
+					\item Decryption verifies consistency
+				\end{itemize}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{LWE/Lattice-based crypto: The trade-offs}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -1183,7 +1215,7 @@
 			\end{itemize}
 
 			\vspace{5mm}
-			\textbf{Perspective}: Is 100 KB really too big in 2024?
+			\textbf{Perspective}: Is 100 KB really too big today?
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1743,13 +1775,13 @@
 					      \item Like Chrome's approach
 					      \item 0.34\% connection failures observed
 				      \end{itemize}
-				\item \textbf{Safe way}: Wait for HelloRetryRequest
+				\item \textbf{Safe way}: Wait for \texttt{HelloRetryRequest}
 				      \begin{itemize}
 					      \item Extra round trip
 					      \item 100\% compatibility
 				      \end{itemize}
 			\end{itemize}
-			\textbf{Failure causes}: Large ClientHello + incorrect HelloRetryRequest handling
+			\textbf{Failure causes}: Large \texttt{ClientHello} + incorrect \texttt{HelloRetryRequest} handling
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1776,8 +1808,6 @@
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
-
-% https://blog.cloudflare.com/pq-2024/
 
 \subsection{Post-Quantum Secure Messaging}
 % PQ3
@@ -2022,7 +2052,7 @@
 		\item \textbf{Katana}: New RKEM based on Kyber
 		      \begin{itemize}
 			      \item 37\% smaller than naive Kyber approach
-			      \item At 192-bit security: 1416 bytes vs 2272 bytes
+			      \item At 192-bit security: 1,416 bytes vs 2,272 bytes
 			      \item Provably secure under hint-MLWE
 		      \end{itemize}
 	\end{itemize}
@@ -2121,7 +2151,7 @@
 					      \item Different algorithms for different use cases
 					      \item Timeline-driven deployment
 				      \end{itemize}
-				\item Let's examine their threat model from 2024...\footnote{\url{https://bughunters.google.com/blog/5108747984306176/google-s-threat-model-for-post-quantum-cryptography}}
+				\item Let's examine their threat model from 2024\ldots\footnote{\url{https://bughunters.google.com/blog/5108747984306176/google-s-threat-model-for-post-quantum-cryptography}}
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -2196,7 +2226,7 @@
 			Firmware Signatures    & \textcolor{orange}{Medium}      & \textcolor{red}{High}      & Can't update keys    \\
 			(Secure boot)          &                                 &                            &                      \\
 			\hline
-			Software Signatures    & \textcolor{green!70!black}{Low} & \textcolor{yellow}{Medium} & Size flexibility     \\
+			Software Signatures    & \textcolor{green!70!black}{Low} & \textcolor{orange}{Medium} & Size flexibility     \\
 			\hline
 			PKI/Certificates       & \textcolor{green!70!black}{Low} & \textcolor{orange}{Medium} & Chain size explosion \\
 			\hline
@@ -2422,7 +2452,7 @@
 
 \begin{frame}{The unknown attack landscape}
 	\begin{itemize}
-		\item \textbf{With RSA}: We know the best attacks
+		\item \textbf{With RSA}: We know strong attacks
 		      \begin{itemize}
 			      \item Number Field Sieve for factoring
 			      \item Decades of optimization
@@ -2668,9 +2698,9 @@ if ((err = SSLHashSHA1.final(&hashCtx,
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The ironic twist}
+\begin{frame}{The PQ paradox}
 	\begin{itemize}
-		\item \textbf{The paradox}: PQ schemes may initially be LESS secure than classical!
+		\item PQ schemes may initially be LESS secure than classical!
 		\item \textbf{Why?}
 		      \begin{itemize}
 			      \item RSA/ECC: 40 years of implementation hardening
