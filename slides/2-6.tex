@@ -2438,23 +2438,26 @@
 \subsection{Unclear Security Levels}
 
 \begin{frame}{The deceptive strength problem}
-	\begin{itemize}
-		\item \textbf{Some schemes look incredibly strong on paper\ldots}
-		\item \textbf{Example}: McEliece (hardness of decoding a linear code with insufficient information)
-		      \begin{itemize}
-			      \item In the worst case, some argue could be proven NP-hard
-			      \item Sounds amazing: NP-hard = practically unbreakable!
-			      \item But cryptographic problems are based on the average case, not the worst case\ldots
-			      \item And the claim of NP-hardness even here is debated\ldots
-		      \end{itemize}
-		\item \textbf{There's a catch}: ``If it looks too good to be true...''
-		\item \textbf{Real-world complications}:
-		      \begin{itemize}
-			      \item Security proofs only work for certain parameters
-			      \item Practical implementations use different parameters
-			      \item The gap between theory and practice can be exploited
-		      \end{itemize}
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Some schemes look incredibly strong on paper\ldots}
+				\item \textbf{Example}: McEliece (hardness of decoding a linear code with insufficient information)
+				      \begin{itemize}
+					      \item In the worst case, some argue could be proven NP-hard
+					      \item Sounds amazing: NP-hard = practically unbreakable!
+					      \item But cryptographic problems are based on the average case, not the worst case\ldots
+					      \item And the claim of NP-hardness even here is debated\ldots\footnote{Eurocrypt 2025 paper found a subexponential distinguisher for McEliece: \url{https://appliedcryptography.page/papers/\#syzygy-distinguisher.pdf}}
+				      \end{itemize}
+				\item \textbf{Real-world complications}:
+				      \begin{itemize}
+					      \item Security proofs only work for certain parameters
+					      \item Practical implementations use different parameters
+					      \item The gap between theory and practice can be exploited
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Asymptotic vs. concrete security}
@@ -2516,7 +2519,7 @@
 \end{frame}
 
 \subsection{When Quantum Computers Arrive}
-\begin{frame}{Breaking news from 2048\ldots}
+\begin{frame}{Breaking news from 2052\ldots}
 	\begin{itemize}
 		\item \textbf{The nightmare scenario}: Large quantum computer suddenly exists
 		\item \textbf{All classical crypto broken overnight}
