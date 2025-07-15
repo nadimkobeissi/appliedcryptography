@@ -1547,6 +1547,59 @@
 	\end{center}
 \end{frame}
 
+\begin{frame}{Breaking news: First verified Rust crypto protocol!}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+		\textbf{What they built:}
+			\begin{itemize}
+				\item \textbf{Bert13}: Full TLS 1.3 implementation in Rust\footnote{\url{https://appliedcryptography.page/papers/\#verified-rust}}
+				\item Supports both classical and post-quantum ciphersuites
+				\item Practical performance (sub-10ms handshakes)
+				\item Runs on everything from IoT devices to servers
+			\end{itemize}
+			\vspace{0.25em}
+			\textbf{The achievement:}
+			\begin{itemize}
+				\item First verified post-quantum TLS 1.3 library
+				\item Written by Rust developers, not verification experts!
+				      \begin{itemize}
+					      \item To me this is the most important part
+				      \end{itemize}
+				\item Deployed and interoperating with major browsers
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Breaking news: First verified Rust crypto protocol!}
+	\bigimagewithcaption{verified_rust_a.png}{Source: Karthikeyan Bhargavan, Lasse Letager Hansen, Franziskus Kiefer, Jonas Schneider-Bensch and Bas Spitters, Formal Security and Functional Verification of Cryptographic Protocol Implementations in Rust, IACR Cryptology ePrint Archive, 2025.}
+\end{frame}
+
+\begin{frame}{One codebase, three provers, thorough verification}
+	\textbf{Their approach with hax:}
+	\begin{itemize}
+		\item \textbf{SSProve (Coq)}: Prove cryptographic security of key schedule
+		\item \textbf{ProVerif}: Prove authentication and confidentiality of protocol
+		\item \textbf{\fstar}: Prove runtime safety and parsing correctness
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{Why this matters:}
+	\begin{itemize}
+		\item No single tool is best at everything
+		\item Symbolic provers great for protocols, bad at crypto proofs
+		\item Computational provers great for crypto, bad at automation
+		\item Now we can use the right tool for each job!
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{3,264 lines of Rust \rightarrow\ Comprehensive security guarantees}
+	\end{center}
+\end{frame}
+
+\begin{frame}{One codebase, three provers, thorough verification}
+	\bigimagewithcaption{verified_rust_b.png}{Source: Karthikeyan Bhargavan, Lasse Letager Hansen, Franziskus Kiefer, Jonas Schneider-Bensch and Bas Spitters, Formal Security and Functional Verification of Cryptographic Protocol Implementations in Rust, IACR Cryptology ePrint Archive, 2025.}
+\end{frame}
+
 \section{Functional Correctness and Efficiency}
 
 \begin{frame}{Building correct and fast cryptographic code}
