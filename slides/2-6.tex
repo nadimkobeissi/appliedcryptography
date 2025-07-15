@@ -16,12 +16,6 @@
 	\titlepage
 \end{frame}
 
-\begin{frame}{Slides not complete and may contain errors}
-	\begin{itemize}
-		\item This slide deck is not finished, may contain errors, and is missing important material. Do not rely on it yet.
-	\end{itemize}
-\end{frame}
-
 \section{Why Go Post-Quantum?}
 
 \begin{frame}{The quantum threat}
@@ -248,6 +242,10 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Timeline: when will quantum computing arrive?}
+	\bigimagewithcaption{quantum_threat.png}{Source: Michele Mosca and Marco Piani, Quantum Threat Timeline Report, Global Risk Institute, 2024.}
+\end{frame}
+
 \begin{frame}{Reality check: Current quantum factorization records}
 	\begin{itemize}
 		\item \textbf{2001}: IBM factored $15 = 3 \times 5$ using Shor's algorithm
@@ -307,7 +305,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Harvest now, decrypt later}
+\begin{frame}{Store now, decrypt later}
 	\begin{itemize}
 		\item \textbf{The problem}: Adversaries can store encrypted data today
 		\item Wait for quantum computers to become available
@@ -1531,12 +1529,253 @@
 			      \item Natural fit: ``Encrypt'' a random key with public key
 			      \item Avoid complex reconciliation mechanisms
 			      \item Better bandwidth usage
+			      \item Potentially less round trips
 		      \end{itemize}
-		\item \textbf{There are probably other reasons and I should research what they are, TODO}
+		\item \textbf{Mathematical limitations}:
+		      \begin{itemize}
+			      \item Lattice problems don't naturally support DH-style operations
+			      \item No efficient ``commutative'' group operation like $g^{ab} = g^{ba}$
+			      \item Isogenies do support DH-style, but have other issues
+		      \end{itemize}
+		\item \textbf{NIST's choice (rumored)}:
+		      \begin{itemize}
+			      \item KEMs work for all mathematical foundations
+			      \item Unified framework for competition
+			      \item Avoids favoring specific mathematical structures
+		      \end{itemize}
 	\end{itemize}
 \end{frame}
 
 \subsection{Post-Quantum TLS}
+
+\begin{frame}{TLS migration timeline}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{February 2024}: TLS 1.3 adoption reaches critical mass\footnote{Much of the slides in this subsection is based on Bas Westerbaan's excellent blog post over at Cloudflare, but has been updated to account for developments in 2024 and 2025: \url{https://blog.cloudflare.com/pq-2024/}}
+				\item \textbf{QUIC protocol}: Uses TLS 1.3 under the hood
+				      \begin{itemize}
+					      \item Modern transport protocol by Google
+					      \item Built-in encryption via TLS 1.3
+					      \item Already quantum-ready infrastructure
+				      \end{itemize}
+				\item \textbf{Preventing future ossification}: GREASE
+				      \begin{itemize}
+					      \item Generate Random Extensions And Sustain Extensibility
+					      \item Clients send unknown identifiers on purpose
+					      \item Catches implementations that break on unknown values
+					      \item Keeps protocols flexible for future changes
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{ML-KEM: The NIST standard}
+	\begin{itemize}
+		\item \textbf{Original name}: CRYSTALS-Kyber
+		\item \textbf{International collaboration}:
+		      \begin{itemize}
+			      \item Designers from France, Switzerland, Netherlands, Belgium, Germany, Canada, USA
+			      \item Industry and academia partnership
+		      \end{itemize}
+		\item \textbf{Three security levels}:
+		      \begin{itemize}
+			      \item ML-KEM-512: Targets AES-128 equivalent security
+			      \item ML-KEM-768: Targets AES-192 equivalent security
+			      \item ML-KEM-1024: Targets AES-256 equivalent security
+		      \end{itemize}
+		\item \textbf{First NIST PQ key agreement standard}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{ML-KEM vs X25519 (ECDH): The numbers}
+	\begin{center}
+		\begin{tabular}{|l|c|c|c|c|c|}
+			\hline
+			\textbf{Algorithm} & \textbf{PQ}  & \multicolumn{2}{c|}{\textbf{Size (bytes)}} & \multicolumn{2}{c|}{\textbf{Ops/sec}}                   \\
+			                   &              & Client                                     & Server                                & Client & Server \\
+			\hline
+			ML-KEM-512         & \mycheckmark & 800                                        & 768                                   & 45,000 & 70,000 \\
+			ML-KEM-768         & \mycheckmark & 1,184                                      & 1,088                                 & 29,000 & 45,000 \\
+			ML-KEM-1024        & \mycheckmark & 1,568                                      & 1,568                                 & 20,000 & 30,000 \\
+			X25519             & \times       & 32                                         & 32                                    & 19,000 & 19,000 \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{3mm}
+	\begin{itemize}
+		\item \textbf{Size penalty}: ML-KEM is 25-50\times\ larger than X25519
+		\item \textbf{Speed bonus}: ML-KEM can be faster
+		\item \textbf{Trade-off}: Bandwidth vs computation
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Hybrid key agreement: Belt and suspenders}
+	\textbf{Common deployment}: X25519 + ML-KEM-768
+	\vspace{3mm}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Why ML-KEM-768?}
+			\begin{itemize}
+				\item Not just ML-KEM-512
+				\item Security margin against future cryptanalysis
+				\item Lattice crypto is newer than elliptic curves
+				\item Conservative choice
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Why keep X25519?}
+			\begin{itemize}
+				\item Hedge against ML-KEM break
+				\item Protection against implementation bugs
+				\item Example: KyberSlash timing attack
+				\item Proven track record
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{5mm}
+	\begin{center}
+		\textbf{Result}: Security of both, vulnerable only if both break
+	\end{center}
+\end{frame}
+
+\begin{frame}{Early browser experiments}
+	\begin{itemize}
+		\item \textbf{2016}: Google's first PQ experiment (same year as NIST competition)
+		\item \textbf{2018}: Cloudflare + Google joint experiment
+		      \begin{itemize}
+			      \item CECPQ2: X25519 + NTRU-HRSS (lattice-based)
+			      \item CECPQ2b: X25519 + SIKE (isogeny-based)
+		      \end{itemize}
+		\item \textbf{Results}:
+		      \begin{itemize}
+			      \item NTRU-HRSS: Good performance, similar to ML-KEM
+			      \item SIKE: Small keys but slow, \textcolor{red}{completely broken in 2022}
+			      \item Handshake times nearly identical to classical crypto
+		      \end{itemize}
+		\item \textbf{But}: Compatibility issues emerged...
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The ClientHello size problem}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\textbf{The ossification strikes again:}
+			\begin{itemize}
+				\item TLS ClientHello historically fit in one packet
+				\item PQ keyshares make it much larger
+				\item Some middleboxes assume single-packet ClientHello
+				\item Result: Broken connections
+			\end{itemize}
+
+			\textbf{Chrome's response:}
+			\begin{itemize}
+				\item Kept PQ experiment at low rate
+				\item Worked with vendors to fix issues
+				\item 5-year delay in deployment
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.8]
+					\draw[thick] (0,0) rectangle (3,1.5) node[midway] {Classical};
+					\draw[thick,red] (0,-2) rectangle (3,-0.5) node[midway] {PQ};
+					\draw[thick,red] (3,-2) rectangle (6,-0.5) node[midway] {overflow};
+					\draw[<->] (0,1.8) -- (3,1.8) node[midway,above] {1 packet};
+					\draw[<->] (0,-2.3) -- (6,-2.3) node[midway,below] {2 packets};
+					\draw[thick,dashed] (3,-3) -- (3,2);
+				\end{tikzpicture}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Current deployment status (2025)}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\textbf{Browsers have begun implementing PQ TLS:}
+			\begin{itemize}
+				\item Started with Chrome, now others following
+				\item In total, now 38\% of all TLS connections
+				      \begin{itemize}
+					      \item Estimate privately shared by an industry source
+				      \end{itemize}
+			\end{itemize}
+			\textbf{Other browsers:}
+			\begin{itemize}
+				\item Firefox: since mid-2024
+				\item Edge, Brave: based on Chrome, so followed it
+				\item Safari: timeline announced at WWDC 2025\footnote{\url{https://support.apple.com/en-us/122756}} for iOS 26, macOS 26, etc.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{center}
+				\textbf{PQ Adoption}\\[3mm]
+				\begin{tikzpicture}[scale=0.8]
+					\pie[text=legend,radius=2]{
+						38/PQ,
+						62/Classical
+					}
+				\end{tikzpicture}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Beyond browsers: Origin connections}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\textbf{The full connection path:}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.9]
+					\node[draw,circle] (client) at (0,0) {Client};
+					\node[draw,rectangle] (cdn) at (3,0) {CDN};
+					\node[draw,circle] (origin) at (6,0) {Origin};
+					\draw[->] (client) -- (cdn) node[midway,above] {(1)};
+					\draw[->] (cdn) -- (origin) node[midway,above] {(2)};
+				\end{tikzpicture}
+			\end{center}
+			\textbf{Two approaches for CDN-to-origin PQ:}
+			\begin{itemize}
+				\item \textbf{Fast way}: Send PQ keyshare immediately
+				      \begin{itemize}
+					      \item Like Chrome's approach
+					      \item 0.34\% connection failures observed
+				      \end{itemize}
+				\item \textbf{Safe way}: Wait for HelloRetryRequest
+				      \begin{itemize}
+					      \item Extra round trip
+					      \item 100\% compatibility
+				      \end{itemize}
+			\end{itemize}
+			\textbf{Failure causes}: Large ClientHello + incorrect HelloRetryRequest handling
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Lessons from PQ TLS deployment}
+	\begin{itemize}
+		\item \textbf{Ossification is real}:
+		      \begin{itemize}
+			      \item Assumptions about packet sizes break deployments
+			      \item GREASE helps but isn't perfect
+			      \item Takes years to fix ecosystem
+		      \end{itemize}
+		\item \textbf{Hybrid approach is prudent}:
+		      \begin{itemize}
+			      \item Protects against algorithm breaks
+			      \item Protects against implementation bugs
+			      \item Small performance cost for peace of mind
+		      \end{itemize}
+		\item \textbf{Deployment is gradual}:
+		      \begin{itemize}
+			      \item Started in 2016, still ongoing in 2025
+			      \item Requires coordination across entire ecosystem
+			      \item But progress is accelerating
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
 
 % https://blog.cloudflare.com/pq-2024/
 
@@ -1546,15 +1785,563 @@
 	\bigimagewithcaption{pq3_apple.png}{Source: Apple Security Engineering and Architecture (SEAR)}
 \end{frame}
 
-\begin{frame}{Signal: PQXDH}
+\begin{frame}{iMessage PQ3: Post-quantum double ratchet}
+	\begin{itemize}
+		\item \textbf{PQ3}: Apple's post-quantum secure messaging protocol (2024)
+		\item \textbf{Hybrid approach}: Combines classical (ECDH) and post-quantum (ML-KEM) cryptography
+		\item \textbf{Double ratchet construction} (like Signal):
+		      \begin{itemize}
+			      \item Outer ratchet: Public-key ratchet (conversation direction changes)
+			      \item Inner ratchet: Symmetric ratchet (same sender keeps sending)
+		      \end{itemize}
+		\item \textbf{Key innovation}: ML-KEM integrated into both initialization AND ratcheting
+		      \begin{itemize}
+			      \item Provides post-compromise security against quantum adversaries
+			      \item Signal only uses PQ crypto in setup (PQXDH), not in ratcheting
+		      \end{itemize}
+		\item \textbf{Security guarantee}: Must break BOTH classical and PQ crypto to compromise
+	\end{itemize}
 \end{frame}
 
-% https://github.com/signalapp/SparsePostQuantumRatchet/
+\begin{frame}{PQ3's bandwidth challenge: Ratcheting trade-offs}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\textbf{The KEM size problem:}
+			\begin{itemize}
+				\item ML-KEM-768: 1,184 bytes sent
+				\item ML-KEM-1024: 1,568 bytes sent
+				\item Compare to X25519: 32 bytes!
+			\end{itemize}
+			\vspace{3mm}
+			\textbf{PQ3's solution:}
+			\begin{itemize}
+				\item Can't send new KEM key with every message
+				\item Heuristic: New KEM key every \approx50 messages
+				\item Or at least once per week
+				\item Trade-off: Less frequent PQ ratcheting
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\textbf{Signal (classical):}
+			\begin{itemize}
+				\item Small DH keys (32 bytes)
+				\item Can ratchet with \textit{every} message
+				\item Immediate post-compromise recovery
+			\end{itemize}
+			\vspace{3mm}
+			\textbf{PQ3 (post-quantum):}
+			\begin{itemize}
+				\item Large KEM keys (1KB+)
+				\item Ratchets every \approx50 messages
+				\item Delayed post-compromise recovery
+				\item But quantum-resistant!
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
 
-\begin{frame}{Slides not complete and may contain errors}
+\begin{frame}{Signal: PQXDH for initial key agreement}
 	\begin{itemize}
-		\item This slide deck is not finished, may contain errors, and is missing important material. Do not rely on it yet.
+		\item \textbf{PQXDH}: Post-Quantum Extended Diffie-Hellman (2023)
+		\item \textbf{Extends X3DH}: Signal's existing handshake protocol
+		\item \textbf{Design goals}:
+		      \begin{itemize}
+			      \item Protect against store-now-decrypt-later (SNDL) attacks
+			      \item No security loss compared to X3DH
+			      \item Minimal changes to existing protocol
+			      \item Efficient for Signal's usage patterns
+		      \end{itemize}
+		\item \textbf{Key insight}: Add PQ-KEM alongside existing DH operations
+		      \begin{itemize}
+			      \item Not replacing, but augmenting classical crypto
+			      \item Hybrid approach for defense in depth
+		      \end{itemize}
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{How PQXDH works}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\textbf{X3DH (classical):}
+			\begin{itemize}
+				\item Multiple DH computations
+				\item Identity keys (IK)
+				\item Signed pre-keys (SPK)
+				\item One-time pre-keys (OPK)
+				\item Ephemeral keys (EK)
+			\end{itemize}
+			\vspace{3mm}
+			\textbf{PQXDH additions:}
+			\begin{itemize}
+				\item \textcolor{blue}{+ KEM key pairs (PQSPK)}
+				\item \textcolor{blue}{+ KEM encapsulation}
+				\item \textcolor{blue}{+ Shared secret in KDF}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\textbf{Protocol flow:}
+			\begin{enumerate}
+				\item Bob generates KEM keys
+				\item Bob signs and uploads them
+				\item Alice encapsulates to Bob's KEM key
+				\item Both derive session key using:
+				      \begin{itemize}
+					      \item DH shared secrets
+					      \item \textcolor{blue}{+ KEM shared secret}
+				      \end{itemize}
+			\end{enumerate}
+			\vspace{3mm}
+			\textbf{Result}: Key secure if either DH or KEM remains unbroken
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{How PQXDH works}
+	\bigimagewithcaption{pqxdh_signal.png}{Source: \url{https://appliedcryptography.page/papers/\#pqxdh-analysis}}
+\end{frame}
+
+\begin{frame}{Lessons from PQXDH deployment}
+	\begin{itemize}
+		\item \textbf{Formal verification revealed issues}:
+		      \begin{itemize}
+			      \item Public key confusion attack (DH vs KEM keys)
+			      \item KEM re-encapsulation vulnerability
+			      \item Fixed in specification version 2
+		      \end{itemize}
+		\item \textbf{Implementation considerations}:
+		      \begin{itemize}
+			      \item Kyber1024 chosen for conservative security
+			      \item Key format prevents confusion attacks
+			      \item Careful integration with existing code
+		      \end{itemize}
+		\item \textbf{Deployment status}:
+		      \begin{itemize}
+			      \item Already live for millions of users
+			      \item Transparent upgrade from X3DH
+			      \item Sets precedent for incremental PQ migration
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Signal's Triple Ratchet}
+	\begin{itemize}
+		\item \textbf{The problem with PQXDH}: Only initial handshake is PQ-secure
+		      \begin{itemize}
+			      \item No post-quantum post-compromise security (PCS)
+			      \item If device compromised after setup, future messages vulnerable
+		      \end{itemize}
+		\item \textbf{Signal's new approach}: Triple Ratchet protocol (2025)
+		      \begin{itemize}
+			      \item Bandwidth-efficient hybrid-secure messaging
+			      \item Addresses PQ3's communication inefficiencies
+			      \item Actively being evaluated by Signal team
+		      \end{itemize}
+		\item \textbf{Key innovation}: Three parallel ratchets
+		      \begin{enumerate}
+			      \item Classical public ratchet (DH-based)
+			      \item Post-quantum public ratchet (lattice-based)
+			      \item Symmetric ratchet (as before)
+		      \end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why ``Triple Ratchet''?}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\textbf{Original Double Ratchet:}
+			\begin{itemize}
+				\item Public ratchet (DH)
+				\item Symmetric ratchet
+				\item Two moving parts
+			\end{itemize}
+			\vspace{5mm}
+			\textbf{Triple Ratchet:}
+			\begin{itemize}
+				\item Classical public ratchet
+				\item \textcolor{blue}{+ PQ public ratchet}
+				\item Symmetric ratchet
+				\item Three moving parts!
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The erasure code innovation}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\textbf{PQ3's problem:}
+			\begin{itemize}
+				\item Sends full Kyber key every \approx50 messages
+				\item If recipient offline: resends 2272 bytes repeatedly!
+				\item Worst case: 50\times\ overhead
+			\end{itemize}
+			\vspace{3mm}
+			\textbf{Triple Ratchet's solution:}
+			\begin{itemize}
+				\item Split KEM message using erasure codes
+				\item Send one chunk per message
+				\item Recipient reconstructs after any 50 chunks
+				\item No repeated full messages!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\begin{center}
+				\textbf{Erasure Code Example}\\[3mm]
+				\begin{tikzpicture}[scale=0.7]
+					\draw[thick] (0,0) rectangle (4,1) node[midway] {KEM message};
+					\draw[->] (2,-0.2) -- (2,-0.8);
+					\foreach \x in {0,...,4} {
+							\draw[fill=blue!30] (\x*0.8,-1) rectangle (\x*0.8+0.6,-1.5) node[midway,font=\tiny] {\x};
+						}
+					\node at (2,-1.8) {Encode to chunks};
+					\draw[->] (2,-2.1) -- (2,-2.7);
+					\draw[thick,dashed] (0.4,-3) rectangle (1,-3.5) node[midway,font=\tiny] {0};
+					\draw[thick,dashed] (1.2,-3) rectangle (1.8,-3.5) node[midway,font=\tiny] {1};
+					\draw[thick] (2,-3) rectangle (2.6,-3.5) node[midway,font=\tiny] {2};
+					\draw[thick] (2.8,-3) rectangle (3.4,-3.5) node[midway,font=\tiny] {3};
+					\draw[thick,dashed] (3.6,-3) rectangle (4.2,-3.5) node[midway,font=\tiny] {4};
+					\node at (2,-3.8) {Any 3 chunks = full message};
+				\end{tikzpicture}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Katana: Optimized lattice RKEM}
+	\begin{itemize}
+		\item \textbf{Ratcheting KEM (RKEM)}: KEM where ciphertext also serves as next public key
+		      \begin{itemize}
+			      \item Like how Signal reuses $g^b$ for both encryption and next public key
+			      \item Saves bandwidth by dual-purposing values
+		      \end{itemize}
+		\item \textbf{Previous attempts had security flaws}:
+		      \begin{itemize}
+			      \item Direct lattice translations of Signal's approach were broken
+			      \item Required careful fix using hint-MLWE assumption
+		      \end{itemize}
+		\item \textbf{Katana}: New RKEM based on Kyber
+		      \begin{itemize}
+			      \item 37\% smaller than naive Kyber approach
+			      \item At 192-bit security: 1416 bytes vs 2272 bytes
+			      \item Provably secure under hint-MLWE
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Triple Ratchet efficiency gains}
+	\begin{center}
+		\begin{tabular}{|l|c|c|c|}
+			\hline
+			\textbf{Protocol} & \textbf{Balanced}                   & \textbf{Typing}                     & \textbf{Offline}                     \\
+			                  & \textbf{(p=0)}                      & \textbf{(p=0.5)}                    & \textbf{(p=0.9)}                     \\
+			\hline
+			PQ3               & 6,488 B                             & 11,176 B                            & \textcolor{red}{48,680 B}            \\
+			TR + Kyber        & 9,000 B                             & 9,540 B                             & 13,860 B                             \\
+			TR + Katana       & \textcolor{green!70!black}{6,500 B} & \textcolor{green!70!black}{6,890 B} & \textcolor{green!70!black}{10,010 B} \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{3mm}
+	\begin{itemize}
+		\item \textbf{p}: Probability sender continues without waiting for response
+		\item \textbf{Balanced}: TR competitive even in best case for PQ3
+		\item \textbf{Realistic scenarios}: TR dramatically better (up to 5\times\ improvement)
+		\item \textbf{Combines}: Erasure coding + efficient Katana RKEM
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Triple Ratchet: Technical challenges}
+	\begin{itemize}
+		\item \textbf{Desynchronized ratchets}:
+		      \begin{itemize}
+			      \item Classical and PQ ratchets advance at different speeds
+			      \item Need separate root keys for each
+			      \item Carefully combine for final message key
+		      \end{itemize}
+		\item \textbf{Delayed key usage}:
+		      \begin{itemize}
+			      \item Can't use new PQ key immediately
+			      \item Must wait for recipient to decode enough chunks
+			      \item Protocol tracks acknowledgments carefully
+		      \end{itemize}
+		\item \textbf{Security analysis}:
+		      \begin{itemize}
+			      \item Different epoch functions for classical vs PQ
+			      \item PQ healing takes 3 epochs (vs 2 for classical)
+			      \item But still provides hybrid security guarantees
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Comparison: PQ3 vs Triple Ratchet}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Apple PQ3:}
+			\begin{itemize}
+				\item Simple amortization strategy
+				\item Full KEM every \approx50 messages
+				\item Good for balanced chats
+				\item \textcolor{red}{Bad for unbalanced scenarios}
+				\item Already deployed
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Signal Triple Ratchet:}
+			\begin{itemize}
+				\item Sophisticated erasure coding
+				\item Chunks spread across messages
+				\item Efficient in all scenarios
+				\item More complex implementation
+				\item Under evaluation
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{5mm}
+	\begin{center}
+		\textbf{Key insight}: Different trade-offs for different use cases\\
+		Both are significant advances in PQ messaging!
+	\end{center}
+\end{frame}
+
+\section{Google's Threat Model for Post-Quantum Cryptography}
+
+\begin{frame}{Google as a PQ case study}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Why look at Google?}
+				      \begin{itemize}
+					      \item Major cloud provider with diverse crypto needs
+					      \item Building their own quantum computer (Google Quantum AI)
+					      \item Public about their PQ migration strategy
+				      \end{itemize}
+				\item \textbf{Google's approach}: Risk-based prioritization
+				      \begin{itemize}
+					      \item Not all crypto needs equal urgency
+					      \item Different algorithms for different use cases
+					      \item Timeline-driven deployment
+				      \end{itemize}
+				\item Let's examine their threat model from 2024...\footnote{\url{https://bughunters.google.com/blog/5108747984306176/google-s-threat-model-for-post-quantum-cryptography}}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Google's prioritization framework}
+	\textbf{Four key considerations for quantum threats:}
+	\begin{enumerate}
+		\item \textbf{Attack feasibility}: How realistic is the quantum attack?
+		\item \textbf{Store-now-decrypt-later}: Is data at risk today?
+		\item \textbf{Key lifetime}: Do public keys last for decades?
+		\item \textbf{Redesign needs}: Will systems need major changes?
+	\end{enumerate}
+	\vspace{5mm}
+	\begin{center}
+		\textbf{Not all cryptography is equally threatened}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Google's crypto taxonomy}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\textbf{By quantum vulnerability:}
+			\begin{enumerate}
+				\item \textbf{Asymmetric encryption/KEM}
+				      \begin{itemize}
+					      \item Broken by Shor's algorithm
+					      \item \textcolor{red}{Vulnerable to SNDL (Store-Now-Decrypt-Later)}
+				      \end{itemize}
+				\item \textbf{Digital signatures}
+				      \begin{itemize}
+					      \item Broken by Shor's algorithm
+					      \item \textcolor{green!70!black}{Not vulnerable to SNDL (Store Now, Decrypt Later)}
+				      \end{itemize}
+				\item \textbf{``Fancy'' crypto}
+				      \begin{itemize}
+					      \item Blind signatures, OPRF, etc.
+					      \item Case-by-case assessment needed
+				      \end{itemize}
+				\item \textbf{Symmetric crypto}
+				      \begin{itemize}
+					      \item \textcolor{green!70!black}{Practically safe from QC}
+					      \item Grover's gives only $\sqrt{n}$ speedup
+				      \end{itemize}
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{center}
+				\textbf{Urgency Level}\\[3mm]
+				\begin{tikzpicture}[scale=0.8]
+					\draw[fill=red!30] (0,0) rectangle (3,1) node[midway] {Encryption};
+					\draw[fill=yellow!30] (0,-1.2) rectangle (3,-0.2) node[midway] {Fancy};
+					\draw[fill=green!30] (0,-2.4) rectangle (3,-1.4) node[midway] {Signatures};
+					\draw[fill=green!50] (0,-3.6) rectangle (3,-2.6) node[midway] {Symmetric};
+					\draw[<-,thick] (-0.3,0.5) -- (-0.3,-3.1) node[midway,left=3mm,rotate=90] {Urgency};
+				\end{tikzpicture}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Google's use case analysis}
+	\begin{center}
+		\begin{tabular}{|l|c|c|c|}
+			\hline
+			\textbf{Use Case}      & \textbf{SNDL Risk}              & \textbf{Urgency}           & \textbf{Challenge}   \\
+			\hline
+			\hline
+			Encryption in Transit  & \textcolor{red}{High}           & \textcolor{red}{Critical}  & Deployment scale     \\
+			(TLS, SSH, ALTS)       &                                 &                            &                      \\
+			\hline
+			Firmware Signatures    & \textcolor{orange}{Medium}      & \textcolor{red}{High}      & Can't update keys    \\
+			(Secure boot)          &                                 &                            &                      \\
+			\hline
+			Software Signatures    & \textcolor{green!70!black}{Low} & \textcolor{yellow}{Medium} & Size flexibility     \\
+			\hline
+			PKI/Certificates       & \textcolor{green!70!black}{Low} & \textcolor{orange}{Medium} & Chain size explosion \\
+			\hline
+			Stateless Tokens (JWT) & \textcolor{green!70!black}{Low} & \textcolor{yellow}{Low}    & 4KB cookie limit     \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{3mm}
+	\textbf{Key insight}: Different problems need different solutions
+\end{frame}
+
+\begin{frame}{Google's algorithm choices}
+	\textbf{Not one-size-fits-all approach:}
+	\begin{itemize}
+		\item \textbf{Encryption in transit}: ML-KEM-768 + X25519/P256
+		      \begin{itemize}
+			      \item Most urgent due to SNDL
+			      \item Ephemeral keys make deployment easier
+		      \end{itemize}
+		\item \textbf{Firmware signatures}: SLH-DSA (SPHINCS+)
+		      \begin{itemize}
+			      \item Can't change keys once burned to silicon
+			      \item Hash-based = most conservative choice
+			      \item Size less critical than security
+		      \end{itemize}
+		\item \textbf{Software signatures}: ML-DSA (Dilithium) + classical
+		      \begin{itemize}
+			      \item Can update keys if needed
+			      \item Signing large binaries = performance matters
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The PKI size explosion problem}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Certificate chains today:}
+			\begin{itemize}
+				\item Root CA: \approx1KB
+				\item Intermediate: \approx1KB
+				\item Leaf cert: \approx1KB
+				\item \textbf{Total}: \approx3KB
+			\end{itemize}
+			\vspace{5mm}
+			\textbf{With PQ signatures:}
+			\begin{itemize}
+				\item Each cert: >5KB
+				\item 3-cert chain: >15KB
+				\item \textbf{5\times\ increase!}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Why this matters:}
+			\begin{itemize}
+				\item Some devices fail at 10-30KB packets
+				\item TLS handshake performance hit
+				\item Mobile data costs
+			\end{itemize}
+			\vspace{5mm}
+			\textbf{Google's view:}
+			\begin{quote}
+				``This problem might be fixable, but a severe performance penalty remains''
+			\end{quote}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Timeline: when will quantum computing arrive?}
+	\bigimagewithcaption{quantum_threat.png}{Source: Michele Mosca and Marco Piani, Quantum Threat Timeline Report, Global Risk Institute, 2024.}
+\end{frame}
+
+\begin{frame}{Threat actors: Who gets QC first?}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\textbf{1. Nation states}
+			\begin{itemize}
+				\item Most likely first adopters
+				\item Will use ``deniably'' to hide capability
+				\item Target: High-value stored data
+				\item Focus on static keys (PKI)
+			\end{itemize}
+			\textbf{2. Insider threats}
+			\begin{itemize}
+				\item Google builds quantum computers
+				\item Crown jewel protection critical
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\textbf{3. Financially motivated}
+			\begin{itemize}
+				\item Only when QC becomes cheap
+				\item Target: Unmigrated systems
+				\item Ransomware potential
+			\end{itemize}
+			\vspace{5mm}
+			\textbf{Key insight}: Different actors = different timelines
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Regulatory pressure}
+	\begin{itemize}
+		\item \textbf{US Government}:
+		      \begin{itemize}
+			      \item Executive orders requiring PQ migration
+			      \item CNSA 2.0: Aggressive timelines for government systems
+			      \item FIPS standards coming soon
+		      \end{itemize}
+		\item \textbf{Europe}:
+		      \begin{itemize}
+			      \item BSI (Germany) and ANSSI (France) active
+			      \item Requesting PQ roadmaps from vendors
+		      \end{itemize}
+		\item \textbf{Impact on Google}:
+		      \begin{itemize}
+			      \item Government contracts require compliance
+			      \item Accelerates migration timeline
+			      \item Can't wait for perfect solutions
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Google's lessons for the industry}
+	\begin{enumerate}
+		\item \textbf{Prioritize by risk, not uniformly}
+		      \begin{itemize}
+			      \item Encryption in transit: Do it now
+			      \item Signatures: You have more time
+		      \end{itemize}
+		\item \textbf{Match algorithms to use cases}
+		      \begin{itemize}
+			      \item No universal ``best'' PQ algorithm
+			      \item Consider size, speed, and security trade-offs
+		      \end{itemize}
+		\item \textbf{Hybrid everything}
+		      \begin{itemize}
+			      \item PQ algorithms less mature than classical
+			      \item Defense against both classical and quantum attacks
+		      \end{itemize}
+		\item \textbf{Start experimenting now}
+		      \begin{itemize}
+			      \item PKI and tokens need creative solutions
+			      \item Industry collaboration essential
+		      \end{itemize}
+	\end{enumerate}
 \end{frame}
 
 \section{How Things Can Go Wrong}
@@ -1714,7 +2501,7 @@
 			      \item Government secrets from decades past revealed
 			      \item Corporate communications laid bare
 		      \end{itemize}
-		\item \textbf{This is why ``harvest now, decrypt later'' matters!}
+		\item \textbf{This is why ``store now, decrypt later'' matters!}
 	\end{itemize}
 \end{frame}
 
@@ -1913,7 +2700,7 @@ if ((err = SSLHashSHA1.final(&hashCtx,
 			      \item Unclear concrete security levels
 			      \item Implementation vulnerabilities
 			      \item Side-channel attacks
-			      \item The ``harvest now, decrypt later'' threat
+			      \item The ``store now, decrypt later'' threat
 		      \end{enumerate}
 		\item \textbf{Best practices}:
 		      \begin{itemize}
