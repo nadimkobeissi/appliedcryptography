@@ -388,6 +388,10 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Starting at the left}
+	\bigimagewithcaption{fischer.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
+\end{frame}
+
 \subsection{Learning with Errors}
 
 \begin{frame}{The Learning with Errors (LWE) Problem}
@@ -973,8 +977,8 @@
 		      \end{enumerate}
 		\item \textbf{Example} (if $q = 12$):
 		      \begin{itemize}
-			      \item Regions: $[0,2], [3,5], [6,8], [9,11]$ $\rightarrow$ bits: 00, 01, 10, 11
-			      \item Alice has 5, Bob has 4 $\rightarrow$ both round to region $[3,5]$ $\rightarrow$ key bits: 01
+			      \item Regions: $[0,2], [3,5], [6,8], [9,11]$ $\rightarrow$ bits: \bit{00}, \bit{01}, \bit{10}, \bit{11}
+			      \item Alice has 5, Bob has 4 $\rightarrow$ both round to region $[3,5]$ $\rightarrow$ key bits: \bit{01}
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -1072,9 +1076,9 @@
 			\begin{itemize}
 				\item \textbf{The problem}: Transmitting data over noisy channels
 				      \begin{itemize}
-					      \item You send: \texttt{010}
+					      \item You send: \bit{010}
 					      \item Channel flips a bit (hardware fault, solar flare\ldots)
-					      \item Receiver gets: \texttt{011} (wrong!)
+					      \item Receiver gets: \bit{011} (wrong!)
 				      \end{itemize}
 				\item \textbf{The solution}: Add redundancy to detect and correct errors
 				\item \textbf{Real-world applications}:
@@ -1098,16 +1102,16 @@
 		\begin{column}{1\textwidth}
 			\textbf{Basic idea}: Repeat each bit multiple times
 			\begin{itemize}
-				\item Original: \texttt{010}
-				\item Encoded: \texttt{000 111 000}
+				\item Original: \bit{010}
+				\item Encoded: \bit{000 111 000}
 				\item Each bit repeated 3 times
 			\end{itemize}
 
 			\textbf{Decoding}: Take majority vote
 			\begin{itemize}
-				\item Received: \texttt{100 110 111}
-				\item Decode: \texttt{0} (two \texttt{0}s) \texttt{1} (two \texttt{1}s) \texttt{1} (three \texttt{1}s)
-				\item Result: \texttt{011}
+				\item Received: \bit{100 110 111}
+				\item Decode: \bit{0} (two \bit{0}s) \bit{1} (two \bit{1}s) \bit{1} (three \bit{1}s)
+				\item Result: \bit{011}
 			\end{itemize}
 
 			\textbf{Limitation}: Can only correct 1 error per 3-bit chunk
@@ -1481,6 +1485,10 @@
 \end{frame}
 
 \section{Today's Post-Quantum Protocols}
+
+\begin{frame}{Moving towards the middle}
+	\bigimagewithcaption{fischer.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
+\end{frame}
 
 \begin{frame}{NIST PQ standardization: The winners}
 	\begin{itemize}
