@@ -521,6 +521,53 @@
 	\textbf{Our strategy}: Use these operations to create zeros below the diagonal
 \end{frame}
 
+\begin{frame}{Row operations: Concrete examples}
+	\textbf{1. Multiply a row by a non-zero constant:}
+	\[
+		\left[\begin{array}{ccc|c}
+				2 & 4 & 6 & 8 \\
+				1 & 3 & 5 & 7 \\
+				4 & 2 & 1 & 3
+			\end{array}\right]
+		\xrightarrow{R_1 \leftarrow \frac{1}{2}R_1}
+		\left[\begin{array}{ccc|c}
+				1 & 2 & 3 & 4 \\
+				1 & 3 & 5 & 7 \\
+				4 & 2 & 1 & 3
+			\end{array}\right]
+	\]
+
+	\textbf{2. Add/subtract a multiple of one row to another:}
+	\[
+		\left[\begin{array}{ccc|c}
+				1 & 2 & 3 & 4 \\
+				1 & 3 & 5 & 7 \\
+				4 & 2 & 1 & 3
+			\end{array}\right]
+		\xrightarrow{R_2 \leftarrow R_2 - R_1}
+		\left[\begin{array}{ccc|c}
+				1 & 2 & 3 & 4 \\
+				0 & 1 & 2 & 3 \\
+				4 & 2 & 1 & 3
+			\end{array}\right]
+	\]
+
+	\textbf{3. Swap two rows:}
+	\[
+		\left[\begin{array}{ccc|c}
+				1 & 2 & 3 & 4 \\
+				0 & 1 & 2 & 3 \\
+				4 & 2 & 1 & 3
+			\end{array}\right]
+		\xrightarrow{R_1 \leftrightarrow R_3}
+		\left[\begin{array}{ccc|c}
+				4 & 2 & 1 & 3 \\
+				0 & 1 & 2 & 3 \\
+				1 & 2 & 3 & 4
+			\end{array}\right]
+	\]
+\end{frame}
+
 \begin{frame}{Step 2a: Understanding the first elimination}
 	\textbf{Goal}: Make all entries in column 1 (below row 1) equal to zero
 
@@ -806,6 +853,34 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{The LWE hardness assumption}
+	\begin{center}
+		\sslinked{
+			\sslibrary{n,m,q}{lwe-real}{
+				\sslibrarysubroutine{lwe.sample}{}{
+					$M \twoheadleftarrow (\mathbb{Z}_q)^{m \times n}$\\
+					$\vec{s} \twoheadleftarrow (\mathbb{Z}_q)^n$\\
+					$\vec{e} \twoheadleftarrow \mathcal{E}^m$\\
+					$\vec{x} = M \cdot \vec{s} + \vec{e}$\\
+					return $(M, \vec{x})$
+				}{1}
+			}{0.8}
+		}{\approxeq}{
+			\sslibrary{n,m,q}{lwe-rand}{
+				\sslibrarysubroutine{lwe.sample}{}{
+					$M \twoheadleftarrow (\mathbb{Z}_q)^{m \times n}$\\
+					$\vec{x} \twoheadleftarrow (\mathbb{Z}_q)^m$\\
+					return $(M, \vec{x})$
+				}{1}
+			}{0.8}
+		}
+	\end{center}
+	\vspace{5mm}
+	\begin{itemize}
+		\item \textbf{The LWE assumption}: These two distributions are computationally indistinguishable \textbf{even for quantum computers}: no known quantum speedup.
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{Understanding ``small'' in modular arithmetic}
 	\begin{columns}[c]
 		\begin{column}{0.65\textwidth}
@@ -874,111 +949,255 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The LWE hardness assumption}
-	\begin{center}
-		\sslinked{
-			\sslibrary{n,m,q}{lwe-real}{
-				\sslibrarysubroutine{lwe.sample}{}{
-					$M \twoheadleftarrow (\mathbb{Z}_q)^{m \times n}$\\
-					$\vec{s} \twoheadleftarrow (\mathbb{Z}_q)^n$\\
-					$\vec{e} \twoheadleftarrow \mathcal{E}^m$\\
-					$\vec{x} = M \cdot \vec{s} + \vec{e}$\\
-					return $(M, \vec{x})$
-				}{1}
-			}{0.8}
-		}{\approxeq}{
-			\sslibrary{n,m,q}{lwe-rand}{
-				\sslibrarysubroutine{lwe.sample}{}{
-					$M \twoheadleftarrow (\mathbb{Z}_q)^{m \times n}$\\
-					$\vec{x} \twoheadleftarrow (\mathbb{Z}_q)^m$\\
-					return $(M, \vec{x})$
-				}{1}
-			}{0.8}
-		}
-	\end{center}
-	\vspace{5mm}
-	\begin{itemize}
-		\item \textbf{The LWE assumption}: These two distributions are computationally indistinguishable \textbf{even for quantum computers}: no known quantum speedup.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{From LWE to key exchange}
-	\begin{itemize}
-		\item \textbf{Key insight}: Both parties can compute ``approximately'' the same value
-		\item \textbf{Alice's view}: $M\vec{s} + \vec{e}_A \approx M\vec{s}$
-		\item \textbf{Bob's view}: $\vec{s}^T M + \vec{e}_B^T \approx \vec{s}^T M$
-		\item \textbf{The magic}: $M\vec{s} = \vec{s}^T M^T$ (without errors)
-		\item With small errors, both parties get values that are ``close''
-		\item \textbf{Reconciliation}: Extract identical keys from close-but-not-equal values
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Simple LWE key exchange}
+\begin{frame}{Key Agreement vs Key Encapsulation}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Public parameters:}
+			\textbf{Shared Secret Agreement (DH-style):}
 			\begin{itemize}
-				\item Matrix $A \in \mathbb{Z}_q^{n \times n}$
-				\item Modulus $q$ (e.g., 3329)
-				\item Error distribution $\mathcal{E}$
+				\item Both parties contribute randomness
+				\item Alice: $g^a$, Bob: $g^b$
+				\item Shared secret: $g^{ab}$
+				\item \textbf{Interactive}: Both parties actively compute
+				\item Traditional approach (RSA, ECDH)
 			\end{itemize}
-
-			\textbf{Alice:}
-			\begin{enumerate}
-				\item Sample $\vec{s}_A, \vec{e}_A \leftarrow \mathcal{E}^n$
-				\item Compute $\vec{b}_A = A\vec{s}_A + \vec{e}_A$
-				\item Send $\vec{b}_A$ to Bob
-			\end{enumerate}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Bob:}
-			\begin{enumerate}
-				\item Sample $\vec{s}_B, \vec{e}_B \leftarrow \mathcal{E}^n$
-				\item Compute $\vec{b}_B = A^T\vec{s}_B + \vec{e}_B$
-				\item Send $\vec{b}_B$ to Alice
-			\end{enumerate}
-
-			\textbf{Shared secret:}
+			\textbf{Key Encapsulation (KEM):}
 			\begin{itemize}
-				\item Alice: $k_A = \vec{s}_A^T \vec{b}_B$
-				\item Bob: $k_B = \vec{s}_B^T \vec{b}_A$
-				\item Note: $k_A \approx k_B$ (differ by small error)
+				\item One party generates the key
+				\item Alice: Generates random key $k$
+				\item Alice: Encapsulates $k$ \rightarrow\ ciphertext $c$
+				\item Bob: Decapsulates $c$ \rightarrow\ key $k$
+				\item \textbf{Asymmetric}: One generates, one recovers
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{5mm}
+	\begin{center}
+		\textbf{Both achieve the same goal}: Establish a shared secret key
+	\end{center}
+\end{frame}
+
+\begin{frame}{From LWE to key encapsulation}
+	\begin{itemize}
+		\item \textbf{Key insight}: LWE naturally supports key encapsulation mechanisms (KEMs)
+		\item \textbf{KEM approach}: One party generates and encapsulates a key
+		\item \textbf{Recipient}: Uses private key to decapsulate and recover the key
+		\item \textbf{Why KEMs?}:
+		      \begin{itemize}
+			      \item Lattice problems don't naturally support DH-style operations
+			      \item No efficient ``commutative'' operation like $g^{ab} = g^{ba}$
+			      \item KEMs are the natural construction for lattice-based crypto
+		      \end{itemize}
+		\item \textbf{Reconciliation}: Still needed to extract identical keys from noisy values
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Mathematical notation primer}
+	\begin{itemize}
+		\item \textbf{Vectors}: Written with arrows, e.g., $\vec{s}$, $\vec{r}$
+		      \begin{itemize}
+			      \item A vector is a list of numbers: $\vec{s} = \begin{bmatrix} s_1 \\ s_2 \\ \vdots \\ s_n \end{bmatrix}$
+			      \item Length $n$ vector has $n$ components
+		      \end{itemize}
+		\item \textbf{Matrices}: 2D arrays of numbers, e.g., $A \in \mathbb{Z}_q^{n \times n}$
+		      \begin{itemize}
+			      \item $n \times n$ means $n$ rows and $n$ columns
+			      \item $\mathbb{Z}_q$ means integers modulo $q$ (from 0 to $q-1$)
+		      \end{itemize}
+		\item \textbf{Matrix transpose}: Flip rows and columns
+		      \begin{itemize}
+			      \item If $A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$, then $A^T = \begin{bmatrix} 1 & 3 \\ 2 & 4 \end{bmatrix}$
+			      \item For vectors: $\vec{v}^T$ turns a column into a row
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Sampling and distribution notation}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Sampling notation:}
+			\begin{itemize}
+				\item $x \twoheadleftarrow S$ means ``randomly pick $x$ from set $S$''
+				\item Like rolling dice or drawing from a hat
+			\end{itemize}
+			\vspace{3mm}
+			\textbf{Error distribution $\mathcal{E}$:}
+			\begin{itemize}
+				\item A probability distribution over small integers
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Sampling examples:}
+			\begin{itemize}
+				\item $e \twoheadleftarrow \mathcal{E}$
+				      \begin{itemize}
+					      \item Sample one small integer
+					      \item Result: e.g., $e = -1$
+				      \end{itemize}
+				\item $\vec{e} \twoheadleftarrow [\mathcal{E}]^n$
+				      \begin{itemize}
+					      \item Sample $n$ integers independently
+					      \item Result: e.g., $\vec{e} = \begin{bmatrix} 0 \\ 1 \\ -1 \\ 0 \end{bmatrix}$
+				      \end{itemize}
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Why the shared secrets are close}
-	\begin{align*}
-		k_A & = \vec{s}_A^T \vec{b}_B = \vec{s}_A^T (A^T\vec{s}_B + \vec{e}_B) \\
-		    & = \vec{s}_A^T A^T \vec{s}_B + \vec{s}_A^T \vec{e}_B              \\
-		\\
-		k_B & = \vec{s}_B^T \vec{b}_A = \vec{s}_B^T (A\vec{s}_A + \vec{e}_A)   \\
-		    & = \vec{s}_B^T A \vec{s}_A + \vec{s}_B^T \vec{e}_A                \\
-		    & = \vec{s}_A^T A^T \vec{s}_B + \vec{s}_B^T \vec{e}_A
-	\end{align*}
-
+\begin{frame}{Other notation in the KEM}
 	\begin{itemize}
-		\item The main terms $\vec{s}_A^T A^T \vec{s}_B$ are identical!
-		\item Difference: $k_A - k_B = \vec{s}_A^T \vec{e}_B - \vec{s}_B^T \vec{e}_A$ (small)
-		\item Use reconciliation to extract identical keys from close values
+		\item \textbf{Floor function}: $\lfloor x \rfloor$ means round down to nearest integer
+		      \begin{itemize}
+			      \item $\lfloor 3.7 \rfloor = 3$, $\lfloor 5.1 \rfloor = 5$
+			      \item $\lfloor q/2 \rfloor$ = halfway point in $\mathbb{Z}_q$
+			      \item If $q = 3329$, then $\lfloor q/2 \rfloor = 1664$
+		      \end{itemize}
+		\item \textbf{Matrix-vector multiplication}:
+		      \begin{itemize}
+			      \item $A\vec{s}$: Matrix $A$ times vector $\vec{s}$ gives a vector
+			      \item $\vec{b}^T\vec{r}$: Row vector times column vector gives a scalar (number)
+		      \end{itemize}
+		\item \textbf{The shared bit $\mu$}:
+		      \begin{itemize}
+			      \item The actual message being transmitted: 0 or 1
+			      \item Encoded by adding 0 (if $\mu = 0$) or $\lfloor q/2 \rfloor$ (if $\mu = 1$)
+			      \item Small errors won't confuse 0 with $\lfloor q/2 \rfloor$
+		      \end{itemize}
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Simple LWE-based KEM}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Public parameters:}
+			\begin{itemize}
+				\item Matrix $A \in \mathbb{Z}_q^{n \times n}$
+				\item Modulus $q$ (e.g., 3329)\footnote{3329 is congruent to 1 modulo 256, and therefore the polynomial $X^{256} + 1$ splits into a product of degreen $2$ polynomials of the form $(X^2 - r_{i}).$}\footnote{\url{https://appliedcryptography.page/papers/\#basic-lattice}}
+				\item Error distribution $\mathcal{E}$
+			\end{itemize}
+			\textbf{Bob's key generation:}
+			\begin{enumerate}
+				\item Sample $(\vec{s}, \vec{e}_1) \twoheadleftarrow [\mathcal{E}]^n$
+				\item Private key: $\vec{s}$
+				\item Public key: $\vec{b} = A\vec{s} + \vec{e}_1$
+				\item Publish $(A, \vec{b})$
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Alice's encapsulation:}
+			\begin{enumerate}
+				\item Sample $(\vec{r}, \vec{e}_2) \twoheadleftarrow [\mathcal{E}]^n$
+				\item Sample $e_3 \twoheadleftarrow \mathcal{E}$
+				\item Message bit: $\mu \in \bits$
+				\item Compute:
+				      \begin{itemize}
+					      \item $\vec{u}^T = \vec{r}^{T}A + \vec{e}_{2}^{T}$
+					      \item $v = \vec{r}^T\vec{t} + e_3 + \lfloor q/2 \rfloor \cdot \mu$
+				      \end{itemize}
+				\item Send ciphertext: $(\vec{u}, v)$
+			\end{enumerate}
+			\textbf{Bob's decapsulation:}
+			\begin{enumerate}
+				\item Compute: $w = v - \vec{u}^{T}\vec{s}$
+				\item If $w$ closer to 0: $\mu = 0$
+				\item If $w$ closer to $\lfloor q/2 \rfloor$: $\mu = 1$
+			\end{enumerate}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why decapsulation works}
+	\begin{align*}
+		v - \vec{u}^T\vec{s} & = \vec{r}^{T}(A\vec{s} + \vec{e}_1) + e_3 + \lfloor q/2 \rfloor \cdot \mu - (\vec{r}^{T}A + \vec{e}_{2}^{T})\vec{s}               \\
+		                     & = \vec{r}^{T}A\vec{s} + \vec{r}^{T}\vec{e}_1 + e_3 + \lfloor q/2 \rfloor \cdot \mu - \vec{r}^{T}A\vec{s} - \vec{e}_{2}^{T}\vec{s} \\
+		                     & = \vec{r}^{T}\vec{e}_{1} + e_3 + \lfloor q/2 \rfloor \cdot \mu - \vec{e}_{2}^{T}\vec{s}                                           \\
+		                     & = \lfloor q/2 \rfloor \cdot \mu + \underbrace{(\vec{r}^{T}\vec{e}_{1} - \vec{e}_{2}^{T}\vec{s} + e_3)}_{\text{small error}}
+	\end{align*}
+\end{frame}
+
+\begin{frame}{Why decapsulation works}
+	\begin{columns}[c]
+		\begin{column}{0.3\textwidth}
+		\tiny
+			\begin{align*}
+				v - \vec{u}^T\vec{s} & = \vec{r}^{T}(A\vec{s} + \vec{e}_1) + e_3 + \lfloor q/2 \rfloor \cdot \mu - (\vec{r}^{T}A + \vec{e}_{2}^{T})\vec{s}               \\
+				                     & = \vec{r}^{T}A\vec{s} + \vec{r}^{T}\vec{e}_1 + e_3 + \lfloor q/2 \rfloor \cdot \mu - \vec{r}^{T}A\vec{s} - \vec{e}_{2}^{T}\vec{s} \\
+				                     & = \vec{r}^{T}\vec{e}_{1} + e_3 + \lfloor q/2 \rfloor \cdot \mu - \vec{e}_{2}^{T}\vec{s}                                           \\
+				                     & = \lfloor q/2 \rfloor \cdot \mu + \underbrace{(\vec{r}^{T}\vec{e}_{1} - \vec{e}_{2}^{T}\vec{s} + e_3)}_{\text{small error}}
+			\end{align*}
+		\end{column}
+		\begin{column}{0.7\textwidth}
+			\begin{itemize}
+				\item \textbf{Step 1}: Start with $v - \vec{u}^T\vec{s}$ and substitute the definitions
+				      \begin{itemize}
+					      \item Recall: $v = \vec{r}^T\vec{b} + e_3 + \lfloor q/2 \rfloor \cdot \mu$ where $\vec{b} = A\vec{s} + \vec{e}_1$
+					      \item So: $v = \vec{r}^T(A\vec{s} + \vec{e}_1) + e_3 + \lfloor q/2 \rfloor \cdot \mu$
+					      \item And: $\vec{u}^T = \vec{r}^TA + \vec{e}_2^T$
+					      \item Substituting: $v - \vec{u}^T\vec{s} = \vec{r}^T(A\vec{s} + \vec{e}_1) + e_3 + \lfloor q/2 \rfloor \cdot \mu - (\vec{r}^TA + \vec{e}_2^T)\vec{s}$
+				      \end{itemize}
+				\item \textbf{Step 2}: Expand the products using distributivity
+				      \begin{itemize}
+					      \item $\vec{r}^T(A\vec{s} + \vec{e}_1) = \vec{r}^TA\vec{s} + \vec{r}^T\vec{e}_1$
+					      \item $(\vec{r}^TA + \vec{e}_2^T)\vec{s} = \vec{r}^TA\vec{s} + \vec{e}_2^T\vec{s}$
+					      \item Result: $\vec{r}^TA\vec{s} + \vec{r}^T\vec{e}_1 + e_3 + \lfloor q/2 \rfloor \cdot \mu - \vec{r}^TA\vec{s} - \vec{e}_2^T\vec{s}$
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why decapsulation works}
+	\begin{columns}[c]
+		\begin{column}{0.3\textwidth}
+			\tiny
+			\begin{align*}
+				v - \vec{u}^T\vec{s} & = \vec{r}^{T}(A\vec{s} + \vec{e}_1) + e_3 + \lfloor q/2 \rfloor \cdot \mu - (\vec{r}^{T}A + \vec{e}_{2}^{T})\vec{s}               \\
+				                     & = \vec{r}^{T}A\vec{s} + \vec{r}^{T}\vec{e}_1 + e_3 + \lfloor q/2 \rfloor \cdot \mu - \vec{r}^{T}A\vec{s} - \vec{e}_{2}^{T}\vec{s} \\
+				                     & = \vec{r}^{T}\vec{e}_{1} + e_3 + \lfloor q/2 \rfloor \cdot \mu - \vec{e}_{2}^{T}\vec{s}                                           \\
+				                     & = \lfloor q/2 \rfloor \cdot \mu + \underbrace{(\vec{r}^{T}\vec{e}_{1} - \vec{e}_{2}^{T}\vec{s} + e_3)}_{\text{small error}}
+			\end{align*}
+		\end{column}
+		\begin{column}{0.7\textwidth}
+			\begin{itemize}
+				\item \textbf{Step 3}: Cancel the $\vec{r}^TA\vec{s}$ terms
+				      \begin{itemize}
+					      \item Notice: $+\vec{r}^TA\vec{s}$ and $-\vec{r}^TA\vec{s}$ cancel out
+					      \item Left with: $\vec{r}^T\vec{e}_1 + e_3 + \lfloor q/2 \rfloor \cdot \mu - \vec{e}_2^T\vec{s}$
+				      \end{itemize}
+				\item \textbf{Step 4}: Rearrange to isolate the message
+				      \begin{itemize}
+					      \item Group error terms: $\vec{r}^T\vec{e}_1 - \vec{e}_2^T\vec{s} + e_3$
+					      \item Final form: $\lfloor q/2 \rfloor \cdot \mu + (\vec{r}^T\vec{e}_1 - \vec{e}_2^T\vec{s} + e_3)$
+				      \end{itemize}
+				\item \textbf{Why this works}:
+				      \begin{itemize}
+					      \item All error terms ($\vec{e}_1$, $\vec{e}_2$, $e_3$, $\vec{r}$, $\vec{s}$) are small
+					      \item Their products and sums remain small
+					      \item If $\mu = 0$: Result is close to 0
+					      \item If $\mu = 1$: Result is close to $\lfloor q/2 \rfloor$
+					      \item Small errors don't confuse these two cases!
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Reconciliation: Getting exact agreement}
 	\begin{itemize}
-		\item \textbf{Problem}: Alice and Bob have close but not identical values
-		\item \textbf{Solution}: Round to nearest ``significant'' bits
-		\item \textbf{Simple approach}:
+		\item \textbf{Problem}: Noise might cause decapsulation errors
+		\item \textbf{Solution}: Error correction codes or reconciliation mechanisms
+		\item \textbf{Modern approach}:
 		      \begin{enumerate}
-			      \item Divide $\mathbb{Z}_q$ into regions (e.g., 4 regions for 2-bit key)
-			      \item Bob sends ``hint'' bits to help Alice round correctly
-			      \item Both extract same bits from their rounded values
+			      \item Encode message bits with error correction
+			      \item Add reconciliation data to help correct errors
+			      \item Ensure Bob always recovers Alice's intended key
 		      \end{enumerate}
-		\item \textbf{Example} (if $q = 12$):
+		\item \textbf{Example} (simplified):
 		      \begin{itemize}
-			      \item Regions: $[0,2], [3,5], [6,8], [9,11]$ $\rightarrow$ bits: \bit{00}, \bit{01}, \bit{10}, \bit{11}
-			      \item Alice has 5, Bob has 4 $\rightarrow$ both round to region $[3,5]$ $\rightarrow$ key bits: \bit{01}
+			      \item Instead of single bit $\mu$, encode multiple bits
+			      \item Use redundancy to correct small errors
+			      \item Kyber uses sophisticated reconciliation for reliability
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
