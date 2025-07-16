@@ -1717,24 +1717,28 @@
 \end{frame}
 
 \begin{frame}{Early browser experiments}
-	\begin{itemize}
-		\item \textbf{2016}: Google's first PQ experiment (same year as NIST competition)
-		\item \textbf{2018}: Cloudflare + Google joint experiment
-		      \begin{itemize}
-			      \item CECPQ2: X25519 + NTRU-HRSS (lattice-based)
-			      \item CECPQ2b: X25519 + SIKE (isogeny-based)
-		      \end{itemize}
-		\item \textbf{Results}:
-		      \begin{itemize}
-			      \item NTRU-HRSS: Good performance, similar to ML-KEM
-			      \item SIKE: Small keys but slow, \textcolor{red}{completely broken in 2022}
-			            \begin{itemize}
-				            \item Good argument for hybrid cryptosystems that combine both classical and PQ crypto!
-			            \end{itemize}
-			      \item Handshake times nearly identical to classical crypto
-		      \end{itemize}
-		\item \textbf{But}: Compatibility issues emerged\ldots
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{2016}: Google's first PQ experiment (same year as NIST competition)
+				\item \textbf{2018}: Cloudflare + Google joint experiment
+				      \begin{itemize}
+					      \item CECPQ2: X25519 + NTRU-HRSS (lattice-based)
+					      \item CECPQ2b: X25519 + SIKE (isogeny-based)
+				      \end{itemize}
+				\item \textbf{Results}:
+				      \begin{itemize}
+					      \item NTRU-HRSS: Good performance, similar to ML-KEM
+					      \item SIKE: Small keys but slow, \textcolor{red}{completely broken in 2022}
+					            \begin{itemize}
+						            \item Good argument for hybrid cryptosystems (like X-Wing\footnote{\url{https://appliedcryptography.page/papers/\#xwing-hybrid}}) that combine both classical and PQ crypto!
+					            \end{itemize}
+					      \item Handshake times nearly identical to classical crypto
+				      \end{itemize}
+				\item \textbf{But}: Compatibility issues emerged\ldots
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{The ClientHello size problem}
