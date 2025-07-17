@@ -1,0 +1,202 @@
+\documentclass[10pt,a4paper,american]{article}
+\newcommand{\aublogopath}{../../website/res/img/aub_black.png}
+\usepackage{../../misc/macros/joc}
+\usepackage{../../misc/fonts/fonts}
+\usepackage{../../misc/macros/classhandout}
+
+\begin{document}
+
+\classhandoutheader
+
+\section*{Problem Set 5: High-Assurance Cryptography}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	\textbf{Instructions:} This problem set covers topics in high-assurance cryptography and formal verification methods from topic 2.5\footnote{\url{https://appliedcryptography.page/slides/\#2-5}} of the course. Submit your solutions as a neatly formatted PDF. You are encouraged to collaborate with classmates in studying the material, but your submitted solutions must be your own work. For proofs, clearly state your assumptions, steps, and conclusions.
+\end{tcolorbox}
+
+\section{Design-Level Security and Formal Verification (35 points)}
+
+\subsection{Symbolic vs. Computational Models (20 points)}
+
+\begin{enumerate}
+	\item (10 points) \textbf{Protocol Modeling Trade-offs:}
+	      You are tasked with formally verifying a new secure messaging protocol for a government agency. The protocol involves complex key derivation, multiple handshake modes, and post-compromise security guarantees.
+	      \begin{enumerate}
+		      \item Compare the advantages and limitations of using symbolic (ProVerif) versus computational (CryptoVerif) approaches for this protocol. Which properties would be easier to verify in each model?
+		      \item The protocol uses a custom authenticated encryption scheme. Explain, at a high level, how such a construction would be modeled in the symbolic model. What assumptions would you need to make?
+	      \end{enumerate}
+	\item (10 points) \textbf{Equivalence Properties in Practice:}
+	      A voting protocol claims to provide receipt-freeness: voters cannot prove how they voted, even if they want to.
+
+	      \textbf{Background:} Recall that security properties in formal verification can be classified as:
+	      \begin{itemize}
+		      \item \textbf{Trace properties}: Properties that can be verified by examining individual execution traces (e.g., ``the secret key is never sent in plaintext'')
+		      \item \textbf{Equivalence properties}: Properties that require comparing multiple executions (e.g., ``an attacker cannot distinguish between two different scenarios'')
+	      \end{itemize}
+
+	      Receipt-freeness means that even if Alice wants to prove she voted for candidate A (perhaps under coercion), she cannot produce evidence that distinguishes her voting for A from voting for B. This inherently involves comparing two scenarios.
+
+	      \begin{enumerate}
+		      \item (5 points) Explain why receipt-freeness cannot be expressed as a trace property.\footnote{Hint: Consider what information would need to be examined in a single trace versus across multiple traces.} Then formulate receipt-freeness as an equivalence property in the symbolic model.\footnote{Hint: Think about what two processes should be indistinguishable to model this property.}
+		      \item (5 points) There exist different notions of equivalence:\footnote{\url{https://appliedcryptography.page/papers/\#sok-verif}}
+		            \begin{itemize}
+			            \item \textbf{Trace equivalence}: Two processes are equivalent if they produce the same set of observable traces.
+			            \item \textbf{Open bisimilarity}: A stronger notion where processes must match each other's behavior step-by-step, even when the attacker provides inputs.
+			            \item \textbf{Diff-equivalence}: The strongest (most restrictive) notion where two protocols must have identical structure, differing only in the messages exchanged. All tests must succeed or fail identically in both protocols, preserving protocol structure during execution.
+		            \end{itemize}
+		            Compare these three approaches for modeling receipt-freeness. Which would be most appropriate and why? What can you say about the analysis's precision of the analysis and the computational complexity?
+	      \end{enumerate}
+\end{enumerate}
+
+\subsection{Tool Selection and Application (15 points)}
+
+\begin{enumerate}
+	\item (7.5 points) \textbf{ProVerif Analysis Challenge:}
+	      You're analyzing a protocol that combines TLS 1.3 with a custom post-quantum key exchange mechanism.
+	      \begin{enumerate}
+		      \item ProVerif's analysis time explodes when modeling protocols that generate many ephemeral keys. Explain why certain cryptographic patterns (like generating fresh keys for each message) are harder to analyze symbolically than others (like reusing long-term keys).
+		      \item To make ProVerif analysis terminate in a shorter time period, you may need to simplify the protocol model. Describe two specific simplifications you would make (e.g., bounding the number of sessions, abstracting the post-quantum KEM as a perfect encryption scheme, or modeling only a subset of TLS 1.3 features). For each simplification, explain what attacks it might miss.
+	      \end{enumerate}
+	\item (7.5 points) \textbf{ProVerif and Stateful Protocol Challenges:}
+	      A blockchain-based PKI protocol maintains global state across multiple sessions.
+	      \begin{enumerate}
+		      \item Explain why ProVerif's lack of native support for global mutable state makes this analysis challenging. Describe techniques to encode stateful behavior in ProVerif (e.g., using private channels, tables, or phase-based modeling) and their limitations.
+		      \item The protocol allows rollback to previous states under certain conditions. Propose a ProVerif encoding that captures this behavior using events and correspondence assertions. What attacks might be missed due to ProVerif's approximations?
+		      \item Design a abstraction strategy that makes the protocol amenable to ProVerif analysis while preserving essential security properties. What state-based attacks would require manual analysis outside of ProVerif?
+	      \end{enumerate}
+\end{enumerate}
+
+\section{Implementation Security and Side Channels (20 points)}
+
+\subsection{Constant-Time Implementation (10 points)}
+
+\begin{enumerate}
+	\item (5 points) \textbf{Compiler Sabotage:}
+	      AES implementations commonly use lookup tables (S-boxes) for the SubBytes operation, where table indices depend on secret key material XORed with plaintext. This creates timing variations through cache hits/misses that can leak key bits. Additionally, some optimized implementations use key-dependent branching or conditional operations that vary in execution time.
+
+	      You've written constant-time code for AES, carefully avoiding these vulnerabilities by eliminating table lookups (perhaps using bit-slicing), key-dependent branches, and variable-time operations.
+	      \begin{enumerate}
+		      \item Give three specific examples of how a modern compiler might destroy your constant-time guarantees through ``optimization.'' For each, show the original code and the problematic transformation.
+		      \item Design a testing methodology to detect when the compiler has broken constant-time properties. Why is measuring wall-clock time insufficient?
+		      \item Propose compiler extensions or annotations that would preserve constant-time properties. What would the compiler need to track during optimization?
+	      \end{enumerate}
+	\item (5 points) \textbf{Hardware Havoc:}
+	      Even with perfect constant-time assembly code, modern CPUs introduce timing variations through various micro-architectural features. Branch predictors are a particularly important source of such variations. These are CPU components that attempt to guess the outcome of conditional branches (if-then-else statements, loops, etc.) before the actual condition is evaluated. When the CPU encounters a branch instruction, instead of waiting to determine which path to take, the branch predictor makes an educated guess based on the branch's history and executes instructions speculatively along the predicted path. If the prediction is correct, execution continues smoothly; if incorrect, the CPU must discard the speculative work and restart from the correct path, causing a measurable timing difference. Modern branch predictors use sophisticated algorithms that track patterns across multiple branches and even correlate behaviors between different branches, maintaining tables indexed by instruction addresses and global history registers. This prediction mechanism can leak information about secret data because the predictor's state, and thus its accuracy, depends on the sequence of branches taken, which may in turn depend on secret values processed by your cryptographic code.
+	      \begin{enumerate}
+		      \item Explain how branch predictors can leak information even when your code has no explicit branches. Design an attack that exploits this against a constant-time implementation.
+		      \item Analyze the trade-offs between different constant-time implementation strategies (bit-slicing, masking, vectorization) in the presence of micro-architectural attacks.
+		      \item Intel's CPUs have variable-latency integer division. How would you implement constant-time modular reduction without using division instructions?
+	      \end{enumerate}
+\end{enumerate}
+
+\subsection{Side-Channel Resistance (10 points)}
+
+\begin{enumerate}
+	\item (5 points) \textbf{Understanding Leakage Models:}
+	      You're implementing cryptographic primitives and need to ensure they're resistant to side-channel attacks.
+	      \begin{enumerate}
+		      \item (2.5 points) Explain the three main leakage models covered in the course: program counter (PC) model, constant-time model, and size-respecting model. For each model, describe what information leaks and give a concrete example of a coding pattern that would violate it.
+		      \item (2.5 points) Consider this password checking code:
+		            \begin{verbatim}
+for (i = 0; i < len; i++) {
+    if (password[i] != input[i]) {
+        return FAIL;
+    }
+}
+return SUCCESS;
+\end{verbatim}
+		            Explain why this violates constant-time principles and show how to rewrite it to be constant-time. What is the performance trade-off?
+	      \end{enumerate}
+
+	\item (5 points) \textbf{Rust's Memory Safety Model:}
+	      \begin{enumerate}
+		      \item (2.5 points) Rust achieves memory safety without garbage collection, claiming to offer the performance of C with greater security guarantees. Explain how Rust's ownership system, borrowing rules, and lifetime annotations provide memory safety at compile time rather than runtime. Why doesn't this approach impose the runtime overhead typical of managed languages like Java or Go? Give specific examples of vulnerabilities that Rust prevents by design.
+		      \item (2.5 points) While Rust avoids runtime performance penalties, there is still a tradeoff. Explain why Rust compilation times are significantly longer than C compilation times. What additional work must the Rust compiler perform? Discuss how the borrow checker's analysis complexity scales with program size and why certain safe patterns can cause exponential compile-time behavior. Is this tradeoff worthwhile for cryptographic implementations?
+	      \end{enumerate}
+\end{enumerate}
+
+\section{Computer-Aided Cryptography in Practice (45 points)}
+
+\subsection{Verification Case Studies (15 points)}
+
+\begin{enumerate}
+	\item (7.5 points) \textbf{\haclstar Success Story:}
+	      Mozilla integrated \haclstar into Firefox, replacing hand-written assembly with verified \fstar code.
+	      \begin{enumerate}
+		      \item Analyze why \haclstar succeeded where previous verification efforts failed. Consider performance, API compatibility, and development process.
+		      \item The \haclstar team claims ``verification for free'' - no performance penalty. Examine this claim critically. What optimizations might verified code miss compared to expert assembly?
+		      \item Design a gradual migration strategy for replacing OpenSSL with verified implementations. What are the technical and organizational challenges?
+	      \end{enumerate}
+
+	\item (7.5 points) \textbf{hax and the Future of Verification:}
+	      The hax toolchain\footnote{\url{https://hax.cryspen.com}} promises to extract formal models from Rust implementations.
+	      \begin{enumerate}
+		      \item Analyze the benefits and risks of extracting ProVerif models from implementation code versus writing them manually. What semantic gaps might arise?
+		      \item Design a development workflow using hax that ensures both protocol-level and implementation-level security. How do you maintain consistency as the code evolves?
+		      \item The Bert13 case study verified TLS 1.3 in Rust using three different provers. Explain why multiple verification approaches are valuable and how to manage the complexity.
+	      \end{enumerate}
+\end{enumerate}
+
+\subsection{Building Verified Systems (30 points)}
+
+\begin{enumerate}
+	\item (14 points) \textbf{Multiple Cipher Suites Challenge:}
+	      Consider a secure messaging protocol that supports three different cipher suites:
+	      \begin{itemize}
+		      \item Suite A: AES-128-GCM with RSA-2048
+		      \item Suite B: AES-256-GCM with ECDH-P256
+		      \item Suite C: ChaCha20-Poly1305 with Ed25519
+	      \end{itemize}
+
+	      \begin{enumerate}
+		      \item (3 points) Would verifying this protocol be more complex than verifying a protocol with a single, fixed cipher suite, and if so, how? Consider both the symbolic model (like ProVerif) and computational model perspectives.
+		      \item (3 points) The protocol allows parties to negotiate which cipher suite to use during the handshake. What new attack vectors does this negotiation introduce? How would you model cipher suite negotiation in ProVerif to catch downgrade attacks?
+		      \item (8 points) You need to formally verify the security of the protocol described above. Describe how you would structure the verification to avoid analyzing all possible combinations of sender/receiver cipher suite choices. What common security properties can you abstract across all cipher suites? What assumptions would you need to make about each cryptographic primitive?
+	      \end{enumerate}
+
+	\item (16 points) \textbf{End-to-End Verification Project:}
+	      You're leading the verification of a new secure communication protocol that will be deployed at nation-state scale. The protocol combines classical and post-quantum cryptography, supports multiple authentication modes, and must resist both computational and side-channel attacks.
+	      \begin{enumerate} \item (4 points) \textbf{Verification Architecture}
+		            \begin{itemize}
+			            \item Design a comprehensive verification strategy using multiple tools.
+			            \item Specify which properties each tool will verify.
+			            \item Identify gaps between different verification layers.
+		            \end{itemize}
+
+		      \item (4 points) \textbf{Formal Specifications}
+		            \begin{itemize}
+			            \item Write formal security definitions for the protocol's goals.
+			            \item Specify side-channel resistance requirements formally.
+		            \end{itemize}
+
+		      \item (4 points) \textbf{Implementation Strategy}
+		            \begin{itemize}
+			            \item Choose implementation languages and verification tools.
+			            \item Design the development workflow to maintain verification.
+		            \end{itemize}
+
+		      \item (4 points) \textbf{Assurance Arguments}
+		            \begin{itemize}
+			            \item Create a comprehensive assurance case for stakeholders.
+			            \item Address the ``fine print'' - what's not verified and why.
+			            \item Design a maintenance strategy for evolving threats.
+		            \end{itemize}
+	      \end{enumerate}
+\end{enumerate}
+
+\begin{tcolorbox}[colframe=EarthBrown!30!white,colback=EarthBrown!5!white]
+	\textbf{Bonus Challenge (30 extra points):} Allen Gumm, a rather sticky fellow who gets trapped by his own bubble gum-based weapons and constantly has to unstick himself from walls, has usurped power at a cryptography company. The company's products use formally verified components: \haclstar for cryptographic primitives and hand-written ProVerif models for protocol verification. Despite these verification efforts, Allen wants to subvert their security without detection.
+
+	Analyze which elements of the cryptography stack Allen Gumm could compromise that would bypass the formal verification guarantees:
+	\begin{enumerate}
+		\item \textbf{Beyond the Verification Boundary (10 points):} Identify at least three components or interfaces that typically fall outside the formal verification scope outlined above but are critical for security. For each, explain how Allen could introduce vulnerabilities and why the verification wouldn't catch them.
+
+		\item \textbf{Trust Assumptions (10 points):} Formal verification relies on various trust assumptions. List specific assumptions made by \haclstar and ProVerif that Allen could violate in practice. How could he exploit the gap between the formal model and the deployed system?
+
+		\item \textbf{Deployment Sabotage (10 points):} Even with verified code and protocols, deployment introduces new attack surfaces. Propose three realistic ways Allen could compromise the system during build, deployment, or runtime without modifying the verified components themselves. What additional verification or monitoring would be needed to detect his sticky schemes?
+	\end{enumerate}
+
+	Your analysis should be concrete and technically sound, focusing on practical vulnerabilities rather than theoretical limitations. Consider real-world deployment scenarios and the boundaries of current verification technology.
+\end{tcolorbox}
+
+\end{document}

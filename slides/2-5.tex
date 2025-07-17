@@ -1550,7 +1550,7 @@
 \begin{frame}{Breaking news: First verified Rust crypto protocol!}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-		\textbf{What they built:}
+			\textbf{What they built:}
 			\begin{itemize}
 				\item \textbf{Bert13}: Full TLS 1.3 implementation in Rust\footnote{\url{https://appliedcryptography.page/papers/\#verified-rust}}
 				\item Supports both classical and post-quantum ciphersuites
@@ -2056,6 +2056,36 @@
 	\begin{center}
 		\textit{Willing to do the ``boring'' work that matters for adoption}
 	\end{center}
+\end{frame}
+
+\begin{frame}{Why \haclstar succeeded where others failed}
+	\begin{center}
+		\large
+		Previous verified crypto almost never made it to production
+	\end{center}
+	\vspace{1em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{What previous efforts got wrong:}
+			\begin{itemize}
+				\item Too slow (10-100\times\ performance penalty)
+				\item Academic prototypes, not production code
+				\item Missing critical algorithms
+				\item No testing infrastructure
+				\item Incompatible APIs
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{What \haclstar did differently:}
+			\begin{itemize}
+				\item Performance within 5\% of OpenSSL
+				\item Professional software engineering
+				\item Complete ciphersuite coverage
+				\item Extensive test vectors
+				\item \textbf{Perfect timing}: Post-Heartbleed trust crisis
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{A paradigm shift in verification}
