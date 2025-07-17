@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<title>Applied Cryptography (CMPS 297AD/396AI): Problem Sets Viewer</title>
+	<title>Applied Cryptography: Problem Sets Viewer</title>
 	<meta name="description" content="Learn modern cryptography principles and applications in this comprehensive course covering cryptographic theory, practical implementations, and real-world security systems at the American University of Beirut." />
 	<meta name="keywords" content="applied cryptography, AUB, American University of Beirut, cryptography course, encryption, cryptographic protocols, cybersecurity education, CMPS 297AD, CMPS 396AI" />
 	<meta name="author" content="Nadim Kobeissi" />
@@ -11,7 +11,7 @@
 	<meta name="robots" content="index, follow" />
 	<link rel="canonical" href="https://appliedcryptography.page/" />
 	<meta property="og:type" content="website" />
-	<meta property="og:title" content="Applied Cryptography (CMPS 297AD/396AI) — American University of Beirut" />
+	<meta property="og:title" content="Applied Cryptography — American University of Beirut" />
 	<meta property="og:description" content="Learn modern cryptography principles and applications in this comprehensive course covering cryptographic theory, practical implementations, and real-world security systems at the American University of Beirut." />
 	<meta property="og:url" content="https://appliedcryptography.page" />
 	<meta property="og:image" content="https://appliedcryptography.page/res/img/og.jpg" />
@@ -38,7 +38,7 @@
 		window.addEventListener(`load`, () => {
 			const anchor = window.location.hash.substring(1);
 			const viewer = document.getElementById(`viewer`);
-			if (anchor && /^\d{1,3}$/.test(anchor)) {
+			if (typeof(anchor) === `string` && /^\d{1,3}$/.test(anchor)) {
 				viewer.src = `../view/?file=/problem-sets/problem-set-${anchor}.pdf`;
 			}
 		});

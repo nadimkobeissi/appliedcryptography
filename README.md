@@ -1,4 +1,4 @@
-# Applied Cryptography (CMPS 297AD/396AI)
+# Applied Cryptography
 
 This repository contains source code of the course materials for Applied Cryptography (CMPS 297AD/396AI) at the American University of Beirut.
 
