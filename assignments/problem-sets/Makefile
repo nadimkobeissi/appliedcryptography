@@ -1,7 +1,7 @@
 all:
-	@make problem-set-1
-	@make problem-set-2
-	@make problem-set-3
+	@make problem-set-1 &
+	@make problem-set-2 &
+	@make problem-set-3 &
 	@make problem-set-4
 
 problem-set-1:

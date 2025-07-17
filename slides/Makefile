@@ -1,21 +1,21 @@
 all:
-	@make 1-1
-	@make 1-2
-	@make 1-3
-	@make 1-4
-	@make 1-5
-	@make 1-6
-	@make 1-7
-	@make 1-8
-	@make 2-1
-	@make 2-2
-	@make 2-3
-	@make 2-4
-	@make 2-5
-	@make 2-6
-	@make 2-7
-	@make 2-8
-	@make 2-9
+	@make 1-1 &
+	@make 1-2 &
+	@make 1-3 &
+	@make 1-4 &
+	@make 1-5 &
+	@make 1-6 &
+	@make 1-7 &
+	@make 1-8 &
+	@make 2-1 &
+	@make 2-2 &
+	@make 2-3 &
+	@make 2-4 &
+	@make 2-5 &
+	@make 2-6 &
+	@make 2-7 &
+	@make 2-8 &
+	@make 2-9 &
 	@make 2-10
 
 1-1:

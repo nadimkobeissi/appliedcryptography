@@ -1,8 +1,8 @@
 all:
-	@make password-manager
-	@make secure-messenger
-	@make zk-battleship
-	@make proverif
+	@make password-manager &
+	@make secure-messenger &
+	@make zk-battleship &
+	@make proverif &
 	@make pq-migration
 
 password-manager:
