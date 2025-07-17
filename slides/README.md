@@ -1,31 +1,10 @@
 # Slides
 
-Welcome to the slides! Here they are. Isn't that amazing?
-
-## Readiness status
-
-I'm still working on the slides. If the checkbox isn't checked, it means you shouldn't use them yet.
-
-#### Part 1
-
-**Complete!**
-
-#### Part 2
-
-- [x] Part 2: Topic 1
-- [x] Part 2: Topic 2
-- [x] Part 2: Topic 3
-- [ ] Part 2: Topic 4
-- [x] Part 2: Topic 5
-- [x] Part 2: Topic 6
-- [x] Part 2: Topic 7
-- [ ] Part 2: Topic 8
-- [ ] Part 2: Topic 9
-- [ ] Part 2: Topic 10
+Welcome! This folder contains presentation slides and instructions for compiling them.
 
 ## Compiling the slides
 
-You'll need to first have [Tectonic](https://tectonic-typesetting.github.io/en-US/) installed. The good news is that this means that you don't need to install LaTeX!
+You'll need to first have [Tectonic](https://tectonic-typesetting.github.io/en-US/) and [qpdf](https://qpdf.sourceforge.io/) installed. The good news is that this means that you don't need to install LaTeX!
 
 ## Notes
 

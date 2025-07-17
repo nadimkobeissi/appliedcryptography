@@ -1,21 +1,6 @@
-all:
-	@make password-manager &
-	@make secure-messenger &
-	@make zk-battleship &
-	@make proverif &
-	@make pq-migration
+TARGETS = password-manager secure-messenger zk-battleship proverif pq-migration
 
-password-manager:
-	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../../website/labs "password-manager.tex"
+all: $(TARGETS)
 
-secure-messenger:
-	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../../website/labs "secure-messenger.tex"
-
-zk-battleship:
-	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../../website/labs "zk-battleship.tex"
-
-proverif:
-	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../../website/labs "proverif.tex"
-
-pq-migration:
-	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../../website/labs "pq-migration.tex"
+$(TARGETS):
+	@export SOURCE_DATE_EPOCH=1700000000 && tectonic -o ../../website/labs "$@.tex" && qpdf --linearize "../../website/labs/$@.pdf" --replace-input &
