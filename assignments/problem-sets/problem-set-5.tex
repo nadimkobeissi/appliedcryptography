@@ -109,8 +109,9 @@ return SUCCESS;
 	      \end{enumerate}
 
 	\item (5 points) \textbf{Rust's Memory Safety Model:}
+	      Rust achieves memory safety without garbage collection, claiming to offer the performance of C with greater security guarantees.
 	      \begin{enumerate}
-		      \item (2.5 points) Rust achieves memory safety without garbage collection, claiming to offer the performance of C with greater security guarantees. Explain how Rust's ownership system, borrowing rules, and lifetime annotations provide memory safety at compile time rather than runtime. Why doesn't this approach impose the runtime overhead typical of managed languages like Java or Go? Give specific examples of vulnerabilities that Rust prevents by design.
+		      \item (2.5 points) Explain how Rust's ownership system, borrowing rules, and lifetime annotations provide memory safety at compile time rather than runtime. Why doesn't this approach impose the runtime overhead typical of managed languages like Java or Go? Give specific examples of vulnerabilities that Rust prevents by design.
 		      \item (2.5 points) While Rust avoids runtime performance penalties, there is still a tradeoff. Explain why Rust compilation times are significantly longer than C compilation times. What additional work must the Rust compiler perform? Discuss how the borrow checker's analysis complexity scales with program size and why certain safe patterns can cause exponential compile-time behavior. Is this tradeoff worthwhile for cryptographic implementations?
 	      \end{enumerate}
 \end{enumerate}

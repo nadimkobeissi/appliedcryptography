@@ -36,14 +36,14 @@
 	</style>
 	<script>
 		window.addEventListener(`load`, () => {
-			const viewer = document.getElementById(`viewer`);
-			viewer.src = `../view/?file=/syllabus/syllabus.pdf`;
+			const viewer = document.createElement(`iframe`);
+			viewer.id = `viewer`;
+			viewer.src = `../view/?file=/syllabus/syllabus.pdf#pagemode=none&zoom=page-fit`;
+			document.body.appendChild(viewer);
 		});
 	</script>
 </head>
 
-<body>
-	<iframe id="viewer" src=""></iframe>
-</body>
+<body></body>
 
 </html>

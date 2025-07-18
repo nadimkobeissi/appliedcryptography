@@ -37,16 +37,18 @@
 	<script>
 		window.addEventListener(`load`, () => {
 			const anchor = window.location.hash.substring(1);
-			const viewer = document.getElementById(`viewer`);
 			if (typeof(anchor) === `string` && /^\w{1,32}(-\w{1,32})?$/.test(anchor)) {
-				viewer.src = `../view/?file=/papers/${anchor}.pdf`;
+				const viewer = document.createElement(`iframe`);
+				viewer.id = `viewer`;
+				viewer.src = `../view/?file=/papers/${anchor}.pdf#pagemode=none&zoom=page-fit`;
+				document.body.appendChild(viewer);
+			} else {
+				window.location.href = `https://appliedcryptography.page`;
 			}
 		});
 	</script>
 </head>
 
-<body>
-	<iframe id="viewer" src=""></iframe>
-</body>
+<body></body>
 
 </html>
