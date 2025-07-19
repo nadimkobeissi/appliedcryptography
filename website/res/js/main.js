@@ -2,4 +2,5 @@
 	menuInit();
 	collapsibleInit();
 	updatedInit();
+	countdownInit();
 })();

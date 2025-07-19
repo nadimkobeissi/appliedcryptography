@@ -28,6 +28,7 @@
 	<script src="res/js/menu.js"></script>
 	<script src="res/js/collapsible.js"></script>
 	<script src="res/js/updated.js"></script>
+	<script src="res/js/countdown.js"></script>
 </head>
 
 <body>
@@ -71,7 +72,10 @@
 					<strong><i class="icon ph-duotone ph-bookmark"></i>Bookmark this website for the duration of the course and visit it regularly</strong>. All course news will be kept up to date on this website.
 				</p>
 				<p class="mb-0">
-					<strong><i class="icon ph-duotone ph-clock"></i>Last updated:</strong> <span id="lastUpdated"><em>Loading...</em></span>
+					<strong><i class="icon ph-duotone ph-git-branch"></i>Last updated:</strong> <span id="lastUpdated"><em>Loading...</em></span>
+				</p>
+				<p class="mb-0">
+					<strong><i class="icon ph-duotone ph-clock-countdown"></i>Class starts in:</strong> <span id="countdown"><em>Loading...</em></span>
 				</p>
 			</div>
 
@@ -321,11 +325,11 @@
 			</div>
 
 			<div class="subsection">
-				<div class="collapsible-header active">
+				<div class="collapsible-header">
 					<h3 class="subsection-title"><i class="icon ph-duotone ph-keyhole"></i>Part 1: Provable Security</h3>
 					<i class="collapsible-icon ph-duotone ph-caret-circle-down"></i>
 				</div>
-				<div class="collapsible-content active">
+				<div class="collapsible-content">
 					<p>
 						<strong>Part 1</strong> explores the theoretical underpinnings of modern cryptography through the lens of provable security. Starting with introductory concepts and perfect secrecy in the one-time pad, we progressively build a rigorous framework for understanding and analyzing cryptographic primitives. We examine fundamental building blocks like pseudorandom generators, functions, and permutations, then advance to encryption schemes secure against increasingly powerful adversaries—from passive eavesdroppers to active attackers who can manipulate ciphertexts. The section also covers essential cryptographic tools including collision-resistant hash functions, digital signatures, and key exchange protocols. Throughout these topics, we emphasize formal security definitions, reduction proofs, and the connections between theoretical security guarantees and practical implementations. By the end of this section, students will have developed a comprehensive understanding of provable security techniques that form the foundation for analyzing and designing secure cryptographic systems.
 					</p>
@@ -484,11 +488,11 @@
 			</div>
 
 			<div class="subsection">
-				<div class="collapsible-header active">
+				<div class="collapsible-header">
 					<h3 class="subsection-title"><i class="icon ph-duotone ph-gear"></i>Part 2: Real-World Cryptography</h3>
 					<i class="collapsible-icon ph-duotone ph-caret-circle-down"></i>
 				</div>
-				<div class="collapsible-content active">
+				<div class="collapsible-content">
 					<p>
 						<strong>Part 2</strong> shifts from theoretical foundations to practical applications, examining how cryptographic principles are implemented in real-world systems. We begin with secure messaging protocols that provide forward secrecy and post-compromise security through ratcheting mechanisms, then explore authenticated key exchange protocols that secure communications against active adversaries. The section covers advanced concepts like zero-knowledge proofs that enable proving knowledge without revealing secrets, and post-quantum cryptography designed to resist attacks from quantum computers. We examine critical infrastructure protocols like TLS that secure internet communications, cloud security applications of cryptography, and analyze significant cryptographic failures to extract valuable design lessons. The course then investigates formal verification and high-assurance implementations that provide mathematical guarantees of security, specialized cryptography in cryptocurrencies, secure multiparty computation enabling joint computation without revealing inputs, and privacy-preserving technologies that protect sensitive information while enabling useful computation. By connecting theoretical foundations to practical systems, students will develop the knowledge needed to evaluate, implement, and design secure cryptographic solutions for complex real-world environments.
 					</p>
