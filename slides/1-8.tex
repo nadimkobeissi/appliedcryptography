@@ -382,7 +382,7 @@
 		\begin{column}{0.6\textwidth}
 			\textbf{Input:} Message $M$, private key $d$
 			\begin{enumerate}[<+->]
-				\item \textbf{Hash the message:} $h = \text{Hash}(M)$
+				\item \textbf{Hash the message:} $h = \func{hash}{M}$
 				      \begin{itemize}
 					      \item Use SHA-256, SHA-3, or similar
 					      \item Interpret hash as number $h \in [0, n-1]$
@@ -414,7 +414,7 @@
 		\begin{column}{0.6\textwidth}
 			\textbf{Input:} Message $M$, signature $(r, s)$, public key $P$
 			\begin{enumerate}[<+->]
-				\item \textbf{Hash the message:} $h = \text{Hash}(M)$
+				\item \textbf{Hash the message:} $h = \func{hash}{M}$
 				\item \textbf{Compute modular inverse:} $w = \frac{1}{s} \bmod n$
 				\item \textbf{Calculate verification values:}
 				      \begin{itemize}
@@ -467,15 +467,15 @@
 		\begin{column}{0.7\textwidth}
 			\textbf{Input:} Message $M$, private key $k$ (byte string)
 			\begin{enumerate}[<+->]
-				\item \textbf{Expand private key:} $a \parallel h = \text{Hash}(k)$
+				\item \textbf{Expand private key:} $a \parallel h = \func{hash}{k}$
 				      \begin{itemize}
 					      \item $a$: actual signing scalar (first 256 bits)
 					      \item $h$: randomness source (last 256 bits)
 				      \end{itemize}
 				\item \textbf{Compute public key:} $A = a \cdot B$ (precomputed)
-				\item \textbf{Generate nonce deterministically:} $r = \text{Hash}(h \parallel M)$
+				\item \textbf{Generate nonce deterministically:} $r = \func{hash}{h \parallel M}$
 				\item \textbf{Compute signature point:} $R = r \cdot B$
-				\item \textbf{Compute signature scalar:} $S = r + \text{Hash}(R, A, M) \times a$
+				\item \textbf{Compute signature scalar:} $S = r + \func{hash}{R, A, M} \times a$
 				\item \textbf{Output signature:} $(R, S)$
 			\end{enumerate}
 		\end{column}
@@ -1322,7 +1322,7 @@
 		      \end{itemize}
 		\item \textbf{Formal verification:} Mathematical proofs of implementation correctness.
 		      \begin{itemize}
-			      \item Projects like Cryspen's HAX and Libcrux generate verified code.
+			      \item Projects like Cryspen's hax and Libcrux generate verified code.
 			      \item Higher assurance for critical applications.
 			      \item Trade-off between verification effort and deployment flexibility.
 			      \item Discussed in a future class topic!
