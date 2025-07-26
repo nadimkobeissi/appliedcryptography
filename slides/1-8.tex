@@ -865,7 +865,7 @@
 			      \item Check point has correct order (belongs to right subgroup).
 		      \end{itemize}
 		\item \textbf{Implementation note:} Many libraries now perform validation automatically.
-		\item \textbf{Defense in depth:} Use curves with prime order (like Curve25519).
+		\item \textbf{Defense in depth:} Use curves with prime order subgroup (like Curve25519, co-factor 8).
 		      \begin{itemize}
 			      \item Eliminates small subgroup attacks entirely.
 			      \item Even invalid points can't exploit subgroup structure.
