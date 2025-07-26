@@ -865,11 +865,6 @@
 			      \item Check point has correct order (belongs to right subgroup).
 		      \end{itemize}
 		\item \textbf{Implementation note:} Many libraries now perform validation automatically.
-		\item \textbf{Defense in depth:} Use curves with prime order subgroup (like Curve25519, co-factor 8).
-		      \begin{itemize}
-			      \item Eliminates small subgroup attacks entirely.
-			      \item Even invalid points can't exploit subgroup structure.
-		      \end{itemize}
 	\end{itemize}
 \end{frame}
 
@@ -1017,6 +1012,47 @@
 		      \end{itemize}
 		\item \textbf{Lesson:} Cryptographic standards must be completely unambiguous.
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Ristretto: Prime-order groups from non-prime curves}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item Modern elliptic curves face a fundamental trade-off:
+				      \begin{itemize}
+					      \item Fast curves (Curve25519): Have cofactor $h = 8$, not prime order
+					      \item Prime-order curves: Slower, harder to implement in constant time
+				      \end{itemize}
+				\item \textbf{Why this matters:} Many protocols assume a prime-order group
+				      \begin{itemize}
+					      \item Security proofs require prime order
+					      \item Cofactor creates edge cases and vulnerabilities
+					      \item Ad-hoc protocol modifications are error-prone
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Ristretto: Prime-order groups from non-prime curves}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Ristretto's solution:} Provides prime-order group abstraction on top of Curve25519\footnote{\url{https://ristretto.group/why_ristretto.html}}
+				      \begin{itemize}
+					      \item Based on Mike Hamburg's Decaf construction\footnote{\url{https://appliedcryptography.page/papers/\#ecc-decaf}}
+					      \item No performance penalty vs. regular Curve25519
+					      \item Clean abstraction for protocol designers
+				      \end{itemize}
+				\item \textbf{Real vulnerabilities from cofactor issues:}
+				      \begin{itemize}
+					      \item Monero double-spend bug (actually octuple-spend due to $h=8$)
+					      \item Tor v3 onion addresses: 8 different addresses per service
+					      \item Required expensive validation checks throughout protocols
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Library selection: The ecosystem landscape}
