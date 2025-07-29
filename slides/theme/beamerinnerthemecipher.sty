@@ -168,7 +168,7 @@
 	\end{center}
 }
 
-% Nicely formatted image with caption (big)
+% Nicely formatted image with caption ([[BIG!]])
 \newcommand{\bigimagewithcaption}[3][1\textwidth]{
 	\begin{center}
 		\vspace{-0.5cm}
@@ -185,6 +185,19 @@
 			\usebeamerfont{caption}#3
 		\end{minipage}
 	\end{center}
+}
+
+\newcommand{\incompleteslideswarning}{
+	\begin{frame}{SLIDES NOT COMPLETE AND MAY CONTAIN ERRORS!}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\imagewithcaption{spamton_deal.png}{}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				{\color{red}DO NOT USE THESE SLIDES. \\ This slide deck is not finished, may contain errors, and is missing important material. Do not rely on it yet.}
+			\end{column}
+		\end{columns}
+	\end{frame}
 }
 
 \newcommand\fstar{\textsf{F}\ensuremath{^\star}\xspace}

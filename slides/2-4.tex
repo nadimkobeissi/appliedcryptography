@@ -16,11 +16,690 @@
 	\titlepage
 \end{frame}
 
-\begin{frame}{Slides not complete and may contain errors}
+\incompleteslideswarning
+
+\section{Introduction}
+
+\incompleteslideswarning
+
+\begin{frame}{Cloud storage today}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Cloud storage is a prevalent computing paradigm today
+				\item Outsources data storage to third party services
+				\item Benefits for users:
+				      \begin{itemize}
+					      \item No need to worry about backups
+					      \item High data availability
+					      \item Access data from anywhere
+				      \end{itemize}
+				\item Major providers (Google, Microsoft, Apple, Amazon) control encryption keys
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{onedrive.png}{Microsoft OneDrive is an example of a popular cloud storage service.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Regular vs End-to-End Encrypted Cloud Storage}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\textbf{Regular Cloud Storage}\\
+			\textit{(e.g., OneDrive, Google Drive)}
+			\vspace{0.5cm}
+			\begin{itemize}
+				\item \textbf{Transport encryption:} TLS protects data in transit
+				\item \textbf{Encryption at rest:} Provider encrypts on their servers
+				\item \textbf{Provider controls keys:} Can decrypt your data
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{E2E Encrypted Storage}\\
+			\textit{(e.g., MEGA, Nextcloud)}
+			\vspace{0.5cm}
+			\begin{itemize}
+				\item \textbf{Client-side encryption:} Data encrypted before upload
+				\item \textbf{User controls keys:} Provider never sees plaintext
+				\item \textbf{Confidentiality:} Provider learns nothing about content
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Regular vs End-to-End Encrypted Cloud Storage}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\textbf{Regular Cloud Storage}\\
+			\textit{(e.g., OneDrive, Google Drive)}
+			\\
+			\vspace{0.5cm}
+			\textbf{Risks:}
+			\begin{itemize}
+				\item Provider breach exposes data
+				\item Government requests
+				\item Insider threats
+				\item Provider can analyze content
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{E2E Encrypted Storage}\\
+			\textit{(e.g., MEGA, Nextcloud)}
+			\\
+			\vspace{0.5cm}
+			\textbf{Guarantees:}
+			\begin{itemize}
+				\item Provider breach reveals nothing
+				\item Government gets encrypted data
+				\item No insider access to content
+				\item Provider can only analyze metadata
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{End-to-End Encryption (E2EE) for cloud storage}
 	\begin{itemize}
-		\item This slide deck is not finished, may contain errors, and is missing important material. Do not rely on it yet.
+		\item Alternative approach: Users encrypt before uploading
+		\item Users control their own encryption keys
+		\item Security guarantees:
+		      \begin{itemize}
+			      \item Cryptographic confidentiality
+			      \item Authenticity and integrity protection
+			      \item Provider can't read file contents
+			      \item Provider can't modify files undetectably
+		      \end{itemize}
+		\item Security maintained even if service is compromised
+		\item Ideally secure against malicious service providers
 	\end{itemize}
 \end{frame}
+
+\begin{frame}{Key management challenges}
+	\begin{itemize}
+		\item Key management delegated to users
+		\item Humans are poor at memorizing cryptographic keys
+		\item Security typically bootstrapped from passwords
+		\item Fundamental limitation: Dictionary attacks possible
+		\item Trade-off between convenience and security
+		\item Strong password policies can partially mitigate risks
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Password hashing}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item Users typically access E2EE storage via passwords
+				\item Passwords must be converted to cryptographic keys
+				\item Common approach: password hashing\footnote{This was previously covered in our \textit{Collision-Resistant Hash Functions} topic.}
+				\item Popular password hashing functions:
+				      \begin{itemize}
+					      \item \textbf{PBKDF2}: Widely deployed but aging
+					      \item \textbf{scrypt}: Memory-hard against ASICs
+					      \item \textbf{Argon2}: Winner of Password Hashing Competition
+				      \end{itemize}
+				\item KDFs slow down brute-force attacks
+				\item Still vulnerable to dictionary attacks with weak passwords
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The authentication vs encryption dilemma}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item Traditional services: Server stores password hash
+				\item E2EE requirement: Server must never see encryption key
+				\item Two common approaches:
+				      \begin{itemize}
+					      \item \textbf{Dual-password:} Separate login and encryption passwords
+					      \item \textbf{SRP (Secure Remote Password):} Zero-knowledge proof of password
+					      \item \textbf{Hardware-backed authentication:} Passkeys, Apple Secure Enclave, etc.
+				      \end{itemize}
+				\item Trade-offs:
+				      \begin{itemize}
+					      \item Dual-password: Poor usability, users often reuse
+					      \item SRP: Complex implementation
+					      \item Hardware-backed: Requires specific devices/platforms
+				      \end{itemize}
+				\item MEGA uses custom authentication with encryption keys
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Password recovery challenges}
+	\begin{itemize}
+		\item Lost password = lost data in true E2EE
+		      \begin{itemize}
+			      \item The ``mud puddle test''
+		      \end{itemize}
+		\item Users expect password recovery options
+		\item Common mitigation strategies:
+		      \begin{itemize}
+			      \item \textbf{Recovery keys:} Long random string users must store
+			      \item \textbf{Social recovery:} Threshold sharing among contacts
+			      \item \textbf{Security questions:} Weaker but familiar to users
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Apple's Advanced Data Protection}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item Apple introduced optional E2EE for iCloud in 2023\footnote{\url{https://support.apple.com/en-us/102651}}
+				\item Called ``Advanced Data Protection'' (ADP)
+				\item Covers most iCloud data categories:
+				      \begin{itemize}
+					      \item Photos, Notes, iCloud Backup, Messages backup
+					      \item iCloud Drive, Reminders, Safari bookmarks
+				      \end{itemize}
+				\item Apple's approach to recovery:
+				      \begin{itemize}
+					      \item \textbf{Option 1:} User-managed recovery key
+					      \item \textbf{Option 2:} Apple escrow (default)
+					      \item Users must explicitly opt-in to ADP
+				      \end{itemize}
+				\item Fundamental tension: Security vs recoverability
+				\item Apple chose user choice over mandatory E2EE
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Multi-device key management}
+	\begin{itemize}
+		\item Users expect seamless multi-device access
+		\item Each device needs access to encryption keys
+		\item Key synchronization approaches:
+		      \begin{itemize}
+			      \item \textbf{Password-based:} Derive keys on each device
+			      \item \textbf{Device pairing:} Transfer keys device-to-device
+			      \item \textbf{Cloud keychain:} Encrypted key storage (circular problem)
+		      \end{itemize}
+		\item Additional challenges:
+		      \begin{itemize}
+			      \item Device revocation when lost/stolen
+			      \item Key rotation after compromise
+			      \item Offline device synchronization
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Research directions in usable key management}
+	\begin{itemize}
+		\item \textbf{Threshold cryptography:} Split keys across multiple locations
+		\item \textbf{Hardware tokens:} FIDO2/WebAuthn/Passkeys for encryption key storage
+		\item \textbf{Biometric key derivation:} Fuzzy extractors from fingerprints
+		\item \textbf{Social key recovery:} Friends/family as key custodians
+		\item Open problems:
+		      \begin{itemize}
+			      \item Balancing security with grandmother-friendliness
+			      \item Recovery without trusted third parties
+			      \item Protecting against coercion/rubber-hose attacks
+		      \end{itemize}
+		\item Most solutions add complexity or trust assumptions
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Passkeys: A new authentication paradigm}{Quick aside}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}
+				\item \textbf{Passkeys} are a password replacement based on WebAuthn/FIDO2
+				\item Built on public-key cryptography:
+				      \begin{itemize}
+					      \item Private key stored securely on device
+					      \item Public key registered with service
+					      \item Authentication via cryptographic signatures
+				      \end{itemize}
+				\item Key advantages over passwords:
+				      \begin{itemize}
+					      \item Phishing-resistant by design
+					      \item No shared secrets with server
+					      \item Automatic strong credentials
+				      \end{itemize}
+				\item Apple: iCloud Keychain, Microsoft: Windows Hello\ldots
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{passkeys_mac.png}{Passkey dialog on macOS.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{WebAuthn PRF: symmetric keys from passkeys}{Quick aside}
+	\begin{itemize}
+		\item WebAuthn's \textbf{PRF (Pseudo-Random Function)} extension enables key derivation
+		\item Key derivation process:
+		      \begin{itemize}
+			      \item PRF can be evaluated during credential creation/assertion
+			      \item Produces 32-byte outputs suitable for encryption keys
+			      \item Supports two inputs per operation (for key rotation)
+		      \end{itemize}
+		\item Implementation typically uses HMAC-SHA256 internally
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{$\mathsf{PRF}: F_{k}= X \rightarrow Y$}{Reminder}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item We want the mapping to be:
+				      \begin{itemize}
+					      \item One-way
+					      \item ``Randomized''
+					      \item Relations between inputs not reflected in outputs
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.8\textwidth}
+			\begin{tikzpicture}[scale=0.38]
+				% Define colors
+				\definecolor{domaingreen}{RGB}{102, 170, 68}
+				\definecolor{rangegreen}{RGB}{170, 187, 136}
+				\definecolor{circlecolor}{RGB}{235, 137, 85}
+				\definecolor{purplearrow}{RGB}{160, 78, 160}
+				\definecolor{redarrow}{RGB}{237, 50, 36}
+
+				% Input space (domain) X - made square
+				\draw[dashed, thick, domaingreen, fill=domaingreen]
+				(0,0) rectangle (8,8);
+				\node[text width=6.5cm, align=center, font=\normalsize]
+				at
+				(4,-0.8)
+				{Size: infinite!};
+				\node[font=\small] at (4,9) {Input space (domain) $X$};
+
+				% Output (range) Y - made square - moved more to the right
+				\draw[thick, rangegreen, fill=rangegreen] (15,2) rectangle (20,7);
+				\node[text width=4cm, align=center, font=\normalsize]
+				at
+				(17.5,1.2)
+				{Size: fixed};
+				\node[font=\small] at (17.5,8.5) {Output (range) $Y$};
+				% Input dots - adjusted positions for square domain
+				\filldraw[circlecolor] (2,7) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,7) -- (16.2,6.4);
+				\pause
+				\filldraw[circlecolor] (16.2,6.4) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,6) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(3,6) -- (18.6,5.3);
+				\pause
+				\filldraw[circlecolor] (18.6,5.3) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,5) -- (16.8,4.2);
+				\pause
+				\filldraw[circlecolor] (16.8,4.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (4,3.5) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(4,3.5) -- (18.4,3.2);
+				\pause
+				\filldraw[circlecolor] (18.4,3.2) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (2,2) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
+				(2,2) -- (17.1,2.7);
+				\pause
+				\filldraw[circlecolor] (17.1,2.7) circle (0.3);
+				\pause
+
+				\filldraw[circlecolor] (3,1) circle (0.3);
+				\pause
+				\draw[-{Stealth[length=6mm, width=4mm]}, ultra thick, redarrow]
+				(3,1) -- (16.8,4.2);
+				\node[redarrow, font=\scriptsize\bfseries, rotate=14]
+				at
+				(10,3)
+				{Collisions are inevitable};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Using passkeys for key management}{Quick aside}
+	\begin{itemize}
+		\item Potential architecture combining passkeys with E2EE:
+		      \begin{itemize}
+			      \item User authenticates with passkey (no password needed)
+			      \item PRF extension derives encryption keys on-demand
+			      \item Keys never leave the authenticator/device
+		      \end{itemize}
+		\item Benefits:
+		      \begin{itemize}
+			      \item No password-derived keys (stronger security)
+			      \item Hardware-backed key storage
+			      \item Seamless multi-device via platform sync
+		      \end{itemize}
+		\item Current limitations:
+		      \begin{itemize}
+			      \item PRF extension not universally supported
+			      \item Security keys may not support PRF evaluation at creation
+		      \end{itemize}
+		\item Represents potential future direction for usable E2EE key management and authentication more generally
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{File sharing challenges}
+	\begin{itemize}
+		\item Primary feature: Sharing files with selected users
+		\item Recipients need decryption keys
+		\item Keys cannot be sent unprotected via untrusted provider
+		\item Common solutions:
+		      \begin{itemize}
+			      \item Encrypt file key under recipient's public key
+			      \item Use out-of-band mechanisms
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{E2EE cloud storage providers}
+	\begin{itemize}
+		\item Major providers:
+		      \begin{itemize}
+			      \item MEGA: 300M users, 150B files, 1000 PB data
+			      \item Nextcloud
+			      \item Apple iCloud (optional E2EE since 2023)
+		      \end{itemize}
+		\item Smaller providers:
+		      \begin{itemize}
+			      \item icedrive, pCloud, Seafile, Tresorit
+			      \item Tens of millions of users collectively
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Security concerns with current E2EE providers}
+	\begin{itemize}
+		\item Recent analyses found attacks on MEGA and Nextcloud
+		\item Both providers use complex, ad hoc cryptographic designs
+		\item Lack formal security guarantees
+		\item MEGA's challenges:
+		      \begin{itemize}
+			      \item Migration infeasible - requires user participation
+			      \item Initial minimal patches proved insufficient
+			      \item Required second round of complex patching
+		      \end{itemize}
+		\item Nextcloud's response:
+		      \begin{itemize}
+			      \item Forced to disable E2EE file sharing entirely
+			      \item Significant feature regression
+			      \item Required full redesign
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Current state of E2EE Cloud Storage}
+	\begin{itemize}
+		\item Most providers rely on proprietary, unanalyzed designs
+		\item Highlights need for formally analyzed cryptographic designs
+		\item Security confidence lags behind E2EE messaging and browsing
+		\item Less design input from cryptographic research community
+		\item Need for standardized, proven security approaches
+		\item \textbf{In this topic, we'll cover:} \begin{enumerate}
+			      \item What went wrong with MEGA
+			      \item What went wrong with Nextcloud
+			      \item A quick look at WhatsApp encrypted cloud backups
+			      \item An attempt by cryptographers to design a provably secure E2EE Cloud Storage protocol
+		      \end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\incompleteslideswarning
+
+\section{Case Study: MEGA}
+
+\begin{frame}{MEGA: Overview}
+	\begin{columns}[c]
+		\begin{column}{0.8\textwidth}
+			\begin{itemize}
+				\item Founded in 2013 by Kim Dotcom (post-Megaupload)
+				\item One of the largest E2EE cloud storage providers
+				\item \textbf{Key statistics}:
+				      \begin{itemize}
+					      \item Over 300 million registered users\footnote{\url{https://blog.mega.io/mega-reaches-300-million-users-milestone}}
+					      \item 150+ billion files stored
+				      \end{itemize}
+				\item \textbf{Core features}:
+				      \begin{itemize}
+					      \item Client-side encryption before upload
+					      \item Secure file sharing via encrypted links
+					      \item Cross-platform support (web, desktop, mobile)
+					      \item Free tier with 20 GB storage
+				      \end{itemize}
+				\item All encryption performed in JavaScript (web client)
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.2\textwidth}
+			\imagewithcaption{mega_logo.png}{MEGA's logo.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{MEGA: Key hierarchy}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}
+				\item Password serves as root of trust for entire key hierarchy
+				\item Key derivation from password:
+				      \begin{itemize}
+					      \item \textbf{Authentication key:} Identifies user to MEGA
+					      \item \textbf{Encryption key:} Encrypts the master key
+				      \end{itemize}
+				\item \textbf{Master key:} Randomly generated, encrypts all other keys
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{mega_keys.png}{MEGA's key hierarchy. The master key encrypts the share, chat, sign
+				and node keys using AES-ECB. Source: \url{https://appliedcryptography.page/papers/\#mega-awry}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{MEGA: Key hierarchy}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}
+				\item Asymmetric key pairs for each account:
+				      \begin{itemize}
+					      \item \textbf{RSA key pair:} For data sharing
+					      \item \textbf{Curve25519 key pair:} For chat key exchange
+					      \item \textbf{Ed25519 key pair:} For signing other keys
+				      \end{itemize}
+				\item \textbf{Per-node keys:} New key for each file/folder
+				\item All keys encrypted with master key using AES-ECB
+				\item Encrypted keys stored on MEGA servers
+				\item Enables multi-device access with password only
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{mega_keys.png}{MEGA's key hierarchy. The master key encrypts the share, chat, sign
+				and node keys using AES-ECB. Source: \url{https://appliedcryptography.page/papers/\#mega-awry}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{MEGA: Where's the attack?}
+	\bigimagewithcaption{mega_keys.png}{MEGA's key hierarchy. The master key encrypts the share, chat, sign
+		and node keys using AES-ECB. Source: \url{https://appliedcryptography.page/papers/\#mega-awry}}
+\end{frame}
+
+\begin{frame}{MEGA: Key hierarchy}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item Password-to-key derivation
+				\item MEGA uses HKDF for deriving keys from password
+				\item \textbf{Problem:} HKDF is not a password hash!
+				      \begin{itemize}
+					      \item HKDF designed for key derivation from high-entropy inputs
+					      \item No computational hardness against brute-force
+					      \item Passwords have low entropy
+				      \end{itemize}
+				\item \textbf{Should use:} Argon2, scrypt, or PBKDF2
+				      \begin{itemize}
+					      \item Memory-hard functions
+					      \item Configurable iteration counts
+					      \item Resistance to GPU/ASIC attacks
+				      \end{itemize}
+				\item Enables offline dictionary attacks on user passwords
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Beyond password hashing: Zero-knowledge protocols}{Quick aside}
+	\begin{itemize}
+		\item Password hashing has fundamental limitations:
+		      \begin{itemize}
+			      \item Server must receive password (or hash) to verify
+			      \item Vulnerable to offline dictionary attacks
+			      \item Trade-off between security and performance
+		      \end{itemize}
+		\item \textbf{Zero-knowledge password protocols} offer better security:
+		      \begin{itemize}
+			      \item Server never sees password or password-equivalent
+			      \item No offline dictionary attacks possible
+			      \item Cryptographic proof of password knowledge
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{SRP (Secure Remote Password)}{Quick aside}
+	\begin{itemize}
+		\item Developed by Tom Wu at Stanford (1998)
+		\item \textbf{Key properties:}
+		      \begin{itemize}
+			      \item Password never transmitted, even encrypted
+			      \item Mutual authentication between client and server
+			      \item Generates session key for subsequent encryption
+			      \item Patent-free and standardized (RFC 2945)
+		      \end{itemize}
+		\item \textbf{How it works:}
+		      \begin{itemize}
+			      \item Registration: Client sends verifier derived from password
+			      \item Authentication: Zero-knowledge proof using verifier
+			      \item Based on discrete logarithm problem
+		      \end{itemize}
+		\item \textbf{Adoption:} Used by Apple iCloud, 1Password, ProtonMail
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{OPAQUE: Next-generation password authentication}{Quick aside}
+	\begin{itemize}
+		\item Developed by Jarecki, Krawczyk, and Xu (2018)
+		\item \textbf{Advantages over SRP:}
+		      \begin{itemize}
+			      \item Stronger security proofs in UC framework
+			      \item Protection against pre-computation attacks
+			      \item Forward secrecy for passwords
+			      \item Quantum-resistant variants possible
+		      \end{itemize}
+		\item \textbf{Key innovation:} Oblivious PRF (OPRF)
+		      \begin{itemize}
+			      \item Server helps compute PRF without learning input
+			      \item Prevents server from testing password guesses
+		      \end{itemize}
+		\item Being standardized by IETF (RFC 9497)
+		\item Early adoption by WhatsApp for backup encryption
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Signal's SVR3: Multi-enclave key recovery}{Quick aside}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item Signal faced same challenge: E2EE backups need secure key recovery
+				\item \textbf{SVR3 (Secure Value Recovery 3)\footnote{\url{https://appliedcryptography.page/papers/\#signal-recovery}}:} PIN-based key recovery
+				      \begin{itemize}
+					      \item Distributes trust across 3 different hardware enclaves
+					      \item Intel SGX (Azure), AMD SEV-SNP (Google Cloud), Nitro (AWS)
+					      \item Attacker must compromise ALL three to access keys
+				      \end{itemize}
+				\item \textbf{Key features:}
+				      \begin{itemize}
+					      \item Uses Password Protected Secret Sharing (PPSS)
+					      \item Limits PIN guesses via secure hardware
+					      \item No single point of failure
+					      \item Cost: \$0.0025/user/year
+				      \end{itemize}
+				\item Already deployed to millions of Signal users
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Comparing authentication approaches}{Quick aside}
+	\begin{columns}
+		\begin{column}{0.33\textwidth}
+			\textbf{Password Hashing}
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item[\textcolor{green}{\mycheckmark}] Simple to implement
+				\item[\textcolor{green}{\mycheckmark}] Well understood
+				\item[\textcolor{red}{$\times$}] Offline attacks
+				\item[\textcolor{red}{$\times$}] Server sees password
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.33\textwidth}
+			\textbf{SRP}
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item[\textcolor{green}{\mycheckmark}] No offline attacks
+				\item[\textcolor{green}{\mycheckmark}] Proven secure
+				\item[\textcolor{orange}{$\sim$}] Complex protocol
+				\item[\textcolor{red}{$\times$}] Pre-computation attacks
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.34\textwidth}
+			\textbf{OPAQUE}
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item[\textcolor{green}{\mycheckmark}] Strongest security
+				\item[\textcolor{green}{\mycheckmark}] Forward secrecy
+				\item[\textcolor{red}{$\times$}] New protocol
+				\item[\textcolor{red}{$\times$}] Limited deployment
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5cm}
+	\begin{center}
+		\textit{For E2EE storage: Can derive encryption keys from authentication protocol outputs}
+	\end{center}
+\end{frame}
+
+\incompleteslideswarning
+
+\section{Case Study: Nextcloud}
+
+\incompleteslideswarning
+
+\section{Case Study: WhatsApp End-to-End Encrypted Backups}
+
+\incompleteslideswarning
+
+\section{Designing an End-to-End Cloud Storage Protocol}
+
+\incompleteslideswarning
 
 \begin{frame}[plain]
 	\titlepage
