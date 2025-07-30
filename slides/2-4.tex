@@ -563,126 +563,6 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Beyond password hashing: Zero-knowledge protocols}{Quick aside}
-	\begin{itemize}
-		\item Password hashing has fundamental limitations:
-		      \begin{itemize}
-			      \item Server must receive password (or hash) to verify
-			      \item Vulnerable to offline dictionary attacks
-			      \item Trade-off between security and performance
-		      \end{itemize}
-		\item \textbf{Zero-knowledge password protocols} offer better security:
-		      \begin{itemize}
-			      \item Server never sees password or password-equivalent
-			      \item No offline dictionary attacks possible
-			      \item Cryptographic proof of password knowledge
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{SRP (Secure Remote Password)}{Quick aside}
-	\begin{itemize}
-		\item Developed by Tom Wu at Stanford (1998)
-		\item \textbf{Key properties:}
-		      \begin{itemize}
-			      \item Password never transmitted, even encrypted
-			      \item Mutual authentication between client and server
-			      \item Generates session key for subsequent encryption
-			      \item Patent-free and standardized (RFC 2945)
-		      \end{itemize}
-		\item \textbf{How it works:}
-		      \begin{itemize}
-			      \item Registration: Client sends verifier derived from password
-			      \item Authentication: Zero-knowledge proof using verifier
-			      \item Based on discrete logarithm problem
-		      \end{itemize}
-		\item \textbf{Adoption:} Used by Apple iCloud, 1Password, ProtonMail
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{OPAQUE: Next-generation password authentication}{Quick aside}
-	\begin{itemize}
-		\item Developed by Jarecki, Krawczyk, and Xu (2018)
-		\item \textbf{Advantages over SRP:}
-		      \begin{itemize}
-			      \item Stronger security proofs in UC framework
-			      \item Protection against pre-computation attacks
-			      \item Forward secrecy for passwords
-			      \item Quantum-resistant variants possible
-		      \end{itemize}
-		\item \textbf{Key innovation:} Oblivious PRF (OPRF)
-		      \begin{itemize}
-			      \item Server helps compute PRF without learning input
-			      \item Prevents server from testing password guesses
-		      \end{itemize}
-		\item Being standardized by IETF (RFC 9497)
-		\item Early adoption by WhatsApp for backup encryption
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Signal's SVR3: Multi-enclave key recovery}{Quick aside}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item Signal faced same challenge: E2EE backups need secure key recovery
-				\item \textbf{SVR3 (Secure Value Recovery 3)\footnote{\url{https://appliedcryptography.page/papers/\#signal-recovery}}:} PIN-based key recovery
-				      \begin{itemize}
-					      \item Distributes trust across 3 different hardware enclaves
-					      \item Intel SGX (Azure), AMD SEV-SNP (Google Cloud), Nitro (AWS)
-					      \item Attacker must compromise ALL three to access keys
-				      \end{itemize}
-				\item \textbf{Key features:}
-				      \begin{itemize}
-					      \item Uses Password Protected Secret Sharing (PPSS)
-					      \item Limits PIN guesses via secure hardware
-					      \item No single point of failure
-					      \item Cost: \$0.0025/user/year
-				      \end{itemize}
-				\item Already deployed to millions of Signal users
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Comparing authentication approaches}{Quick aside}
-	\begin{columns}
-		\begin{column}{0.33\textwidth}
-			\textbf{Password Hashing}
-			\vspace{0.3cm}
-			\begin{itemize}
-				\item[\textcolor{green}{\mycheckmark}] Simple to implement
-				\item[\textcolor{green}{\mycheckmark}] Well understood
-				\item[\textcolor{red}{$\times$}] Offline attacks
-				\item[\textcolor{red}{$\times$}] Server sees password
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.33\textwidth}
-			\textbf{SRP}
-			\vspace{0.3cm}
-			\begin{itemize}
-				\item[\textcolor{green}{\mycheckmark}] No offline attacks
-				\item[\textcolor{green}{\mycheckmark}] Proven secure
-				\item[\textcolor{orange}{$\sim$}] Complex protocol
-				\item[\textcolor{red}{$\times$}] Pre-computation attacks
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.34\textwidth}
-			\textbf{OPAQUE}
-			\vspace{0.3cm}
-			\begin{itemize}
-				\item[\textcolor{green}{\mycheckmark}] Strongest security
-				\item[\textcolor{green}{\mycheckmark}] Forward secrecy
-				\item[\textcolor{red}{$\times$}] New protocol
-				\item[\textcolor{red}{$\times$}] Limited deployment
-			\end{itemize}
-		\end{column}
-	\end{columns}
-	\vspace{0.5cm}
-	\begin{center}
-		\textit{For E2EE storage: Can derive encryption keys from authentication protocol outputs}
-	\end{center}
-\end{frame}
-
 \begin{frame}{Attack 1: RSA key recovery attack}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
@@ -1268,6 +1148,346 @@
 	\vspace{0.5cm}
 	\begin{center}
 		\textbf{Common theme:} Complex, ad-hoc designs without formal security analysis!
+	\end{center}
+\end{frame}
+
+\section{Authentication: Moving Beyond Passwords}
+
+\begin{frame}{Beyond password hashing: Zero-knowledge protocols}
+	\begin{itemize}
+		\item Password hashing has fundamental limitations:
+		      \begin{itemize}
+			      \item Server must receive password (or hash) to verify
+			      \item Vulnerable to offline dictionary attacks
+			      \item Trade-off between security and performance
+		      \end{itemize}
+		\item \textbf{Zero-knowledge password protocols} offer better security:
+		      \begin{itemize}
+			      \item Server never sees password or password-equivalent
+			      \item No offline dictionary attacks possible
+			      \item Cryptographic proof of password knowledge
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{SRP (Secure Remote Password)}
+	\begin{itemize}
+		\item Developed by Tom Wu at Stanford (1998)
+		\item \textbf{Key properties:}
+		      \begin{itemize}
+			      \item Password never transmitted, even encrypted
+			      \item Mutual authentication between client and server
+			      \item Generates session key for subsequent encryption
+			      \item Patent-free and standardized (RFC 2945)
+		      \end{itemize}
+		\item \textbf{How it works:}
+		      \begin{itemize}
+			      \item Registration: Client sends verifier derived from password
+			      \item Authentication: Zero-knowledge proof using verifier
+			      \item Based on discrete logarithm problem
+		      \end{itemize}
+		\item \textbf{Adoption:} Used by Apple iCloud, 1Password, ProtonMail
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{OPAQUE: Next-generation password authentication}
+	\begin{itemize}
+		\item Developed by Jarecki, Krawczyk, and Xu (2018)
+		\item \textbf{Advantages over SRP:}
+		      \begin{itemize}
+			      \item Stronger security proofs in UC framework
+			      \item Protection against pre-computation attacks
+			      \item Forward secrecy for passwords
+			      \item Quantum-resistant variants possible
+		      \end{itemize}
+		\item \textbf{Key innovation:} Oblivious PRF (OPRF)
+		      \begin{itemize}
+			      \item Server helps compute PRF without learning input
+			      \item Prevents server from testing password guesses
+		      \end{itemize}
+		\item Being standardized by IETF (RFC 9497)
+		\item Early adoption by WhatsApp for backup encryption
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Signal's SVR3: Multi-enclave key recovery}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item Signal faced same challenge: E2EE backups need secure key recovery
+				\item \textbf{SVR3 (Secure Value Recovery 3)\footnote{\url{https://appliedcryptography.page/papers/\#signal-recovery}}:} PIN-based key recovery
+				      \begin{itemize}
+					      \item Distributes trust across 3 different hardware enclaves
+					      \item Intel SGX (Azure), AMD SEV-SNP (Google Cloud), Nitro (AWS)
+					      \item Attacker must compromise ALL three to access keys
+				      \end{itemize}
+				\item \textbf{Key features:}
+				      \begin{itemize}
+					      \item Uses Password Protected Secret Sharing (PPSS)
+					      \item Limits PIN guesses via secure hardware
+					      \item No single point of failure
+					      \item Cost: \$0.0025/user/year
+				      \end{itemize}
+				\item Already deployed to millions of Signal users
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Comparing authentication approaches}
+	\begin{columns}
+		\begin{column}{0.33\textwidth}
+			\textbf{Password Hashing}
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item[\textcolor{green}{\mycheckmark}] Simple to implement
+				\item[\textcolor{green}{\mycheckmark}] Well understood
+				\item[\textcolor{red}{$\times$}] Offline attacks
+				\item[\textcolor{red}{$\times$}] Server sees password
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.33\textwidth}
+			\textbf{SRP}
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item[\textcolor{green}{\mycheckmark}] No offline attacks
+				\item[\textcolor{green}{\mycheckmark}] Proven secure
+				\item[\textcolor{orange}{$\sim$}] Complex protocol
+				\item[\textcolor{red}{$\times$}] Pre-computation attacks
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.34\textwidth}
+			\textbf{OPAQUE}
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item[\textcolor{green}{\mycheckmark}] Strongest security
+				\item[\textcolor{green}{\mycheckmark}] Forward secrecy
+				\item[\textcolor{red}{$\times$}] New protocol
+				\item[\textcolor{red}{$\times$}] Limited deployment
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5cm}
+	\begin{center}
+		\textit{For E2EE storage: Can derive encryption keys from authentication protocol outputs}
+	\end{center}
+\end{frame}
+
+\begin{frame}{OPAQUE: How it works under the hood}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{OPAQUE combines three key components:}
+				      \begin{itemize}
+					      \item \textbf{OPRF (Oblivious PRF):} Server helps compute function without seeing input
+					      \item \textbf{Authenticated Key Exchange:} Derives session keys after password verification
+					      \item \textbf{Password hardening:} Makes brute-force attacks computationally expensive
+				      \end{itemize}
+				\item \textbf{The magic:} Server stores a ``password file'' but:
+				      \begin{itemize}
+					      \item File doesn't contain password or hash
+					      \item Server can't test password guesses offline
+					      \item Client proves password knowledge without revealing it
+					            \begin{itemize}
+						            \item You could even say they perform a \textit{zero knowledge proof}!
+					            \end{itemize}
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{What is an OPRF?}{Oblivious Pseudorandom Function}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Definition:} A two-party protocol where:
+				      \begin{itemize}
+					      \item Client has input $x$
+					      \item Server has key $k$
+					      \item Client learns $F(k, x)$ and nothing else
+					      \item Server learns nothing about $x$
+					            \begin{itemize}
+						            \item You could even say they perform a \textit{multi-party computation}!
+					            \end{itemize}
+				      \end{itemize}
+				\item \textbf{Key properties:}
+				      \begin{itemize}
+					      \item \textbf{Oblivious:} Server doesn't learn client's input
+					      \item \textbf{Verifiable:} Client can verify correct computation
+					      \item \textbf{Deterministic:} Same input always gives same output
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{OPAQUE Registration: Step by step}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Client actions:}
+			\begin{enumerate}
+				\item Choose password $pw$
+				\item Run OPRF with server:\footnote{Here, our chosen OPRF operates in a cyclic group $\mathbb{G}$ of prime order $q$. The blinding factor $r$ is sampled uniformly at random from $\mathbb{Z}_q$, and $k$ is the server's OPRF key. I just made this OPRF up for the purposes of this slide and I don't know if it's secure (it probably is?)}
+				      \begin{itemize}
+					      \item Send blinded $H(pw)^r$
+					      \item Get back $(H(pw)^r)^k$
+					      \item Compute $rwd = H(pw)^k = (H(pw)^r)^{k/r}$
+				      \end{itemize}
+				\item Generate random private key $sk_c$
+				\item Encrypt: $env = \text{Enc}(rwd, sk_c)$
+				\item Send $(env, pk_c)$ to server
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Server actions:}
+			\begin{enumerate}
+				\item Generate OPRF key $k$
+				\item Respond to OPRF:
+				      \begin{itemize}
+					      \item Receive blinded value
+					      \item Return $(blinded)^k$
+				      \end{itemize}
+				\item Generate key pair $(sk_s, pk_s)$
+				\item Store password file:
+				      \begin{itemize}
+					      \item Client's $env$ (encrypted)
+					      \item Client's $pk_c$
+					      \item Own $sk_s, pk_s$
+					      \item OPRF key $k$
+				      \end{itemize}
+			\end{enumerate}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{What's in the password file?}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}
+				\item \textbf{Client's envelope ($env$):}
+				      \begin{itemize}
+					      \item Encrypted with $rwd = H(pw)^k$
+					      \item Contains client's private key $sk_c$
+					      \item Server can't decrypt without password
+				      \end{itemize}
+				\item \textbf{Public keys:}
+				      \begin{itemize}
+					      \item Client's $pk_c$ (for key exchange)
+					      \item Server's $pk_s$ (for authentication)
+				      \end{itemize}
+				\item \textbf{Server's secrets:}
+				      \begin{itemize}
+					      \item OPRF key $k$ (for password evaluation)
+					      \item Server private key $sk_s$
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{tikzpicture}[scale=0.8]
+				% Password file box
+				\node[draw, rectangle, minimum width=3.5cm, minimum height=4cm, fill=gray!10] (file) at (0,0) {};
+				\node[above] at (0,1.7) {\textbf{Password File}};
+
+				% Contents
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.6cm, fill=blue!20] (env) at (0,1.2) {$env = \text{Enc}(rwd, sk_c)$};
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.5cm, fill=green!20] (pkc) at (0,0.3) {$pk_c$};
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.5cm, fill=green!20] (pks) at (0,-0.4) {$pk_s$};
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.5cm, fill=red!20] (k) at (0,-1.1) {OPRF key $k$};
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.5cm, fill=red!20] (sks) at (0,-1.8) {$sk_s$};
+
+				% Note
+				\node[text width=3.5cm, align=center] at (0,-3) {\small\textit{No password or hash stored!}};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{OPAQUE login (after registration)}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item[1.]\textbf{Client starts OPRF:}
+				      \begin{itemize}
+					      \item Blinds password: $\alpha = H(pw)^r$
+					      \item Sends $\alpha$ to server
+					      \item Note: This $r$ is freshly randomized - different from registration and each login
+				      \end{itemize}
+				\item[2.]\textbf{Server responds:}
+				      \begin{itemize}
+					      \item Computes $\beta = \alpha^k = H(pw)^{rk}$
+					      \item Sends back $\beta$ and encrypted envelope $env$
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item[3.]\textbf{Client recovers private key:}
+				      \begin{itemize}
+					      \item Unblinds: $rwd = \beta^{1/r} = H(pw)^k$
+					      \item Decrypts: $sk_c = \text{Dec}(rwd, env)$
+					      \item If wrong password, decryption fails!
+				      \end{itemize}
+				\item[4.]\textbf{Authenticated key exchange:}
+				      \begin{itemize}
+					      \item Client and server run AKE using their key pairs
+					      \item Derives session key and export key
+					      \item Mutual authentication achieved
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why can't the server test passwords?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{What the server sees:}
+			\begin{itemize}
+				\item Random group element $\alpha$
+				\item No relation to password visible
+				\item Different $\alpha$ each login (random $r$)
+				\item Can't extract $H(pw)$ from $\alpha$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{What prevents offline attacks:}
+			\begin{itemize}
+				\item Server doesn't know $H(pw)$
+				\item Can't verify guesses without client
+				\item Each guess requires online interaction
+				\item Rate limiting becomes enforceable
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5cm}
+	\begin{center}
+		\textbf{Key insight:} The OPRF makes the server ``blind'' to the password while still enabling authentication
+	\end{center}
+\end{frame}
+
+\begin{frame}{OPAQUE's security guarantees}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Against server compromise:}
+			\begin{itemize}
+				\item[\textcolor{green}{\mycheckmark}] No offline dictionary attacks
+				\item[\textcolor{green}{\mycheckmark}] Forward secrecy for passwords
+				\item[\textcolor{green}{\mycheckmark}] Past sessions remain secure
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Against active attacks:}
+			\begin{itemize}
+				\item[\textcolor{green}{\mycheckmark}] Mutual authentication
+				\item[\textcolor{green}{\mycheckmark}] Key confirmation
+				\item[\textcolor{green}{\mycheckmark}] Protection from phishing
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5cm}
+	\begin{center}
+		\textbf{Bonus:} Provides both authentication \textit{and} key derivation - perfect for E2EE storage!
 	\end{center}
 \end{frame}
 
@@ -2155,7 +2375,7 @@
 				\item \textbf{Goal:} Client computes $H_2(x, H_1(x)^k)$ without revealing $x$ to server
 				\item \textbf{Protocol steps:}
 				      \begin{enumerate}
-					      \item Client picks random blinding factor $r \leftarrow \mathbb{Z}_q$
+					      \item Client picks random blinding factor $r \twoheadleftarrow \mathbb{Z}_q$
 					      \item Client sends blinded value: $\alpha = H_1(x)^r$ to server
 						            {\footnotesize\begin{itemize}
 								            \item Client hashes their secret input $x$ to get $H_1(x)$, raises it to the power of $r$, and sends this ``blinded'' result to the server - the server cannot determine $x$ from this
