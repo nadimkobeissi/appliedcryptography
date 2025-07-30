@@ -1,4 +1,4 @@
-TARGETS = problem-set-1 problem-set-2 problem-set-3 problem-set-4 problem-set-5 problem-set-6
+TARGETS = problem-set-1 problem-set-2 problem-set-3 problem-set-4 problem-set-5 problem-set-6 problem-set-7
 
 all: $(TARGETS)
 

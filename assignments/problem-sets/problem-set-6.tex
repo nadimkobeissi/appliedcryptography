@@ -8,133 +8,196 @@
 
 \classhandoutheader
 
-\section*{Problem Set 6: Post-Quantum Cryptography}
+\section*{Problem Set 6: High-Assurance Cryptography}
 
 \begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
-	\textbf{Instructions:} This problem set covers topics in post-quantum cryptography from topic 2.6\footnote{\url{https://appliedcryptography.page/slides/\#2-6}} of the course. Submit your solutions as a neatly formatted PDF. You are encouraged to collaborate with classmates in studying the material, but your submitted solutions must be your own work. For proofs, clearly state your assumptions, steps, and conclusions.
+	\textbf{Instructions:} This problem set covers topics in high-assurance cryptography and formal verification methods from topic 2.5\footnote{\url{https://appliedcryptography.page/slides/\#2-5}} of the course. Submit your solutions as a neatly formatted PDF. You are encouraged to collaborate with classmates in studying the material, but your submitted solutions must be your own work. For proofs, clearly state your assumptions, steps, and conclusions.
 \end{tcolorbox}
 
-\section{Quantum Computing and Cryptographic Impact (35 points)}
+\section{Design-Level Security and Formal Verification (35 points)}
 
-\subsection{Understanding the Quantum Threat (20 points)}
+\subsection{Symbolic vs. Computational Models (20 points)}
 
 \begin{enumerate}
-	\item (10 points) \textbf{Quantum Algorithms and Their Impact:}
-	      You are advising a financial institution on their post-quantum migration strategy. They currently use Curve25519 for key exchange and AES-128 for symmetric encryption.
+	\item (10 points) \textbf{Protocol Modeling Trade-offs:}
+	      You are tasked with formally verifying a new secure messaging protocol for a government agency. The protocol involves complex key derivation, multiple handshake modes, and post-compromise security guarantees.
 	      \begin{enumerate}
-		      \item Explain how Shor's algorithm would break their Curve25519 implementation. What is the fundamental mathematical operation that quantum computers can perform efficiently that classical computers cannot? Be specific about the polynomial vs. exponential time complexity difference.
-		      \item Their security team argues that since Grover's algorithm only provides a quadratic speedup against AES-128, they don't need to upgrade their symmetric cryptography. Evaluate this claim. If a quantum computer capable of running Shor's algorithm existed, what would be the effective security level of AES-128 against Grover's algorithm? Should they upgrade to AES-256?
+		      \item Compare the advantages and limitations of using symbolic (ProVerif) versus computational (CryptoVerif) approaches for this protocol. Which properties would be easier to verify in each model?
+		      \item The protocol uses a custom authenticated encryption scheme. Explain, at a high level, how such a construction would be modeled in the symbolic model. What assumptions would you need to make?
 	      \end{enumerate}
-	\item (10 points) \textbf{Store-Now-Decrypt-Later Analysis:}
-	      A healthcare provider stores patient records encrypted with current cryptographic standards. These records must remain confidential for 50 years due to regulatory requirements.
+	\item (10 points) \textbf{Equivalence Properties in Practice:}
+	      A voting protocol claims to provide receipt-freeness: voters cannot prove how they voted, even if they want to.
+
+	      \textbf{Background:} Recall that security properties in formal verification can be classified as:
+	      \begin{itemize}
+		      \item \textbf{Trace properties}: Properties that can be verified by examining individual execution traces (e.g., ``the secret key is never sent in plaintext'')
+		      \item \textbf{Equivalence properties}: Properties that require comparing multiple executions (e.g., ``an attacker cannot distinguish between two different scenarios'')
+	      \end{itemize}
+
+	      Receipt-freeness means that even if Alice wants to prove she voted for candidate A (perhaps under coercion), she cannot produce evidence that distinguishes her voting for A from voting for B. This inherently involves comparing two scenarios.
 
 	      \begin{enumerate}
-		      \item (5 points) Analyze the store-now-decrypt-later (SNDL) threat for this scenario. Given current quantum computing progress (as of 2025), when might adversaries who intercept data today be able to decrypt it? Consider both optimistic and pessimistic timelines from the quantum threat timeline presented in class.
-		      \item (5 points) The provider uses TLS 1.3 with ECDHE for key exchange. Explain why forward secrecy doesn't protect against SNDL attacks in the quantum context. How would implementing post-quantum TLS today help, and what are the trade-offs?
+		      \item (5 points) Explain why receipt-freeness cannot be expressed as a trace property.\footnote{Hint: Consider what information would need to be examined in a single trace versus across multiple traces.} Then formulate receipt-freeness as an equivalence property in the symbolic model.\footnote{Hint: Think about what two processes should be indistinguishable to model this property.}
+		      \item (5 points) There exist different notions of equivalence:\footnote{\url{https://appliedcryptography.page/papers/\#sok-verif}}
+		            \begin{itemize}
+			            \item \textbf{Trace equivalence}: Two processes are equivalent if they produce the same set of observable traces.
+			            \item \textbf{Open bisimilarity}: A stronger notion where processes must match each other's behavior step-by-step, even when the attacker provides inputs.
+			            \item \textbf{Diff-equivalence}: The strongest (most restrictive) notion where two protocols must have identical structure, differing only in the messages exchanged. All tests must succeed or fail identically in both protocols, preserving protocol structure during execution.
+		            \end{itemize}
+		            Compare these three approaches for modeling receipt-freeness. Which would be most appropriate and why? What can you say about the analysis's precision of the analysis and the computational complexity?
 	      \end{enumerate}
 \end{enumerate}
 
-\subsection{Quantum Computing Reality Check (15 points)}
+\subsection{Tool Selection and Application (15 points)}
 
 \begin{enumerate}
-	\item (7.5 points) \textbf{Evaluating Quantum Progress:}
-	      Recent news claims a breakthrough in quantum computing: ``Quantum computer factors RSA-2048!''
+	\item (7.5 points) \textbf{ProVerif Analysis Challenge:}
+	      You're analyzing a protocol that combines TLS 1.3 with a custom post-quantum key exchange mechanism.
 	      \begin{enumerate}
-		      \item Based on the course material\footnote{\url{https://appliedcryptography.page/papers/\#quantum-dog}} about current quantum factorization records and ``sleight-of-hand'' numbers, what questions would you ask to evaluate this claim? List at least three specific technical details you would investigate.
-		      \item The paper reveals they factored a number where the two prime factors differ by 2. Explain why this is not a valid demonstration of breaking RSA-2048 and how it could be solved on classical hardware from the 1980s.
+		      \item ProVerif's analysis time explodes when modeling protocols that generate many ephemeral keys. Explain why certain cryptographic patterns (like generating fresh keys for each message) are harder to analyze symbolically than others (like reusing long-term keys).
+		      \item To make ProVerif analysis terminate in a shorter time period, you may need to simplify the protocol model. Describe two specific simplifications you would make (e.g., bounding the number of sessions, abstracting the post-quantum KEM as a perfect encryption scheme, or modeling only a subset of TLS 1.3 features). For each simplification, explain what attacks it might miss.
 	      \end{enumerate}
-	\item (7.5 points) \textbf{Engineering Challenges:}
-	      You're on a government panel evaluating quantum computing threats to national security.
+	\item (7.5 points) \textbf{ProVerif and Stateful Protocol Challenges:}
+	      A blockchain-based PKI protocol maintains global state across multiple sessions.
 	      \begin{enumerate}
-		      \item Explain three major engineering challenges that must be overcome before quantum computers can break real cryptographic systems. For each, describe the current state of the art and what improvements are needed.
-		      \item The panel asks: ``Should we panic about quantum computers if they can't even outperform a trained dog at factoring?'' How would you provide a balanced response that acknowledges both the current limitations and future risks?
-		      \item Given the gap between quantum hype and reality, justify why organizations should still begin post-quantum migration now rather than waiting for more capable quantum computers.
+		      \item Explain why ProVerif's lack of native support for global mutable state makes this analysis challenging. Describe techniques to encode stateful behavior in ProVerif (e.g., using private channels, tables, or phase-based modeling) and their limitations.
+		      \item The protocol allows rollback to previous states under certain conditions. Propose a ProVerif encoding that captures this behavior using events and correspondence assertions. What attacks might be missed due to ProVerif's approximations?
+		      \item Design a abstraction strategy that makes the protocol amenable to ProVerif analysis while preserving essential security properties. What state-based attacks would require manual analysis outside of ProVerif?
 	      \end{enumerate}
 \end{enumerate}
 
-\section{Post-Quantum Protocol Design and Deployment (35 points)}
+\section{Implementation Security and Side Channels (20 points)}
 
-\subsection{Post-Quantum TLS (15 points)}
+\subsection{Constant-Time Implementation (10 points)}
 
 \begin{enumerate}
-	\item (7.5 points) \textbf{Hybrid Key Agreement:}
-	      Current deployments of TLS 1.3 use X25519 + ML-KEM-768 hybrid key agreement.
+	\item (5 points) \textbf{Compiler Sabotage:}
+	      AES implementations commonly use lookup tables (S-boxes) for the SubBytes operation, where table indices depend on secret key material XORed with plaintext. This creates timing variations through cache hits/misses that can leak key bits. Additionally, some optimized implementations use key-dependent branching or conditional operations that vary in execution time.
+
+	      You've written constant-time code for AES, carefully avoiding these vulnerabilities by eliminating table lookups (perhaps using bit-slicing), key-dependent branches, and variable-time operations.
 	      \begin{enumerate}
-		      \item Explain why hybrid approaches are used rather than pure post-quantum. Consider both security and practical reasons. What specific attack scenarios does each component protect against?
-		      \item The X-Wing KEM\footnote{\url{https://appliedcryptography.page/papers/\#xwing-hybrid}} combines X25519 and ML-KEM-768 in an optimized way. What efficiency gains does a purpose-built hybrid construction provide over generic combination methods? Why can X-Wing provide stronger security proofs than generic combiners? Refer to the X-Wing paper.
-		      \item Given that ML-KEM is faster than X25519 in operations per second, why do we still see the size difference (32 bytes vs 1KB+) as a significant deployment challenge?
+		      \item Give three specific examples of how a modern compiler might destroy your constant-time guarantees through ``optimization.'' For each, show the original code and the problematic transformation.
+		      \item Design a testing methodology to detect when the compiler has broken constant-time properties. Why is measuring wall-clock time insufficient?
+		      \item Propose compiler extensions or annotations that would preserve constant-time properties. What would the compiler need to track during optimization?
 	      \end{enumerate}
-	\item (7.5 points) \textbf{Deployment Challenges:}
-	      You're implementing post-quantum TLS for Cloudflare, a major Content Delivery Network (CDN).
+	\item (5 points) \textbf{Hardware Havoc:}
+	      Even with perfect constant-time assembly code, modern CPUs introduce timing variations through various micro-architectural features. Branch predictors are a particularly important source of such variations. These are CPU components that attempt to guess the outcome of conditional branches (if-then-else statements, loops, etc.) before the actual condition is evaluated. When the CPU encounters a branch instruction, instead of waiting to determine which path to take, the branch predictor makes an educated guess based on the branch's history and executes instructions speculatively along the predicted path. If the prediction is correct, execution continues smoothly; if incorrect, the CPU must discard the speculative work and restart from the correct path, causing a measurable timing difference. Modern branch predictors use sophisticated algorithms that track patterns across multiple branches and even correlate behaviors between different branches, maintaining tables indexed by instruction addresses and global history registers. This prediction mechanism can leak information about secret data because the predictor's state, and thus its accuracy, depends on the sequence of branches taken, which may in turn depend on secret values processed by your cryptographic code.
 	      \begin{enumerate}
-		      \item The \texttt{ClientHello} size problem caused a 5-year delay in Chrome's PQ deployment. Explain what ossification means in this context and why some middleboxes fail when \texttt{ClientHello} exceeds one packet. How does GREASE help prevent future ossification?
-		      \item For CDN-to-origin connections, describe the trade-offs between the ``fast way'' (immediate PQ keyshare) and ``safe way'' (wait for \texttt{HelloRetryRequest}). Given a 0.34\% connection failure rate for the fast way, how would you decide which approach to use?
-		      \item As of 2025, 38\% of TLS connections use post-quantum cryptography. What are the remaining barriers to reaching 100\%? Consider both technical and ecosystem challenges.
+		      \item Explain how branch predictors can leak information even when your code has no explicit branches. Design an attack that exploits this against a constant-time implementation.
+		      \item Analyze the trade-offs between different constant-time implementation strategies (bit-slicing, masking, vectorization) in the presence of micro-architectural attacks.
+		      \item Intel's CPUs have variable-latency integer division. How would you implement constant-time modular reduction without using division instructions?
 	      \end{enumerate}
 \end{enumerate}
 
-\subsection{Post-Quantum Messaging (20 points)}
+\subsection{Side-Channel Resistance (10 points)}
 
 \begin{enumerate}
-	\item (10 points) \textbf{Comparing PQ3 and Signal's Approach:}
-	      Apple's PQ3 and Signal's PQXDH/Triple Ratchet take different approaches to post-quantum messaging.
+	\item (5 points) \textbf{Understanding Leakage Models:}
+	      You're implementing cryptographic primitives and need to ensure they're resistant to side-channel attacks.
 	      \begin{enumerate}
-		      \item Compare how Apple's PQ3 and Signal's PQXDH handle the initial key agreement. While Signal's PQXDH is limited to adding post-quantum cryptography only to the setup phase, Apple's PQ3 integrates post-quantum cryptography into the ratcheting phase as well. What are the advantages of Apple's PQ3 integrating post-quantum cryptography into the ratcheting process?
-		      \item PQ3 sends new ML-KEM keys every ~50 messages due to bandwidth constraints. Explain why this is problematic for unbalanced conversations (where one party sends many messages without response).
+		      \item (2.5 points) Explain the three main leakage models covered in the course: program counter (PC) model, constant-time model, and size-respecting model. For each model, describe what information leaks and give a concrete example of a coding pattern that would violate it.
+		      \item (2.5 points) Consider this password checking code:
+		            \begin{verbatim}
+for (i = 0; i < len; i++) {
+    if (password[i] != input[i]) {
+        return FAIL;
+    }
+}
+return SUCCESS;
+\end{verbatim}
+		            Explain why this violates constant-time principles and show how to rewrite it to be constant-time. What is the performance trade-off?
 	      \end{enumerate}
-	\item (10 points) \textbf{Engineering Post-Quantum Messaging:}
-	      You're designing a post-quantum secure messaging app for a government agency.
+
+	\item (5 points) \textbf{Rust's Memory Safety Model:}
+	      Rust achieves memory safety without garbage collection, claiming to offer the performance of C with greater security guarantees.
 	      \begin{enumerate}
-		      \item (5 points) The agency requires post-compromise security against quantum adversaries. Compare the approaches of PQ3 (periodic KEM ratcheting) versus Triple Ratchet (parallel classical and PQ ratchets). Which provides better security properties and why? Consider the trade-off between security and bandwidth.
-		      \item (5 points) Your app needs to work on bandwidth-constrained satellite links. Design a ratcheting strategy that balances post-quantum security with bandwidth efficiency. How would you adapt the erasure coding approach from Triple Ratchet? What would be your criteria for when to perform a PQ ratchet step?
+		      \item (2.5 points) Explain how Rust's ownership system, borrowing rules, and lifetime annotations provide memory safety at compile time rather than runtime. Why doesn't this approach impose the runtime overhead typical of managed languages like Java or Go? Give specific examples of vulnerabilities that Rust prevents by design.
+		      \item (2.5 points) While Rust avoids runtime performance penalties, there is still a tradeoff. Explain why Rust compilation times are significantly longer than C compilation times. What additional work must the Rust compiler perform? Discuss how the borrow checker's analysis complexity scales with program size and why certain safe patterns can cause exponential compile-time behavior. Is this tradeoff worthwhile for cryptographic implementations?
 	      \end{enumerate}
 \end{enumerate}
 
-\section{Post-Quantum Algorithm Selection and Engineering (30 points)}
+\section{Computer-Aided Cryptography in Practice (45 points)}
 
-\subsection{Choosing the Right Tool (15 points)}
+\subsection{Verification Case Studies (15 points)}
 
 \begin{enumerate}
-	\item (7.5 points) \textbf{Algorithm Selection for Real Systems:}
-	      You're the lead cryptographic engineer for a company building three different products: a secure messaging app, a software update system, and a high-frequency trading platform.
+	\item (7.5 points) \textbf{\haclstar Success Story:}
+	      Mozilla integrated \haclstar into Firefox, replacing hand-written assembly with verified \fstar code.
 	      \begin{enumerate}
-		      \item For each system, recommend whether to use ML-KEM, ML-DSA, or SLH-DSA (or a combination). Justify your choices based on the specific operational requirements, performance constraints, and threat models of each system.
-		      \item The messaging app team wants to use algorithms with the same underlying mathematical problems and assumptions for both key exchange and signatures to ``simplify implementation.'' Evaluate this proposal. What are the security and engineering implications of using one algorithm family for multiple purposes?
-		      \item Your trading platform processes 1 million transactions per second. The team discovers that ML-DSA verification is the bottleneck. What engineering solutions would you propose? Consider both cryptographic alternatives and system architecture changes.
+		      \item Analyze why \haclstar succeeded where previous verification efforts failed. Consider performance, API compatibility, and development process.
+		      \item The \haclstar team claims ``verification for free'' - no performance penalty. Examine this claim critically. What optimizations might verified code miss compared to expert assembly?
+		      \item Design a gradual migration strategy for replacing OpenSSL with verified implementations. What are the technical and organizational challenges?
 	      \end{enumerate}
-	\item (7.5 points) \textbf{Living with Large Keys:}
-	      Post-quantum algorithms have significantly larger keys and ciphertexts than classical alternatives. The ``size doesn't matter'' argument says modern networks can handle larger keys. Challenge this argument by identifying a specific scenario where post-quantum key sizes create real engineering problems. Propose a mitigation strategy.
+
+	\item (7.5 points) \textbf{hax and the Future of Verification:}
+	      The hax toolchain\footnote{\url{https://hax.cryspen.com}} promises to extract formal models from Rust implementations.
+	      \begin{enumerate}
+		      \item Analyze the benefits and risks of extracting ProVerif models from implementation code versus writing them manually. What semantic gaps might arise?
+		      \item Design a development workflow using hax that ensures both protocol-level and implementation-level security. How do you maintain consistency as the code evolves?
+		      \item The Bert13 case study verified TLS 1.3 in Rust using three different provers. Explain why multiple verification approaches are valuable and how to manage the complexity.
+	      \end{enumerate}
 \end{enumerate}
 
-\subsection{Migration Engineering (15 points)}
+\subsection{Building Verified Systems (30 points)}
 
 \begin{enumerate}
-	\item (7.5 points) \textbf{Backwards Compatibility Nightmares:}
-	      You're migrating a 20-year-old payment processing system to post-quantum cryptography.
+	\item (14 points) \textbf{Multiple Cipher Suites Challenge:}
+	      Consider a secure messaging protocol that supports three different cipher suites:
+	      \begin{itemize}
+		      \item Suite A: AES-128-GCM with RSA-2048
+		      \item Suite B: AES-256-GCM with ECDH-P256
+		      \item Suite C: ChaCha20-Poly1305 with Ed25519
+	      \end{itemize}
+
 	      \begin{enumerate}
-		      \item The system has hardcoded assumptions about 2048-bit Diffie-Hellman key sizes throughout the codebase. Design a migration strategy that allows gradual rollout without breaking existing integrations. How would you handle the transition period where some nodes are post-quantum and others aren't?
-		      \item Legacy Hardware Security Modules (HSMs) can't be upgraded to support post-quantum algorithms. Propose a hybrid architecture that provides post-quantum security while still utilizing the existing HSM investment. What are the security trade-offs?
-		      \item During testing, you discover that post-quantum signatures cause some database fields to overflow. The database schema can't be changed due to regulatory requirements. How would you engineer around this constraint while maintaining security?
+		      \item (3 points) Would verifying this protocol be more complex than verifying a protocol with a single, fixed cipher suite, and if so, how? Consider both the symbolic model (like ProVerif) and computational model perspectives.
+		      \item (3 points) The protocol allows parties to negotiate which cipher suite to use during the handshake. What new attack vectors does this negotiation introduce? How would you model cipher suite negotiation in ProVerif to catch downgrade attacks?
+		      \item (8 points) You need to formally verify the security of the protocol described above. Describe how you would structure the verification to avoid analyzing all possible combinations of sender/receiver cipher suite choices. What common security properties can you abstract across all cipher suites? What assumptions would you need to make about each cryptographic primitive?
 	      \end{enumerate}
-	\item (7.5 points) \textbf{Performance vs. Security Trade-offs:}
-	      A major cloud provider is implementing post-quantum cryptography across their infrastructure.
-	      \begin{enumerate}
-		      \item They observe that ML-KEM key generation is 100x slower than X25519. For a service handling millions of ephemeral connections per second, is this a problem? Design a key management strategy that balances security with performance requirements.
-		      \item Propose a monitoring and alerting system that would detect if post-quantum cryptographic operations are becoming a performance bottleneck. What metrics would you track, and what automatic mitigations could the system trigger?
+
+	\item (16 points) \textbf{End-to-End Verification Project:}
+	      You're leading the verification of a new secure communication protocol that will be deployed at nation-state scale. The protocol combines classical and post-quantum cryptography, supports multiple authentication modes, and must resist both computational and side-channel attacks.
+	      \begin{enumerate} \item (4 points) \textbf{Verification Architecture}
+		            \begin{itemize}
+			            \item Design a comprehensive verification strategy using multiple tools.
+			            \item Specify which properties each tool will verify.
+			            \item Identify gaps between different verification layers.
+		            \end{itemize}
+
+		      \item (4 points) \textbf{Formal Specifications}
+		            \begin{itemize}
+			            \item Write formal security definitions for the protocol's goals.
+			            \item Specify side-channel resistance requirements formally.
+		            \end{itemize}
+
+		      \item (4 points) \textbf{Implementation Strategy}
+		            \begin{itemize}
+			            \item Choose implementation languages and verification tools.
+			            \item Design the development workflow to maintain verification.
+		            \end{itemize}
+
+		      \item (4 points) \textbf{Assurance Arguments}
+		            \begin{itemize}
+			            \item Create a comprehensive assurance case for stakeholders.
+			            \item Address the ``fine print'' - what's not verified and why.
+			            \item Design a maintenance strategy for evolving threats.
+		            \end{itemize}
 	      \end{enumerate}
 \end{enumerate}
 
 \begin{tcolorbox}[colframe=EarthBrown!30!white,colback=EarthBrown!5!white]
-	\textbf{Bonus Challenge (30 extra points):} Dr. Gaster, a rogue physicist who gained superintelligence after falling into his own creation, has decided to ``help'' the world transition to post-quantum cryptography by selectively breaking classical cryptosystems. However, their quantum computer is peculiar -- it only works on Tuesdays, can only run for 5 minutes before needing a 24-hour cooldown, and makes an extremely loud humming noise that can be heard from space. The International Space Station reports that Dr. Gaster's quantum computer produces a humming noise so loud it interferes with their meditation sessions and causes spontaneous dance parties among the astronauts. The frequency analysis reveals it's playing a continuous loop of Rick Astley's \textit{``Never Gonna Give You Up''} at 142 decibels, audible from low Earth orbit. NASA is concerned this constitutes the first documented case of quantum rickrolling and may violate several intergalactic noise ordinances.
+	\textbf{Bonus Challenge (30 extra points):} Allen Gumm, a rather sticky fellow who gets trapped by his own bubble gum-based weapons and constantly has to unstick himself from walls, has usurped power at a cryptography company. The company's products use formally verified components: \haclstar for cryptographic primitives and hand-written ProVerif models for protocol verification. Despite these verification efforts, Allen wants to subvert their security without detection.
 
-	Analyze Dr. Gaster's impact on global cryptographic infrastructure:
+	Analyze which elements of the cryptography stack Allen Gumm could compromise that would bypass the formal verification guarantees:
 	\begin{enumerate}
-		\item \textbf{Attack Strategy (10 points):} Given the constraints of Dr. Gaster's quantum computer, what would be the most effective targets? Consider the difference between attacking live TLS sessions versus stored encrypted data, and between breaking encryption versus signatures. How would the Tuesday-only operation affect which systems are vulnerable? Design a detection system that organizations could use to know when they're under quantum attack.
+		\item \textbf{Beyond the Verification Boundary (10 points):} Identify at least three components or interfaces that typically fall outside the formal verification scope outlined above but are critical for security. For each, explain how Allen could introduce vulnerabilities and why the verification wouldn't catch them.
 
-		\item \textbf{Prioritizing Defense (10 points):} You're the CISO of a major tech company. Based on Google's threat model discussed in class, create a prioritized list of systems to migrate to post-quantum cryptography. For each system type (TLS, firmware signatures, authentication tokens, etc.), explain whether Dr. Gaster's attacks make it more or less urgent to migrate. How would you handle systems where post-quantum solutions have significant drawbacks?
+		\item \textbf{Trust Assumptions (10 points):} Formal verification relies on various trust assumptions. List specific assumptions made by \haclstar and ProVerif that Allen could violate in practice. How could he exploit the gap between the formal model and the deployed system?
 
-		\item \textbf{The Quantum Rickroll Paradox (10 points):} Dr. Gaster's musical quantum computer has created an unexpected side effect: the quantum rickrolling frequency interferes with certain post-quantum algorithms, causing them to fail verification 0.1\% of the time when the humming is active. You discover that ML-KEM-768 experiences increased decapsulation failures during Tuesday quantum rickrolls, while SLH-DSA signatures become temporarily invalid due to quantum interference patterns matching Rick Astley's vocal frequencies. The UN Security Council is debating whether quantum rickrolling constitutes a form of cyber warfare. As their technical advisor, explain why this interference might actually help organizations test their post-quantum migration readiness. How could you use Dr. Gaster's predictable attack pattern as a stress test for hybrid cryptographic systems?
+		\item \textbf{Deployment Sabotage (10 points):} Even with verified code and protocols, deployment introduces new attack surfaces. Propose three realistic ways Allen could compromise the system during build, deployment, or runtime without modifying the verified components themselves. What additional verification or monitoring would be needed to detect his sticky schemes?
 	\end{enumerate}
+
+	Your analysis should be concrete and technically sound, focusing on practical vulnerabilities rather than theoretical limitations. Consider real-world deployment scenarios and the boundaries of current verification technology.
 \end{tcolorbox}
 
 \end{document}
