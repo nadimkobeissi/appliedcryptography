@@ -466,11 +466,13 @@
 
 \incompleteslideswarning
 
-\section{Case Study: MEGA}
+\section{Attacks on MEGA and Nextcloud}
+
+\subsection{Attacks on MEGA}
 
 \begin{frame}{MEGA: Overview}
 	\begin{columns}[c]
-		\begin{column}{0.8\textwidth}
+		\begin{column}{0.75\textwidth}
 			\begin{itemize}
 				\item Founded in 2013 by Kim Dotcom (post-Megaupload)
 				\item One of the largest E2EE cloud storage providers
@@ -489,7 +491,7 @@
 				\item All encryption performed in JavaScript (web client)
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.2\textwidth}
+		\begin{column}{0.25\textwidth}
 			\imagewithcaption{mega_logo.png}{MEGA's logo.}
 		\end{column}
 	\end{columns}
@@ -687,17 +689,1372 @@
 	\end{center}
 \end{frame}
 
-\incompleteslideswarning
+\begin{frame}{Attack 1: RSA key recovery attack}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}
+				\item \textbf{Target:} User's RSA private key (for sharing)
+				\item \textbf{Exploit:} No integrity protection on encrypted RSA key
+				\item \textbf{Attack vector:}
+				      \begin{itemize}
+					      \item Malicious server modifies encrypted RSA key
+					      \item Client decrypts corrupted key
+					      \item RSA-CRT implementation leaks information
+				      \end{itemize}
+				\item \textbf{Oracle construction:}
+				      \begin{itemize}
+					      \item Each login attempt leaks 1 bit
+					      \item About RSA modulus factors
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{tikzpicture}[scale=0.8]
+				% Server
+				\node[draw, rectangle, minimum width=3cm, minimum height=1cm, fill=red!20] (server) at (0,4) {Malicious Server};
 
-\section{Case Study: Nextcloud}
+				% Client
+				\node[draw, rectangle, minimum width=3cm, minimum height=1cm, fill=blue!20] (client) at (0,0) {MEGA Client};
+
+				% Encrypted RSA key
+				\node[draw, rectangle, minimum width=2.5cm, minimum height=0.8cm] (enckey) at (0,2.5) {Enc(RSA key)};
+
+				% Attack flow
+				\draw[->, thick] (server) -- node[right] {\small Corrupted} (enckey);
+				\draw[->, thick] (enckey) -- (client);
+
+				% Oracle feedback
+				\draw[->, thick, dashed, red] (client) to[bend right=45] node[left, yshift=-0.3cm] {\small 1 bit leaked} (server);
+
+				% Result
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.8cm, fill=red!30] (result) at (0,-1.5) {RSA key recovered};
+				\draw[->, thick] (client) -- (result);
+
+				% Attack count
+				\node at (3.5,2) {\textbf{2 logins}};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Attack 1: High-level overview}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Threat model:} Malicious service provider controls MEGA infrastructure
+				\item \textbf{Attack strategy:}
+				      \begin{enumerate}
+					      \item Modify encrypted RSA private key (no integrity protection)
+					      \item Use modified key to create decryption oracle
+					      \item Binary search to recover RSA prime factor
+				      \end{enumerate}
+				\item \textbf{Key insight:} RSA-CRT implementation leaks information
+				      \begin{itemize}
+					      \item Modified key causes different behavior for $m < q$ vs $m \geq q$
+					      \item Where $q$ is one of the RSA primes
+					      \item Observable through session ID responses
+				      \end{itemize}
+				\item \textbf{Attack efficiency:}
+				      \begin{itemize}
+					      \item Binary search requires ~512 login attempts\footnote{Later improved to 2 logins: \url{https://appliedcryptography.page/papers/\#mega-recovery}}
+					      \item Each login leaks 1 bit of information about $q$
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Attack 1: The decryption oracle}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Setup:}
+				      \begin{itemize}
+					      \item Server sends corrupted RSA key
+					      \item Key has modified $u' \neq u = q^{-1} \bmod p$
+				      \end{itemize}
+				\item \textbf{Oracle mechanism:}
+				      \begin{itemize}
+					      \item Server chooses message $m$
+					      \item Sends encrypted $[m]_{pk}$ as session ID
+					      \item Client decrypts with corrupted key
+				      \end{itemize}
+				\item \textbf{Observable behavior:}
+				      \begin{itemize}
+					      \item If $m < q$: Returns $\text{sid}' = 0$
+					      \item If $m \geq q$: Returns $\text{sid}' \neq 0$
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{tikzpicture}[scale=0.8]
+				% Binary search visualization
+				\node[draw, rectangle, minimum width=4cm, minimum height=0.5cm] (range) at (0,3) {Search range for $q$};
+
+				% Middle point
+				\node[draw, circle, fill=yellow!30] (mid) at (0,2) {$m$};
+				\draw[->, thick] (range) -- (mid);
+
+				% Oracle
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.8cm, fill=blue!20] (oracle) at (0,0.5) {Decryption Oracle};
+				\draw[->, thick] (mid) -- (oracle);
+
+				% Decision
+				\node[draw, diamond, aspect=2, fill=green!20] (decision) at (0,-1.5) {$m < q?$};
+				\draw[->, thick] (oracle) -- (decision);
+
+				% Left and right
+				\node at (-2,-3) {Left half};
+				\node at (2,-3) {Right half};
+				\draw[->, thick] (decision) -- (-2,-2.5) node[midway, left, xshift=-3mm] {Yes};
+				\draw[->, thick] (decision) -- (2,-2.5) node[midway, right, xshift=3mm] {No};
+
+				% Iteration count
+				\node[draw, rectangle, fill=red!20] at (4.5,0) {2 iterations};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Attack 2: Plaintext recovery attack}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Goal:} Decrypt any AES-ECB ciphertext under master key
+				\item \textbf{Impact:}
+				      \begin{itemize}
+					      \item All node keys (file/folder encryption)
+					      \item Ed25519 signing key
+					      \item Curve25519 chat key
+					      \item Complete confidentiality breach
+				      \end{itemize}
+				\item \textbf{Attack requirements:}
+				      \begin{itemize}
+					      \item RSA key from Attack 1
+					      \item Ability to modify key ciphertexts
+					      \item Control authentication plaintexts
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{tikzpicture}[scale=0.6]
+				\node[draw, rectangle, minimum width=3.5cm, minimum height=0.8cm, fill=blue!20] (master) at (0,4) {Master Key};
+
+				% Encrypted items
+				\node[draw, rectangle, minimum width=2cm, minimum height=0.6cm] (nodekeys) at (-4,2) {Node Keys};
+				\node[draw, rectangle, minimum width=2cm, minimum height=0.6cm] (ed25519) at (0,2) {Ed25519};
+				\node[draw, rectangle, minimum width=2cm, minimum height=0.6cm] (curve25519) at (4,2) {Curve25519};
+
+				% AES-ECB
+				\node[draw, rectangle, minimum width=4cm, minimum height=0.8cm, fill=yellow!20] (aesecb) at (0,0.5) {AES-ECB};
+
+				\draw[->, thick] (master) -- (aesecb);
+				\draw[->, thick] (nodekeys) -- (aesecb);
+				\draw[->, thick] (ed25519) -- (aesecb);
+				\draw[->, thick] (curve25519) -- (aesecb);
+
+				% Attack
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.8cm, fill=red!30] (attack) at (0,-1.5) {Decryption Oracle};
+				\draw[->, thick, red] (aesecb) -- (attack);
+
+				% Result
+				\node[text width=4cm, align=center] at (0,-3) {\textbf{All keys recovered!}};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+\begin{frame}{MEGA attacks: Summary}
+	\begin{center}
+		\textbf{Note: Due to time constraints, we won't dive into the details of each attack}
+	\end{center}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Attack 1 (RSA Key Recovery):} Exploit missing integrity protection to recover RSA private key in 512 logins\footnote{Later improved to 2 logins: \url{https://appliedcryptography.page/papers/\#mega-recovery}}
+				\item \textbf{Attack 2 (Plaintext Recovery):} Use recovered RSA key to build AES-ECB decryption oracle for all encrypted keys
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Attack 3a (File Integrity - Oracle):} Forge files using decryption oracle to frame users with malicious content
+				\item \textbf{Attack 3b (File Integrity - Key Reuse):} Forge files without oracle by exploiting MEGA's key obfuscation scheme
+				\item \textbf{Attack 4 (RSA Decryption):} Bleichenbacher's attack on PKCS\#1 v1.5 to decrypt RSA-encrypted keys
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{MEGA attacks: Summary}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{table}
+				\centering
+				\small
+				\begin{tabular}{|l|c|c|l|}
+					\hline
+					\textbf{Attack}    & \textbf{Attempts} & \textbf{Prerequisites} & \textbf{Impact}        \\
+					\hline
+					RSA Key Recovery   & 2 logins          & None                   & Share keys compromised \\
+					\hline
+					Plaintext Recovery & Varies            & Attack 1               & All keys compromised   \\
+					\hline
+					Integrity Attack A & 1                 & Attack 2               & File forgery           \\
+					\hline
+					Integrity Attack B & 1                 & One AES block          & File forgery           \\
+					\hline
+					RSA Decryption     & $2^{17}$          & Weaker model           & Chat/node keys         \\
+					\hline
+				\end{tabular}
+			\end{table}
+			\vspace{0.5cm}
+			\textbf{Root causes:}
+			\begin{itemize}
+				\item No authenticated encryption (AES-ECB without MAC)
+				\item Key reuse across different contexts
+				\item Legacy cryptography (PKCS\#1 v1.5)
+				\item \textbf{Complex, ad-hoc design without formal analysis!}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{Attacks on Nextcloud}
+
+\begin{frame}{Nextcloud: Overview}
+	\begin{columns}[c]
+		\begin{column}{0.75\textwidth}
+			\begin{itemize}
+				\item Open-source self-hosted cloud storage platform
+				\item Founded in 2016 (fork of ownCloud)
+				\item \textbf{Key statistics:}
+				      \begin{itemize}
+					      \item 20+ million users (2017)
+					      \item 400,000+ deployments (2022)
+					      \item Used by German government, Amnesty International
+				      \end{itemize}
+				\item \textbf{E2EE claims:}
+				      \begin{itemize}
+					      \item ``Zero Knowledge'' server
+					      \item Secure against full server breach
+					      \item Enterprise-grade encryption
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.25\textwidth}
+			\imagewithcaption{nextcloud_logo.png}{Nextcloud's logo.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Nextcloud: E2EE Design}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}
+				\item E2EE is \textbf{not enabled by default}
+				\item Users must manually mark folders as E2EE
+				\item \textbf{Encryption approach:}
+				      \begin{itemize}
+					      \item Each file: AES-GCM with unique key
+					      \item File keys encrypted by metadata key
+					      \item Metadata keys encrypted by RSA-OAEP
+				      \end{itemize}
+				\item \textbf{Key rotation support:}
+				      \begin{itemize}
+					      \item Array of metadata keys per folder
+					      \item Uses highest-indexed key for encryption
+					      \item Re-encrypts on each sync
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{tikzpicture}[scale=0.7]
+				% Mnemonic
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.8cm, fill=green!20] (mnemonic) at (0,5) {12-word Mnemonic};
+
+				% Master key
+				\node[draw, rectangle, minimum width=2.5cm, minimum height=0.8cm, fill=blue!20] (master) at (0,3.5) {Master Key};
+				\draw[->, thick] (mnemonic) -- (master);
+
+				% RSA keys
+				\node[draw, rectangle, minimum width=2.5cm, minimum height=0.8cm, fill=yellow!20] (rsa) at (0,2) {RSA Key Pair};
+				\draw[->, thick] (master) -- (rsa);
+
+				% Metadata keys
+				\node[draw, rectangle, minimum width=2.5cm, minimum height=0.8cm, fill=orange!20] (metadata) at (0,0.5) {Metadata Keys};
+				\draw[->, thick] (rsa) -- (metadata);
+
+				% File keys
+				\node[draw, rectangle, minimum width=2.5cm, minimum height=0.8cm, fill=red!20] (filekeys) at (0,-1) {File Keys};
+				\draw[->, thick] (metadata) -- (filekeys);
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Nextcloud: Key hierarchy}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Mnemonic (top level):}
+				      \begin{itemize}
+					      \item 12 random words
+					      \item Generated by client
+					      \item User must memorize/store
+				      \end{itemize}
+				\item \textbf{Master key:}
+				      \begin{itemize}
+					      \item Derived from mnemonic
+					      \item Encrypts RSA private key
+				      \end{itemize}
+				\item \textbf{RSA key pair:}
+				      \begin{itemize}
+					      \item Public key stored in clear
+					      \item Private key encrypted on server
+					      \item Used for sharing folders
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Metadata keys:}
+				      \begin{itemize}
+					      \item One per E2EE folder
+					      \item Encrypted with RSA-OAEP
+					      \item Encrypts file keys and metadata
+				      \end{itemize}
+				\item \textbf{File keys (bottom level):}
+				      \begin{itemize}
+					      \item Unique per file
+					      \item Random 128-bit AES key
+					      \item Encrypted by metadata key
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Nextcloud vulnerabilities: Overview}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\textbf{Three critical vulnerabilities found:}\footnote{\url{https://appliedcryptography.page/papers/\#nextcloud-break}}
+			\begin{enumerate}
+				\item \textbf{Key Insertion Attack}
+				      \begin{itemize}
+					      \item Server can substitute metadata keys
+					      \item Exploits lack of authentication in RSA-OAEP
+				      \end{itemize}
+				\item \textbf{Ghost Key Attack}
+				      \begin{itemize}
+					      \item Forces client to use all-zero encryption key
+					      \item Exploits missing bounds checking
+				      \end{itemize}
+				\item \textbf{IV Reuse in AES-GCM}
+				      \begin{itemize}
+					      \item Same IV used when files are modified
+					      \item Enables plaintext recovery and forgery
+				      \end{itemize}
+			\end{enumerate}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Attack 1: Key Insertion Attack}
+	\begin{columns}[c]
+		\begin{column}{0.7\textwidth}
+			\begin{itemize}
+				\item \textbf{Root cause:} RSA-OAEP provides confidentiality but \textbf{not authentication}
+				\item \textbf{Attack scenario:}
+				      \begin{enumerate}
+					      \item Server creates chosen metadata key
+					      \item Encrypts it with user's RSA public key
+					      \item Places ciphertext in user's folder
+					      \item Triggers key rotation
+				      \end{enumerate}
+				\item \textbf{Impact:}
+				      \begin{itemize}
+					      \item Server knows metadata key
+					      \item Can decrypt all file keys
+					      \item Can insert/modify files
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+			\begin{tikzpicture}[scale=0.8]
+				% Malicious server
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.8cm, fill=red!20] (server) at (0,4) {Malicious Server};
+
+				% Chosen key
+				\node[draw, rectangle, minimum width=2.5cm, minimum height=0.6cm] (chosenkey) at (0,2.5) {Chosen Key};
+				\draw[->, thick] (server) -- (chosenkey);
+
+				% RSA-OAEP
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.8cm, fill=yellow!20] (rsaoaep) at (0,1) {RSA-OAEP Encrypt};
+				\draw[->, thick] (chosenkey) -- (rsaoaep);
+
+				% Client
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.8cm, fill=blue!20] (client) at (0,-0.5) {Nextcloud Client};
+				\draw[->, thick] (rsaoaep) -- (client);
+
+				% Result
+				\node[draw, rectangle, minimum width=3.5cm, minimum height=0.8cm, fill=red!30] (result) at (0,-2) {Uses attacker's key!};
+				\draw[->, thick] (client) -- (result);
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The authentication problem in public key encryption}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{What RSA-OAEP provides:}
+				      \begin{itemize}
+					      \item Confidentiality: Only private key holder can decrypt
+					      \item Chosen-ciphertext security (IND-CCA2)
+				      \end{itemize}
+				\item \textbf{What RSA-OAEP does NOT provide:}
+				      \begin{itemize}
+					      \item Authentication: No proof of who created the ciphertext
+					      \item Anyone with public key can encrypt
+				      \end{itemize}
+				\item \textbf{Nextcloud's assumption:}
+				      \begin{itemize}
+					      \item ``Only legitimate users will encrypt metadata keys''
+					      \item But server has all public keys!
+				      \end{itemize}
+				\item \textbf{Solution approaches:}
+				      \begin{itemize}
+					      \item Digital signatures on encrypted keys
+					      \item Authenticated encryption (e.g., signcryption)
+					      \item Key exchange protocols instead of PKE
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Attack 2: Ghost Key Attack}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Vulnerability:} Missing bounds checking on metadata key array
+				\item \textbf{Attack mechanism:}
+				      \begin{enumerate}
+					      \item Server modifies key index
+					      \item Points to non-existent entry
+					      \item Client allocates default key
+					      \item Default is all zeros!
+				      \end{enumerate}
+				\item \textbf{Result:}
+				      \begin{itemize}
+					      \item Files encrypted with known key (0x00...)
+					      \item Complete confidentiality loss
+					      \item Trivial file forgery
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{tikzpicture}[scale=0.8]
+				% Key array
+				\node[draw, rectangle, minimum width=0.8cm, minimum height=0.6cm] (key0) at (0,3) {K[0]};
+				\node[draw, rectangle, minimum width=0.8cm, minimum height=0.6cm] (key1) at (1.25,3) {K[1]};
+				\node[draw, rectangle, minimum width=0.8cm, minimum height=0.6cm] (key2) at (2.5,3) {K[2]};
+				\node[right] at (3.125,3) {...};
+
+				% Invalid index
+				\node[draw, rectangle, minimum width=0.8cm, minimum height=0.6cm, fill=red!20] (keyX) at (4.5,3) {K[99]};
+
+				% Arrow to ghost
+				\draw[->, thick, red] (keyX) -- (4.5,1.5) node[below] {Uninitialized!};
+
+				% All zeros
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.8cm, fill=red!30] (zeros) at (2,0) {0x000...000};
+
+				% Result
+				\node[text width=4cm, align=center] at (2,-1.5) {\textbf{Files encrypted with zeros!}};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Attack 3: IV Reuse in AES-GCM}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}
+				\item \textbf{Critical flaw:} Same IV used when file is modified
+				\item \textbf{AES-GCM requirement:} Never reuse IV with same key
+				\item \textbf{Consequences of IV reuse:}
+				      \begin{itemize}
+					      \item Keystream repeats
+					      \item XOR of plaintexts revealed
+					      \item Authentication key recovery
+				      \end{itemize}
+				\item \textbf{Attack scenarios:}
+				      \begin{itemize}
+					      \item \textbf{Plaintext recovery:} If attacker knows one version
+					      \item \textbf{Forgery:} Create valid ciphertexts
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{tikzpicture}[scale=0.8]
+				% Original file
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.8cm] (file1) at (0,3) {Original File};
+
+				% Modified file
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.8cm] (file2) at (0,1.5) {Modified File};
+
+				% Same key and IV
+				\node[draw, rectangle, minimum width=2.5cm, minimum height=0.6cm, fill=yellow!20] (keyiv) at (0,0) {Same Key, IV};
+
+				% XOR reveals difference
+				\node[draw, rectangle, minimum width=3.5cm, minimum height=0.8cm, fill=red!30] (xor) at (0,-1.5) {$C_1 \oplus C_2 = P_1 \oplus P_2$};
+				\draw[->, thick, red] (keyiv) -- (xor);
+
+				% Result
+				\node[text width=3.5cm, align=center] at (0,-3) {\textbf{Plaintext revealed!}};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Nextcloud's response}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Initial patches:}
+				      \begin{itemize}
+					      \item Added bounds checking (Ghost Key)
+					      \item Generate new IV on file modification
+					      \item But Key Insertion attack remained...
+				      \end{itemize}
+				\item \textbf{Drastic measure (2023):}
+				      \begin{itemize}
+					      \item \textbf{Disabled E2EE file sharing entirely}
+					      \item Could not fix authentication issues
+					      \item Major feature regression
+				      \end{itemize}
+				\item \textbf{Lessons learned:}
+				      \begin{itemize}
+					      \item Ad-hoc crypto designs are dangerous
+					      \item Retrofitting security is difficult
+					      \item Need formal analysis before deployment
+					      \item Authentication is as important as confidentiality
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Comparing MEGA and Nextcloud failures}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\textbf{MEGA}
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item No authenticated encryption
+				\item Complex key hierarchy
+				\item ECB mode usage
+				\item Legacy crypto (PKCS\#1 v1.5)
+				\item Patches partially successful
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Nextcloud}
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item Missing authentication
+				\item Implementation bugs
+				\item IV reuse in AES-GCM
+				\item Bounds checking errors
+				\item Had to disable features
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5cm}
+	\begin{center}
+		\textbf{Common theme:} Complex, ad-hoc designs without formal security analysis!
+	\end{center}
+\end{frame}
 
 \incompleteslideswarning
 
 \section{Case Study: WhatsApp End-to-End Encrypted Backups}
 
+\subsection{WhatsApp's Design}
+
+\begin{frame}{WhatsApp End-to-End Encrypted Backups: Overview}
+	\begin{columns}[c]
+		\begin{column}{0.75\textwidth}
+			\begin{itemize}
+				\item WhatsApp messages have been E2EE since 2016
+				\item \textbf{Problem:} Backups in iCloud/Google Drive were not E2EE
+				\item \textbf{Solution (2021):} End-to-end encrypted backups
+				\item \textbf{Key innovation:} HSM-based Backup Key Vault
+				      \begin{itemize}
+					      \item Hardware Security Module for key storage
+					      \item Password-protected key recovery
+					      \item Brute-force protection
+				      \end{itemize}
+				\item \textbf{User choice:}
+				      \begin{itemize}
+					      \item Password-based recovery (via HSM)
+					      \item 64-digit key (user manages)
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.25\textwidth}
+			\imagewithcaption{whatsapp_logo.png}{WhatsApp logo.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The backup encryption challenge}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{User expectations:}
+				      \begin{itemize}
+					      \item Recover chats after losing phone
+					      \item Transfer chats to new device
+					      \item No complex key management
+				      \end{itemize}
+				\item \textbf{Security requirements:}
+				      \begin{itemize}
+					      \item WhatsApp cannot read backups
+					      \item Cloud providers cannot read backups
+					      \item Protection against brute-force attacks
+				      \end{itemize}
+				\item \textbf{Traditional approach:} Trust cloud provider
+				\item \textbf{WhatsApp's approach:} Client-side encryption with secure key recovery
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Hardware Security Modules (HSMs)}{What are they?}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item \textbf{Definition:} Dedicated cryptographic processors designed for key protection
+				\item \textbf{Key features:}
+				      \begin{itemize}
+					      \item Hardware-based key storage and generation
+					      \item Tamper-resistant physical security
+					      \item Cryptographic operations in secure boundary
+					      \item FIPS 140-2 Level 3/4 certified
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}
+				\item \textbf{Security properties:}
+				      \begin{itemize}
+					      \item Keys never exist in plaintext outside HSM
+					      \item Physical intrusion triggers key deletion
+					      \item Rate limiting and access controls
+					      \item Audit logging of all operations
+				      \end{itemize}
+				\item \textbf{Common uses:}
+				      \begin{itemize}
+					      \item PKI root certificate authorities
+					      \item Payment card industry (PIN verification)
+					      \item Database encryption key management
+					      \item Code signing for software integrity
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{HSM-based Backup Key Vault: The safe deposit box analogy}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Traditional Bank Safe Deposit Box}
+			\begin{itemize}
+				\item User has unique key
+				\item Bank cannot open box
+				\item Requires physical presence
+				\item Lost key = lost contents
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{WhatsApp's Key Vault}
+			\begin{itemize}
+				\item Password protects key
+				\item WhatsApp cannot access
+				\item Remote recovery possible
+				\item Password attempts limited
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{System architecture}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}
+				\item \textbf{Client side:}
+				      \begin{itemize}
+					      \item $K \twoheadleftarrow \bits^{256}$
+					      \item Encrypts backup with $K$
+					      \item Uploads to iCloud/Google Drive
+				      \end{itemize}
+				\item \textbf{WhatsApp infrastructure:}
+				      \begin{itemize}
+					      \item Front-end service (ChatD)
+					      \item HSM-based Backup Key Vault
+					      \item Geographically distributed
+				      \end{itemize}
+				\item \textbf{Security properties:}
+				      \begin{itemize}
+					      \item Cloud provider sees only ciphertext
+					      \item $K$ never leaves client unencrypted
+					      \item Password never known to WhatsApp
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{whatsapp_backups.png}{Source: \url{https://appliedcryptography.page/papers/\#whatsapp-backups}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Now the problem becomes: how to store encrypted $K$?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item WhatsApp uses OPAQUE for password-based key storage
+				\item \textbf{Key properties of OPAQUE:}
+				      \begin{itemize}
+					      \item Server never learns password
+					      \item No offline dictionary attacks
+					      \item Derives encryption key from password
+					      \item Strong security proofs
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{How it works:}
+				      \begin{itemize}
+					      \item Registration: Client creates password-protected record
+					      \item Retrieval: Client proves password knowledge
+					      \item Server helps compute key without learning password
+				      \end{itemize}
+				\item \textbf{Advantage over simple password hashing:}
+				      \begin{itemize}
+					      \item HSM enforces rate limiting
+					      \item No password-equivalent stored
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Registration process}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{enumerate}
+				\item User enters password
+				\item Client starts OPAQUE registration
+				\item Server returns registration response + signature
+				\item Client completes registration:
+				      \begin{itemize}
+					      \item Derives $\mathtt{OPAQUE}_K$
+					      \item Sends $\func{aes-gcm}{\mathtt{OPAQUE}_K, K}$ to server
+				      \end{itemize}
+				\item Server stores encrypted record
+			\end{enumerate}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Key retrieval process}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{enumerate}
+				\item Client initiates OPAQUE login with password
+				\item Server decrements attempt counter
+				\item Server returns credential response
+				\item Client completes login:
+				      \begin{itemize}
+					      \item Derives $\mathtt{SHARED}_K$ and $\mathtt{OPAQUE}_K$
+					      \item Sends finalization message
+				      \end{itemize}
+				\item Server returns encrypted key ($EK$)
+				\item Client decrypts:
+				      \begin{itemize}
+					      \item First with $\mathtt{SHARED}_K$ (known to both client and server)
+					      \item Then with $\mathtt{OPAQUE}_K$ (known only to client)
+					      \item Recovers backup key K
+				      \end{itemize}
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{tikzpicture}[scale=0.7]
+				% Attempt counter
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.6cm, fill=red!20] (counter) at (0,4) {Attempt Counter};
+
+				% OPAQUE login
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.8cm, fill=blue!20] (opaque) at (0,2.5) {OPAQUE Login};
+				\draw[->, thick] (counter) -- (opaque);
+
+				% Keys derived
+				\node[draw, rectangle, minimum width=2.5cm, minimum height=0.6cm] (shared) at (-2,1) {$\mathtt{SHARED}_K$};
+				\node[draw, rectangle, minimum width=2.5cm, minimum height=0.6cm] (opaquek) at (2,1) {$\mathtt{OPAQUE}_K$};
+				\draw[->, thick] (opaque) -- (shared);
+				\draw[->, thick] (opaque) -- (opaquek);
+
+				% Decryption
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.6cm, fill=green!20] (decrypt) at (0,-0.5) {Decrypt $EK$};
+				\draw[->, thick] (shared) -- (decrypt);
+				\draw[->, thick] (opaquek) -- (decrypt);
+
+				% Result
+				\node[draw, rectangle, fill=green!30] at (0,-2.5) {$K$};
+				\draw[->, thick] (decrypt) -- (0,-2);
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Security features}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Brute-force protection}
+			\begin{itemize}
+				\item HSM enforces attempt limits
+				\item After threshold: Key permanently inaccessible
+				\item Rate limiting in hardware
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Infrastructure resilience}
+			\begin{itemize}
+				\item 5 datacenter deployment
+				\item Majority consensus system
+				\item Tolerates multiple failures
+				\item Geographic distribution
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5cm}
+	\begin{center}
+		\textbf{Transport security:} Noise Protocol Framework for client-server communication (here used as an alternative to TLS, but in reality it's a whole thing that lets you design a versatile amount of protocols)
+	\end{center}
+\end{frame}
+
+\begin{frame}{Alternative: User-managed 64-digit key}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{For users who prefer full control:}
+				      \begin{itemize}
+					      \item 64-digit encryption key option
+					      \item Key never sent to WhatsApp
+					      \item User must store key securely
+				      \end{itemize}
+				\item \textbf{Trade-offs:}
+				      \begin{itemize}
+					      \item[\textcolor{green}{\mycheckmark}] Maximum security - no trust required
+					      \item[\textcolor{green}{\mycheckmark}] No brute-force risk
+					      \item[\textcolor{red}{$\times$}] User responsibility for key management
+					      \item[\textcolor{red}{$\times$}] Lost key = lost backups forever
+				      \end{itemize}
+				\item \textbf{Recommendation:} Only for technically sophisticated users
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{WhatsApp's design principles}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Use proven protocols:} OPAQUE for password authentication
+				\item \textbf{Hardware security:} HSMs for tamper-resistant key storage
+				\item \textbf{Defense in depth:}
+				      \begin{itemize}
+					      \item Client-side encryption
+					      \item Zero-knowledge password protocol
+					      \item Rate limiting in hardware
+					      \item Geographic distribution
+				      \end{itemize}
+				\item \textbf{User choice:} Password vs self-managed key
+				\item \textbf{Clear threat model:}
+				      \begin{itemize}
+					      \item Protects against cloud provider access
+					      \item Protects against WhatsApp compromise
+					      \item Limits brute-force attacks
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Lessons from WhatsApp's approach}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{What they did right:}
+			\begin{itemize}
+				\item Used established OPAQUE protocol
+				\item Hardware-backed security
+				\item Simple, clear design
+				\item Published detailed whitepaper
+				\item Gradual rollout with testing
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Key takeaways:}
+			\begin{itemize}
+				\item Don't reinvent authentication
+				\item User education is crucial
+				\item Transparency builds trust
+				\item Complexity should be hidden
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5cm}
+	\begin{center}
+		\textit{Compare with MEGA/Nextcloud: Standard protocols vs. custom designs}
+	\end{center}
+\end{frame}
+
+\subsection{Critiquing WhatsApp's Design}
+
+\begin{frame}{Critical limitation: Trust in WhatsApp's infrastructure}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{The fundamental trust problem:}
+				      \begin{itemize}
+					      \item WhatsApp claims to use HSMs, but users cannot verify
+					      \item HSMs are owned and operated by WhatsApp
+					      \item No independent audit or verification possible
+					      \item Could be software emulation instead
+				      \end{itemize}
+				\item \textbf{What users must trust:}
+				      \begin{itemize}
+					      \item WhatsApp actually deployed HSMs as described
+					      \item HSMs are configured correctly
+					      \item Rate limiting is enforced as claimed
+					      \item WhatsApp doesn't have backdoor access
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The HSM security theater problem}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{What WhatsApp claims:}
+			\begin{itemize}
+				\item Hardware-enforced rate limiting
+				\item Tamper-resistant key storage
+				\item Geographic distribution
+				\item No backdoor access
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{What users can verify:}
+			\begin{itemize}
+				\item Nothing!
+				\item No attestation provided
+				\item No third-party audits
+				\item Closed-source implementation
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Potential vulnerabilities in WhatsApp's design}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Silent key escrow:}
+				      \begin{itemize}
+					      \item HSM could have backdoor for data extraction
+					      \item HSM could literally be one guy in a basement memorizing everything
+					      \item No way for users to detect this
+				      \end{itemize}
+				\item \textbf{Selective targeting:}
+				      \begin{itemize}
+					      \item Different behavior for specific accounts
+					      \item Disable rate limiting for law enforcement
+					      \item Return fake ``attempt exceeded'' to user
+				      \end{itemize}
+				\item \textbf{Implementation substitution:}
+				      \begin{itemize}
+					      \item Replace HSM with software for some users
+					      \item Use weaker entropy for key generation
+					      \item Log passwords before OPAQUE processing
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The attestation problem}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{What's missing:}
+				      \begin{itemize}
+					      \item Remote attestation from HSMs
+					      \item Cryptographic proof of HSM usage
+					      \item Public audit logs
+					      \item Third-party verification
+				      \end{itemize}
+				\item \textbf{Technical solutions exist:}
+				      \begin{itemize}
+					      \item HSMs can provide attestation
+					      \item Intel SGX, AMD SEV offer remote attestation
+					      \item Blockchain for public audit logs
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Why not implemented?}
+				      \begin{itemize}
+					      \item Complexity for users?
+					      \item Business reasons?
+					      \item Legal requirements?
+					      \item Law enforcement pressure?
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Law enforcement pressure?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{cloud_pressure_a.png}{Source: Reuters}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{cloud_pressure_b.png}{Source: \url{https://support.apple.com/en-us/122234}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The 64-digit key mystery}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Why 64 digits?}
+				      \begin{itemize}
+					      \item 64 digits = ~212 bits of entropy
+					      \item Much more than needed for 128-bit AES key
+					      \item Difficult for humans to manage
+					      \item Error-prone to transcribe
+				      \end{itemize}
+				\item \textbf{We already have better solutions:}
+				      \begin{itemize}
+					      \item BIP39 mnemonic phrases (12-24 words)
+					      \item Used successfully by cryptocurrency wallets
+					      \item Easier to write down and verify
+					      \item Built-in error detection
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Possible explanations:}
+				      \begin{itemize}
+					      \item Deliberate friction to push HSM option?
+					      \item Making self-custody intentionally hard?
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{A more honest assessment of WhatsApp backups}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{What WhatsApp backups actually provide:}
+				      \begin{itemize}
+					      \item Protection from cloud providers (Google/Apple)
+					      \item Some protection from external hackers
+					      \item Convenient key recovery
+				      \end{itemize}
+				\item \textbf{What they DON'T provide:}
+				      \begin{itemize}
+					      \item Full protection from WhatsApp itself
+					      \item Fully verifiable security guarantees
+				      \end{itemize}
+				\item \textbf{Alternatives:}
+				      \begin{itemize}
+					      \item Threshold cryptography across providers
+					      \item Client-side key derivation only
+					      \item Transparent, auditable systems
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \incompleteslideswarning
 
 \section{Designing an End-to-End Cloud Storage Protocol}
+
+\subsection{Lessons Learned}
+
+\begin{frame}{Lessons from MEGA and Nextcloud failures}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\textbf{What went wrong?}
+			\begin{itemize}
+				\item \textbf{Ad-hoc design:} Both created custom cryptographic protocols
+				\item \textbf{No formal analysis:} Security claims without proofs
+				\item \textbf{Complexity spiral:} Features added without security review
+				\item \textbf{Missing fundamentals:}
+				      \begin{itemize}
+					      \item MEGA: No authenticated encryption
+					      \item Nextcloud: No sender authentication
+					      \item Both: Improper use of cryptographic primitives
+				      \end{itemize}
+				\item \textbf{Patch difficulties:}
+				      \begin{itemize}
+					      \item MEGA: Multiple rounds of incomplete fixes
+					      \item Nextcloud: Had to disable core features
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The danger of ad-hoc designs}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Common mistakes in ad-hoc designs:}
+				      \begin{itemize}
+					      \item Misunderstanding primitive guarantees
+					      \item Ignoring composition problems
+					      \item No clear threat model
+					      \item Feature creep without security analysis
+				      \end{itemize}
+				\item \textbf{Why it happens:}
+				      \begin{itemize}
+					      \item Overconfidence in understanding
+					      \item Time/resource constraints
+					      \item Lack of cryptographic expertise
+					      \item ``It encrypts, so it's secure''
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Principles of secure protocol design}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{enumerate}
+				\item \textbf{Start with a clear threat model}
+				      \begin{itemize}
+					      \item What are you protecting against?
+					      \item What can the adversary do?
+					      \item What are acceptable trade-offs?
+				      \end{itemize}
+				\item \textbf{Use established cryptographic patterns}
+				      \begin{itemize}
+					      \item Authenticated encryption (AES-GCM, ChaCha20-Poly1305)
+					      \item Standard key exchange (X3DH, Noise Protocol Framework)
+					      \item Proven constructions (don't invent new ones!)
+				      \end{itemize}
+				\item \textbf{Keep it simple}
+				      \begin{itemize}
+					      \item Complexity is the enemy of security
+					      \item Each feature multiplies attack surface
+					      \item Can you explain your protocol in one page?
+				      \end{itemize}
+			\end{enumerate}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Reminder: formal analysis}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{What is formal analysis?}\footnote{See our previous topic on High-Assurance Cryptography!}
+				      \begin{itemize}
+					      \item Mathematical proofs of security
+					      \item Clear security definitions
+					      \item Reduction to hard problems
+					      \item Machine-verified proofs
+				      \end{itemize}
+				\item \textbf{Benefits:}
+				      \begin{itemize}
+					      \item Catches subtle flaws
+					      \item Provides confidence
+					      \item Clear security guarantees
+					      \item Guides implementation
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Types of analysis:}
+				      \begin{itemize}
+					      \item \textbf{Computational:} Reduction to hard problems
+					      \item \textbf{Symbolic:} Protocol logic verification
+					      \item \textbf{UC Framework:} Composable security
+					      \item \textbf{Game-based:} Step-by-step proofs
+				      \end{itemize}
+				\item \textbf{Tools available:}
+				      \begin{itemize}
+					      \item ProVerif, Tamarin
+					      \item EasyCrypt, CryptoVerif
+					      \item \fstar, Coq
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Security definitions matter}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\textbf{MEGA's mistake:} Assumed encryption provides integrity
+			\begin{itemize}
+				\item Used AES-ECB without MAC
+				\item Encryption $\neq$ Authenticated encryption
+				\item Led to complete key recovery
+			\end{itemize}
+			\textbf{Nextcloud's mistake:} Assumed encryption provides authentication
+			\begin{itemize}
+				\item RSA-OAEP only provides confidentiality
+				\item Anyone can create valid ciphertexts
+				\item Led to key insertion attacks
+			\end{itemize}
+			\textbf{Lesson:} Understand exactly what each primitive guarantees!
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Protocol design methodology}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Requirements gathering}
+				      \begin{itemize}
+					      \item Security goals (confidentiality, integrity, authentication)
+					      \item Functionality requirements
+					      \item Performance constraints
+				      \end{itemize}
+				\item \textbf{Threat modeling}
+				      \begin{itemize}
+					      \item Define adversary capabilities
+					      \item Identify trust assumptions
+					      \item Document acceptable risks
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Protocol design}
+				      \begin{itemize}
+					      \item Use standard building blocks
+					      \item Create formal specification
+					      \item Keep complexity minimal
+				      \end{itemize}
+				\item \textbf{Security analysis}
+				      \begin{itemize}
+					      \item Formal proofs or verification
+					      \item External review
+					      \item Test edge cases
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Learning from other successful protocols}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Signal Protocol}
+				      \begin{itemize}
+					      \item Formal security proofs
+					      \item Clear threat model
+					      \item Simple, modular design
+					      \item Widely analyzed
+				      \end{itemize}
+				\item \textbf{WireGuard}
+				      \begin{itemize}
+					      \item Minimal codebase
+					      \item Fixed crypto choices
+					      \item Formal verification
+					      \item Clear specification
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{TLS 1.3}
+				      \begin{itemize}
+					      \item Removed legacy features
+					      \item Formal analysis during design
+					      \item Simplified handshake
+					      \item Clear security properties
+				      \end{itemize}
+				\item \textbf{Common themes:}
+				      \begin{itemize}
+					      \item Simplicity over features
+					      \item Formal analysis early
+					      \item Clear documentation
+					      \item Conservative choices
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Key takeaways for protocol designers}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Don't roll your own crypto}
+				      \begin{itemize}
+					      \item Use established, analyzed protocols
+					      \item If you must innovate, get expert review
+				      \end{itemize}
+				\item \textbf{Security is not just encryption}
+				      \begin{itemize}
+					      \item Authentication, integrity equally important
+					      \item Consider key management, revocation
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Formal analysis is worth it}
+				      \begin{itemize}
+					      \item Catches issues before deployment
+					      \item Provides clear security guarantees
+				      \end{itemize}
+				\item \textbf{Simplicity is security}
+				      \begin{itemize}
+					      \item Every feature adds complexity
+					      \item Complex protocols have more bugs
+				      \end{itemize}
+				\item \textbf{Learn from failures}
+				      \begin{itemize}
+					      \item Study what went wrong
+					      \item Apply lessons to new designs
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{A Formal Treatment of End-to-End Encrypted Cloud Storage}
 
 \incompleteslideswarning
 
