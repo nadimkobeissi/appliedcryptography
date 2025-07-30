@@ -16,11 +16,7 @@
 	\titlepage
 \end{frame}
 
-\incompleteslideswarning
-
 \section{Introduction}
-
-\incompleteslideswarning
 
 \begin{frame}{Cloud storage today}
 	\begin{columns}[c]
@@ -463,8 +459,6 @@
 		      \end{enumerate}
 	\end{itemize}
 \end{frame}
-
-\incompleteslideswarning
 
 \section{Attacks on MEGA and Nextcloud}
 
@@ -1277,8 +1271,6 @@
 	\end{center}
 \end{frame}
 
-\incompleteslideswarning
-
 \section{Case Study: WhatsApp End-to-End Encrypted Backups}
 
 \subsection{WhatsApp's Design}
@@ -1485,8 +1477,8 @@
 				\item Server returns encrypted key ($EK$)
 				\item Client decrypts:
 				      \begin{itemize}
-					      \item First with $\mathtt{SHARED}_K$ (known to both client and server)
-					      \item Then with $\mathtt{OPAQUE}_K$ (known only to client)
+					      \item First with $\mathtt{SHARED}_K$
+					      \item Then with $\mathtt{OPAQUE}_K$
 					      \item Recovers backup key K
 				      \end{itemize}
 			\end{enumerate}
@@ -1623,6 +1615,34 @@
 
 \subsection{Critiquing WhatsApp's Design}
 
+\begin{frame}{Specification ambiguity: A major flaw}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{The problem:} WhatsApp's specification is ambiguous about $\mathtt{OPAQUE}_K$
+				\item \textbf{Two possible interpretations:}
+				      \begin{itemize}
+					      \item \textbf{Option 1:} OPAQUE's export key (client-only secret)
+					      \item \textbf{Option 2:} OPAQUE's shared session key (known to both parties)
+				      \end{itemize}
+				\item \textbf{Why this matters:}
+				      \begin{itemize}
+					      \item If Option 2: Server learns $\mathtt{OPAQUE}_K$
+					      \item Server could decrypt backup key directly!
+					      \item Completely breaks the security model
+				      \end{itemize}
+				\item \textbf{This type of ambiguity is dangerous:}
+				      \begin{itemize}
+					      \item Different implementations may choose differently
+					      \item Security analysis becomes impossible
+					      \item Opens door to implementation vulnerabilities
+				      \end{itemize}
+				\item \textbf{Lesson:} Cryptographic specifications must be \textit{unambiguous}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Critical limitation: Trust in WhatsApp's infrastructure}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
@@ -1753,7 +1773,7 @@
 				      \end{itemize}
 				\item \textbf{We already have better solutions:}
 				      \begin{itemize}
-					      \item BIP39 mnemonic phrases (12-24 words)
+					      \item BIP39 mnemonic phrases (12-24 words)\footnote{Argument against: hard to localize into many languages}
 					      \item Used successfully by cryptocurrency wallets
 					      \item Easier to write down and verify
 					      \item Built-in error detection
@@ -1797,8 +1817,6 @@
 		\end{column}
 	\end{columns}
 \end{frame}
-
-\incompleteslideswarning
 
 \section{Designing an End-to-End Cloud Storage Protocol}
 
@@ -1882,8 +1900,9 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item \textbf{What is formal analysis?}\footnote{See our previous topic on High-Assurance Cryptography!}
+				\item \textbf{What is formal analysis?}\footnote{Coming soon in our upcoming topic sessions on High-Assurance Cryptography!}
 				      \begin{itemize}
+					      \item Automated using software
 					      \item Mathematical proofs of security
 					      \item Clear security definitions
 					      \item Reduction to hard problems
@@ -1911,7 +1930,7 @@
 				      \begin{itemize}
 					      \item ProVerif, Tamarin
 					      \item EasyCrypt, CryptoVerif
-					      \item \fstar, Coq
+					      \item \fstar
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -2056,7 +2075,393 @@
 
 \subsection{A Formal Treatment of End-to-End Encrypted Cloud Storage}
 
-\incompleteslideswarning
+\begin{frame}{Next: A formal treatment from the literature}
+	\begin{center}
+		\textbf{What follows is based on:}\\
+		\vspace{0.3cm}
+		\textit{``A Formal Treatment of End-to-End Encrypted Cloud Storage''}\\
+		{\tiny\url{https://appliedcryptography.page/papers/\#cloud-storage}}\\
+		\vspace{0.2cm}
+		{\small by Matilda Backendal, Hannah Davis, Felix Günther, Miro Haller, and Kenneth G. Paterson}
+	\end{center}
+	\begin{columns}[t]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Why this paper?}
+				      \begin{itemize}
+					      \item First comprehensive formal treatment of E2EE cloud storage
+					      \item Addresses the exact failures we've seen in MEGA/Nextcloud
+					      \item Shows how to do protocol design \textit{right}
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Key contributions:}
+				      \begin{itemize}
+					      \item Formal security definitions for E2EE storage
+					      \item Clean, analyzable protocol design
+					      \item Security proofs in the UC framework
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{A formal treatment: Building blocks}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\textbf{Core cryptographic primitives:}
+			\begin{itemize}
+				\item \textbf{PRF (Pseudorandom Function):} $F: \{0,1\}^{kl} \times \{0,1\}^* \to \{0,1\}^{kl}$
+				\item \textbf{MAC (Message Authentication Code):} For integrity verification
+				\item \textbf{AEAD (Authenticated Encryption):} AES-GCM or ChaCha20-Poly1305
+				\item \textbf{2HashDH OPRF:} Password hardening against offline attacks
+			\end{itemize}
+			\vspace{0.3cm}
+			\textbf{Key insight:} Use standard, proven primitives - don't invent new ones!
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The 2HashDH OPRF: Motivation}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Problem:} How to derive keys from passwords without server learning them?
+				\item \textbf{Challenge:} Server needs to help with computation, but shouldn't learn password
+				\item \textbf{Solution:} Oblivious Pseudorandom Function (OPRF) (Similar to OPAQUE)
+				      \begin{itemize}
+					      \item Client has secret input (account ID + password)
+					      \item Server has key $k$
+					      \item Together compute $F(k, \text{input})$ without server learning input
+				      \end{itemize}
+				\item \textbf{In our protocol:}
+				      \begin{itemize}
+					      \item Client generates OPRF key during registration
+					      \item Sends key to server (ensures honest key generation)
+					      \item Later uses OPRF to derive keys from password
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The 2HashDH OPRF: How it works}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\textbf{Setup:} Group $\mathbb{G}$ of prime order $q$, hash functions $H_1$ and $H_2$\footnote{Ideally memory-hard and slow}
+			\begin{itemize}
+				\item \textbf{Goal:} Client computes $H_2(x, H_1(x)^k)$ without revealing $x$ to server
+				\item \textbf{Protocol steps:}
+				      \begin{enumerate}
+					      \item Client picks random blinding factor $r \leftarrow \mathbb{Z}_q$
+					      \item Client sends blinded value: $\alpha = H_1(x)^r$ to server
+						            {\footnotesize\begin{itemize}
+								            \item Client hashes their secret input $x$ to get $H_1(x)$, raises it to the power of $r$, and sends this ``blinded'' result to the server - the server cannot determine $x$ from this
+							            \end{itemize}}
+					      \item Server computes: $\beta = \alpha^k = H_1(x)^{rk}$ and returns it
+					      \item Client unblinds: $\beta^{1/r} = H_1(x)^k$
+					            {\footnotesize\begin{itemize}
+								            \item The client removes the blinding by raising the server's response to the power of $1/r$ (the multiplicative inverse of $r$), which cancels out the $r$ in the exponent, leaving just $H_1(x)^k$
+							            \end{itemize}}
+					      \item Client outputs: $y = H_2(x, \beta^{1/r})$
+				      \end{enumerate}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The 2HashDH OPRF: How it works}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Security properties:}
+				      \begin{itemize}
+					      \item Server sees only random group element $\alpha$ (learns nothing about $x$)
+					      \item Client gets consistent PRF output
+					      \item Memory-hard hash functions prevent brute-force attacks
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Scheme architecture: Clean key hierarchy}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}
+				\item \textbf{Password-derived keys:}
+				      \begin{itemize}
+					      \item Raw secret $rw$ from OPRF
+					      \item Key encryption key $k_{kek}$
+					      \item MAC key $k_{mac}$
+				      \end{itemize}
+				\item \textbf{Master key ($k_{mk}$):}
+				      \begin{itemize}
+					      \item Randomly generated
+					      \item Encrypted with $k_{kek}$
+					      \item Enables password changes!
+				      \end{itemize}
+				\item \textbf{File keys:}
+				      \begin{itemize}
+					      \item Unique per file
+					      \item Encrypted with master key
+					      \item Shared via headers
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{tikzpicture}[scale=0.7]
+				% Password
+				\node[draw, rectangle, minimum width=2.5cm, minimum height=0.8cm, fill=green!20] (password) at (0,5) {Password + account ID};
+
+				% OPRF
+				\node[draw, rectangle, minimum width=2cm, minimum height=0.6cm, fill=blue!20] (oprf) at (0,3.5) {2HashDH};
+				\draw[->, thick] (password) -- (oprf);
+
+				% Derived keys
+				\node[draw, rectangle, minimum width=1.5cm, minimum height=0.5cm] (kkek) at (-2,2) {$k_{kek}$};
+				\node[draw, rectangle, minimum width=1.5cm, minimum height=0.5cm] (kmac) at (2,2) {$k_{mac}$};
+				\draw[->, thick] (oprf) -- (kkek);
+				\draw[->, thick] (oprf) -- (kmac);
+
+				% Master key
+				\node[draw, rectangle, minimum width=2cm, minimum height=0.6cm, fill=yellow!20] (master) at (0,0.5) {Master Key};
+				\draw[->, thick] (kkek) -- (master) node[midway, left] {encrypts};
+
+				% File keys
+				\node[draw, rectangle, minimum width=2cm, minimum height=0.6cm, fill=red!20] (filekeys) at (0,-1) {File Keys};
+				\draw[->, thick] (master) -- (filekeys);
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Registration and authentication flow}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Registration:}
+			\begin{enumerate}
+				\item Client samples OPRF key $k$, has account ID ($aid$)
+				\item Computes $rw = \func{oprf}{aid, pw}$
+				\item Derives $k_{kek}$, $k_{mac}$ from $rw$
+				\item Generates random master key
+				\item Encrypts master key with $k_{kek}$
+				\item Sends to server: aid, $k$, $k_{mac}$, encrypted master key
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Authentication:}
+			\begin{enumerate}
+				\item Client initiates OPRF with server
+				\item Server sends session ID (sid)
+				\item Client recovers $rw$, derives keys
+				\item Client MACs transcript with $k_{mac}$
+				\item Server verifies MAC
+				\item Server returns encrypted master key
+				\item Client decrypts master key
+			\end{enumerate}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{File operations: Simple and secure}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Upload (put):}
+			\begin{itemize}
+				\item Generate random file key
+				\item AEAD-encrypt file with file key
+				\item AEAD-encrypt file key with master key
+				\item Store header (encrypted file key)
+				\item Store encrypted file content
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Download (get):}
+			\begin{itemize}
+				\item Fetch encrypted header
+				\item Decrypt file key with master key
+				\item Fetch encrypted file
+				\item Decrypt file with file key
+				\item All bound to file ID via AEAD
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5cm}
+	\begin{center}
+		Separate headers from content enables efficient sharing!
+	\end{center}
+\end{frame}
+
+\begin{frame}{Sharing design: Each owner has their own header}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}
+				\item \textbf{Sharing process:}
+				      \begin{enumerate}
+					      \item Owner fetches file key
+					      \item Shares key out-of-band
+					      \item Server adds new owner
+					      \item Recipient wraps key under their master key
+				      \end{enumerate}
+				\item \textbf{Benefits:}
+				      \begin{itemize}
+					      \item No re-encryption on updates
+					      \item Independent key management
+					      \item Efficient for large files
+					      \item Password changes don't affect shares
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{tikzpicture}[scale=0.65]
+				% File
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.8cm, fill=gray!20] (file) at (0,3) {Encrypted File};
+
+				% File key
+				\node[draw, circle, fill=yellow!30] (filekey) at (0,1.5) {$k_f$};
+
+				% Users
+				\node[draw, rectangle, minimum width=1.5cm, minimum height=0.6cm, fill=blue!20] (user1) at (-3,0) {User 1};
+				\node[draw, rectangle, minimum width=1.5cm, minimum height=0.6cm, fill=green!20] (user2) at (0,0) {User 2};
+				\node[draw, rectangle, minimum width=1.5cm, minimum height=0.6cm, fill=red!20] (user3) at (3,0) {User 3};
+
+				% Headers
+				\node[draw, rectangle, minimum width=1.2cm, minimum height=0.5cm] (h1) at (-3,-1.5) {Header 1};
+				\node[draw, rectangle, minimum width=1.2cm, minimum height=0.5cm] (h2) at (0,-1.5) {Header 2};
+				\node[draw, rectangle, minimum width=1.2cm, minimum height=0.5cm] (h3) at (3,-1.5) {Header 3};
+
+				% Connections
+				\draw[->, thick] (filekey) -- (file);
+				\draw[->, thick, dashed] (user1) -- (h1);
+				\draw[->, thick, dashed] (user2) -- (h2);
+				\draw[->, thick, dashed] (user3) -- (h3);
+				\draw[->, thick] (h1) -- (filekey);
+				\draw[->, thick] (h2) -- (filekey);
+				\draw[->, thick] (h3) -- (filekey);
+
+				\node[text width=3cm, align=center] at (0,-3) {Same file key, different headers};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Security properties achieved}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Against malicious server:}
+			\begin{itemize}
+				\item[\textcolor{green}{\mycheckmark}] No offline password attacks (OPRF)
+				\item[\textcolor{green}{\mycheckmark}] Authenticated encryption throughout
+				\item[\textcolor{green}{\mycheckmark}] Unique account ID prevents correlation
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Design advantages:}
+			\begin{itemize}
+				\item[\textcolor{green}{\mycheckmark}] Password changes without re-encryption
+				\item[\textcolor{green}{\mycheckmark}] Efficient file sharing
+				\item[\textcolor{green}{\mycheckmark}] Simple, analyzable design
+				\item[\textcolor{green}{\mycheckmark}] Uses only standard primitives
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5cm}
+	\begin{center}
+		\textbf{This scheme has formal security proofs!}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Comparing with MEGA/Nextcloud}
+	\begin{columns}[c]
+		\begin{column}{0.33\textwidth}
+			\textbf{MEGA}
+			\begin{itemize}
+				\item[\textcolor{red}{$\times$}] Custom crypto
+				\item[\textcolor{red}{$\times$}] No AEAD
+				\item[\textcolor{red}{$\times$}] Complex design
+				\item[\textcolor{red}{$\times$}] No formal analysis
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.33\textwidth}
+			\textbf{Nextcloud}
+			\begin{itemize}
+				\item[\textcolor{red}{$\times$}] Missing authentication
+				\item[\textcolor{red}{$\times$}] Implementation bugs
+				\item[\textcolor{red}{$\times$}] Ad-hoc design
+				\item[\textcolor{red}{$\times$}] Feature creep
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.34\textwidth}
+			\textbf{This scheme}
+			\begin{itemize}
+				\item[\textcolor{green}{\mycheckmark}] Standard primitives
+				\item[\textcolor{green}{\mycheckmark}] AEAD everywhere
+				\item[\textcolor{green}{\mycheckmark}] Clean hierarchy
+				\item[\textcolor{green}{\mycheckmark}] Formal proofs
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5cm}
+	\begin{center}
+		\textit{Simplicity and formal analysis make the difference!}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Key takeaways}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{End-to-end encryption is hard to get right}
+				      \begin{itemize}
+					      \item Even major companies make critical mistakes
+					      \item Ad-hoc designs inevitably fail
+					      \item Retrofitting security doesn't work
+				      \end{itemize}
+				\item \textbf{Use established cryptographic building blocks}
+				      \begin{itemize}
+					      \item Don't roll your own crypto
+					      \item Understand what primitives actually guarantee
+					      \item Simplicity beats cleverness
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Formal analysis is essential}
+				      \begin{itemize}
+					      \item Catches subtle vulnerabilities
+					      \item Provides clear security guarantees
+					      \item Should be done \textit{before} deployment
+				      \end{itemize}
+				\item \textbf{Trust models matter}
+				      \begin{itemize}
+					      \item Be honest about what you're protecting against
+					      \item Users need verifiable security, not promises
+					      \item Transparency builds trust
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{\textit{And remember...}}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				{\Large The best cryptographic protocol is one that's\\
+					\textit{simple enough to understand} and \textit{proven to be secure}} \\
+				\vspace{1cm}
+				{\small\textit{``Complexity is the enemy of security''}}
+			\end{center}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{spamton_sez.png}{}
+		\end{column}
+	\end{columns}
+\end{frame}
 
 \begin{frame}[plain]
 	\titlepage
