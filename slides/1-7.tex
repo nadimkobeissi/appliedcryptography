@@ -1540,6 +1540,120 @@
 	\textbf{This is the power of applied cryptography}: transforming abstract mathematical problems into tools that help people and protect our digital lives.
 \end{frame}
 
+\section{RSA}
+
+\begin{frame}{RSA: The other public-key pioneer}
+	\begin{center}
+		\Large\textbf{One year after Diffie-Hellman came RSA (1977)}
+	\end{center}
+	\vspace{0.5cm}
+	\begin{itemize}[<+->]
+		\item \textbf{Named after}: Rivest, Shamir, and Adleman (MIT researchers)
+		\item \textbf{Different approach}: Based on the hardness of factoring large numbers
+		\item \textbf{Key innovation}: Combines public-key encryption AND digital signatures
+		\item \textbf{Revolutionary impact}: Enabled secure communication without prior key exchange
+	\end{itemize}
+	\vspace{0.5cm}
+	\definitionbox{RSA's Core Idea}{
+		Anyone can encrypt messages to you using your public key, but only you can decrypt them with your private key.
+	}
+\end{frame}
+
+\begin{frame}{How RSA works (simplified)}
+	\textbf{The mathematical foundation}:
+	\begin{enumerate}[<+->]
+		\item \textbf{Key generation}:
+		      \begin{itemize}
+			      \item Choose two large primes $p$ and $q$
+			      \item Compute $n = p \times q$ (public modulus)
+			      \item Choose public exponent $e$ (commonly 65537)
+			      \item Compute private exponent $d$ such that $e \times d \equiv 1 \pmod{\phi(n)}$
+			            \begin{itemize}
+				            \item $\phi(n)$ is Euler's totient function: counts integers less than $n$ that are coprime to $n$
+				            \item For $n = p \times q$: $\phi(n) = (p-1)(q-1)$
+			            \end{itemize}
+		      \end{itemize}
+		\item \textbf{Encryption}: $c = m^e \bmod n$ (anyone can do this)
+		\item \textbf{Decryption}: $m = c^d \bmod n$ (only private key holder can do this)
+	\end{enumerate}
+	\vspace{0.5cm}
+	\textbf{Security assumption}: Factoring $n$ back into $p$ and $q$ is computationally infeasible
+\end{frame}
+
+\begin{frame}{RSA's dual functionality}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Encryption}
+			\begin{itemize}[<+->]
+				\item Public key encrypts
+				\item Private key decrypts
+				\item Provides confidentiality
+				\item Anyone can send you secrets
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Digital Signatures}
+			\begin{itemize}[<+->]
+				\item Private key signs
+				\item Public key verifies
+				\item Provides authenticity
+				\item You can prove you wrote something
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5cm}
+	\begin{itemize}[<+->]
+		\item \textbf{Historical significance}: First algorithm to do both!
+		\item \textbf{Widespread adoption}: Used in SSL/TLS, email encryption, code signing
+		\item \textbf{Patent controversy}: Was patented until 2000, limiting early adoption
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{RSA in practice}
+	\textbf{Where RSA dominated for decades}:
+	\begin{itemize}[<+->]
+		\item \textbf{HTTPS certificates}: Most websites used RSA signatures until recently
+		\item \textbf{Email encryption}: PGP/GPG relied heavily on RSA
+		\item \textbf{Software signing}: Windows, macOS, Linux packages
+		\item \textbf{SSH keys}: RSA was the default for years
+	\end{itemize}
+	\vspace{0.5cm}
+	\textbf{Key sizes and security}:
+	\begin{itemize}[<+->]
+		\item 1024-bit RSA: Broken, considered insecure since 2010
+		\item 2048-bit RSA: Current minimum, but showing its age
+		\item 4096-bit RSA: Secure but slow and unwieldy
+		\item Compare to ECDSA: 256-bit keys offer similar security to 3072-bit RSA!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why we're not covering RSA in depth}
+	\begin{center}
+		\Large\textbf{RSA is a cryptographic dinosaur}
+	\end{center}
+	\vspace{0.25cm}
+	\begin{itemize}[<+->]
+		\item \textbf{On its way out}: Being actively replaced everywhere
+		      \begin{itemize}
+			      \item TLS 1.3 prefers ECDSA and EdDSA
+			      \item Modern systems default to elliptic curves
+			      \item Even RSA Inc. recommends moving away from RSA!
+		      \end{itemize}
+		\item \textbf{Not a building block}: Unlike Diffie-Hellman
+		      \begin{itemize}
+			      \item DH principles apply to modern protocols (ECDH, X25519)
+			      \item RSA's approach doesn't translate to newer systems
+		      \end{itemize}
+		\item \textbf{Performance issues}: Terribly slow compared to alternatives
+		      \begin{itemize}
+			      \item 4096-bit RSA signature: ~10ms
+			      \item Ed25519 signature: ~0.1ms (100x faster!)
+		      \end{itemize}
+		\item \textbf{Implementation pitfalls}: Padding oracle attacks, timing attacks, etc.
+		\item \textbf{The future is elliptic curves and post-quantum}: Time better spent there!
+	\end{itemize}
+\end{frame}
+
 \begin{frame}[plain]
 	\titlepage
 \end{frame}
