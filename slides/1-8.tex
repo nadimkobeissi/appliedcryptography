@@ -47,6 +47,7 @@
 		      \begin{itemize}
 			      \item 256-bit ECC key $\simeq$ 4,096-bit RSA key $\simeq$ 15,360-bit finite field DH.
 			      \item Exponential security advantage as key sizes increase.
+				\item Good resource for estimating key length: \url{https://keylength.com}
 		      \end{itemize}
 		\item \textbf{Performance benefits:}
 		      \begin{itemize}
@@ -919,24 +920,24 @@
 
 \begin{frame}{Small subgroup attacks}
 	\begin{itemize}[<+->]
-		\item \textbf{How it works:}
+		\item \textbf{The vulnerability:} Confining the shared secret to a small set of possibilities.
 		      \begin{itemize}
 			      \item Attacker sends a point $P$ of small order (e.g., order 8).
-			      \item Victim computes secret scalar multiplication: $s \cdot P$.
-			      \item Result $s \cdot P$ also has small order (at most 8).
-			      \item Attacker can brute-force to find $s \bmod 8$.
+			      \item Victim computes shared secret: $s \cdot P$.
+			      \item Result $s \cdot P$ belongs to a small subgroup (at most 8 elements).
+			      \item Attacker can brute-force the entire shared secret space.
 		      \end{itemize}
-		\item \textbf{Information leakage:} Each exchange reveals bits of the secret.
+		\item \textbf{Why this is catastrophic:}
 		      \begin{itemize}
-			      \item With order-8 point: Learn 3 bits of secret.
-			      \item Repeat with different small-order points.
-			      \item Combine using Chinese Remainder Theorem.
-			      \item Eventually recover full secret.
+			      \item With order-8 point: Only 8 possible shared secrets.
+			      \item Attacker tries all 8 possibilities offline.
+			      \item Breaks encryption, authentication, or any derived keys.
+			      \item Complete compromise, not just partial information leakage.
 		      \end{itemize}
 		\item \textbf{Real-world example:} Curve25519 without proper validation.
 		      \begin{itemize}
 			      \item Has points of order 1, 2, 4, 8, $\ell$, $2\ell$, $4\ell$, $8\ell$.
-			      \item Unvalidated ECDH can leak secret key bits.
+			      \item Unvalidated ECDH can produce predictable shared secrets.
 		      \end{itemize}
 		\item \textbf{Defense:} Validate points belong to correct subgroup or use protocols that eliminate the threat.
 	\end{itemize}
