@@ -14,7 +14,7 @@
 	<meta property="og:title" content="Applied Cryptography — American University of Beirut" />
 	<meta property="og:description" content="Learn modern cryptography principles and applications in this comprehensive course covering cryptographic theory, practical implementations, and real-world security systems at the American University of Beirut." />
 	<meta property="og:url" content="https://appliedcryptography.page" />
-	<meta property="og:image" content="https://appliedcryptography.page/res/img/og.jpg" />
+	<meta property="og:image" content="https://appliedcryptography.page/res/img/og.png" />
 	<meta property="og:locale" content="en_US" />
 	<link rel="icon" href="/res/img/favicon.png" type="image/png" />
 	<link rel="apple-touch-icon" href="/res/img/favicon.png" sizes="180x180" />
@@ -134,10 +134,12 @@
 				<h2 class="section-title">News</h2>
 			</div>
 			<div class="news-entry new">
-				<span class="news-date"><i class="icon ph-duotone ph-calendar-blank"></i>May 28<sup>th</sup>, 2025</span>
-				<h3 class="news-title"><i class="icon ph-duotone ph-confetti"></i>Part 1 materials are complete!</h3>
-				<p class="news-content">The course plan, readings, slides, problem sets and lab project proposals for Part 1 of the course are now all complete and available on this website!</p>
-				<p class="news-content">Things may change during the semester as Part 1 is being taught, but the course is beginning to take real shape, and the materials should at the very least be able to provide prospective students with an idea of what to expect. Also, the course schedule for Part 2 now looks much more mature and substantial, and will likely only change minimally as the course is developed.</p>
+				<span class="news-date"><i class="icon ph-duotone ph-calendar-blank"></i>August 1<sup>st</sup>, 2025</span>
+				<h3 class="news-title"><i class="icon ph-duotone ph-rocket-launch"></i>Course preparation complete!</h3>
+				<p class="news-content">I'm thrilled to announce that the Applied Cryptography course is now essentially complete and ready for the Fall semester! We now have seven comprehensive problem sets, five engaging lab project proposals, and all slides for Part 2 are finished except for the final couple of sessions (which will be ready soon).</p>
+				<p class="news-content">I'm also excited to introduce <em><a href="#thekeyexchange">The Key Exchange</a></em>, our optional informal discussion sessions where we'll explore cutting-edge cryptographic topics, current events in security, and dive deeper into areas of particular student interest. Think of it as our cryptographic coffee hour where curiosity drives the conversation!</p>
+				<p class="news-content">For a lighter introduction to what we'll be studying, <a href="https://www.youtube.com/watch?v=z6kK7rIbyB0">check out this fun video I made about the course</a> — I promise it's more entertaining than a formal syllabus reading!</p>
+				<p class="news-content">With the term starting soon, I'm looking forward to meeting all of you and embarking on this cryptographic journey together. Don't forget to email me at <a href="mailto:cmps-297ad-396ai@nadim.email">cmps-297ad-396ai@nadim.email</a> if you have any questions about the course, prerequisites, or anything else. See you soon!</p>
 			</div>
 			<div class="subsection mb-4">
 				<div class="collapsible-header">
@@ -146,6 +148,12 @@
 				</div>
 				<div class="collapsible-content">
 					<p><strong>Older news</strong> entries are kept for the academic year for archival purposes.</p>
+					<div class="news-entry">
+						<span class="news-date"><i class="icon ph-duotone ph-calendar-blank"></i>May 28<sup>th</sup>, 2025</span>
+						<h3 class="news-title"><i class="icon ph-duotone ph-confetti"></i>Part 1 materials are complete!</h3>
+						<p class="news-content">The course plan, readings, slides, problem sets and lab project proposals for Part 1 of the course are now all complete and available on this website!</p>
+						<p class="news-content">Things may change during the semester as Part 1 is being taught, but the course is beginning to take real shape, and the materials should at the very least be able to provide prospective students with an idea of what to expect. Also, the course schedule for Part 2 now looks much more mature and substantial, and will likely only change minimally as the course is developed.</p>
+					</div>
 					<div class="news-entry">
 						<span class="news-date"><i class="icon ph-duotone ph-calendar-blank"></i>May 1<sup>st</sup>, 2025</span>
 						<h3 class="news-title"><i class="icon ph-duotone ph-newspaper"></i>We have a course number!</h3>
@@ -167,7 +175,7 @@
 				Aside from the textbooks and materials, students will also require their own personal computer for various parts of this course. Linux, Mac and Windows computers are all suitable.
 			</p>
 			<div class="subsection">
-				<h3 class="subsection-title">Textbook</h3>
+				<h3 class="subsection-title">Textbooks</h3>
 				<div class="card">
 					<div class="book-display">
 						<a href="https://joyofcryptography.com">
@@ -179,6 +187,19 @@
 							<p class="mb-2">Mike Rosulek</p>
 							<p class="mb-2"><strong>Required</strong>. This textbook is the primary resource for our course and is available free of charge <a href="https://joyofcryptography.com">online</a>.</p>
 							<p class="mb-0"><strong>Note</strong>: For this course, we will be using an updated edition of the textbook that is not yet released to the public. Professor Rosulek has been gracious enough to grant us access in advance — access will be shared privately with students during the course.</p>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="book-display">
+						<a href="https://nostarch.com/serious-cryptography-2nd-edition">
+							<img src="res/img/serious.webp" alt="Serious Cryptography book cover" class="book-cover">
+						</a>
+						<div>
+							<h4 class="mb-2"><i class="icon ph-duotone ph-book"></i><a href="https://nostarch.com/serious-cryptography-2nd-edition">Serious Cryptography, 2nd Edition</a></h4>
+							<p class="mb-2">No Starch Press, 2024</p>
+							<p class="mb-2">Jean-Philippe Aumasson</p>
+							<p class="mb-0"><strong>Required</strong>. This textbook provides practical insights into cryptographic implementations and complements the theoretical foundation from <em>The Joy of Cryptography</em>.</p>
 						</div>
 					</div>
 				</div>
@@ -316,12 +337,10 @@
 							<li><a href="https://hax-playground.cryspen.com"><i class="icon ph-duotone ph-arrow-square-out"></i>hax Playground</a>: Formally verify your Rust code by translating it into F* and other languages.</li>
 							<li><a href="https://learnmeabitcoin.com"><i class="icon ph-duotone ph-arrow-square-out"></i>Learn Me a Bitcoin</a>: Comprehensive online resource for learning how Bitcoin works.</li>
 							<li><a href="https://noiseexplorer.com"><i class="icon ph-duotone ph-arrow-square-out"></i>Noise Explorer</a>: an online engine for reasoning about Noise Protocol Framework Handshake Patterns.</li>
-							<li><a href="https://prooffrog.github.io"><i class="icon ph-duotone ph-arrow-square-out"></i>ProofFrog</a>: Tool for verifying cryptographic proofs written in the style of <em>The Joy of Cryptography</em>.</li>
 							<li><a href="https://github.com/proof-ladders/protocol-ladder"><i class="icon ph-duotone ph-arrow-square-out"></i>Protocol Ladder</a>: Computer-aided cryptographic proofs of simple protocols, formalized in different tools.</li>
 							<li><i class="icon ph-duotone ph-arrow-square-out"></i><a href="https://formaestudio.com/rijndaelinspector/archivos/Rijndael_Animation_v4_eng-html5.html">Rijndael Cipher</a>: animation explaining AES's internal structure.</li>
 							<li><a href="https://tls13.xargs.org"><i class="icon ph-duotone ph-arrow-square-out"></i>The New Illustrated TLS Connection</a>: Every byte of a TLS connection explained and reproduced.</li>
 							<li><a href="https://verifpal.com"><i class="icon ph-duotone ph-arrow-square-out"></i>Verifpal</a>: Cryptographic protocol analysis for students and engineers.</li>
-							<li><i class="icon ph-duotone ph-arrow-square-out"></i><a href="https://www.douglas.stebila.ca/teaching/visual-one-time-pad/">Visual One-Time Pad</a>: An interactive tool for understanding the one-time pad encryption algorithm.</li>
 							<li><em>More to be added soon!</em></li>
 						</ul>
 					</div>
@@ -863,9 +882,8 @@
 			<div class="section-header">
 				<h2 class="section-title">The Key Exchange</h2>
 			</div>
-			<p><em>The Key Exchange</em> is an optional weekly gathering intended to provide additional career training for students intending to become researchers or career professionals in cryptography. Once a week, we will come together to discuss cutting-edge research papers, work on our presentation skills by practicing presenting complex ideas, develop scientific writing skills, and explore career paths in cryptography. Whether you're debugging your first encryption algorithm or designing novel protocols, <em>The Key Exchange</em> provides a supportive environment where questions are encouraged, mistakes become learning opportunities, and everyone has something valuable to contribute. The only prerequisite is your curiosity!</p>
 
-			<p>What makes <em>The Key Exchange</em> special isn't just what we learn, but how we learn together. In our relaxed, coffee-shop-style sessions, you'll gain skills that textbooks can't teach: how to read research papers efficiently, present technical concepts clearly, write like a cryptographer, and navigate career decisions with confidence. One week you might be discussing the elegance of elliptic curves with a visiting researcher from Signal, the next you're getting feedback on your presentation about side-channel attacks, and the following week you're collaborating on a blog post explaining zero-knowledge proofs to a general audience. With our rotating format of paper discussions, student presentations, writing workshops, and career cafés, you'll build a portfolio of skills while forming lasting connections with peers who share your passion for cryptography. After all, the best cryptographic protocols are built on collaboration, and <em>The Key Exchange</em> is where your journey as a cryptographer truly begins!</p>
+			<p><em>The Key Exchange</em> is an optional weekly gathering intended to provide additional career training for students intending to become researchers or career professionals in cryptography. Once a week, we will come together to discuss cutting-edge research papers, work on our presentation skills by practicing presenting complex ideas, develop scientific writing skills, and explore career paths in cryptography. Whether you're debugging your first encryption algorithm or designing novel protocols, <em>The Key Exchange</em> provides a supportive environment where questions are encouraged, mistakes become learning opportunities, and everyone has something valuable to contribute. The only prerequisite is your curiosity!</p>
 
 			<div class="subsection">
 				<div class="collapsible-header">
