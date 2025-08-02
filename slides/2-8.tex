@@ -29,6 +29,284 @@
 
 \incompleteslideswarning
 
+\begin{frame}{Zero-knowledge proofs: magic, but real}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Imagine this scenario:}
+			\begin{itemize}
+				\item I claim to know the password to a secret vault
+				\item You need to verify I really know it
+				\item But I don't want to tell you the password!
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Seems impossible?}
+			\begin{itemize}
+				\item How can I prove knowledge without revealing it?
+				\item This is the magic of zero-knowledge proofs
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{block}{Zero-knowledge property}
+				A proof that reveals \textbf{nothing} except the truth of the statement being proven
+			\end{block}
+			\vspace{0.5em}
+			\begin{alertblock}{The paradox}
+				Convince you completely while teaching you nothing
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{What makes zero-knowledge proofs special?}
+	\textbf{Traditional proof:}
+	\begin{itemize}
+		\item ``Here's my password: \texttt{hunter2}''
+		\item You learn the secret itself
+		\item You could now impersonate me
+	\end{itemize}
+	\vspace{1em}
+	\textbf{Zero-Knowledge proof:}
+	\begin{itemize}
+		\item ``I'll convince you I know the password''
+		\item You learn \textit{only} that I know it
+		\item You gain no ability to prove it yourself
+		\item You can't replay my proof to others
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The three zero-knowledge properties}
+	\begin{block}{1. Completeness}
+		If the statement is true, an honest prover can convince an honest verifier
+	\end{block}
+	\begin{block}{2. Soundness}
+		If the statement is false, no cheating prover can convince an honest verifier (except with negligible probability)
+	\end{block}
+	\begin{block}{3. Zero-Knowledge}
+		The verifier learns nothing beyond the validity of the statement
+	\end{block}
+	\vspace{0.25em}
+	\begin{center}
+		\textbf{These three properties together create the ``magic''}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Example: Proving Knowledge of a Private Key}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The Setup:}
+			\begin{itemize}
+				\item Public key: $A = g^{a}$
+				\item I claim to know $a$
+				\item But revealing $a$ would compromise security
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Zero-Knowledge Solution:}
+			\begin{enumerate}
+				\item Interactive protocol
+				\item Multiple rounds of challenges
+				\item Statistically convincing
+				\item Reveals nothing about $a$
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{alertblock}{Can't prove to others}
+				After our interaction:
+				\begin{itemize}
+					\item You're 100\% convinced I know $a$
+					\item You've learned nothing about $a$
+					\item You can't prove to others that I know it
+				\end{itemize}
+			\end{alertblock}
+			\vspace{0.5em}
+			\begin{exampleblock}{No ``trace'' or ``evidence''}
+				The interaction leaves no transferable evidence
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Schnorr Identification Protocol}
+	\vspace{-1.5cm}
+	\begin{center}\resizebox{0.8\textwidth}{!}{
+			\begin{msc}{}
+				\setmscvalues{small}
+				\drawframe{none}
+				\setlength{\instdist}{8cm}
+				\setlength{\instwidth}{2cm}
+				\declinst{prover}{}{Prover}
+				\declinst{verifier}{}{Verifier}
+				\action*{$\begin{array}{l}
+							\text{Knows generator}~g         \\
+							\text{Knows prime}~n             \\
+							\text{Knows secret}~a            \\
+							y \twoheadleftarrow \mathbb{Z}_n \\
+							Y = g^y
+						\end{array}$}{prover}
+				\action*{$\begin{array}{l}
+							\text{Knows generator}~g                 \\
+							\text{Knows prime}~n                     \\
+							\text{Knows prover's public key}~A = g^a \\
+						\end{array}$}{verifier}
+				\nextlevel[7]
+				\mess{$Y$}{prover}{verifier}
+				\nextlevel[1]
+				\action*{$c \twoheadleftarrow \mathbb{Z}_n$}{verifier}
+				\nextlevel[2]
+				\mess{$c$}{verifier}{prover}
+				\nextlevel[1]
+				\action*{$r = (y + ca) \bmod n$}{prover}
+				\nextlevel[2]
+				\mess{$r$}{prover}{verifier}
+				\nextlevel[1]
+				\action*{$g^r \overset{?}{\equiv} Y \cdot A^c$}{verifier}
+				\nextlevel[2]
+			\end{msc}
+		}\end{center}
+\end{frame}
+
+\begin{frame}{Schnorr Identification Protocol}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}
+				\item \textbf{Interactive proof:} Multiple rounds of communication
+				\item \textbf{Commitment phase:} Prover commits to random $Y = g^y$
+				\item \textbf{Challenge phase:} Verifier sends random challenge $c$
+				\item \textbf{Response phase:} Prover computes $r = y + ca$
+				\item \textbf{Verification:} Check if $g^r = Y \cdot A^c$
+				\item \textbf{Zero-knowledge property:} $r$ reveals nothing about $a$ due to random masking by $y$
+				\item \textbf{Soundness:} Without knowing $a$, prover can't answer random challenges correctly
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\vspace{-1.5cm}
+			\begin{center}\resizebox{1\textwidth}{!}{
+					\begin{msc}{}
+						\setmscvalues{small}
+						\drawframe{none}
+						\setlength{\instdist}{8cm}
+						\setlength{\instwidth}{2cm}
+						\declinst{prover}{}{Prover}
+						\declinst{verifier}{}{Verifier}
+						\action*{$\begin{array}{l}
+									\text{Knows generator}~g         \\
+									\text{Knows prime}~n             \\
+									\text{Knows secret}~a            \\
+									y \twoheadleftarrow \mathbb{Z}_n \\
+									Y = g^y
+								\end{array}$}{prover}
+						\action*{$\begin{array}{l}
+									\text{Knows generator}~g                 \\
+									\text{Knows prime}~n                     \\
+									\text{Knows prover's public key}~A = g^a \\
+								\end{array}$}{verifier}
+						\nextlevel[7]
+						\mess{$Y$}{prover}{verifier}
+						\nextlevel[1]
+						\action*{$c \twoheadleftarrow \mathbb{Z}_n$}{verifier}
+						\nextlevel[2]
+						\mess{$c$}{verifier}{prover}
+						\nextlevel[1]
+						\action*{$r = (y + ca) \bmod n$}{prover}
+						\nextlevel[2]
+						\mess{$r$}{prover}{verifier}
+						\nextlevel[1]
+						\action*{$g^r \overset{?}{\equiv} Y \cdot A^c$}{verifier}
+						\nextlevel[2]
+					\end{msc}
+				}\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The verifier learned literally nothing new}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\begin{itemize}
+				\item After the protocol, you're convinced I know the secret
+				\item But you can't convince anyone else!
+				\item Why? The transcript looks identical to \textbf{something you could have generated alone}
+				\item \textbf{The simulation argument:}
+				      \begin{itemize}
+					      \item You could have picked $r$ and $c$ randomly
+					      \item Then computed $Y = g^r / A^c$
+					      \item This produces a valid-looking transcript!
+					      \item No way to distinguish from real interaction
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+		\resizebox{0.8\textwidth}{!}{%
+			\begin{minipage}{\textwidth}
+				\begin{alertblock}{Self-generated transcripts}
+					For any challenge $c$ and response $r$:
+					\begin{itemize}
+						\item Set $Y = g^r / A^c$
+						\item Now $(Y, c, r)$ is a valid transcript
+						\item Indistinguishable from real protocol
+						\item Real interaction: Prover knows secret
+						\item Simulated transcript: No secret needed
+						\item Both look exactly the same!
+						\item This is what makes it ``zero-knowledge''
+					\end{itemize}
+				\end{alertblock}
+			\end{minipage}%
+		}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{ZK can scale to entire systems}{Reminder}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item As seen previously, you can build entire \textbf{zero-knowledge protocols}, not just primitives that prove knowledge of certain numbers.
+				\item ``Zero-knowledge virtual machines'' where you can execute
+				      an entire program that runs as a zero-knowledge proof.
+				\item ZKP battleship game: server proves to the players that its
+				      output to their battleship guesses is correct, without revealing any
+				      additional information (e.g. ship location).
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{battleship.jpg}{Battleship board game. Source: Hasbro}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Beyond authentication: the power of zero-knowledge}
+	\begin{center}
+		\textbf{Zero-knowledge is not limited to proving identity!}
+	\end{center}
+	\vspace{0.25em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Can prove statements like:}
+				      \begin{itemize}
+					      \item \textit{``I know a solution to this Sudoku puzzle''}
+					      \item \textit{``This encrypted value is in range [0, 100]''} (range proofs)
+					      \item \textit{``I performed this computation correctly''}
+					      \item \ldots without revealing any information!
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Applications:}
+				      \begin{itemize}
+					      \item Private transactions (Zcash)
+					      \item Anonymous credentials
+					      \item Secure voting systems
+					      \item Privacy-preserving audits
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\incompleteslideswarning
+
 \begin{frame}[plain]
 	\titlepage
 \end{frame}
