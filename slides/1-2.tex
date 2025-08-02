@@ -474,11 +474,11 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{One-time pad}{What about $\%\ n$?}
+\begin{frame}{One-time pad}{What about $\pmod{n}$?}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item Let's replace $\oplus$ with $\%\ n$. What would happen?
+				\item Let's replace $\oplus$ with $\pmod{n}$. What would happen?
 				\item Still good!
 				\item Can you prove correctness and security?
 			\end{itemize}
@@ -486,7 +486,7 @@
 		\begin{column}{0.5\textwidth}
 			\sssubroutine{Attack}{M}{
 				$K \twoheadleftarrow \mathbb{Z}_{n}$ \\
-				$C \coloneq (K + M)\ \%\ n$ \\
+				$C \coloneq (K + M)\ \pmod{n}$ \\
 				return $C$
 			}{1.5}
 		\end{column}

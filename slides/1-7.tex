@@ -948,19 +948,19 @@
 	\begin{itemize}[<+->]
 		\item \textbf{The key requirement}: Elements in $\mathbb{Z}_n^*$ must be \textbf{coprime} to $n$
 		      \begin{itemize}
-			      \item Coprime means $\gcd(a, n) = 1$ (no common factors)
+			      \item Coprime means $\func{gcd}{a, n} = 1$ (no common factors)
 			      \item Only coprime elements have multiplicative inverses mod $n$
 		      \end{itemize}
 		\item \textbf{Let's check the missing elements} (with $n = 15 = 3 \times 5$):
 		      \begin{itemize}
-			      \item $\gcd(3, 15) = 3$ (shares factor 3)
-			      \item $\gcd(5, 15) = 5$ (shares factor 5)
-			      \item $\gcd(6, 15) = 3$ (because $6 = 2 \times 3$)
-			      \item $\gcd(9, 15) = 3$ (because $9 = 3^2$)
-			      \item $\gcd(10, 15) = 5$ (because $10 = 2 \times 5$)
-			      \item $\gcd(12, 15) = 3$ (because $12 = 4 \times 3$)
+			      \item $\func{gcd}{3, 15} = 3$ (shares factor 3)
+			      \item $\func{gcd}{5, 15} = 5$ (shares factor 5)
+			      \item $\func{gcd}{6, 15} = 3$ (because $6 = 2 \times 3$)
+			      \item $\func{gcd}{9, 15} = 3$ (because $9 = 3^2$)
+			      \item $\func{gcd}{10, 15} = 5$ (because $10 = 2 \times 5$)
+			      \item $\func{gcd}{12, 15} = 3$ (because $12 = 4 \times 3$)
 		      \end{itemize}
-		\item \textbf{Why no inverse?} If $\gcd(a, n) > 1$, then $ax \equiv 1 \pmod{n}$ has no solution
+		\item \textbf{Why no inverse?} If $\func{gcd}{a, n) > 1$, then $ax \equiv 1 \pmod{n}$ has no solution
 		      \begin{itemize}
 			      \item Example: $3x \equiv 1 \pmod{15}$ is impossible because $3x$ is always divisible by 3
 			      \item But $1 \bmod 15$ leaves remainder 1, which is not divisible by 3!
