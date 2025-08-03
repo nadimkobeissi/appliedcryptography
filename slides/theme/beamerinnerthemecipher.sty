@@ -63,21 +63,13 @@
 			\fill[cipherdarkbg] (current page.north west) rectangle (current page.south east);
 			\draw[cipheraccent, line width=2pt] (current page.north west) rectangle (current page.south east);
 		\end{tikzpicture}
-
-		\vspace{2cm}
+		\vspace{1cm}
 		\begin{center}
-			\begin{minipage}{0.9\textwidth}
-				\raggedright
-				{\usebeamercolor[fg]{subtitle}\usebeamerfont{subtitle}\Large Section \thesection}
-
-				\vspace{0.5cm}
-				{\usebeamercolor[fg]{title}\usebeamerfont{title}\fontsize{20}{24}\selectfont\insertsectionhead\par}
-			\end{minipage}
-
-			\vspace{1cm}
-			\begin{tikzpicture}
-				\draw[cipheraccent, line width=3pt] (0,0) -- (8,0);
-			\end{tikzpicture}
+			\raggedright
+			{\usebeamercolor[fg]{section header}\usebeamerfont{subtitle}\Large Section \thesection}
+			\\
+			\vspace{0.5cm}
+			{\usebeamercolor[fg]{title}\usebeamerfont{title}\fontsize{20}{24}\selectfont\insertsectionhead\par}
 		\end{center}
 	\end{frame}
 }
@@ -88,20 +80,12 @@
 			\fill[cipherdarkbg!90] (current page.north west) rectangle (current page.south east);
 			\draw[cipheraccent, line width=1.5pt] (current page.north west) rectangle (current page.south east);
 		\end{tikzpicture}
-
-		\vspace{2cm}
+		\vspace{1cm}
 		\begin{center}
-			\begin{minipage}{0.9\textwidth}
-				\raggedright
-				{\usebeamercolor[fg]{subtitle}\usebeamerfont{subtitle}Section \thesection: \insertsectionhead}\\[2.5em]
-				{\usebeamercolor[fg]{subtitle}\usebeamerfont{subtitle}\Large Subsection \thesection.\thesubsection}\\[0.2em]
-				{\usebeamercolor[fg]{title}\usebeamerfont{title}\fontsize{18}{22}\selectfont\insertsubsectionhead\par}
-			\end{minipage}
-
-			\vspace{1cm}
-			\begin{tikzpicture}
-				\draw[cipheraccent, line width=2.5pt] (0,0) -- (6,0);
-			\end{tikzpicture}
+			\raggedright
+			{\usebeamercolor[fg]{section header}\usebeamerfont{subtitle}Section \thesection: \insertsectionhead}\\[2.5em]
+			{\usebeamercolor[fg]{section header}\usebeamerfont{subtitle}\Large Subsection \thesection.\thesubsection}\\[0.2em]
+			{\usebeamercolor[fg]{title}\usebeamerfont{title}\fontsize{18}{22}\selectfont\insertsubsectionhead\par}
 		\end{center}
 	\end{frame}
 }
