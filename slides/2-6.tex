@@ -524,7 +524,7 @@
 \end{frame}
 
 \begin{frame}{Row operations: Concrete examples}
-\small
+	\small
 	\textbf{1. Multiply a row by a non-zero constant:}
 	\[
 		\left[\begin{array}{ccc|c}
@@ -1121,7 +1121,7 @@
 
 \begin{frame}{Why decapsulation works}
 	\begin{columns}[c]
-		\begin{column}{0.3\textwidth}
+		\begin{column}{0.4\textwidth}
 			\tiny
 			\begin{align*}
 				v - \vec{u}^T\vec{s} & = \vec{r}^{T}(A\vec{s} + \vec{e}_1) + e_3 + \lfloor q/2 \rfloor \cdot \mu - (\vec{r}^{T}A + \vec{e}_{2}^{T})\vec{s}               \\
@@ -1130,7 +1130,7 @@
 				                     & = \lfloor q/2 \rfloor \cdot \mu + \underbrace{(\vec{r}^{T}\vec{e}_{1} - \vec{e}_{2}^{T}\vec{s} + e_3)}_{\text{small error}}
 			\end{align*}
 		\end{column}
-		\begin{column}{0.7\textwidth}
+		\begin{column}{0.6\textwidth}
 			\begin{itemize}
 				\item \textbf{Step 1}: Start with $v - \vec{u}^T\vec{s}$ and substitute the definitions
 				      \begin{itemize}
@@ -1152,7 +1152,7 @@
 
 \begin{frame}{Why decapsulation works}
 	\begin{columns}[c]
-		\begin{column}{0.3\textwidth}
+		\begin{column}{0.4\textwidth}
 			\tiny
 			\begin{align*}
 				v - \vec{u}^T\vec{s} & = \vec{r}^{T}(A\vec{s} + \vec{e}_1) + e_3 + \lfloor q/2 \rfloor \cdot \mu - (\vec{r}^{T}A + \vec{e}_{2}^{T})\vec{s}               \\
@@ -1161,7 +1161,7 @@
 				                     & = \lfloor q/2 \rfloor \cdot \mu + \underbrace{(\vec{r}^{T}\vec{e}_{1} - \vec{e}_{2}^{T}\vec{s} + e_3)}_{\text{small error}}
 			\end{align*}
 		\end{column}
-		\begin{column}{0.7\textwidth}
+		\begin{column}{0.6\textwidth}
 			\begin{itemize}
 				\item \textbf{Step 3}: Cancel the $\vec{r}^TA\vec{s}$ terms
 				      \begin{itemize}
@@ -1276,7 +1276,7 @@
 	\end{columns}
 	\vspace{5mm}
 	\begin{center}
-		\textbf{Bottom line}: Leading choice for general-purpose post-quantum crypto
+		\textbf{Bottom line}: Leading choice for general-purpose post-quantum cryptography
 	\end{center}
 \end{frame}
 
@@ -3056,7 +3056,7 @@ if ((err = SSLHashSHA1.final(&hashCtx,
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Timing attacks on post-quantum crypto}
+\begin{frame}{Timing attacks on post-quantum cryptography}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Example: Gaussian sampling in lattices}
