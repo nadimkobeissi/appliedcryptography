@@ -1,7 +1,17 @@
-\usepackage[pdftitle=Applied Cryptography,pdflang=en-US,colorlinks=true,linkcolor=OliveGreen,urlcolor=OliveGreen,citecolor=OliveGreen,bookmarksopen=true]{hyperref}
-\usepackage{xurl,hyperxmp,graphicx,array,fancyhdr,bbding,pmboxdraw,listings,acronym,amsthm,bookmark,zref-totpages,xcolor,tikz,titlesec,enumitem,amsmath,xspace}
-\usepackage[inner=2.50cm,outer=2.50cm,top=2.50cm,bottom=2.50cm]{geometry}
-\usepackage{microtype}
+\NeedsTeXFormat{LaTeX2e}
+
+\ProvidesPackage{classhandout}[2025/08/04 v1.0 Nadim's Class Handout Style]
+
+\newcommand{\subject}[1]{\hypersetup{pdfsubject={#1}}}
+\newcommand{\keywords}[1]{\hypersetup{pdfkeywords={#1}}}
+
+\RequirePackage{
+	xurl,graphicx,array,fancyhdr,bbding,pmboxdraw,listings,acronym,amsthm,bookmark,
+	bookmark,zref-totpages,xcolor,tikz,titlesec,enumitem,amsmath,xspace,hyperref,hyperxmp
+}
+\RequirePackage[inner=2.50cm,outer=2.50cm,top=2.50cm,bottom=2.50cm]{geometry}
+\RequirePackage[final]{microtype}
+
 \renewcommand{\familydefault}{\sfdefault}
 \definecolor{OliveGreen}{HTML}{3F7E31}
 \definecolor{EarthBrown}{HTML}{7D4C31}
@@ -24,6 +34,11 @@
 \tcbsetforeverylayer{colframe=OliveGreen!20!white,colback=LightestGray,boxrule=0.5pt,arc=2mm,boxsep=5pt,left=6pt,right=6pt,top=6pt,bottom=6pt}
 \thispagestyle{empty}
 \setlist{itemsep=0em}
+
+\makeatletter
+\renewcommand{\maketitle}{\vskip 1.5em{\normalfont\Large\bfseries\color{OliveGreen}\@title}\vskip 1.5em}
+\hypersetup{pdfa,pdfusetitle,pdflang=en-US,colorlinks=true,linkcolor=OliveGreen,urlcolor=OliveGreen,citecolor=OliveGreen,bookmarksopen=true,keeppdfinfo}
+\makeatother
 
 \newcommand{\classhandoutheader}{
 	\begin{tikzpicture}[remember picture, overlay]

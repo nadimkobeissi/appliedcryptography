@@ -1,12 +1,18 @@
+\NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{theme/beamerthemecipher}[2025/05/04 v1.0 Cipher Beamer Theme]
 
 % Load required packages
 \RequirePackage{
-	mathtools,fontspec,unicode-math,
+	mathtools,fontspec,unicode-math,bookmark,
 	amsmath,amsthm,amssymb,amsfonts,graphicx,setspace,cancel,
-	etoolbox,hyperref,xstring,fancybox,xspace,titlecaps,gensymb
+	etoolbox,xstring,fancybox,xspace,titlecaps,gensymb,hyperref,hyperxmp
 }
-\RequirePackage{microtype}
+\RequirePackage[final]{microtype}
+
+% Hyperref/HyperXMP
+\makeatletter
+\hypersetup{pdfa,pdfusetitle,pdflang=en-US,colorlinks=true,linkcolor=cipheraccent,urlcolor=cipheraccent,citecolor=cipheraccent,bookmarksopen=true,keeppdfinfo}
+\makeatother
 
 % TikZ libraries
 \RequirePackage{tikz}
