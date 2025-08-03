@@ -1,9 +1,9 @@
 \documentclass[aspectratio=169, lualatex, handout]{beamer}
 \makeatletter\def\input@path{{theme/}}\makeatother\usetheme{cipher}
 
-\title{Applied Cryptography - 1.1: Introduction}
+\title{Applied Cryptography - Part 1, Topic 1: Introduction}
 \author{Nadim Kobeissi}
-\subject{Introduction to Applied Cryptography covering cryptographic primitives, protocols, security goals, and real-world applications from basic concepts to advanced topics like TLS and zero-knowledge proofs.}
+\subject{Introduction to Applied Cryptography covering cryptographic primitives, protocols, security goals, and real-world applications from basic concepts to advanced topics like TLKSzero-knowledge proofs and TLS.}
 \keywords{cryptography, security, encryption, authentication, hash functions, TLS, protocols, provable security}
 \institute{American University of Beirut}
 \instituteimage{images/aub_white.png}
@@ -298,7 +298,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}
 			\definitionbox{Hash Function Properties}{
-				\begin{itemize}\item Takes input of \textbf{any size}[<+->]
+				\begin{itemize}\item Takes input of \textbf{any size}
 					\item Produces output of \textbf{fixed size}
 					\item Is \textbf{deterministic} (same input $\rightarrow$ same output)
 					\item Even a \textbf{tiny change} in input creates completely different output
@@ -307,11 +307,10 @@
 		\end{column}
 		\begin{column}{0.45\textwidth}
 			\begin{tcolorbox}
-				[colback=black!5!white,colframe=ciphergray] $\mathsf{SHA256}(\texttt{hello}) =$ \\ \texttt{2cf24dba5fb0a30e26e83b2ac5}\\ \texttt{b9e29e1b161e5c1fa7425e7304}\\
-				\texttt{3362938b9824}
-
-				$\mathsf{SHA256}(\texttt{hullo}) =$ \\ \texttt{7835066a1457504217688c8f5d}\\
-				\texttt{06909c6591e0ca78c254ccf174}\\ \texttt{50d0d999cab0}
+				[colback=black!5!white,colframe=ciphergray] $\mathsf{SHA256}(\texttt{hello}) =$ \\ {\small\texttt{2cf24dba5fb0a30e26e83b2ac5}\\ \texttt{b9e29e1b161e5c1fa7425e7304}\\
+				\texttt{3362938b9824}}\\[1em]
+				$\mathsf{SHA256}(\texttt{hullo}) =$ \\ {\small\texttt{7835066a1457504217688c8f5d}\\
+				\texttt{06909c6591e0ca78c254ccf174}\\ \texttt{50d0d999cab0}}
 			\end{tcolorbox}
 			\textcolor{cipherprimary}{\textbf{Note:} \small One character change $\rightarrow$
 				completely different hash!}
