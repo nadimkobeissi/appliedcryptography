@@ -686,7 +686,7 @@
 				\draw[->, thick] (decision) -- (2,-2.5) node[midway, right, xshift=3mm] {No};
 
 				% Iteration count
-				\node[draw, rectangle, fill=red!20] at (4.5,0) {2 iterations};
+				\node[draw, rectangle, fill=red!20] at (4.5,0) {512 iterations};
 			\end{tikzpicture}
 		\end{column}
 	\end{columns}
@@ -739,6 +739,31 @@
 		\end{column}
 	\end{columns}
 \end{frame}
+
+\begin{frame}{MEGA's patches: A cautionary tale}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{MEGA's response to attacks:} Added sanity checks instead of proper fixes
+				\item \textbf{New paper (2023):} ``Caveat Implementor! Key Recovery Attacks on MEGA''\footnote{\url{https://appliedcryptography.page/papers/\#mega-recovery}}
+				\item \textbf{Key findings:}
+				      \begin{itemize}
+					      \item MEGA's patches introduced \textit{new} vulnerabilities
+					      \item Detailed error reporting became an attack vector
+				      \end{itemize}
+				\item \textbf{The irony:} Ad-hoc fixes to ad-hoc designs created more problems
+				      \begin{itemize}
+					      \item ECB encryption oracle in MEGAdrop feature
+					      \item Distinguishable error messages leak information
+					      \item Patches made attacks \textit{easier}, not harder
+				      \end{itemize}
+				\item \textbf{Contrast with Nextcloud:} Had the wisdom to pause and redesign
+				\item \textbf{Lesson:} Band-aid fixes to broken crypto are dangerous!
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{MEGA attacks: Summary}
 	\begin{center}
 		\textbf{Note: Due to time constraints, we won't dive into the details of each attack}
