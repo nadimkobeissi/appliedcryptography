@@ -18,6 +18,8 @@
 	\titlepage
 \end{frame}
 
+\section{Defining Cryptography}
+
 \begin{frame}{Defining cryptography}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -68,7 +70,7 @@
 				\item DRM solutions
 				\item Private contact discovery
 				\item Cryptocurrencies
-				\item That iPhotos feature that detects similar photos
+				\item That Apple Photos feature that detects similar photos
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -175,7 +177,7 @@
 		      etc. before granting access.
 		\item What's so bad about that?
 	\end{itemize}
-	\definitionbox{The Problem with Traditional Access Control}{
+	\definitionbox{The problem with traditional access control}{
 		\begin{itemize}[<+->]
 			\item Requires trusting the server completely
 			\item No protection during transmission
@@ -196,6 +198,8 @@
 		\end{itemize}
 	\end{center}
 \end{frame}
+
+\section{Examples of the Magic in Cryptography}
 
 \begin{frame}{Hard problems}
 	\begin{itemize}[<+->]
@@ -246,6 +250,30 @@
 			            \end{itemize}
 		      \end{itemize}
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Signal's double ratchet: DH everywhere}
+	\begin{columns}[c]
+		\begin{column}{0.7\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Initial key exchange}: Uses X3DH (Extended Triple DH)
+				      \begin{itemize}
+					      \item Combines \textbf{three} DH key exchanges for security.
+					      \item Works even when recipient is offline (\textit{``asynchronous''} protocol).\footnote{Everything on this slide will be covered in much more detail later in the course.}
+				      \end{itemize}
+				\item \textbf{Ongoing communication}: Uses Double Ratchet
+				      \begin{itemize}
+					      \item New DH key exchange for every message!
+					      \item Provides ``forward secrecy'' and ``post-compromise security''.
+					      \item If your phone gets compromised today, yesterday's messages remain secure.
+					      \item If your phone recovers from compromise, tomorrow's messages are secure again.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+			\imagewithcaption{signal.jpg}{Signal uses DH key exchange dozens, hundreds of times per conversation.}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Hard problems}
@@ -766,6 +794,8 @@
 	\textbf{This is the power of applied cryptography}: transforming abstract mathematical problems into tools that help people and protect our digital lives.
 \end{frame}
 
+\section{Course Goals}
+
 \begin{frame}{Course goals}
 	\begin{itemize}[<+->]
 		\item Understand the reasoning behind the math of modern cryptography.
@@ -851,15 +881,16 @@
 
 \begin{frame}{Exam transparency: no surprises!}
 	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.65\textwidth}
 			\begin{itemize}[<+->]
 				\item \textbf{What's covered}: Specific topics, chapters, and concepts clearly outlined.
 				\item \textbf{Format details}: Question types, duration, and grading scheme all disclosed.
 				\item \textbf{Practice materials}: Sample questions are available through the problem sets.
 				\item \textbf{No stress approach}: Focus on understanding concepts, not guessing what might appear.
+				\item \textbf{If it wasn't mentioned in the slides or problem sets, then it's not on the exam.}
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.35\textwidth}
 			\imagewithcaption{website_midterm.png}{Check the website for complete exam information! \\ \url{https://appliedcryptography.page}}
 		\end{column}
 	\end{columns}
@@ -930,6 +961,97 @@
 	\begin{center}
 		\Large\textcolor{cipherprimary}{\textbf{When should we meet? \\ Let's find a time that works for everyone!}}
 	\end{center}
+\end{frame}
+
+\begin{frame}{About me}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Academic Background}
+				      \begin{itemize}[<+->]
+					      \item Ph.D. Computer Science, Inria Paris (2018)
+					      \item Thesis: \textit{``Formal Verification for Real-World Cryptographic Protocols''}
+					      \item Advisors: Karthikeyan Bhargavan, Bruno Blanchet
+				      \end{itemize}
+			\end{itemize}
+			\begin{itemize}
+				\item \textbf{Current Roles}
+				      \begin{itemize}[<+->]
+					      \item Visiting Professor, AUB (2025-2026)
+					      \item Senior Applied Cryptography Auditor, Cure53
+					      \item Director, Symbolic Software
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Research \& Practice}
+				      \begin{itemize}[<+->]
+					      \item 250+ security audits for major clients
+					      \item Created Verifpal, Noise Explorer
+					      \item Published at IEEE S\&P, USENIX Security, RWC
+					      \item Program Committee: CCS, NDSS, PETS
+				      \end{itemize}
+			\end{itemize}
+			\begin{itemize}
+				\item \textbf{Fun Facts}
+				      \begin{itemize}[<+->]
+					      \item Active in cryptography for \approx 15 years now
+					      \item Published indie games on Steam \& Nintendo
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{My goals for this course}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{My Commitment}{
+				\textit{``To provide you with an excellent applied cryptography education that prepares you for success in this field.''}
+				\begin{itemize}
+					\item High standards and quality teaching
+					\item Your success is my priority
+					\item We'll work together to achieve this
+				\end{itemize}
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{What I aim to deliver}
+			\begin{itemize}[<+->]
+				\item Strong foundation in cryptographic science and engineering
+				\item Practical skills for research and industry
+				\item Clear technical communication abilities
+				\item A learning environment driven by \textbf{curiosity} and \textbf{intellectual excitement}
+				\item Deep understanding over memorization
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Let's get to know each other!}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Please introduce yourself!}{
+				I'd love to learn more about each of you. Please share:
+				\begin{itemize}
+					\item Your name
+					\item Your major and level (undergrad/grad)
+					\item Your career aspirations
+					\item What you hope to gain from this course
+				\end{itemize}
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Why this matters}
+			\begin{itemize}[<+->]
+				\item Helps me tailor examples to your interests
+				\item Enables better project matching
+				\item Builds our classroom community
+				\item Allows me to connect course material to your goals
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}[plain]
