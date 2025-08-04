@@ -492,6 +492,42 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{How the sponge construction prevents length extension}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\begin{itemize}[<+->]
+				\item In Merkle-Damgård, the final state becomes the hash output directly.
+				\item This allows attackers to continue from that state without knowing the input.
+				\item The sponge construction protects against this by:
+				      \begin{itemize}
+					      \item Maintaining a larger internal state than the output size.
+					      \item Only revealing part of the state as output.
+					      \item The hidden portion (capacity) remains secret.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\begin{tcolorbox}[colback=black!5!white,colframe=ciphergray]
+				\textbf{Sponge State:}
+
+				\vspace{0.2cm}
+
+				\texttt{Rate (r): 1088 bits}\\
+				\textcolor{cipheraccent}{\texttt{[Revealed in output]}}
+
+				\vspace{0.2cm}
+
+				\texttt{Capacity (c): 512 bits}\\
+				\textcolor{cipherprimary}{\texttt{[Hidden from attacker]}}
+
+				\vspace{0.3cm}
+
+				\textcolor{cipherprimary}{\textbf{Key:} \small Without knowing the full state, attacker cannot continue hashing!}
+			\end{tcolorbox}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{HMAC: Protection against length extension}
 	\definitionbox{HMAC}{
 		\textbf{HMAC} (Hash-based Message Authentication Code) is a specific construction for calculating a message authentication code (MAC) using a cryptographic hash function and a secret key.
