@@ -168,18 +168,48 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Password recovery challenges}
+\begin{frame}{The mud puddle test}
 	\begin{itemize}
-		\item Lost password = lost data in true E2EE
+		\item \textbf{What is the mud puddle test?}
 		      \begin{itemize}
-			      \item The ``mud puddle test''
+			      \item Thought experiment for E2EE systems
+			      \item ``If you drop your device in a mud puddle and it's destroyed\ldots''
+			      \item ``And then slip in that mud puddle and suffer from password amnesia\ldots''
+			      \item ``\ldots can you recover your data on a new device?''
 		      \end{itemize}
-		\item Users expect password recovery options
-		\item Common mitigation strategies:
+		\item \textbf{In true E2EE:}
+		      \begin{itemize}
+			      \item Lost password = lost data forever
+			      \item No backdoor for the provider
+			      \item No ``forgot password'' that maintains E2EE
+		      \end{itemize}
+		\item \textbf{The fundamental trade-off:}
+		      \begin{itemize}
+			      \item Security vs recoverability
+			      \item Provider can't help without breaking E2EE
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Password recovery expectations vs reality}
+	\begin{itemize}
+		\item \textbf{User expectations:}
+		      \begin{itemize}
+			      \item ``Forgot password'' should always work
+			      \item Data should never be permanently lost
+			      \item Trained by non-E2EE services (Gmail, Facebook)
+		      \end{itemize}
+		\item \textbf{Common mitigation strategies:}
 		      \begin{itemize}
 			      \item \textbf{Recovery keys:} Long random string users must store
 			      \item \textbf{Social recovery:} Threshold sharing among contacts
 			      \item \textbf{Security questions:} Weaker but familiar to users
+		      \end{itemize}
+		\item \textbf{Each approach has trade-offs:}
+		      \begin{itemize}
+			      \item Recovery keys: Often lost or not backed up
+			      \item Social recovery: Complex setup, trust issues
+			      \item Security questions: Weak against targeted attacks
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -1048,7 +1078,7 @@
 				      \end{enumerate}
 				\item \textbf{Result:}
 				      \begin{itemize}
-					      \item Files encrypted with known key (0x00...)
+					      \item Files encrypted with known key (\texttt{0x00...})
 					      \item Complete confidentiality loss
 					      \item Trivial file forgery
 				      \end{itemize}
@@ -1127,7 +1157,7 @@
 				      \begin{itemize}
 					      \item Added bounds checking (Ghost Key)
 					      \item Generate new IV on file modification
-					      \item But Key Insertion attack remained...
+					      \item But Key Insertion attack remained\ldots
 				      \end{itemize}
 				\item \textbf{Drastic measure (2023):}
 				      \begin{itemize}
@@ -2783,7 +2813,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{\textit{And remember...}}
+\begin{frame}{\textit{And remember\ldots}}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{center}

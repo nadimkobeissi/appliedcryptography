@@ -528,7 +528,7 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Because...}{Note that Bob records the exchange of the \textit{same} key with Eve that Alice exchanged with Bob!}
+\begin{frame}{Because\ldots}{Note that Bob records the exchange of the \textit{same} key with Eve that Alice exchanged with Bob!}
 	\begin{center}
 		\begin{tikzpicture}[>=Stealth]
 			\node (A) at (0,0) {$A$};
@@ -558,7 +558,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}
-				\item Works, but...
+				\item Works, but\ldots
 				      \begin{itemize}
 					      \item Need to know both identities before I can produce a signature,
 					      \item Harder to implement ``identity protection''
@@ -817,9 +817,9 @@
 
 \section{Interlude: Key Derivation in Protocols}
 
-\begin{frame}{You may have noticed...}
+\begin{frame}{You may have noticed\ldots}
 	\begin{itemize}
-		\item We often use hashing to derive symmetric primitive keys from shared secrets...
+		\item We often use hashing to derive symmetric primitive keys from shared secrets\ldots
 		      \begin{itemize}
 			      \item $K_m \twoheadleftarrow \func{hash}{g^{xy}}$
 			      \item $K_e \twoheadleftarrow \func{hash}{g^{xy}}$
@@ -925,7 +925,7 @@
 	\begin{itemize}
 		\item \textbf{OTR needed multiple keys from one shared secret}
 		      \begin{itemize}
-			      \item Encryption keys, MAC keys, counter values...
+			      \item Encryption keys, MAC keys, counter values\ldots
 			      \item Needed consistent, deterministic derivation
 		      \end{itemize}
 		\item \textbf{Their solution (simplified):}
@@ -1548,7 +1548,7 @@
 		      \end{itemize}
 		\item \textbf{Post-compromise security!}
 		      \begin{itemize}
-			      \item If attacker steals your state at time $t$...
+			      \item If attacker steals your state at time $t$\ldots
 			      \item After one DH ratchet step, they're locked out again
 			      \item Fresh randomness from new ephemeral keys
 			      \item OTR couldn't do this - required interactive AKE
@@ -1718,7 +1718,7 @@
 			\vspace{1em}
 			\begin{itemize}
 				\item Based on: ``Impossibility Results for Post-Compromise Security'' by Cremers, Medinger, and Naska (2024)
-				\item \textbf{Spoiler:} The answer might surprise you...
+				\item \textbf{Spoiler:} The answer might surprise you\ldots
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1731,7 +1731,7 @@
 			\begin{itemize}
 				\item Your phone gets hacked today
 				\item Attacker reads all your secrets
-				\item But tomorrow...
+				\item But tomorrow\ldots
 				\item \textbf{Magic happens!}
 				\item Future messages become secure again
 				\item Attacker is ``locked out''
@@ -1742,7 +1742,7 @@
 			\begin{itemize}
 				\item Continuously inject fresh randomness
 				\item Update keys with every message
-				\item If attacker misses an update...
+				\item If attacker misses an update\ldots
 				\item They can't decrypt future messages!
 				\item Like changing locks after a break-in
 			\end{itemize}
@@ -1767,7 +1767,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{This paper says:}
 			\begin{itemize}
-				\item Wait, not so fast...
+				\item Wait, not so fast\ldots
 				\item Those proofs assume perfect conditions
 				\item Real apps $\neq$ Academic protocols
 				\item \textbf{Users don't actually get PCS!}
@@ -1857,7 +1857,7 @@
 			      \item Must handle static state loss (lost devices)
 			      \item Must allow recovery to continue chatting
 		      \end{itemize}
-		\item Try to prove PCS property holds...
+		\item Try to prove PCS property holds\ldots
 		\item \textbf{Tamarin finds counterexamples!}
 	\end{enumerate}
 \end{frame}

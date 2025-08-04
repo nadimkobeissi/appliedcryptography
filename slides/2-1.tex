@@ -31,7 +31,7 @@
 			      \item SMACK (State Machine AttaCK)
 			      \item FREAK (Factoring RSA Export Keys)
 			      \item Logjam attack on Diffie-Hellman
-			      \item And many more...
+			      \item And many more\ldots
 		      \end{itemize}
 		\item How these attacks informed the design of \textbf{TLS 1.3}.
 		\item Lessons learned for building secure protocols.
@@ -51,7 +51,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{...and yet...}
+\begin{frame}{\ldots and yet\ldots}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
@@ -671,7 +671,7 @@
 		      \begin{itemize}
 			      \item Each party maintains 64-bit sequence number.
 			      \item Incremented for each new record.
-			      \item Starts at 0, goes 1, 2, 3, ...
+			      \item Starts at 0, goes 1, 2, 3, \ldots
 		      \end{itemize}
 		\item \textbf{Nonce derivation}:
 		      \begin{itemize}
@@ -791,7 +791,7 @@
 	\pause
 	\begin{center}
 		\textbf{Think of it like ordering at a restaurant:}\\
-		Client: ``Here's what I like...'' \quad Server: ``We'll go with this option.''
+		Client: ``Here's what I like\ldots'' \quad Server: ``We'll go with this option.''
 	\end{center}
 \end{frame}
 
@@ -1662,7 +1662,7 @@
 				      \end{itemize}
 				\item \textbf{SMACK core insight}: TLS implementations have \textbf{state machines}
 				      \begin{itemize}
-					      \item Expected message sequence: ClientHello \rightarrow\ ServerHello \rightarrow\ Certificate \rightarrow\ ...
+					      \item Expected message sequence: ClientHello \rightarrow\ ServerHello \rightarrow\ Certificate \rightarrow\ \ldots
 					      \item Implementations track current state
 					      \item But different implementations have different state machines!
 				      \end{itemize}

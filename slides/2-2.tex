@@ -198,7 +198,7 @@
 		\item Impractical for most real-world applications.
 		      \begin{itemize}[<+->]
 			      \item Clearly this is not what we're doing when we use HTTPS,
-			      \item or WhatsApp, or pay for something via a debit card...
+			      \item or WhatsApp, or pay for something via a debit card\ldots
 		      \end{itemize}
 		\item We need encryption schemes where the key can be smaller than the message.
 	\end{itemize}
@@ -274,7 +274,7 @@
 		      \begin{itemize}[<+->]
 			      \item Found that the second byte of RC4 keystream was biased
 			      \item Probability of being zero was $2/256$ instead of $1/256$
-			      \item Seemed like a minor curiosity at the time...
+			      \item Seemed like a minor curiosity at the time\ldots
 		      \end{itemize}
 		\item \textbf{1997:} Golic discovered more biases in the keystream
 		      \begin{itemize}[<+->]
@@ -286,7 +286,7 @@
 			      \item Identified correlations between consecutive keystream bytes
 			      \item Cryptographic community began to worry about RC4's security
 		      \end{itemize}
-		\item \textbf{The stage was set} for a more devastating attack...
+		\item \textbf{The stage was set} for a more devastating attack\ldots
 	\end{itemize}
 \end{frame}
 
@@ -371,7 +371,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{In fact...}
+\begin{frame}{In fact\ldots}
 	\bigimagewithcaption{rc4_bias.png}{Source: Kenny Paterson}
 \end{frame}
 
@@ -760,7 +760,7 @@
 			      \item Occurs when value 1 is used to update index $j$ in RC4
 			      \item Creates correlations between distant output positions
 		      \end{itemize}
-		\item \textbf{The mathematics:} For pattern AB...AB with gap $G$
+		\item \textbf{The mathematics:} For pattern AB\ldots AB with gap $G$
 		      \begin{itemize}[<+->]
 			      \item Expected probability in random: $1/N^2$
 			      \item Actual probability in RC4: $(1 + e^{(-4-8G)/N}/N) \cdot 1/N^2$
