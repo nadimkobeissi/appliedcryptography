@@ -1153,6 +1153,95 @@
 	\end{center}
 \end{frame}
 
+\subsection{Additional Ecosystem Analysis}
+
+\begin{frame}{Additional attacks in the ecosystem (2024)}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item Recent comprehensive analysis of 5 major E2EE providers\footnote{\url{https://appliedcryptography.page/papers/\#cloud-broken}}
+				\item Collectively serving 22+ million users
+				\item \textbf{Key finding:} Widespread cryptographic failures across ecosystem
+				\item \textbf{Common patterns:}
+				      \begin{itemize}
+					      \item Unauthenticated key material (Sync, pCloud)
+					      \item Unauthenticated encryption modes (Icedrive, Seafile)
+					      \item Missing integrity protection
+					      \item Protocol downgrade attacks
+				      \end{itemize}
+				\item \textbf{Impact:} Most ``secure'' providers fail basic security requirements
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Attack highlights: Breaking confidentiality}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Key replacement attacks}
+				      \begin{itemize}
+					      \item Sync/pCloud: No authentication of public key encrypted material
+					      \item Server replaces user keys with attacker-controlled keys
+					      \item All future uploads compromised
+				      \end{itemize}
+			\end{itemize}
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item \textbf{Protocol downgrade (Seafile)}
+				      \begin{itemize}
+					      \item Forces client to use weak KDF
+					      \item 3 iterations of SHA1 instead of PBKDF2
+					      \item Enables offline password cracking
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Link sharing leakage (Sync)}
+				      \begin{itemize}
+					      \item Password embedded in URL path
+					      \item Sent to server on every click
+					      \item Complete confidentiality breach
+				      \end{itemize}
+			\end{itemize}
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item \textbf{Unauthenticated chunking}
+				      \begin{itemize}
+					      \item Seafile/pCloud: Can reorder/remove file chunks
+					      \item Icedrive: CBC mode allows controlled tampering
+					      \item Files corrupted without detection
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The state of E2EE cloud storage: A broken ecosystem}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Systemic failures across providers:}
+				      \begin{itemize}
+					      \item 4 out of 5 analyzed providers have critical vulnerabilities
+					      \item Only Tresorit showed reasonable security design
+					      \item Common mistakes repeated independently
+				      \end{itemize}
+				\item \textbf{Root causes echo MEGA/Nextcloud:}
+				      \begin{itemize}
+					      \item Ad-hoc cryptographic designs
+					      \item Misunderstanding primitive guarantees
+					      \item No formal security analysis
+					      \item Missing authentication at multiple levels
+				      \end{itemize}
+				\item \textbf{Key lesson:} E2EE cloud storage is not a ``solved problem''
+				\item \textbf{Need for:} Standardized, formally analyzed protocols
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \section{Authentication: Moving Beyond Passwords}
 
 \begin{frame}{Beyond password hashing: Zero-knowledge protocols}
