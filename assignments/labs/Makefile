@@ -1,3 +1,4 @@
+MAKEFLAGS += -j8
 TARGETS = password-manager secure-messenger zk-battleship proverif pq-migration
 
 all: $(TARGETS)
