@@ -595,6 +595,38 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Quick reminder: What does $x^{-1}$ mean?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{In modular arithmetic:}
+			\begin{itemize}
+				\item $x^{-1}$ is the \textbf{modular inverse} of $x$
+				\item It's the number that, when multiplied by $x$, gives 1
+				\item $x \cdot x^{-1} \equiv 1 \pmod{n}$
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Example:}
+			\begin{itemize}
+				\item If $x = 3$ and $n = 7$
+				\item Then $x^{-1} = 5$ because $3 \cdot 5 = 15 \equiv 1 \pmod{7}$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{In group elements:}
+			\begin{itemize}
+				\item If $A = g^a$, then $A^{-1} = g^{-a}$
+				\item $A \cdot A^{-1} = g^a \cdot g^{-a} = g^{a-a} = g^0 = 1$
+				\item It's the element that ``cancels out'' $A$
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{alertblock}{Key property}
+				$(A^c)^{-1} = A^{-c}$ \\
+				This is why we can rewrite expressions!
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Attack 1: RSA key recovery attack}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}

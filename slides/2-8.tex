@@ -288,6 +288,179 @@
 	\end{center}
 \end{frame}
 
+\begin{frame}{Quick reminder: What does $x^{-1}$ mean?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{In modular arithmetic:}
+			\begin{itemize}
+				\item $x^{-1}$ is the \textbf{modular inverse} of $x$
+				\item It's the number that, when multiplied by $x$, gives 1
+				\item $x \cdot x^{-1} \equiv 1 \pmod{n}$
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Example:}
+			\begin{itemize}
+				\item If $x = 3$ and $n = 7$
+				\item Then $x^{-1} = 5$ because $3 \cdot 5 = 15 \equiv 1 \pmod{7}$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{In group elements:}
+			\begin{itemize}
+				\item If $A = g^a$, then $A^{-1} = g^{-a}$
+				\item $A \cdot A^{-1} = g^a \cdot g^{-a} = g^{a-a} = g^0 = 1$
+				\item It's the element that ``cancels out'' $A$
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{alertblock}{Key property}
+				$(A^c)^{-1} = A^{-c}$ \\
+				This is why we can rewrite expressions!
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of indistinguishability}{Step 1}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item We can rearrange things so that $c$ is chosen first.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sslibrary{}{schnorr-real}{
+					\sslibrarysubroutine{schnorr.transcript}{a}{
+						$A := g^a$ \\
+						$c \twoheadleftarrow \mathbb{Z}_n$ \\
+						\hl{$y \twoheadleftarrow \mathbb{Z}_n$} \\
+						$r := (y + ca) \bmod n$ \\
+						\hl{$Y := g^y$} \\
+						return $(A, Y, c, r)$
+					}{1}
+				}{1}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of indistinguishability}{Step 2}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item $r$ is essentially a OTP encryption of plaintext $ca$ under key $y$, using a variant of OTP with addition $\bmod\ n$.
+				\item We can achieve the same distribution by choosing $r$ uniformly and solving for $y$.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sslibrary{}{schnorr-real}{
+					\sslibrarysubroutine{schnorr.transcript}{a}{
+						$A := g^a$ \\
+						$c \twoheadleftarrow \mathbb{Z}_n$ \\
+						\hl{$r \twoheadleftarrow \mathbb{Z}_n$} \\
+						\hl{$y := (r - ca) \bmod n$} \\
+						$Y := g^y$ \\
+						return $(A, Y, c, r)$
+					}{1}
+				}{1}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of indistinguishability}{Step 3}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item $Y$ is computed as
+				      \begin{align*}
+					      Y & = g^y                       \\
+					        & = g^{r-ca}                  \\
+					        & = g^{r} \cdot (g^{ca})^{-1} \\
+					        & = g^{r} \cdot (A^{c})^{-1}
+				      \end{align*}
+				\item By rewriting $Y$ in this way, the private exponent $a$ is no longer needed.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sslibrary{}{schnorr-fake}{
+					\sslibrarysubroutine{schnorr.transcript}{a}{
+						$A := g^a$ \\
+						$c \twoheadleftarrow \mathbb{Z}_n$ \\
+						$r \twoheadleftarrow \mathbb{Z}_n$ \\
+						$y := (r - ca) \bmod n$ \\
+						\hl{$Y := g^r \cdot (A^c)^{-1}$} \\
+						return $(A, Y, c, r)$
+					}{1}
+				}{1}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Understanding the exponent manipulation}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Why does $g^{r-ca} = g^r \cdot (g^{ca})^{-1}$?}
+			\vspace{0.5em}
+			\begin{itemize}
+				\item Recall the exponent rule: $g^{x-y} = \frac{g^x}{g^y}$
+				\item In group notation, division is multiplication by inverse
+				\item So $\frac{g^x}{g^y} = g^x \cdot (g^y)^{-1}$
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Step by step:}
+			\begin{enumerate}
+				\item $g^{r-ca} = \frac{g^r}{g^{ca}}$ (exponent rule)
+				\item $\frac{g^r}{g^{ca}} = g^r \cdot (g^{ca})^{-1}$ (division = multiply by inverse)
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{exampleblock}{Concrete example}
+				Let's use regular numbers to see why:
+				\begin{itemize}
+					\item If $g = 2$, $r = 7$, $ca = 3$
+					\item $2^{7-3} = 2^4 = 16$
+					\item $2^7 \cdot (2^3)^{-1} = 128 \cdot \frac{1}{8} = 16$ \mycheckmark
+				\end{itemize}
+			\end{exampleblock}
+			\vspace{0.5em}
+			\begin{alertblock}{Observe how...}
+				This manipulation lets us separate the secret exponent $a$ from the computation!
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{In other words\ldots}
+	\begin{center}
+		\sslinked{
+			\sslibrary{}{schnorr-real}{
+				\sslibrarysubroutine{schnorr.transcript}{a}{
+					$A := g^a$ \\
+					$y \twoheadleftarrow \mathbb{Z}_n$ \\
+					$Y := g^y$ \\
+					$c \twoheadleftarrow \mathbb{Z}_n$ \\
+					$r := (y + ca) \bmod n$ \\
+					return $(A, Y, c, r)$
+				}{1}
+			}{1}
+		}{\interchangeable}{
+			\sslibrary{}{schnorr-fake}{
+				\sslibrarysubroutine{schnorr.transcript}{a}{
+					$A := g^a$ \\
+					$c \twoheadleftarrow \mathbb{Z}_n$ \\
+					$r \twoheadleftarrow \mathbb{Z}_n$ \\
+					$Y := g^r \cdot (A^c)^{-1}$ \\
+					return $(A, Y, c, r)$
+				}{1}
+			}{1}
+		}
+	\end{center}
+\end{frame}
+
 \begin{frame}{A parable}
 	\begin{center}
 		\vfill
