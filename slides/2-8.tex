@@ -18,8 +18,6 @@
 	\titlepage
 \end{frame}
 
-\incompleteslideswarning
-
 \section{Introduction}
 
 \begin{frame}{Zero-knowledge proofs: magic, but real}
@@ -551,9 +549,21 @@
 			\begin{exampleblock}{Examples of relations}
 				\begin{itemize}
 					\item ``I know $a$ such that $g^a = X$''
+					      \begin{itemize}
+						      \item Witness: $a$
+					      \end{itemize}
 					\item ``I know $(r, s)$ such that $g^r h^s = X$''
+					      \begin{itemize}
+						      \item Witness: $(r, s)$
+					      \end{itemize}
 					\item ``I know a factorization of $X$''
+					      \begin{itemize}
+						      \item Witness: $(p, q)$ where $X = p \cdot q$
+					      \end{itemize}
 					\item ``I know a graph coloring for $X$''
+					      \begin{itemize}
+						      \item Witness: The coloring assignment
+					      \end{itemize}
 				\end{itemize}
 			\end{exampleblock}
 		\end{column}
@@ -1272,7 +1282,7 @@
 				\item Respond to all with same challenge
 			\end{itemize}
 			\vspace{0.5em}
-			\begin{exampleblock}{Key insight}
+			\begin{exampleblock}{How it works}
 				Reusing the challenge maintains both soundness and zero-knowledge
 			\end{exampleblock}
 		\end{column}
@@ -1337,7 +1347,7 @@
 	\end{columns}
 	\vspace{0.5em}
 	\begin{alertblock}{Single response proves all!}
-		One value $R$ satisfies all three equations iff all discrete logs are equal
+		One value $R$ satisfies all three equations if and only if all discrete logs are equal
 	\end{alertblock}
 \end{frame}
 
@@ -1362,11 +1372,1107 @@
 
 \section{Non-Interactive Zero-Knowledge Proofs}
 
-\section{Zero-Knowledge Virtual Machines}
+\subsection{Fiat-Shamir}
+
+\begin{frame}{Non-interactive proofs: removing the verifier}
+	\begin{center}
+		\textbf{The limitation of interactive proofs}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Interactive Sigma protocols:}
+			\begin{itemize}
+				\item Require back-and-forth communication
+				\item Prover and verifier must be online together
+				\item Can't post a proof for later verification
+				\item Can't broadcast a proof to many verifiers
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{What we want:}
+			\begin{itemize}
+				\item Prover generates proof alone
+				\item Anyone can verify later
+				\item No interaction needed
+				\item But still zero-knowledge!
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{alertblock}{The challenge}
+				How to ensure $C$ comes after $Y$ without a verifier?
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The Fiat-Shamir transformation}
+	\begin{center}
+		\textbf{Replace the verifier with a hash function!}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Requirements:}
+				      \begin{itemize}
+					      \item Challenge must be unpredictable
+					      \item Must depend on commitment $Y$
+					      \item Solution: $C := \func{hash}{X, Y}$
+					      \item Hash function acts as ``virtual verifier''
+				      \end{itemize}
+			\end{itemize}
+			\begin{itemize}
+				\item \textbf{Properties needed:}
+				      \begin{itemize}
+					      \item $H$ modeled as random oracle
+					      \item Output unpredictable before input
+					      \item Uniformly distributed output
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{exampleblock}{Random oracle}
+				\begin{itemize}
+					\item A theoretical hash function that:
+					      \begin{itemize}
+						      \item Returns random output for each new input
+						      \item Always returns same output for same input
+						      \item Output is uniformly distributed
+					      \end{itemize}
+					\item In practice, we use SHA-256 or similar, which approximates these properties
+				\end{itemize}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Fiat-Shamir: the construction}
+	Given a Sigma protocol $\Sigma$, create a non-interactive proof system:\\[1em]
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Prove}$(X, W)$:
+			\begin{enumerate}
+				\item $(Y, \sigma) := \Sigma.\text{Commit}(X, W)$
+				\item \hl{$C := \func{hash}{X, Y}$}
+				\item $R := \Sigma.\text{Respond}(\sigma, C)$
+				\item Return $(Y, R)$
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Verify}$(X, Y, R)$:
+			\begin{enumerate}
+				\item \hl{$C := \func{hash}{X, Y}$}
+				\item Return $\Sigma.\text{Check}(X, Y, C, R)$
+			\end{enumerate}
+		\end{column}
+	\end{columns}
+	\vspace{0.5em}
+	\begin{center}
+		\textbf{The proof is just $(Y, R)$ - no interaction needed!}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Example: Non-interactive Schnorr}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Interactive Schnorr:}
+			\begin{enumerate}
+				\item Prover sends $Y = g^y$
+				\item Verifier sends random $c$
+				\item Prover sends $r = y + ca$
+				\item Verifier checks $g^r = Y \cdot A^c$
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Fiat-Shamir Schnorr:}
+			\begin{enumerate}
+				\item Prover computes $Y = g^y$
+				\item Prover computes $c = \func{hash}{A, Y}$
+				\item Prover computes $r = y + ca$
+				\item Proof is $(Y, r)$
+				\item Verifier recomputes $c = \func{hash}{A, Y}$
+				\item Verifier checks $g^r = Y \cdot A^c$
+			\end{enumerate}
+		\end{column}
+	\end{columns}
+	\vspace{0.5em}
+	\begin{alertblock}{This is a digital signature!}
+		If we include a message $m$ in the hash: $c = \func{hash}{A, Y, m}$, we get the Schnorr signature scheme!
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{Why Fiat-Shamir is sound}
+	\begin{center}
+		\textbf{The order of operations is crucial}
+	\end{center}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{With random oracle:}
+				      \begin{itemize}
+					      \item Must choose $Y$ first
+					      \item Then compute $C = \func{hash}{X, Y}$
+					      \item Can't predict $C$ before choosing $Y$
+					      \item Can't ``work backwards'' like in simulation
+				      \end{itemize}
+			\end{itemize}
+			\begin{itemize}
+				\item \textbf{This enforces honest behavior:}
+				      \begin{itemize}
+					      \item Prover commits before seeing challenge
+					      \item Just like in interactive protocol
+					      \item Hash function enforces ordering
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{alertblock}{Key difference from interactive}
+				\begin{itemize}
+					\item In interactive Sigma protocol:
+					      \begin{itemize}
+						      \item Can simulate by choosing $C, R$ first
+						      \item Then compute $Y$ backwards
+						      \item This creates deniability
+					      \end{itemize}
+				\end{itemize}
+				\begin{itemize}
+					\item In Fiat-Shamir:
+					      \begin{itemize}
+						      \item Can't choose $C$ arbitrarily
+						      \item Must be $C = \func{hash}{X, Y}$
+						      \item Can't work backwards!
+						      \item \textbf{Loses deniability property}
+					      \end{itemize}
+				\end{itemize}
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The Forking Lemma: extracting witnesses}
+	\begin{block}{Lemma (Forking Lemma)}
+		If an algorithm $A$ can produce valid Fiat-Shamir proofs with non-negligible probability, then we can extract a valid witness with non-negligible probability.
+	\end{block}
+	\vspace{0.5em}
+	\textbf{The extraction strategy:}
+	\begin{enumerate}
+		\item Run $A$ until it outputs valid proof $(Y, R)$
+		\item ``Rewind'' $A$ to when it queried $\func{hash}{X, Y}$
+		\item Give a different hash output $C'$ this time
+		\item If $A$ outputs another valid proof with same $Y$:
+		      \begin{itemize}
+			      \item We have two transcripts: $(Y, C, R)$ and $(Y, C', R')$
+			      \item Extract witness using special soundness!
+		      \end{itemize}
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Forking Lemma: the challenge}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Why extraction is tricky:}
+			\begin{itemize}
+				\item $A$ might query hash many times
+				\item Don't know which query to rewind to
+				\item After rewinding, $A$ might:
+				      \begin{itemize}
+					      \item Not output a valid proof
+					      \item Output proof with different $Y$
+					      \item Behave completely differently
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{The solution:}
+			\begin{itemize}
+				\item Save state at every hash query
+				\item After valid proof, rewind to $\func{hash}{X, Y}$
+				\item Try multiple times if needed
+				\item Analysis shows this works with non-negligible probability
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Deniability lost!}
+	\begin{center}
+		\textbf{Fiat-Shamir destroys the deniability property}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Interactive Sigma protocol:}
+			\begin{itemize}
+				\item Transcripts are deniable
+				\item Anyone can generate fake transcripts
+				\item Choose $C, R$ first, compute $Y$
+				\item Indistinguishable from real
+				\item \textbf{Can't prove to third parties}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Fiat-Shamir proof:}
+			\begin{itemize}
+				\item Have constraint $C = \func{hash}{X, Y}$
+				\item Everyone can verify this constraint
+				\item Can't generate fake proofs
+				\item Only witness holder can create
+				\item \textbf{Transferable evidence!}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5em}
+	\begin{alertblock}{Trade-off}
+		We gain non-interactivity but lose deniability. The proof becomes a permanent, transferable piece of evidence.
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{Applications of Fiat-Shamir}
+	\begin{center}
+		\textbf{Fiat-Shamir is widely used in practice}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Digital signatures:}
+			\begin{itemize}
+				\item Schnorr signatures
+				\item EdDSA (used in many systems)
+				\item BLS signatures (with pairings)
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Blockchain applications:}
+			\begin{itemize}
+				\item Proof of reserves
+				\item Ring signatures for privacy
+				\item Bulletproofs (range proofs)
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Advanced protocols:}
+			\begin{itemize}
+				\item SNARKs (succinct proofs)
+				\item STARKs (transparent proofs)
+				\item Proof of knowledge of signature
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{alertblock}{Key advantage}
+				Convert any interactive ZK proof into a non-interactive one that can be verified by anyone, anytime
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{Fiat-Shamir Circuits}
+
+\begin{frame}{From statements to circuits: a paradigm shift}
+	\begin{center}
+		\textbf{Wait, why are we suddenly talking about circuits?}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{So far, we proved statements like:}
+			\begin{itemize}
+				\item ``I know $a$ such that $g^a = A$''
+				\item ``I know a 3-coloring of this graph''
+				\item Specific mathematical relations
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{But what if we want to prove:}
+			\begin{itemize}
+				\item ``I computed this SHA-256 correctly''
+				\item ``This transaction is valid''
+				\item ``I executed this program correctly''
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{alertblock}{The idea}
+				Any computation can be represented as a circuit!
+			\end{alertblock}
+			\vspace{0.5em}
+			\begin{exampleblock}{Think of it like:}
+				Instead of proving ``I know $x$'', we prove ``I know $x$ such that circuit $C(x) = y$''
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{What is a circuit?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{A circuit is just a computation graph:}
+				      \begin{itemize}
+					      \item Gates: AND, OR, NOT, ADD, MUL, etc.
+					      \item Wires: Connect gates together
+					      \item Inputs: Public ($x$) and private ($w$)
+					      \item Output: Result of computation
+				      \end{itemize}
+				\item \textbf{Example: $y = (a + b) \cdot c$}
+				      \begin{center}
+					      \begin{tikzpicture}[scale=0.8]
+						      \node[circle,draw] (a) at (0,2) {$a$};
+						      \node[circle,draw] (b) at (0,0) {$b$};
+						      \node[circle,draw] (c) at (0,-2) {$c$};
+						      \node[rectangle,draw] (add) at (2,1) {$+$};
+						      \node[rectangle,draw] (mul) at (4,0) {$\times$};
+						      \node[circle,draw] (y) at (6,0) {$y$};
+
+						      \draw[->] (a) -- (add);
+						      \draw[->] (b) -- (add);
+						      \draw[->] (add) -- (mul);
+						      \draw[->] (c) -- (mul);
+						      \draw[->] (mul) -- (y);
+					      \end{tikzpicture}
+				      \end{center}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Why circuits?}
+				      \begin{itemize}
+					      \item Universal representation
+					      \item Any algorithm $\rightarrow$ circuit
+					      \item Fixed structure (no loops!)
+					      \item Easy to verify gate-by-gate
+				      \end{itemize}
+			\end{itemize}
+			\begin{exampleblock}{The power}
+				Once we can prove statements about circuits, we can prove statements about \textit{any computation}!
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The zero-knowledge circuit paradigm}
+	\begin{center}
+		\textbf{The fundamental shift in thinking}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Old way (Sigma protocols):}
+			\begin{itemize}
+				\item Design specific protocol for each statement
+				\item Schnorr for discrete log
+				\item Different protocol for factoring
+				\item Custom protocol for each problem
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{New way (Circuit ZK):}
+			\begin{itemize}
+				\item Convert problem to circuit
+				\item Use general ZK protocol for circuits
+				\item Same protocol works for everything!
+				\item Just change the circuit
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5em}
+	\begin{alertblock}{This changes everything!}
+		Instead of crafting clever protocols, we write programs and prove we executed them correctly
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{Example: proving knowledge of a hash preimage}
+	\begin{center}
+		\textbf{Claim: ``I know $x$ such that SHA256($x$) = $y$''}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{As a Sigma protocol:}
+			\begin{itemize}
+				\item Would be incredibly complex
+				\item SHA-256 has 64 rounds
+				\item Each round has bitwise operations
+				\item No elegant mathematical structure
+				\item Basically impossible to design!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{As a circuit:}
+			\begin{itemize}
+				\item Write SHA-256 as circuit
+				\item Input: private $x$
+				\item Output: public $y$
+				\item Apply general circuit ZK protocol
+				\item Done! Works automatically
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{From theory to practice: ZK programming}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Modern ZK development:}
+			\begin{itemize}
+				\item Write programs in high-level languages
+				\item Compiler converts to circuits
+				\item ZK protocol proves circuit execution
+				\item Developer doesn't see the circuit!
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Example (Circom syntax):}
+			\begin{verbatim}
+template IsZero() {
+  signal input in;
+  signal output out;
+  // Proves: out = (in == 0)
+}
+   \end{verbatim}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{The compilation pipeline:}
+			\begin{enumerate}
+				\item High-level code
+				\item Intermediate representation
+				\item Arithmetic circuit
+				\item Constraint system
+				\item ZK proof
+			\end{enumerate}
+			\vspace{0.5em}
+			\begin{alertblock}{We've come full circle}
+				Started with ``I know a secret''\\
+				Now: ``I ran this program correctly''\\
+				Both use the same ZK machinery!
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The cost of generality}
+	\begin{center}
+		\textbf{Circuit ZK is powerful but comes with trade-offs}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Advantages:}
+			\begin{itemize}
+				\item Universal - works for any computation
+				\item Compositional - combine circuits
+				\item Tool support - compilers, libraries
+				\item No need for crypto expertise
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Disadvantages:}
+			\begin{itemize}
+				\item Less efficient than custom protocols
+				\item Circuit can be huge (millions of gates)
+				\item Proving time can be slow
+				\item More complex security analysis
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5em}
+	\begin{exampleblock}{Rule of thumb}
+		Use custom Sigma protocols for simple statements (like Schnorr)\\
+		Use circuit ZK for complex computations (like program execution)
+	\end{exampleblock}
+\end{frame}
+
+\subsection{Attacks on Fiat-Shamir}
+
+\begin{frame}{The problem with Fiat-Shamir}
+	\begin{center}
+		\textbf{Can we actually trust Fiat-Shamir in practice?}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The promise:}
+			\begin{itemize}
+				\item FS is secure in random oracle model
+				\item Replace oracle with concrete hash
+				\item Should be secure in practice
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Known theoretical attacks:}
+			\begin{itemize}
+				\item Canetti-Goldreich-Halevi (2004)
+				\item Barak (2001), Goldwasser-Kalai (2003)
+				\item But all use contrived protocols!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{alertblock}{New result (2025)}
+				First practical attack on a standard protocol!\footnote{https://appliedcryptography.page/papers/\#prove-false}
+				\begin{itemize}
+					\item Targets GKR-based proof systems
+					\item Used in real deployed systems
+					\item Attack works for \textit{any} hash function
+				\end{itemize}
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The GKR protocol under attack}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{What is GKR?}
+			\begin{itemize}
+				\item Protocol by Goldwasser-Kalai-Rothblum
+				\item Proves correctness of computations
+				\item Works for bounded-depth circuits
+				\item Combined with polynomial commitments
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{The claim being proved:}
+			\begin{itemize}
+				\item Circuit $C$, input $x$, witness $w$
+				\item Prove: $\exists w$ such that $C(x,w) = y$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Why this matters:}
+			\begin{itemize}
+				\item Widely studied in literature
+				\item Used in practice (e.g., Expander)
+				\item Considered secure with Fiat-Shamir
+				\item Foundation of many SNARKs
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{exampleblock}{The protocol flow}
+				\begin{enumerate}
+					\item Commit to witness $w$
+					\item Verifier picks random $r$
+					\item Run GKR reduction
+					\item Verify with polynomial commitment
+				\end{enumerate}
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Extended attack: backdooring any circuit}
+	\begin{center}
+		\textbf{We can insert a backdoor into ANY circuit!}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Given:}
+			\begin{itemize}
+				\item Any circuit $C(x,w) \rightarrow y$
+				\item Desired input $x^*$ and output $y^*$
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{We construct:}
+			\begin{itemize}
+				\item Circuit $C^*$ functionally equivalent to $C$
+				\item But can prove $C^*(x^*, w) = y^*$
+				\item Even if this is FALSE!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{The backdoored circuit:}
+			\begin{enumerate}
+				\item Compute $y = C(x,w)$ normally
+				\item Check if conditions match attack
+				\item If yes, manipulate output
+				\item Otherwise, output $y$
+			\end{enumerate}
+			\vspace{0.5em}
+			\begin{alertblock}{Critical insight}
+				Security depends on circuit \textit{implementation}, not just functionality!
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Implications for practice}
+	\begin{center}
+		\textbf{What does this mean for real systems?}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Immediate impact:}
+			\begin{itemize}
+				\item GKR+FS is not secure in general
+				\item Affects deployed systems
+				\item No ``safe'' hash function choice
+				\item Circuit implementation matters!
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Particularly concerning:}
+			\begin{itemize}
+				\item Recursive proof composition
+				\item Circuits that use crypto primitives
+				\item Hard to audit implementations
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Mitigations:}
+			\begin{itemize}
+				\item Restrict circuit depth
+				\item Avoid circuits with crypto ops
+				\item Use canonical representations
+				\item Domain separation techniques
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{exampleblock}{Silver lining}
+				Simple circuits (e.g., for lookups) seem safe - they have canonical forms
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Lessons learned}
+	\begin{center}
+		\textbf{The Fiat-Shamir transform is more fragile than we thought}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Key takeaways:}
+			\begin{itemize}
+				\item Random oracle model $\neq$ real world
+				\item Natural protocols can fail
+				\item Implementation details matter
+				\item Need extreme care in practice
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Open questions:}
+			\begin{itemize}
+				\item Which protocols are safe?
+				\item Better security models?
+				\item Practical alternatives to FS?
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{alertblock}{Remember}
+				\begin{itemize}
+					\item This isn't a hash function weakness
+					\item It's a fundamental protocol issue
+					\item Affects any FS hash choice
+					\item First attack on ``real'' protocol
+				\end{itemize}
+			\end{alertblock}
+			\vspace{0.5em}
+			\begin{exampleblock}{Future work}
+				Need provably secure alternatives based on standard assumptions
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
 
 \section{Zero-Knowledge Proofs in the Real World}
 
-\incompleteslideswarning
+\subsection{Zcash: Privacy-Preserving Cryptocurrency}
+
+\begin{frame}{Zcash: bringing ZK to cryptocurrency}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Bitcoin's transparency:}
+				      \begin{itemize}
+					      \item All transactions are public
+					      \item Addresses are pseudonymous
+					      \item But can be linked and traced
+					      \item Chain analysis reveals patterns
+					      \item Privacy through obscurity fails
+				      \end{itemize}
+				\item \textbf{The need for privacy:}
+				      \begin{itemize}
+					      \item Financial privacy is fundamental
+					      \item Fungibility requires privacy
+					      \item Businesses need confidentiality
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Enter Zcash (2016):}
+				      \begin{itemize}
+					      \item First production use of zk-SNARKs
+					      \item Optional privacy for transactions
+					      \item Prove transaction validity without revealing:
+					            \begin{itemize}
+						            \item Sender
+						            \item Receiver
+						            \item Amount
+					            \end{itemize}
+					      \item Revolutionary achievement!
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{How Zcash works: shielded transactions}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Two types of addresses:}
+			\begin{itemize}
+				\item \textbf{Transparent (t-addresses):}
+				      \begin{itemize}
+					      \item Work like Bitcoin
+					      \item Fully visible on blockchain
+					      \item Start with 't'
+				      \end{itemize}
+				\item \textbf{Shielded (z-addresses):}
+				      \begin{itemize}
+					      \item Use zero-knowledge proofs
+					      \item Hide transaction details
+					      \item Start with 'z'
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{What the ZK proof proves:}
+			\begin{itemize}
+				\item Input notes exist and are unspent
+				\item Sum of inputs = sum of outputs
+				\item Sender owns the input notes
+				\item No double spending
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{alertblock}{The magic}
+				All this is proved without revealing which notes are spent or created!
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Evolution and improvements}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Performance journey:}
+			\begin{itemize}
+				\item \textbf{Sprout (2016):}
+				      \begin{itemize}
+					      \item Proof generation: ~40 seconds
+					      \item Memory: ~3 GB
+					      \item Mobile impossible
+				      \end{itemize}
+				\item \textbf{Sapling (2018):}
+				      \begin{itemize}
+					      \item Proof generation: ~2.5 seconds
+					      \item Memory: ~40 MB
+					      \item Mobile feasible
+				      \end{itemize}
+				\item \textbf{Halo 2 (upcoming):}
+				      \begin{itemize}
+					      \item No trusted setup!
+					      \item Recursive proofs
+					      \item Even better performance
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Key innovations:}
+			\begin{itemize}
+				\item Viewing keys for auditing
+				\item Memo field for encrypted messages
+				\item Unified addresses
+				\item Hardware wallet support
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{alertblock}{The trade-off}
+				Privacy comes at a cost: shielded transactions are more expensive and complex than transparent ones
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Impact and lessons learned}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Technical achievements:}
+			\begin{itemize}
+				\item First production ZK system at scale
+				\item Proved ZK can work in adversarial environment
+				\item Inspired countless other projects
+				\item Advanced the field significantly
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Challenges faced:}
+			\begin{itemize}
+				\item Regulatory concerns
+				\item Exchange delistings
+				\item Slow progress and growth
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Lessons for ZK adoption:}
+			\begin{itemize}
+				\item Privacy must be easy to use
+				\item Optional privacy \rightarrow\ limited adoption
+				\item Performance matters enormously
+				\item Trust assumptions are critical
+				\item Regulatory environment is key
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{exampleblock}{Legacy}
+				Zcash showed the world that zero-knowledge proofs aren't just theory - they can secure billions in value
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{ZK Goes Mainstream: Google's Open Source Initiative}
+
+\begin{frame}{From academic curiosity to industry adoption}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{What just happened?}
+			\begin{itemize}
+				\item Google open-sourced ZKP libraries
+				\item Partnership with Sparkasse (German bank)
+				\item Focus on EU age assurance
+				\item Code available on GitHub\footnote{https://github.com/google/longfellow-zk}
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Why this matters:}
+			\begin{itemize}
+				\item Tech giant embracing privacy tech
+				\item Real-world deployment at scale
+				\item Not just research anymore!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{exampleblock}{The promise fulfilled}
+				``In layperson's terms, ZKP makes it possible for people to prove that something about them is true without exchanging any other data.''
+			\end{exampleblock}
+			\vspace{0.5em}
+			\begin{alertblock}{Think about it}
+				We've spent this lecture learning the theory. Now it's becoming everyday technology!
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The age verification problem}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Current approaches:}
+			\begin{itemize}
+				\item Upload government ID
+				\item Credit card verification
+				\item Face recognition + AI
+				\item Third-party identity services
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Problems:}
+			\begin{itemize}
+				\item Privacy nightmare
+				\item Data breaches
+				\item Identity theft risk
+				\item Tracking across sites
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{The ZK solution:}
+			\begin{itemize}
+				\item Prove: ``I am over 18''
+				\item Reveal: Nothing else!
+				\item No name, no birthdate
+				\item No tracking possible
+				\item Cryptographically secure
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{block}{Question for you}
+				What other attributes could we prove this way? Think beyond age...
+			\end{block}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The European regulatory landscape}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{eIDAS Regulation (2026):}
+			\begin{itemize}
+				\item European Digital Identity Wallet
+				\item Every EU citizen gets one
+				\item Must work across all member states
+				\item Privacy-enhancing tech encouraged
+			\end{itemize}
+			\textbf{The tension:}
+			\begin{itemize}
+				\item Governments want: Control, compliance
+				\item Citizens want: Privacy, freedom
+				\item ZK offers: Both! Or does it?
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{alertblock}{Critical thinking}
+				\begin{itemize}
+					\item Is this true privacy protection?
+					\item Who controls the infrastructure?
+					\item Can governments revoke proofs?
+					\item What about metadata leakage?
+				\end{itemize}
+			\end{alertblock}
+			\begin{exampleblock}{Looking for extra credit?}
+				Research the EUDI Wallet proposal. Does it truly protect privacy or just shift trust?
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The open source angle: democratizing privacy}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Benefits of open sourcing:}
+			\begin{itemize}
+				\item Transparency - no backdoors
+				\item Community review
+				\item Faster innovation
+				\item No vendor lock-in
+				\item Educational value
+			\end{itemize}
+			\textbf{The ecosystem effect:}
+			\begin{itemize}
+				\item Developers can build on it
+				\item Researchers can improve it
+				\item Standards can emerge
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{But consider:}
+			\begin{itemize}
+				\item Google's motivations?
+				\item Control through contribution?
+				\item Patent considerations?
+				\item Implementation vs. specification
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Beyond age verification: the possibilities}
+	\begin{center}
+		\textbf{Where else could ZK proofs transform our digital lives?}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Financial services:}
+			\begin{itemize}
+				\item Prove income without revealing amount
+				\item Credit worthiness without credit score
+				\item KYC without identity exposure
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Healthcare:}
+			\begin{itemize}
+				\item Vaccination status
+				\item Insurance eligibility
+				\item Clinical trial participation
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Social platforms:}
+			\begin{itemize}
+				\item Prove you're human (not bot)
+				\item Community membership
+				\item Reputation without identity
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Government services:}
+			\begin{itemize}
+				\item Voting eligibility
+				\item Benefit qualification
+				\item License verification
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{The Future of Real-World Zero-Knowledge Systems}
+
+\begin{frame}{Technical challenges ahead}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Current limitations:}
+			\begin{itemize}
+				\item Proof generation time
+				\item Verification complexity
+				\item Key management
+				\item Trusted setup ceremonies
+				\item Quantum resistance
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Research frontiers:}
+			\begin{itemize}
+				\item Recursive proof composition
+				\item Hardware acceleration
+				\item Post-quantum ZK
+				\item Universal circuits
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{User experience challenges:}
+			\begin{itemize}
+				\item How to explain ZK to users?
+				\item Wallet backup and recovery
+				\item Cross-device synchronization
+				\item Fallback mechanisms
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The future of privacy online}
+	\begin{center}
+		\textbf{Three possible futures - which will we choose?}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.33\textwidth}
+			\begin{block}{Surveillance capitalism}
+				\begin{itemize}
+					\item Status quo continues
+					\item Data = currency
+					\item Privacy theater
+					\item ZK never adopted
+				\end{itemize}
+			\end{block}
+		\end{column}
+		\begin{column}{0.33\textwidth}
+			\begin{block}{Privacy renaissance}
+				\begin{itemize}
+					\item ZK everywhere
+					\item Self-sovereign identity
+					\item Minimal disclosure
+					\item User empowerment
+				\end{itemize}
+			\end{block}
+		\end{column}
+		\begin{column}{0.33\textwidth}
+			\begin{block}{Hybrid reality}
+				\begin{itemize}
+					\item Some privacy gains
+					\item Corporate control
+					\item Government oversight
+					\item Compromises
+				\end{itemize}
+			\end{block}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Questions to ponder}
+	\begin{enumerate}
+		\item \textbf{Trust models:} If Google controls the ZK infrastructure, have we really gained privacy or just shifted trust?
+		      \vspace{0.5em}
+		\item \textbf{Adoption barriers:} What will it take for average users to understand and demand ZK proofs?
+		      \vspace{0.5em}
+		\item \textbf{Economic incentives:} Who profits from privacy? Who loses? How does this affect adoption?
+		      \vspace{0.5em}
+		\item \textbf{Global implications:} How will authoritarian regimes respond to unbreakable privacy tech?
+		      \vspace{0.5em}
+		\item \textbf{Your role:} Will you be a builder, a critic, a user, or an advocate of this technology?
+	\end{enumerate}
+\end{frame}
 
 \begin{frame}[plain]
 	\titlepage
