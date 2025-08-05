@@ -2,10 +2,6 @@
 
 Welcome! This folder contains presentation slides and instructions for compiling them.
 
-## Compiling the slides
-
-You'll need to first have [Tectonic](https://tectonic-typesetting.github.io/en-US/) and [qpdf](https://qpdf.sourceforge.io/) installed. The good news is that this means that you don't need to install LaTeX!
-
 ## Notes
 
 ### Regarding handout mode

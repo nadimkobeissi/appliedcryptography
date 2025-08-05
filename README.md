@@ -16,6 +16,33 @@ If you are a student or someone trying to learn from this course's materials, th
 
 Before compiling any of the LaTeX materials (slides, problem sets, lab sheets...), make sure to first install the fonts included in `misc/fonts/` on your system.
 
+You'll also need to first have [Tectonic](https://tectonic-typesetting.github.io/en-US/) and [qpdf](https://qpdf.sourceforge.io/) installed. The good news is that this means that you don't need to install LaTeX!
+
+Then:
+
+- `make all`: Compiles all the slides, lab project sheets, problem sets and the syllabus.
+- `make slides`: Compiles all the slides.
+- `make labs`: Compiles all the lab project sheets.
+- `make problem-sets`: Compiles all the problem sets.
+- `make syllabus`: Compiles the syllabus.
+
+You can also do stuff like this:
+
+- `make slides-2-4`: Compiles only Slides 2.4.
+- `make labs-proverif-model`: Compiles only the ProVerif modeling lab project sheet.
+- `make problem-set-4`: Compiles only Problem Set 4.
+
+You get the drift.
+
+All compiled output PDFs will be in their respective directory in the `website` folder:
+
+- `website/slides` contains the compiled slides PDFs.
+- `website/labs` contains the compiled lab project sheet PDFs.
+- `website/problem-sets` contains the compiled problem set PDFs.
+- `website/syllabus` contains the compiled syllabus PDF.
+
+_It really is that simple!_
+
 ## Author & License
 
 Applied Cryptography at the American University of Beirut by Nadim Kobeissi is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
