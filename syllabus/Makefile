@@ -1,4 +1,7 @@
 MAKEFLAGS += -j8
+TARGETS = syllabus
 
-syllabus:
-	@tectonic -o ../website/syllabus "syllabus.tex" && qpdf --linearize "../website/syllabus/syllabus.pdf" --replace-input
+all: $(TARGETS)
+
+$(TARGETS):
+	@tectonic -o ../website/syllabus "$@.tex" && qpdf --linearize "../website/syllabus/$@.pdf" --replace-input

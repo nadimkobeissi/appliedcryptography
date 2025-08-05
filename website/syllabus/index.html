@@ -36,10 +36,12 @@
 	</style>
 	<script>
 		window.addEventListener(`load`, () => {
-			const viewer = document.createElement(`iframe`);
-			viewer.id = `viewer`;
-			viewer.src = `../view/?file=/syllabus/syllabus.pdf#pagemode=none&zoom=page-fit`;
-			document.body.appendChild(viewer);
+			setTimeout(() => {
+				const viewer = document.createElement(`iframe`);
+				viewer.id = `viewer`;
+				viewer.src = `../view/?file=/syllabus/syllabus.pdf#pagemode=none&zoom=page-fit`;
+				document.body.appendChild(viewer);
+			}, 1000);
 		});
 	</script>
 </head>

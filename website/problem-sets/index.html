@@ -36,15 +36,17 @@
 	</style>
 	<script>
 		window.addEventListener(`load`, () => {
-			const anchor = window.location.hash.substring(1);
-			if (typeof(anchor) === `string` && /^\d{1,3}$/.test(anchor)) {
-				const viewer = document.createElement(`iframe`);
-				viewer.id = `viewer`;
-				viewer.src = `../view/?file=/problem-sets/problem-set-${anchor}.pdf#pagemode=none&zoom=page-fit`;
-				document.body.appendChild(viewer);
-			} else {
-				window.location.href = `https://appliedcryptography.page`;
-			}
+			setTimeout(() => {
+				const anchor = window.location.hash.substring(1);
+				if (typeof(anchor) === `string` && /^\d{1,3}$/.test(anchor)) {
+					const viewer = document.createElement(`iframe`);
+					viewer.id = `viewer`;
+					viewer.src = `../view/?file=/problem-sets/problem-set-${anchor}.pdf#pagemode=none&zoom=page-fit`;
+					document.body.appendChild(viewer);
+				} else {
+					window.location.href = `https://appliedcryptography.page`;
+				}
+			}, 1000);
 		});
 	</script>
 </head>
