@@ -41,7 +41,7 @@
 				viewer.id = `viewer`;
 				viewer.src = `../view/?file=/syllabus/syllabus.pdf#pagemode=none&zoom=page-fit`;
 				document.body.appendChild(viewer);
-			}, 1000);
+			}, navigator.userAgent.includes('Safari')? 1000 : 1);
 		});
 	</script>
 </head>

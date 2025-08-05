@@ -46,7 +46,7 @@
 				} else {
 					window.location.href = `https://appliedcryptography.page`;
 				}
-			}, 1000);
+			}, navigator.userAgent.includes('Safari')? 1000 : 1);
 		});
 	</script>
 </head>
