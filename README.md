@@ -25,6 +25,7 @@ Then:
 - `make labs`: Compiles all the lab project sheets.
 - `make problem-sets`: Compiles all the problem sets.
 - `make syllabus`: Compiles the syllabus.
+- `make clean`: Deletes all compiled PDF output.
 
 You can also do stuff like this:
 
