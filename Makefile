@@ -23,4 +23,4 @@ $(TARGETS_PROBLEM_SETS):
 $(TARGETS_SYLLABUS):
 	@tectonic -o website/syllabus "syllabus/$@.tex" && qpdf --linearize "website/syllabus/$@.pdf" --replace-input
 
-.PHONY: all slides labs problem-sets $(TARGETS_SLIDES) $(TARGETS_LABS) $(TARGETS_PROBLEM_SETS) $(TARGETS_SYLLABUS)
+.PHONY: all slides labs problem-sets clean $(TARGETS_SLIDES) $(TARGETS_LABS) $(TARGETS_PROBLEM_SETS) $(TARGETS_SYLLABUS)
