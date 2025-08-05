@@ -18,22 +18,9 @@
 	\titlepage
 \end{frame}
 
-% zkSNARKs, arithmetization
-% Sigma, Fiat-Shamir
-% That recent paper about limitations of Fiat-Shamir
-% OPAQUE, since it was mentioned 100 times in earlier topics
-% SRP? Socialist Millionaire? Or too basic?
-% Much more, TBD
-%
-% Use cases:
-% - Zcash
-% - Penumbra
-
 \incompleteslideswarning
 
 \section{Introduction}
-
-\incompleteslideswarning
 
 \begin{frame}{Zero-knowledge proofs: magic, but real}
 	\begin{columns}[c]
@@ -44,7 +31,6 @@
 				\item You need to verify I really know it
 				\item But I don't want to tell you the password!
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Seems impossible?}
 			\begin{itemize}
 				\item How can I prove knowledge without revealing it?
@@ -70,7 +56,6 @@
 		\item You learn the secret itself
 		\item You could now impersonate me
 	\end{itemize}
-	\vspace{1em}
 	\textbf{Zero-Knowledge proof:}
 	\begin{itemize}
 		\item ``I'll convince you I know the password''
@@ -105,7 +90,6 @@
 				\item I claim to know $a$
 				\item But revealing $a$ would compromise security
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Zero-Knowledge Solution:}
 			\begin{enumerate}
 				\item Interactive protocol
@@ -297,7 +281,6 @@
 				\item It's the number that, when multiplied by $x$, gives 1
 				\item $x \cdot x^{-1} \equiv 1 \pmod{n}$
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Example:}
 			\begin{itemize}
 				\item If $x = 3$ and $n = 7$
@@ -311,7 +294,6 @@
 				\item $A \cdot A^{-1} = g^a \cdot g^{-a} = g^{a-a} = g^0 = 1$
 				\item It's the element that ``cancels out'' $A$
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Key property}
 				$(A^c)^{-1} = A^{-c}$ \\
 				This is why we can rewrite expressions!
@@ -404,13 +386,11 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Why does $g^{r-ca} = g^r \cdot (g^{ca})^{-1}$?}
-			\vspace{0.5em}
 			\begin{itemize}
 				\item Recall the exponent rule: $g^{x-y} = \frac{g^x}{g^y}$
 				\item In group notation, division is multiplication by inverse
 				\item So $\frac{g^x}{g^y} = g^x \cdot (g^y)^{-1}$
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Step by step:}
 			\begin{enumerate}
 				\item $g^{r-ca} = \frac{g^r}{g^{ca}}$ (exponent rule)
@@ -427,7 +407,7 @@
 				\end{itemize}
 			\end{exampleblock}
 			\vspace{0.5em}
-			\begin{alertblock}{Observe how...}
+			\begin{alertblock}{Observe how\ldots}
 				This manipulation lets us separate the secret exponent $a$ from the computation!
 			\end{alertblock}
 		\end{column}
@@ -497,6 +477,8 @@
 	\end{center}
 \end{frame}
 
+\section{Sigma Protocols}
+
 \begin{frame}{ZK can scale to entire systems}{Reminder}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
@@ -546,9 +528,7 @@
 	\end{columns}
 \end{frame}
 
-\incompleteslideswarning
-
-\section{Sigma Protocols}
+\subsection{Sigma Protocols: High-Level Overview}
 
 \begin{frame}{From Schnorr to Sigma, a general framework}
 	\begin{columns}[c]
@@ -646,7 +626,6 @@
 				\item Forms a ``zigzag'' pattern
 				\item Hence: Sigma protocols!
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Always this pattern}
 				\begin{enumerate}
 					\item Prover $\rightarrow$ Verifier: Commitment
@@ -679,7 +658,6 @@
 				\item Witness: $W = a$
 				\item Relation: $g^W = X$
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{The Algorithms:}
 			\begin{itemize}
 				\item \textbf{Commit}$(A, a)$:
@@ -702,7 +680,6 @@
 					      \item Return $(g^r = Y \cdot A^c)$
 				      \end{itemize}
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Fits the framework!}
 				Schnorr is just one example of a Sigma protocol
 			\end{exampleblock}
@@ -719,7 +696,6 @@
 				\item Prove: ``I know $(a, b)$''
 				\item Without revealing $(a, b)$!
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Why is this useful?}
 			\begin{itemize}
 				\item Pedersen commitments
@@ -764,7 +740,6 @@
 				\item ``I know a Hamiltonian cycle''
 				\item ``I know an isomorphism between graphs''
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Number Theory:}
 			\begin{itemize}
 				\item ``I know the square root of $X$ mod $N$''
@@ -778,7 +753,6 @@
 				\item ``These ciphertexts encrypt the same value''
 				\item ``I shuffled these ciphertexts correctly''
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Universal result}
 				Any NP statement has a Sigma protocol!
 			\end{alertblock}
@@ -786,91 +760,611 @@
 	\end{columns}
 \end{frame}
 
-\section{Proving AND, OR}
+\subsection{Formal Properties of Sigma Protocols}
 
-\begin{frame}{Composing Sigma protocols: AND, OR}
+\begin{frame}{The three essential properties}
+	\begin{center}
+		\textbf{What makes a Sigma protocol actually work?}
+	\end{center}
+	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Proving AND statements:}
+			\textbf{Mathematical guarantees:}
+			\begin{enumerate}
+				\item \textbf{Completeness:} Honest provers always succeed
+				\item \textbf{Soundness:} Dishonest provers always fail
+				\item \textbf{Zero-Knowledge:} Nothing leaks about the witness
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{alertblock}{In proof language}
+				\begin{itemize}
+					\item Completeness: Every true thing has a valid proof
+					\item Soundness: Only true things have valid proofs
+					\item Zero-Knowledge: Proofs reveal nothing extra
+				\end{itemize}
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+	\vspace{0.5em}
+	\begin{center}
+		\textbf{All three are essential for a useful protocol!}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Completeness: honest provers always win}
+	\begin{block}{Definition: Completeness}
+		A Sigma protocol is \textbf{complete} if:
+		\begin{itemize}
+			\item For any instance $X$ and witness $W$ where $P(X,W) = \text{true}$
+			\item When the prover follows the protocol honestly
+			\item The verifier \textit{always} accepts
+		\end{itemize}
+	\end{block}
+	\vspace{0.5em}
+	\textbf{In other words:}
+	\begin{itemize}
+		\item If you actually know the secret, you can always prove it
+		\item No ``false negatives'' - legitimate users never get rejected
+		\item The protocol doesn't accidentally lock out honest participants
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Example: Schnorr's completeness}
+	\begin{center}
+		\textbf{Why does Schnorr always work for honest provers?}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The honest execution:}
 			\begin{itemize}
-				\item ``I know $a$ AND I know $b$''
-				\item Run both protocols in parallel
-				\item Use the same challenge for both
-				\item Verifier checks both conditions
-			\end{itemize}
-			\vspace{0.5em}
-			\textbf{Example:}
-			\begin{itemize}
-				\item Prove: ``I know $x$ such that $g^x = A$ AND $h^x = B$''
-				\item Shows same secret used in multiple places
+				\item Prover knows $a$ where $A = g^a$
+				\item Sends $Y = g^y$ for random $y$
+				\item Receives challenge $c$
+				\item Responds with $r = y + ca$
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Proving OR statements:}
+			\textbf{Verification always succeeds:}
+			\begin{align*}
+				g^r & = g^{y + ca}                   \\
+				    & = g^y \cdot g^{ca}             \\
+				    & = Y \cdot (g^a)^c              \\
+				    & = Y \cdot A^c \quad \checkmark
+			\end{align*}
+		\end{column}
+	\end{columns}
+	\vspace{0.5em}
+	\begin{exampleblock}{Perfect completeness}
+		Honest prover succeeds with probability 1
+	\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Special soundness: cheaters get caught}{Unique to Sigma protocols}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\textbf{The challenge for cheaters:}
 			\begin{itemize}
-				\item ``I know $a$ OR I know $b$''
-				\item More complex: need to hide which one
-				\item Simulate one proof, execute the other
-				\item Verifier can't tell which is real!
+				\item Prover doesn't know the witness
+				\item Must commit to $Y$ before seeing challenge
+				\item Can't predict what challenge will be
+				\item Must be ready for \textit{any} challenge!
 			\end{itemize}
 			\vspace{0.5em}
-			\textbf{Example:}
+			\textbf{The extraction principle:}
 			\begin{itemize}
-				\item Prove: ``I know the key for account A OR account B''
-				\item Privacy-preserving authentication
+				\item If you can answer two different challenges\ldots
+				\item \ldots for the same commitment $Y$\ldots
+				\item \ldots then you must know the witness!
 			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{alertblock}{Key insight}
+				Being able to handle multiple challenges proves knowledge
+			\end{alertblock}
+			\vspace{0.5em}
+			\begin{exampleblock}{Why ``special''?}
+				This specific form of soundness is unique to Sigma protocols
+			\end{exampleblock}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Special Soundness: why Sigma protocols are secure}
-	\begin{itemize}
-		\item TODO
-	\end{itemize}
+\begin{frame}{Special soundness: formal definition}
+	\begin{block}{Definition: Special Soundness}
+		A Sigma protocol has \textbf{special soundness} if there exists an efficient algorithm \textbf{Extract} such that:
+		\begin{itemize}
+			\item Given two accepting transcripts: $(X, Y, c, r)$ and $(X, Y, c', r')$
+			\item With same instance $X$ and commitment $Y$
+			\item But different challenges $c \neq c'$
+			\item \textbf{Extract}$(X, Y, c, r, c', r')$ outputs witness $W$
+			\item Such that $P(X, W) = \text{true}$
+		\end{itemize}
+	\end{block}
+	\vspace{0.5em}
+	\textbf{Interpretation:} If you can answer two different challenges for the same commitment, you must know the secret!
 \end{frame}
 
-\begin{frame}{From Interactive to Non-Interactive}
+\begin{frame}{Example: extracting from Schnorr}
+	\begin{center}
+		\textbf{Given two accepting transcripts with same $Y$ but different challenges:}
+	\end{center}
+	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{The limitation:}
+			\textbf{Transcript 1:}
 			\begin{itemize}
-				\item Sigma protocols require interaction
-				\item Verifier must be online
-				\item Can't create transferable proofs
-				\item Can't post proofs publicly
+				\item Commitment: $Y$
+				\item Challenge: $c$
+				\item Response: $r$
+				\item Valid: $g^r = Y \cdot A^c$
 			\end{itemize}
-			\textbf{The goal:}
+			\textbf{Transcript 2:}
 			\begin{itemize}
-				\item Create a proof once
-				\item Anyone can verify it later
-				\item No interaction needed
+				\item Commitment: $Y$ (same!)
+				\item Challenge: $c'$
+				\item Response: $r'$
+				\item Valid: $g^{r'} = Y \cdot A^{c'}$
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{block}{Coming next\ldots}
-				The Fiat-Shamir transform:
+			\textbf{Extract the secret:}
+			\begin{align*}
+				g^r                & = Y \cdot A^c                \\
+				g^{r'}             & = Y \cdot A^{c'}             \\
+				\frac{g^r}{g^{r'}} & = \frac{A^c}{A^{c'}}         \\
+				g^{r-r'}           & = A^{c-c'}                   \\
+				g^{r-r'}           & = g^{a(c-c')}                \\
+				r-r'               & = a(c-c') \pmod{n}           \\
+				a                  & = \frac{r-r'}{c-c'} \pmod{n}
+			\end{align*}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why extraction implies soundness}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The contrapositive argument:}
+			\begin{itemize}
+				\item If prover doesn't know witness\ldots
+				\item Then can't produce two valid responses
+				\item So can succeed for at most one challenge
+				\item But challenge is random!
+				\item Probability of guessing right: $\frac{1}{|\mathcal{C}|}$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{alertblock}{Soundness guarantee}
+				Cheating probability $\leq \frac{1}{\text{number of challenges}}$
+			\end{alertblock}
+			\vspace{0.5em}
+			\begin{exampleblock}{For Schnorr}
+				$|\mathcal{C}| = n$ (prime order)\\
+				Cheating probability $\approx \frac{1}{2^{256}}$\\
+				Essentially impossible!
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Zero-knowledge: the formal definition}
+	\begin{block}{Definition: Zero-Knowledge}
+		A Sigma protocol is \textbf{zero-knowledge} if:
+		\begin{itemize}
+			\item There exists a simulator algorithm that can generate convincing transcripts
+			\item Without knowing the witness!
+			\item These simulated transcripts are indistinguishable from real ones
+		\end{itemize}
+	\end{block}
+	\vspace{0.5em}
+	\textbf{In other words:}
+	\begin{itemize}
+		\item If fake transcripts look identical to real ones\ldots
+		\item And fake transcripts contain no information about the witness\ldots
+		\item Then real transcripts must not leak information either!
+		\item We saw this earlier when we proved $\lib{}{schnorr-real} \equiv \lib{}{schnorr-fake}$.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Honest-verifier zero-knowledge}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{A subtlety:}
+			\begin{itemize}
+				\item Sigma protocols are ``honest-verifier'' ZK
+				\item Assumes verifier follows the protocol
+				\item Chooses challenges randomly
+				\item Doesn't try to be clever
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{What about cheating verifiers?}
+			\begin{itemize}
+				\item Might choose challenges adaptively
+				\item Could try to extract information
+				\item Harder to protect against!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{exampleblock}{Good news}
+				For most applications, honest-verifier ZK is sufficient
+			\end{exampleblock}
+			\vspace{0.5em}
+			\begin{alertblock}{Later: Fiat-Shamir}
+				We'll see how to make protocols secure against any verifier by removing interaction entirely!
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Putting it all together}
+	\begin{center}
+		\textbf{A Sigma protocol is useful when it has all three properties:}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.33\textwidth}
+			\begin{block}{Completeness}
 				\begin{itemize}
-					\item Replace verifier with a hash function
-					\item Challenge = $H(X, Y)$
-					\item Prover can't cheat the hash!
-					\item Creates non-interactive proofs
+					\item Honest users succeed
+					\item No false rejections
+					\item Protocol is usable
+				\end{itemize}
+			\end{block}
+		\end{column}
+		\begin{column}{0.33\textwidth}
+			\begin{block}{Special Soundness}
+				\begin{itemize}
+					\item Cheaters get caught
+					\item Can extract witness
+					\item Protocol is secure
+				\end{itemize}
+			\end{block}
+		\end{column}
+		\begin{column}{0.33\textwidth}
+			\begin{block}{Zero-Knowledge}
+				\begin{itemize}
+					\item No information leaks
+					\item Privacy preserved
+					\item Protocol is private
 				\end{itemize}
 			\end{block}
 		\end{column}
 	\end{columns}
+	\vspace{1em}
+	\begin{center}
+		\textbf{Together, these properties create the ``magic'' of zero-knowledge proofs!}
+	\end{center}
 \end{frame}
 
-\incompleteslideswarning
+\section{Proving AND, OR}
+
+\begin{frame}{Combining proofs: AND and OR}
+	\begin{center}
+		\textbf{What if we need to prove more complex statements?}
+	\end{center}
+	\vspace{0.5em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{OR statements:}
+			\begin{itemize}
+				\item ``I know the private key for $A_1$ OR $A_2$''
+				\item ``This vote encrypts YES or NO''
+				\item Prove one of several conditions
+				\item Without revealing which one!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{AND statements:}
+			\begin{itemize}
+				\item ``I know $a$ AND $b$ such that\ldots''
+				\item ``These discrete logs are equal''
+				\item Prove multiple conditions hold
+				\item All must be satisfied
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5em}
+	\begin{alertblock}{The challenge}
+		How to combine Sigma protocols while preserving zero-knowledge?
+	\end{alertblock}
+\end{frame}
+
+\subsection{OR Proofs}
+
+\begin{frame}{Example use cases for OR proofs}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\textbf{1. Anonymous authentication:}
+			\begin{itemize}
+				\item Public keys: $A_1, A_2$ (authorized users)
+				\item Alice proves she knows one private key
+				\item Doesn't reveal which user she is!
+			\end{itemize}
+			\textbf{2. Electronic voting:}
+			\begin{itemize}
+				\item Encrypted vote: $C = \text{Enc}(\text{vote})$
+				\item Prove: $\text{Dec}(SK, C) \in \{\text{yes}, \text{no}\}$
+				\item Ensures valid vote without revealing it
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{exampleblock}{Key property}
+				OR proofs hide \textit{which} condition is satisfied
+			\end{exampleblock}
+			\begin{alertblock}{Privacy guarantee}
+				Verifier learns that at least one condition holds, but not which one
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The Robin Hood analogy}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textit{Robin Hood has two bows:}
+				      \begin{itemize}
+					      \item One bow shoots accurately
+					      \item One bow is erratic
+					      \item King wants proof Robin can shoot well
+					      \item But Robin doesn't want to reveal which bow works!
+				      \end{itemize}
+			\end{itemize}
+			\begin{itemize}
+				\item \textit{The challenge:}
+				      \begin{itemize}
+					      \item King draws one target
+					      \item Robin must fire both bows
+					      \item Arrows must be equidistant from target
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textit{Robin's strategy:}
+				      \begin{enumerate}
+					      \item Fire the erratic bow first (lands randomly)
+					      \item Calculate where to place second arrow
+					      \item Use accurate bow to hit that exact spot
+					      \item Target appears centered between arrows!
+				      \end{enumerate}
+				\item \textbf{Control over one arrow is enough to satisfy the constraint}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{OR proofs: the construction}
+	\textbf{Given:} Sigma protocols $\Sigma_0$ for condition $P_0$ and $\Sigma_1$ for condition $P_1$\\
+	\textbf{Goal:} Prove ``I know $W$ such that $P_0(X,W)$ OR $P_1(X,W)$''
+	\vspace{0.5em}
+	\begin{block}{The protocol}
+		\begin{enumerate}
+			\item \textbf{Commit:} Prover sends $(Y_0, Y_1)$ - commitments for both protocols
+			\item \textbf{Challenge:} Verifier sends single challenge $C$
+			\item \textbf{Constraint:} Prover must provide $(C_0, R_0)$ and $(C_1, R_1)$ such that:
+			      \begin{itemize}
+				      \item $C_0 + C_1 = C$ (challenges sum to verifier's challenge)
+				      \item Both transcripts $(Y_0, C_0, R_0)$ and $(Y_1, C_1, R_1)$ are valid
+			      \end{itemize}
+		\end{enumerate}
+	\end{block}
+\end{frame}
+
+\begin{frame}{OR proofs: how it works}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{If prover knows witness for $P_0$:}
+			\begin{enumerate}
+				\item Generate real $Y_0$ using witness
+				\item Simulate fake transcript for $\Sigma_1$:
+				      \begin{itemize}
+					      \item Choose random $C_1, R_1$
+					      \item Compute $Y_1$ backwards
+				      \end{itemize}
+				\item Receive challenge $C$ from verifier
+				\item Set $C_0 = C - C_1$
+				\item Use witness to compute real $R_0$
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Why it's zero-knowledge:}
+			\begin{itemize}
+				\item One transcript is real
+				\item One transcript is simulated
+				\item Verifier can't tell which is which!
+				\item Distribution looks identical regardless of which witness we have
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{alertblock}{The trick}
+				Prover controls one challenge completely, must adapt to the other
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{OR proof protocol diagram}
+	\vspace{-1.5cm}
+	\begin{center}\resizebox{0.8\textwidth}{!}{
+			\begin{msc}{}
+				\setmscvalues{small}
+				\drawframe{none}
+				\setlength{\instdist}{8cm}
+				\setlength{\instwidth}{5cm}
+				\declinst{prover}{}{Prover (knows $W$ for $P_b$)}
+				\declinst{verifier}{}{Verifier}
+				\action*{$\begin{array}{l}
+							\text{Generate real commitment for } \Sigma_b            \\
+							\text{Simulate fake transcript for } \Sigma_{1-b}        \\
+							(Y_{1-b}, C_{1-b}, R_{1-b}) \leftarrow \text{Simulate}() \\
+						\end{array}$}{prover}
+				\nextlevel[5]
+				\mess{$(Y_0, Y_1)$}{prover}{verifier}
+				\nextlevel[1]
+				\action*{$C \twoheadleftarrow \mathcal{C}$}{verifier}
+				\nextlevel[2]
+				\mess{$C$}{verifier}{prover}
+				\nextlevel[1]
+				\action*{$\begin{array}{l}
+							C_b := C - C_{1-b} \\
+							R_b \leftarrow \text{Respond using witness}
+						\end{array}$}{prover}
+				\nextlevel[4]
+				\mess{$(C_0, R_0, C_1, R_1)$}{prover}{verifier}
+				\nextlevel[1]
+				\action*{$\begin{array}{l}
+							\text{Check: } C_0 + C_1 \overset{?}{=} C            \\
+							\text{Check: } \Sigma_0.\text{Verify}(Y_0, C_0, R_0) \\
+							\text{Check: } \Sigma_1.\text{Verify}(Y_1, C_1, R_1)
+						\end{array}$}{verifier}
+				\nextlevel[4]
+			\end{msc}
+		}\end{center}
+\end{frame}
+
+\begin{frame}{Example: proving knowledge of one private key}
+	\textbf{Setup:} Public keys $A_0 = g^{a_0}$ and $A_1 = g^{a_1}$\\
+	\textbf{Alice knows $a_0$ (but not $a_1$) and wants to prove she knows one of them:}
+	\begin{enumerate}
+		\item \textbf{Commit phase:}
+		      \begin{itemize}
+			      \item Real: Pick $y_0 \leftarrow \mathbb{Z}_n$, compute $Y_0 = g^{y_0}$
+			      \item Fake: Pick $C_1, R_1 \leftarrow \mathbb{Z}_n$, compute $Y_1 = g^{R_1} \cdot A_1^{-C_1}$
+			      \item Send $(Y_0, Y_1)$
+		      \end{itemize}
+		\item \textbf{Challenge:} Receive $C$ from verifier
+		\item \textbf{Response phase:}
+		      \begin{itemize}
+			      \item Compute $C_0 = C - C_1$
+			      \item Compute $R_0 = y_0 + C_0 \cdot a_0$
+			      \item Send $(C_0, R_0, C_1, R_1)$
+		      \end{itemize}
+	\end{enumerate}
+	\textbf{Verification:} Check $C_0 + C_1 = C$ and both Schnorr transcripts valid
+\end{frame}
+
+\subsection{AND Proofs}
+
+\begin{frame}{AND proofs: proving multiple conditions}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The problem:}
+			\begin{itemize}
+				\item Prove multiple conditions simultaneously
+				\item All must be true
+				\item Example: ``I know $a$ such that $g_1^a = A_1$ AND $g_2^a = A_2$ AND $g_3^a = A_3$''
+			\end{itemize}
+			\textbf{Naive approach:}
+			\begin{itemize}
+				\item Run protocols separately?
+				\item Problem: different challenges
+				\item Loses zero-knowledge!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{The solution:}
+			\begin{itemize}
+				\item Use the \textit{same} challenge for all
+				\item Commit to all statements
+				\item Receive one challenge
+				\item Respond to all with same challenge
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{exampleblock}{Key insight}
+				Reusing the challenge maintains both soundness and zero-knowledge
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AND proof construction}
+	\textbf{Given:} Sigma protocols $\Sigma_1, \Sigma_2, \ldots, \Sigma_k$ for conditions $P_1, P_2, \ldots, P_k$\\
+	\textbf{Goal:} Prove ``I know $W$ such that $P_1(X,W)$ AND $P_2(X,W)$ AND \ldots AND $P_k(X,W)$''
+	\vspace{0.5em}
+	\begin{block}{The protocol}
+		\begin{enumerate}
+			\item \textbf{Commit:} Run commit phase for all protocols
+			      \begin{itemize}
+				      \item $(Y_i, \sigma_i) \leftarrow \Sigma_i.\text{Commit}(X_i, W_i)$ for all $i$
+				      \item Send $(Y_1, Y_2, \ldots, Y_k)$
+			      \end{itemize}
+			\item \textbf{Challenge:} Receive single $C$ from verifier
+			\item \textbf{Respond:} Use same $C$ for all protocols
+			      \begin{itemize}
+				      \item $R_i \leftarrow \Sigma_i.\text{Respond}(\sigma_i, C)$ for all $i$
+				      \item Send $(R_1, R_2, \ldots, R_k)$
+			      \end{itemize}
+			\item \textbf{Verify:} Check all transcripts $(Y_i, C, R_i)$ are valid
+		\end{enumerate}
+	\end{block}
+\end{frame}
+
+\begin{frame}{Example: proving equality of discrete logs}
+	\textbf{Setup:} Given $(g_1, g_2, g_3, A_1, A_2, A_3)$ where $A_i = g_i^a$ for same $a$\\
+	\textbf{Protocol to prove knowledge of $a$:}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{enumerate}
+				\item \textbf{Commit:}
+				      \begin{itemize}
+					      \item Pick $y \leftarrow \mathbb{Z}_n$
+					      \item Compute $Y_1 = g_1^y$
+					      \item Compute $Y_2 = g_2^y$
+					      \item Compute $Y_3 = g_3^y$
+					      \item Send $(Y_1, Y_2, Y_3)$
+				      \end{itemize}
+				\item \textbf{Challenge:} Receive $C$
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{enumerate}
+				\setcounter{enumi}{2}
+				\item \textbf{Respond:}
+				      \begin{itemize}
+					      \item Compute $R = y + C \cdot a$
+					      \item Send $R$
+				      \end{itemize}
+				\item \textbf{Verify:}
+				      \begin{itemize}
+					      \item Check $g_1^R = Y_1 \cdot A_1^C$
+					      \item Check $g_2^R = Y_2 \cdot A_2^C$
+					      \item Check $g_3^R = Y_3 \cdot A_3^C$
+				      \end{itemize}
+			\end{enumerate}
+		\end{column}
+	\end{columns}
+	\vspace{0.5em}
+	\begin{alertblock}{Single response proves all!}
+		One value $R$ satisfies all three equations iff all discrete logs are equal
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{Combining AND and OR}
+	\begin{center}
+		\textbf{We can build complex logical statements!}
+	\end{center}
+	\vspace{0.5em}
+	\textbf{Example:} ``I know the private key for ($A_1$ OR $A_2$) AND ($B_1$ OR $B_2$)''
+	\begin{itemize}
+		\item Meaning: I'm one of users $\{A_1, A_2\}$ AND one of users $\{B_1, B_2\}$
+		\item Four possible combinations, but verifier learns nothing about which!
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{Construction approach:}
+	\begin{enumerate}
+		\item Build OR protocols for each clause
+		\item Combine them using AND construction
+		\item Result: Single protocol proving the entire statement
+	\end{enumerate}
+\end{frame}
 
 \section{Non-Interactive Zero-Knowledge Proofs}
 
-\incompleteslideswarning
-
-\incompleteslideswarning
-
 \section{Zero-Knowledge Virtual Machines}
 
-\incompleteslideswarning
+\section{Zero-Knowledge Proofs in the Real World}
 
 \incompleteslideswarning
 
