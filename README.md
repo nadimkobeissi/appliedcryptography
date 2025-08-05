@@ -29,7 +29,7 @@ Then:
 You can also do stuff like this:
 
 - `make slides-2-4`: Compiles only Slides 2.4.
-- `make labs-proverif-model`: Compiles only the ProVerif modeling lab project sheet.
+- `make lab-proverif-model`: Compiles only the ProVerif modeling lab project sheet.
 - `make problem-set-4`: Compiles only Problem Set 4.
 
 You get the drift.
