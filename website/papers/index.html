@@ -45,7 +45,7 @@
 				if (typeof(anchor) === `string` && /^\w{1,32}(-\w{1,32})?$/.test(anchor)) {
 					const viewer = document.createElement(`iframe`);
 					viewer.id = `viewer`;
-					viewer.src = `../view/?file=/papers/${anchor}.pdf#pagemode=none&zoom=page-fit`;
+					viewer.src = `/papers/${anchor}.pdf`;
 					document.body.appendChild(viewer);
 				} else {
 					window.location.href = `https://appliedcryptography.page`;
