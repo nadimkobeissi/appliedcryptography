@@ -24,12 +24,33 @@
 	<link rel="apple-touch-icon" href="/res/img/favicon.png" sizes="180x180" />
 	<link rel="icon" href="/res/img/favicon.png" sizes="32x32" type="image/png" />
 	<link rel="icon" href="/res/img/favicon.png" sizes="16x16" type="image/png" />
+	<style>
+		#viewer {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			border: none;
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+		}
+	</style>
 	<script defer data-domain="appliedcryptography.page" data-api="https://restless-block-0a1e.symbolicsoft.workers.dev/oil-ocean/event" src="https://restless-block-0a1e.symbolicsoft.workers.dev/emerald-hill/script.js"></script>
-	<script>
+	<script async type="module">
+		import EmbedPDF from 'https://appliedcryptography.page/res/js/vendor/embedpdf.js';
 		window.addEventListener(`load`, () => {
 			const anchor = window.location.hash.substring(1);
 			if (typeof(anchor) === `string` && /^\w{1,32}(-\w{1,32})?$/.test(anchor)) {
-				window.location.href = `/papers/${anchor}.pdf`;
+				const viewer = document.createElement(`div`);
+				viewer.id = `viewer`;
+				document.body.appendChild(viewer);
+				const EPDFinstance = EmbedPDF.init({
+					type: 'container',
+					target: viewer,
+					src: `https://appliedcryptography.page/papers/${anchor}.pdf`
+				})
 			} else {
 				window.location.href = `/`;
 			}
