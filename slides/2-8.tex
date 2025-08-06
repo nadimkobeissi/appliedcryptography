@@ -79,6 +79,45 @@
 	\end{center}
 \end{frame}
 
+\begin{frame}{Also, knowledge soundness}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Regular Soundness:}
+				      \begin{itemize}
+					      \item Prevents false statements from being proved
+					      \item ``Can't prove something that's false''
+					      \item Example: Can't prove $g^a = X$ if no such $a$ exists
+					      \item Weaker guarantee
+				      \end{itemize}
+				\item \textbf{Sufficient when:}
+				      \begin{itemize}
+					      \item Only care about statement validity
+					      \item Don't need witness extraction
+					      \item Simple yes/no verification
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Knowledge Soundness:}
+				      \begin{itemize}
+					      \item If prover succeeds, they \textit{know} a witness
+					      \item ``Can extract the witness from successful prover''
+					      \item Example: Can extract the actual value $a$
+					      \item Stronger guarantee
+				      \end{itemize}
+				\item \textbf{Essential when:}
+				      \begin{itemize}
+					      \item Building signatures schemes
+					      \item Proving knowledge credentials
+					      \item Composition with other protocols
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Example: Proving Knowledge of a Private Key}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
