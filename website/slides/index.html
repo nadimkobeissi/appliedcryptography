@@ -25,32 +25,14 @@
 	<link rel="icon" href="/res/img/favicon.png" sizes="32x32" type="image/png" />
 	<link rel="icon" href="/res/img/favicon.png" sizes="16x16" type="image/png" />
 	<script defer data-domain="appliedcryptography.page" data-api="https://restless-block-0a1e.symbolicsoft.workers.dev/oil-ocean/event" src="https://restless-block-0a1e.symbolicsoft.workers.dev/emerald-hill/script.js"></script>
-	<style>
-		#viewer {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			border: none;
-			margin: 0;
-			padding: 0;
-			overflow: hidden;
-		}
-	</style>
 	<script>
 		window.addEventListener(`load`, () => {
-			setTimeout(() => {
-				const anchor = window.location.hash.substring(1);
-				if (typeof(anchor) === `string` && /^\d-\d{1,2}$/.test(anchor)) {
-					const viewer = document.createElement(`iframe`);
-					viewer.id = `viewer`;
-					viewer.src = `/slides/${anchor}.pdf`;
-					document.body.appendChild(viewer);
-				} else {
-					window.location.href = `https://appliedcryptography.page`;
-				}
-			}, 1);
+			const anchor = window.location.hash.substring(1);
+			if (typeof(anchor) === `string` && /^\d-\d{1,2}$/.test(anchor)) {
+				window.location.href = `/slides/${anchor}.pdf`;
+			} else {
+				window.location.href = `/`;
+			}
 		});
 	</script>
 </head>
