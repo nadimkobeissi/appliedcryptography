@@ -6,9 +6,10 @@ If you are a student or someone trying to learn from this course's materials, th
 
 ## Contents
 
-- `assignments`: Course assignments and lab projects.
+- `labs`: Lab project sheets.
 - `misc`: LaTeX dependencies.
-- `slides`: Course slides.
+- `problem-sets`: Problem sets.
+- `slides`: Lecture slides.
 - `syllabus`: Course syllabus.
 - `website`: [Course website](https://appliedcryptography.page).
 

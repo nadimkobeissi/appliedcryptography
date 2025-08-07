@@ -15,10 +15,10 @@ $(TARGETS_SLIDES):
 	@tectonic -o website/slides "slides/$(patsubst slides-%,%,$@).tex" && qpdf --linearize "website/slides/$(patsubst slides-%,%,$@).pdf" --replace-input
 
 $(TARGETS_LABS):
-	@tectonic -o website/labs "assignments/labs/$(patsubst lab-%,%,$@).tex" && qpdf --linearize "website/labs/$(patsubst lab-%,%,$@).pdf" --replace-input
+	@tectonic -o website/labs "labs/$(patsubst lab-%,%,$@).tex" && qpdf --linearize "website/labs/$(patsubst lab-%,%,$@).pdf" --replace-input
 
 $(TARGETS_PROBLEM_SETS):
-	@tectonic -o website/problem-sets "assignments/problem-sets/$@.tex" && qpdf --linearize "website/problem-sets/$@.pdf" --replace-input
+	@tectonic -o website/problem-sets "problem-sets/$@.tex" && qpdf --linearize "website/problem-sets/$@.pdf" --replace-input
 
 $(TARGETS_SYLLABUS):
 	@tectonic -o website/syllabus "syllabus/$@.tex" && qpdf --linearize "website/syllabus/$@.pdf" --replace-input
