@@ -11,7 +11,8 @@
 	--text-muted-light: #6c757d;
 	--hero-overlay-dark: rgba(0, 0, 0, 0.5);
 	--hero-overlay-light: rgba(0, 0, 0, 0.4);
-	--alert-bg-light: rgba(240, 182, 127, 0.15);
+	--tertiary-light: rgba(240, 182, 127, 0.15);
+	--tertiary-light-hovered: rgba(240, 182, 127, 0.25);
 	--border-radius: 8px;
 	--spacing-sm: 0.75rem;
 	--spacing-md: 1.5rem;
@@ -38,7 +39,8 @@
 		--card-bg-dark: #1a2c0f;
 		--button-text-dark: #0a1005;
 		--badge-bg-dark: #2a3f19;
-		--alert-bg-dark: rgba(152, 195, 122, 0.15);
+		--tertiary-dark: rgba(152, 195, 122, 0.15);
+		--tertiary-dark-hovered: rgba(152, 195, 122, 0.25);
 		--shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.3);
 		--shadow-lg:
 			0 10px 15px -3px rgba(0, 0, 0, 0.3),
@@ -346,11 +348,12 @@ strong {
 }
 
 .topic-exam-indicator {
-	background-color: var(--alert-bg-light);
+	background-color: var(--tertiary-light);
 	color: var(--dark);
 }
 
-.topic-slides-btn {
+.topic-slides-btn,
+.topic-quiz-btn {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -367,13 +370,27 @@ strong {
 	transition: var(--transition);
 }
 
+.topic-quiz-btn {
+	background-color: var(--tertiary-light);
+}
+
 .topic-slides-btn:hover {
 	background-color: var(--primary);
 	color: var(--white);
 }
 
-.topic-slides-btn i {
+.topic-quiz-btn:hover {
+	background-color: var(--tertiary-light-hovered);
+}
+
+.topic-slides-btn i,
+.topic-quiz-btn i {
 	margin-right: 0.25rem;
+}
+
+.topic-quiz-btn {
+	top: 40px;
+	border-radius: var(--border-radius) 0 0 var(--border-radius);
 }
 
 .topic-slides-not-available {
@@ -405,7 +422,7 @@ strong {
 }
 
 .alert {
-	background-color: var(--alert-bg-light);
+	background-color: var(--tertiary-light);
 	border-left: 4px solid var(--accent);
 	padding: var(--spacing-md);
 	margin-bottom: var(--spacing-md);
@@ -844,7 +861,7 @@ strong {
 	}
 
 	.alert {
-		background-color: var(--alert-bg-dark);
+		background-color: var(--tertiary-dark);
 	}
 
 	.news-empty-text {
@@ -874,8 +891,18 @@ strong {
 		font-weight: 700;
 	}
 
+	a.topic-quiz-btn {
+		background-color: var(--tertiary-dark);
+		font-weight: 700;
+	}
+
 	a.topic-slides-btn:hover {
 		background-color: var(--primary);
+		color: var(--button-text-dark);
+	}
+
+	a.topic-quiz-btn:hover {
+		background-color: var(--tertiary-dark-hovered);
 		color: var(--button-text-dark);
 	}
 
@@ -902,7 +929,7 @@ strong {
 	}
 
 	.topic-exam-indicator {
-		background-color: var(--alert-bg-dark);
+		background-color: var(--tertiary-dark);
 	}
 
 	.collapsible-header .collapsible-icon {

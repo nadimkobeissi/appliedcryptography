@@ -1,0 +1,208 @@
+\documentclass[10pt,a4paper,american]{article}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Quiz 2.3: Secure Messaging}
+\author{Nadim Kobeissi}
+\subject{Multiple choice quiz to help you see how much you remembered from the secure messaging session of the Applied Cryptography course.}
+\keywords{cryptography, security, encryption, authentication, secure messaging, PGP, OTR, Signal, forward secrecy, deniability}
+
+\begin{document}
+\classhandoutheader
+\section*{Quiz 2.3: Secure Messaging}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our secure messaging session.\footnote{\url{https://appliedcryptography.page/slides/\#2-3}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the bottom (printed upside down to avoid accidental peeking!). Good luck!
+\end{tcolorbox}
+
+\vspace{1em}
+
+\textbf{1. What was the main usability problem identified in ``Why Johnny Can't Encrypt'' (1999)?}
+\begin{enumerate}[label=\alph*)]
+	\item PGP was too slow to encrypt messages
+	\item Users couldn't understand public key concepts and made dangerous errors
+	\item The software required command-line expertise
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{2. What is forward secrecy in secure messaging?}
+\begin{enumerate}[label=\alph*)]
+	\item Messages can be forwarded to other users securely
+	\item Past messages remain secure even if long-term keys are compromised
+	\item Future messages are pre-encrypted for efficiency
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{3. In OTR, what enables deniable authentication?}
+\begin{enumerate}[label=\alph*)]
+	\item Using digital signatures that expire quickly
+	\item Using MACs instead of signatures and revealing old MAC keys
+	\item Encrypting messages with temporary passwords
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{4. What is the purpose of the HMAC in the SIGMA protocol?}
+\begin{enumerate}[label=\alph*)]
+	\item To encrypt the identity information
+	\item To speed up the key exchange process
+	\item To bind identities to the key exchange and prevent identity misbinding attacks
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{5. Why is HKDF preferred over simple hashing for key derivation?}
+\begin{enumerate}[label=\alph*)]
+	\item It's faster than SHA-256
+	\item It provides domain separation and provable security properties
+	\item It produces longer keys than regular hash functions
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{6. What makes Signal's X3DH protocol asynchronous?}
+\begin{enumerate}[label=\alph*)]
+	\item It uses pre-keys uploaded to a server so key exchange works when Bob is offline
+	\item It delays message delivery until both parties are online
+	\item It uses quantum-resistant algorithms
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{7. In Signal's Double Ratchet, what are the two types of ratcheting?}
+\begin{enumerate}[label=\alph*)]
+	\item Forward ratchet and backward ratchet
+	\item Symmetric ratchet (HMAC chain) and DH ratchet (ephemeral keys)
+	\item Encryption ratchet and decryption ratchet
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{8. What is post-compromise security?}
+\begin{enumerate}[label=\alph*)]
+	\item The ability to detect when a system has been compromised
+	\item Messages sent before a compromise remain secure
+	\item Future messages become secure again after recovery from compromise
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{9. According to the 2024 impossibility results, why can't real messaging apps achieve perfect PCS?}
+\begin{enumerate}[label=\alph*)]
+	\item The Double Ratchet algorithm has a fundamental flaw
+	\item Real apps must handle state loss and allow recovery, creating permanent vulnerabilities
+	\item Quantum computers will eventually break all encryption
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{10. What is Signal's approach to metadata protection with Sealed Sender?}
+\begin{enumerate}[label=\alph*)]
+	\item All metadata is deleted immediately after message delivery
+	\item Sender identity is encrypted in an envelope so the server can't see who sent messages
+	\item Messages are routed through multiple servers to hide the sender
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{11. What security property does PGP provide that OTR deliberately avoids?}
+\begin{enumerate}[label=\alph*)]
+	\item Forward secrecy
+	\item Non-repudiation (permanent cryptographic proof of authorship)
+	\item Perfect forward secrecy
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{12. In the context of secure messaging, what is a replay attack?}
+\begin{enumerate}[label=\alph*)]
+	\item Resending valid protocol messages later to cause confusion or duplicate actions
+	\item Playing back encrypted voice messages
+	\item Copying someone's encryption keys
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{13. Why does Signal allow up to 40 concurrent sessions per conversation?}
+\begin{enumerate}[label=\alph*)]
+	\item To support up to 40 devices per user
+	\item To handle desync events and improve usability at the cost of security
+	\item To enable group chats with up to 40 members
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{14. What is the main difference between Telegram's cloud chats and secret chats?}
+\begin{enumerate}[label=\alph*)]
+	\item Cloud chats are faster than secret chats
+	\item Cloud chats are encrypted to the server (not E2E), secret chats use E2E encryption
+	\item Secret chats use stronger encryption algorithms
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{15. How does WhatsApp's Sender Keys approach scale group messaging?}
+\begin{enumerate}[label=\alph*)]
+	\item Each member encrypts to every other member individually
+	\item Members share a sender key allowing one encryption per message regardless of group size
+	\item The server decrypts and re-encrypts messages for each recipient
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{16. What is TreeKEM in the MLS protocol?}
+\begin{enumerate}[label=\alph*)]
+	\item A tree structure for managing group key agreement with logarithmic scaling
+	\item A method for storing encrypted messages in a tree database
+	\item A key escrow mechanism for law enforcement
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{17. What attack on OTRv2 exploits MAC key revelation and message ordering?}
+\begin{enumerate}[label=\alph*)]
+	\item Version rollback attack
+	\item Message integrity attack allowing forged messages with revealed MAC keys
+	\item Key compromise impersonation attack
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{18. Why did the Chelsea Manning/Adrian Lamo case show that cryptographic deniability has limitations?}
+\begin{enumerate}[label=\alph*)]
+	\item The encryption was broken by the FBI
+	\item Courts don't require cryptographic proof and accept testimony and context as evidence
+	\item OTR wasn't actually used in their conversation
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{19. What is the computational complexity of sending a message in MLS compared to Signal's pairwise approach?}
+\begin{enumerate}[label=\alph*)]
+	\item MLS: O(n), Signal: O(1)
+	\item MLS: O(n²), Signal: O(n)
+	\item MLS: O(log n), Signal: O(n)
+\end{enumerate}
+
+\vspace{0.5em}
+
+\textbf{20. What vulnerability was found in Signal's Sealed Sender through statistical disclosure attacks?}
+\begin{enumerate}[label=\alph*)]
+	\item The encryption could be broken with enough messages
+	\item Reply patterns create timing epochs that reveal communication relationships
+	\item Sender certificates could be forged by attackers
+\end{enumerate}
+
+\vspace{2cm}
+
+\rotatebox{180}{
+	\begin{minipage}{\textwidth}
+		\textbf{Answer Key:} 1-b, 2-b, 3-b, 4-c, 5-b, 6-a, 7-b, 8-c, 9-b, 10-b, 11-b, 12-a, 13-b, 14-b, 15-b, 16-a, 17-b, 18-b, 19-c, 20-b
+	\end{minipage}
+}
+
+\end{document}
