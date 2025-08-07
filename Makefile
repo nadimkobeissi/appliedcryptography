@@ -9,16 +9,16 @@ all: slides labs problem-sets syllabus
 slides: $(TARGETS_SLIDES)
 labs: $(TARGETS_LABS)
 problem-sets: $(TARGETS_PROBLEM_SETS)
-clean: $(RM) website/slides/*.pdf website/labs/*.pdf website/problem-sets/*.pdf website/syllabus/*.pdf
+clean: $(RM) website/slides/*.pdf website/lab/*.pdf website/problem-set/*.pdf website/syllabus/*.pdf
 
 $(TARGETS_SLIDES):
 	@tectonic -o website/slides "slides/$(patsubst slides-%,%,$@).tex" && qpdf --linearize "website/slides/$(patsubst slides-%,%,$@).pdf" --replace-input
 
 $(TARGETS_LABS):
-	@tectonic -o website/labs "labs/$(patsubst lab-%,%,$@).tex" && qpdf --linearize "website/labs/$(patsubst lab-%,%,$@).pdf" --replace-input
+	@tectonic -o website/lab "lab/$(patsubst lab-%,%,$@).tex" && qpdf --linearize "website/lab/$(patsubst lab-%,%,$@).pdf" --replace-input
 
 $(TARGETS_PROBLEM_SETS):
-	@tectonic -o website/problem-sets "problem-sets/$@.tex" && qpdf --linearize "website/problem-sets/$@.pdf" --replace-input
+	@tectonic -o website/problem-set "problem-set/$@.tex" && qpdf --linearize "website/problem-set/$@.pdf" --replace-input
 
 $(TARGETS_SYLLABUS):
 	@tectonic -o website/syllabus "syllabus/$@.tex" && qpdf --linearize "website/syllabus/$@.pdf" --replace-input

@@ -848,7 +848,7 @@
 				      \end{itemize}
 				\item \textbf{Real-world example:} Found in TLS-ECDH implementations (2015).
 				      \begin{itemize}
-					      \item Paper: ``Practical Invalid Curve Attacks on TLS-ECDH''\footnote{\url{https://appliedcryptography.page/papers/\#invalid-curve}}
+					      \item Paper: ``Practical Invalid Curve Attacks on TLS-ECDH''\footnote{\url{https://appliedcryptography.page/paper/\#invalid-curve}}
 					      \item Jager, Schwenk, and Somorovsky
 				      \end{itemize}
 				\item \textbf{Prevention:} Always validate that points satisfy the correct curve equation.
@@ -1043,7 +1043,7 @@
 			\begin{itemize}[<+->]
 				\item \textbf{Ristretto's solution:} Provides prime-order group abstraction on top of Curve25519\footnote{\url{https://ristretto.group/why_ristretto.html}}
 				      \begin{itemize}
-					      \item Based on Mike Hamburg's Decaf construction\footnote{\url{https://appliedcryptography.page/papers/\#ecc-decaf}}
+					      \item Based on Mike Hamburg's Decaf construction\footnote{\url{https://appliedcryptography.page/paper/\#ecc-decaf}}
 					      \item No performance penalty vs. regular Curve25519
 					      \item Clean abstraction for protocol designers
 				      \end{itemize}

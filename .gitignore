@@ -28,6 +28,6 @@ __latex*
 
 # Compiled materials
 website/slides/*.pdf
-website/labs/*.pdf
-website/problem-sets/*.pdf
+website/lab/*.pdf
+website/problem-set/*.pdf
 website/syllabus/syllabus.pdf

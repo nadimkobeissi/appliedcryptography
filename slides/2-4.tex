@@ -538,7 +538,7 @@
 		\end{column}
 		\begin{column}{0.4\textwidth}
 			\imagewithcaption{mega_keys.png}{MEGA's key hierarchy. The master key encrypts the share, chat, sign
-				and node keys using AES-ECB. Source: \url{https://appliedcryptography.page/papers/\#mega-awry}}
+				and node keys using AES-ECB. Source: \url{https://appliedcryptography.page/paper/\#mega-awry}}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -561,14 +561,14 @@
 		\end{column}
 		\begin{column}{0.4\textwidth}
 			\imagewithcaption{mega_keys.png}{MEGA's key hierarchy. The master key encrypts the share, chat, sign
-				and node keys using AES-ECB. Source: \url{https://appliedcryptography.page/papers/\#mega-awry}}
+				and node keys using AES-ECB. Source: \url{https://appliedcryptography.page/paper/\#mega-awry}}
 		\end{column}
 	\end{columns}
 \end{frame}
 
 \begin{frame}{MEGA: Where's the attack?}
 	\bigimagewithcaption{mega_keys.png}{MEGA's key hierarchy. The master key encrypts the share, chat, sign
-		and node keys using AES-ECB. Source: \url{https://appliedcryptography.page/papers/\#mega-awry}}
+		and node keys using AES-ECB. Source: \url{https://appliedcryptography.page/paper/\#mega-awry}}
 \end{frame}
 
 \begin{frame}{MEGA: Key hierarchy}
@@ -694,7 +694,7 @@
 				      \end{itemize}
 				\item \textbf{Attack efficiency:}
 				      \begin{itemize}
-					      \item Binary search requires ~512 login attempts\footnote{Later improved to 2 logins: \url{https://appliedcryptography.page/papers/\#mega-recovery}}
+					      \item Binary search requires ~512 login attempts\footnote{Later improved to 2 logins: \url{https://appliedcryptography.page/paper/\#mega-recovery}}
 					      \item Each login leaks 1 bit of information about $q$
 				      \end{itemize}
 			\end{itemize}
@@ -807,7 +807,7 @@
 		\begin{column}{1\textwidth}
 			\begin{itemize}
 				\item \textbf{MEGA's response to attacks:} Added sanity checks instead of proper fixes
-				\item \textbf{New paper (2023):} ``Caveat Implementor! Key Recovery Attacks on MEGA''\footnote{\url{https://appliedcryptography.page/papers/\#mega-recovery}}
+				\item \textbf{New paper (2023):} ``Caveat Implementor! Key Recovery Attacks on MEGA''\footnote{\url{https://appliedcryptography.page/paper/\#mega-recovery}}
 				\item \textbf{Key findings:}
 				      \begin{itemize}
 					      \item MEGA's patches introduced \textit{new} vulnerabilities
@@ -833,7 +833,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item \textbf{Attack 1 (RSA Key Recovery):} Exploit missing integrity protection to recover RSA private key in 512 logins\footnote{Later improved to 2 logins: \url{https://appliedcryptography.page/papers/\#mega-recovery}}
+				\item \textbf{Attack 1 (RSA Key Recovery):} Exploit missing integrity protection to recover RSA private key in 512 logins\footnote{Later improved to 2 logins: \url{https://appliedcryptography.page/paper/\#mega-recovery}}
 				\item \textbf{Attack 2 (Plaintext Recovery):} Use recovered RSA key to build AES-ECB decryption oracle for all encrypted keys
 			\end{itemize}
 		\end{column}
@@ -999,7 +999,7 @@
 \begin{frame}{Nextcloud vulnerabilities: Overview}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\textbf{Three critical vulnerabilities found:}\footnote{\url{https://appliedcryptography.page/papers/\#nextcloud-break}}
+			\textbf{Three critical vulnerabilities found:}\footnote{\url{https://appliedcryptography.page/paper/\#nextcloud-break}}
 			\begin{enumerate}
 				\item \textbf{Key Insertion Attack}
 				      \begin{itemize}
@@ -1246,7 +1246,7 @@
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
-				\item Recent comprehensive analysis of 5 major E2EE providers\footnote{\url{https://appliedcryptography.page/papers/\#cloud-broken}}
+				\item Recent comprehensive analysis of 5 major E2EE providers\footnote{\url{https://appliedcryptography.page/paper/\#cloud-broken}}
 				\item Collectively serving 22+ million users
 				\item \textbf{Key finding:} Widespread cryptographic failures across ecosystem
 				\item \textbf{Common patterns:}
@@ -1393,7 +1393,7 @@
 		\begin{column}{1\textwidth}
 			\begin{itemize}
 				\item Signal faced same challenge: E2EE backups need secure key recovery
-				\item \textbf{SVR3 (Secure Value Recovery 3)\footnote{\url{https://appliedcryptography.page/papers/\#signal-recovery}}:} PIN-based key recovery
+				\item \textbf{SVR3 (Secure Value Recovery 3)\footnote{\url{https://appliedcryptography.page/paper/\#signal-recovery}}:} PIN-based key recovery
 				      \begin{itemize}
 					      \item Distributes trust across 3 different hardware enclaves
 					      \item Intel SGX (Azure), AMD SEV-SNP (Google Cloud), Nitro (AWS)
@@ -1805,7 +1805,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
-			\imagewithcaption{whatsapp_backups.png}{Source: \url{https://appliedcryptography.page/papers/\#whatsapp-backups}}
+			\imagewithcaption{whatsapp_backups.png}{Source: \url{https://appliedcryptography.page/paper/\#whatsapp-backups}}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -2478,7 +2478,7 @@
 		\textbf{What follows is based on:}\\
 		\vspace{0.3cm}
 		\textit{``A Formal Treatment of End-to-End Encrypted Cloud Storage''}\\
-		{\tiny\url{https://appliedcryptography.page/papers/\#cloud-storage}}\\
+		{\tiny\url{https://appliedcryptography.page/paper/\#cloud-storage}}\\
 		\vspace{0.2cm}
 		{\small by Matilda Backendal, Hannah Davis, Felix Günther, Miro Haller, and Kenneth G. Paterson}
 	\end{center}

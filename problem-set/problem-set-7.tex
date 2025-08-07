@@ -1,8 +1,8 @@
 \documentclass[10pt,a4paper,american]{article}
-\newcommand{\aublogopath}{../../website/res/img/aub_black.png}
-\usepackage{../../misc/macros/joc}
-\usepackage{../../misc/fonts/fonts}
-\usepackage{../../misc/macros/classhandout}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
 
 \title{Applied Cryptography - Problem Set 7: Post-Quantum Cryptography}
 \author{Nadim Kobeissi}
@@ -43,7 +43,7 @@
 	\item (7.5 points) \textbf{Evaluating Quantum Progress:}
 	      Recent news claims a breakthrough in quantum computing: ``Quantum computer factors RSA-2048!''
 	      \begin{enumerate}
-		      \item Based on the course material\footnote{\url{https://appliedcryptography.page/papers/\#quantum-dog}} about current quantum factorization records and ``sleight-of-hand'' numbers, what questions would you ask to evaluate this claim? List at least three specific technical details you would investigate.
+		      \item Based on the course material\footnote{\url{https://appliedcryptography.page/paper/\#quantum-dog}} about current quantum factorization records and ``sleight-of-hand'' numbers, what questions would you ask to evaluate this claim? List at least three specific technical details you would investigate.
 		      \item The paper reveals they factored a number where the two prime factors differ by 2. Explain why this is not a valid demonstration of breaking RSA-2048 and how it could be solved on classical hardware from the 1980s.
 	      \end{enumerate}
 	\item (7.5 points) \textbf{Engineering Challenges:}
@@ -64,7 +64,7 @@
 	      Current deployments of TLS 1.3 use X25519 + ML-KEM-768 hybrid key agreement.
 	      \begin{enumerate}
 		      \item Explain why hybrid approaches are used rather than pure post-quantum. Consider both security and practical reasons. What specific attack scenarios does each component protect against?
-		      \item The X-Wing KEM\footnote{\url{https://appliedcryptography.page/papers/\#xwing-hybrid}} combines X25519 and ML-KEM-768 in an optimized way. What efficiency gains does a purpose-built hybrid construction provide over generic combination methods? Why can X-Wing provide stronger security proofs than generic combiners? Refer to the X-Wing paper.
+		      \item The X-Wing KEM\footnote{\url{https://appliedcryptography.page/paper/\#xwing-hybrid}} combines X25519 and ML-KEM-768 in an optimized way. What efficiency gains does a purpose-built hybrid construction provide over generic combination methods? Why can X-Wing provide stronger security proofs than generic combiners? Refer to the X-Wing paper.
 		      \item Given that ML-KEM is faster than X25519 in operations per second, why do we still see the size difference (32 bytes vs 1KB+) as a significant deployment challenge?
 	      \end{enumerate}
 	\item (7.5 points) \textbf{Deployment Challenges:}

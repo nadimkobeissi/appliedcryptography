@@ -1,8 +1,8 @@
 \documentclass[10pt,a4paper,american]{article}
-\newcommand{\aublogopath}{../../website/res/img/aub_black.png}
-\usepackage{../../misc/macros/joc}
-\usepackage{../../misc/fonts/fonts}
-\usepackage{../../misc/macros/classhandout}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
 
 \title{Applied Cryptography - Problem Set 6: High-Assurance Cryptography}
 \author{Nadim Kobeissi}
@@ -41,7 +41,7 @@
 
 	      \begin{enumerate}
 		      \item (5 points) Explain why receipt-freeness cannot be expressed as a trace property.\footnote{Hint: Consider what information would need to be examined in a single trace versus across multiple traces.} Then formulate receipt-freeness as an equivalence property in the symbolic model.\footnote{Hint: Think about what two processes should be indistinguishable to model this property.}
-		      \item (5 points) There exist different notions of equivalence:\footnote{\url{https://appliedcryptography.page/papers/\#sok-verif}}
+		      \item (5 points) There exist different notions of equivalence:\footnote{\url{https://appliedcryptography.page/paper/\#sok-verif}}
 		            \begin{itemize}
 			            \item \textbf{Trace equivalence}: Two processes are equivalent if they produce the same set of observable traces.
 			            \item \textbf{Open bisimilarity}: A stronger notion where processes must match each other's behavior step-by-step, even when the attacker provides inputs.

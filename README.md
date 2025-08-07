@@ -6,9 +6,9 @@ If you are a student or someone trying to learn from this course's materials, th
 
 ## Contents
 
-- `labs`: Lab project sheets.
+- `lab`: Lab project sheets.
 - `misc`: LaTeX dependencies.
-- `problem-sets`: Problem sets.
+- `problem-set`: Problem sets.
 - `slides`: Lecture slides.
 - `syllabus`: Course syllabus.
 - `website`: [Course website](https://appliedcryptography.page).
@@ -39,8 +39,8 @@ You get the drift.
 All compiled output PDFs will be in their respective directory in the `website` folder:
 
 - `website/slides` contains the compiled slides PDFs.
-- `website/labs` contains the compiled lab project sheet PDFs.
-- `website/problem-sets` contains the compiled problem set PDFs.
+- `website/lab` contains the compiled lab project sheet PDFs.
+- `website/problem-set` contains the compiled problem set PDFs.
 - `website/syllabus` contains the compiled syllabus PDF.
 
 _It really is that simple!_

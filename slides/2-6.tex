@@ -275,7 +275,7 @@
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
-				\item Recent paper\footnote{\url{https://appliedcryptography.page/papers/\#quantum-dog}} demonstrates matching all quantum factorization records using:
+				\item Recent paper\footnote{\url{https://appliedcryptography.page/paper/\#quantum-dog}} demonstrates matching all quantum factorization records using:
 				      \begin{itemize}
 					      \item \textbf{VIC-20}: 8-bit computer from 1981 (538 bytes of code)
 					      \item \textbf{Abacus}: Ancient counting device
@@ -1076,7 +1076,7 @@
 			\textbf{Public parameters:}
 			\begin{itemize}
 				\item Matrix $A \in \mathbb{Z}_q^{n \times n}$
-				\item Modulus $q$ (e.g., 3329)\footnote{3329 is congruent to 1 modulo 256, and therefore the polynomial $X^{256} + 1$ splits into a product of degreen $2$ polynomials of the form $(X^2 - r_{i}).$}\footnote{\url{https://appliedcryptography.page/papers/\#basic-lattice}}
+				\item Modulus $q$ (e.g., 3329)\footnote{3329 is congruent to 1 modulo 256, and therefore the polynomial $X^{256} + 1$ splits into a product of degreen $2$ polynomials of the form $(X^2 - r_{i}).$}\footnote{\url{https://appliedcryptography.page/paper/\#basic-lattice}}
 				\item Error distribution $\mathcal{E}$
 			\end{itemize}
 			\textbf{Bob's key generation:}
@@ -1824,7 +1824,7 @@
 			\begin{itemize}
 				\item \textbf{What is X-Wing?}
 				      \begin{itemize}
-					      \item Purpose-built hybrid KEM combining X25519 and ML-KEM-768\footnote{\url{https://appliedcryptography.page/papers/\#xwing-hybrid}}
+					      \item Purpose-built hybrid KEM combining X25519 and ML-KEM-768\footnote{\url{https://appliedcryptography.page/paper/\#xwing-hybrid}}
 					      \item Designed to be ``the sensible choice for most applications''
 				      \end{itemize}
 				\item \textbf{Efficiency gains}:
@@ -1953,7 +1953,7 @@
 					      \item NTRU-HRSS: Good performance, similar to ML-KEM
 					      \item SIKE: Small keys but slow, \textcolor{red}{completely broken in 2022}
 					            \begin{itemize}
-						            \item Good argument for hybrid cryptosystems (like X-Wing\footnote{\url{https://appliedcryptography.page/papers/\#xwing-hybrid}}) that combine both classical and PQ crypto!
+						            \item Good argument for hybrid cryptosystems (like X-Wing\footnote{\url{https://appliedcryptography.page/paper/\#xwing-hybrid}}) that combine both classical and PQ crypto!
 					            \end{itemize}
 					      \item Handshake times nearly identical to classical crypto
 				      \end{itemize}
@@ -2197,7 +2197,7 @@
 \end{frame}
 
 \begin{frame}{How PQXDH works}
-	\bigimagewithcaption{pqxdh_signal.png}{Source: \url{https://appliedcryptography.page/papers/\#pqxdh-analysis}}
+	\bigimagewithcaption{pqxdh_signal.png}{Source: \url{https://appliedcryptography.page/paper/\#pqxdh-analysis}}
 \end{frame}
 
 \begin{frame}{Lessons from PQXDH deployment}
@@ -2681,7 +2681,7 @@
 					      \item In the worst case, some argue could be proven NP-hard
 					      \item Sounds amazing: NP-hard = practically unbreakable!
 					      \item But cryptographic problems are based on the average case, not the worst case\ldots
-					      \item And the claim of NP-hardness even here is debated\ldots\footnote{Eurocrypt 2025 paper found a subexponential distinguisher for McEliece: \url{https://appliedcryptography.page/papers/\#syzygy-distinguisher}}
+					      \item And the claim of NP-hardness even here is debated\ldots\footnote{Eurocrypt 2025 paper found a subexponential distinguisher for McEliece: \url{https://appliedcryptography.page/paper/\#syzygy-distinguisher}}
 				      \end{itemize}
 				\item \textbf{Real-world complications}:
 				      \begin{itemize}
@@ -3035,7 +3035,7 @@ if ((err = SSLHashSHA1.final(&hashCtx,
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
-				\item \textbf{What}: Timing attack on Kyber implementations\footnote{\url{https://appliedcryptography.page/papers/\#kyber-slash}} (Dec 2023)
+				\item \textbf{What}: Timing attack on Kyber implementations\footnote{\url{https://appliedcryptography.page/paper/\#kyber-slash}} (Dec 2023)
 				\item \textbf{Affected}: Multiple ``production-ready'' Kyber libraries
 				\item \textbf{The vulnerability}:
 				      \begin{itemize}

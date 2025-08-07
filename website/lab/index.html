@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<title>Applied Cryptography: Lab Projects Viewer</title>
+	<title>Applied Cryptography: Lab Project Sheet Viewer</title>
 	<meta name="description" content="Learn modern cryptography principles and applications in this comprehensive course covering cryptographic theory, practical implementations, and real-world security systems at the American University of Beirut." />
 	<meta name="keywords" content="applied cryptography, AUB, American University of Beirut, cryptography course, encryption, cryptographic protocols, cybersecurity education, CMPS 297AD, CMPS 396AI" />
 	<meta name="author" content="Nadim Kobeissi" />
@@ -49,7 +49,7 @@
 				const EPDFinstance = EmbedPDF.init({
 					type: 'container',
 					target: viewer,
-					src: `https://appliedcryptography.page/labs/${anchor}.pdf`
+					src: `https://appliedcryptography.page/lab/${anchor}.pdf`
 				})
 			} else {
 				window.location.href = `/`;

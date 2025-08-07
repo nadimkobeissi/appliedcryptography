@@ -1,8 +1,8 @@
 \documentclass[10pt,a4paper,american]{article}
-\newcommand{\aublogopath}{../../website/res/img/aub_black.png}
-\usepackage{../../misc/macros/joc}
-\usepackage{../../misc/fonts/fonts}
-\usepackage{../../misc/macros/classhandout}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
 
 \title{Applied Cryptography - Lab Project E: Post-Quantum Cryptography Migration}
 \author{Nadim Kobeissi}
@@ -30,7 +30,7 @@ The advent of quantum computers poses a significant threat to current public-key
 \begin{itemize}
 	\item ML-KEM (Kyber) provides quantum-resistant key encapsulation based on lattice problems.
 	\item ML-DSA (Dilithium) offers quantum-resistant digital signatures also based on lattice cryptography.
-	\item Hybrid approaches, such as X-Wing\footnote{Manuel Barbosa, Deirdre Connolly, Jo\~ao Diogo Duarte, Aaron Kaiser, Peter Schwabe, Karolin Varner and Baas Westerban, \href{https://appliedcryptography.page/papers/\#xwing-hybrid}{\textit{X-Wing: The Hybrid KEM You've Been Looking For}}, IACR Communications in Cryptology, 2024.} combine classical and post-quantum algorithms to hedge against implementation vulnerabilities.
+	\item Hybrid approaches, such as X-Wing\footnote{Manuel Barbosa, Deirdre Connolly, Jo\~ao Diogo Duarte, Aaron Kaiser, Peter Schwabe, Karolin Varner and Baas Westerban, \href{https://appliedcryptography.page/paper/\#xwing-hybrid}{\textit{X-Wing: The Hybrid KEM You've Been Looking For}}, IACR Communications in Cryptology, 2024.} combine classical and post-quantum algorithms to hedge against implementation vulnerabilities.
 	\item Migration strategies must consider performance impacts, message size increases, and backward compatibility.
 \end{itemize}
 
