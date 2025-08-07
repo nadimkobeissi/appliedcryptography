@@ -92,6 +92,14 @@ h6 {
 	color: var(--primary);
 }
 
+h4 {
+	font-size: 1.1rem;
+}
+
+h5 {
+	font-size: 1rem;
+}
+
 p {
 	margin-bottom: var(--spacing-md);
 }
@@ -379,7 +387,6 @@ strong {
 }
 
 .topic-readings h5 {
-	font-size: 0.9rem;
 	color: var(--primary-dark);
 	margin-bottom: 0.5rem;
 }
@@ -805,9 +812,11 @@ strong {
 }
 
 .collapsible-header.active {
-	background: linear-gradient(to bottom,
-			var(--gray-dark) 0%,
-			transparent 100%);
+	background: linear-gradient(
+		to bottom,
+		var(--gray-dark) 0%,
+		transparent 100%
+	);
 	box-shadow: none;
 	border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
