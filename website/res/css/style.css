@@ -683,10 +683,6 @@ strong {
 	gap: 0.5rem;
 }
 
-.news-content {
-	color: var(--dark);
-}
-
 .news-footer {
 	display: flex;
 	justify-content: flex-end;
