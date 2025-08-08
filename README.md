@@ -16,6 +16,8 @@ If you are a student or someone trying to learn from this course's materials, th
 
 ## Compiling LaTeX Materials
 
+Before cloning this repository, make sure that you have [Git LFS](https://git-lfs.com) installed.
+
 Before compiling any of the LaTeX materials, make sure to first install the fonts included in `misc/fonts/` on your system.
 
 You'll also need to first have [Tectonic](https://tectonic-typesetting.github.io/en-US/) and [qpdf](https://qpdf.sourceforge.io/) installed. The good news is that this means that you don't need to install LaTeX!
