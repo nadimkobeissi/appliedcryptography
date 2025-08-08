@@ -1,0 +1,170 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Quiz 1.4: Pseudorandomness}
+\author{Nadim Kobeissi}
+\subject{Multiple choice quiz to help you see how much you remembered from the Pseudorandomness session of the Applied Cryptography course.}
+\keywords{pseudorandom generators, pseudorandom functions, pseudorandom permutations, stream ciphers, hash functions, Feistel ciphers, one-time pad, cryptographic security}
+
+\begin{document}
+\classhandoutheader
+\section*{Quiz 1.4: Pseudorandomness}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our Pseudorandomness session.\footnote{\url{https://appliedcryptography.page/slides/\#1-4}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the end. Good luck!
+\end{tcolorbox}
+
+\subsection*{Questions}
+
+\begin{questions}
+	\question What is the main limitation of the one-time pad encryption scheme?
+	\begin{randomizechoices}
+		\choice It is computationally expensive
+		\CorrectChoice The key must be as long as the plaintext
+		\choice It doesn't provide perfect secrecy
+	\end{randomizechoices}
+
+	\question What is a pseudorandom generator (PRG)?
+	\begin{randomizechoices}
+		\choice A function that compresses data
+		\CorrectChoice A function that expands a short seed into a longer output indistinguishable from random
+		\choice A function that generates truly random numbers
+	\end{randomizechoices}
+
+	\question What is the primary difference between a PRG and a PRF?
+	\begin{randomizechoices}
+		\CorrectChoice PRFs provide selective access to pseudorandom values for any input
+		\choice PRGs are more secure than PRFs
+		\choice PRFs are faster to compute than PRGs
+	\end{randomizechoices}
+
+	\question Which real-world cryptographic primitive is an example of a PRF?
+	\begin{randomizechoices}
+		\choice Block ciphers like AES
+		\CorrectChoice Hash functions like SHA-256
+		\choice Stream ciphers like ChaCha20
+	\end{randomizechoices}
+
+	\question What property must a hash function have to be considered secure?
+	\begin{randomizechoices}
+		\choice It must be reversible
+		\choice It must produce variable-length outputs
+		\CorrectChoice It must be collision resistant
+	\end{randomizechoices}
+
+	\question What is a pseudorandom permutation (PRP)?
+	\begin{randomizechoices}
+		\choice A function that randomly shuffles data
+		\CorrectChoice A keyed bijective function indistinguishable from a random permutation
+		\choice A one-way function that cannot be inverted
+	\end{randomizechoices}
+
+	\question What is the key advantage of PRPs over PRFs?
+	\begin{randomizechoices}
+		\choice PRPs are faster to compute
+		\CorrectChoice PRPs are efficiently invertible
+		\choice PRPs provide better security
+	\end{randomizechoices}
+
+	\question How many rounds does a Feistel cipher need to be a secure PRP?
+	\begin{randomizechoices}
+		\choice 2 rounds
+		\CorrectChoice 3 or more rounds
+		\choice 16 rounds
+	\end{randomizechoices}
+
+	\question What makes Feistel ciphers always permutations?
+	\begin{randomizechoices}
+		\choice They use strong encryption algorithms
+		\CorrectChoice Each round is invertible without inverting the round function
+		\choice They require reversible round functions
+	\end{randomizechoices}
+
+	\question What is the main weakness of RC4?
+	\begin{randomizechoices}
+		\choice It has a small key size
+		\CorrectChoice Statistical biases in its output
+		\choice It is too slow for practical use
+	\end{randomizechoices}
+
+	\question What is AES an example of?
+	\begin{randomizechoices}
+		\choice A pseudorandom generator
+		\choice A hash function
+		\CorrectChoice A pseudorandom permutation
+	\end{randomizechoices}
+
+	\question What attack can break a 2-round Feistel cipher?
+	\begin{randomizechoices}
+		\CorrectChoice Observing that XOR of outputs equals XOR of inputs when using same right half
+		\choice Birthday attack on the round function
+		\choice Exhaustive key search
+	\end{randomizechoices}
+
+	\question What is the "Golden Rule of PRFs"?
+	\begin{randomizechoices}
+		\choice PRFs should use large key sizes
+		\CorrectChoice Security depends on ensuring distinct inputs to the PRF
+		\choice PRFs must be implemented in hardware
+	\end{randomizechoices}
+
+	\question What was the purpose of the EFF's "Deep Crack" machine?
+	\begin{randomizechoices}
+		\choice To develop a new encryption standard
+		\CorrectChoice To demonstrate that 56-bit DES keys were insufficient
+		\choice To break AES encryption
+	\end{randomizechoices}
+
+	\question What is the difference between a PRF and a PRP in terms of output collisions?
+	\begin{randomizechoices}
+		\choice PRFs never have collisions
+		\CorrectChoice PRPs never have collisions, PRFs can have collisions
+		\choice Both have the same collision probability
+	\end{randomizechoices}
+
+	\question What is the main security concern with using the same key for all rounds in a Feistel cipher?
+	\begin{randomizechoices}
+		\choice It makes encryption slower
+		\CorrectChoice It enables meet-in-the-middle attacks
+		\choice It reduces the block size
+	\end{randomizechoices}
+
+	\question What technique was used to prove the security of 3-round Feistel ciphers?
+	\begin{randomizechoices}
+		\choice Differential cryptanalysis
+		\CorrectChoice Bad event proof technique
+		\choice Linear cryptanalysis
+	\end{randomizechoices}
+
+	\question What is the best known attack complexity against AES-128?
+	\begin{randomizechoices}
+		\choice $2^{64}$ operations
+		\CorrectChoice Approximately $2^{126}$ operations
+		\choice $2^{256}$ operations
+	\end{randomizechoices}
+
+	\question What does 3DES use to increase security over regular DES?
+	\begin{randomizechoices}
+		\choice Larger block size
+		\CorrectChoice Three DES operations in sequence
+		\choice More Feistel rounds
+	\end{randomizechoices}
+
+	\question What property makes something "pseudorandom" in cryptography?
+	\begin{randomizechoices}
+		\choice It uses a deterministic algorithm
+		\choice It passes statistical randomness tests
+		\CorrectChoice It is computationally indistinguishable from uniform distribution
+	\end{randomizechoices}
+
+\end{questions}
+
+\clearpage
+
+\subsection*{Answers}
+\printkeytable
+
+\end{document}

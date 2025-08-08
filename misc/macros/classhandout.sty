@@ -6,8 +6,8 @@
 \newcommand{\keywords}[1]{\hypersetup{pdfkeywords={#1}}}
 
 \RequirePackage{
-	xurl,graphicx,array,fancyhdr,bbding,pmboxdraw,
-	listings,acronym,amsthm,bookmark,
+	xurl,graphicx,array,bbding,pmboxdraw,
+	listings,acronym,amsthm,bookmark,exam-randomizechoices,
 	bookmark,zref-totpages,xcolor,tikz,titlesec,
 	enumitem,amsmath,xspace,hyperref,hyperxmp
 }
@@ -24,16 +24,12 @@
 \titleformat{\subsection}
 {\normalfont\large\bfseries\color{EarthBrown}}
 {\thesubsection}{1em}{}
-\pagestyle{fancy}
-\fancyhf{}
-\renewcommand{\headrulewidth}{0.3pt}
-\renewcommand{\footrulewidth}{0.3pt}
-\lhead{\textcolor{OliveGreen}{Applied Cryptography}}
-\rhead{\textcolor{DarkGray}{American University of Beirut}}
-\lfoot{\textcolor{DarkGray}{CMPS 297AD/396AI, Fall 2025}}
-\rfoot{\textcolor{DarkGray}{Page \thepage\ of \ztotpages}}
+\pagestyle{headandfoot}
+\header{\textcolor{OliveGreen}{Applied Cryptography}}{}{\textcolor{DarkGray}{American University of Beirut}}
+\footer{\textcolor{DarkGray}{CMPS 297AD/396AI, Fall 2025}}{}{\textcolor{DarkGray}{Page \thepage\ of \ztotpages}}
+\headrule
+\footrule
 \tcbsetforeverylayer{colframe=OliveGreen!20!white,colback=LightestGray,boxrule=0.5pt,arc=2mm,boxsep=5pt,left=6pt,right=6pt,top=6pt,bottom=6pt}
-\thispagestyle{empty}
 \setlist{itemsep=0em}
 
 \makeatletter

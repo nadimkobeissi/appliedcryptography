@@ -1,0 +1,170 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Quiz 2.8: Zero-Knowledge Proofs}
+\author{Nadim Kobeissi}
+\subject{Multiple choice quiz to help you see how much you remembered from the zero-knowledge proofs session of the Applied Cryptography course.}
+\keywords{cryptography, security, zero-knowledge, ZKP, Schnorr, Sigma protocols, Fiat-Shamir, soundness, completeness}
+
+\begin{document}
+\classhandoutheader
+\section*{Quiz 2.8: Zero-Knowledge Proofs}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our zero-knowledge proofs session.\footnote{\url{https://appliedcryptography.page/slides/\#2-8}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the end. Good luck!
+\end{tcolorbox}
+
+\subsection*{Questions}
+
+\begin{questions}
+	\question What is the fundamental paradox of zero-knowledge proofs?
+	\begin{randomizechoices}
+		\choice They are slower than regular proofs but more secure
+		\CorrectChoice They convince you completely while teaching you nothing
+		\choice They require trusted setup but provide trustless verification
+	\end{randomizechoices}
+
+	\question Which of the following is NOT one of the three core properties of zero-knowledge proofs?
+	\begin{randomizechoices}
+		\choice Completeness
+		\CorrectChoice Efficiency
+		\choice Soundness
+	\end{randomizechoices}
+
+	\question What is knowledge soundness in the context of zero-knowledge proofs?
+	\begin{randomizechoices}
+		\choice The proof is mathematically sound
+		\CorrectChoice If a prover succeeds, they must know a witness (can extract it)
+		\choice The proof doesn't reveal any knowledge
+	\end{randomizechoices}
+
+	\question In the Schnorr identification protocol, what does the prover send first?
+	\begin{randomizechoices}
+		\choice The challenge $c$
+		\choice The response $r = y + ca$
+		\CorrectChoice The commitment $Y = g^y$
+	\end{randomizechoices}
+
+	\question Why can a verifier simulate Schnorr protocol transcripts without knowing the secret?
+	\begin{randomizechoices}
+		\CorrectChoice By choosing $r$ and $c$ first, then computing $Y = g^r / A^c$
+		\choice By using quantum computing to break the discrete log
+		\choice By intercepting previous valid transcripts
+	\end{randomizechoices}
+
+	\question What does the Greek letter Sigma ($\Sigma$) represent in Sigma protocols?
+	\begin{randomizechoices}
+		\choice The sum of all challenges
+		\CorrectChoice The three-message zigzag pattern of communication
+		\choice The signature of the prover
+	\end{randomizechoices}
+
+	\question What is special soundness in Sigma protocols?
+	\begin{randomizechoices}
+		\choice The protocol uses special hash functions
+		\CorrectChoice From two accepting transcripts with same commitment but different challenges, you can extract the witness
+		\choice The soundness property holds only for special types of statements
+	\end{randomizechoices}
+
+	\question In an OR proof, what constraint must the prover satisfy?
+	\begin{randomizechoices}
+		\choice $C_0 \times C_1 = C$
+		\CorrectChoice $C_0 + C_1 = C$
+		\choice $C_0 - C_1 = C$
+	\end{randomizechoices}
+
+	\question How do AND proofs maintain zero-knowledge when proving multiple conditions?
+	\begin{randomizechoices}
+		\choice By using different challenges for each condition
+		\choice By encrypting all responses together
+		\CorrectChoice By using the same challenge for all conditions
+	\end{randomizechoices}
+
+	\question What does the Fiat-Shamir transformation replace the verifier with?
+	\begin{randomizechoices}
+		\choice A trusted third party
+		\CorrectChoice A hash function
+		\choice A quantum computer
+	\end{randomizechoices}
+
+	\question In Fiat-Shamir, how is the challenge $c$ computed?
+	\begin{randomizechoices}
+		\CorrectChoice $c = \text{Hash}(X, Y)$ where $X$ is instance and $Y$ is commitment
+		\choice $c$ is chosen randomly by the prover
+		\choice $c = X \oplus Y$ using XOR
+	\end{randomizechoices}
+
+	\question What property do interactive Sigma protocols have that Fiat-Shamir loses?
+	\begin{randomizechoices}
+		\choice Completeness
+		\CorrectChoice Deniability
+		\choice Soundness
+	\end{randomizechoices}
+
+	\question What is the Forking Lemma used for?
+	\begin{randomizechoices}
+		\choice Creating multiple parallel proofs
+		\CorrectChoice Extracting witnesses from Fiat-Shamir proofs
+		\choice Forking the blockchain
+	\end{randomizechoices}
+
+	\question Why are circuits important in modern zero-knowledge systems?
+	\begin{randomizechoices}
+		\choice They make proofs faster
+		\CorrectChoice Any computation can be represented as a circuit and proved
+		\choice They eliminate the need for trusted setup
+	\end{randomizechoices}
+
+	\question What was the first practical attack on Fiat-Shamir found in 2025?
+	\begin{randomizechoices}
+		\choice An attack on the hash function SHA-256
+		\CorrectChoice An attack on GKR-based proof systems that works for any hash function
+		\choice A quantum attack on the discrete log problem
+	\end{randomizechoices}
+
+	\question What does Zcash use zero-knowledge proofs for?
+	\begin{randomizechoices}
+		\choice Mining new coins faster
+		\CorrectChoice Proving transaction validity without revealing sender, receiver, or amount
+		\choice Preventing double spending attacks
+	\end{randomizechoices}
+
+	\question What are the two types of addresses in Zcash?
+	\begin{randomizechoices}
+		\choice Public and private addresses
+		\choice Bitcoin and Ethereum compatible addresses
+		\CorrectChoice Transparent (t-addresses) and shielded (z-addresses)
+	\end{randomizechoices}
+
+	\question What improvement did Zcash's Sapling upgrade (2018) bring?
+	\begin{randomizechoices}
+		\CorrectChoice Proof generation time reduced from ~40 seconds to ~2.5 seconds
+		\choice Complete elimination of trusted setup
+		\choice Support for smart contracts
+	\end{randomizechoices}
+
+	\question What is Google's recent ZK initiative focused on?
+	\begin{randomizechoices}
+		\choice Building a new cryptocurrency
+		\CorrectChoice Age verification without revealing personal data
+		\choice Replacing passwords with ZK proofs
+	\end{randomizechoices}
+
+	\question What is a key challenge for widespread ZK adoption according to the lecture?
+	\begin{randomizechoices}
+		\choice The mathematics is too complex to implement
+		\CorrectChoice Privacy must be easy to use and performance matters enormously
+		\choice Zero-knowledge proofs are not quantum resistant
+	\end{randomizechoices}
+
+\end{questions}
+
+\clearpage
+
+\subsection*{Answers}
+\printkeytable
+
+\end{document}

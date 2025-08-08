@@ -1,0 +1,170 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Quiz 2.1: Transport Layer Security}
+\author{Nadim Kobeissi}
+\subject{Multiple choice quiz to help you see how much you remembered from the Transport Layer Security session of the Applied Cryptography course.}
+\keywords{cryptography, security, encryption, authentication, TLS, SSL, HTTPS, certificates, forward secrecy, TLS attacks}
+
+\begin{document}
+\classhandoutheader
+\section*{Quiz 2.1: Transport Layer Security}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our Transport Layer Security session.\footnote{\url{https://appliedcryptography.page/slides/\#2-1}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the end. Good luck!
+\end{tcolorbox}
+
+\subsection*{Questions}
+
+\begin{questions}
+	\question What is the primary security goal of TLS?
+	\begin{randomizechoices}
+		\choice To compress data for efficient transmission
+		\CorrectChoice To defeat man-in-the-middle attacks through server authentication
+		\choice To provide anonymity for users browsing the web
+	\end{randomizechoices}
+
+	\question What does a TLS certificate contain?
+	\begin{randomizechoices}
+		\choice Only the server's private key
+		\CorrectChoice A public key and a signature of that key, plus associated information
+		\choice The session keys for encryption
+	\end{randomizechoices}
+
+	\question What was the revolutionary change introduced by Let's Encrypt in 2015?
+	\begin{randomizechoices}
+		\choice Stronger encryption algorithms
+		\CorrectChoice Free, automated certificate issuance and renewal
+		\choice Support for quantum-resistant cryptography
+	\end{randomizechoices}
+
+	\question In a TLS handshake, what is included in the ClientHello message?
+	\begin{randomizechoices}
+		\choice The server's certificate
+		\choice The client's private key
+		\CorrectChoice List of supported cipher suites and a Diffie-Hellman public key
+	\end{randomizechoices}
+
+	\question What is forward secrecy in TLS?
+	\begin{randomizechoices}
+		\choice The ability to encrypt future messages in advance
+		\CorrectChoice Past sessions remain secure even if long-term private keys are compromised
+		\choice Messages can be forwarded securely to other servers
+	\end{randomizechoices}
+
+	\question What was the Heartbleed vulnerability?
+	\begin{randomizechoices}
+		\choice A protocol design flaw in TLS 1.2
+		\CorrectChoice A buffer over-read bug in OpenSSL allowing memory disclosure
+		\choice A weak encryption algorithm in SSL 3.0
+	\end{randomizechoices}
+
+	\question What does the POODLE attack exploit?
+	\begin{randomizechoices}
+		\CorrectChoice Padding oracle vulnerability in SSL 3.0 after forcing a downgrade
+		\choice Weak random number generation in TLS
+		\choice Certificate validation failures
+	\end{randomizechoices}
+
+	\question What is the purpose of Certificate Transparency?
+	\begin{randomizechoices}
+		\choice To encrypt certificates during transmission
+		\CorrectChoice To make all certificate issuances publicly auditable in append-only logs
+		\choice To reduce the size of certificate chains
+	\end{randomizechoices}
+
+	\question What attack does the "DOWNGRD" magic value in TLS 1.3 prevent?
+	\begin{randomizechoices}
+		\choice Buffer overflow attacks
+		\CorrectChoice Version rollback attacks to older, vulnerable TLS versions
+		\choice Certificate forgery
+	\end{randomizechoices}
+
+	\question How many round trips does a TLS 1.3 handshake require before encrypted data can be sent?
+	\begin{randomizechoices}
+		\choice Zero round trips
+		\CorrectChoice One round trip
+		\choice Two round trips
+	\end{randomizechoices}
+
+	\question What was the FREAK attack?
+	\begin{randomizechoices}
+		\CorrectChoice An attack that factored 512-bit RSA export keys after forcing a downgrade
+		\choice A timing attack on AES encryption
+		\choice A collision attack on SHA-1 hashes
+	\end{randomizechoices}
+
+	\question What is the main vulnerability exploited by the Lucky Thirteen attack?
+	\begin{randomizechoices}
+		\choice Weak key generation
+		\CorrectChoice Timing differences in MAC verification with CBC mode padding
+		\choice Integer overflow in sequence numbers
+	\end{randomizechoices}
+
+	\question What cryptographic construction does TLS 1.3 use exclusively for bulk encryption?
+	\begin{randomizechoices}
+		\choice MAC-then-encrypt with CBC mode
+		\choice Stream ciphers like RC4
+		\CorrectChoice Authenticated encryption (AEAD) ciphers only
+	\end{randomizechoices}
+
+	\question What was the Logjam attack?
+	\begin{randomizechoices}
+		\choice An attack on logging mechanisms in TLS
+		\CorrectChoice A downgrade attack forcing weak 512-bit Diffie-Hellman groups
+		\choice A vulnerability in certificate chain validation
+	\end{randomizechoices}
+
+	\question Why did the US government classify cryptography as munitions in the 1990s?
+	\begin{randomizechoices}
+		\CorrectChoice To prevent foreign adversaries from using strong encryption
+		\choice To increase funding for cryptographic research
+		\choice To standardize encryption algorithms
+	\end{randomizechoices}
+
+	\question What is 0-RTT in TLS 1.3?
+	\begin{randomizechoices}
+		\choice A compression algorithm
+		\CorrectChoice The ability to send encrypted data in the first message using a preshared key
+		\choice A new certificate format
+	\end{randomizechoices}
+
+	\question What formal verification tool was used to analyze TLS 1.3 during its design?
+	\begin{randomizechoices}
+		\CorrectChoice ProVerif for automated protocol verification
+		\choice Wireshark for packet analysis
+		\choice OpenSSL for implementation testing
+	\end{randomizechoices}
+
+	\question What is the SWEET32 attack?
+	\begin{randomizechoices}
+		\CorrectChoice A birthday attack on 64-bit block ciphers requiring long-lived connections
+		\choice An attack on 32-bit systems
+		\choice A vulnerability in sugar-based random number generators
+	\end{randomizechoices}
+
+	\question What security trade-off exists with TLS 1.3's 0-RTT feature?
+	\begin{randomizechoices}
+		\choice It uses weaker encryption
+		\CorrectChoice It's vulnerable to replay attacks
+		\choice It doesn't provide forward secrecy
+	\end{randomizechoices}
+
+	\question What was the impact of the Bernstein v. United States case?
+	\begin{randomizechoices}
+		\choice It banned export of cryptographic software
+		\CorrectChoice It established that cryptographic source code is protected speech under the First Amendment
+		\choice It required all encryption to have government backdoors
+	\end{randomizechoices}
+
+\end{questions}
+
+\clearpage
+
+\subsection*{Answers}
+\printkeytable
+
+\end{document}

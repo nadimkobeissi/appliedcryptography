@@ -1,0 +1,170 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Quiz 1.5: Chosen-Plaintext \& Chosen-Ciphertext Attacks}
+\author{Nadim Kobeissi}
+\subject{Multiple choice quiz to help you see how much you remembered from the Chosen-Plaintext \& Chosen-Ciphertext Attacks session of the Applied Cryptography course.}
+\keywords{cryptography, security, encryption, authentication, CPA, CCA, malleability, MAC, authenticated encryption}
+
+\begin{document}
+\classhandoutheader
+\section*{Quiz 1.5: Chosen-Plaintext \& Chosen-Ciphertext Attacks}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our Chosen-Plaintext \& Chosen-Ciphertext Attacks session.\footnote{\url{https://appliedcryptography.page/slides/\#1-5}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the end. Good luck!
+\end{tcolorbox}
+
+\subsection*{Questions}
+
+\begin{questions}
+	\question What does CPA security guarantee about an encryption scheme?
+	\begin{randomizechoices}
+		\choice The ciphertext is always shorter than the plaintext
+		\CorrectChoice Even if attackers can encrypt chosen messages, ciphertexts appear random
+		\choice The encryption key can be recovered from the ciphertext
+	\end{randomizechoices}
+
+	\question What information is allowed to leak even in a CPA-secure encryption scheme?
+	\begin{randomizechoices}
+		\choice The encryption key
+		\choice The first byte of the plaintext
+		\CorrectChoice The length of the message
+	\end{randomizechoices}
+
+	\question Why does deterministic encryption always fail CPA security?
+	\begin{randomizechoices}
+		\CorrectChoice The same message always encrypts to the same ciphertext
+		\choice It uses weak encryption algorithms
+		\choice The key is too short
+	\end{randomizechoices}
+
+	\question What is the "Golden Rule of PRFs" in cryptographic constructions?
+	\begin{randomizechoices}
+		\choice Always use the longest possible key
+		\CorrectChoice Security depends on ensuring distinct inputs to the PRF
+		\choice PRFs should only be used for authentication
+	\end{randomizechoices}
+
+	\question What makes CTR mode different from CBC mode?
+	\begin{randomizechoices}
+		\choice CTR mode requires padding
+		\choice CTR mode is sequential and cannot be parallelized
+		\CorrectChoice CTR mode is highly parallelizable and acts like a stream cipher
+	\end{randomizechoices}
+
+	\question In a format-oracle attack, what does the oracle reveal?
+	\begin{randomizechoices}
+		\choice The complete plaintext
+		\CorrectChoice A small piece of information about the decrypted plaintext's format
+		\choice The encryption key
+	\end{randomizechoices}
+
+	\question What property makes CTR mode vulnerable to chosen-ciphertext attacks?
+	\begin{randomizechoices}
+		\choice It uses weak encryption
+		\CorrectChoice It is malleable - bit flips in ciphertext cause predictable changes in plaintext
+		\choice It requires too much memory
+	\end{randomizechoices}
+
+	\question In the null-oracle attack, how many queries are needed to recover one byte?
+	\begin{randomizechoices}
+		\choice Exactly 256 queries
+		\CorrectChoice At most 255 queries
+		\choice At least 1000 queries
+	\end{randomizechoices}
+
+	\question What is the difference between CPA and CCA security?
+	\begin{randomizechoices}
+		\choice CPA is stronger than CCA
+		\CorrectChoice CCA additionally protects against adversaries who can decrypt chosen ciphertexts
+		\choice They are the same thing
+	\end{randomizechoices}
+
+	\question What does a Message Authentication Code (MAC) provide?
+	\begin{randomizechoices}
+		\choice Only confidentiality
+		\choice Only compression
+		\CorrectChoice Integrity and authenticity
+	\end{randomizechoices}
+
+	\question Which MAC-and-encrypt combination is always CCA-secure?
+	\begin{randomizechoices}
+		\choice MAC-then-encrypt
+		\CorrectChoice Encrypt-then-MAC
+		\choice Encrypt-and-MAC
+	\end{randomizechoices}
+
+	\question Why is Encrypt-and-MAC not even CPA-secure?
+	\begin{randomizechoices}
+		\choice The encryption is too weak
+		\choice The MAC key is exposed
+		\CorrectChoice The MAC is computed on plaintext, leaking equality information
+	\end{randomizechoices}
+
+	\question What is Authenticated Encryption (AE)?
+	\begin{randomizechoices}
+		\CorrectChoice Encryption that provides both confidentiality and authenticity
+		\choice Encryption that requires user authentication
+		\choice Encryption that uses public key certificates
+	\end{randomizechoices}
+
+	\question What is the most widely used AEAD scheme in modern protocols?
+	\begin{randomizechoices}
+		\choice AES-CBC with HMAC
+		\CorrectChoice AES-GCM
+		\choice Triple DES
+	\end{randomizechoices}
+
+	\question What happens if you reuse a nonce in AES-GCM?
+	\begin{randomizechoices}
+		\choice Nothing, it's still secure
+		\choice Only confidentiality is lost
+		\CorrectChoice Complete loss of both confidentiality and authentication
+	\end{randomizechoices}
+
+	\question What is the purpose of associated data in AEAD?
+	\begin{randomizechoices}
+		\choice To compress the ciphertext
+		\CorrectChoice To bind context information without encrypting it
+		\choice To store the encryption key
+	\end{randomizechoices}
+
+	\question How does ChaCha20-Poly1305 compare to AES-GCM on devices without AES hardware?
+	\begin{randomizechoices}
+		\choice It's much slower
+		\CorrectChoice It has excellent performance
+		\choice They perform identically
+	\end{randomizechoices}
+
+	\question What type of attack can AEAD schemes still be vulnerable to?
+	\begin{randomizechoices}
+		\choice Brute force attacks on the ciphertext
+		\CorrectChoice Replay attacks
+		\choice Frequency analysis
+	\end{randomizechoices}
+
+	\question What does the Fujisaki-Okamoto transform do?
+	\begin{randomizechoices}
+		\choice Converts symmetric encryption to asymmetric
+		\CorrectChoice Converts CPA-secure public-key encryption to CCA-secure
+		\choice Increases the key size
+	\end{randomizechoices}
+
+	\question What is key commitment in authenticated encryption?
+	\begin{randomizechoices}
+		\choice Committing to use the same key forever
+		\CorrectChoice A ciphertext should only decrypt correctly under the key that created it
+		\choice Publicly revealing part of the key
+	\end{randomizechoices}
+
+\end{questions}
+
+\clearpage
+
+\subsection*{Answers}
+\printkeytable
+
+\end{document}

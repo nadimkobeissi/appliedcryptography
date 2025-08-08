@@ -1,0 +1,170 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Quiz 2.6: Post-Quantum Cryptography}
+\author{Nadim Kobeissi}
+\subject{Multiple choice quiz to help you see how much you remembered from the post-quantum cryptography session of the Applied Cryptography course.}
+\keywords{cryptography, post-quantum, quantum computing, Shor's algorithm, Grover's algorithm, Learning with Errors, LWE, lattice-based cryptography, CRYSTALS-Kyber, NIST PQC}
+
+\begin{document}
+\classhandoutheader
+\section*{Quiz 2.6: Post-Quantum Cryptography}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our post-quantum cryptography session.\footnote{\url{https://appliedcryptography.page/slides/\#2-6}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the end. Good luck!
+\end{tcolorbox}
+
+\subsection*{Questions}
+
+\begin{questions}
+	\question What fundamental property of quantum computers enables their computational advantage?
+	\begin{randomizechoices}
+		\choice They use faster transistors than classical computers
+		\CorrectChoice They exploit superposition and entanglement to process many states simultaneously
+		\choice They have more memory than classical computers
+	\end{randomizechoices}
+
+	\question What is the main impact of Shor's algorithm on current cryptography?
+	\begin{randomizechoices}
+		\choice It speeds up symmetric encryption by a quadratic factor
+		\CorrectChoice It can efficiently factor integers and solve discrete logarithm problems
+		\choice It breaks all hash functions in polynomial time
+	\end{randomizechoices}
+
+	\question How does Grover's algorithm affect symmetric cryptography?
+	\begin{randomizechoices}
+		\choice It completely breaks all symmetric ciphers
+		\CorrectChoice It provides a quadratic speedup, effectively halving the security level
+		\choice It has no impact on symmetric cryptography
+	\end{randomizechoices}
+
+	\question What is the ``store now, decrypt later'' threat?
+	\begin{randomizechoices}
+		\CorrectChoice Adversaries storing encrypted data today to decrypt with future quantum computers
+		\choice A technique for compressing encrypted data for long-term storage
+		\choice A method for time-delayed encryption
+	\end{randomizechoices}
+
+	\question What is the Learning with Errors (LWE) problem based on?
+	\begin{randomizechoices}
+		\choice Finding collisions in hash functions
+		\CorrectChoice Solving noisy systems of linear equations
+		\choice Factoring products of large primes
+	\end{randomizechoices}
+
+	\question Why can't Gaussian elimination solve LWE problems efficiently?
+	\begin{randomizechoices}
+		\choice The matrices are too large
+		\CorrectChoice Small errors destroy the exact cancellations needed for the algorithm
+		\choice Quantum computers can interfere with the process
+	\end{randomizechoices}
+
+	\question What is a Key Encapsulation Mechanism (KEM)?
+	\begin{randomizechoices}
+		\choice A method where both parties contribute randomness to generate a shared key
+		\CorrectChoice A protocol where one party generates and encrypts a key for the other to decrypt
+		\choice A compression algorithm for public keys
+	\end{randomizechoices}
+
+	\question Which NIST-standardized algorithm is used for post-quantum key encapsulation?
+	\begin{randomizechoices}
+		\choice RSA-OAEP
+		\CorrectChoice ML-KEM (formerly CRYSTALS-Kyber)
+		\choice ECDH
+	\end{randomizechoices}
+
+	\question What is the main advantage of hash-based signatures like SPHINCS+?
+	\begin{randomizechoices}
+		\choice They have the smallest signature sizes
+		\CorrectChoice They rely only on the security of hash functions, the most conservative assumption
+		\choice They can also be used for encryption
+	\end{randomizechoices}
+
+	\question What is X-Wing in the context of post-quantum cryptography?
+	\begin{randomizechoices}
+		\choice A quantum computer architecture
+		\CorrectChoice A hybrid KEM combining X25519 and ML-KEM-768
+		\choice A new quantum-resistant hash function
+	\end{randomizechoices}
+
+	\question Why do post-quantum TLS implementations use hybrid cryptography?
+	\begin{randomizechoices}
+		\choice To make connections faster
+		\CorrectChoice To maintain security if either classical or post-quantum algorithms are broken
+		\choice To reduce bandwidth requirements
+	\end{randomizechoices}
+
+	\question What was the KyberSlash vulnerability?
+	\begin{randomizechoices}
+		\choice A mathematical break of the Kyber algorithm
+		\CorrectChoice A timing side-channel attack on Kyber implementations
+		\choice A quantum attack on Kyber's key generation
+	\end{randomizechoices}
+
+	\question How does Apple's PQ3 protocol handle the large size of post-quantum keys?
+	\begin{randomizechoices}
+		\choice It compresses keys using quantum algorithms
+		\CorrectChoice It sends new KEM keys approximately every 50 messages instead of with each message
+		\choice It uses smaller, less secure post-quantum algorithms
+	\end{randomizechoices}
+
+	\question What is Signal's PQXDH protocol?
+	\begin{randomizechoices}
+		\CorrectChoice A post-quantum extension of X3DH for initial key agreement
+		\choice A compression algorithm for post-quantum signatures
+		\choice A quantum-resistant messaging format
+	\end{randomizechoices}
+
+	\question What innovation does Signal's Triple Ratchet use to improve efficiency?
+	\begin{randomizechoices}
+		\choice Quantum compression of messages
+		\CorrectChoice Erasure codes to split KEM messages across multiple transmissions
+		\choice Triple encryption with three different algorithms
+	\end{randomizechoices}
+
+	\question According to Google's threat model, which cryptographic use case has the highest urgency for PQ migration?
+	\begin{randomizechoices}
+		\choice Digital signatures for software
+		\CorrectChoice Encryption in transit (TLS, SSH)
+		\choice Stateless tokens (JWT)
+	\end{randomizechoices}
+
+	\question What is the main challenge with post-quantum signatures in PKI?
+	\begin{randomizechoices}
+		\choice They are vulnerable to quantum attacks
+		\CorrectChoice Certificate chains become 5x larger, causing compatibility issues
+		\choice They require quantum computers to verify
+	\end{randomizechoices}
+
+	\question Why are hardware-based signature systems particularly vulnerable to quantum computers?
+	\begin{randomizechoices}
+		\choice Hardware is more susceptible to quantum interference
+		\CorrectChoice Keys burned in ROM/fuses cannot be updated after quantum computers arrive
+		\choice Hardware signatures are weaker than software signatures
+	\end{randomizechoices}
+
+	\question What is the current state of quantum factorization capabilities (as of 2024)?
+	\begin{randomizechoices}
+		\choice Can factor RSA-2048 keys in hours
+		\CorrectChoice Can factor numbers up to 21 using specially constructed examples
+		\choice Can break all current encryption standards
+	\end{randomizechoices}
+
+	\question What percentage of TLS connections were using post-quantum cryptography as of 2025?
+	\begin{randomizechoices}
+		\choice Less than 5\%
+		\CorrectChoice Approximately 38\%
+		\choice Over 75\%
+	\end{randomizechoices}
+
+\end{questions}
+
+\clearpage
+
+\subsection*{Answers}
+\printkeytable
+
+\end{document}

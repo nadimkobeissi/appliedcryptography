@@ -1,0 +1,170 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Quiz 1.3: Provable Security \& Computational Cryptography}
+\author{Nadim Kobeissi}
+\subject{Multiple choice quiz to help you see how much you remembered from the Provable Security \& Computational Cryptography session of the Applied Cryptography course.}
+\keywords{provable security, computational cryptography, one-time pad, indistinguishability, libraries, subroutines, symmetric-key encryption, negligible functions, polynomial time, birthday paradox, bad event technique}
+
+\begin{document}
+\classhandoutheader
+\section*{Quiz 1.3: Provable Security \& Computational Cryptography}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our Provable Security \& Computational Cryptography session.\footnote{\url{https://appliedcryptography.page/slides/\#1-3}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the end. Good luck!
+\end{tcolorbox}
+
+\subsection*{Questions}
+
+\begin{questions}
+	\question What does it mean when we say an adversary has access to an encryption oracle?
+	\begin{randomizechoices}
+		\choice The adversary can decrypt any ciphertext
+		\CorrectChoice The adversary can choose messages and receive their encryptions
+		\choice The adversary knows the encryption key
+	\end{randomizechoices}
+
+	\question In the library/program model, what can programs NOT do?
+	\begin{randomizechoices}
+		\choice Call library subroutines
+		\CorrectChoice Read library variables directly
+		\choice See the output of function calls
+	\end{randomizechoices}
+
+	\question When are two libraries considered interchangeable?
+	\begin{randomizechoices}
+		\choice When they have the same source code
+		\choice When they run in the same amount of time
+		\CorrectChoice When they have the same interface and produce indistinguishable outputs
+	\end{randomizechoices}
+
+	\question Why is key reuse bad in One-Time Pad encryption?
+	\begin{randomizechoices}
+		\choice It makes encryption slower
+		\CorrectChoice XORing two ciphertexts reveals the XOR of the plaintexts
+		\choice It uses too much memory
+	\end{randomizechoices}
+
+	\question What are the three important aspects when defining a cryptographic primitive?
+	\begin{randomizechoices}
+		\CorrectChoice Syntax, correctness, and security
+		\choice Speed, memory usage, and security
+		\choice Encryption, decryption, and key generation
+	\end{randomizechoices}
+
+	\question What does one-time secrecy for symmetric-key encryption mean?
+	\begin{randomizechoices}
+		\choice Keys can only be generated once
+		\CorrectChoice Ciphertexts are indistinguishable from random when keys are used once
+		\choice Encryption can only be performed once per session
+	\end{randomizechoices}
+
+	\question In the concrete approach to provable security, what type of statements do we make?
+	\begin{randomizechoices}
+		\choice Algorithms are absolutely secure
+		\CorrectChoice Attacks require specific computational effort or have specific success probability
+		\choice Security depends on the implementation language
+	\end{randomizechoices}
+
+	\question According to the cost table, approximately how much would $2^{85}$ CPU cycles cost on Amazon EC2?
+	\begin{randomizechoices}
+		\choice \$130 million
+		\CorrectChoice \$140 billion
+		\choice \$20 trillion
+	\end{randomizechoices}
+
+	\question What is the security parameter typically denoted as?
+	\begin{randomizechoices}
+		\choice $n$
+		\CorrectChoice $\lambda$
+		\choice $k$
+	\end{randomizechoices}
+
+	\question What does it mean for a function to be negligible?
+	\begin{randomizechoices}
+		\choice It runs in polynomial time
+		\CorrectChoice It approaches zero faster than any polynomial fraction
+		\choice It can be computed efficiently
+	\end{randomizechoices}
+
+	\question In the birthday paradox, how many people do you need for a >50\% chance of a shared birthday?
+	\begin{randomizechoices}
+		\choice 50
+		\choice 183
+		\CorrectChoice 23
+	\end{randomizechoices}
+
+	\question What is the general implication of the birthday paradox for cryptography?
+	\begin{randomizechoices}
+		\choice We need small key spaces
+		\CorrectChoice Finding collisions happens with roughly $\sqrt{N}$ samples in a space of size $N$
+		\choice Birthday attacks are impossible to prevent
+	\end{randomizechoices}
+
+	\question In computational indistinguishability, what is the "advantage" of a distinguisher?
+	\begin{randomizechoices}
+		\choice The time it takes to distinguish libraries
+		\CorrectChoice The absolute difference in probabilities of outputting true
+		\choice The number of queries needed
+	\end{randomizechoices}
+
+	\question What is the key idea behind the "bad event" proof technique?
+	\begin{randomizechoices}
+		\choice Bad events always happen
+		\CorrectChoice Libraries differ only when a rare bad event occurs
+		\choice We can prevent all bad events
+	\end{randomizechoices}
+
+	\question What is the "end-of-time" strategy for bad events?
+	\begin{randomizechoices}
+		\choice Stop execution when bad events occur
+		\CorrectChoice Postpone bad event checking until the end of execution
+		\choice Ignore bad events entirely
+	\end{randomizechoices}
+
+	\question What happens when you replace XOR with AND in one-time pad?
+	\begin{randomizechoices}
+		\choice Encryption becomes faster
+		\choice Security is improved
+		\CorrectChoice Output is no longer uniformly distributed
+	\end{randomizechoices}
+
+	\question In the asymptotic approach, what type of adversaries do we consider?
+	\begin{randomizechoices}
+		\choice Quantum adversaries
+		\CorrectChoice Polynomial-time adversaries
+		\choice Unbounded adversaries
+	\end{randomizechoices}
+
+	\question What does AES-256 mean in terms of security parameter?
+	\begin{randomizechoices}
+		\choice It encrypts 256-bit messages
+		\CorrectChoice It uses $\lambda = 256$ (256-bit security)
+		\choice It runs 256 rounds of encryption
+	\end{randomizechoices}
+
+	\question According to the Bitcoin example, approximately how many SHA-256 hashes has the network performed in total?
+	\begin{randomizechoices}
+		\choice $2^{50}$
+		\choice $2^{75}$
+		\CorrectChoice $2^{95}$
+	\end{randomizechoices}
+
+	\question What probability is associated with winning the American Powerball lottery according to the slides?
+	\begin{randomizechoices}
+		\choice $2^{-40}$
+		\CorrectChoice $2^{-28.1}$
+		\choice $2^{-56.2}$
+	\end{randomizechoices}
+
+\end{questions}
+
+\clearpage
+
+\subsection*{Answers}
+\printkeytable
+
+\end{document}

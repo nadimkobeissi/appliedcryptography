@@ -1,0 +1,170 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Quiz 1.7: Hard Problems \& Diffie-Hellman}
+\author{Nadim Kobeissi}
+\subject{Multiple choice quiz to help you see how much you remembered from the Hard Problems \& Diffie-Hellman session of the Applied Cryptography course.}
+\keywords{cryptography, computational complexity, P vs NP, hard problems, discrete logarithm, Diffie-Hellman, key exchange, NP-complete, cryptographic protocols}
+
+\begin{document}
+\classhandoutheader
+\section*{Quiz 1.7: Hard Problems \& Diffie-Hellman}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our Hard Problems \& Diffie-Hellman session.\footnote{\url{https://appliedcryptography.page/slides/\#1-7}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the end. Good luck!
+\end{tcolorbox}
+
+\subsection*{Questions}
+
+\begin{questions}
+	\question What is the discrete logarithm problem?
+	\begin{randomizechoices}
+		\choice Finding the product of two large prime numbers
+		\CorrectChoice Given $g$, $p$, and $g^x \bmod p$, finding the secret exponent $x$
+		\choice Computing the greatest common divisor of two numbers
+	\end{randomizechoices}
+
+	\question What type of cryptographic primitive is Diffie-Hellman?
+	\begin{randomizechoices}
+		\choice A symmetric encryption algorithm
+		\choice A hash function
+		\CorrectChoice An asymmetric key exchange protocol
+	\end{randomizechoices}
+
+	\question What does the class P contain?
+	\begin{randomizechoices}
+		\CorrectChoice Problems solvable in polynomial time
+		\choice Problems that require exponential time to solve
+		\choice Problems with no known solution algorithm
+	\end{randomizechoices}
+
+	\question What is special about NP-complete problems?
+	\begin{randomizechoices}
+		\choice They can never be solved
+		\CorrectChoice If any one is solved efficiently, all problems in NP can be solved efficiently
+		\choice They require quantum computers to solve
+	\end{randomizechoices}
+
+	\question In Diffie-Hellman, what do Alice and Bob publicly exchange?
+	\begin{randomizechoices}
+		\choice Their private exponents $a$ and $b$
+		\choice The shared secret $g^{ab}$
+		\CorrectChoice Their public values $g^a$ and $g^b$
+	\end{randomizechoices}
+
+	\question What is the main vulnerability of unauthenticated Diffie-Hellman?
+	\begin{randomizechoices}
+		\choice Weak encryption strength
+		\CorrectChoice Man-in-the-middle attacks
+		\choice Key reuse vulnerabilities
+	\end{randomizechoices}
+
+	\question What does NIST stand for?
+	\begin{randomizechoices}
+		\choice National Internet Security Team
+		\CorrectChoice National Institute of Standards and Technology
+		\choice Network Infrastructure Security Testing
+	\end{randomizechoices}
+
+	\question What is a safe prime in the context of Diffie-Hellman?
+	\begin{randomizechoices}
+		\choice Any large prime number
+		\CorrectChoice A prime $p$ where $p = 2q + 1$ and $q$ is also prime
+		\choice A prime with exactly 2048 bits
+	\end{randomizechoices}
+
+	\question What is the Computational Diffie-Hellman (CDH) problem?
+	\begin{randomizechoices}
+		\choice Finding the discrete logarithm of a group element
+		\choice Factoring the product of two primes
+		\CorrectChoice Given $g^a$ and $g^b$, computing $g^{ab}$ without knowing $a$ or $b$
+	\end{randomizechoices}
+
+	\question What does the P vs NP problem ask?
+	\begin{randomizechoices}
+		\CorrectChoice Whether problems that are easy to verify are also easy to solve
+		\choice Whether quantum computers can solve all problems
+		\choice Whether encryption is mathematically possible
+	\end{randomizechoices}
+
+	\question What happens to Diffie-Hellman if a quantum computer running Shor's algorithm exists?
+	\begin{randomizechoices}
+		\choice It becomes twice as secure
+		\choice Nothing changes
+		\CorrectChoice It can be broken in polynomial time
+	\end{randomizechoices}
+
+	\question What is the relationship between DDH, CDH, and DLP in terms of hardness?
+	\begin{randomizechoices}
+		\choice DDH is harder than CDH which is harder than DLP
+		\CorrectChoice DDH $\leq$ CDH $\leq$ DLP (DDH is easier or equal)
+		\choice They are all equally hard
+	\end{randomizechoices}
+
+	\question What is a generator in a mathematical group?
+	\begin{randomizechoices}
+		\choice A random number generator
+		\choice The identity element of the group
+		\CorrectChoice An element whose powers produce every element in the group
+	\end{randomizechoices}
+
+	\question Why must $p$ be prime in standard Diffie-Hellman?
+	\begin{randomizechoices}
+		\CorrectChoice To ensure the group $\mathbb{Z}_p^*$ has clean mathematical structure and avoid small subgroup attacks
+		\choice To make computations faster
+		\choice Because composite numbers don't support exponentiation
+	\end{randomizechoices}
+
+	\question What is forward secrecy in the context of key exchange?
+	\begin{randomizechoices}
+		\choice The ability to predict future keys
+		\CorrectChoice Past communications remain secure even if long-term keys are compromised
+		\choice Encrypting messages for future decryption
+	\end{randomizechoices}
+
+	\question What modern variant of Diffie-Hellman uses smaller key sizes for equivalent security?
+	\begin{randomizechoices}
+		\choice RSA-DH
+		\choice Quantum Diffie-Hellman
+		\CorrectChoice Elliptic Curve Diffie-Hellman (ECDH)
+	\end{randomizechoices}
+
+	\question What is the typical key size for secure traditional Diffie-Hellman today?
+	\begin{randomizechoices}
+		\choice 256 bits
+		\choice 512 bits
+		\CorrectChoice 2048+ bits
+	\end{randomizechoices}
+
+	\question How does Signal authenticate Diffie-Hellman key exchanges?
+	\begin{randomizechoices}
+		\choice Using government-issued certificates
+		\CorrectChoice Through security numbers (fingerprints) that users can verify out-of-band
+		\choice It doesn't authenticate them
+	\end{randomizechoices}
+
+	\question What is the Clay Mathematics Institute prize for solving P vs NP?
+	\begin{randomizechoices}
+		\choice \$100,000
+		\CorrectChoice \$1,000,000
+		\choice \$10,000,000
+	\end{randomizechoices}
+
+	\question Why was RSA described as a "cryptographic dinosaur" in the lecture?
+	\begin{randomizechoices}
+		\choice It was invented before Diffie-Hellman
+		\CorrectChoice It's slow, being phased out, and not a building block for modern systems
+		\choice It requires quantum computers to work
+	\end{randomizechoices}
+
+\end{questions}
+
+\clearpage
+
+\subsection*{Answers}
+\printkeytable
+
+\end{document}

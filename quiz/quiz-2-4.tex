@@ -1,0 +1,170 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Quiz 2.4: End-to-End Encrypted Cloud Storage}
+\author{Nadim Kobeissi}
+\subject{Multiple choice quiz to help you see how much you remembered from the end-to-end encrypted cloud storage session of the Applied Cryptography course.}
+\keywords{cryptography, security, encryption, authentication, cloud storage, MEGA, Nextcloud, OPAQUE, key management}
+
+\begin{document}
+\classhandoutheader
+\section*{Quiz 2.4: End-to-End Encrypted Cloud Storage}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our end-to-end encrypted cloud storage session.\footnote{\url{https://appliedcryptography.page/slides/\#2-4}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the end. Good luck!
+\end{tcolorbox}
+
+\subsection*{Questions}
+
+\begin{questions}
+	\question What is the main difference between regular cloud storage and E2EE cloud storage?
+	\begin{randomizechoices}
+		\choice E2EE storage is faster because it uses better algorithms
+		\CorrectChoice In E2EE storage, data is encrypted before upload and the provider never sees plaintext
+		\choice E2EE storage doesn't require passwords
+	\end{randomizechoices}
+
+	\question What is the ``mud puddle test'' for E2EE systems?
+	\begin{randomizechoices}
+		\choice Testing if devices are waterproof
+		\CorrectChoice If you lose your device and forget your password, can you recover data?
+		\choice Testing encryption strength against physical damage
+	\end{randomizechoices}
+
+	\question What was MEGA's critical mistake in their key hierarchy?
+	\begin{randomizechoices}
+		\CorrectChoice Using HKDF instead of a proper password hash like Argon2
+		\choice Encrypting files with the wrong algorithm
+		\choice Storing passwords in plaintext
+	\end{randomizechoices}
+
+	\question How did the RSA key recovery attack on MEGA work?
+	\begin{randomizechoices}
+		\choice By factoring the RSA modulus directly
+		\CorrectChoice By exploiting missing integrity protection to create a decryption oracle
+		\choice By stealing the password from memory
+	\end{randomizechoices}
+
+	\question What fundamental property does RSA-OAEP NOT provide?
+	\begin{randomizechoices}
+		\choice Confidentiality
+		\CorrectChoice Authentication (proof of who created the ciphertext)
+		\choice Chosen-ciphertext security
+	\end{randomizechoices}
+
+	\question What was Nextcloud's Ghost Key Attack?
+	\begin{randomizechoices}
+		\CorrectChoice Missing bounds checking caused files to be encrypted with all zeros
+		\choice A vulnerability in key generation
+		\choice Passwords were stored as ``ghosts'' in memory
+	\end{randomizechoices}
+
+	\question Why is IV reuse in AES-GCM catastrophic?
+	\begin{randomizechoices}
+		\choice It makes encryption slower
+		\CorrectChoice It reveals XOR of plaintexts and enables forgery
+		\choice It corrupts the encrypted files
+	\end{randomizechoices}
+
+	\question What drastic measure did Nextcloud take after the security vulnerabilities?
+	\begin{randomizechoices}
+		\choice They rewrote everything in Rust
+		\CorrectChoice They disabled E2EE file sharing entirely
+		\choice They switched to a different encryption algorithm
+	\end{randomizechoices}
+
+	\question What is OPAQUE in the context of authentication?
+	\begin{randomizechoices}
+		\CorrectChoice A zero-knowledge password protocol where server never learns the password
+		\choice An encryption algorithm for passwords
+		\choice A type of hardware security module
+	\end{randomizechoices}
+
+	\question What is an OPRF (Oblivious Pseudorandom Function)?
+	\begin{randomizechoices}
+		\choice A random number generator
+		\CorrectChoice A protocol where client gets F(k,x) without server learning x
+		\choice A function for generating passwords
+	\end{randomizechoices}
+
+	\question How does WhatsApp's E2EE backup system protect the backup key?
+	\begin{randomizechoices}
+		\choice Stores it in plaintext on their servers
+		\CorrectChoice Uses HSM-based key vault with password protection via OPAQUE
+		\choice Emails it to the user
+	\end{randomizechoices}
+
+	\question What is the main criticism of WhatsApp's HSM-based backup system?
+	\begin{randomizechoices}
+		\choice It's too slow
+		\CorrectChoice Users cannot verify that HSMs are actually being used
+		\choice It doesn't support group chats
+	\end{randomizechoices}
+
+	\question Why is WhatsApp's 64-digit key option problematic?
+	\begin{randomizechoices}
+		\choice It's not long enough for security
+		\CorrectChoice It's unnecessarily long and error-prone compared to mnemonic phrases
+		\choice It can be brute-forced easily
+	\end{randomizechoices}
+
+	\question What is Apple's approach to E2EE with Advanced Data Protection?
+	\begin{randomizechoices}
+		\choice Mandatory E2EE for all users
+		\CorrectChoice Optional E2EE with user choice between recovery key or Apple escrow
+		\choice No E2EE support at all
+	\end{randomizechoices}
+
+	\question What security property does the 2HashDH OPRF provide?
+	\begin{randomizechoices}
+		\choice Server can test password guesses offline
+		\CorrectChoice Server sees only random group elements, learns nothing about password
+		\choice It encrypts the password for transmission
+	\end{randomizechoices}
+
+	\question What was the common failure pattern across MEGA, Nextcloud, and other providers?
+	\begin{randomizechoices}
+		\choice Using weak passwords
+		\CorrectChoice Ad-hoc cryptographic designs without formal analysis
+		\choice Not supporting enough file types
+	\end{randomizechoices}
+
+	\question In OPAQUE registration, what does the client's envelope contain?
+	\begin{randomizechoices}
+		\choice The user's password in plaintext
+		\CorrectChoice The client's private key encrypted with password-derived key
+		\choice The server's public key
+	\end{randomizechoices}
+
+	\question What enables efficient file sharing in the formal E2EE storage scheme?
+	\begin{randomizechoices}
+		\choice Re-encrypting the entire file for each user
+		\CorrectChoice Separate headers containing file keys for each owner
+		\choice Storing files in plaintext on the server
+	\end{randomizechoices}
+
+	\question What is Signal's SVR3 approach to key recovery?
+	\begin{randomizechoices}
+		\choice Single HSM with password protection
+		\choice Storing keys in the blockchain
+		\CorrectChoice Distributing trust across 3 different hardware enclaves
+	\end{randomizechoices}
+
+	\question According to the formal treatment, what makes a good E2EE protocol design?
+	\begin{randomizechoices}
+		\choice Complex custom cryptography for maximum security
+		\CorrectChoice Simple design using standard primitives with formal proofs
+		\choice Using the newest experimental algorithms
+	\end{randomizechoices}
+
+\end{questions}
+
+\clearpage
+
+\subsection*{Answers}
+\printkeytable
+
+\end{document}

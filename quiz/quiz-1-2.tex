@@ -1,0 +1,170 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Quiz 1.2: One-Time Pad \& The Provable Security Mindset}
+\author{Nadim Kobeissi}
+\subject{Multiple choice quiz to help you see how much you remembered from the One-Time Pad \& The Provable Security Mindset session of the Applied Cryptography course.}
+\keywords{one-time pad, OTP, provable security, XOR, encryption, security proofs, Kerckhoff's principle, cryptographic oracles, adversary models}
+
+\begin{document}
+\classhandoutheader
+\section*{Quiz 1.2: One-Time Pad \& The Provable Security Mindset}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our One-Time Pad \& The Provable Security Mindset session.\footnote{\url{https://appliedcryptography.page/slides/\#1-2}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the end. Good luck!
+\end{tcolorbox}
+
+\subsection*{Questions}
+
+\begin{questions}
+	\question What does Kerckhoff's principle state?
+	\begin{randomizechoices}
+		\choice The key should be as long as the message
+		\CorrectChoice A cryptosystem should be secure even if everything except the key is public
+		\choice Security should rely on keeping the algorithm secret
+	\end{randomizechoices}
+
+	\question What operation does the One-Time Pad use for encryption?
+	\begin{randomizechoices}
+		\choice Modular addition
+		\choice AND operation
+		\CorrectChoice XOR (exclusive OR)
+	\end{randomizechoices}
+
+	\question What is the key property that makes XOR suitable for OTP?
+	\begin{randomizechoices}
+		\CorrectChoice It is self-inverse: $(M \oplus K) \oplus K = M$
+		\choice It always produces output of 1
+		\choice It compresses the data
+	\end{randomizechoices}
+
+	\question How should the key be selected in OTP for security?
+	\begin{randomizechoices}
+		\choice Using a simple pattern
+		\CorrectChoice From a uniform random distribution
+		\choice By reusing previous keys
+	\end{randomizechoices}
+
+	\question What does it mean when we say an adversary has access to an "encryption oracle"?
+	\begin{randomizechoices}
+		\choice The adversary can see the encryption key
+		\choice The adversary can decrypt any message
+		\CorrectChoice The adversary can choose messages and receive their ciphertexts
+	\end{randomizechoices}
+
+	\question In the OTP security model, what can the adversary NOT do?
+	\begin{randomizechoices}
+		\choice Query the oracle multiple times
+		\choice Choose any message to encrypt
+		\CorrectChoice See or influence the key selection
+	\end{randomizechoices}
+
+	\question What makes OTP provably secure?
+	\begin{randomizechoices}
+		\choice The key is very long
+		\CorrectChoice The ciphertext is uniformly distributed regardless of the plaintext
+		\choice The XOR operation is fast
+	\end{randomizechoices}
+
+	\question What probability does each possible ciphertext have in OTP for a given plaintext?
+	\begin{randomizechoices}
+		\choice 0
+		\choice 1
+		\CorrectChoice $\frac{1}{2^n}$ where $n$ is the message length in bits
+	\end{randomizechoices}
+
+	\question What does "real or random" mean in cryptographic security?
+	\begin{randomizechoices}
+		\CorrectChoice The adversary cannot distinguish actual ciphertexts from random data
+		\choice The key is either real or randomly generated
+		\choice The message is either meaningful or random
+	\end{randomizechoices}
+
+	\question What is a major limitation of security proofs?
+	\begin{randomizechoices}
+		\choice They are always wrong
+		\CorrectChoice They only address specific properties within specific models
+		\choice They make systems slower
+	\end{randomizechoices}
+
+	\question What type of attack violates the OTP security model assumptions?
+	\begin{randomizechoices}
+		\choice Choosing different plaintexts
+		\CorrectChoice Side-channel attacks observing power consumption
+		\choice Querying the oracle many times
+	\end{randomizechoices}
+
+	\question What happens if you reuse a key in OTP?
+	\begin{randomizechoices}
+		\choice The encryption becomes faster
+		\choice Nothing, it remains secure
+		\CorrectChoice Security is broken; patterns can be revealed
+	\end{randomizechoices}
+
+	\question Why doesn't AND work as well as XOR for OTP?
+	\begin{randomizechoices}
+		\choice AND is slower than XOR
+		\CorrectChoice The output is not uniformly distributed
+		\choice AND requires longer keys
+	\end{randomizechoices}
+
+	\question What alternative operation to XOR would still provide OTP security?
+	\begin{randomizechoices}
+		\CorrectChoice Modular addition
+		\choice AND operation
+		\choice OR operation
+	\end{randomizechoices}
+
+	\question What does "security through obscurity" mean?
+	\begin{randomizechoices}
+		\choice Using very complex mathematics
+		\CorrectChoice Relying on keeping the system design secret for security
+		\choice Making the ciphertext look random
+	\end{randomizechoices}
+
+	\question What is the correct relationship in OTP correctness?
+	\begin{randomizechoices}
+		\choice $\textsf{Enc}(K, \textsf{Dec}(K, C)) = C$
+		\CorrectChoice $\textsf{Dec}(K, \textsf{Enc}(K, M)) = M$
+		\choice $\textsf{Enc}(M, K) = \textsf{Dec}(M, K)$
+	\end{randomizechoices}
+
+	\question What assumption about the adversary is necessary for OTP security proofs?
+	\begin{randomizechoices}
+		\choice The adversary is computationally bounded
+		\choice The adversary cannot see ciphertexts
+		\CorrectChoice The adversary cannot influence key sampling
+	\end{randomizechoices}
+
+	\question What does sampling notation $K \twoheadleftarrow \bits^n$ mean?
+	\begin{randomizechoices}
+		\choice $K$ is set to all zeros
+		\CorrectChoice $K$ is randomly sampled from all possible $n$-bit strings
+		\choice $K$ is copied from another variable
+	\end{randomizechoices}
+
+	\question What is the value of security proofs despite their limitations?
+	\begin{randomizechoices}
+		\choice They guarantee real-world security
+		\choice They eliminate all possible attacks
+		\CorrectChoice They provide precise guarantees and identify security boundaries
+	\end{randomizechoices}
+
+	\question In the OTP attack model, why might two queries with the same $M$ return different ciphertexts?
+	\begin{randomizechoices}
+		\choice The encryption algorithm is probabilistic
+		\CorrectChoice The victim may use different randomly chosen keys
+		\choice There's an error in the implementation
+	\end{randomizechoices}
+
+\end{questions}
+
+\clearpage
+
+\subsection*{Answers}
+\printkeytable
+
+\end{document}

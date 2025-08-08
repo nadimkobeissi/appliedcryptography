@@ -1,0 +1,170 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Quiz 2.5: High-Assurance Cryptography}
+\author{Nadim Kobeissi}
+\subject{Multiple choice quiz to help you see how much you remembered from the high-assurance cryptography session of the Applied Cryptography course.}
+\keywords{cryptography, security, computer-aided cryptography, formal verification, symbolic security, computational security, ProVerif, Tamarin, F*, constant-time}
+
+\begin{document}
+\classhandoutheader
+\section*{Quiz 2.5: High-Assurance Cryptography}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our high-assurance cryptography session.\footnote{\url{https://appliedcryptography.page/slides/\#2-5}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the end. Good luck!
+\end{tcolorbox}
+
+\subsection*{Questions}
+
+\begin{questions}
+	\question What are the three levels of complexity in implementing cryptography?
+	\begin{randomizechoices}
+		\choice Algorithm level, protocol level, system level
+		\CorrectChoice Design level, implementation level, deployment level
+		\choice Mathematical level, coding level, testing level
+	\end{randomizechoices}
+
+	\question What is the main difference between symbolic and computational security models?
+	\begin{randomizechoices}
+		\choice Symbolic uses real encryption while computational uses abstract functions
+		\CorrectChoice Symbolic treats crypto as perfect black boxes while computational models concrete algorithms
+		\choice Computational is easier to analyze than symbolic
+	\end{randomizechoices}
+
+	\question What are trace properties in symbolic security?
+	\begin{randomizechoices}
+		\choice Properties about execution speed
+		\CorrectChoice Properties ensuring bad events never occur on any execution trace
+		\choice Properties about memory usage patterns
+	\end{randomizechoices}
+
+	\question Why are equivalence properties harder to verify than trace properties?
+	\begin{randomizechoices}
+		\choice They require more computational resources
+		\choice They need special hardware support
+		\CorrectChoice They require analyzing relations between traces rather than single traces
+	\end{randomizechoices}
+
+	\question What is diff-equivalence in ProVerif?
+	\begin{randomizechoices}
+		\choice A way to compare performance differences
+		\CorrectChoice The strongest equivalence notion requiring identical protocol structure
+		\choice A method for finding bugs in protocols
+	\end{randomizechoices}
+
+	\question In F*, what role does Z3 play during type checking?
+	\begin{randomizechoices}
+		\choice It optimizes the code for performance
+		\CorrectChoice It proves verification conditions to ensure code satisfies specifications
+		\choice It generates test cases automatically
+	\end{randomizechoices}
+
+	\question What is hax in the context of Rust cryptography?
+	\begin{randomizechoices}
+		\choice A debugging tool for finding memory leaks
+		\CorrectChoice A toolchain that extracts verification models from Rust code to F* or ProVerif
+		\choice A performance profiler for cryptographic code
+	\end{randomizechoices}
+
+	\question What makes cryptographic code an ideal target for formal verification?
+	\begin{randomizechoices}
+		\choice It's usually written in high-level languages
+		\CorrectChoice It has well-defined specs, small codebase, and is critically important
+		\choice It doesn't require mathematical proofs
+	\end{randomizechoices}
+
+	\question What is constant-time programming?
+	\begin{randomizechoices}
+		\choice Code that always runs in the same wall-clock time
+		\CorrectChoice Making execution independent of secret values to prevent side-channel attacks
+		\choice Using timers to ensure operations complete quickly
+	\end{randomizechoices}
+
+	\question Why can't you use if-statements with secret values in constant-time code?
+	\begin{randomizechoices}
+		\choice They make the code slower
+		\CorrectChoice They create branches that leak information through timing
+		\choice They cause compiler errors
+	\end{randomizechoices}
+
+	\question What problem can compilers cause for constant-time code?
+	\begin{randomizechoices}
+		\CorrectChoice They might reintroduce branches through optimizations
+		\choice They always make the code slower
+		\choice They remove all security features
+	\end{randomizechoices}
+
+	\question What is the constant-time leakage model?
+	\begin{randomizechoices}
+		\choice It only considers wall-clock timing
+		\CorrectChoice It leaks program counter and memory access patterns
+		\choice It measures power consumption
+	\end{randomizechoices}
+
+	\question What was revolutionary about TLS 1.3's development process?
+	\begin{randomizechoices}
+		\choice It was developed entirely in secret
+		\CorrectChoice Academic formal analysis was involved during design, not after
+		\choice It removed all cryptographic operations
+	\end{randomizechoices}
+
+	\question How many drafts did TLS 1.3 go through?
+	\begin{randomizechoices}
+		\choice 5 drafts
+		\choice 14 drafts
+		\CorrectChoice 28 drafts
+	\end{randomizechoices}
+
+	\question What is the main achievement of HACL*?
+	\begin{randomizechoices}
+		\CorrectChoice First verified crypto deployed at scale with performance parity
+		\choice First crypto library written in assembly
+		\choice First library to break all encryption
+	\end{randomizechoices}
+
+	\question What does ``verification-friendly design'' mean?
+	\begin{randomizechoices}
+		\choice Using only simple algorithms
+		\CorrectChoice Making small changes that dramatically simplify formal analysis
+		\choice Avoiding all optimizations
+	\end{randomizechoices}
+
+	\question What is the fundamental tension in cryptographic implementation?
+	\begin{randomizechoices}
+		\choice Between security and usability
+		\CorrectChoice Between easy-to-verify reference implementations and fast optimized code
+		\choice Between open source and proprietary code
+	\end{randomizechoices}
+
+	\question What was proven about verified Curve25519 implementations?
+	\begin{randomizechoices}
+		\choice They are always slower than unverified code
+		\CorrectChoice They can match or beat the performance of unverified implementations
+		\choice They only work on specific hardware
+	\end{randomizechoices}
+
+	\question What is observational non-interference?
+	\begin{randomizechoices}
+		\CorrectChoice A property where leakage is independent of secrets
+		\choice A way to prevent all side channels
+		\choice A method for faster encryption
+	\end{randomizechoices}
+
+	\question What lesson did TLS 1.3 teach about protocol development?
+	\begin{randomizechoices}
+		\choice Formal methods are too slow for real development
+		\CorrectChoice Machine-checked proofs can evolve with rapidly changing protocols
+		\choice Security analysis should only happen after standardization
+	\end{randomizechoices}
+
+\end{questions}
+
+\clearpage
+
+\subsection*{Answers}
+\printkeytable
+
+\end{document}

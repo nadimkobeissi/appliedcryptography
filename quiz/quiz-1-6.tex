@@ -1,0 +1,170 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Quiz 1.6: Collision Resistant Hash Functions}
+\author{Nadim Kobeissi}
+\subject{Multiple choice quiz to help you see how much you remembered from the Collision Resistant Hash Functions session of the Applied Cryptography course.}
+\keywords{hash functions, collision resistance, SHA-256, MD5, SHA-1, birthday paradox, rainbow tables, salt, HMAC, password hashing, PBKDF2, Scrypt, random oracle model, length extension attacks, Merkle-Damgård, sponge construction}
+
+\begin{document}
+\classhandoutheader
+\section*{Quiz 1.6: Collision Resistant Hash Functions}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our Collision Resistant Hash Functions session.\footnote{\url{https://appliedcryptography.page/slides/\#1-6}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the end. Good luck!
+\end{tcolorbox}
+
+\subsection*{Questions}
+
+\begin{questions}
+	\question What is a collision in the context of hash functions?
+	\begin{randomizechoices}
+		\choice When a hash function takes too long to compute
+		\CorrectChoice When two different inputs produce the same hash output
+		\choice When the hash output is larger than the input
+	\end{randomizechoices}
+
+	\question According to the birthday paradox, how many people do you need for a 50\% chance of a shared birthday?
+	\begin{randomizechoices}
+		\choice 183 people
+		\choice 50 people
+		\CorrectChoice 23 people
+	\end{randomizechoices}
+
+	\question What is the purpose of adding salt to password hashing?
+	\begin{randomizechoices}
+		\choice To make the hash computation faster
+		\CorrectChoice To prevent precomputation attacks like rainbow tables
+		\choice To compress the password before hashing
+	\end{randomizechoices}
+
+	\question Which hash function construction is vulnerable to length extension attacks?
+	\begin{randomizechoices}
+		\CorrectChoice Merkle-Damgård (used in SHA-2)
+		\choice Sponge construction (used in SHA-3)
+		\choice HMAC construction
+	\end{randomizechoices}
+
+	\question What researcher demonstrated the first practical MD5 collision in 2004?
+	\begin{randomizechoices}
+		\choice Bruce Schneier
+		\CorrectChoice Xiaoyun Wang
+		\choice Colin Percival
+	\end{randomizechoices}
+
+	\question What is HMAC designed to protect against?
+	\begin{randomizechoices}
+		\choice Birthday attacks
+		\choice Collision attacks
+		\CorrectChoice Length extension attacks
+	\end{randomizechoices}
+
+	\question In the sponge construction, what prevents length extension attacks?
+	\begin{randomizechoices}
+		\choice Using a different compression function
+		\CorrectChoice Hiding part of the internal state (capacity) from the output
+		\choice Processing blocks in parallel instead of sequentially
+	\end{randomizechoices}
+
+	\question What was the name of the 2017 SHA-1 collision attack by Google?
+	\begin{randomizechoices}
+		\choice Heartbleed
+		\choice POODLE
+		\CorrectChoice SHAttered
+	\end{randomizechoices}
+
+	\question Why is storing passwords in plaintext dangerous?
+	\begin{randomizechoices}
+		\choice It uses too much storage space
+		\choice It makes login verification slower
+		\CorrectChoice Attackers immediately get all passwords if the server is compromised
+	\end{randomizechoices}
+
+	\question What makes Scrypt a memory-hard function?
+	\begin{randomizechoices}
+		\choice It uses very large hash outputs
+		\CorrectChoice It requires storing a large array of pseudorandom values during computation
+		\choice It encrypts the password multiple times
+	\end{randomizechoices}
+
+	\question Approximately how many SHA-256 hashes can a high-end GPU compute per second?
+	\begin{randomizechoices}
+		\choice 20,000 hashes/second
+		\choice 1 million hashes/second
+		\CorrectChoice 2+ billion hashes/second
+	\end{randomizechoices}
+
+	\question What is PBKDF2?
+	\begin{randomizechoices}
+		\choice A type of rainbow table
+		\CorrectChoice A key derivation function that iterates a PRF many times
+		\choice A memory-hard hash function like Scrypt
+	\end{randomizechoices}
+
+	\question What property must collisions have due to the pigeonhole principle?
+	\begin{randomizechoices}
+		\choice They are impossible to find
+		\CorrectChoice They must exist when infinite inputs map to finite outputs
+		\choice They only occur with weak hash functions
+	\end{randomizechoices}
+
+	\question What is the Random Oracle Model?
+	\begin{randomizechoices}
+		\choice A real hash function implementation
+		\CorrectChoice A theoretical framework modeling hash functions as truly random functions
+		\choice A type of attack on hash functions
+	\end{randomizechoices}
+
+	\question Why is encrypting passwords (instead of hashing) a bad idea?
+	\begin{randomizechoices}
+		\choice Encryption is slower than hashing
+		\CorrectChoice The server needs the decryption key, which an attacker could also steal
+		\choice Encrypted passwords take up too much storage space
+	\end{randomizechoices}
+
+	\question What makes rainbow tables ineffective against salted hashes?
+	\begin{randomizechoices}
+		\choice Salted hashes are computed faster
+		\choice Salt makes the hash output longer
+		\CorrectChoice Each unique salt requires a completely new rainbow table
+	\end{randomizechoices}
+
+	\question What is protocol agility in cryptography?
+	\begin{randomizechoices}
+		\choice The speed at which protocols can be implemented
+		\CorrectChoice The ability to support and transition between multiple cryptographic algorithms
+		\choice A type of timing attack on protocols
+	\end{randomizechoices}
+
+	\question How much computational effort did the SHAttered attack require?
+	\begin{randomizechoices}
+		\choice About 1 CPU year
+		\CorrectChoice About 6,500 CPU years and 110 GPU years
+		\choice About 1 million CPU years
+	\end{randomizechoices}
+
+	\question What discovery about Joux's multi-collision attack was surprising?
+	\begin{randomizechoices}
+		\choice Multi-collisions are impossible to find
+		\choice Finding multi-collisions takes exponentially more work
+		\CorrectChoice Finding $2^n$ collisions only takes about $n$ times the work of finding one collision
+	\end{randomizechoices}
+
+	\question Why does Bitcoin mining demonstrate hash function security?
+	\begin{randomizechoices}
+		\choice It uses quantum-resistant hash functions
+		\CorrectChoice The extreme computational cost shows how hard it is to find specific hash patterns
+		\choice It proves that hash collisions don't exist
+	\end{randomizechoices}
+
+\end{questions}
+
+\clearpage
+
+\subsection*{Answers}
+\printkeytable
+
+\end{document}

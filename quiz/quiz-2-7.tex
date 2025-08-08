@@ -1,0 +1,170 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Quiz 2.7: Cryptocurrency Cryptography}
+\author{Nadim Kobeissi}
+\subject{Multiple choice quiz to help you see how much you remembered from the cryptocurrency cryptography session of the Applied Cryptography course.}
+\keywords{cryptography, security, Bitcoin, blockchain, proof-of-work, consensus, Ethereum, smart contracts, Layer 2}
+
+\begin{document}
+\classhandoutheader
+\section*{Quiz 2.7: Cryptocurrency Cryptography}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our cryptocurrency cryptography session.\footnote{\url{https://appliedcryptography.page/slides/\#2-7}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the end. Good luck!
+\end{tcolorbox}
+
+\subsection*{Questions}
+
+\begin{questions}
+	\question What is the core challenge that Bitcoin solved?
+	\begin{randomizechoices}
+		\choice Making digital payments faster than credit cards
+		\CorrectChoice Preventing double-spending without a trusted third party
+		\choice Encrypting financial transactions end-to-end
+	\end{randomizechoices}
+
+	\question In Bitcoin's proof-of-work, what makes a block hash valid?
+	\begin{randomizechoices}
+		\choice It must contain the correct timestamp
+		\CorrectChoice It must be less than the target difficulty threshold
+		\choice It must be divisible by the number of transactions
+	\end{randomizechoices}
+
+	\question What is the Byzantine Generals Problem?
+	\begin{randomizechoices}
+		\choice How to encrypt messages between military commanders
+		\CorrectChoice How to achieve consensus when some participants may be malicious
+		\choice How to prevent replay attacks in distributed systems
+	\end{randomizechoices}
+
+	\question What happens to Bitcoin's block reward every 210,000 blocks?
+	\begin{randomizechoices}
+		\choice It doubles to incentivize more miners
+		\choice It stays the same but transaction fees increase
+		\CorrectChoice It halves, reducing new Bitcoin creation
+	\end{randomizechoices}
+
+	\question What is a coinbase transaction?
+	\begin{randomizechoices}
+		\choice A transaction processed by the Coinbase exchange
+		\CorrectChoice The first transaction in a block that creates new Bitcoin
+		\choice A special transaction type for moving coins between wallets
+	\end{randomizechoices}
+
+	\question What does UTXO stand for in Bitcoin?
+	\begin{randomizechoices}
+		\choice Universal Transaction Exchange Order
+		\CorrectChoice Unspent Transaction Output
+		\choice Unified Token Transfer Operation
+	\end{randomizechoices}
+
+	\question Why does Bitcoin use Merkle trees in blocks?
+	\begin{randomizechoices}
+		\choice To encrypt all transactions together
+		\CorrectChoice To enable efficient verification without downloading full blocks
+		\choice To compress transaction data for faster mining
+	\end{randomizechoices}
+
+	\question What happens when two miners find blocks simultaneously?
+	\begin{randomizechoices}
+		\choice Both blocks are accepted and the chain splits permanently
+		\choice The network votes on which block to accept
+		\CorrectChoice The chain temporarily forks until the next block determines the winner
+	\end{randomizechoices}
+
+	\question What is the main difference between Ethereum and Bitcoin?
+	\begin{randomizechoices}
+		\choice Ethereum uses proof-of-stake instead of proof-of-work
+		\CorrectChoice Ethereum supports Turing-complete smart contracts
+		\choice Ethereum has faster block times and no mining
+	\end{randomizechoices}
+
+	\question What is gas in Ethereum?
+	\begin{randomizechoices}
+		\choice A cryptocurrency separate from ETH
+		\CorrectChoice A measure of computational cost for executing operations
+		\choice The reward given to validators for processing blocks
+	\end{randomizechoices}
+
+	\question What was "The Merge" in Ethereum?
+	\begin{randomizechoices}
+		\choice Combining Ethereum with Bitcoin
+		\choice Merging all Layer 2 solutions into one
+		\CorrectChoice Transitioning from proof-of-work to proof-of-stake
+	\end{randomizechoices}
+
+	\question In proof-of-stake, what is slashing?
+	\begin{randomizechoices}
+		\choice Reducing block rewards over time
+		\CorrectChoice Penalizing validators by taking their staked ETH for misbehavior
+		\choice Cutting transaction fees during network congestion
+	\end{randomizechoices}
+
+	\question What was the DAO hack's main vulnerability?
+	\begin{randomizechoices}
+		\choice Integer overflow in the balance calculation
+		\CorrectChoice Reentrancy allowing multiple withdrawals before balance update
+		\choice Weak cryptographic keys that were brute-forced
+	\end{randomizechoices}
+
+	\question What makes smart contracts "immutable"?
+	\begin{randomizechoices}
+		\choice They use unbreakable encryption
+		\CorrectChoice Their code cannot be changed after deployment
+		\choice They can only be called by the original deployer
+	\end{randomizechoices}
+
+	\question What is the purpose of Layer 2 solutions?
+	\begin{randomizechoices}
+		\choice To provide backup consensus if Layer 1 fails
+		\choice To add encryption to blockchain transactions
+		\CorrectChoice To scale transaction throughput while inheriting L1 security
+	\end{randomizechoices}
+
+	\question How do optimistic rollups ensure correctness?
+	\begin{randomizechoices}
+		\choice They use zero-knowledge proofs for every transaction
+		\CorrectChoice They assume transactions are valid but allow fraud proofs during a challenge period
+		\choice They require multiple validators to sign each block
+	\end{randomizechoices}
+
+	\question What is the main advantage of ZK rollups over optimistic rollups?
+	\begin{randomizechoices}
+		\choice They are easier to implement and deploy
+		\CorrectChoice They have instant finality without a withdrawal delay
+		\choice They support more complex smart contracts
+	\end{randomizechoices}
+
+	\question What is a validium?
+	\begin{randomizechoices}
+		\choice A type of sidechain with its own consensus
+		\CorrectChoice A ZK rollup that stores data off-chain for lower costs
+		\choice A bridge protocol between different blockchains
+	\end{randomizechoices}
+
+	\question What percentage of energy consumption did Ethereum reduce by switching to proof-of-stake?
+	\begin{randomizechoices}
+		\choice Approximately 50\%
+		\choice Approximately 75\%
+		\CorrectChoice Approximately 99.95\%
+	\end{randomizechoices}
+
+	\question What is the blockchain trilemma?
+	\begin{randomizechoices}
+		\choice Choosing between Bitcoin, Ethereum, or other chains
+		\CorrectChoice The difficulty of achieving decentralization, security, and scalability simultaneously
+		\choice The trade-off between transaction speed, cost, and finality
+	\end{randomizechoices}
+
+\end{questions}
+
+\clearpage
+
+\subsection*{Answers}
+\printkeytable
+
+\end{document}

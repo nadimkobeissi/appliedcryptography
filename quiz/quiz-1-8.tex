@@ -1,0 +1,170 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Quiz 1.8: Elliptic Curves \& Digital Signatures}
+\author{Nadim Kobeissi}
+\subject{Multiple choice quiz to help you see how much you remembered from the Elliptic Curves \& Digital Signatures session of the Applied Cryptography course.}
+\keywords{elliptic curves, ECC, ECDH, ECDSA, EdDSA, Curve25519, digital signatures, cryptographic security, discrete logarithm problem, ECDLP}
+
+\begin{document}
+\classhandoutheader
+\section*{Quiz 1.8: Elliptic Curves \& Digital Signatures}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our Elliptic Curves \& Digital Signatures session.\footnote{\url{https://appliedcryptography.page/slides/\#1-8}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the end. Good luck!
+\end{tcolorbox}
+
+\subsection*{Questions}
+
+\begin{questions}
+	\question What is the key advantage of elliptic curve cryptography over RSA?
+	\begin{randomizechoices}
+		\choice It provides stronger encryption algorithms
+		\CorrectChoice It offers equivalent security with much smaller key sizes
+		\choice It eliminates the need for digital signatures
+	\end{randomizechoices}
+
+	\question What is the mathematical form of elliptic curves used in cryptography?
+	\begin{randomizechoices}
+		\choice $y = ax + b$ (linear equation)
+		\choice $x^2 + y^2 = 1$ (circle equation)
+		\CorrectChoice $y^2 = x^3 + ax + b$ (Weierstrass form)
+	\end{randomizechoices}
+
+	\question What is the elliptic curve discrete logarithm problem (ECDLP)?
+	\begin{randomizechoices}
+		\CorrectChoice Given points $G$ and $H = k \cdot G$, find the integer $k$
+		\choice Computing the product of two elliptic curve points
+		\choice Finding the inverse of a point on an elliptic curve
+	\end{randomizechoices}
+
+	\question How does point addition work geometrically on an elliptic curve?
+	\begin{randomizechoices}
+		\choice By computing the average of the two points
+		\CorrectChoice By drawing a line through the points and reflecting the third intersection
+		\choice By multiplying the coordinates modulo a prime
+	\end{randomizechoices}
+
+	\question What makes ECDH more secure than finite field Diffie-Hellman for the same key size?
+	\begin{randomizechoices}
+		\choice ECDH uses stronger hash functions
+		\choice ECDH has faster computation times
+		\CorrectChoice Index calculus attacks don't work on elliptic curves
+	\end{randomizechoices}
+
+	\question What was the critical flaw in Sony's PlayStation 3 ECDSA implementation?
+	\begin{randomizechoices}
+		\choice They used weak elliptic curves
+		\CorrectChoice They reused the same random nonce $k$ for different signatures
+		\choice They didn't validate signature points
+	\end{randomizechoices}
+
+	\question What is the main difference between ECDSA and EdDSA?
+	\begin{randomizechoices}
+		\choice ECDSA is faster than EdDSA
+		\choice EdDSA requires larger key sizes
+		\CorrectChoice EdDSA uses deterministic nonce generation while ECDSA requires randomness
+	\end{randomizechoices}
+
+	\question Why are NIST curves controversial in the cryptographic community?
+	\begin{randomizechoices}
+		\CorrectChoice The NSA-chosen constants have unexplained origins
+		\choice They are mathematically proven to be weak
+		\choice They require too much computational power
+	\end{randomizechoices}
+
+	\question What is Curve25519's cofactor and why does it matter?
+	\begin{randomizechoices}
+		\choice 1, making it a prime-order curve
+		\choice 4, which improves performance
+		\CorrectChoice 8, which enables small subgroup attacks if not handled properly
+	\end{randomizechoices}
+
+	\question What is an invalid curve attack?
+	\begin{randomizechoices}
+		\choice Using expired certificates in TLS
+		\CorrectChoice Sending a point from a different curve to exploit weak validation
+		\choice Attempting to factor the curve's prime modulus
+	\end{randomizechoices}
+
+	\question How can you prevent small subgroup attacks in ECDH?
+	\begin{randomizechoices}
+		\choice Use larger key sizes
+		\choice Implement faster scalar multiplication
+		\CorrectChoice Validate that points have the correct order or use prime-order curves
+	\end{randomizechoices}
+
+	\question What is the purpose of the Ristretto construction?
+	\begin{randomizechoices}
+		\choice To make elliptic curves quantum-resistant
+		\CorrectChoice To provide prime-order group abstraction on non-prime-order curves
+		\choice To speed up point multiplication operations
+	\end{randomizechoices}
+
+	\question What makes Ed25519 particularly suitable for modern applications?
+	\begin{randomizechoices}
+		\choice It uses the largest key sizes available
+		\choice It's compatible with all legacy systems
+		\CorrectChoice It's deterministic, fast, and resistant to bad RNG vulnerabilities
+	\end{randomizechoices}
+
+	\question Why is constant-time implementation important for ECC?
+	\begin{randomizechoices}
+		\choice To ensure consistent performance across platforms
+		\CorrectChoice To prevent timing attacks that could reveal private keys
+		\choice To comply with industry standards
+	\end{randomizechoices}
+
+	\question What security level does a 256-bit ECC key approximately provide?
+	\begin{randomizechoices}
+		\choice 256 bits of security
+		\choice 512 bits of security
+		\CorrectChoice 128 bits of security
+	\end{randomizechoices}
+
+	\question What was the consequence of Ed25519 validation inconsistencies?
+	\begin{randomizechoices}
+		\choice Increased computation time for verification
+		\CorrectChoice Different implementations accepting/rejecting the same signatures
+		\choice Complete breakdown of the signature scheme
+	\end{randomizechoices}
+
+	\question Which elliptic curve is most widely used in modern secure messaging?
+	\begin{randomizechoices}
+		\choice NIST P-256
+		\choice Brainpool curves
+		\CorrectChoice Curve25519/Ed25519
+	\end{randomizechoices}
+
+	\question What happens if you don't validate the equation $y^2 = x^3 + ax + b$ for received points?
+	\begin{randomizechoices}
+		\choice The computation will fail with an error
+		\CorrectChoice An attacker could force operations on a weaker curve
+		\choice The signature will be larger than expected
+	\end{randomizechoices}
+
+	\question What is the relationship between X25519 and Ed25519?
+	\begin{randomizechoices}
+		\choice They are completely unrelated algorithms
+		\choice X25519 is for signatures, Ed25519 is for key exchange
+		\CorrectChoice X25519 is for key exchange, Ed25519 is for signatures, both use Curve25519
+	\end{randomizechoices}
+
+	\question Why should you never implement elliptic curve cryptography from scratch?
+	\begin{randomizechoices}
+		\choice It's legally prohibited by patents
+		\choice The mathematics are too complex to understand
+		\CorrectChoice Cryptographic implementations require years of hardening against subtle attacks
+	\end{randomizechoices}
+
+\end{questions}
+
+\clearpage
+
+\subsection*{Answers}
+\printkeytable
+
+\end{document}

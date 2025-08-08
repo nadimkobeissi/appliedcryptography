@@ -1,0 +1,170 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Quiz 2.2: The Story of RC4}
+\author{Nadim Kobeissi}
+\subject{Multiple choice quiz to help you see how much you remembered from the RC4 session of the Applied Cryptography course.}
+\keywords{RC4, stream cipher, cryptanalysis, WEP, TLS, FMS attack, statistical biases, ABSAB bias, cryptographic lifecycle}
+
+\begin{document}
+\classhandoutheader
+\section*{Quiz 2.2: The Story of RC4}
+
+\begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
+	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our RC4 session.\footnote{\url{https://appliedcryptography.page/slides/\#2-2}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the end. Good luck!
+\end{tcolorbox}
+
+\subsection*{Questions}
+
+\begin{questions}
+	\question When was RC4 designed and by whom?
+	\begin{randomizechoices}
+		\choice 1994 by Bruce Schneier
+		\CorrectChoice 1987 by Ron Rivest
+		\choice 1991 by Phil Zimmermann
+	\end{randomizechoices}
+
+	\question What happened to RC4 in 1994?
+	\begin{randomizechoices}
+		\choice It was officially published by RSA Security
+		\choice It was broken by cryptanalysts
+		\CorrectChoice The algorithm was anonymously leaked to the Cypherpunks mailing list
+	\end{randomizechoices}
+
+	\question What is the size of RC4's internal state array?
+	\begin{randomizechoices}
+		\choice 128 bytes
+		\CorrectChoice 256 bytes
+		\choice 512 bytes
+	\end{randomizechoices}
+
+	\question In RC4's Key Scheduling Algorithm (KSA), what creates the initial permutation?
+	\begin{randomizechoices}
+		\choice XORing the key with random values
+		\CorrectChoice Swapping array elements based on the key bytes
+		\choice Hashing the key multiple times
+	\end{randomizechoices}
+
+	\question What was the first major statistical bias discovered in RC4 (1995)?
+	\begin{randomizechoices}
+		\CorrectChoice The second byte of keystream has probability 2/256 of being zero
+		\choice The first byte is always predictable
+		\choice Every 256th byte repeats
+	\end{randomizechoices}
+
+	\question What is the FMS attack (2001)?
+	\begin{randomizechoices}
+		\choice An attack on RC4's random number generator
+		\CorrectChoice An attack exploiting weak keys in RC4 to recover the secret key
+		\choice A timing attack on RC4 implementations
+	\end{randomizechoices}
+
+	\question In WEP, what made it vulnerable to the FMS attack?
+	\begin{randomizechoices}
+		\choice Using short 40-bit keys
+		\choice Using the same key for all packets
+		\CorrectChoice Prepending a plaintext IV to the secret key, creating related keys
+	\end{randomizechoices}
+
+	\question What is the vulnerable IV pattern in the FMS attack for attacking key byte $K_A$?
+	\begin{randomizechoices}
+		\choice $(A, 255, 255)$
+		\CorrectChoice $(A+3, 255, x)$ where x is any value
+		\choice $(255, A, 0)$
+	\end{randomizechoices}
+
+	\question How many packets did the PTW attack (2007) need to crack WEP?
+	\begin{randomizechoices}
+		\choice 1-5 million packets
+		\choice 500,000 packets
+		\CorrectChoice As few as 40,000 packets
+	\end{randomizechoices}
+
+	\question Why did RC4 usage in TLS actually increase in 2011?
+	\begin{randomizechoices}
+		\choice RC4 got faster with new hardware
+		\CorrectChoice The BEAST attack on CBC mode made RC4 seem safer
+		\choice New versions of RC4 were released
+	\end{randomizechoices}
+
+	\question What did AlFardan et al. (2013) discover about RC4 in TLS?
+	\begin{randomizechoices}
+		\choice RC4 keys could be factored
+		\choice The implementation had buffer overflows
+		\CorrectChoice Statistical biases in RC4 keystream were exploitable with enough samples
+	\end{randomizechoices}
+
+	\question What is Mantin's ABSAB bias?
+	\begin{randomizechoices}
+		\choice A bias in the alphabet used by RC4
+		\CorrectChoice Certain digraph patterns (like ABAB) occur more frequently than expected
+		\choice The state array becomes sorted over time
+	\end{randomizechoices}
+
+	\question How many encryptions were typically needed for the broadcast attack on RC4 in TLS?
+	\begin{randomizechoices}
+		\choice $2^{10}$ to $2^{15}$
+		\CorrectChoice $2^{24}$ to $2^{30}$
+		\choice $2^{40}$ to $2^{50}$
+	\end{randomizechoices}
+
+	\question What did Garman et al. (2015) target to improve RC4 attacks?
+	\begin{randomizechoices}
+		\choice SSL certificates
+		\choice HTTP cookies
+		\CorrectChoice Password verifiers in Basic Authentication
+	\end{randomizechoices}
+
+	\question When did the IETF formally prohibit RC4 in TLS?
+	\begin{randomizechoices}
+		\choice 2013 with RFC 6465
+		\CorrectChoice 2015 with RFC 7465
+		\choice 2018 with RFC 8465
+	\end{randomizechoices}
+
+	\question What is WEP's IV size that contributed to its weakness?
+	\begin{randomizechoices}
+		\choice 8 bits
+		\choice 16 bits
+		\CorrectChoice 24 bits
+	\end{randomizechoices}
+
+	\question What tool first made WEP cracking practical for non-experts?
+	\begin{randomizechoices}
+		\CorrectChoice AirSnort (2001)
+		\choice Metasploit (2003)
+		\choice John the Ripper (1996)
+	\end{randomizechoices}
+
+	\question What modern stream cipher is recommended as an RC4 replacement?
+	\begin{randomizechoices}
+		\choice Salsa20
+		\CorrectChoice ChaCha20-Poly1305
+		\choice RC5
+	\end{randomizechoices}
+
+	\question What was the main lesson from WEP's failure?
+	\begin{randomizechoices}
+		\choice Stream ciphers should never be used
+		\choice All wireless protocols are insecure
+		\CorrectChoice Never use a stream cipher with related keys
+	\end{randomizechoices}
+
+	\question What does the RC4 story teach about cryptographic lifecycle?
+	\begin{randomizechoices}
+		\choice Ciphers should be replaced every 5 years
+		\CorrectChoice All ciphers eventually fall, so plan for migration from day one
+		\choice Proprietary ciphers are more secure than public ones
+	\end{randomizechoices}
+
+\end{questions}
+
+\clearpage
+
+\subsection*{Answers}
+\printkeytable
+
+\end{document}
