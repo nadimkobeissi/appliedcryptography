@@ -1,0 +1,163 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Lab Project F: Private Set Intersection for Contact Discovery}
+\author{Nadim Kobeissi}
+\subject{Lab project exploring privacy-preserving contact discovery using Private Set Intersection (PSI) and Oblivious Pseudorandom Functions (OPRF).}
+\keywords{private set intersection, PSI, OPRF, contact discovery, privacy-preserving protocols, secure multiparty computation, oblivious PRF, peppered hashing}
+
+\begin{document}
+\classhandoutheader
+\section*{Lab Project F: Private Set Intersection for Contact Discovery}
+
+\subsection*{Overview}
+In this lab project, you will tackle a fundamental privacy challenge in modern communication apps: how can users discover which of their contacts are using a service without revealing their entire address book? You'll build a privacy-preserving contact discovery system using Private Set Intersection (PSI), a cryptographic technique that allows two parties to find common elements in their sets without revealing non-matching items. Starting with the theoretical foundations of PSI protocols, you'll implement an Oblivious Pseudorandom Function (OPRF) based approach where the client can query whether specific contacts are registered while the server learns nothing about unsuccessful queries. The project guides you through designing secure wire protocols, implementing both server and client components, and addressing real-world security challenges such as preventing offline enumeration attacks through peppered hashing and implementing rate limiting to prevent abuse. You'll evaluate your system's performance with realistic address book sizes, exploring optimization techniques like batching and streaming to handle thousands of contacts efficiently. Advanced extensions include bandwidth optimization using probabilistic data structures like Bloom filters, adding authentication layers for enhanced security, and comparing your implementation against production systems used by Signal, WhatsApp, and other messaging platforms. By completing this lab, you'll gain deep understanding of how cryptographic protocols can preserve privacy in everyday applications while maintaining usability and performance.
+
+\subsection*{Learning Objectives}
+After completing this lab, you should be able to:
+\begin{itemize}
+	\item Implement Private Set Intersection protocols using Oblivious Pseudorandom Functions (OPRF).
+	\item Design and build secure wire protocols for privacy-preserving contact discovery.
+	\item Address real-world security challenges including enumeration attacks and rate limiting.
+	\item Optimize PSI protocols for performance with large datasets using batching and streaming techniques.
+\end{itemize}
+
+\subsection*{Background}
+Private Set Intersection enables two parties to find common elements in their sets without revealing non-matching items. In the context of contact discovery:
+\begin{itemize}
+	\item PSI allows users to discover which contacts use a service without revealing their entire address book.
+	\item OPRF-based PSI protocols provide efficient solutions where the client learns the intersection while the server learns nothing.
+	\item Peppered hashing prevents offline enumeration attacks by adding server-side secrets to contact hashes.
+	\item Production systems must balance privacy, performance, and practical constraints like bandwidth and latency.
+\end{itemize}
+
+\subsection*{Requirements}
+Your PSI contact discovery system must implement the following core functionality:
+
+\begin{enumerate}
+	\item \textbf{OPRF-based PSI Protocol:}
+	      \begin{itemize}
+		      \item Implement the OPRF evaluation protocol for blinded contact queries.
+		      \item Design the PSI protocol flow for contact set intersection.
+		      \item Ensure the server learns nothing about non-matching contacts.
+	      \end{itemize}
+
+	\item \textbf{Security Mechanisms:}
+	      \begin{itemize}
+		      \item Implement peppered hashing to prevent offline enumeration attacks.
+		      \item Add rate limiting to prevent abuse and large-scale enumeration.
+		      \item Design secure storage for server-side contact databases.
+	      \end{itemize}
+
+	\item \textbf{Wire Protocol Design:}
+	      \begin{itemize}
+		      \item Design efficient message formats for OPRF queries and responses.
+		      \item Implement batching for processing multiple contacts efficiently.
+		      \item Add authentication and integrity protection to protocol messages.
+	      \end{itemize}
+
+	\item \textbf{Performance Optimization:}
+	      \begin{itemize}
+		      \item Implement streaming protocols for large contact sets.
+		      \item Optimize bandwidth usage with compression or probabilistic data structures.
+		      \item Benchmark performance with realistic address book sizes (100-10,000 contacts).
+		      \item Analyze trade-offs between privacy, performance, and bandwidth.
+	      \end{itemize}
+\end{enumerate}
+
+\subsection*{Implementation Guidelines}
+
+\subsubsection*{Step 1: OPRF Foundation}
+Begin by implementing the OPRF primitive:
+\begin{itemize}
+	\item Choose an OPRF construction (e.g., based on Diffie-Hellman or RSA).
+	\item Implement the blinding and evaluation functions.
+	\item Verify correctness with test vectors.
+	\item Ensure the OPRF provides verifiable outputs.
+\end{itemize}
+
+Document your OPRF choice and security properties.
+
+\subsubsection*{Step 2: PSI Protocol Implementation}
+Build the PSI protocol on top of your OPRF:
+\begin{itemize}
+	\item Design the client-side protocol for querying contacts.
+	\item Implement the server-side protocol for OPRF evaluation.
+	\item Add the intersection computation logic.
+	\item Handle edge cases like empty sets and duplicate contacts.
+\end{itemize}
+
+\subsubsection*{Step 3: Security Enhancements}
+Add crucial security features:
+\begin{itemize}
+	\item Implement peppered hashing with secure pepper management.
+	\item Design rate limiting mechanisms (per-user and global).
+	\item Add authentication to prevent unauthorized queries.
+	\item Implement secure deletion for expired contact data.
+\end{itemize}
+
+\subsubsection*{Step 4: Performance Optimization}
+Optimize for real-world usage:
+\begin{itemize}
+	\item Implement batching to process multiple contacts per round.
+	\item Add streaming support for large contact sets.
+	\item Explore Bloom filters or cuckoo filters for bandwidth reduction.
+	\item Profile and optimize cryptographic operations.
+\end{itemize}
+
+\subsubsection*{Step 5: Evaluation and Comparison}
+Evaluate your implementation:
+\begin{itemize}
+	\item Benchmark with varying contact set sizes (100, 1000, 10000).
+	\item Measure bandwidth consumption and round-trip times.
+	\item Compare against naive approaches and existing systems.
+	\item Analyze privacy guarantees under different threat models.
+\end{itemize}
+
+\subsection*{Deliverables}
+Submit the following:
+
+\begin{enumerate}
+	\item Source code for your PSI contact discovery implementation.
+	\item Design document including:
+	      \begin{itemize}
+		      \item Detailed protocol specification and message formats.
+		      \item Security analysis and threat model.
+		      \item Justification for cryptographic choices and parameters.
+	      \end{itemize}
+	\item Performance analysis report with:
+	      \begin{itemize}
+		      \item Benchmarking results for different contact set sizes.
+		      \item Bandwidth and computational cost analysis.
+		      \item Comparison with production systems (Signal, WhatsApp).
+	      \end{itemize}
+	\item Security analysis discussing:
+	      \begin{itemize}
+		      \item Privacy guarantees against various adversaries.
+		      \item Resistance to enumeration and timing attacks.
+		      \item Trade-offs between privacy and performance.
+	      \end{itemize}
+\end{enumerate}
+
+\subsection*{Evaluation Criteria}
+Your project will be evaluated based on:
+
+\begin{itemize}
+	\item Correctness of the PSI protocol implementation.
+	\item Security of the overall system design.
+	\item Performance and scalability with realistic datasets.
+	\item Quality of optimizations and engineering decisions.
+	\item Quality of code and documentation.
+\end{itemize}
+
+\subsection*{Submission Guidelines}
+\begin{itemize}
+	\item Submit your code as a ZIP archive or through a Git repository.
+	\item Include all documentation in PDF or Markdown format.
+	\item Presentations: Prepare a 10-minute presentation demonstrating your PSI contact discovery system and its privacy properties.
+\end{itemize}
+
+\end{document}

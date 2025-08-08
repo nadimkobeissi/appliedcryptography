@@ -1,0 +1,161 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Lab Project G: Privacy-Preserving Age Verification}
+\author{Nadim Kobeissi}
+\subject{Lab project exploring privacy-preserving age verification systems using zero-knowledge proofs and anonymous credentials.}
+\keywords{privacy-preserving authentication, zero-knowledge proofs, anonymous credentials, selective disclosure, Pedersen commitments, Schnorr proofs, unlinkable signatures, age verification}
+
+\begin{document}
+\classhandoutheader
+\section*{Lab Project G: Privacy-Preserving Age Verification}
+
+\subsection*{Overview}
+In this lab project, you will design and implement a privacy-preserving age verification system that addresses a fundamental privacy challenge: how can you prove you're over 18 using your government-issued ID without revealing your actual age, name, address, or any other personal information? This lab project guides you through building a cryptographic protocol that enables selective disclosure—proving only what's necessary while keeping everything else private. You'll start by implementing a digital ID system using cryptographic commitments and signatures, then build zero-knowledge proofs that can verify age thresholds (e.g., "I am 18 or older") without revealing the exact birthdate. The system will ensure that even repeated age checks at different venues cannot be linked together to track users. You'll tackle real-world challenges including credential revocation (what happens when an ID expires or is reported stolen?), preventing credential sharing between users, and ensuring efficient verification that works on mobile devices. The lab explores the cryptographic primitives behind anonymous credentials, including Pedersen commitments for hiding attributes, Schnorr-style proofs for selective disclosure, and unlinkable signatures that prevent tracking across sessions. By completing this project, you'll understand how modern privacy-preserving identity systems work and gain hands-on experience implementing protocols that could enable age verification for online services, venue entry, or regulated purchases—all while preserving user privacy in ways that physical ID checks cannot achieve.
+
+\subsection*{Learning Objectives}
+After completing this lab, you should be able to:
+\begin{itemize}
+	\item Implement cryptographic commitments to hide personal attributes while allowing selective disclosure.
+	\item Design and implement zero-knowledge proofs for threshold predicates (e.g., age $\geq$ 18).
+	\item Build anonymous credential systems that prevent tracking across verification sessions.
+	\item Analyze and mitigate practical challenges including credential revocation and sharing prevention.
+\end{itemize}
+
+\subsection*{Background}
+Privacy-preserving age verification requires careful application of cryptographic techniques to balance verification needs with privacy protection:
+\begin{itemize}
+	\item Pedersen commitments allow hiding attribute values while enabling efficient zero-knowledge proofs about committed values.
+	\item Schnorr-style proofs enable proving statements about hidden values without revealing the values themselves.
+	\item Anonymous credentials provide unlinkability between different verification sessions, preventing tracking.
+	\item Revocation mechanisms must balance privacy with the ability to invalidate compromised or expired credentials.
+	\item Anti-sharing techniques prevent users from lending their credentials to others who don't meet the requirements.
+\end{itemize}
+
+\subsection*{Requirements}
+Your privacy-preserving age verification system must implement the following core functionality:
+
+\begin{enumerate}
+	\item \textbf{Digital ID Issuance:}
+	      \begin{itemize}
+		      \item Implement a credential issuance protocol where an authority issues digital IDs.
+		      \item Use cryptographic commitments to bind attributes (birthdate, expiry, etc.) to the credential.
+		      \item Ensure the issuer's signature validates the credential without revealing committed attributes.
+	      \end{itemize}
+
+	\item \textbf{Zero-Knowledge Age Proofs:}
+	      \begin{itemize}
+		      \item Implement zero-knowledge proofs for age threshold verification (e.g., age $\geq$ 18, age $\geq$ 21).
+		      \item Ensure proofs reveal no information beyond the threshold satisfaction.
+		      \item Support multiple threshold checks without revealing exact age.
+	      \end{itemize}
+
+	\item \textbf{Unlinkability and Privacy:}
+	      \begin{itemize}
+		      \item Implement unlinkable showing protocols preventing correlation across sessions.
+		      \item Ensure different verifications by the same user cannot be linked.
+		      \item Prevent the issuer from tracking credential usage.
+	      \end{itemize}
+
+	\item \textbf{Practical Security Features:}
+	      \begin{itemize}
+		      \item Design a revocation mechanism for expired or compromised credentials.
+		      \item Implement anti-sharing measures to prevent credential lending.
+		      \item Ensure efficient verification suitable for mobile devices.
+		      \item Handle edge cases like leap years and time zone considerations.
+	      \end{itemize}
+\end{enumerate}
+
+\subsection*{Implementation Guidelines}
+
+\subsubsection*{Step 1: Credential Structure Design}
+Begin by designing your digital ID structure:
+\begin{itemize}
+	\item What attributes need to be included? (birthdate, issuance date, expiry date, unique ID for revocation)
+	\item How will attributes be committed and bound to the credential?
+	\item What signature scheme will the issuer use?
+	\item How will you encode dates to enable efficient range proofs?
+\end{itemize}
+
+Document your design choices and their security implications.
+
+\subsubsection*{Step 2: Commitment and Issuance Protocol}
+Implement the credential issuance system:
+\begin{itemize}
+	\item Use Pedersen commitments to hide attribute values.
+	\item Implement the issuer's signature scheme (e.g., BBS+, CL signatures, or structure-preserving signatures).
+	\item Ensure the issuance protocol doesn't leak attribute information to the issuer beyond what's necessary.
+\end{itemize}
+
+\subsubsection*{Step 3: Zero-Knowledge Proof Construction}
+Build the zero-knowledge proof system for age verification:
+\begin{itemize}
+	\item Implement range proofs to prove age thresholds without revealing exact birthdate.
+	\item Use Schnorr-style proofs or Bulletproofs for efficient range proofs.
+	\item Ensure proof generation and verification are efficient enough for practical use.
+\end{itemize}
+
+\subsubsection*{Step 4: Unlinkability Mechanisms}
+Implement privacy-preserving showing protocols:
+\begin{itemize}
+	\item Design randomization techniques to make each showing unlinkable.
+	\item Implement proof of knowledge of a valid credential without revealing which one.
+	\item Ensure the issuer cannot track credential usage even with verifier collusion.
+\end{itemize}
+
+\subsubsection*{Step 5: Practical Features}
+Add real-world functionality:
+\begin{itemize}
+	\item Implement a privacy-preserving revocation mechanism (e.g., accumulators or revocation lists with zero-knowledge membership proofs).
+	\item Add anti-sharing measures (e.g., binding to device-specific secrets or biometric templates).
+	\item Optimize for mobile device constraints.
+\end{itemize}
+
+\subsection*{Deliverables}
+Submit the following:
+
+\begin{enumerate}
+	\item Source code for your privacy-preserving age verification system.
+	\item Design document including:
+	      \begin{itemize}
+		      \item Detailed protocol specifications for issuance and verification.
+		      \item Description of cryptographic primitives and their security properties.
+		      \item Privacy analysis showing unlinkability and selective disclosure guarantees.
+	      \end{itemize}
+	\item Performance analysis report with:
+	      \begin{itemize}
+		      \item Benchmarking results for proof generation and verification times.
+		      \item Storage requirements for credentials and revocation data.
+		      \item Scalability analysis for different deployment scenarios.
+	      \end{itemize}
+	\item Security and privacy analysis discussing:
+	      \begin{itemize}
+		      \item Formal security properties achieved by your system.
+		      \item Privacy guarantees and potential information leakage.
+		      \item Comparison with existing age verification approaches.
+		      \item Limitations and potential improvements.
+	      \end{itemize}
+\end{enumerate}
+
+\subsection*{Evaluation Criteria}
+Your project will be evaluated based on:
+
+\begin{itemize}
+	\item Correctness of cryptographic implementations and protocols.
+	\item Strength of privacy guarantees and unlinkability properties.
+	\item Practicality of the solution for real-world deployment.
+	\item Effectiveness of revocation and anti-sharing mechanisms.
+	\item Quality of code and documentation.
+\end{itemize}
+
+\subsection*{Submission Guidelines}
+\begin{itemize}
+	\item Submit your code as a ZIP archive or through a Git repository.
+	\item Include all documentation in PDF or Markdown format.
+	\item Presentations: Prepare a 10-minute presentation demonstrating your privacy-preserving age verification system and its privacy guarantees.
+\end{itemize}
+
+\end{document}
