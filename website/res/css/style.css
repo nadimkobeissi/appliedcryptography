@@ -65,6 +65,7 @@ body {
 	line-height: 1.7;
 	color: var(--dark);
 	background-color: var(--light);
+	min-width: 360px;
 }
 
 a {
