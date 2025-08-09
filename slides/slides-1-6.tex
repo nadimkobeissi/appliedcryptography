@@ -4,7 +4,7 @@
 \title{Applied Cryptography - 1.6: Collision Resistant Hash Functions}
 \author{Nadim Kobeissi}
 \subject{An exploration of collision-resistant hash functions, their properties, attacks, defenses, and applications in modern cryptography.}
-\keywords{hash functions, collision resistance, SHA-256, MD5, SHA-1, birthday paradox, rainbow tables, salt, HMAC, password hashing, PBKDF2, Scrypt, random oracle model, length extension attacks, Merkle-Damgård, sponge construction}
+\keywords{hash functions, collision resistance, SHA-256, MD5, SHA-1, birthday paradox, rainbow tables, salt, HMAC, password hashing, PBKDF2, Scrypt, random oracle model, length extension attacks, sponge construction}
 \institute{American University of Beirut}
 \instituteimage{images/aub_white.png}
 \date{\today}
@@ -426,7 +426,7 @@
 		A \textbf{length extension attack} allows an attacker who knows $H(M)$ to calculate $H(M \| P)$ for some padding $P$ without knowing $M$ itself.
 	}
 	\begin{itemize}[<+->]
-		\item Affects hash functions built using the Merkle-Damgård construction:
+		\item Affects hash functions built using the Merkle-Damg\aa rd construction:
 		      \begin{itemize}
 			      \item SHA-1, SHA-256, SHA-512, MD5, and others
 			      \item Not SHA-3 (which uses the sponge construction)
@@ -453,7 +453,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{The Merkle-Damgård construction}{SHA-1, SHA-2}
+\begin{frame}{The Merkle-Damg\aa rd construction}{SHA-1, SHA-2}
 	\begin{columns}[c]
 		\begin{column}{0.45\textwidth}
 			\begin{itemize}[<+->]
@@ -496,7 +496,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}
 			\begin{itemize}[<+->]
-				\item In Merkle-Damgård, the final state becomes the hash output directly.
+				\item In Merkle-Damg\aa rd, the final state becomes the hash output directly.
 				\item This allows attackers to continue from that state without knowing the input.
 				\item The sponge construction protects against this by:
 				      \begin{itemize}
