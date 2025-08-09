@@ -348,6 +348,36 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{CPA vs CCA security definitions}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{CPA Security (informal)}{
+				\textit{``Even if I let you encrypt any message you want, you can't obtain any distinguisher regarding my scheme.''}
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\definitionbox{CCA Security (informal)}{
+				\textit{``Even if I let you encrypt any message you want AND decrypt any ciphertext you want, you can't obtain any distinguisher regarding my scheme.''}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{CPA vs CCA security definitions}{To be more precise\ldots}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{CPA Security (more precise)}{
+				\textit{``Even if I let you choose any messages to encrypt, you can’t tell which of two chosen messages my challenge ciphertext encrypts, except with probability close to $\frac{1}{2}$.''}
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\definitionbox{CCA Security (more precise)}{
+				\textit{``Even if I let you choose any messages to encrypt and decrypt (except the challenge ciphertext itself), you can’t tell which of two chosen messages my challenge ciphertext encrypts, except with probability close to $\frac{1}{2}$.''}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Format-oracle attacks \& malleability}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
