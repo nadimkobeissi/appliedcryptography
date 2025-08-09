@@ -18,6 +18,158 @@
 	\titlepage
 \end{frame}
 
+\section{Math Review}
+
+\begin{frame}{Logs \& Exponents}
+	\begin{itemize}[<+->]
+		\item Key identities to remember:
+		      \begin{align*}
+			      (x^a)(x^b) & = x^{a+b}             \\
+			      (x^a)^b    & = x^{ab}              \\
+			      \log_x(ab) & = \log_x a + \log_x b \\
+			      a \log_x b & = \log_x(b^a)
+		      \end{align*}
+		\item \alert{Never write $(x^a)(x^b) = x^{ab}$!}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Modular Arithmetic}{Key definitions}
+	\begin{itemize}[<+->]
+		\item \textbf{Integers}: $\mathbb{Z} = \{\ldots, -2, -1, 0, 1, 2, \ldots\}$
+		\item \textbf{Natural numbers}: $\mathbb{N} = \{0, 1, 2, \ldots\}$
+		\item \textbf{Divides}: $n | x$ means $x = kn$ for some integer $k$
+		\item \textbf{Example}: $7 | 84$ because $84 = 12 \cdot 7$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The Modulo Operation}
+	\begin{itemize}[<+->]
+		\item $a \bmod n$ gives the remainder when dividing $a$ by $n$
+		\item Result is always in $\{0, 1, \ldots, n-1\}$
+		\item \textbf{Even for negative numbers!}
+		      \begin{align*}
+			      21 \bmod 7  & = 0                        \\
+			      20 \bmod 7  & = 6                        \\
+			      -20 \bmod 7 & = 1 \quad \text{(not -6!)}
+		      \end{align*}
+		\item Think: ``$a$ is $(a \bmod n)$ more than a multiple of $n$''
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Understanding Modulo with clocks}
+	\begin{columns}[c]
+		\column{0.5\textwidth}{
+			\begin{itemize}[<+->]
+				\item Clock arithmetic is modulo 12
+				\item 15:00 = 3:00 PM because $15 \bmod 12 = 3$
+				\item 7 hours after 9:00?
+				      \begin{itemize}[<+->]
+					      \item $(9 + 7) \bmod 12 = 16 \bmod 12 = 4$
+				      \end{itemize}
+				\item 5 hours before 2:00?
+				      \begin{itemize}[<+->]
+					      \item $(2 - 5) \bmod 12 = -3 \bmod 12 = 9$
+				      \end{itemize}
+				\item Wrapping around: when we go past 12, we start over from 1
+			\end{itemize}
+		}
+		\column{0.5\textwidth}{
+			\begin{center}
+				\begin{tikzpicture}[scale=1.2]
+					\draw[thick] (0,0) circle (2cm);
+					\foreach \hour in {1,2,...,12} {
+							\pgfmathsetmacro{\angle}{90 - \hour * 30}
+							\draw[thick] (\angle:1.8cm) -- (\angle:2cm);
+							\node at (\angle:1.5cm) {\hour};
+						}
+					\draw[thick, ->, red] (0,0) -- (0:1.2cm);
+					\draw[thick, ->, blue] (0,0) -- (90:1.6cm);
+					\fill (0,0) circle (2pt);
+					\node[below] at (0,-2.5cm) {\small Example: 16:00 = 4:00pm};
+				\end{tikzpicture}
+			\end{center}
+		}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Binary Strings}
+	\begin{itemize}[<+->]
+		\item $\bits^n$ = set of $n$-bit binary strings
+		\item $\bits^*$ = set of all finite-length binary strings
+		\item $|x|$ = length of string $x$
+		\item $\bit{0}^n$ = string of $n$ zeros, $\bit{1}^n$ = string of $n$ ones
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{XOR (Exclusive OR) operation}
+	\begin{columns}[c]
+		\column{0.6\textwidth}{
+			\begin{table}
+				\centering
+				\begin{tabular}{|c|c|c|}
+					\hline
+					\textbf{A} & \textbf{B} & \textbf{A $\oplus$ B} \\
+					\hline
+					\bit{0}    & \bit{0}    & \bit{0}               \\
+					\hline
+					\bit{0}    & \bit{1}    & \bit{1}               \\
+					\hline
+					\bit{1}    & \bit{0}    & \bit{1}               \\
+					\hline
+					\bit{1}    & \bit{1}    & \bit{0}               \\
+					\hline
+				\end{tabular}
+				\caption{Truth table for XOR operation}
+			\end{table}
+			\begin{itemize}
+				\item XOR returns 1 when inputs differ
+				\item XOR returns 0 when inputs are the same
+				\item Key property: $x \oplus x = 0$ and $x \oplus 0 = x$
+				\item Self-inverse: $(M \oplus K) \oplus K = M$
+			\end{itemize}
+		}
+		\column{0.4\textwidth}{
+			\begin{center}
+				\begin{tikzpicture}[scale=0.8]
+					\draw[thick] (0,0) circle (1.5);
+					\draw[thick] (1,0) circle (1.5);
+					\node at (0,-2) {A};
+					\node at (1,-2) {B};
+					\begin{scope}
+						\clip (0,0) circle (1.5);
+						\clip (1,0) circle (1.5);
+						\fill[cyan!30] (-1.5,-1.5) rectangle (2.5,1.5);
+					\end{scope}
+					\draw[thick] (0,0) circle (1.5);
+					\draw[thick] (1,0) circle (1.5);
+					\node at (0.5,0) {$A \oplus B$};
+				\end{tikzpicture}
+			\end{center}
+		}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Probability basics}
+	\begin{itemize}[<+->]
+		\item \textbf{Distribution}: assigns probability to each outcome
+		\item For each outcome $x$: $0 \leq \Pr[x] \leq 1$
+		\item Sum of all probabilities = 1
+		\item \textbf{Uniform distribution}: $\Pr[x] = \frac{1}{|\mathcal{X}|}$ for all $x \in \mathcal{X}$
+		\item Basic fact: $\Pr[A] = 1 - \Pr[\neg A]$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Notation in pseudocode}
+	\begin{itemize}[<+->]
+		\item $x \twoheadleftarrow \mathcal{D}$: sample $x$ from distribution $\mathcal{D}$
+		\item $x \twoheadleftarrow \mathcal{X}$: sample $x$ uniformly from set $\mathcal{X}$
+		\item $x \coloneq y$: assign value of $y$ to variable $x$
+		\item $x \stackrel{?}{=} y$: check if $x$ equals $y$ (returns true/false)
+	\end{itemize}
+\end{frame}
+
+\section{The Provable Security Mindset}
+
 \begin{frame}{How it's made}
 	\bigimagewithcaption{fischer_theory.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
 \end{frame}
@@ -107,13 +259,13 @@
 					\hline
 					\textbf{A} & \textbf{B} & \textbf{A $\oplus$ B} \\
 					\hline
-					\bit{0} & \bit{0} & \bit{0}            \\
+					\bit{0}    & \bit{0}    & \bit{0}               \\
 					\hline
-					\bit{0} & \bit{1} & \bit{1}            \\
+					\bit{0}    & \bit{1}    & \bit{1}               \\
 					\hline
-					\bit{1} & \bit{0} & \bit{1}            \\
+					\bit{1}    & \bit{0}    & \bit{1}               \\
 					\hline
-					\bit{1} & \bit{1} & \bit{0}            \\
+					\bit{1}    & \bit{1}    & \bit{0}               \\
 					\hline
 				\end{tabular}
 				\caption{Truth table for XOR operation}
@@ -454,13 +606,13 @@
 					\hline
 					\textbf{A} & \textbf{B} & \textbf{A $\land$ B} \\
 					\hline
-					\bit{0} & \bit{0} & \bit{0}           \\
+					\bit{0}    & \bit{0}    & \bit{0}              \\
 					\hline
-					\bit{0} & \bit{1} & \bit{0}           \\
+					\bit{0}    & \bit{1}    & \bit{0}              \\
 					\hline
-					\bit{1} & \bit{0} & \bit{0}           \\
+					\bit{1}    & \bit{0}    & \bit{0}              \\
 					\hline
-					\bit{1} & \bit{1} & \bit{1}           \\
+					\bit{1}    & \bit{1}    & \bit{1}              \\
 					\hline
 				\end{tabular}
 				\caption{Truth table for AND operation}
