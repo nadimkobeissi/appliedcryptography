@@ -830,6 +830,8 @@
 	\end{itemize}
 \end{frame}
 
+\subsection{Lab Projects}
+
 \begin{frame}{Lab projects: hands-on learning}
 	\begin{itemize}[<+->]
 		\item \textbf{Weekly lab sessions}: Hands-on complement to lectures.
@@ -849,6 +851,243 @@
 	\end{center}
 \end{frame}
 
+\begin{frame}{Lab Project A: Designing a Password Manager}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Build Your Digital Vault!}{
+				Create a fortress for your passwords using real cryptographic techniques!
+				\begin{itemize}
+					\item Master password protection with key derivation
+					\item Encrypted storage that even you can't break
+					\item Secure password generation algorithms
+				\end{itemize}
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{What you'll learn:}
+			\begin{itemize}[<+->]
+				\item How password managers \textit{actually} work
+				\item Defend against password cracking attacks
+				\item Memory scraping countermeasures
+				\item Why ``forgot master password'' button doesn't exist
+			\end{itemize}
+			\vspace{0.5cm}
+			\textcolor{cipherprimary}{\textbf{Never forget a password again... except one!}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Lab Project B: Designing a Secure Messenger}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Build the Next Signal!}{
+				Create your own end-to-end encrypted messaging app from scratch!
+				\begin{itemize}
+					\item Implement the Double Ratchet protocol
+					\item Perfect forward secrecy by default
+					\item Group messaging that stays private
+				\end{itemize}
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Real cryptography in action:}
+			\begin{itemize}[<+->]
+				\item Key exchange protocols that feel like magic
+				\item Deniable authentication (plausible deniability!)
+				\item Metadata protection techniques
+				\item Secure key storage on real devices
+			\end{itemize}
+			\vspace{0.5cm}
+			\textcolor{cipherprimary}{\textbf{Your messages, truly private!}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Lab Project C: Protocol Modeling with ProVerif}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Prove It Secure!}{
+				Design and mathematically verify your own TLS-like protocol!
+				\begin{itemize}
+					\item Formal verification with ProVerif
+					\item Specify security properties rigorously
+					\item Find attacks before hackers do
+				\end{itemize}
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Become a protocol designer:}
+			\begin{itemize}[<+->]
+				\item Design protocols that are \textit{provably} secure
+				\item Learn how TLS was formally verified
+				\item Discover subtle attack patterns
+				\item Master formal methods used by pros
+			\end{itemize}
+			\vspace{0.5cm}
+			\textcolor{cipherprimary}{\textbf{If you can't prove it, don't ship it!}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Lab Project D: Zero-Knowledge Battleship Game}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Cryptographic Gaming!}{
+				Build Battleship where cheating is mathematically impossible!
+				\begin{itemize}
+					\item Zero-knowledge proofs with RISC Zero
+					\item Prove hits without revealing ship positions
+					\item Verifiable gameplay, zero trust needed
+				\end{itemize}
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{The magic of ZK proofs:}
+			\begin{itemize}[<+->]
+				\item Build a zkVM from scratch
+				\item Create proofs that feel impossible
+				\item Learn by building an actual game
+				\item Impress your friends with crypto magic!
+			\end{itemize}
+			\vspace{0.5cm}
+			\textcolor{cipherprimary}{\textbf{You sunk my battleship... provably!}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Lab Project E: Post-Quantum Migration}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Quantum-Proof the Future!}{
+				Prepare systems for the quantum computing era!
+				\begin{itemize}
+					\item Implement NIST's ML-KEM (Kyber)
+					\item Deploy ML-DSA (Dilithium) signatures
+					\item Design hybrid classical-quantum systems
+				\end{itemize}
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Tomorrow's cryptography today:}
+			\begin{itemize}[<+->]
+				\item Migrate real protocols to PQC
+				\item Analyze performance impacts
+				\item Handle message size explosions
+				\item Future-proof existing systems
+			\end{itemize}
+			\vspace{0.5cm}
+			\textcolor{cipherprimary}{\textbf{Beat quantum computers at their own game!}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Lab Project F: Private Contact Discovery}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Find Friends with Privacy!}{
+				Build WhatsApp-style contact discovery that's actually private!
+				\begin{itemize}
+					\item Private Set Intersection (PSI)
+					\item Oblivious PRFs in action
+					\item Zero leakage to servers
+				\end{itemize}
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Real-world privacy tech:}
+			\begin{itemize}[<+->]
+				\item Protect address books from servers
+				\item Prevent enumeration attacks
+				\item Handle thousands of contacts efficiently
+				\item Used by Signal and WhatsApp!
+			\end{itemize}
+			\vspace{0.5cm}
+			\textcolor{cipherprimary}{\textbf{Your contacts, your business!}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Lab Project G: Privacy-Preserving Age Verification}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Prove Your Age Privately!}{
+				Build ID checks that don't track you!
+				\begin{itemize}
+					\item Anonymous credentials
+					\item Zero-knowledge age proofs
+					\item Unlinkable verifications
+				\end{itemize}
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Digital ID done right:}
+			\begin{itemize}[<+->]
+				\item Prove ``over 18'' without revealing birthdate
+				\item Prevent tracking across services
+				\item Mobile-friendly verification
+				\item Pedersen commitments \& Schnorr proofs
+			\end{itemize}
+			\vspace{0.5cm}
+			\textcolor{cipherprimary}{\textbf{Old enough to enter, young enough for privacy!}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Lab Project H: Time-Locked Message Capsule}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Send Messages to the Future!}{
+				Create digital time capsules that can't be opened early!
+				\begin{itemize}
+					\item Timelock encryption with drand beacon
+					\item Threshold BLS signatures
+					\item Unstoppable future reveals
+				\end{itemize}
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Time travel for data:}
+			\begin{itemize}[<+->]
+				\item Messages that decrypt themselves
+				\item Perfect for auctions \& commitments
+				\item Build on League of Entropy infrastructure
+				\item No key escrow, no early access!
+			\end{itemize}
+			\vspace{0.5cm}
+			\textcolor{cipherprimary}{\textbf{Encrypt today, decrypt tomorrow!}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Create Your Own Cryptographic Adventure!}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Be the Innovator!}{
+				Design your own cryptographic project from scratch!
+				\begin{itemize}
+					\item Novel protocol implementation
+					\item Security analysis of real systems
+					\item Formal verification challenges
+					\item Your creative crypto idea!
+				\end{itemize}
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{The sky's the limit:}
+			\begin{itemize}[<+->]
+				\item Follow your cryptographic passion
+				\item Solve a real problem you care about
+				\item Combine techniques in new ways
+				\item Potentially publishable research!
+			\end{itemize}
+			\vspace{0.5cm}
+			\textcolor{cipherprimary}{\textbf{Your idea could change cryptography!}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{Problem Sets}
+
 \begin{frame}{Problem sets: theory meets practice}
 	\begin{itemize}[<+->]
 		\item \textbf{Already available}: All problem sets are posted on the course website.
@@ -867,6 +1106,8 @@
 	\end{center}
 \end{frame}
 
+\subsection{Graduate Students: Special Instructions}
+
 \begin{frame}{Graduate students: thesis integration}
 	\definitionbox{Special Requirements for Graduate Students}{
 		Graduate students are expected to discuss their thesis topic with me to develop an individual project that integrates with their research.
@@ -878,6 +1119,25 @@
 		\item \textbf{Consultation}: Schedule a meeting early in the semester to discuss your thesis and project ideas.
 		\item \textbf{Outcome}: Deepen your understanding of cryptography within your research context.
 	\end{itemize}
+\end{frame}
+
+\subsection{Exams}
+
+\begin{frame}{Exam transparency: no surprises!}
+	\begin{columns}[c]
+		\begin{column}{0.65\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{What's covered}: Specific topics, chapters, and concepts clearly outlined.
+				\item \textbf{Format details}: Question types, duration, and grading scheme all disclosed.
+				\item \textbf{Practice materials}: Sample questions are available through the problem sets.
+				\item \textbf{No stress approach}: Focus on understanding concepts, not guessing what might appear.
+				\item \textbf{If it wasn't mentioned in the slides or problem sets, then it's not on the exam.}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.35\textwidth}
+			\imagewithcaption{website_midterm.png}{Check the website for complete exam information! \\ \url{https://appliedcryptography.page}}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Self-assessment quizzes: test your understanding}
@@ -898,22 +1158,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Exam transparency: no surprises!}
-	\begin{columns}[c]
-		\begin{column}{0.65\textwidth}
-			\begin{itemize}[<+->]
-				\item \textbf{What's covered}: Specific topics, chapters, and concepts clearly outlined.
-				\item \textbf{Format details}: Question types, duration, and grading scheme all disclosed.
-				\item \textbf{Practice materials}: Sample questions are available through the problem sets.
-				\item \textbf{No stress approach}: Focus on understanding concepts, not guessing what might appear.
-				\item \textbf{If it wasn't mentioned in the slides or problem sets, then it's not on the exam.}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.35\textwidth}
-			\imagewithcaption{website_midterm.png}{Check the website for complete exam information! \\ \url{https://appliedcryptography.page}}
-		\end{column}
-	\end{columns}
-\end{frame}
+\subsection{The Key Exchange}
 
 \begin{frame}{The Key Exchange: optional weekly gathering}
 	\begin{columns}[c]
@@ -984,6 +1229,8 @@
 	\end{center}
 \end{frame}
 
+\subsection{About Me}
+
 \begin{frame}{About me}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -1048,6 +1295,70 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{My expectations: be intellectually present}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{Minimum Requirements}{
+				\begin{itemize}
+					\item Attend all classes, labs, and exams, \textbf{on time}.
+					\item Complete assignments, \textbf{on time}.
+				\end{itemize}
+			}
+			\begin{itemize}
+				\item \textbf{But I want you to do more:}
+				      \begin{itemize}[<+->]
+					      \item \textbf{Be curious}: Think deeply about what we're learning.
+					      \item \textbf{Engage actively}: This is a conversation, not a monologue.
+					      \item \textbf{Work hard}: Not because this is hard, but because you stand to learn so much!
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Please, SPEAK UP!}
+				      \begin{itemize}[<+->]
+					      \item Don't understand something? \textbf{Ask!}
+					      \item Have a question? \textbf{Voice it!}
+					      \item Afraid of looking stupid? \textbf{Don't be!}
+				      \end{itemize}
+				\item \textbf{Why?}
+				      \begin{itemize}[<+->]
+					      \item I sometimes wasted weeks because my ego didn't allow me to ask ``stupid'' questions.
+					      \item Don't worry: I've managed to make myself look dumber in front of the international cryptography community than you ever will.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{About You}
+
+\begin{frame}{This is YOUR learning journey}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{What I need from you}
+			\begin{itemize}[<+->]
+				\item Think about what YOU want from this course.
+				\item Express your interests and goals.
+				\item Participate in shaping our discussions.
+				\item I didn't come here just to watch you stare at me from a corner!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{We're learning together}
+			\begin{itemize}[<+->]
+				\item This isn't just another course to check off.
+				\item Applied cryptography is an exciting, specialized field.
+				\item Your questions make the class better for everyone.
+				\item Your engagement shapes the experience.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\begin{center}
+		\textcolor{cipherprimary}{\Large\textbf{Let's make this journey extraordinary together!}}
+	\end{center}
 \end{frame}
 
 \begin{frame}{Let's get to know each other!}
