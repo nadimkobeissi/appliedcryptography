@@ -1,0 +1,171 @@
+\documentclass[10pt,a4paper,american]{exam}
+\newcommand{\aublogopath}{../website/res/img/aub_black.png}
+\usepackage{../misc/macros/joc}
+\usepackage{../misc/fonts/fonts}
+\usepackage{../misc/macros/classhandout}
+
+\title{Applied Cryptography - Lab Project H: Building a Time-Locked Message Capsule}
+\author{Nadim Kobeissi}
+\subject{Lab project exploring timelock encryption using distributed randomness beacons to create messages that can only be decrypted at specified future times.}
+\keywords{timelock encryption, distributed randomness, League of Entropy, threshold cryptography, BLS signatures, identity-based encryption, drand beacon, commitment schemes}
+
+\begin{document}
+\classhandoutheader
+\section*{Lab Project H: Building a Time-Locked Message Capsule}
+
+\subsection*{Overview}
+In this lab project, you will build a practical timelock encryption system that enables messages to be encrypted such that they can only be decrypted after a specific future time. You'll implement the tlock protocol using the League of Entropy's distributed randomness beacon, which broadcasts threshold BLS signatures that serve as time-based decryption keys. The lab guides you through implementing identity-based encryption where ``identities'' are future timestamps, creating a web application for encrypting time-locked messages, and building a decryption service that automatically reveals messages at the specified time. You'll explore real-world applications including scheduled disclosures, commitment schemes for auctions, and ``digital time capsules'' for personal messages. The project includes challenges like handling network failures, caching beacon signatures efficiently, and designing user interfaces that clearly communicate the irreversible nature of timelock encryption. By completing this lab, you'll gain hands-on experience with threshold cryptography, distributed trust models, and creative applications of existing cryptographic infrastructure for novel purposes.
+
+\subsection*{Learning Objectives}
+After completing this lab, you should be able to:
+\begin{itemize}
+	\item Implement timelock encryption using distributed randomness beacons and identity-based encryption.
+	\item Work with threshold BLS signatures and understand their role in distributed trust systems.
+	\item Design and build applications that leverage time-based cryptographic primitives.
+	\item Handle practical challenges in distributed systems including network reliability and caching strategies.
+\end{itemize}
+
+\subsection*{Background}
+Timelock encryption enables encrypting messages that can only be decrypted after a specified future time, without requiring a trusted third party to hold keys:
+\begin{itemize}
+	\item The League of Entropy's drand beacon generates publicly verifiable randomness at regular intervals using threshold BLS signatures.
+	\item The tlock protocol uses identity-based encryption where future beacon rounds serve as identities.
+	\item Messages are encrypted to future beacon values that don't yet exist, ensuring they cannot be decrypted until the beacon publishes them.
+	\item Applications include scheduled disclosures, sealed-bid auctions, and personal time capsules.
+\end{itemize}
+
+\subsection*{Requirements}
+Your timelock encryption system must implement the following core functionality:
+
+\begin{enumerate}
+	\item \textbf{Beacon Integration:}
+	      \begin{itemize}
+		      \item Connect to the League of Entropy's drand beacon API.
+		      \item Fetch and verify beacon signatures using BLS signature verification.
+		      \item Implement efficient caching of beacon values for reliability.
+	      \end{itemize}
+
+	\item \textbf{Timelock Encryption:}
+	      \begin{itemize}
+		      \item Implement identity-based encryption using future beacon rounds as identities.
+		      \item Create encryption functions that accept a message and future timestamp.
+		      \item Generate ciphertexts that remain undecryptable until the specified time.
+	      \end{itemize}
+
+	\item \textbf{Web Application:}
+	      \begin{itemize}
+		      \item Build a user-friendly interface for creating time-locked messages.
+		      \item Display clear warnings about the irreversible nature of timelock encryption.
+		      \item Provide options for different unlock times (hours, days, years into the future).
+	      \end{itemize}
+
+	\item \textbf{Decryption Service:}
+	      \begin{itemize}
+		      \item Implement automatic decryption when beacon values become available.
+		      \item Create a service that monitors and decrypts messages at the appropriate time.
+		      \item Handle edge cases like messages scheduled far into the future.
+		      \item Provide notifications or callbacks when messages are unlocked.
+	      \end{itemize}
+\end{enumerate}
+
+\subsection*{Implementation Guidelines}
+
+\subsubsection*{Step 1: Beacon Connection}
+Begin by establishing reliable connection to the drand beacon:
+\begin{itemize}
+	\item Connect to multiple drand nodes for redundancy.
+	\item Implement signature verification for beacon values.
+	\item Calculate future round numbers from timestamps.
+	\item Design a caching strategy for beacon values.
+\end{itemize}
+
+Document your approach to handling network failures and beacon unavailability.
+
+\subsubsection*{Step 2: Encryption Implementation}
+Implement the core timelock encryption:
+\begin{itemize}
+	\item Use identity-based encryption with beacon rounds as identities.
+	\item Implement the tlock protocol for message encryption.
+	\item Create helper functions for timestamp to round conversion.
+	\item Add support for encrypting various data types (text, files, etc.).
+\end{itemize}
+
+\subsubsection*{Step 3: Application Development}
+Build the user-facing application:
+\begin{itemize}
+	\item Design an intuitive interface for creating time capsules.
+	\item Implement clear time selection (calendar picker, duration selector).
+	\item Add warnings about permanence and irreversibility.
+	\item Create shareable links or codes for encrypted messages.
+\end{itemize}
+
+\subsubsection*{Step 4: Decryption Service}
+Develop the automatic decryption service:
+\begin{itemize}
+	\item Monitor upcoming unlock times for encrypted messages.
+	\item Fetch beacon values as they become available.
+	\item Decrypt messages and notify recipients.
+	\item Handle storage and retrieval of time-locked messages.
+\end{itemize}
+
+\subsubsection*{Step 5: Advanced Features}
+Implement additional functionality:
+\begin{itemize}
+	\item Support for multiple recipients or threshold decryption.
+	\item Integration with existing applications (email, messaging).
+	\item Commitment schemes for auctions or voting.
+	\item ``Dead man's switch'' functionality for automated disclosures.
+\end{itemize}
+
+\subsection*{Deliverables}
+Submit the following:
+
+\begin{enumerate}
+	\item Source code for your timelock encryption implementation.
+	\item Design document including:
+	      \begin{itemize}
+		      \item Architecture of your timelock system.
+		      \item Description of the cryptographic protocols used.
+		      \item Approach to handling distributed system challenges.
+	      \end{itemize}
+	\item User documentation with:
+	      \begin{itemize}
+		      \item Instructions for using the time capsule application.
+		      \item Examples of different use cases.
+		      \item Security considerations and limitations.
+	      \end{itemize}
+	\item Technical analysis discussing:
+	      \begin{itemize}
+		      \item Performance characteristics and scalability.
+		      \item Reliability strategies and failure modes.
+		      \item Potential applications and extensions.
+	      \end{itemize}
+\end{enumerate}
+
+\subsection*{Evaluation Criteria}
+Your project will be evaluated based on:
+
+\begin{itemize}
+	\item Correctness of timelock encryption implementation.
+	\item Reliability and robustness of beacon integration.
+	\item User experience and interface design.
+	\item Handling of edge cases and failure scenarios.
+	\item Quality of code and documentation.
+\end{itemize}
+
+\subsection*{Resources}
+\begin{itemize}
+	\item \href{https://drand.love/}{League of Entropy drand beacon} and \href{https://api.drand.sh/}{drand API documentation}.
+	\item \href{https://appliedcryptography.page/paper/\#tlock-bls}{tlock: Practical Timelock Encryption from Threshold BLS} paper.
+	\item Libraries: \href{https://github.com/drand/tlock}{tlock reference implementation}, \href{https://github.com/drand/drand-client}{drand client libraries}.
+	\item Course materials on identity-based encryption and BLS signatures.
+\end{itemize}
+
+\subsection*{Submission Guidelines}
+\begin{itemize}
+	\item Submit your code as a ZIP archive or through a Git repository.
+	\item Include all documentation in PDF or Markdown format.
+	\item Presentations: Prepare a 10-minute presentation demonstrating your time capsule system with live examples of message encryption and scheduled decryption.
+\end{itemize}
+
+\end{document}
