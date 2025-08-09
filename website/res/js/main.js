@@ -1,6 +1,6 @@
-(() => {
-	menuInit();
-	collapsibleInit();
-	updatedInit();
-	countdownInit();
-})();
+;(() => {
+	menuInit()
+	collapsibleInit()
+	updatedInit()
+	countdownInit()
+})()

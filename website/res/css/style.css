@@ -18,8 +18,7 @@
 	--spacing-md: 1.5rem;
 	--spacing-lg: 3rem;
 	--shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
-	--shadow-lg:
-		0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+	--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 	--transition: all 0.5s ease;
 }
 
@@ -42,9 +41,7 @@
 		--tertiary-dark: rgba(152, 195, 122, 0.15);
 		--tertiary-dark-hovered: rgba(152, 195, 122, 0.25);
 		--shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.3);
-		--shadow-lg:
-			0 10px 15px -3px rgba(0, 0, 0, 0.3),
-			0 4px 6px -2px rgba(0, 0, 0, 0.2);
+		--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
 	}
 }
 
@@ -174,9 +171,7 @@ strong {
 
 .hero {
 	position: relative;
-	background-image:
-		linear-gradient(var(--hero-overlay-dark), var(--hero-overlay-light)),
-		url("../img/cedar.webp");
+	background-image: linear-gradient(var(--hero-overlay-dark), var(--hero-overlay-light)), url("../img/cedar.webp");
 	background-size: cover;
 	background-position: center;
 	min-height: 40vh;
@@ -826,9 +821,7 @@ strong {
 }
 
 .collapsible-header.active {
-	background: linear-gradient(to bottom,
-			var(--gray-dark) 0%,
-			transparent 100%);
+	background: linear-gradient(to bottom, var(--gray-dark) 0%, transparent 100%);
 	box-shadow: none;
 	border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
