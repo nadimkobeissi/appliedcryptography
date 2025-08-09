@@ -566,7 +566,7 @@
 		\item Our security proofs rely on specific assumptions about the adversary:
 		      \begin{itemize}[<+->]
 			      \item \textbf{Key reuse}: Keys are never intentionally reused (though may repeat by chance).
-			      \item \textbf{Observation only}: Adversary passively observes ciphertext but doesn't tam.per with it
+			      \item \textbf{Observation only}: Adversary passively observes ciphertext but doesn't tamper with it
 			      \item \textbf{Message independence}: Choice of message $M$ is independent of key $K$.
 			      \item \textbf{Key secrecy}: Adversary learns nothing about the key.
 			      \item \textbf{No sampling influence}: Adversary cannot influence how the key is sampled.
@@ -644,6 +644,204 @@
 				return $C$
 			}{1.5}
 		\end{column}
+	\end{columns}
+\end{frame}
+
+\section{Breaking One-Time Pads}
+
+\begin{frame}{Two-time pads}{What happens when we reuse a key?}
+	\begin{columns}[c]
+		\column{1\textwidth}{
+			\begin{itemize}[<+->]
+				\item Alice sends two messages with the same key:
+				\item $C_1 = M_1 \oplus K$
+				\item $C_2 = M_2 \oplus K$
+				\item What can Eve learn from $C_1$ and $C_2$?
+				\item $C_1 \oplus C_2 = (M_1 \oplus K) \oplus (M_2 \oplus K)$
+				\item $C_1 \oplus C_2 = M_1 \oplus M_2 \oplus (K \oplus K)$
+				\item $C_1 \oplus C_2 = M_1 \oplus M_2$
+				\item \alert{The key cancels out completely!}
+			\end{itemize}
+		}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Exploiting $M_1 \oplus M_2$}{Why is this dangerous?}
+	\begin{itemize}[<+->]
+		\item Knowing $M_1 \oplus M_2$ allows statistical attacks:
+		\item \textbf{Language patterns}: Natural language has predictable structure
+		      \begin{itemize}[<+->]
+			      \item Common words: ``the'', ``and'', ``of'', ``to''
+			      \item Letter frequencies: E is most common in English (12.7\%)
+			      \item Spaces are very frequent (about 18\% of characters)
+		      \end{itemize}
+		\item \textbf{Crib dragging}: Try XORing common words at different positions
+		\item \textbf{Example}: If we guess ``the'' at position $i$ in $M_1$:
+		      \begin{itemize}[<+->]
+			      \item Extract: $(M_1 \oplus M_2)[i:i+3] \oplus \text{``the''}$
+			      \item If result looks like valid text, we may have found part of $M_2$!
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Interactive demo}{One-time pad attack}
+	\begin{columns}[c]
+		\column{1\textwidth}{
+			\begin{itemize}[<+->]
+				\item \textbf{Given}: $C_1$, $C_2$ (same key)
+				\item \textbf{Step 1}: Compute $C_1 \oplus C_2 = M_1 \oplus M_2$
+				\item \textbf{Step 2}: Guess common word in $M_1$
+				\item \textbf{Step 3}: XOR with $M_1 \oplus M_2$ to get potential $M_2$ fragment
+				\item \textbf{Step 4}: If sensible, expand the guess
+				\item \textbf{Step 5}: Iterate until messages recovered
+			\end{itemize}
+		}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Historical example}{Project Venona}
+	\begin{columns}[c]
+		\column{1\textwidth}{
+			\begin{itemize}[<+->]
+				\item \textbf{1940s-1950s}: Soviet intelligence used one-time pads
+				\item \textbf{The mistake}: Key pages were accidentally duplicated
+				\item \textbf{Result}: Some messages encrypted with same key
+				\item \textbf{NSA/GCHQ response}: Decades-long decryption effort
+				\item \textbf{Impact}: Exposed Soviet spy networks, including:
+				      \begin{itemize}[<+->]
+					      \item Klaus Fuchs (atomic secrets)
+					      \item Julius and Ethel Rosenberg
+					      \item Cambridge Five spy ring
+				      \end{itemize}
+				\item \textbf{Lesson}: Even ``perfect'' cryptography fails with improper use
+			\end{itemize}
+		}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Malleability of one-time pads}{Another practical weakness}
+	\begin{columns}[c]
+		\column{1\textwidth}{
+			\begin{itemize}[<+->]
+				\item OTP provides confidentiality but not integrity
+				\item \textbf{Malleability}: Attacker can modify ciphertext predictably
+				\item Given $C = M \oplus K$
+				\item Attacker creates $C' = C \oplus \Delta$
+				\item Decryption: $C' \oplus K = (M \oplus K \oplus \Delta) \oplus K$
+				\item Result: $M' = M \oplus \Delta$
+				\item \alert{Attacker controls the change without knowing $M$ or $K$!}
+			\end{itemize}
+		}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Practical attack}{Bit flipping}
+	\begin{itemize}[<+->]
+		\item \textbf{Scenario}: Bank transfer message
+		\item Original: ``Transfer \$0100.00 to Account 12345''
+		\item Attacker knows position of amount field
+		\item Flips bit to change `1' (ASCII 49 = \texttt{00110001}) to `9' (ASCII 57 = \texttt{00111001})
+		\item XOR difference: \texttt{00110001} $\oplus$ \texttt{00111001} = \texttt{00001000}
+		\item Apply $\Delta$ = \texttt{00001000} at correct position in ciphertext
+		\item Result: ``Transfer \$0900.00 to Account 12345''
+		\item \alert{No need to break encryption or know the key!}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Key Distribution Problem}{The elephant in the room}
+	\begin{columns}[c]
+		\column{0.5\textwidth}{
+			\begin{itemize}[<+->]
+				\item OTP requires key as long as message
+				\item How do Alice and Bob share this key?
+				\item \textbf{The paradox}:
+				      \begin{itemize}[<+->]
+					      \item If you can securely send the key...
+					      \item ...why not just send the message?
+				      \end{itemize}
+				\item \textbf{Historical solutions}:
+				      \begin{itemize}[<+->]
+					      \item Diplomatic pouches
+					      \item Trusted couriers
+					      \item Pre-shared codebooks
+				      \end{itemize}
+				\item \textbf{Modern issue}: Impractical for internet scale
+			\end{itemize}
+		}
+		\column{0.5\textwidth}{
+			\begin{center}
+				\begin{tikzpicture}[scale=0.8]
+					\node[circle, draw, minimum size=1cm] (alice) at (0, 0) {Alice};
+					\node[circle, draw, minimum size=1cm] (bob) at (5, 0) {Bob};
+					\node[circle, draw, minimum size=1cm, fill=red!20] (eve) at (2.5, -2) {Eve};
+
+					\draw[<->, thick, dashed, red] (alice) -- node[above] {Key?} (bob);
+					\draw[->, thick, red] (eve) -- (2.5, -0.5);
+
+					\node[text width=4cm, align=center] at (2.5, 2) {\small \textbf{Problem}: How to share key securely?};
+
+					\node[text width=5cm, align=center] at (2.5, -3.5) {\small If channel is secure for key, why not use it for message?};
+				\end{tikzpicture}
+			\end{center}
+		}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Lessons from OTP in practice}
+	\begin{itemize}[<+->]
+		\item \textbf{Perfect in theory $\neq$ Perfect in practice}
+		      \begin{itemize}[<+->]
+			      \item Mathematical security doesn't guarantee practical security
+			      \item Implementation details matter enormously
+		      \end{itemize}
+		\item \textbf{Common failure modes}:
+		      \begin{itemize}[<+->]
+			      \item Key reuse (breaks confidentiality completely)
+			      \item Predictable ``random'' numbers
+			      \item Malleability attacks (no integrity protection)
+			      \item Key distribution challenges
+		      \end{itemize}
+		\item \textbf{Modern best practices}:
+		      \begin{itemize}[<+->]
+			      \item Use authenticated encryption (AE/AEAD)
+			      \item Proper random number generation
+			      \item Key management systems
+			      \item Defense in depth
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{From theory to practice}
+	\begin{columns}[c]
+		\column{0.5\textwidth}{
+			\begin{itemize}[<+->]
+				\item \textbf{Theory provides foundation}:
+				      \begin{itemize}[<+->]
+					      \item Precise security definitions
+					      \item Mathematical guarantees
+					      \item Clear assumptions
+				      \end{itemize}
+				\item \textbf{Practice reveals challenges}:
+				      \begin{itemize}[<+->]
+					      \item Implementation vulnerabilities
+					      \item Usability constraints
+					      \item Side-channel attacks
+					      \item Human factors
+				      \end{itemize}
+			\end{itemize}
+		}
+		\column{0.5\textwidth}{
+			\begin{center}
+				\begin{tikzpicture}[scale=0.8]
+					\draw[thick, fill=green!20] (-1,0) circle (1.5cm);
+					\node at (-1,0) {Theory};
+					\draw[thick, fill=blue!20] (1.8,0) circle (1.5cm);
+					\node at (1.8,0) {Practice};
+					\node[text width=3cm, align=center] at (0.5,-2.5) {\small \textbf{Sweet spot}: Provably secure \& practically usable};
+					\draw[->, thick, red] (0.4,-1.5) -- (0.4,-0.3);
+				\end{tikzpicture}
+			\end{center}
+		}
 	\end{columns}
 \end{frame}
 
