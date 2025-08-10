@@ -1,9 +1,6 @@
 const updatedInit = () => {
-	const lastUpdatedElement = document.getElementById("lastUpdated")
-	const updatedLink = document.createElement("a")
 	const repoUri = "https://cedarcrypt.org/nadim/appliedcryptography/commits/branch/main"
 	const apiUri = "https://cedarcrypt.org/api/v1/repos/nadim/appliedcryptography/commits?limit=1&sha=main"
-	updatedLink.href = repoUri
 	fetch(apiUri)
 		.then((response) => response.json())
 		.then((data) => {
@@ -19,20 +16,32 @@ const updatedInit = () => {
 							minute: "numeric",
 							hour12: true,
 						})
+						const lastUpdatedElement = document.getElementById("lastUpdated")
+						const updatedLink = document.createElement("a")
+						updatedLink.href = repoUri
 						updatedLink.innerText = formattedDate
 						lastUpdatedElement.innerHTML = ""
 						lastUpdatedElement.appendChild(updatedLink)
 						const period = document.createElement("span")
 						period.innerText = "."
 						lastUpdatedElement.appendChild(period)
+					} else {
+						updatedError("Invalid date")
 					}
+				} else {
+					updatedError("Invalid date")
 				}
 			}
 		})
-		.catch((error) => {
-			console.error("Error fetching commit data:", error)
-			updatedLink.innerText = "View history"
-			lastUpdatedElement.innerHTML = ""
-			lastUpdatedElement.appendChild(updatedLink)
-		})
+		.catch(updatedError)
+}
+
+const updatedError = (error) => {
+	const lastUpdatedElement = document.getElementById("lastUpdated")
+	const updatedLink = document.createElement("a")
+	updatedLink.href = repoUri
+	console.error("Error fetching commit data:", error)
+	updatedLink.innerText = "View history"
+	lastUpdatedElement.innerHTML = ""
+	lastUpdatedElement.appendChild(updatedLink)
 }
