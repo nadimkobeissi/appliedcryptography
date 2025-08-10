@@ -431,7 +431,6 @@ strong {
 
 .icon {
 	margin-right: 0.5rem;
-	color: var(--primary-dark);
 	transform: scale(1.25);
 	display: inline-block;
 }
