@@ -6,7 +6,7 @@
 \subject{An introduction to chosen-plaintext and chosen-ciphertext attacks in cryptography, covering CPA/CCA security definitions, real-world vulnerabilities, and authenticated encryption.}
 \keywords{CPA security, CCA security, chosen-plaintext attacks, chosen-ciphertext attacks, format-oracle attacks, malleability, message authentication codes, authenticated encryption, encrypt-then-MAC}
 \institute{American University of Beirut}
-\instituteimage{images/aub_white.png}
+\instituteimage{images/aub-white.png}
 \date{\today}
 \coversubtitle{CMPS 297AD/396AI\\Fall 2025}
 \coverpartname{Part 1: Provable Security}
@@ -213,15 +213,15 @@
 \begin{frame}{Block cipher examples}
 	\begin{columns}
 		\begin{column}{0.33\textwidth}
-			\imagewithcaption{tux_plaintext.png}{What we start with}
+			\imagewithcaption{tux-plaintext.png}{What we start with}
 		\end{column}
 		\pause
 		\begin{column}{0.33\textwidth}
-			\imagewithcaption{tux_encrypted_ecb.png}{What we get}
+			\imagewithcaption{tux-encrypted-ecb.png}{What we get}
 		\end{column}
 		\pause
 		\begin{column}{0.33\textwidth}
-			\imagewithcaption{tux_encrypted_ctr.png}{What we actually want}
+			\imagewithcaption{tux-encrypted-ctr.png}{What we actually want}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -261,7 +261,7 @@
 \end{frame}
 
 \begin{frame}{Block cipher modes of operation}
-	\bigimagewithcaption{block_cipher_modes.png}{Source: Wikipedia}
+	\bigimagewithcaption{block-cipher-modes.png}{Source: Wikipedia}
 \end{frame}
 
 \begin{frame}{CBC mode: a closer look}
@@ -288,7 +288,7 @@
 
 \begin{frame}{CBC mode: a closer look}
 	\vspace{-0.3cm}
-	\bigimagewithcaption{cbc_with_dec.pdf}{Source: The Joy of Cryptography}
+	\bigimagewithcaption{cbc-with-dec.pdf}{Source: The Joy of Cryptography}
 \end{frame}
 
 \begin{frame}{CTR mode: a closer look}
@@ -315,7 +315,7 @@
 \end{frame}
 
 \begin{frame}{CTR mode: a closer look}
-	\bigimagewithcaption{ctr_with_dec.pdf}{Source: The Joy of Cryptography}
+	\bigimagewithcaption{ctr-with-dec.pdf}{Source: The Joy of Cryptography}
 \end{frame}
 
 \section{Chosen-Ciphertext Attacks}
@@ -413,7 +413,7 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\vspace{-0.4cm}
-			\bigimagewithcaption{oracle_painting_zoom.jpg}{\textit{The Oracle} by Camillo Miola, 1880\footnote{Absolutely beautiful painting, well-worth viewing in high resolution: \url{https://upload.wikimedia.org/wikipedia/commons/9/94/Camillo_Miola_\%28Biacca\%29_-_The_Oracle_-_72.PA.32_-_J._Paul_Getty_Museum.jpg}}}
+			\bigimagewithcaption{oracle-painting-zoom.jpg}{\textit{The Oracle} by Camillo Miola, 1880\footnote{Absolutely beautiful painting, well-worth viewing in high resolution: \url{https://upload.wikimedia.org/wikipedia/commons/9/94/Camillo_Miola_\%28Biacca\%29_-_The_Oracle_-_72.PA.32_-_J._Paul_Getty_Museum.jpg}}}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -482,7 +482,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\imagewithcaption{ctr_dec.pdf}{CTR mode decryption.\\Source: The Joy of Cryptography}
+			\imagewithcaption{ctr-dec.pdf}{CTR mode decryption.\\Source: The Joy of Cryptography}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -498,7 +498,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\imagewithcaption{ctr_dec_delta.pdf}{CTR mode decryption.\\Source: The Joy of Cryptography}
+			\imagewithcaption{ctr-dec-delta.pdf}{CTR mode decryption.\\Source: The Joy of Cryptography}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -638,7 +638,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
-			\imagewithcaption{yoda_meme.jpg}{}
+			\imagewithcaption{yoda-meme.jpg}{}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -863,7 +863,7 @@
 				\item Not CCA-secure!
 				\item Here's a distinguisher:
 			\end{itemize}
-			\imagewithcaption{prf_enc_malleable}{Source: The Joy of Cryptography}
+			\imagewithcaption{prf-enc-malleable}{Source: The Joy of Cryptography}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\ssprogram{}{
@@ -883,7 +883,7 @@
 			\begin{itemize}
 				\item Let's try a harder challenge.
 			\end{itemize}
-			\imagewithcaption{prf_enc_2}{Source: The Joy of Cryptography}
+			\imagewithcaption{prf-enc-2}{Source: The Joy of Cryptography}
 		\end{column}
 		\begin{column}{0.4\textwidth}
 			\sslibrary{}{cca-real}{
@@ -908,7 +908,7 @@
 			\begin{itemize}
 				\item Let's try a harder challenge.
 			\end{itemize}
-			\imagewithcaption{prf_enc_2}{Source: The Joy of Cryptography}
+			\imagewithcaption{prf-enc-2}{Source: The Joy of Cryptography}
 		\end{column}
 		\begin{column}{0.7\textwidth}
 			\sslinked{
@@ -1575,11 +1575,11 @@
 \end{frame}
 
 \begin{frame}{Replay attacks}{Step 1: Alice sends original message}
-	\bigimagewithcaption{aead_scenario_1.pdf}{Source: The Joy of Cryptography}
+	\bigimagewithcaption{aead-scenario-1.pdf}{Source: The Joy of Cryptography}
 \end{frame}
 
 \begin{frame}{Replay attacks}{Step 2: Attacker replays message in a different context}
-	\bigimagewithcaption{aead_scenario_2.pdf}{Source: The Joy of Cryptography}
+	\bigimagewithcaption{aead-scenario-2.pdf}{Source: The Joy of Cryptography}
 \end{frame}
 
 \begin{frame}{Replay attacks}{Authenticated encryption didn't save us}
@@ -1678,7 +1678,7 @@
 \end{frame}
 
 \begin{frame}{Solution: use associated data to provide context}
-	\bigimagewithcaption{aead_scenario_4.pdf}{Source: The Joy of Cryptography}
+	\bigimagewithcaption{aead-scenario-4.pdf}{Source: The Joy of Cryptography}
 \end{frame}
 
 \begin{frame}{The Fujisaki-Okamoto Transform}{From CPA to CCA in public-key encryption}

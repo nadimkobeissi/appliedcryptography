@@ -6,7 +6,7 @@
 \subject{An introduction to Transport Layer Security (TLS), covering its protocol design, certificate infrastructure, security guarantees, and common vulnerabilities.}
 \keywords{TLS, SSL, HTTPS, cryptography, certificates, certificate authorities, authentication, key exchange, forward secrecy, man-in-the-middle attacks, TLS 1.2, TLS 1.3, Let's Encrypt, Certificate Transparency}
 \institute{American University of Beirut}
-\instituteimage{images/aub_white.png}
+\instituteimage{images/aub-white.png}
 \date{\today}
 \coversubtitle{CMPS 297AD/396AI\\Fall 2025}
 \coverpartname{Part 2: Real-World Cryptography}
@@ -39,7 +39,7 @@
 \end{frame}
 
 \begin{frame}{TLS attacks timeline (to 2015)}
-	\bigimagewithcaption{tls_attacks_timeline_2015.png}{TLS attacks up until 2015.}
+	\bigimagewithcaption{tls-attacks-timeline-2015.png}{TLS attacks up until 2015.}
 \end{frame}
 
 \begin{frame}{TLS isn't very interesting}
@@ -192,7 +192,7 @@
 
 \begin{frame}{Notice how we're mentioning design requirements now?}
 	\begin{center}
-		\bigimagewithcaption{fischer_sectioned.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
+		\bigimagewithcaption{fischer-sectioned.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
 	\end{center}
 \end{frame}
 
@@ -313,7 +313,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\imagewithcaption{tls_illustrated}{}
+			\imagewithcaption{tls-illustrated}{}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -410,7 +410,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
-			\imagewithcaption{tls_handshake.png}{TLS handshake overview.}
+			\imagewithcaption{tls-handshake.png}{TLS handshake overview.}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -510,15 +510,15 @@
 \end{frame}
 
 \begin{frame}{Let's Encrypt: active certificates}
-	\bigimagewithcaption{letsencrypt_certs.png}{Source: Let's Encrypt}
+	\bigimagewithcaption{letsencrypt-certs.png}{Source: Let's Encrypt}
 \end{frame}
 
 \begin{frame}{Let's Encrypt: certificates issued}
-	\bigimagewithcaption{letsencrypt_issuance.png}{Source: Let's Encrypt}
+	\bigimagewithcaption{letsencrypt-issuance.png}{Source: Let's Encrypt}
 \end{frame}
 
 \begin{frame}{Percentage of HTTPS traffic in Firefox}
-	\bigimagewithcaption{letsencrypt_https.png}{Source: Let's Encrypt}
+	\bigimagewithcaption{letsencrypt-https.png}{Source: Let's Encrypt}
 \end{frame}
 
 \begin{frame}{Certificate chains in practice}
@@ -762,7 +762,7 @@
 \end{frame}
 
 \begin{frame}{TLS: the handshake protocol}
-	\bigimagewithcaption{tls_13_handshake}{TLS 1.3 handshake protocol. Source: Serious Cryptography}
+	\bigimagewithcaption{tls-13-handshake}{TLS 1.3 handshake protocol. Source: Serious Cryptography}
 \end{frame}
 
 \begin{frame}{Client vs. Server: Different roles in the handshake}
@@ -1070,7 +1070,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.2\textwidth}
-			\imagewithcaption{tls_borat.jpg}{}
+			\imagewithcaption{tls-borat.jpg}{}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1337,7 +1337,7 @@
 \section{Attacks on TLS}
 
 \begin{frame}{TLS attacks timeline (to 2015)}
-	\bigimagewithcaption{tls_attacks_timeline_2015.png}{TLS attacks up until 2015.}
+	\bigimagewithcaption{tls-attacks-timeline-2015.png}{TLS attacks up until 2015.}
 \end{frame}
 
 \begin{frame}{Lucky Thirteen (2013)}
@@ -1701,7 +1701,7 @@
 \end{frame}
 
 \begin{frame}{SMACK: How state machine attacks work}
-	\bigimagewithcaption{tls_smack.png}{}
+	\bigimagewithcaption{tls-smack.png}{}
 \end{frame}
 
 \begin{frame}{FREAK: Factoring RSA Export Keys}
@@ -1810,13 +1810,13 @@
 \begin{frame}{``The Crypto Wars''}
 	\begin{columns}[c]
 		\begin{column}{0.33\textwidth}
-			\imagewithcaption{export_1.jpg}{RSA tattoo}
+			\imagewithcaption{export-1.jpg}{RSA tattoo}
 		\end{column}
 		\begin{column}{0.33\textwidth}
-			\imagewithcaption{export_2.jpg}{RSA t-shirt}
+			\imagewithcaption{export-2.jpg}{RSA t-shirt}
 		\end{column}
 		\begin{column}{0.33\textwidth}
-			\imagewithcaption{export_3.jpg}{Netscape ``not for export'' floppy}
+			\imagewithcaption{export-3.jpg}{Netscape ``not for export'' floppy}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1891,7 +1891,7 @@
 \end{frame}
 
 \begin{frame}{FREAK}
-	\bigimagewithcaption{tls_freak.png}{}
+	\bigimagewithcaption{tls-freak.png}{}
 \end{frame}
 
 \begin{frame}{SMACK: Real vulnerabilities found}
@@ -1964,7 +1964,7 @@
 \end{frame}
 
 \begin{frame}{Logjam: The downgrade attack}
-	\bigimagewithcaption{logjam_2.png}{}
+	\bigimagewithcaption{logjam-2.png}{}
 \end{frame}
 
 \begin{frame}{Logjam: Precomputation attacks on 1024-bit groups}
@@ -1992,7 +1992,7 @@
 \end{frame}
 
 \begin{frame}{Logjam: Precomputation attacks on 1024-bit groups}
-	\bigimagewithcaption{logjam_1.png}{}
+	\bigimagewithcaption{logjam-1.png}{}
 \end{frame}
 
 \begin{frame}{Logjam: The ``well-known groups'' problem}
@@ -2020,7 +2020,7 @@
 \end{frame}
 
 \begin{frame}{Logjam: Intelligence services exploit these issues!}
-	\bigimagewithcaption{logjam_3.png}{}
+	\bigimagewithcaption{logjam-3.png}{}
 \end{frame}
 
 \begin{frame}{Logjam: Countermeasures and lessons}
@@ -2143,7 +2143,7 @@
 \end{frame}
 
 \begin{frame}{Transcript Collision}
-	\bigimagewithcaption{tls_collision.png}{}
+	\bigimagewithcaption{tls-collision.png}{}
 \end{frame}
 
 \begin{frame}{Transcript Collision: Attack on TLS}
