@@ -171,7 +171,7 @@ strong {
 
 .hero {
 	position: relative;
-	background-image: linear-gradient(var(--hero-overlay-dark), var(--hero-overlay-light)), url("../images/cedar.webp");
+	background-image: linear-gradient(var(--hero-overlay-dark), var(--hero-overlay-light)), url("../images/cedar.avif");
 	background-size: cover;
 	background-position: center;
 	min-height: 40vh;
