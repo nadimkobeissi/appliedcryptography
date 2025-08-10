@@ -38,14 +38,15 @@ This course is intended for \textbf{senior undergraduate} students. \textbf{Grad
 
 If you want to understand whether you have the sufficient background for this course, review this revision chapter and try to do all the exercises: \url{https://joyofcryptography.com/pdf/chap0.pdf}
 
-\section{Materials}
+\section{Course Schedule}
+The course schedule is available on the course website, where it is always kept up-to-date, including details about the lecture topics, materials, resources and easy access to slides: \url{https://appliedcryptography.page}
+
+\section{Resources}
 \begin{itemize}
 	\item Mike Rosulek, {\href{https://joyofcryptography.com}{\textit{The Joy of Cryptography}}}, Oregon State University, 2021.\footnote{\textit{The Joy of Cryptography} is available free of charge at \url{https://joyofcryptography.com}.}
+	\item Jean-Philippe Aumasson, {\href{https://nostarch.com/serious-cryptography-2nd-edition}{\textit{Serious Cryptography, $2^{nd}$ Edition}}}, No Starch Press, 2024.
 	\item Handouts will be made available during the course and on the course website.
 \end{itemize}
-
-\section{Course Schedule}
-The course schedule is available on the course website, where it is always kept up-to-date, including details about the lecture topics, materials and easy access to slides: \url{https://appliedcryptography.page}
 
 \section{Assessment Items \& Grading Criteria}
 In this course, your performance will be evaluated through multiple components designed to measure both your theoretical understanding and your practical skills in cryptography. By staying current with the readings, attending and participating in lectures and lab projects, and completing all assigned work, you will gain a thorough mastery of the material.
@@ -73,13 +74,14 @@ Lab projects will be worked on weekly during lab sessions intended to serve as a
 Example lab sessions include:
 
 \begin{itemize}
-	\item \textbf{Zero-Knowledge Battleship:} Build a secure battleship game that uses zero-knowledge proofs to verify that the server is reporting ship hits honestly without revealing the entire board layout. This lab explores ZKP implementations and demonstrates their power in creating trustworthy interactive applications.
-	\item \textbf{Cryptographic Protocol Reverse Engineering:} Analyze real-world mobile applications to identify how they implement cryptographic protocols, discover potential vulnerabilities, and understand how protocol design flaws can lead to security breaches.
-	\item \textbf{Breaking Cloud Storage Encryption:} Investigate current research into vulnerabilities in cloud storage encryption protocols. Implement proof-of-concept attacks in a controlled environment and propose mitigations for the discovered vulnerabilities.
-	\item \textbf{Implementation of Secure Messaging Protocols:} Implement a simplified version of the Signal Protocol for secure messaging, focusing on the Double Ratchet algorithm and how it provides forward secrecy and post-compromise security.
-	\item \textbf{Side-Channel Attack Workshop:} Perform practical timing and power analysis attacks against basic cryptographic implementations to understand the importance of constant-time algorithms and other side-channel mitigations.
-	\item \textbf{Post-Quantum Cryptography Evaluation:} Compare and test different post-quantum cryptographic algorithms, analyzing their performance, security margins, and implementation challenges.
-	\item \textbf{Formal Verification with Verifpal, Progressing to Tamarin:} Model cryptographic protocols first using Verifpal as a learning tool and then progressing towards mature tools such as Tamarin, automatically verifying their security properties, learning how formal methods can discover subtle vulnerabilities that manual review might miss.
+	\item \textbf{Designing a Password Manager:} Design and implement a secure password manager application, learning about secure password storage techniques, key derivation functions, and encryption methods for sensitive data. You'll implement features such as master password protection, secure password generation, and encrypted storage while analyzing potential vulnerabilities and implementing countermeasures against common attacks.
+	\item \textbf{Designing a Secure Messenger:} Build a secure messaging application implementing end-to-end encryption using cryptographic libraries for key exchange protocols, message encryption, and authentication mechanisms. This lab covers essential features like perfect forward secrecy, deniability, and secure group messaging while exploring practical challenges such as key verification and metadata protection.
+	\item \textbf{Protocol Modeling and Verification with ProVerif:} Design and formally verify a Transport Layer Security (TLS)-like protocol using ProVerif, a formal verification tool for cryptographic protocols. This lab provides practical experience with cryptographic protocol design, formal verification, and security property specification for protocols that provide confidentiality, integrity, and authentication for network communications.
+	\item \textbf{Designing a Battleship Game Using Zero-Knowledge Systems:} Design and implement a zero-knowledge battleship game using RISC Zero, a zero-knowledge virtual machine (zkVM). This lab demonstrates how players can validate moves without revealing the entire game state, providing practical experience with zero-knowledge proofs, zkVMs, and cryptographic protocol design.
+	\item \textbf{Post-Quantum Cryptography Migration:} Explore the practical challenges of migrating existing systems to post-quantum cryptography using NIST's standardized algorithms, integrating ML-KEM (Kyber) for key encapsulation and ML-DSA (Dilithium) for digital signatures. You'll analyze performance impacts, message size increases, and integration challenges when replacing pre-quantum primitives with quantum-resistant alternatives.
+	\item \textbf{Private Set Intersection for Contact Discovery:} Build a privacy-preserving contact discovery system using Private Set Intersection (PSI), implementing an Oblivious Pseudorandom Function (OPRF) based approach. This lab covers designing secure wire protocols, implementing server and client components, and addressing security challenges like preventing offline enumeration attacks through peppered hashing and rate limiting.
+	\item \textbf{Privacy-Preserving Age Verification:} Build a privacy-preserving age verification system that proves age thresholds without revealing personal information using cryptographic commitments and signatures. You'll implement zero-knowledge proofs that verify statements like "I am 18 or older" while tackling challenges including credential revocation, preventing credential sharing, and ensuring efficient mobile verification.
+	\item \textbf{Building a Time-Locked Message Capsule:} Build a practical timelock encryption system that enables messages to be encrypted such that they can only be decrypted after a specific future time. You'll implement the tlock protocol using the League of Entropy's distributed randomness beacon, exploring real-world applications including scheduled disclosures, commitment schemes for auctions, and "digital time capsules" for personal messages.
 \end{itemize}
 
 Lab participation will be graded based on preparedness, engagement, demonstrated understanding during checkpoints, and the successful completion of in-lab activities.
@@ -153,7 +155,7 @@ Experience a full academic conference simulation where students present ``papers
 Students are expected to strictly observe the following course policies:
 
 \subsection{Attendance}
-\textbf{Do not register for this course if you do not plan to attend all classes, labs, and exams.} You are expected to abide by the university's rules on attendance. You are expected to attend lectures and to be on time for all sessions and activities related to this course. Lectures are a sequence. Missing one lecture will almost certainly mean that you will not be able to keep up with the following lectures without studying the material covered in the missed lecture. Catching up with missed lectures is your responsibility and is done on your own time. You are responsible for all work, even when absent. Attendance may be recorded at every class session. Excessive absence will not be tolerated and will result in being dropped from the course.
+\textbf{Do not register for this course if you do not plan to attend all classes, labs, and exams.} You are expected to abide by the university's rules on attendance. You are expected to attend lectures and to be on time for all sessions and activities related to this course. Lectures are a sequence. Missing one lecture will almost certainly mean that you will not be able to keep up with the following lectures without studying the material covered in the missed lecture. Catching up with missed lectures is your responsibility and is done on your own time. You are responsible for all work, even when absent. Attendance may be recorded at every class session. Excessive absence, defined at the discretion of the instructor, will not be tolerated and will result in being dropped from the course.
 
 \subsection{Academic Misconduct \& Plagiarism}
 Lectures and labs start on time. You may not be allowed to come into the room or lab once class has started. Any class conduct that disturbs the learning atmosphere may be deemed misbehavior and will not be tolerated.
