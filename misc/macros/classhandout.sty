@@ -1,10 +1,8 @@
 \NeedsTeXFormat{LaTeX2e}
-
 \ProvidesPackage{classhandout}[2025/08/04 v1.0 Nadim's Class Handout Style]
 
-\newcommand{\subject}[1]{\hypersetup{pdfsubject={#1}}}
-\newcommand{\keywords}[1]{\hypersetup{pdfkeywords={#1}}}
-
+\RequirePackage{../misc/macros/joc}
+\RequirePackage{../misc/fonts/fonts}
 \RequirePackage{
 	xurl,graphicx,array,bbding,pmboxdraw,
 	listings,acronym,amsthm,bookmark,exam-randomizechoices,
@@ -13,6 +11,8 @@
 }
 \RequirePackage[inner=2.50cm,outer=2.50cm,top=2.50cm,bottom=2.50cm]{geometry}
 
+\newcommand{\subject}[1]{\hypersetup{pdfsubject={#1}}}
+\newcommand{\keywords}[1]{\hypersetup{pdfkeywords={#1}}}
 \renewcommand{\familydefault}{\sfdefault}
 \definecolor{OliveGreen}{HTML}{3F7E31}
 \definecolor{EarthBrown}{HTML}{7D4C31}
