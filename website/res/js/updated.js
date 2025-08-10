@@ -8,21 +8,25 @@ const updatedInit = () => {
 		.then((response) => response.json())
 		.then((data) => {
 			if (Array.isArray(data) && data.length > 0) {
-				const latestCommitDate = new Date(data[0].commit.author.date)
-				const formattedDate = latestCommitDate.toLocaleString(undefined, {
-					year: "numeric",
-					month: "long",
-					day: "numeric",
-					hour: "numeric",
-					minute: "numeric",
-					hour12: true,
-				})
-				updatedLink.innerText = formattedDate
-				lastUpdatedElement.innerHTML = ""
-				lastUpdatedElement.appendChild(updatedLink)
-				const period = document.createElement("span")
-				period.innerText = "."
-				lastUpdatedElement.appendChild(period)
+				if (data[0]?.commit?.author?.date) {
+					const latestCommitDate = new Date(data[0].commit.author.date)
+					if (!isNaN(latestCommitDate.getTime())) {
+						const formattedDate = latestCommitDate.toLocaleString(undefined, {
+							year: "numeric",
+							month: "long",
+							day: "numeric",
+							hour: "numeric",
+							minute: "numeric",
+							hour12: true,
+						})
+						updatedLink.innerText = formattedDate
+						lastUpdatedElement.innerHTML = ""
+						lastUpdatedElement.appendChild(updatedLink)
+						const period = document.createElement("span")
+						period.innerText = "."
+						lastUpdatedElement.appendChild(period)
+					}
+				}
 			}
 		})
 		.catch((error) => {
