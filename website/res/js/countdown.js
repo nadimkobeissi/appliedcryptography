@@ -1,4 +1,4 @@
-const countdownInit = () => {
+export const countdownInit = () => {
 	const targetDate = new Date("2025-08-26T12:30:00+03:00") // Beirut time (UTC+3)
 	const countdownElement = document.getElementById("countdown")
 	let countdownInterval = 0

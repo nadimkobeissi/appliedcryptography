@@ -1,4 +1,4 @@
-const menuInit = () => {
+export const menuInit = () => {
 	const mobileMenuToggle = document.querySelector(".mobile-menu-toggle")
 	const navbarLinks = document.querySelector(".navbar-links")
 

@@ -19,10 +19,8 @@
 		<meta property="og:image:width" content="1200" />
 		<meta property="og:image:height" content="630" />
 		<meta property="og:locale" content="en_US" />
-		<link rel="icon" href="/res/images/favicon.png" type="image/png" />
-		<link rel="apple-touch-icon" href="/res/images/favicon.png" sizes="180x180" />
-		<link rel="icon" href="/res/images/favicon.png" sizes="32x32" type="image/png" />
-		<link rel="icon" href="/res/images/favicon.png" sizes="16x16" type="image/png" />
+		<link rel="icon" href="../res/images/favicon.png" type="image/png" />
+		<link rel="apple-touch-icon" href="../res/images/favicon.png" sizes="180x180" />
 		<style>
 			#viewer {
 				position: absolute;
@@ -38,7 +36,7 @@
 		</style>
 		<script defer data-domain="appliedcryptography.page" data-api="https://restless-block-0a1e.symbolicsoft.workers.dev/oil-ocean/event" src="https://restless-block-0a1e.symbolicsoft.workers.dev/emerald-hill/script.js"></script>
 		<script async type="module">
-			import EmbedPDF from "https://appliedcryptography.page/res/js/vendor/embedpdf.js"
+			import EmbedPDF from "../res/js/vendor/embedpdf.js"
 			window.addEventListener(`load`, () => {
 				const anchor = window.location.hash.substring(1)
 				if (typeof anchor === `string` && /^\d-\d{1,2}$/.test(anchor)) {
@@ -51,7 +49,7 @@
 						src: `https://appliedcryptography.page/slides/slides-${anchor}.pdf`,
 					})
 				} else {
-					window.location.href = `https://appliedcryptography.page`
+					window.location.href = `/`
 				}
 			})
 		</script>

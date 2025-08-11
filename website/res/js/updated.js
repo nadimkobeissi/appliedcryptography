@@ -1,4 +1,4 @@
-const updatedInit = () => {
+export const updatedInit = () => {
 	const repoUri = "https://cedarcrypt.org/nadim/appliedcryptography/commits/branch/main"
 	const apiUri = "https://cedarcrypt.org/api/v1/repos/nadim/appliedcryptography/commits?limit=1&sha=main"
 	fetch(apiUri)
