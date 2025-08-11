@@ -964,6 +964,110 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Insights from Hashcat 7.0.0}{The evolving landscape of password cracking}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\definitionbox{Hashcat}{
+				\textbf{Hashcat} is the world's fastest and most advanced password recovery tool, supporting over 300 hash algorithms and multiple attack modes.
+			}
+			\begin{itemize}[<+->]
+				\item Released after 2+ years of development with 900,000+ lines of code changed.\footnote{\url{https://hashcat.net/forum/thread-13330.html}}
+				\item 105 contributors show the scale of the password cracking community.
+				\item Major architectural changes reveal trends in both attack and defense strategies.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Trend 1: Memory-hard functions are winning}{But attackers are adapting}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Argon2 support added} - defenders are adopting memory-hard functions.
+				\item \textbf{Scrypt optimization}: +320\% performance improvement shows attackers aren't giving up.
+				\item \textbf{Memory management rewrite}: Removed 4GB allocation caps, enabling full device memory usage.
+				\item This arms race validates our discussion about memory-hard functions!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\begin{tcolorbox}[colback=black!5!white,colframe=ciphergray]
+				\textbf{Performance Gains:}\\
+				\texttt{Scrypt: +320\%}\\
+				\texttt{RAR3: +54\%}\\
+				\texttt{NetNTLMv2: +223\%}\\[0.5em]
+				\textcolor{cipherprimary}{\textbf{Note:} \small Even memory-hard functions face continuous optimization pressure!}
+			\end{tcolorbox}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Trend 2: Hardware diversity in attacks}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Assimilation Bridge}: Integrate CPUs, FPGAs, and embedded devices.
+				\item \textbf{Multiple backend support}:
+				      \begin{itemize}
+					      \item HIP (AMD GPUs)
+					      \item Metal (Apple Silicon)
+					      \item Virtual Backend Devices
+				      \end{itemize}
+				\item \textbf{Python Bridge Plugin}: Rapid prototyping of new attack methods.
+				\item Attackers now leverage every available compute resource, not just traditional GPUs.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\begin{tcolorbox}[colback=black!5!white,colframe=ciphergray]
+				\textbf{Attack Surface Expansion:}
+				\vspace{0.2cm}
+				\begin{center}
+					Traditional: GPU farms\\
+					$\downarrow$\\
+					Modern: Heterogeneous computing
+				\end{center}
+				\vspace{0.3cm}
+				\textcolor{cipherprimary}{\textbf{Implication:} \small Defenders must assume attackers have access to diverse, optimized hardware ecosystems.}
+			\end{tcolorbox}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Trend 3: Real-world targets dominate}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{58 new application-specific hashes}:
+				      \begin{itemize}
+					      \item MetaMask (cryptocurrency wallets)
+					      \item Microsoft Online Accounts
+					      \item LUKS2 (disk encryption)
+					      \item GPG, OpenSSH (security tools)
+				      \end{itemize}
+				\item \textbf{20 new extraction tools} for BitLocker, APFS, VirtualBox.
+				\item \textbf{Hash-mode autodetection}: Attackers don't even need to know the algorithm!
+				\item Focus has shifted from breaking algorithms to extracting and cracking real-world implementations.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\begin{tcolorbox}[colback=black!5!white,colframe=ciphergray]
+				\textbf{Attack Evolution:}
+				\begin{itemize}
+					\item Past: Break MD5/SHA-1
+					\item Today: Extract from:
+					      \begin{itemize}
+						      \small
+						      \item Encrypted disks
+						      \item Password managers
+						      \item Cryptocurrency wallets
+						      \item Cloud accounts
+					      \end{itemize}
+				\end{itemize}
+				\textcolor{cipherprimary}{\textbf{Lesson:} \small Security depends on implementation, not just algorithm choice!}
+			\end{tcolorbox}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Best practices for password hashing}
 	\begin{itemize}[<+->]
 		\item Use a dedicated password hashing function (not raw SHA-256).
