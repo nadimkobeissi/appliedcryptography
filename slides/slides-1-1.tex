@@ -367,8 +367,6 @@
 
 \begin{frame}{Hash functions: what are they good for?}
 	\begin{itemize}[<+->]
-		\item \textbf{Password storage}: Store the hash of the password on the server,
-		      not the password itself. Then check candidate passwords against the hash.
 		\item \textbf{Data integrity verification}: Hash a file. Later hash it
 		      again and compare hashes to check if the file has changed, suffered storage
 		      degradation, etc.
@@ -444,7 +442,7 @@
 \begin{frame}{PRF versus PRP}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Pseudo-Random Function (SHA-2)}
+			\textbf{Pseudo-Random Function (HMAC-SHA-2)}
 			\begin{itemize}[<+->]
 				\item \textbf{Input} is arbitrary-length,
 				\item \textbf{Output} is fixed-length, looks random (as discussed
