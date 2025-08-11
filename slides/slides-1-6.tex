@@ -453,19 +453,19 @@
 
 \begin{frame}{The Merkle-Damg\aa rd construction}{SHA-1, SHA-2}
 	\begin{columns}[c]
-		\begin{column}{0.45\textwidth}
+		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
 				\item Key components:
 				      \begin{itemize}
 					      \item Message is padded to a multiple of block size.
 					      \item Split into fixed-size blocks.
 					      \item Processes blocks sequentially through a compression function.
-					      \item Each step combines previous state with current block.
+					      \item Each step combines previous state with current block.\footnote{Interactive visualization: \url{https://sha256algorithm.com}}
 				      \end{itemize}
 				\item If compression function is collision-resistant, so is the hash function.
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.55\textwidth}
+		\begin{column}{0.5\textwidth}
 			\imagewithcaption{merkle-damgard.pdf}{Source: The Joy of Cryptography}
 		\end{column}
 	\end{columns}
