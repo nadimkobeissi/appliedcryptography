@@ -12,7 +12,7 @@ labs: $(TARGETS_LAB)
 problem-sets: $(TARGETS_PROBLEM_SET)
 quizzes: $(TARGETS_QUIZ)
 clean:
-	@$(RM) website/slides/*.pdf website/lab/*.pdf website/problem-set/*.pdf website/syllabus/*.pdf website/quiz/*.pdf
+	@$(RM) -r website/slides/*.pdf website/lab/*.pdf website/problem-set/*.pdf website/syllabus/*.pdf website/quiz/*.pdf starter-kit/target
 
 $(TARGETS_SLIDES):
 	@tectonic -o website/slides "slides/$@.tex" && qpdf --linearize "website/slides/$@.pdf" --replace-input
