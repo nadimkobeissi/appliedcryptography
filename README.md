@@ -11,6 +11,7 @@ If you are a student or someone trying to learn from this course's materials, th
 - `problem-set`: Problem sets.
 - `quiz`: Self-assessment quizzes.
 - `slides`: Lecture slides.
+- `starter-kit`: Cryptography implementations starter kit, written in Rust, for use during practical sessions.
 - `syllabus`: Course syllabus.
 - `website`: [Course website](https://appliedcryptography.page).
 

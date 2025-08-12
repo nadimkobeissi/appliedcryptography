@@ -34,7 +34,7 @@ website/syllabus/syllabus.pdf
 website/quiz/*.pdf
 
 # Rust
-target/**
+starter-kit/target
 **/*.rs.bk
 *.pdb
 Cargo.lock
