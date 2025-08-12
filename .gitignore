@@ -26,9 +26,25 @@ __latex*
 *.snm
 *.vrb
 
-# Compiled materials
+# Compiled PDFs
 website/slides/*.pdf
 website/lab/*.pdf
 website/problem-set/*.pdf
 website/syllabus/syllabus.pdf
 website/quiz/*.pdf
+
+# Rust
+target/**
+**/*.rs.bk
+*.pdb
+Cargo.lock
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
