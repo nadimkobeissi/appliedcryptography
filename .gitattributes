@@ -1,20 +1,21 @@
 # PDFs
-*.pdf filter=lfs diff=lfs merge=lfs -text
+*.pdf -text
 
 # Images
-*.jpeg filter=lfs diff=lfs merge=lfs -text
-*.jpg filter=lfs diff=lfs merge=lfs -text
-*.webp filter=lfs diff=lfs merge=lfs -text
-*.png filter=lfs diff=lfs merge=lfs -text
-*.gif filter=lfs diff=lfs merge=lfs -text
-*.svg filter=lfs diff=lfs merge=lfs -text
-*.ico filter=lfs diff=lfs merge=lfs -text
-*.avif filter=lfs diff=lfs merge=lfs -text
+*.jpeg -text
+*.jpg -text
+*.webp -text
+*.png -text
+*.gif -text
+*.svg -text
+*.ico -text
+*.avif -text
+
 # Fonts
-*.ttf filter=lfs diff=lfs merge=lfs -text linguist-vendored
-*.otf filter=lfs diff=lfs merge=lfs -text linguist-vendored
-*.woff filter=lfs diff=lfs merge=lfs -text linguist-vendored
-*.woff2 filter=lfs diff=lfs merge=lfs -text linguist-vendored
+*.ttf -text linguist-vendored
+*.otf -text linguist-vendored
+*.woff -text linguist-vendored
+*.woff2 -text linguist-vendored
+
 # Vendored code
-website/res/js/vendor/** filter=lfs diff=lfs merge=lfs -text linguist-vendored
-* !text !filter !merge !diff
+website/res/js/vendor/** -text linguist-vendored
