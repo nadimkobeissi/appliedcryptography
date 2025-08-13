@@ -19,3 +19,5 @@
 
 # Vendored code
 website/res/js/vendor/** -text linguist-vendored
+website/res/fonts/google/** -text linguist-vendored
+website/res/fonts/phosphor/** -text linguist-vendored
