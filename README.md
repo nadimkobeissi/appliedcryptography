@@ -2,8 +2,6 @@
 
 This repository contains source code of the course materials for Applied Cryptography (CMPS 297AD/396AI) at the American University of Beirut.
 
-If you are a student or someone trying to learn from this course's materials, there is no point in browsing this repository, since it only contains uncompiled sources. For a better experience, ignore this repository completely and access the materials through the course website: [appliedcryptography.page](https://appliedcryptography.page)
-
 ## Contents
 
 - `lab`: Lab project sheets.
@@ -17,11 +15,13 @@ If you are a student or someone trying to learn from this course's materials, th
 
 ## Compiling LaTeX Materials
 
-Before cloning this repository, make sure that you have [Git LFS](https://git-lfs.com) installed.
+Before compiling any of the LaTeX materials, follow these steps:
 
-Before compiling any of the LaTeX materials, make sure to first install the fonts included in `misc/fonts/` on your system.
+1. **Install the fonts**: Install the fonts included in `misc/fonts` on your system.
+2. **Install Tectonic**: Download and install [Tectonic](https://tectonic-typesetting.github.io/en-US/).
+3. **Install qpdf**: Download and install [qpdf](https://qpdf.sourceforge.io/).
 
-You'll also need to first have [Tectonic](https://tectonic-typesetting.github.io/en-US/) and [qpdf](https://qpdf.sourceforge.io/) installed. The good news is that this means that you don't need to install LaTeX!
+The good news is that this means that you don't need to install LaTeX!
 
 Then:
 
