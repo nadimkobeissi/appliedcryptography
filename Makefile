@@ -16,7 +16,7 @@ $(TARGETS_SLIDES):
 	@tectonic -o website/slides "slides/$@.tex"
 
 $(TARGETS_LAB):
-	@tectonic -o website/lab "lab/$@.tex" --replace-input
+	@tectonic -o website/lab "lab/$@.tex"
 
 $(TARGETS_PROBLEM_SET):
 	@tectonic -o website/problem-set "problem-set/$@.tex"
