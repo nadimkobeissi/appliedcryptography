@@ -1,5 +1,3 @@
-MAKEFLAGS += -j8
-
 TARGETS_SLIDES = slides-1-1 slides-1-2 slides-1-3 slides-1-4 slides-1-5 slides-1-6 slides-1-7 slides-1-8 slides-2-1 slides-2-2 slides-2-3 slides-2-4 slides-2-5 slides-2-6 slides-2-7 slides-2-8 slides-2-9 slides-2-10
 TARGETS_LAB = lab-password-manager lab-secure-messenger lab-zk-battleship lab-proverif-model lab-pq-migration lab-contact-discovery lab-private-auth lab-time-lock
 TARGETS_PROBLEM_SET = problem-set-1 problem-set-2 problem-set-3 problem-set-4 problem-set-5 problem-set-6 problem-set-7 problem-set-8
