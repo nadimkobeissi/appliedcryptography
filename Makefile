@@ -15,18 +15,18 @@ clean:
 	@$(RM) -r website/slides/*.pdf website/lab/*.pdf website/problem-set/*.pdf website/syllabus/*.pdf website/quiz/*.pdf starter-kit/target
 
 $(TARGETS_SLIDES):
-	@tectonic -o website/slides "slides/$@.tex" && qpdf --linearize "website/slides/$@.pdf" --replace-input
+	@tectonic -o website/slides "slides/$@.tex"
 
 $(TARGETS_LAB):
-	@tectonic -o website/lab "lab/$@.tex" && qpdf --linearize "website/lab/$@.pdf" --replace-input
+	@tectonic -o website/lab "lab/$@.tex" --replace-input
 
 $(TARGETS_PROBLEM_SET):
-	@tectonic -o website/problem-set "problem-set/$@.tex" && qpdf --linearize "website/problem-set/$@.pdf" --replace-input
+	@tectonic -o website/problem-set "problem-set/$@.tex"
 
 $(TARGETS_QUIZ):
-	@tectonic -o website/quiz "quiz/$@.tex" && qpdf --linearize "website/quiz/$@.pdf" --replace-input
+	@tectonic -o website/quiz "quiz/$@.tex"
 
 $(TARGETS_SYLLABUS):
-	@tectonic -o website/syllabus "syllabus/$@.tex" && qpdf --linearize "website/syllabus/$@.pdf" --replace-input
+	@tectonic -o website/syllabus "syllabus/$@.tex"
 
 .PHONY: all slides labs problem-sets quizzes clean $(TARGETS_SLIDES) $(TARGETS_LAB) $(TARGETS_PROBLEM_SET) $(TARGETS_QUIZ) $(TARGETS_SYLLABUS)

@@ -15,13 +15,7 @@ This repository contains source code of the course materials for Applied Cryptog
 
 ## Compiling LaTeX Materials
 
-Before compiling any of the LaTeX materials, follow these steps:
-
-1. **Install the fonts**: Install the fonts included in `misc/fonts` on your system.
-2. **Install Tectonic**: Download and install [Tectonic](https://tectonic-typesetting.github.io/en-US/).
-3. **Install qpdf**: Download and install [qpdf](https://qpdf.sourceforge.io/).
-
-The good news is that this means that you don't need to install LaTeX!
+Before compiling any of the LaTeX materials, download and install [Tectonic](https://tectonic-typesetting.github.io/en-US/).
 
 Then:
 

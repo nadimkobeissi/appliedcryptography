@@ -1,9 +1,38 @@
 \RequirePackage[final]{microtype}
-\RequirePackage[T1]{fontenc}
-\RequirePackage[utf8]{inputenc}
-\RequirePackage{fontspec}
 \RequirePackage{unicode-math}
-\setsansfont[Scale=1.0]{Inria Sans}
-\setmonofont[Scale=0.9]{JetBrains Mono}
-\setromanfont[Scale=1.0]{STIX Two Text}
-\setmathfont[Scale=1.0]{STIX Two Math}
+
+\setsansfont[
+	Scale=1.0,
+	Path=../misc/fonts/,
+	Extension=.ttf,
+	UprightFont=*-Regular,
+	BoldFont=*-Bold,
+	ItalicFont=*-Italic,
+	BoldItalicFont=*-BoldItalic
+]{InriaSans}
+
+\setmonofont[
+	Scale=0.9,
+	Path=../misc/fonts/,
+	Extension=.ttf,
+	UprightFont=*-Regular,
+	BoldFont=*-Bold,
+	ItalicFont=*-Italic,
+	BoldItalicFont=*-BoldItalic
+]{JetBrainsMono}
+
+\setromanfont[
+	Scale=1.0,
+	Path=../misc/fonts/,
+	Extension=.ttf,
+	UprightFont=*-Regular,
+	BoldFont=*-Bold,
+	ItalicFont=*-Italic,
+	BoldItalicFont=*-BoldItalic
+]{STIXTwoText}
+
+\setmathfont[
+	Scale=1.0,
+	Path=../misc/fonts/,
+	Extension=.ttf
+]{STIXTwoMath-Regular}
