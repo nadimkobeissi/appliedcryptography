@@ -212,9 +212,47 @@
 		\item PoW provides:
 		      \begin{itemize}
 			      \item \textbf{Finality}: Expensive to reverse transactions
-			      \item \textbf{Sybil resistance}: Can't fake computational work
+			      \item \textbf{Sybil resistance}: One entity can't pretend to be many participants
 			      \item \textbf{Fair lottery}: Proportional to hashpower
 			      \item \textbf{Time spacing}: Predictable block intervals
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Sybil attacks: The identity problem}
+	\begin{itemize}
+		\item Named after ``Sybil'' - a case study of multiple personality disorder
+		\item \textbf{The problem}: In decentralized systems, one entity creates many fake identities
+		\item Attack scenarios:
+		      \begin{itemize}
+			      \item One person pretends to be 1000 users
+			      \item Overwhelm honest participants in voting
+			      \item Gain disproportionate control over network
+		      \end{itemize}
+		\item Why it's easy online:
+		      \begin{itemize}
+			      \item Creating accounts/addresses is free
+			      \item No central authority to verify real identities
+			      \item Can automate identity creation at scale
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{How PoW prevents Sybil attacks}
+	\begin{itemize}
+		\item \textbf{Proposed solution}: Can't fake computational work
+		\item Creating identities is free, but:
+		      \begin{itemize}
+			      \item Each identity needs hashpower to participate
+			      \item 1000 identities with 1 hash/sec each = 1 identity with 1000 hash/sec
+			      \item No advantage to splitting resources
+		      \end{itemize}
+		\item PoW creates ``one-CPU-one-vote'' instead of ``one-identity-one-vote''
+		\item Result:
+		      \begin{itemize}
+			      \item Influence proportional to actual resources
+			      \item Can't amplify power through fake identities
+			      \item Economic cost enforces honest participation
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
