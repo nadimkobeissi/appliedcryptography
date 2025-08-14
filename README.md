@@ -21,9 +21,9 @@ Then:
 
 - `make all`: Compiles all the slides, lab project sheets, problem sets and the syllabus.
 - `make slides`: Compiles all the slides.
-- `make labs`: Compiles all the lab project sheets.
-- `make problem-sets`: Compiles all the problem sets.
-- `make quizzes`: Compiles all the self-assessment quizzes.
+- `make lab`: Compiles all the lab project sheets.
+- `make problem-set`: Compiles all the problem sets.
+- `make quiz`: Compiles all the self-assessment quizzes.
 - `make syllabus`: Compiles the syllabus.
 - `make clean`: Deletes all compiled PDF output.
 
@@ -36,13 +36,13 @@ You can also do stuff like this:
 
 You get the drift.
 
-All compiled output PDFs will be in their respective directory in the `website` folder:
+All compiled output PDFs will be in their respective directory in the `objects` folder:
 
-- `website/slides` contains the compiled slides PDFs.
-- `website/lab` contains the compiled lab project sheet PDFs.
-- `website/problem-set` contains the compiled problem set PDFs.
-- `website/quiz` contains the compiled self-assessment quiz PDFs.
-- `website/syllabus` contains the compiled syllabus PDF.
+- `objects/slides` contains the compiled slides PDFs.
+- `objects/lab` contains the compiled lab project sheet PDFs.
+- `objects/problem-set` contains the compiled problem set PDFs.
+- `objects/quiz` contains the compiled self-assessment quiz PDFs.
+- `objects/syllabus` contains the compiled syllabus PDF.
 
 _It really is that simple!_
 

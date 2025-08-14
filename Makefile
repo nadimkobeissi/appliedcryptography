@@ -4,27 +4,27 @@ TARGETS_PROBLEM_SET = problem-set-1 problem-set-2 problem-set-3 problem-set-4 pr
 TARGETS_QUIZ = quiz-1-2 quiz-1-3 quiz-1-4 quiz-1-5 quiz-1-6 quiz-1-7 quiz-1-8 quiz-2-1 quiz-2-2 quiz-2-3 quiz-2-4 quiz-2-5 quiz-2-6 quiz-2-7 quiz-2-8
 TARGETS_SYLLABUS = syllabus
 
-all: slides labs problem-sets quizzes syllabus
+all: slides lab problem-set quiz syllabus
 slides: $(TARGETS_SLIDES)
-labs: $(TARGETS_LAB)
-problem-sets: $(TARGETS_PROBLEM_SET)
-quizzes: $(TARGETS_QUIZ)
+lab: $(TARGETS_LAB)
+problem-set: $(TARGETS_PROBLEM_SET)
+quiz: $(TARGETS_QUIZ)
 clean:
-	@$(RM) -r website/slides/*.pdf website/lab/*.pdf website/problem-set/*.pdf website/syllabus/*.pdf website/quiz/*.pdf starter-kit/target
+	@$(RM) -r objects/slides/*.pdf objects/lab/*.pdf objects/problem-set/*.pdf objects/syllabus/*.pdf objects/quiz/*.pdf starter-kit/target
 
 $(TARGETS_SLIDES):
-	@tectonic -o website/slides "slides/$@.tex"
+	@tectonic -o objects/slides "slides/$@.tex"
 
 $(TARGETS_LAB):
-	@tectonic -o website/lab "lab/$@.tex"
+	@tectonic -o objects/lab "lab/$@.tex"
 
 $(TARGETS_PROBLEM_SET):
-	@tectonic -o website/problem-set "problem-set/$@.tex"
+	@tectonic -o objects/problem-set "problem-set/$@.tex"
 
 $(TARGETS_QUIZ):
-	@tectonic -o website/quiz "quiz/$@.tex"
+	@tectonic -o objects/quiz "quiz/$@.tex"
 
 $(TARGETS_SYLLABUS):
-	@tectonic -o website/syllabus "syllabus/$@.tex"
+	@tectonic -o objects/syllabus "syllabus/$@.tex"
 
-.PHONY: all slides labs problem-sets quizzes clean $(TARGETS_SLIDES) $(TARGETS_LAB) $(TARGETS_PROBLEM_SET) $(TARGETS_QUIZ) $(TARGETS_SYLLABUS)
+.PHONY: all slides lab problem-set quiz clean $(TARGETS_SLIDES) $(TARGETS_LAB) $(TARGETS_PROBLEM_SET) $(TARGETS_QUIZ) $(TARGETS_SYLLABUS)
