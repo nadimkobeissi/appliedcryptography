@@ -2050,7 +2050,7 @@
 	\end{itemize}
 	\textbf{Problems with this approach:}
 	\begin{itemize}
-		\item \textbf{Linear scaling:} $O(n)$ work per message
+		\item \textbf{Linear scaling:} $\mathcal{O}(n)$ work per message
 		\item \textbf{Bandwidth:} Upload grows with group size
 		\item \textbf{Battery drain:} More crypto operations
 		\item \textbf{Consistency:} Members may see different states
@@ -2085,7 +2085,7 @@
 			\end{enumerate}
 			\textbf{Benefits:}
 			\begin{itemize}
-				\item $O(1)$ encryptions per message
+				\item $\mathcal{O}(1)$ encryptions per message
 				\item Handles out-of-order delivery
 				\item Scales to large groups
 			\end{itemize}
@@ -2126,7 +2126,7 @@
 			\begin{itemize}
 				\item Designed for efficient group messaging
 				\item Single encryption per message
-				\item Logarithmic scaling: $O(\log n)$
+				\item Logarithmic scaling: $\mathcal{O}(\log n)$
 				\item Native group key agreement
 			\end{itemize}
 		\end{column}
