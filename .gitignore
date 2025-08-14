@@ -27,11 +27,7 @@ __latex*
 *.vrb
 
 # Compiled PDFs
-website/slides/*.pdf
-website/lab/*.pdf
-website/problem-set/*.pdf
-website/syllabus/syllabus.pdf
-website/quiz/*.pdf
+objects/*/*.pdf
 
 # Rust
 starter-kit/target
