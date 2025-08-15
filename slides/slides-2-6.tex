@@ -2403,6 +2403,70 @@
 	\end{center}
 \end{frame}
 
+\subsection{Post-Quantum SSH}
+
+\begin{frame}{OpenSSH: Post-quantum by default}
+	\begin{itemize}
+		\item \textbf{OpenSSH leading the way}: PQ key agreement by default since 2022
+		\item \textbf{Timeline of PQ adoption}:
+		      \begin{itemize}
+			      \item \textbf{OpenSSH 9.0 (2022)}: First PQ by default
+			            \begin{itemize}
+				            \item Algorithm: \texttt{sntrup761x25519-sha512}
+				            \item Hybrid approach (NTRU + X25519)
+			            \end{itemize}
+			      \item \textbf{OpenSSH 9.9 (2024)}: Added ML-KEM support
+			            \begin{itemize}
+				            \item Algorithm: \texttt{mlkem768x25519-sha256}
+				            \item Based on NIST standard
+			            \end{itemize}
+			      \item \textbf{OpenSSH 10.0}: ML-KEM becomes default
+			      \item \textbf{OpenSSH 10.1}: Warns on non-PQ connections
+		      \end{itemize}
+		\item \textbf{The issue}: SSH particularly vulnerable to SNDL
+		      \begin{itemize}
+			      \item Entire session privacy depends on key agreement
+			      \item Attackers can record SSH sessions today
+			      \item Decrypt everything once QC arrives
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{OpenSSH's aggressive stance}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\textbf{The warning (10.1+):}
+			\begin{quote}
+				\small
+				\texttt{** WARNING: connection is not using a post-quantum key exchange algorithm.\\
+					** This session may be vulnerable to "store now, decrypt later" attacks.}
+			\end{quote}
+
+			\textbf{Why this matters:}
+			\begin{itemize}
+				\item Pushes ecosystem forward
+				\item Makes PQ the norm, not exception
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\textbf{SSH's unique position:}\footnote{\url{https://www.openssh.com/pq.html}}
+			\begin{itemize}
+				\item Often used for critical infrastructure
+				\item Long-lived connections
+				\item High-value targets (admin access)
+				\item Perfect for SNDL attacks
+			\end{itemize}
+
+			\textbf{Deployment advantage:}
+			\begin{itemize}
+				\item Simpler than TLS
+				\item No certificate chains
+				\item Easier to upgrade
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \section{Google's Threat Model for Post-Quantum Cryptography}
 
 \begin{frame}{Google as a PQ case study}
