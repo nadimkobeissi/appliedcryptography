@@ -23,7 +23,7 @@
 \begin{frame}{Zero-knowledge proofs: magic, but real}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Imagine this scenario:}
+			\em {Imagine this scenario:}
 			\begin{itemize}
 				\item I claim to know the password to a secret vault
 				\item You need to verify I really know it
@@ -2098,6 +2098,425 @@ template IsZero() {
 			\begin{exampleblock}{Future work}
 				Need provably secure alternatives based on standard assumptions
 			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\section{zkVMs}
+
+\begin{frame}{What is a zkVM?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{The concept:}
+				      \begin{itemize}
+					      \item A black-box virtual machine that executes programs
+					      \item Generates ZK proofs of correct execution
+					      \item Proves: ``I ran program P on input X and got output Y''
+					      \item \textit{Without revealing intermediate states!}
+				      \end{itemize}
+				\item \textbf{Think of it as:}
+				      \begin{itemize}
+					      \item Computer + ZK proof system
+					      \item Run any program privately
+					      \item Prove the result is correct
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Why is this revolutionary?}
+				      \begin{itemize}
+					      \item No need to design custom circuits
+					      \item Write normal code, get ZK proofs
+					      \item Developers don't need crypto expertise
+					      \item One system for all computations
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{zkVM architecture and components}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Core components:}
+			\begin{itemize}
+				\item \textbf{Instruction Set:}
+				      \begin{itemize}
+					      \item RISC-V, MIPS, or custom
+					      \item Simple, well-defined operations
+					      \item Each instruction becomes constraints
+				      \end{itemize}
+				\item \textbf{Memory model:}
+				      \begin{itemize}
+					      \item RAM with read/write operations
+					      \item Stack and heap management
+					      \item Merkle trees for efficiency
+				      \end{itemize}
+				\item \textbf{Execution trace:}
+				      \begin{itemize}
+					      \item Record of all state transitions
+					      \item Forms the witness for the proof
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{The proving process:}
+			\begin{enumerate}
+				\item Load program into VM
+				\item Execute with private inputs
+				\item Record execution trace
+				\item Generate constraints from trace
+				\item Create ZK proof of constraints
+				\item Output: proof + public result
+			\end{enumerate}
+			\vspace{0.5em}
+			\begin{exampleblock}{Examples in practice}
+				RISC Zero, SP1, Jolt, Cairo VM - each with different trade-offs
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{zkVM applications and impact}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Blockchain scaling:}
+				      \begin{itemize}
+					      \item Rollups: execute off-chain, prove on-chain
+					      \item Compress thousands of transactions
+					      \item Ethereum's Layer 2 revolution
+					      \item Orders of magnitude cheaper
+				      \end{itemize}
+				\item \textbf{Verifiable computation:}
+				      \begin{itemize}
+					      \item Cloud computing with proof
+					      \item Outsource work, verify results
+					      \item No trust in compute provider
+					      \item Perfect for untrusted environments
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Private applications:}
+				      \begin{itemize}
+					      \item Machine learning inference
+					      \item Private smart contracts
+					      \item Confidential databases
+					      \item Regulatory compliance proofs
+				      \end{itemize}
+			\end{itemize}
+			\begin{alertblock}{The trade-off}
+				Proving is 1000-1,000,000$\times$ slower than native execution
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{RISC Zero}
+
+\begin{frame}{Remember this?}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Zero-knowledge proofs} allow you to prove that you know
+				      a secret without revealing any information about it.
+				\item They built ``zero-knowledge virtual machines'' where you can execute
+				      an entire program that runs as a zero-knowledge proof.
+				\item ZKP battleship game: server proves to the players that its
+				      output to their battleship guesses is correct, without revealing any
+				      additional information (e.g. ship location).
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{battleship.jpg}{Battleship board game. Source: Hasbro}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{RISC Zero: making ZK development accessible}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{What it offers:}
+				      \begin{itemize}
+					      \item Write ZK apps in Rust/C++
+					      \item No circuit design needed
+					      \item No custom languages
+					      \item Leverage existing ecosystem
+					      \item 70\% of top Rust crates work!
+				      \end{itemize}
+				\item \textbf{Key use cases:\footnote{\url{https://dev.risczero.com/api/use-cases}}}
+				      \begin{itemize}
+					      \item ZK Coprocessors for blockchains
+					      \item Optimistic rollups with ZK fraud proofs
+					      \item Verifiable off-chain computation
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Example applications built:}
+				      \begin{itemize}
+					      \item \textbf{Zeth:} Prove correct Ethereum blocks
+					      \item \textbf{Bonsai Pay:} Send ETH to email addresses
+					      \item \textbf{JSON:} Selective disclosure of data
+					      \item \textbf{Where's Waldo:} Prove without revealing
+					      \item \textbf{ZK Checkmate:} Prove mate-in-one without revealing
+					      \item \textbf{Proof of Exploit:} Responsible disclosure
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Getting started with RISC Zero}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Building a zkVM application:\footnote{\url{https://dev.risczero.com/api/zkvm/quickstart}}}
+				      \begin{enumerate}
+					      \item Write guest program in Rust
+					      \item Compile to ELF binary
+					      \item Execute and record session
+					      \item Generate proof (receipt)
+					      \item Anyone can verify with ImageID
+				      \end{enumerate}
+				\item \textbf{The guest program:}
+				      \begin{itemize}
+					      \item Core logic that gets proven
+					      \item Standard Rust code
+					      \item Access to most crates
+					      \item Defines public/private inputs
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Deployment options:}
+				      \begin{itemize}
+					      \item \textbf{Local proving:}
+					            \begin{itemize}
+						            \item Need 16GB+ RAM
+						            \item GPU acceleration available
+						            \item Full control over process
+					            \end{itemize}
+					      \item \textbf{Bonsai (remote):}
+					            \begin{itemize}
+						            \item Cloud-based proving
+						            \item No host code needed
+						            \item Pay per proof
+						            \item Easier to get started
+					            \end{itemize}
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{Making zkVMs Practical}
+
+\begin{frame}{The zkVM promise vs. reality}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{The promise:}
+				      \begin{itemize}
+					      \item ``Democratize SNARKs''
+					      \item No specialized expertise needed
+					      \item Prove any program execution
+					      \item Amazing developer experience
+					      \item Ready for deployment today
+				      \end{itemize}
+				\item \textbf{The reality:}
+				      \begin{itemize}
+					      \item Riddled with bugs
+					      \item 100,000$\times$ slower than native
+					      \item Years from production-ready
+					      \item Security theater, not security
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item\textbf{The hard truth:}
+				      \begin{itemize}
+					      \item Projects claiming to use zkVMs for security today are either:
+					            \begin{itemize}
+						            \item Secured by permissioning (not SNARKs)
+						            \item Vulnerable to attack
+						            \item Paying enormous costs for false security
+					            \end{itemize}
+				      \end{itemize}
+				\item \textbf{Time to maturity:}
+				      \begin{itemize}
+					      \item We are still \textbf{years away} from meeting even basic goals for secure and performant zkVMs
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Security stages: the path to trusted zkVMs}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Stage 1: Correct protocols}
+				      \begin{itemize}
+					      \item \textbf{1a:} Formally verify PIOP soundness
+					      \item \textbf{1b:} Verify PCS is binding
+					      \item \textbf{1c:} Verify Fiat-Shamir security
+					      \item \textbf{1d:} Verify constraint $\leftrightarrow$ VM semantics
+					      \item \textbf{1e:} Glue everything together
+				      \end{itemize}
+				\item \textbf{Timeline:} No zkVM likely to fully meet Stage 1 for at least \textbf{2 years}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Stage 2: Correct verifier}
+				      \begin{itemize}
+					      \item Formally verify implementation
+					      \item Match protocol from Stage 1
+					      \item Focus on verifier (simpler than prover)
+					      \item Ensures soundness in practice
+				      \end{itemize}
+				\item \textbf{Stage 3: Correct prover}
+				      \begin{itemize}
+					      \item Verify prover implementation
+					      \item Ensures completeness
+					      \item Zero-knowledge if claimed
+				      \end{itemize}
+				\item \textbf{Timeline:} Stage 3 in \textbf{4+ years}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Critical caveats and open problems}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Fiat-Shamir vulnerability:}
+				      \begin{itemize}
+					      \item Open research questions remain
+					      \item Random oracle $\neq$ real hash functions
+					      \item Known attacks involve recursive circuits
+					      \item Stage 2 system could be found insecure!
+				      \end{itemize}
+				\item \textbf{The bytecode problem:}
+				      \begin{itemize}
+					      \item Proving correct execution of flawed code?
+					      \item Need formally verified bytecode
+					      \item Enormous challenge outside zkVM scope
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Recursion complications:}
+				      \begin{itemize}
+					      \item Every PIOP must be verified
+					      \item Every commitment scheme too
+					      \item Every constraint system
+					      \item Multiplies verification burden
+				      \end{itemize}
+			\end{itemize}
+			\begin{itemize}
+				\item Current deployments skimp on security for performance:
+				      \begin{itemize}
+					      \item Some use $<$100 bits security
+					      \item Should use 128+ bits minimum
+					      \item If performance were good, we wouldn't compromise
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Performance reality check}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Current performance:}
+				      \begin{itemize}
+					      \item 100,000$\times$ to 1,000,000$\times$ slower
+					      \item Simple operations take seconds
+					      \item Complex programs take hours
+					      \item Memory operations particularly costly
+				      \end{itemize}
+				\item \textbf{Why so slow?}
+				      \begin{itemize}
+					      \item Every instruction $\rightarrow$ constraints
+					      \item Memory access needs Merkle proofs
+					      \item Polynomial commitments are expensive
+					      \item Recursion adds more overhead
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{The performance stages ahead:}
+				      \begin{itemize}
+					      \item Hardware acceleration (GPUs, ASICs)
+					      \item Better constraint systems
+					      \item Optimized polynomial arithmetic
+					      \item Proof composition techniques
+				      \end{itemize}
+			\end{itemize}
+			\begin{exampleblock}{Reality check}
+				Even with all optimizations, expect 1000$\times$ overhead for years to come
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The road ahead: realistic expectations}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{What to focus on now:}
+				      \begin{itemize}
+					      \item Formal verification efforts
+					      \item Basic security properties
+					      \item Performance fundamentals
+					      \item Not post-quantum (yet)
+					            \begin{itemize}
+						            \item Quantum computers: 5+ years away
+						            \item Bugs: existential risk today
+						            \item Use classical SNARKs for now
+					            \end{itemize}
+				      \end{itemize}
+				\item \textbf{Realistic timeline:}
+				      \begin{itemize}
+					      \item 2 years: Stage 1 protocols
+					      \item 3 years: Stage 2 verifiers
+					      \item 4+ years: Stage 3 provers
+					      \item 5+ years: Production-ready
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Key takeaways:}
+				      \begin{itemize}
+					      \item Don't believe the hype
+					      \item Current deployments are insecure
+					      \item Performance is prohibitive
+					      \item Years of work ahead
+				      \end{itemize}
+			\end{itemize}
+			\begin{alertblock}{Remember}
+				Anyone claiming zkVMs are ready for production deployment is either:
+				\begin{itemize}
+					\item Misinformed
+					\item Misleading you
+					\item Taking enormous risks
+				\end{itemize}
+			\end{alertblock}
 		\end{column}
 	\end{columns}
 \end{frame}
