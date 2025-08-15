@@ -272,9 +272,9 @@
 				\item We typically use \textbf{asymptotic analysis} to express complexity.
 				\item Common notation:
 				      \begin{itemize}
-					      \item $O(n)$: Linear time.
-					      \item $O(n^2)$: Quadratic time.
-					      \item $O(2^n)$: Exponential time.
+					      \item $\mathcal{O}(n)$: Linear time.
+					      \item $\mathcal{O}(n^2)$: Quadratic time.
+					      \item $\mathcal{O}(2^n)$: Exponential time.
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -290,9 +290,9 @@
 		\item We typically use \textbf{asymptotic analysis} to express complexity.
 		\item Common notation:
 		      \begin{itemize}
-			      \item $O(n)$: Linear time.
-			      \item $O(n^2)$: Quadratic time.
-			      \item $O(2^n)$: Exponential time.
+			      \item $\mathcal{O}(n)$: Linear time.
+			      \item $\mathcal{O}(n^2)$: Quadratic time.
+			      \item $\mathcal{O}(2^n)$: Exponential time.
 		      \end{itemize}
 		\item We care about how the running time grows as the input size increases.
 		\item \textbf{Example}: An algorithm that takes $n^2$ operations for input size $n$ becomes impractical as $n$ grows large.
@@ -306,7 +306,7 @@
 			\begin{itemize}[<+->]
 				\item Solvable in polynomial time.
 				\item \textbf{Examples}: Sorting, searching.
-				\item Running time: $O(n^c)$ for some constant $c$
+				\item Running time: $\mathcal{O}(n^c)$ for some constant $c$
 				\item Generally scales reasonably with input size.
 				\item Class P (Polynomial time).
 			\end{itemize}
@@ -316,7 +316,7 @@
 			\begin{itemize}[<+->]
 				\item No known polynomial-time solution.
 				\item \textbf{Example}: Factorizing product of two large primes.
-				\item Running time: Often exponential, e.g., $O(2^n)$
+				\item Running time: Often exponential, e.g., $\mathcal{O}(2^n)$
 				\item Becomes impractical quickly as input grows.
 				\item Includes NP-hard, NP-complete classes.
 			\end{itemize}
@@ -406,7 +406,7 @@
 		A group of computational problems that share similar resource requirements (time, memory, etc.).
 	}
 	\begin{itemize}[<+->]
-		\item \textbf{Example}: All problems solvable in $O(n^2)$ time form one class.
+		\item \textbf{Example}: All problems solvable in $\mathcal{O}(n^2)$ time form one class.
 		\item Different classes represent different levels of computational difficulty.
 		\item Understanding these classes helps us categorize cryptographic problems.
 	\end{itemize}
@@ -414,14 +414,14 @@
 
 \begin{frame}{TIME complexity classes}
 	\begin{itemize}[<+->]
-		\item \textbf{TIME}$(f(n))$ = class of problems solvable in time $O(f(n))$
+		\item \textbf{TIME}$(f(n))$ = class of problems solvable in time $\mathcal{O}(f(n))$
 		\item Examples:
 		      \begin{itemize}
-			      \item \textbf{TIME}$(n^2)$ = problems solvable in $O(n^2)$ time
-			      \item \textbf{TIME}$(n^3)$ = problems solvable in $O(n^3)$ time
-			      \item \textbf{TIME}$(2^n)$ = problems solvable in $O(2^n)$ time
+			      \item \textbf{TIME}$(n^2)$ = problems solvable in $\mathcal{O}(n^2)$ time
+			      \item \textbf{TIME}$(n^3)$ = problems solvable in $\mathcal{O}(n^3)$ time
+			      \item \textbf{TIME}$(2^n)$ = problems solvable in $\mathcal{O}(2^n)$ time
 		      \end{itemize}
-		\item \textbf{Key insight}: If you can solve a problem in $O(n^2)$ time, you can also solve it in $O(n^3)$ time.
+		\item \textbf{Key insight}: If you can solve a problem in $\mathcal{O}(n^2)$ time, you can also solve it in $\mathcal{O}(n^3)$ time.
 		\item Therefore: \textbf{TIME}$(n^2) \subseteq$ \textbf{TIME}$(n^3) \subseteq$ \textbf{TIME}$(n^4) \subseteq \ldots$
 	\end{itemize}
 \end{frame}
@@ -449,8 +449,8 @@
 		\item \textbf{SPACE}$(f(n))$ = class of problems solvable using $O(f(n))$ bits of memory
 		\item Examples:
 		      \begin{itemize}
-			      \item \textbf{SPACE}$(n)$ = problems using $O(n)$ memory
-			      \item \textbf{SPACE}$(n^2)$ = problems using $O(n^2)$ memory
+			      \item \textbf{SPACE}$(n)$ = problems using $\mathcal{O}(n)$ memory
+			      \item \textbf{SPACE}$(n^2)$ = problems using $\mathcal{O}(n^2)$ memory
 		      \end{itemize}
 		\item \textbf{PSPACE} = union of all \textbf{SPACE}$(n^k)$ for constants $k$
 	\end{itemize}

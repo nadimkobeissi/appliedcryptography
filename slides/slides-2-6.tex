@@ -126,7 +126,7 @@
 \begin{frame}{Grover's algorithm: summary}
 	\begin{itemize}
 		\item \textbf{Grover's algorithm}: Quantum algorithm for searching unsorted databases
-		\item \textbf{Classical search}: $O(2^n)$ time to search $2^n$ items
+		\item \textbf{Classical search}: $\mathcal{O}(2^n)$ time to search $2^n$ items
 		\item \textbf{Quantum search}: $O(2^{n/2})$ time with Grover's algorithm
 		\item \textbf{Formal claim}: Given $F: \{0,1\}^n \rightarrow \{0,1\}$, Grover's algorithm makes $O(2^{n/2})$ quantum evaluations of $F$ and outputs $X \in \{0,1\}^n$ such that $F(X) = 1$, if such $X$ exists
 		\item \textbf{Intuition}: Finding needles in haystacks
@@ -204,11 +204,11 @@
 						height=6cm,
 					]
 					\addplot[red, thick, domain=0:10, samples=100] {2^x};
-					\addlegendentry{Exponential ($O(2^n)$)}
+					\addlegendentry{Exponential ($\mathcal{O}(2^n)$)}
 					\addplot[blue, thick, domain=0:10, samples=100] {x^2};
-					\addlegendentry{Polynomial ($O(n^2)$)}
+					\addlegendentry{Polynomial ($\mathcal{O}(n^2)$)}
 					\addplot[green!70!black, thick, domain=0:10] {x};
-					\addlegendentry{Linear ($O(n)$)}
+					\addlegendentry{Linear ($\mathcal{O}(n)$)}
 				\end{axis}
 			\end{tikzpicture}
 		\end{column}
