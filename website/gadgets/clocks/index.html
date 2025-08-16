@@ -99,6 +99,54 @@
 				}
 			}
 
+			.nav-link {
+				display: inline-block;
+				text-decoration: none;
+				color: var(--primary);
+				font-weight: 600;
+				padding: 0.5rem 1rem;
+				border-radius: var(--border-radius);
+				background: var(--gray);
+				transition: var(--transition);
+				margin-bottom: var(--spacing-md);
+			}
+
+			.nav-link:hover {
+				background: var(--primary);
+				color: var(--white);
+				transform: translateY(-2px);
+				box-shadow: var(--shadow);
+			}
+
+			@media (max-width: 768px) {
+				.nav-link:hover {
+					transform: none;
+				}
+			}
+
+			.nav-link i {
+				margin-right: 0.5rem;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				.nav-link {
+					background: var(--gray);
+					color: var(--primary);
+				}
+
+				.nav-link:hover {
+					background: var(--primary);
+					color: var(--button-text-dark);
+				}
+			}
+
+			.footer-nav {
+				text-align: center;
+				margin-top: var(--spacing-lg);
+				padding-top: var(--spacing-md);
+				border-top: 2px solid var(--gray);
+			}
+
 			.container {
 				max-width: 1400px;
 				margin: 0 auto;
@@ -599,6 +647,10 @@
 	</head>
 	<body>
 		<div class="container">
+			<a href="https://appliedcryptography.page" class="nav-link">
+				Back to Applied Cryptography
+			</a>
+
 			<h1>Understanding Diffie-Hellman with Clocks</h1>
 			<p class="subtitle">Visualize modular exponentiation and a toy Diffie-Hellman exchange.</p>
 
@@ -679,6 +731,12 @@
 					Alice computes: Bob's public^a mod p = <span id="aliceCompute">6^3 mod 13 = 10</span><br />
 					Bob computes: Alice's public^b mod p = <span id="bobCompute">8^5 mod 13 = 10</span>
 				</p>
+			</div>
+
+			<div class="footer-nav">
+				<a href="https://appliedcryptography.page" class="nav-link">
+					Return to Course Site
+				</a>
 			</div>
 		</div>
 
