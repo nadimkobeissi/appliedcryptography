@@ -2,11 +2,10 @@
 <html lang="en" dir="ltr">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		<meta name="description" content="Explore an interactive demonstration of the Diffie-Hellman key exchange using clock arithmetic to visualize modular exponentiation and cryptographic concepts." />
 		<meta name="keywords" content="applied cryptography, AUB, American University of Beirut, cryptography course, encryption, cryptographic protocols, cybersecurity education, CMPS 297AD, CMPS 396AI" />
 		<meta name="author" content="Nadim Kobeissi" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, height=device-height" />
 		<meta name="robots" content="index, follow" />
 		<link rel="canonical" href="https://appliedcryptography.page/" />
 		<meta property="og:type" content="website" />
@@ -70,6 +69,14 @@
 				}
 			}
 
+			@media (max-width: 480px) {
+				:root {
+					--spacing-sm: 0.5rem;
+					--spacing-md: 1rem;
+					--spacing-lg: 1.5rem;
+				}
+			}
+
 			* {
 				box-sizing: border-box;
 				margin: 0;
@@ -80,10 +87,16 @@
 				font-family: "Inria Sans", sans-serif;
 				background-color: var(--light);
 				margin: 0;
-				padding: 20px;
+				padding: 10px;
 				min-height: 100vh;
 				color: var(--dark);
 				line-height: 1.7;
+			}
+
+			@media (max-width: 480px) {
+				body {
+					padding: 5px;
+				}
 			}
 
 			.container {
@@ -93,6 +106,12 @@
 				border-radius: var(--border-radius);
 				padding: var(--spacing-lg);
 				box-shadow: var(--shadow-lg);
+			}
+
+			@media (max-width: 480px) {
+				.container {
+					padding: var(--spacing-md);
+				}
 			}
 
 			@media (prefers-color-scheme: dark) {
@@ -110,11 +129,24 @@
 				line-height: 1.2;
 			}
 
+			@media (max-width: 480px) {
+				h1 {
+					font-size: 1.75rem;
+				}
+			}
+
 			h2 {
 				color: var(--primary);
 				margin-bottom: var(--spacing-md);
 				font-weight: 700;
 				line-height: 1.2;
+				font-size: 1.5rem;
+			}
+
+			@media (max-width: 480px) {
+				h2 {
+					font-size: 1.25rem;
+				}
 			}
 
 			h3 {
@@ -137,6 +169,12 @@
 				font-size: 1.1rem;
 			}
 
+			@media (max-width: 480px) {
+				.subtitle {
+					font-size: 1rem;
+				}
+			}
+
 			@media (prefers-color-scheme: dark) {
 				.subtitle {
 					color: var(--text-muted);
@@ -153,6 +191,7 @@
 			@media (max-width: 992px) {
 				.clocks-container {
 					grid-template-columns: 1fr;
+					gap: var(--spacing-md);
 				}
 			}
 
@@ -163,6 +202,12 @@
 				box-shadow: var(--shadow);
 				border-left: 4px solid var(--secondary);
 				transition: var(--transition);
+			}
+
+			@media (max-width: 480px) {
+				.clock-section {
+					padding: var(--spacing-sm);
+				}
 			}
 
 			@media (prefers-color-scheme: dark) {
@@ -176,16 +221,31 @@
 				box-shadow: var(--shadow-lg);
 			}
 
+			@media (max-width: 768px) {
+				.clock-section:hover {
+					transform: none;
+				}
+			}
+
 			.clock-wrapper {
 				position: relative;
-				width: 300px;
-				height: 300px;
+				width: 100%;
+				max-width: 300px;
+				aspect-ratio: 1;
 				margin: var(--spacing-md) auto;
+			}
+
+			@media (max-width: 480px) {
+				.clock-wrapper {
+					max-width: 250px;
+					margin: var(--spacing-sm) auto;
+				}
 			}
 
 			.clock {
 				width: 100%;
 				height: 100%;
+				display: block;
 			}
 
 			.controls {
@@ -194,6 +254,13 @@
 				gap: 10px;
 				flex-wrap: wrap;
 				justify-content: center;
+			}
+
+			@media (max-width: 480px) {
+				.controls {
+					gap: 5px;
+					margin: var(--spacing-sm) 0;
+				}
 			}
 
 			button {
@@ -207,6 +274,15 @@
 				font-weight: 600;
 				transition: var(--transition);
 				text-align: center;
+				touch-action: manipulation;
+				-webkit-tap-highlight-color: transparent;
+			}
+
+			@media (max-width: 480px) {
+				button {
+					padding: 0.5rem 1rem;
+					font-size: 12px;
+				}
 			}
 
 			button:hover {
@@ -214,6 +290,12 @@
 				color: var(--white);
 				transform: translateY(-2px);
 				box-shadow: var(--shadow);
+			}
+
+			@media (max-width: 768px) {
+				button:hover {
+					transform: none;
+				}
 			}
 
 			button:active {
@@ -240,6 +322,13 @@
 				margin: var(--spacing-md) 0;
 			}
 
+			@media (max-width: 480px) {
+				.generator-info {
+					padding: var(--spacing-sm);
+					margin: var(--spacing-sm) 0;
+				}
+			}
+
 			@media (prefers-color-scheme: dark) {
 				.generator-info {
 					background: var(--gray);
@@ -256,6 +345,15 @@
 				min-height: 80px;
 				overflow-x: auto;
 				font-size: 0.9rem;
+				word-break: break-word;
+				white-space: pre-wrap;
+			}
+
+			@media (max-width: 480px) {
+				.path-display {
+					font-size: 0.75rem;
+					min-height: 60px;
+				}
 			}
 
 			@media (prefers-color-scheme: dark) {
@@ -270,6 +368,12 @@
 				padding: var(--spacing-lg);
 				box-shadow: var(--shadow);
 				border-left: 4px solid var(--secondary);
+			}
+
+			@media (max-width: 480px) {
+				.dh-section {
+					padding: var(--spacing-md);
+				}
 			}
 
 			@media (prefers-color-scheme: dark) {
@@ -288,6 +392,35 @@
 			@media (max-width: 768px) {
 				.dh-controls {
 					grid-template-columns: 1fr;
+					gap: var(--spacing-sm);
+				}
+			}
+
+			.dh-selectors {
+				grid-column: span 2;
+				text-align: center;
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				gap: 10px;
+				align-items: center;
+			}
+
+			@media (max-width: 768px) {
+				.dh-selectors {
+					grid-column: span 1;
+				}
+			}
+
+			@media (max-width: 480px) {
+				.dh-selectors {
+					flex-direction: column;
+					gap: 5px;
+				}
+
+				.dh-selectors label {
+					display: block;
+					margin-bottom: 5px;
 				}
 			}
 
@@ -295,6 +428,13 @@
 				background: var(--gray);
 				padding: var(--spacing-md);
 				border-radius: var(--border-radius);
+				margin-top: 30px;
+			}
+
+			@media (max-width: 480px) {
+				.player-section {
+					padding: var(--spacing-sm);
+				}
 			}
 
 			@media (prefers-color-scheme: dark) {
@@ -311,6 +451,13 @@
 				margin: 5px 0;
 				font-family: "Inria Sans", sans-serif;
 				font-size: 1rem;
+				-webkit-appearance: none;
+			}
+
+			@media (max-width: 480px) {
+				.secret-input {
+					font-size: 16px; /* Prevents zoom on iOS */
+				}
 			}
 
 			select {
@@ -321,6 +468,19 @@
 				color: var(--dark);
 				font-family: "Inria Sans", sans-serif;
 				font-size: 1rem;
+				-webkit-appearance: none;
+				appearance: none;
+				background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+				background-repeat: no-repeat;
+				background-position: right 0.5rem center;
+				background-size: 1.5em 1.5em;
+				padding-right: 2.5rem;
+			}
+
+			@media (max-width: 480px) {
+				select {
+					font-size: 16px; /* Prevents zoom on iOS */
+				}
 			}
 
 			@media (prefers-color-scheme: dark) {
@@ -340,6 +500,14 @@
 				background: var(--tertiary-light);
 				border-radius: var(--border-radius);
 				border-left: 4px solid var(--secondary);
+				word-break: break-word;
+			}
+
+			@media (max-width: 480px) {
+				.shared-secret {
+					font-size: 1.25rem;
+					padding: var(--spacing-sm);
+				}
 			}
 
 			@media (prefers-color-scheme: dark) {
@@ -364,6 +532,14 @@
 				border-radius: var(--border-radius);
 				margin: var(--spacing-sm) 0;
 				border-left: 4px solid var(--secondary);
+			}
+
+			@media (max-width: 480px) {
+				.warning,
+				.success {
+					padding: var(--spacing-sm);
+					font-size: 0.9rem;
+				}
 			}
 
 			@media (prefers-color-scheme: dark) {
@@ -393,11 +569,25 @@
 				margin-bottom: var(--spacing-md);
 			}
 
+			@media (max-width: 480px) {
+				p {
+					margin-bottom: var(--spacing-sm);
+					font-size: 0.9rem;
+				}
+			}
+
 			.dh-section p:last-child {
 				text-align: center;
 				color: var(--text-muted-light);
 				font-family: "JetBrains Mono", monospace;
 				font-size: 0.9rem;
+				word-break: break-word;
+			}
+
+			@media (max-width: 480px) {
+				.dh-section p:last-child {
+					font-size: 0.75rem;
+				}
 			}
 
 			@media (prefers-color-scheme: dark) {
@@ -445,19 +635,23 @@
 				<p>Choose a clock (modulus) and generator, then Alice and Bob pick secret numbers. <strong>Note:</strong> don't forget that a finite field of prime order 13 is way too small for use in the real world, and that this is just a toy example. In real-world protocols, finite-field Diffie-Hellman uses prime numbers that are at least 2048 bits long.</p>
 
 				<div class="dh-controls">
-					<div style="grid-column: span 2; text-align: center">
-						<label>Clock Type: </label>
-						<select id="dhClock">
-							<option value="12">12-Hour (Subgroups!)</option>
-							<option value="13" selected>13-Hour (No subgroups)</option>
-						</select>
-						<label style="margin-left: 20px">Generator: </label>
-						<select id="dhGen">
-							<option value="2" selected>2</option>
-							<option value="3">3</option>
-							<option value="7">7</option>
-							<option value="11">11</option>
-						</select>
+					<div class="dh-selectors">
+						<div>
+							<label>Clock Type: </label>
+							<select id="dhClock">
+								<option value="12">12-Hour (Subgroups!)</option>
+								<option value="13" selected>13-Hour (No subgroups)</option>
+							</select>
+						</div>
+						<div></div>
+							<label>Generator: </label>
+							<select id="dhGen">
+								<option value="2" selected>2</option>
+								<option value="3">3</option>
+								<option value="7">7</option>
+								<option value="11">11</option>
+							</select>
+						</div>
 					</div>
 
 					<div class="player-section">
