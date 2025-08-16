@@ -455,7 +455,6 @@
 						<select id="dhGen">
 							<option value="2" selected>2</option>
 							<option value="3">3</option>
-							<option value="5">5</option>
 							<option value="7">7</option>
 							<option value="11">11</option>
 						</select>
@@ -698,21 +697,16 @@
 
 				// Check if using weak parameters
 				const warning = document.getElementById("dhWarning")
-				if (p === 12) {
-					// Check generator coverage for mod 12
-					const coverage = new Set([1])
-					let current = g
-					for (let i = 1; i < 12; i++) {
-						coverage.add(current)
-						current = (current * g) % 12
-						if (current === 0) current = 12
-					}
+				const coverage = new Set([1])
+				let current = g
+				for (let i = 1; i < p; i++) {
+					coverage.add(current)
+					current = (current * g) % p
+					if (current === 0) current = p
+				}
 
-					if (coverage.size < 12) {
-						warning.innerHTML = `<div class="warning">⚠️ Warning: With mod 12 and g=${g}, only ${coverage.size}/12 possible shared secrets exist! An attacker has fewer values to check.</div>`
-					} else {
-						warning.innerHTML = `<div class="warning">⚠️ Warning: 12 is composite (2²×3), making this system weaker than using a prime modulus.</div>`
-					}
+				if (coverage.size < 12) {
+					warning.innerHTML = `<div class="warning">⚠️ Warning: With mod ${p} and g=${g}, only ${coverage.size}/12 possible shared secrets exist! An attacker has fewer values to check.</div>`
 				} else {
 					warning.innerHTML = `<div class="success">✅ Using prime modulus (${p}) with generator ${g} - cryptographically stronger!</div>`
 				}
