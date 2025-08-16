@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content="Learn modern cryptography principles and applications in this comprehensive course covering cryptographic theory, practical implementations, and real-world security systems at the American University of Beirut." />
+		<meta name="keywords" content="applied cryptography, AUB, American University of Beirut, cryptography course, encryption, cryptographic protocols, cybersecurity education, CMPS 297AD, CMPS 396AI" />
+		<meta name="author" content="Nadim Kobeissi" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, height=device-height" />
+		<meta name="robots" content="index, follow" />
+		<link rel="canonical" href="https://appliedcryptography.page/" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="Applied Cryptography — American University of Beirut" />
+		<meta property="og:description" content="Learn modern cryptography principles and applications in this comprehensive course covering cryptographic theory, practical implementations, and real-world security systems at the American University of Beirut." />
+		<meta property="og:url" content="https://appliedcryptography.page" />
+		<meta property="og:type" content="website" />
+		<meta property="og:image" content="https://appliedcryptography.page/res/images/og.gif" />
+		<meta property="og:image:type" content="image/gif" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:locale" content="en_US" />
+		<link rel="icon" href="../../res/images/favicon.png" type="image/png" />
+		<link rel="apple-touch-icon" href="../../res/images/favicon.png" sizes="180x180" />
+		<link rel="stylesheet" href="../../res/fonts/phosphor/phosphor.css" />
+		<link rel="stylesheet" href="../../res/fonts/google/google.css" />
+		<script defer data-domain="appliedcryptography.page" data-api="https://restless-block-0a1e.symbolicsoft.workers.dev/oil-ocean/event" src="https://restless-block-0a1e.symbolicsoft.workers.dev/emerald-hill/script.js"></script>
+		<title>Applied Cryptography — Diffie-Hellman Clocks</title>
+		<style>
+			:root {
+				--primary: #2c5e1a;
+				--primary-dark: #1e3e12;
+				--secondary: #4a9c31;
+				--accent: #8cb369;
+				--dark: #1a2c0d;
+				--light: #f6f9f1;
+				--gray: #e8f0df;
+				--gray-dark: #cad9b7;
+				--white: white;
+				--text-muted-light: #6c757d;
+				--tertiary-light: rgba(240, 182, 127, 0.15);
+				--tertiary-light-hovered: rgba(240, 182, 127, 0.25);
+				--border-radius: 8px;
+				--spacing-sm: 0.75rem;
+				--spacing-md: 1.5rem;
+				--spacing-lg: 3rem;
+				--shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+				--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+				--transition: all 0.5s ease;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				:root {
+					--primary: #78d159;
+					--primary-dark: #5eaf41;
+					--secondary: #8ad566;
+					--accent: #b8e19f;
+					--dark: #f2f9ee;
+					--light: #0a1005;
+					--gray: #1c2a11;
+					--gray-dark: #2c4119;
+					--text-muted: #a8c29b;
+					--code-bg-dark: #263b18;
+					--card-bg-dark: #1a2c0f;
+					--button-text-dark: #0a1005;
+					--badge-bg-dark: #2a3f19;
+					--tertiary-dark: rgba(152, 195, 122, 0.15);
+					--tertiary-dark-hovered: rgba(152, 195, 122, 0.25);
+					--shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.3);
+					--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+				}
+			}
+
+			* {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
+
+			body {
+				font-family: "Inria Sans", sans-serif;
+				background-color: var(--light);
+				margin: 0;
+				padding: 20px;
+				min-height: 100vh;
+				color: var(--dark);
+				line-height: 1.7;
+			}
+
+			.container {
+				max-width: 1400px;
+				margin: 0 auto;
+				background: var(--white);
+				border-radius: var(--border-radius);
+				padding: var(--spacing-lg);
+				box-shadow: var(--shadow-lg);
+			}
+
+			@media (prefers-color-scheme: dark) {
+				.container {
+					background: var(--card-bg-dark);
+				}
+			}
+
+			h1 {
+				text-align: center;
+				color: var(--primary);
+				margin-bottom: var(--spacing-sm);
+				font-size: 2.5rem;
+				font-weight: 700;
+				line-height: 1.2;
+			}
+
+			h2 {
+				color: var(--primary);
+				margin-bottom: var(--spacing-md);
+				font-weight: 700;
+				line-height: 1.2;
+			}
+
+			h3 {
+				color: var(--primary-dark);
+				margin-bottom: var(--spacing-sm);
+				font-weight: 700;
+				line-height: 1.2;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				h3 {
+					color: var(--primary);
+				}
+			}
+
+			.subtitle {
+				text-align: center;
+				color: var(--text-muted-light);
+				margin-bottom: var(--spacing-lg);
+				font-size: 1.1rem;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				.subtitle {
+					color: var(--text-muted);
+				}
+			}
+
+			.clocks-container {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: var(--spacing-lg);
+				margin-bottom: var(--spacing-lg);
+			}
+
+			@media (max-width: 992px) {
+				.clocks-container {
+					grid-template-columns: 1fr;
+				}
+			}
+
+			.clock-section {
+				background: var(--white);
+				border-radius: var(--border-radius);
+				padding: var(--spacing-md);
+				box-shadow: var(--shadow);
+				border-left: 4px solid var(--secondary);
+				transition: var(--transition);
+			}
+
+			@media (prefers-color-scheme: dark) {
+				.clock-section {
+					background: var(--card-bg-dark);
+				}
+			}
+
+			.clock-section:hover {
+				transform: translateY(-5px);
+				box-shadow: var(--shadow-lg);
+			}
+
+			.clock-wrapper {
+				position: relative;
+				width: 300px;
+				height: 300px;
+				margin: var(--spacing-md) auto;
+			}
+
+			.clock {
+				width: 100%;
+				height: 100%;
+			}
+
+			.controls {
+				margin: var(--spacing-md) 0;
+				display: flex;
+				gap: 10px;
+				flex-wrap: wrap;
+				justify-content: center;
+			}
+
+			button {
+				padding: 0.75rem 1.5rem;
+				border: none;
+				border-radius: var(--border-radius);
+				background-color: var(--accent);
+				color: var(--dark);
+				cursor: pointer;
+				font-size: 14px;
+				font-weight: 600;
+				transition: var(--transition);
+				text-align: center;
+			}
+
+			button:hover {
+				background-color: var(--primary);
+				color: var(--white);
+				transform: translateY(-2px);
+				box-shadow: var(--shadow);
+			}
+
+			button:active {
+				transform: scale(0.95);
+			}
+
+			@media (prefers-color-scheme: dark) {
+				button {
+					background-color: var(--accent);
+					color: var(--button-text-dark);
+					font-weight: 700;
+				}
+
+				button:hover {
+					background-color: var(--primary);
+					color: var(--button-text-dark);
+				}
+			}
+
+			.generator-info {
+				background: var(--gray);
+				padding: var(--spacing-md);
+				border-radius: var(--border-radius);
+				margin: var(--spacing-md) 0;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				.generator-info {
+					background: var(--gray);
+				}
+			}
+
+			.path-display {
+				font-family: "JetBrains Mono", monospace;
+				background: var(--primary-dark);
+				color: var(--accent);
+				padding: var(--spacing-sm);
+				border-radius: var(--border-radius);
+				margin: var(--spacing-sm) 0;
+				min-height: 80px;
+				overflow-x: auto;
+				font-size: 0.9rem;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				.path-display {
+					background: var(--code-bg-dark);
+				}
+			}
+
+			.dh-section {
+				background: var(--white);
+				border-radius: var(--border-radius);
+				padding: var(--spacing-lg);
+				box-shadow: var(--shadow);
+				border-left: 4px solid var(--secondary);
+			}
+
+			@media (prefers-color-scheme: dark) {
+				.dh-section {
+					background: var(--card-bg-dark);
+				}
+			}
+
+			.dh-controls {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: var(--spacing-md);
+				margin: var(--spacing-md) 0;
+			}
+
+			@media (max-width: 768px) {
+				.dh-controls {
+					grid-template-columns: 1fr;
+				}
+			}
+
+			.player-section {
+				background: var(--gray);
+				padding: var(--spacing-md);
+				border-radius: var(--border-radius);
+			}
+
+			@media (prefers-color-scheme: dark) {
+				.player-section {
+					background: var(--gray);
+				}
+			}
+
+			.secret-input {
+				width: 100%;
+				padding: 8px;
+				border: 2px solid var(--gray-dark);
+				border-radius: var(--border-radius);
+				margin: 5px 0;
+				font-family: "Inria Sans", sans-serif;
+				font-size: 1rem;
+			}
+
+			select {
+				padding: 0.5rem;
+				border-radius: var(--border-radius);
+				border: 2px solid var(--gray-dark);
+				background: var(--white);
+				color: var(--dark);
+				font-family: "Inria Sans", sans-serif;
+				font-size: 1rem;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				select {
+					background: var(--gray);
+					color: var(--dark);
+				}
+			}
+
+			.shared-secret {
+				text-align: center;
+				font-size: 1.5rem;
+				font-weight: bold;
+				color: var(--primary);
+				margin: var(--spacing-md) 0;
+				padding: var(--spacing-md);
+				background: var(--tertiary-light);
+				border-radius: var(--border-radius);
+				border-left: 4px solid var(--secondary);
+			}
+
+			@media (prefers-color-scheme: dark) {
+				.shared-secret {
+					background: var(--tertiary-dark);
+				}
+			}
+
+			.warning {
+				background: var(--tertiary-light);
+				color: var(--dark);
+				padding: var(--spacing-md);
+				border-radius: var(--border-radius);
+				margin: var(--spacing-sm) 0;
+				border-left: 4px solid var(--accent);
+			}
+
+			.success {
+				background: var(--tertiary-light);
+				color: var(--dark);
+				padding: var(--spacing-md);
+				border-radius: var(--border-radius);
+				margin: var(--spacing-sm) 0;
+				border-left: 4px solid var(--secondary);
+			}
+
+			@media (prefers-color-scheme: dark) {
+				.warning,
+				.success {
+					background: var(--tertiary-dark);
+				}
+			}
+
+			.highlight {
+				background: var(--tertiary-light);
+				padding: 2px 4px;
+				border-radius: 3px;
+				font-family: "JetBrains Mono", monospace;
+				font-size: 0.9em;
+				color: var(--primary-dark);
+			}
+
+			@media (prefers-color-scheme: dark) {
+				.highlight {
+					background: var(--badge-bg-dark);
+					color: var(--accent);
+				}
+			}
+
+			p {
+				margin-bottom: var(--spacing-md);
+			}
+
+			.dh-section p:last-child {
+				text-align: center;
+				color: var(--text-muted-light);
+				font-family: "JetBrains Mono", monospace;
+				font-size: 0.9rem;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				.dh-section p:last-child {
+					color: var(--text-muted);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Understanding Diffie-Hellman with Clocks</h1>
+			<p class="subtitle">Visualize modular exponentiation and a toy Diffie-Hellman exchange.</p>
+
+			<div class="clocks-container">
+				<div class="clock-section">
+					<h2>12-Hour Clock (Composite: 2² × 3)</h2>
+					<div class="clock-wrapper">
+						<canvas id="clock12" class="clock"></canvas>
+					</div>
+					<div class="controls" data-hours="12" data-gens="1,2,3,4,5,7,11"></div>
+					<div class="generator-info">
+						<h3>Generator g = <span id="gen12">2</span></h3>
+						<div class="path-display" id="path12"></div>
+						<div id="coverage12"></div>
+					</div>
+				</div>
+
+				<div class="clock-section">
+					<h2>13-Hour Clock (Prime)</h2>
+					<div class="clock-wrapper">
+						<canvas id="clock13" class="clock"></canvas>
+					</div>
+					<div class="controls" data-hours="13" data-gens="1,2,3,4,6,7,11"></div>
+					<div class="generator-info">
+						<h3>Generator g = <span id="gen13">2</span></h3>
+						<div class="path-display" id="path13"></div>
+						<div id="coverage13"></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="dh-section">
+				<h2>🔐 Diffie-Hellman Key Exchange Demo</h2>
+				<p>Choose a clock (modulus) and generator, then Alice and Bob pick secret numbers. <strong>Note:</strong> don't forget that a finite field of prime order 13 is way too small for use in the real world, and that this is just a toy example. In real-world protocols, finite-field Diffie-Hellman uses prime numbers that are at least 2048 bits long.</p>
+
+				<div class="dh-controls">
+					<div style="grid-column: span 2; text-align: center">
+						<label>Clock Type: </label>
+						<select id="dhClock">
+							<option value="12">12-Hour (Subgroups!)</option>
+							<option value="13" selected>13-Hour (No subgroups)</option>
+						</select>
+						<label style="margin-left: 20px">Generator: </label>
+						<select id="dhGen">
+							<option value="2" selected>2</option>
+							<option value="3">3</option>
+							<option value="5">5</option>
+							<option value="7">7</option>
+							<option value="11">11</option>
+						</select>
+					</div>
+
+					<div class="player-section">
+						<h3>👩 Alice</h3>
+						<label>Secret number (a):</label>
+						<input type="number" id="aliceSecret" class="secret-input" value="3" min="1" max="12" />
+						<p>Public: g^a mod p = <span class="highlight" id="alicePublic">8</span></p>
+						<p>Calculation: <span id="aliceCalc">2^3 mod 13 = 8</span></p>
+					</div>
+
+					<div class="player-section">
+						<h3>👨 Bob</h3>
+						<label>Secret number (b):</label>
+						<input type="number" id="bobSecret" class="secret-input" value="5" min="1" max="12" />
+						<p>Public: g^b mod p = <span class="highlight" id="bobPublic">6</span></p>
+						<p>Calculation: <span id="bobCalc">2^5 mod 13 = 6</span></p>
+					</div>
+				</div>
+
+				<div class="shared-secret">🔑 Shared Secret: <span id="sharedSecret">10</span></div>
+
+				<div id="dhWarning"></div>
+
+				<p>
+					Alice computes: Bob's public^a mod p = <span id="aliceCompute">6^3 mod 13 = 10</span><br />
+					Bob computes: Alice's public^b mod p = <span id="bobCompute">8^5 mod 13 = 10</span>
+				</p>
+			</div>
+		</div>
+
+		<script>
+			const TWO_PI = Math.PI * 2
+
+			function drawClock(canvasId, hours, generator) {
+				const canvas = document.getElementById(canvasId)
+				const ctx = canvas.getContext("2d")
+				canvas.width = 300
+				canvas.height = 300
+
+				const centerX = 150
+				const centerY = 150
+				const radius = 120
+
+				// Clear canvas
+				ctx.clearRect(0, 0, 300, 300)
+
+				// Draw clock circle
+				ctx.beginPath()
+				ctx.arc(centerX, centerY, radius, 0, TWO_PI)
+				ctx.strokeStyle = "#4a5568"
+				ctx.lineWidth = 3
+				ctx.stroke()
+
+				// Draw hour markers and numbers
+				for (let i = 0; i < hours; i++) {
+					const angle = (i * TWO_PI) / hours - Math.PI / 2
+					const x1 = centerX + Math.cos(angle) * (radius - 10)
+					const y1 = centerY + Math.sin(angle) * (radius - 10)
+					const x2 = centerX + Math.cos(angle) * radius
+					const y2 = centerY + Math.sin(angle) * radius
+
+					ctx.beginPath()
+					ctx.moveTo(x1, y1)
+					ctx.lineTo(x2, y2)
+					ctx.strokeStyle = "#cbd5e0"
+					ctx.lineWidth = 2
+					ctx.stroke()
+
+					// Draw numbers
+					const numX = centerX + Math.cos(angle) * (radius - 25)
+					const numY = centerY + Math.sin(angle) * (radius - 25)
+					ctx.font = "16px Arial"
+					ctx.fillStyle = "#4a5568"
+					ctx.textAlign = "center"
+					ctx.textBaseline = "middle"
+					ctx.fillText(i === 0 ? hours : i, numX, numY)
+				}
+
+				// Calculate and draw generator path
+				const path = []
+				const visited = new Set()
+				let current = 1
+
+				for (let power = 0; power < hours; power++) {
+					current = (current * generator) % hours
+					if (current === 0) current = hours
+					if (!visited.has(current)) {
+						path.push(current)
+						visited.add(current)
+					}
+					if (current === 1 && power > 0) break
+				}
+
+				// Draw arrows between consecutive powers
+				ctx.strokeStyle = "gray"
+				ctx.lineWidth = 2
+				ctx.setLineDash([5, 3])
+
+				let prev = 1
+				for (let i = 0; i < path.length; i++) {
+					const curr = path[i]
+					const prevAngle = ((prev % hours) * TWO_PI) / hours - Math.PI / 2
+					const currAngle = ((curr % hours) * TWO_PI) / hours - Math.PI / 2
+
+					const prevX = centerX + Math.cos(prevAngle) * (radius - 40)
+					const prevY = centerY + Math.sin(prevAngle) * (radius - 40)
+					const currX = centerX + Math.cos(currAngle) * (radius - 40)
+					const currY = centerY + Math.sin(currAngle) * (radius - 40)
+
+					ctx.beginPath()
+					ctx.moveTo(prevX, prevY)
+
+					// Draw curved path
+					const cpX = centerX + Math.cos((prevAngle + currAngle) / 2) * (radius - 60)
+					const cpY = centerY + Math.sin((prevAngle + currAngle) / 2) * (radius - 60)
+					ctx.quadraticCurveTo(cpX, cpY, currX, currY)
+					ctx.stroke()
+
+					// Draw arrowhead
+					const angle = Math.atan2(currY - cpY, currX - cpX)
+					ctx.beginPath()
+					ctx.moveTo(currX, currY)
+					ctx.lineTo(currX - 8 * Math.cos(angle - Math.PI / 6), currY - 8 * Math.sin(angle - Math.PI / 6))
+					ctx.moveTo(currX, currY)
+					ctx.lineTo(currX - 8 * Math.cos(angle + Math.PI / 6), currY - 8 * Math.sin(angle + Math.PI / 6))
+					ctx.stroke()
+
+					prev = curr
+				}
+				ctx.setLineDash([])
+
+				// Highlight visited hours (including 1)
+				visited.add(1)
+				for (const hour of visited) {
+					const angle = ((hour % hours) * TWO_PI) / hours - Math.PI / 2
+					const x = centerX + Math.cos(angle) * (radius - 40)
+					const y = centerY + Math.sin(angle) * (radius - 40)
+
+					ctx.beginPath()
+					ctx.arc(x, y, 8, 0, TWO_PI)
+					ctx.fillStyle = "green"
+					ctx.fill()
+				}
+
+				// Draw center
+				ctx.beginPath()
+				ctx.arc(centerX, centerY, 5, 0, TWO_PI)
+				ctx.fillStyle = "black"
+				ctx.fill()
+
+				return { path: [1, ...path], visited }
+			}
+
+			function generatorSequence(hours, gen) {
+				const seq = []
+				let current = 1
+				for (let i = 0; i < hours; i++) {
+					seq.push(`g^${i} = ${current}`)
+					current = (current * gen) % hours
+					if (current === 0) current = hours
+					if (current === 1 && i > 0) break
+				}
+				return seq
+			}
+
+			function showGenerator(clockHours, gen) {
+				const canvasId = `clock${clockHours}`
+				const result = drawClock(canvasId, clockHours, gen)
+
+				const genSpan = document.getElementById(`gen${clockHours}`)
+				const pathDiv = document.getElementById(`path${clockHours}`)
+				const coverageDiv = document.getElementById(`coverage${clockHours}`)
+
+				genSpan.textContent = String(gen)
+				pathDiv.textContent = generatorSequence(clockHours, gen).join(", ")
+
+				const coverage = result.visited.size
+				const percentage = Math.round((coverage / clockHours) * 100)
+
+				if (coverage >= clockHours - 1) {
+					coverageDiv.innerHTML = `<div class="success">✅ Full generator! Covers at least ${clockHours} - 1 = ${clockHours - 1} hours.</div>`
+				} else {
+					coverageDiv.innerHTML = `<div class="warning">⚠️ Partial generator. Only covers ${coverage}/${clockHours} hours (${percentage}%).</div>`
+				}
+			}
+
+			function modExp(base, exp, mod) {
+				let result = 1
+				base = base % mod
+				while (exp > 0) {
+					if (exp % 2 === 1) {
+						result = (result * base) % mod
+					}
+					exp = Math.floor(exp / 2)
+					base = (base * base) % mod
+				}
+				return result
+			}
+
+			function clampSecret(val, p) {
+				const min = 1
+				const max = Math.max(1, p - 1)
+				if (Number.isNaN(val)) return min
+				return Math.min(Math.max(val, min), max)
+			}
+
+			function updateDH() {
+				const p = Number(document.getElementById("dhClock").value)
+				const g = Number(document.getElementById("dhGen").value)
+
+				const aliceInput = document.getElementById("aliceSecret")
+				const bobInput = document.getElementById("bobSecret")
+
+				// keep secrets in valid range [1, p-1]
+				aliceInput.max = Math.max(1, p - 1)
+				bobInput.max = Math.max(1, p - 1)
+				aliceInput.value = clampSecret(Number(aliceInput.value), p)
+				bobInput.value = clampSecret(Number(bobInput.value), p)
+
+				const a = Number(aliceInput.value)
+				const b = Number(bobInput.value)
+
+				const alicePublic = modExp(g, a, p)
+				const bobPublic = modExp(g, b, p)
+
+				const aliceShared = modExp(bobPublic, a, p)
+				const bobShared = modExp(alicePublic, b, p)
+
+				document.getElementById("alicePublic").textContent = String(alicePublic)
+				document.getElementById("bobPublic").textContent = String(bobPublic)
+				document.getElementById("aliceCalc").textContent = `${g}^${a} mod ${p} = ${alicePublic}`
+				document.getElementById("bobCalc").textContent = `${g}^${b} mod ${p} = ${bobPublic}`
+
+				document.getElementById("sharedSecret").textContent = String(aliceShared)
+				document.getElementById("aliceCompute").textContent = `${bobPublic}^${a} mod ${p} = ${aliceShared}`
+				document.getElementById("bobCompute").textContent = `${alicePublic}^${b} mod ${p} = ${bobShared}`
+
+				// Check if using weak parameters
+				const warning = document.getElementById("dhWarning")
+				if (p === 12) {
+					// Check generator coverage for mod 12
+					const coverage = new Set([1])
+					let current = g
+					for (let i = 1; i < 12; i++) {
+						coverage.add(current)
+						current = (current * g) % 12
+						if (current === 0) current = 12
+					}
+
+					if (coverage.size < 12) {
+						warning.innerHTML = `<div class="warning">⚠️ Warning: With mod 12 and g=${g}, only ${coverage.size}/12 possible shared secrets exist! An attacker has fewer values to check.</div>`
+					} else {
+						warning.innerHTML = `<div class="warning">⚠️ Warning: 12 is composite (2²×3), making this system weaker than using a prime modulus.</div>`
+					}
+				} else {
+					warning.innerHTML = `<div class="success">✅ Using prime modulus (${p}) with generator ${g} - cryptographically stronger!</div>`
+				}
+			}
+
+			function initGeneratorButtons() {
+				document.querySelectorAll(".controls[data-hours]").forEach((ctrl) => {
+					const hours = Number(ctrl.dataset.hours)
+					const gens = (ctrl.dataset.gens || "")
+						.split(",")
+						.map((s) => Number(s.trim()))
+						.filter((n) => !Number.isNaN(n))
+
+					ctrl.replaceChildren(
+						...gens.map((g) => {
+							const btn = document.createElement("button")
+							btn.type = "button"
+							btn.textContent = `g=${g}`
+							btn.addEventListener("click", () => showGenerator(hours, g))
+							return btn
+						}),
+					)
+				})
+			}
+
+			function initDHListeners() {
+				document.getElementById("dhClock").addEventListener("change", updateDH)
+				document.getElementById("dhGen").addEventListener("change", updateDH)
+				document.getElementById("aliceSecret").addEventListener("input", updateDH)
+				document.getElementById("bobSecret").addEventListener("input", updateDH)
+			}
+
+			// Initialize
+			initGeneratorButtons()
+			showGenerator(12, 2)
+			showGenerator(13, 2)
+			initDHListeners()
+			updateDH()
+		</script>
+	</body>
+</html>
