@@ -174,21 +174,13 @@
 \begin{enumerate}
 	\item (5 points) Explain why computational security is important in practice despite the existence of information-theoretic security. Discuss the limitations of both approaches.
 
-	\item (4 points) Consider a brute-force attack on AES-128:
+	\item (5 points) Consider a brute-force attack on AES-128:
 	      \begin{enumerate}
 		      \item Using the monetary cost table provided in the lecture, estimate how much it would cost to try all possible keys.
 		      \item Discuss whether the computational approach to security makes sense in light of this cost.
 	      \end{enumerate}
 
-	\item (3 points) Define a negligible function formally. Then determine which of the following functions are negligible (where $\lambda$ is the security parameter):
-	      \begin{enumerate}
-		      \item $f_1(\lambda) = 2^{-\lambda}$
-		      \item $f_2(\lambda) = \lambda^{-\log \lambda}$
-		      \item $f_3(\lambda) = 2^{-\sqrt{\lambda}}$
-		      \item $f_4(\lambda) = \frac{1}{\lambda \cdot 2^{\lambda/2}}$
-	      \end{enumerate}
-
-	\item (3 points) The ``birthday paradox'' is crucial for understanding many cryptographic attacks. If a hash function produces outputs of length $n$ bits:
+	\item (5 points) The ``birthday paradox'' is crucial for understanding many cryptographic attacks. If a hash function produces outputs of length $n$ bits:
 	      \begin{enumerate}
 		      \item Approximately how many random inputs would you need to hash before finding a collision with 50\% probability?
 		      \item How many bits of output would a hash function need to be reasonably secure against birthday attacks for the next decade?
