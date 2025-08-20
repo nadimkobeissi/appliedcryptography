@@ -195,36 +195,10 @@
 	      \end{enumerate}
 \end{enumerate}
 
-\subsection{Distinguishability and Bad Events (15 points)}
+\subsection{Distinguishability (15 points)}
 
 \begin{enumerate}
-	\item (6 points) Consider the following two libraries that implement a 256-bit hash function:
-	      \begin{center}
-		      \sslinked{
-			      \sslibrary{}{real}{
-				      \sslibrarysubroutine{hash}{X}{
-					      return SHA-256(x)
-				      }{1}
-			      }{1}
-		      }{\approxeq}{
-			      \sslibrary{}{rand}{
-				      $L \coloneq$ [\ ]\\[1em]
-				      \sslibrarysubroutine{hash}{X}{
-					      if $L[X]$ undefined:\\
-					      \quad $L[X] \twoheadleftarrow \bits^{256}$\\
-					      return $L[X]$
-				      }{1}
-			      }{1}
-		      }
-	      \end{center}
-
-	      \begin{enumerate}
-		      \item Describe the ``bad event'' that would allow these libraries to be distinguished.
-		      \item If an adversary is limited to $q$ queries, what is the probability of triggering this bad event?
-		      \item Using the ``bad event'' proof technique, show that these libraries are computationally indistinguishable when $q$ is polynomial in the security parameter.
-	      \end{enumerate}
-
-	\item (4 points) Consider the following two libraries:
+	\item (7 points) Consider the following two libraries:
 	      \begin{center}
 		      \sslinked{
 			      \sslibrary{}{1}{
@@ -246,7 +220,7 @@
 	      \end{center}
 	      Use the hybrid proof technique to show these libraries are interchangeable. Clearly describe each intermediate hybrid library.
 
-	\item (5 points) Consider a PRF $F: \bits^n \times \bits^n \rightarrow \bits^n$ and the following two libraries:
+	\item (8 points) Consider a PRF $F: \bits^n \times \bits^n \rightarrow \bits^n$ and the following two libraries:
 	      \begin{center}
 		      \sslinked{
 			      \sslibrary{}{{\text{PRF}}}{
