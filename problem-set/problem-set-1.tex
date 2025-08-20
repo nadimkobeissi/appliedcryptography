@@ -212,27 +212,35 @@
 	      \end{center}
 	      Use the hybrid proof technique to show these libraries are interchangeable. Clearly describe each intermediate hybrid library.
 
-	\item (8 points) Consider a PRF $F: \bits^n \times \bits^n \rightarrow \bits^n$ and the following two libraries:
+	\item (8 points) Consider the following two libraries that implement a simple encryption scheme:
 	      \begin{center}
 		      \sslinked{
-			      \sslibrary{}{{\text{PRF}}}{
+			      \sslibrary{}{real}{
 				      $K \twoheadleftarrow \bits^n$\\[1em]
-				      \sslibrarysubroutine{query}{x}{
-					      return $F(K, X)$
+				      \sslibrarysubroutine{encrypt}{M}{
+					      $R \twoheadleftarrow \bits^n$\\
+					      $C \coloneq (R, F(K, R) \oplus M)$\\
+					      return $C$
 				      }{1}
 			      }{1}
 		      }{\approxeq}{
-			      \sslibrary{}{rand}{
-				      $L \coloneq$ [\ ]\\[1em]
-				      \sslibrarysubroutine{query}{x}{
-					      if $L[X]$ undefined:\\
-					      \quad $L[X] \twoheadleftarrow \bits^n$\\
-					      return $L[X]$
+			      \sslibrary{}{random}{
+				      \sslibrarysubroutine{encrypt}{M}{
+					      $R \twoheadleftarrow \bits^n$\\
+					      $Y \twoheadleftarrow \bits^n$\\
+					      $C \coloneq (R, Y \oplus M)$\\
+					      return $C$
 				      }{1}
 			      }{1}
 		      }
 	      \end{center}
-	      Suppose we have a program $\mathcal{A}$ that can distinguish between these libraries with advantage $\varepsilon$. Construct a program $\mathcal{B}$ that uses $\mathcal{A}$ as a subroutine to distinguish a PRF from a truly random function with the same advantage $\varepsilon$.
+	      where $F: \bits^n \times \bits^n \rightarrow \bits^n$ is a pseudorandom function (PRF).
+
+	      \begin{enumerate}
+		      \item Explain intuitively why these two libraries should be computationally indistinguishable if $F$ is a secure PRF.
+		      \item Write a distinguisher that can tell these libraries apart if $F$ is \textbf{not} a secure PRF, but instead always returns $0^n$ regardless of input.
+		      \item If a distinguisher $\mathcal{D}$ can tell these libraries apart with advantage $\varepsilon$, explain how you could use $\mathcal{D}$ to distinguish the PRF $F$ from a truly random function.
+	      \end{enumerate}
 \end{enumerate}
 
 \section{Application of Cryptographic Principles (30 points)}
