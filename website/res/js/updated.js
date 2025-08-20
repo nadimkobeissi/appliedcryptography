@@ -37,6 +37,8 @@ export const updatedInit = () => {
 }
 
 const updatedError = (error) => {
+	const repoUri = "https://cedarcrypt.org/nadim/appliedcryptography/commits/branch/main"
+	const apiUri = "https://cedarcrypt.org/api/v1/repos/nadim/appliedcryptography/commits?limit=1&sha=main"
 	const lastUpdatedElement = document.getElementById("lastUpdated")
 	const updatedLink = document.createElement("a")
 	updatedLink.href = repoUri
