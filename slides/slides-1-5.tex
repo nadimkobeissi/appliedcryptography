@@ -572,17 +572,17 @@
 		\end{column}
 		\begin{column}{0.4\textwidth}
 			\ssprogram{null-oracle}{
-			$n := |C_1\|\cdots\|C_{\ell}|$\\
-			$M := ""$\\
-			\\
-			for $i = 1$ to $n$:\\
-			$\quad$ for each $b \in \{\bit{0}\bit{1}, \ldots, \bit{f}\bit{f}\}$:\\
-			$\quad\quad$ $\Delta := (\bit{0}\bit{0})^n$\\
-			$\quad\quad$ $\Delta[i] := b$\\
-			$\quad\quad$ if $\func{nulloracle}{C \oplus (0^\lambda \| \Delta)}$:\\
-			$\quad\quad\quad$ $M := M \| b$\\
-			$\quad\quad\quad$ next $i$\\
-			return $M$
+				$n := |C_1\|\cdots\|C_{\ell}|$\\
+				$M := ""$\\
+				\\
+				for $i = 1$ to $n$:\\
+				$\quad$ for each $b \in \{\bit{0}\bit{1}, \ldots, \bit{f}\bit{f}\}$:\\
+				$\quad\quad$ $\Delta := (\bit{0}\bit{0})^n$\\
+				$\quad\quad$ $\Delta[i] := b$\\
+				$\quad\quad$ if $\func{nulloracle}{C \oplus (0^\lambda \| \Delta)}$:\\
+				$\quad\quad\quad$ $M := M \| b$\\
+				$\quad\quad\quad$ next $i$\\
+				return $M$
 			}{0.8}
 		\end{column}
 	\end{columns}
@@ -1534,12 +1534,12 @@
 		\begin{column}{0.4\textwidth}
 			\begin{center}
 				\sssubroutine{ChaCha20-Poly1305.Enc}{K, N, A, M}{
-				$\text{key}_p \coloneq \texttt{ChaCha20}(K, N, 0)_{0..31}$\\
-				$C \coloneq M \oplus \texttt{ChaCha20}(K, N, 1)$\\
-				$\text{data} \coloneq \text{pad}(A) \| \text{pad}(C) \|$\\
-				$\quad\quad \text{len}(A) \| \text{len}(C)$\\
-				$T \coloneq \texttt{Poly1305}_{\text{key}_p}(\text{data})$\\
-				$\textbf{return } C\|T$
+					$\text{key}_p \coloneq \texttt{ChaCha20}(K, N, 0)_{0..31}$\\
+					$C \coloneq M \oplus \texttt{ChaCha20}(K, N, 1)$\\
+					$\text{data} \coloneq \text{pad}(A) \| \text{pad}(C) \|$\\
+					$\quad\quad \text{len}(A) \| \text{len}(C)$\\
+					$T \coloneq \texttt{Poly1305}_{\text{key}_p}(\text{data})$\\
+					$\textbf{return } C\|T$
 				}{0.87}
 			\end{center}
 		\end{column}
@@ -1552,9 +1552,9 @@
 			\hline
 			\textbf{Property}       & \textbf{AES-GCM}  & \textbf{ChaCha20-Poly1305} & \textbf{AES+HMAC} \\
 			\hline
-			Performance (HW accel.) & Excellent         & Good                       & Good              \\
+			Performance (HW accel.) & Good              & Good                       & Good              \\
 			\hline
-			Performance (no accel.) & Poor              & Excellent                  & Moderate          \\
+			Performance (no accel.) & Okay              & Good                       & Okay              \\
 			\hline
 			Security level          & 128-256 bits      & 256 bits                   & 128-256 bits      \\
 			\hline
@@ -1566,7 +1566,7 @@
 			\hline
 			Overhead                & Low (single pass) & Low (single pass)          & Higher (two pass) \\
 			\hline
-			Implem. complexity      & Moderate          & Low                        & High              \\
+			Implem. complexity      & Moderate          & Low                        & Low               \\
 			\hline
 		\end{tabular}
 	\end{center}
