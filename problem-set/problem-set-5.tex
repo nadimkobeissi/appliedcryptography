@@ -1,125 +1,177 @@
 \documentclass[10pt,a4paper,american]{exam}
 \usepackage{../misc/macros/classhandout}
 
-\title{Applied Cryptography - Problem Set 5: End-to-End Encrypted Cloud Protocol Design}
+\title{Applied Cryptography - Problem Set 5: End-to-End Encrypted Cloud Storage}
 \author{Nadim Kobeissi}
-\subject{Design and analysis of cryptographic protocols for end-to-end encrypted cloud storage systems with focus on threat modeling, key management, and implementation considerations.}
-\keywords{end-to-end encryption, cloud storage, cryptographic protocols, threat modeling, key management, secure file sharing, multi-device synchronization, E2EE}
+\subject{Problem set covering end-to-end encrypted cloud storage systems, cryptographic attacks on real-world implementations, and authentication protocols.}
+\keywords{end-to-end encryption, cloud storage, MEGA, Nextcloud, WhatsApp, OPAQUE, SRP, password authentication, key management, cryptographic attacks}
 
 \begin{document}
 \classhandoutheader
-\section*{Problem Set 5: End-to-End Encrypted Cloud Protocol Design}
+\section*{Problem Set 5: End-to-End Encrypted Cloud Storage}
 
 \begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
-	\textbf{Instructions:} This problem set focuses on creative protocol design for end-to-end encrypted cloud storage based on topic 2.4\footnote{\url{https://appliedcryptography.page/slides/\#2-4}} of the course. Unlike previous problem sets, this assignment is intentionally open-ended and requires you to design, analyze, and justify your own cryptographic solutions. Submit your solutions as a neatly formatted PDF with clear diagrams and specifications. You are encouraged to collaborate with classmates in studying the material, but your submitted protocol designs must be your own work.
+	\textbf{Instructions:} This problem set covers topics in end-to-end encrypted cloud storage from topic 2.4\footnote{\url{https://appliedcryptography.page/slides/\#2-4}} of the course. Submit your solutions as a neatly formatted PDF. You are encouraged to collaborate with classmates in studying the material, but your submitted solutions must be your own work. For proofs, clearly state your assumptions, steps, and conclusions.
 \end{tcolorbox}
 
-\section{Protocol Design Challenge (100 points)}
+\section{Understanding E2EE Cloud Storage (25 points)}
 
-You have been hired by a startup that wants to build a new end-to-end encrypted cloud storage service. Learning from the failures of MEGA and Nextcloud, they want a formally analyzable design that provides strong security guarantees while remaining practical and user-friendly.
-
-\subsection{Part 1: Threat Model and Requirements (25 points)}
-
-Design a comprehensive threat model and requirements specification for your E2EE cloud storage system.
+\subsection{Threat Models and Trade-offs (15 points)}
 
 \begin{enumerate}
-	\item \textbf{Threat Model (15 points):}
-	      \begin{itemize}
-		      \item Define your adversary's capabilities. Consider both passive and active attacks, including a malicious service provider.
-		      \item What attacks are in scope? What attacks are explicitly out of scope?
-		      \item How do you handle the case where the adversary compromises user devices at different points in time?
-		      \item Address the ``mud puddle test'' - what happens when a user loses their device and all credentials?
-	      \end{itemize}
-
-	\item \textbf{Functional Requirements (10 points):}
-	      \begin{itemize}
-		      \item What features must your system support? (Consider: file storage, sharing, multi-device access, key recovery)
-		      \item What are the usability constraints? How technically sophisticated are your target users?
-		      \item What performance requirements must be met?
-		      \item How will you handle user authentication without compromising E2EE guarantees?
-	      \end{itemize}
+	\item (7 points) \textbf{The Mud Puddle Test:}
+	      You're designing an E2EE cloud storage service for a healthcare provider that must comply with HIPAA regulations.
+	      \begin{enumerate}
+		      \item Explain the ``mud puddle test'' and why it's fundamental to true E2EE systems. What are the implications for password recovery mechanisms?
+		      \item Your CEO insists on having a ``password recovery'' feature because ``users always forget passwords.'' Design three different approaches that balance security with usability, clearly stating the security trade-offs of each.
+		      \item Compare Apple's Advanced Data Protection approach (optional E2EE with recovery options) versus a mandatory E2EE approach. Which would you recommend for the healthcare provider and why?
+	      \end{enumerate}
+	\item (8 points) \textbf{Multi-Device Key Management:}
+	      Design a key management system for an E2EE cloud storage service that supports seamless multi-device access.
+	      \begin{enumerate}
+		      \item Compare password-based key derivation, device pairing, and cloud keychain approaches. What are the security and usability trade-offs of each?
+		      \item Propose a solution using WebAuthn PRF extension for key derivation. How would this compare to traditional password-based approaches in terms of security and usability?
+		      \item How would you handle device revocation when a user loses their phone? Consider both immediate security needs and the user's ability to recover their data.
+		      \item Design a key rotation strategy that maintains backward compatibility while improving forward secrecy. How do you handle files shared with other users during rotation?
+	      \end{enumerate}
 \end{enumerate}
 
-\subsection{Part 2: Cryptographic Protocol Design (40 points)}
-
-Design the core cryptographic protocol for your E2EE cloud storage system.
+\subsection{Authentication Protocols (10 points)}
 
 \begin{enumerate}
-	\item \textbf{Key Hierarchy and Management (20 points):}
-	      \begin{itemize}
-		      \item Design a key hierarchy that supports all your functional requirements
-		      \item How are keys derived from user passwords or other authentication methods?
-		      \item How do you handle password changes without re-encrypting all data?
-		      \item Address the key recovery problem - what happens when users forget their passwords?
-		      \item If using password-based authentication, how do you prevent offline dictionary attacks?
-	      \end{itemize}
-
-	\item \textbf{File Operations and Sharing (20 points):}
-	      \begin{itemize}
-		      \item Specify the protocols for uploading, downloading, and deleting files
-		      \item Design a secure file sharing mechanism that doesn't require re-encryption
-		      \item How do you handle access revocation?
-		      \item What metadata is visible to the server? How do you minimize metadata leakage?
-		      \item Include clear protocol diagrams and message flows
-	      \end{itemize}
+	\item (10 points) \textbf{Password Authentication Comparison:}
+	      You're evaluating authentication mechanisms for a new E2EE cloud storage service.
+	      \begin{enumerate}
+		      \item Compare traditional password hashing (PBKDF2/Argon2) with SRP and OPAQUE. For each approach, explain what the server learns about the user's password and what attacks are possible after server compromise.
+		      \item The OPAQUE protocol uses an OPRF (Oblivious Pseudorandom Function). Explain how the 2HashDH OPRF works and why the server cannot perform offline dictionary attacks even though it helps compute the function.
+		      \item Your implementation team suggests using OPAQUE's shared session key for encrypting the backup key (like WhatsApp might be doing). Explain why this would be catastrophic for security and what should be used instead.
+		      \item Design a migration path from password hashing to OPAQUE for an existing service with 10 million users. How do you handle the transition period where both systems must coexist?
+	      \end{enumerate}
 \end{enumerate}
 
-\subsection{Part 3: Implementation Considerations (20 points)}
+\section{Cryptographic Attacks on Real Systems (35 points)}
 
-Address practical implementation challenges for your protocol.
+\subsection{MEGA Attack Analysis (20 points)}
 
 \begin{enumerate}
-	\item \textbf{Multi-Device Synchronization (10 points):}
-	      \begin{itemize}
-		      \item How do users access their files from multiple devices?
-		      \item Design a secure device pairing/enrollment protocol.
-		      \item How do you handle device revocation when a device is lost or stolen?
-		      \item What are the trade-offs between security and usability in your approach?
-	      \end{itemize}
-
-	\item \textbf{Performance and Scalability (10 points):}
-	      \begin{itemize}
-		      \item Analyze the computational and communication costs of your protocol.
-		      \item How does your design scale to millions of users and billions of files?
-		      \item What optimizations can you apply without compromising security?
-		      \item Compare your approach to the schemes used by MEGA, Nextcloud, and WhatsApp
-	      \end{itemize}
+	\item (10 points) \textbf{RSA Key Recovery Attack:}
+	      You're analyzing MEGA's cryptographic design for vulnerabilities.
+	      \begin{enumerate}
+		      \item MEGA uses AES-ECB to encrypt RSA private keys without integrity protection. Explain how this enables the RSA key recovery attack that works in just 2 login attempts.
+		      \item The attack exploits RSA-CRT implementation. Describe how modifying the parameter $u' \neq u = q^{-1} \bmod p$ creates an oracle that leaks information about the prime factor $q$.
+		      \item MEGA attempted to patch these vulnerabilities but introduced new ones. Explain why ad-hoc fixes to broken cryptographic designs are dangerous, using MEGA's patches as a case study.
+	      \end{enumerate}
+	\item (10 points) \textbf{Plaintext Recovery and System Compromise:}
+	      Once the RSA key is recovered, an attacker can compromise the entire system.
+	      \begin{enumerate}
+		      \item Explain how the recovered RSA key enables building an AES-ECB decryption oracle for all encrypted keys in MEGA's system.
+		      \item MEGA uses a complex key hierarchy with a master key encrypting all other keys. Design a simpler, more secure key hierarchy that would prevent these cascading failures.
+		      \item Compare MEGA's use of AES-ECB with proper authenticated encryption (AES-GCM). What specific attacks does authenticated encryption prevent?
+	      \end{enumerate}
 \end{enumerate}
 
-\subsection{Part 4: Security Analysis (15 points)}
-
-Provide a rigorous security analysis of your protocol.
+\subsection{Nextcloud Vulnerabilities (15 points)}
 
 \begin{enumerate}
-	\item \textbf{Formal Security Properties (10 points):}
-	      \begin{itemize}
-		      \item State the formal security properties your protocol achieves.
-		      \item What assumptions does your security rely on?
-		      \item How would you model your protocol in ProVerif or another verification tool?
-	      \end{itemize}
+	\item (7 points) \textbf{Authentication Failures:}
+	      Nextcloud's E2EE implementation has critical authentication flaws.
+	      \begin{enumerate}
+		      \item Explain the ``Key Insertion Attack'' where the server can substitute metadata keys. Why doesn't RSA-OAEP provide authentication, and what does this mean for security?
+		      \item Describe the ``Ghost Key Attack'' involving missing bounds checking. How can a simple programming error lead to files being encrypted with all zeros?
+		      \item Propose fixes for both attacks that maintain backward compatibility with existing encrypted files.
+	      \end{enumerate}
+	\item (8 points) \textbf{AES-GCM IV Reuse:}
+	      Nextcloud reuses IVs when files are modified, breaking AES-GCM security.
+	      \begin{enumerate}
+		      \item Explain why IV reuse in AES-GCM is catastrophic. What can an attacker learn from $C_1 \oplus C_2$ when the same IV is used?
+		      \item Design an attack that recovers plaintext when you know one version of a file and observe another version encrypted with the same key and IV.
+		      \item Nextcloud's response was to disable E2EE file sharing entirely. Was this an appropriate response? Design a better solution that preserves functionality while fixing the vulnerability.
+		      \item Compare the security impact of IV reuse in AES-GCM versus AES-CBC. Why is GCM's authenticated encryption particularly vulnerable?
+	      \end{enumerate}
+\end{enumerate}
 
-	\item \textbf{Attack Surface Analysis (5 points):}
-	      \begin{itemize}
-		      \item What attacks does your protocol prevent that affected MEGA or Nextcloud?
-		      \item Are there any potential vulnerabilities in your design? How do you mitigate them?
-		      \item What happens if your implementation has bugs similar to Nextcloud's?
-	      \end{itemize}
+\section{WhatsApp Encrypted Backups (20 points)}
+
+\subsection{System Design Analysis (10 points)}
+
+\begin{enumerate}
+	\item (10 points) \textbf{HSM-Based Key Recovery:}
+	      WhatsApp uses Hardware Security Modules (HSMs) for their encrypted backup system.
+	      \begin{enumerate}
+		      \item Explain WhatsApp's two-option approach: password-based recovery via HSM versus 64-digit user-managed keys. What are the security and usability trade-offs?
+		      \item WhatsApp claims to use OPAQUE with HSM-enforced rate limiting. However, users cannot verify these claims. List three ways WhatsApp could provide transparency without compromising security.
+		      \item The 64-digit key is unusually long (212 bits of entropy for 128-bit AES). Propose alternative key formats (like BIP39 mnemonics) that would be more user-friendly. Why might WhatsApp have chosen this inconvenient format?
+		      \item Design an attack scenario where a malicious WhatsApp could compromise backups despite their claimed security architecture. What trust assumptions are users forced to make?
+	      \end{enumerate}
+\end{enumerate}
+
+\subsection{OPAQUE Implementation (10 points)}
+
+\begin{enumerate}
+	\item (10 points) \textbf{OPAQUE Protocol Analysis:}
+	      Analyze WhatsApp's use of OPAQUE for password-protected backups.
+	      \begin{enumerate}
+		      \item WhatsApp's specification is ambiguous about whether they use OPAQUE's export key or shared session key for $\mathtt{OPAQUE}_K$. Explain why using the shared session key would completely break the security model.
+		      \item During OPAQUE registration, the client sends the encrypted backup key to the server. Trace through the complete registration and retrieval process, identifying what each party learns at each step.
+		      \item Compare WhatsApp's centralized HSM approach with Signal's SVR3 system that distributes trust across multiple enclaves. What are the advantages of Signal's approach?
+		      \item The HSM enforces attempt limits to prevent brute-force attacks. Calculate how many attempts an attacker would need on average to crack a 6-digit PIN versus a 15-character password. How should the rate limiting policy differ for each?
+	      \end{enumerate}
+\end{enumerate}
+
+\section{Designing Secure E2EE Cloud Storage (20 points)}
+
+\subsection{Formal Protocol Design (20 points)}
+
+\begin{enumerate}
+	\item (10 points) \textbf{Building a Secure Protocol:}
+	      Based on the formal treatment in the literature, sketch out components of a secure E2EE cloud storage protocol.
+	      \begin{enumerate}
+		      \item Define a minimal key hierarchy with: root key $K_r$, file encryption keys $K_f$, and sharing keys $K_s$. How does separating these roles prevent MEGA's cascading failure pattern?
+		      \item Sketch an authentication flow using OPAQUE that derives $K_r$ from the export key. What specific property of OPAQUE prevents offline attacks after server compromise?
+		      \item Describe how per-recipient headers containing $\text{Enc}_{K_s}(K_f)$ enable file sharing. Why is this more efficient than re-encryption?
+		      \item Identify three key security properties your design achieves that MEGA/Nextcloud lack. Give one specific attack each system suffers that your design prevents.
+	      \end{enumerate}
+	\item (10 points) \textbf{Implementation Considerations:}
+	      Consider practical aspects of deploying your E2EE cloud storage protocol.
+	      \begin{enumerate}
+		      \item How would you handle password changes without re-encrypting all files? Design a key rotation mechanism that maintains security while being efficient.
+		      \item Your protocol should support file versioning and deduplication. How do you implement these features without leaking information to the server?
+		      \item Design a migration strategy for a service currently using server-side encryption to adopt your E2EE protocol. How do you handle the transition period?
+		      \item What formal analysis tools (ProVerif, Tamarin, \fstar) would you use to verify your protocol? What security properties would you prove?
+	      \end{enumerate}
 \end{enumerate}
 
 \begin{tcolorbox}[colframe=EarthBrown!30!white,colback=EarthBrown!5!white]
-	\textbf{Bonus Challenge: Advanced Features (30 extra points)}
+	\textbf{Bonus Challenge (30 extra points):} \textbf{The Cungadero Cloud Deluxe Audit}
 
-	Extend your protocol design to support one of the following advanced features:
+	\begin{wrapfigure}{l}{0.15\textwidth}
+		\centering
+		\includegraphics[width=0.15\textwidth]{images/cungadero.png}
+	\end{wrapfigure}
 
+	Spamton G. Spamton, self-proclaimed \textit{``Number 1 Rated Salesman 1997,''} has just launched his revolutionary E2EE cloud storage service: the Cungadero Cloud Deluxe. His marketing materials promise ``\texttt{[[BIG SHOT]] SECURITY AT [[Hyperlink Blocked]] PRICES!}'' and claim the system uses ``\texttt{MILITARY-GRADE [[Kromer]] ENCRYPTION}'' that's ``\texttt{SO SECURE, EVEN I CAN'T SEE YOUR [[Commemorative Plates]]!}''
+
+	You've been hired to conduct a security audit before the service goes live to his first million customers (he's very optimistic). During your initial meeting, Spamton excitedly shows you his ``innovative'' features:
+
+	\begin{itemize}
+		\item Password recovery using ``Hardware-Secured Recovery Module'' (the hardware is a drawer locked with a key).
+		\item ``Post-quantum key agreement'' using RSA-4096 with $e = 3$ and PKCS\#1 v1.5 padding.
+		\item File sharing implements ``Zero-Knowledge URLs'' by XORing the file key with a timestamp before base64 encoding it in the URL.
+		\item Keys protected by ``Distributed Storage Architecture'' where each key is split using Shamir's Secret Sharing with threshold k=1, n=1.
+		\item Authentication uses ``OPAQUE-Compatible Protocol'' which is actually just PBKDF2 with 1 iteration where the derived key is sent directly to the server over HTTPS for comparison.
+		\item ``Perfect Forward Secrecy'' achieved by generating new AES keys for each file block using \texttt{Math.random()} seeded with the file's creation timestamp.
+		\item ``Authenticated Encryption'' using AES-CBC where the MAC is computed as SHA-1(encrypt(plaintext)).
+	\end{itemize}
+
+	\textbf{Your Task:} Design a comprehensive security audit plan for the Cungadero Cloud Deluxe. Your response should include:
 	\begin{enumerate}
-		\item \textbf{Secure Computation on Encrypted Data:} Come up with a high-level description for a mechanism that allows the server to perform useful operations (search, deduplication, compression) on encrypted files without learning their contents. What cryptographic techniques would you use? You don't need to actually come up with a full design (could you imagine? All that for a bonus question? Sheesh!) — just credibly investigate which technologies you'd look into, and estimate their implementation and performance costs.
-
-		\item \textbf{Post-Compromise Security:} Enhance your protocol to provide security guarantees even after temporary key compromise. How quickly can your system recover security after a breach? Design a key rotation mechanism that maintains backward and forward secrecy.
-
-		\item \textbf{Decentralized Trust:} Redesign your system to eliminate single points of trust. Could you distribute trust across multiple providers or use blockchain technology? How would this affect usability and performance? Address the challenges of consensus and availability.
+		\item \textbf{Triage Strategy}: Which components would you prioritize examining first, and why? Consider both the likelihood of vulnerabilities and their potential impact.
+		\item \textbf{Audit Methodology}: Describe your approach for each major component (authentication, key management, encryption, file sharing). Include specific tests you would run and tools you would use.
+		\item \textbf{Diplomatic Reporting}: How would you explain the security issues to Spamton in a way that a ``[[BIG SHOT]]'' salesman would understand? Provide examples of how to translate technical vulnerabilities into business risks.
+		\item \textbf{Remediation Roadmap}: Create a prioritized list of fixes that balances security improvements with Spamton's need to launch quickly. Which vulnerabilities are absolutely critical to fix before launch, and which could be addressed in ``version 2.0''?
 	\end{enumerate}
 
-	Your extended design should maintain all the security properties of your base protocol while adding these new capabilities. Provide clear specifications and analyze the additional complexity introduced.
+	Your analysis should reference real vulnerability patterns from MEGA, Nextcloud, and other systems discussed in class, explain how formal verification could have prevented Spamton's mistakes, and include a comparison with properly implemented E2EE systems.
 \end{tcolorbox}
 
 \end{document}
