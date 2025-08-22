@@ -314,6 +314,29 @@
 
 \section{Attacks on Hash Functions}
 
+\begin{frame}{Evaluating a hash function's quality}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Recall}:
+				      \begin{itemize}[<+->]
+					      \item \textbf{Asymmetric primitives} are based on mathematical
+					            problems, can be mathematically proven secure (given assumptions!)
+					      \item \textbf{Symmetric primitives} (encryption, hashing\ldots)
+					            are statistically, empirically, heuristically shown to be secure,
+					            not proven secure.
+					      \item The more cryptanalysis they survive, the higher confidence
+					            we have in their security.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{qiao.png}{Cryptanalysis of AES.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{What about attacks on hash functions?}
 	\begin{itemize}[<+->]
 		\item Despite their security properties, hash functions can be vulnerable.
