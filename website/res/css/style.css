@@ -269,6 +269,7 @@ strong {
 	margin-bottom: var(--spacing-md);
 	box-shadow: var(--shadow);
 	transition: var(--transition);
+	min-height: 320px;
 }
 
 @media (prefers-color-scheme: dark) {
