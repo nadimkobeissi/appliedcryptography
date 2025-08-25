@@ -269,7 +269,6 @@ strong {
 	margin-bottom: var(--spacing-md);
 	box-shadow: var(--shadow);
 	transition: var(--transition);
-	min-height: 320px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -472,6 +471,10 @@ strong {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	gap: var(--spacing-md);
+}
+
+.two-columns .card {
+	min-height: 320px;
 }
 
 @media (max-width: 992px) {
