@@ -323,6 +323,10 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
 				\item ``Victim'' chooses their key.
+				      \begin{itemize}
+					      \item Fresh key for each message (each key used only once)
+					      \item This means output will differ even if same plaintext is input twice by adversary
+				      \end{itemize}
 				\item Adversary chooses the message and receives the ciphertext.
 				\item We say that \textbf{the adversary has access to an encryption oracle}.
 			\end{itemize}
@@ -358,7 +362,7 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
 				\item Adversary can query oracle an unbounded number of times.
-				\item Two queries with same $M$ may return different $(C, C')$, since victim may use different $K$.
+				\item Two queries with same $M$ return different $(C, C')$, since victim uses different $K$.
 				\item $K$ is always chosen correctly (pseudo-random uniform sampling)
 				\item ``Randomized oracle''
 				\item Attacker cannot see $K$.
@@ -682,41 +686,6 @@
 			      \item If result looks like valid text, we may have found part of $M_2$!
 		      \end{itemize}
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Interactive demo}{One-time pad attack}
-	\begin{columns}[c]
-		\column{1\textwidth}{
-			\begin{itemize}[<+->]
-				\item \textbf{Given}: $C_1$, $C_2$ (same key)
-				\item \textbf{Step 1}: Compute $C_1 \oplus C_2 = M_1 \oplus M_2$
-				\item \textbf{Step 2}: Guess common word in $M_1$
-				\item \textbf{Step 3}: XOR with $M_1 \oplus M_2$ to get potential $M_2$ fragment
-				\item \textbf{Step 4}: If sensible, expand the guess
-				\item \textbf{Step 5}: Iterate until messages recovered
-			\end{itemize}
-		}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Historical example}{Project Venona}
-	\begin{columns}[c]
-		\column{1\textwidth}{
-			\begin{itemize}[<+->]
-				\item \textbf{1940s-1950s}: Soviet intelligence used one-time pads
-				\item \textbf{The mistake}: Key pages were accidentally duplicated
-				\item \textbf{Result}: Some messages encrypted with same key
-				\item \textbf{NSA/GCHQ response}: Decades-long decryption effort
-				\item \textbf{Impact}: Exposed Soviet spy networks, including:
-				      \begin{itemize}[<+->]
-					      \item Klaus Fuchs (atomic secrets)
-					      \item Julius and Ethel Rosenberg
-					      \item Cambridge Five spy ring
-				      \end{itemize}
-				\item \textbf{Lesson}: Even ``perfect'' cryptography fails with improper use
-			\end{itemize}
-		}
-	\end{columns}
 \end{frame}
 
 \begin{frame}{Malleability of one-time pads}{Another practical weakness}
