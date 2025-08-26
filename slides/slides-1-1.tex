@@ -44,6 +44,31 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Pull out your phone!}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Let's count the cryptographic operations happening right now:}
+			\begin{itemize}[<+->]
+				\item WiFi connection (WPA3)
+				\item Cellular connection (5G AES)
+				\item App notifications (TLS)
+				\item Face/Touch ID (Secure Enclave)
+				\item Background app refreshes
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Real-time calculation}
+			\begin{itemize}[<+->]
+				\item Average smartphone: 100+ crypto operations/second
+				\item In this 75-minute class: 450,000+ operations
+				\item By end of semester: Billions of operations
+			\end{itemize}
+			\vspace{0.5cm}
+			\textcolor{cipherprimary}{\textbf{You're already a crypto user!}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Cryptography is everywhere}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -158,7 +183,7 @@
 		      \begin{itemize}
 			      \item Prevents thieves from accessing your data if your MacBook is stolen.
 		      \end{itemize}
-		\item \textbf{Signal} implements post-compromise security, an advanced security
+		\item \textbf{Signal and WhatsApp} implement post-compromise security, an advanced security
 		      goal.
 		      \begin{itemize}
 			      \item Allows a conversation to ``heal'' in the event of a temporary key
@@ -193,7 +218,7 @@
 		\vspace{1cm}
 		\begin{itemize}[<+->]
 			\item Secure communication over insecure channels
-			\item Verification without revealing secrets
+			\item Prove information is true without revealing it
 			\item Proof of computation without redoing it
 		\end{itemize}
 	\end{center}
@@ -215,6 +240,50 @@
 			      \item Can they exchange a secret without you learning it?
 		      \end{itemize}
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Time for actual magic}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Setup}
+			\begin{itemize}[<+->]
+				\item Public parameters: $p = 13$, $g = 2$
+				\item Alice picks secret: \textcolor{red}{$a = 5$}
+				\item Bob picks secret: \textcolor{red}{$b = 7$}
+			\end{itemize}
+			\pause
+			\vspace{0.5cm}
+			\textbf{Public Exchange}
+			\begin{itemize}[<+->]
+				\item Alice computes: $A = g^{\textcolor{red}{a}} \bmod p = 6$
+				\item Bob computes: $B = g^{\textcolor{red}{b}} \bmod p = 11$
+				\item Alice sends $A = 6$ to Bob
+				\item Bob sends $B = 11$ to Alice
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\pause
+			\textbf{Shared Secret Computation}
+			\begin{itemize}[<+->]
+				\item Alice computes: $s = B^{\textcolor{red}{a}} \bmod p = 11^{\textcolor{red}{5}} \bmod 13$
+				      \begin{itemize}
+					      \item $= 161051 \bmod 13 = \textcolor{red}{9}$
+				      \end{itemize}
+				\item Bob computes: $s = A^{\textcolor{red}{b}} \bmod p = 6^{\textcolor{red}{7}} \bmod 13$
+				      \begin{itemize}
+					      \item $= 279936 \bmod 13 = \textcolor{red}{9}$
+				      \end{itemize}
+				\item \textcolor{red}{\textbf{Shared secret: $s = 9$}}
+			\end{itemize}
+			\pause
+			\vspace{0.5cm}
+			\textbf{Eavesdropper sees only:}
+			\begin{itemize}[<+->]
+				\item $p = 13$, $g = 2$, $A = 6$, $B = 11$
+				\item (In the real world, $p$, \textcolor{red}{$a$} and \textcolor{red}{$b$} are much larger numbers)
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Time for actual magic}
@@ -255,7 +324,7 @@
 \begin{frame}{Signal's double ratchet: DH everywhere}
 	\begin{columns}[c]
 		\begin{column}{0.7\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Initial key exchange}: Uses X3DH (Extended Triple DH)
 				      \begin{itemize}
 					      \item Combines \textbf{three} DH key exchanges for security.
@@ -396,29 +465,6 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Evaluating a hash function's quality}
-	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
-				\item \textbf{Recall}:
-				      \begin{itemize}[<+->]
-					      \item \textbf{Asymmetric primitives} are based on mathematical
-					            problems, can be mathematically proven secure (given assumptions!)
-					      \item \textbf{Symmetric primitives} (encryption, hashing\ldots)
-					            are statistically, empirically, heuristically shown to be secure,
-					            not proven secure.
-					      \item The more cryptanalysis they survive, the higher confidence
-					            we have in their security.
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-
-		\begin{column}{0.4\textwidth}
-			\imagewithcaption{qiao.png}{Cryptanalysis of AES.}
-		\end{column}
-	\end{columns}
-\end{frame}
-
 \begin{frame}{What about encryption?}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
@@ -435,214 +481,6 @@
 
 		\begin{column}{0.4\textwidth}
 			\imagewithcaption{aes-subbytes.png}{AES's SubBytes operation. Source: Wikipedia}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{PRF versus PRP}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{Pseudo-Random Function (HMAC-SHA-2)}
-			\begin{itemize}[<+->]
-				\item \textbf{Input} is arbitrary-length,
-				\item \textbf{Output} is fixed-length, looks random (as discussed
-				      earlier).
-				\item Indistinguishable from a truly random function by an adversary with
-				      limited computational power.
-			\end{itemize}
-		\end{column}
-
-		\begin{column}{0.5\textwidth}
-			\textbf{Pseudo-Random Permutation (AES)}
-			\begin{itemize}[<+->]
-				\item \textbf{Input and output} are the same length, forming a permutation.
-				\item Each input maps uniquely to one output, allowing invertibility.
-				\item Indistinguishable from a truly random permutation by an adversary
-				      with limited computational power.
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{$\mathsf{PRF}: F_{k}= X \rightarrow Y$}
-	\begin{columns}[c]
-		\begin{column}{0.4\textwidth}
-			\begin{itemize}
-				\item We want the mapping to be:
-				      \begin{itemize}
-					      \item One-way
-					      \item ``Randomized''
-					      \item Relations between inputs not reflected in outputs
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-
-		\begin{column}{0.8\textwidth}
-			\begin{tikzpicture}[scale=0.38]
-				% Define colors
-				\definecolor{domaingreen}{RGB}{102, 170, 68}
-				\definecolor{rangegreen}{RGB}{170, 187, 136}
-				\definecolor{circlecolor}{RGB}{235, 137, 85}
-				\definecolor{purplearrow}{RGB}{160, 78, 160}
-				\definecolor{redarrow}{RGB}{237, 50, 36}
-
-				% Input space (domain) X - made square
-				\draw[dashed, thick, domaingreen, fill=domaingreen]
-				(0,0) rectangle (8,8);
-				\node[text width=6.5cm, align=center, font=\normalsize]
-				at
-				(4,-0.8)
-				{Size: infinite!};
-				\node[font=\small] at (4,9) {Input space (domain) $X$};
-
-				% Output (range) Y - made square - moved more to the right
-				\draw[thick, rangegreen, fill=rangegreen] (15,2) rectangle (20,7);
-				\node[text width=4cm, align=center, font=\normalsize]
-				at
-				(17.5,1.2)
-				{Size: fixed};
-				\node[font=\small] at (17.5,8.5) {Output (range) $Y$};
-				% Input dots - adjusted positions for square domain
-				\filldraw[circlecolor] (2,7) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(2,7) -- (16.2,6.4);
-				\pause
-				\filldraw[circlecolor] (16.2,6.4) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (3,6) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(3,6) -- (18.6,5.3);
-				\pause
-				\filldraw[circlecolor] (18.6,5.3) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (2,5) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(2,5) -- (16.8,4.2);
-				\pause
-				\filldraw[circlecolor] (16.8,4.2) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (4,3.5) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(4,3.5) -- (18.4,3.2);
-				\pause
-				\filldraw[circlecolor] (18.4,3.2) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (2,2) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(2,2) -- (17.1,2.7);
-				\pause
-				\filldraw[circlecolor] (17.1,2.7) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (3,1) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, ultra thick, redarrow]
-				(3,1) -- (16.8,4.2);
-				\node[redarrow, font=\scriptsize\bfseries, rotate=14]
-				at
-				(10,3)
-				{Collisions are inevitable};
-			\end{tikzpicture}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{$\mathsf{PRP}: F_{k}= X \rightarrow X$}
-	\begin{columns}[c]
-		\begin{column}{0.4\textwidth}
-			\begin{itemize}
-				\item \textbf{Bijective} (two-way)
-				      \begin{itemize}
-					      \item \textbf{Injective}: no two inputs map to same output (no
-					            collisions)
-					      \item \textbf{Surjective}: Every output has one corresponding input
-				      \end{itemize}
-				\item ``Randomized''
-				\item Relations between inputs not reflected in outputs
-			\end{itemize}
-		\end{column}
-
-		\begin{column}{0.8\textwidth}
-			\begin{tikzpicture}[scale=0.38]
-				% Define colors
-				\definecolor{domaingreen}{RGB}{102, 170, 68}
-				\definecolor{rangegreen}{RGB}{102, 170, 68}
-				\definecolor{circlecolor}{RGB}{235, 137, 85}
-				\definecolor{purplearrow}{RGB}{160, 78, 160}
-
-				% Input space (domain) X - made square
-				\draw[dashed, thick, domaingreen, fill=domaingreen]
-				(0,0) rectangle (8,8);
-				\node[text width=6.5cm, align=center, font=\normalsize]
-				at
-				(4,-0.8)
-				{Size: fixed};
-				\node[font=\normalsize] at (4,9) {Input space (domain) $X$};
-
-				% Output (range) Y - made square, same size as domain, moved left
-				\draw[thick, rangegreen, fill=rangegreen] (12,0) rectangle (20,8);
-				\node[text width=6.5cm, align=center, font=\normalsize]
-				at
-				(16,-0.8)
-				{Size: fixed};
-				\node[font=\normalsize] at (16,9) {Output (range) $X$};
-				% Input dots - adjusted positions for square domain
-				\filldraw[circlecolor] (2,7) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(2,7) -- (14.2,7.4);
-				\pause
-				\filldraw[circlecolor] (14.2,7.4) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (3,6) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(3,6) -- (18.6,5.3);
-				\pause
-				\filldraw[circlecolor] (18.6,5.3) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (2,5) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(2,5) -- (13.8,4.2);
-				\pause
-				\filldraw[circlecolor] (13.8,4.2) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (4,3.5) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(4,3.5) -- (17.4,2.2);
-				\pause
-				\filldraw[circlecolor] (17.4,2.2) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (2,2) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(2,2) -- (16.1,6.7);
-				\pause
-				\filldraw[circlecolor] (16.1,6.7) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (3,1) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(3,1) -- (19.0,1.4);
-				\pause
-				\filldraw[circlecolor] (19.0,1.4) circle (0.3);
-			\end{tikzpicture}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -664,11 +502,11 @@
 		\end{column}
 		\pause
 		\begin{column}{0.33\textwidth}
-			\imagewithcaption{tux-encrypted-ecb.png}{What we get}
+			\imagewithcaption{tux-encrypted-ctr.png}{What we want}
 		\end{column}
 		\pause
 		\begin{column}{0.33\textwidth}
-			\imagewithcaption{tux-encrypted-ctr.png}{What we actually want}
+			\imagewithcaption{tux-encrypted-ecb.png}{What we actually get}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -695,7 +533,7 @@
 
 		\begin{column}{0.5\textwidth}
 			\textbf{Examples}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Confidentiality}: When you send a private message on Signal,
 				      only you and the recipient can read the content.
 				\item \textbf{Authentication}: When you receive an email from your boss,
@@ -708,7 +546,7 @@
 \end{frame}
 
 \begin{frame}{Security goals: more examples}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{TLS (HTTPS)} ensures that data exchanged between the client
 		      and the server is confidential and that parties are authenticated.
 		      \begin{itemize}
@@ -719,7 +557,7 @@
 		      \begin{itemize}
 			      \item Prevents thieves from accessing your data if your MacBook is stolen.
 		      \end{itemize}
-		\item \textbf{Signal} implements post-compromise security, an advanced security
+		\item \textbf{Signal and WhatsApp} implement post-compromise security, an advanced security
 		      goal.
 		      \begin{itemize}
 			      \item Allows a conversation to ``heal'' in the event of a temporary key
@@ -783,11 +621,13 @@
 		\Large\textbf{The journey we'll trace}
 	\end{center}
 	\vspace{0.5cm}
+	\pause
 	\begin{enumerate}[<+->]
 		\item \textbf{Mathematical insight}: Discrete logarithm is hard to compute.
 		\item \textbf{Cryptographic innovation}: Diffie-Hellman key exchange leverages this hardness.
 		\item \textbf{Real-world impact}: Secure communication for billions of people daily.
 	\end{enumerate}
+	\pause
 	\vspace{1cm}
 	\textbf{This is the power of applied cryptography}: transforming abstract mathematical problems into tools that help people and protect our digital lives.
 \end{frame}
@@ -1189,7 +1029,7 @@
 \begin{frame}{The Key Exchange: four-week rotating schedule}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item \textbf{Week 1: Paper Deep Dive}
 				      \begin{itemize}
 					      \item Read and analyze research papers
@@ -1205,7 +1045,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item \textbf{Week 3: Writing Workshop}
 				      \begin{itemize}
 					      \item Technical writing exercises
@@ -1221,6 +1061,7 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
+	\pause
 	\vspace{0.1cm}
 	\begin{center}
 		\Large\textcolor{cipherprimary}{\textbf{When should we meet? \\ Let's find a time that works for everyone!}}
