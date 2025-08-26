@@ -122,6 +122,50 @@
 \end{frame}
 
 \begin{frame}{Time for actual magic}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Setup}
+			\begin{itemize}[<+->]
+				\item Public parameters: $p = 13$, $g = 2$
+				\item Alice picks secret: \textcolor{red}{$a = 5$}
+				\item Bob picks secret: \textcolor{red}{$b = 7$}
+			\end{itemize}
+			\pause
+			\vspace{0.5cm}
+			\textbf{Public Exchange}
+			\begin{itemize}[<+->]
+				\item Alice computes: $A = g^{\textcolor{red}{a}} \bmod p = 6$
+				\item Bob computes: $B = g^{\textcolor{red}{b}} \bmod p = 11$
+				\item Alice sends $A = 6$ to Bob
+				\item Bob sends $B = 11$ to Alice
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\pause
+			\textbf{Shared Secret Computation}
+			\begin{itemize}[<+->]
+				\item Alice computes: $s = B^{\textcolor{red}{a}} \bmod p = 11^{\textcolor{red}{5}} \bmod 13$
+				      \begin{itemize}
+					      \item $= 161051 \bmod 13 = \textcolor{red}{9}$
+				      \end{itemize}
+				\item Bob computes: $s = A^{\textcolor{red}{b}} \bmod p = 6^{\textcolor{red}{7}} \bmod 13$
+				      \begin{itemize}
+					      \item $= 279936 \bmod 13 = \textcolor{red}{9}$
+				      \end{itemize}
+				\item \textcolor{red}{\textbf{Shared secret: $s = 9$}}
+			\end{itemize}
+			\pause
+			\vspace{0.5cm}
+			\textbf{Eavesdropper sees only:}
+			\begin{itemize}[<+->]
+				\item $p = 13$, $g = 2$, $A = 6$, $B = 11$
+				\item (In the real world, $p$, \textcolor{red}{$a$} and \textcolor{red}{$b$} are much larger numbers)
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Time for actual magic}
 	\bigimagewithcaption{dh.png}{}
 \end{frame}
 
