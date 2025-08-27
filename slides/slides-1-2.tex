@@ -101,67 +101,26 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{XOR (Exclusive OR) operation}
-	\begin{columns}[c]
-		\column{0.6\textwidth}{
-			\begin{table}
-				\centering
-				\begin{tabular}{|c|c|c|}
-					\hline
-					\textbf{A} & \textbf{B} & \textbf{A $\oplus$ B} \\
-					\hline
-					\bit{0}    & \bit{0}    & \bit{0}               \\
-					\hline
-					\bit{0}    & \bit{1}    & \bit{1}               \\
-					\hline
-					\bit{1}    & \bit{0}    & \bit{1}               \\
-					\hline
-					\bit{1}    & \bit{1}    & \bit{0}               \\
-					\hline
-				\end{tabular}
-				\caption{Truth table for XOR operation}
-			\end{table}
-			\begin{itemize}
-				\item XOR returns 1 when inputs differ
-				\item XOR returns 0 when inputs are the same
-				\item Key property: $x \oplus x = 0$ and $x \oplus 0 = x$
-				\item Self-inverse: $(M \oplus K) \oplus K = M$
-			\end{itemize}
-		}
-		\column{0.4\textwidth}{
-			\begin{center}
-				\begin{tikzpicture}[scale=0.8]
-					\draw[thick] (0,0) circle (1.5);
-					\draw[thick] (1,0) circle (1.5);
-					\node at (0,-2) {A};
-					\node at (1,-2) {B};
-					\begin{scope}
-						\clip (0,0) circle (1.5);
-						\clip (1,0) circle (1.5);
-						\fill[cyan!30] (-1.5,-1.5) rectangle (2.5,1.5);
-					\end{scope}
-					\draw[thick] (0,0) circle (1.5);
-					\draw[thick] (1,0) circle (1.5);
-					\node at (0.5,0) {$A \oplus B$};
-				\end{tikzpicture}
-			\end{center}
-		}
-	\end{columns}
-\end{frame}
-
 \begin{frame}{Probability basics}
 	\begin{itemize}[<+->]
 		\item \textbf{Distribution}: assigns probability to each outcome
 		\item For each outcome $x$: $0 \leq \Pr[x] \leq 1$
 		\item Sum of all probabilities = 1
 		\item \textbf{Uniform distribution}: $\Pr[x] = \frac{1}{|\mathcal{X}|}$ for all $x \in \mathcal{X}$
+		      \begin{itemize}
+			      \item $\frac{1}{|\mathcal{X}|}$ means ``one divided by the size of set $\mathcal{X}$''
+			      \item Example: Rolling a fair die has uniform distribution with $\Pr[x] = \frac{1}{6}$ for each outcome
+		      \end{itemize}
 		\item Basic fact: $\Pr[A] = 1 - \Pr[\neg A]$
+		      \begin{itemize}
+			      \item $\neg A$ means ``not A''
+			      \item All outcomes where $A$ does not occur
+		      \end{itemize}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Notation in pseudocode}
 	\begin{itemize}[<+->]
-		\item $x \twoheadleftarrow \mathcal{D}$: sample $x$ from distribution $\mathcal{D}$
 		\item $x \twoheadleftarrow \mathcal{X}$: sample $x$ uniformly from set $\mathcal{X}$
 		\item $x \coloneq y$: assign value of $y$ to variable $x$
 		\item $x \stackrel{?}{=} y$: check if $x$ equals $y$ (returns true/false)
