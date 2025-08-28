@@ -277,7 +277,35 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Adversary's access to oracle}
+\begin{frame}{One-time pad}{Correctness proof}
+	\begin{itemize}[<+->]
+		\item $\forall(n > 0,\; K \in \bits^{n},\; M \in \bits^{n}),\; \textsf{Dec}(K, \textsf{Enc}(K, M)) = M$
+		\item For all positive $n$, any key of $n$ bits and message of $n$ bits will decrypt back to the same plaintext if encrypted into a ciphertext.
+		\item \textbf{Proof}:
+		      \begin{align*}
+			      \textsf{Dec}(K, \textsf{Enc}(K, M)) & = \textsf{Dec}(K, K \oplus M) \\
+			                                          & = K \oplus (K \oplus M)       \\
+			                                          & = (K \oplus K) \oplus M       \\
+			                                          & = 0^n \oplus M                \\
+			                                          & = M \quad \qed
+		      \end{align*}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{One-time pad}{How do we prove security?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item When we prove security, we prove what is or isn't possible by the attacker calling \textsc{Attack}$(M)$.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{attacker-interface.pdf}{Source: The Joy of Cryptography}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{One-time pad}{How do we prove security?}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
@@ -296,7 +324,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Adversary's access to oracle}
+\begin{frame}{One-time pad}{How do we prove security?}
 	\begin{center}
 		\begin{tikzpicture}[
 				box/.style={rectangle, draw, minimum height=2.5cm, align=left, fill=white},
@@ -316,7 +344,7 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Adversary's access to oracle}
+\begin{frame}{One-time pad}{How do we prove security?}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
@@ -333,38 +361,10 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Adversary's access to oracle}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item When we prove security, we prove what is or isn't possible by the attacker calling \textsc{Attack}$(M)$.
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\imagewithcaption{attacker-interface.pdf}{Source: The Joy of Cryptography}
-		\end{column}
-	\end{columns}
-\end{frame}
-
 \begin{frame}
 	\begin{center}
 		\Large\textit{``If I use OTP according to the attack scenario (I sample keys uniformly and use each key to encrypt just one ciphertext), then no matter how the plaintexts are chosen, and no matter how the ciphertext is subsequently used, I can enjoy a certain security guarantee.''}
 	\end{center}
-\end{frame}
-
-\begin{frame}{One-time pad}{Correctness proof}
-	\begin{itemize}[<+->]
-		\item $\forall(n > 0,\; K \in \bits^{n},\; M \in \bits^{n}),\; \textsf{Dec}(K, \textsf{Enc}(K, M)) = M$
-		\item For all positive $n$, any key of $n$ bits and message of $n$ bits will decrypt back to the same plaintext if encrypted into a ciphertext.
-		\item \textbf{Proof}:
-		      \begin{align*}
-			      \textsf{Dec}(K, \textsf{Enc}(K, M)) & = \textsf{Dec}(K, K \oplus M) \\
-			                                          & = K \oplus (K \oplus M)       \\
-			                                          & = (K \oplus K) \oplus M       \\
-			                                          & = 0^n \oplus M                \\
-			                                          & = M \quad \qed
-		      \end{align*}
-	\end{itemize}
 \end{frame}
 
 \begin{frame}{One-time pad}{How do we prove security?}
@@ -403,6 +403,89 @@
 			\sssubroutine{Attack}{M}{
 				$K \twoheadleftarrow \bits^{n}$ \\
 				$C \coloneq K \oplus M$ \\
+				return $C$
+			}{1.5}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{XOR (Exclusive OR) operation}
+	\begin{columns}[c]
+		\column{0.6\textwidth}{
+			\begin{table}
+				\centering
+				\begin{tabular}{|c|c|c|}
+					\hline
+					\textbf{A} & \textbf{B} & \textbf{A $\oplus$ B} \\
+					\hline
+					\bit{0}    & \bit{0}    & \bit{0}               \\
+					\hline
+					\bit{0}    & \bit{1}    & \bit{1}               \\
+					\hline
+					\bit{1}    & \bit{0}    & \bit{1}               \\
+					\hline
+					\bit{1}    & \bit{1}    & \bit{0}               \\
+					\hline
+				\end{tabular}
+				\caption{Truth table for XOR operation}
+			\end{table}
+			\begin{itemize}
+				\item XOR returns 1 when inputs differ
+				\item XOR returns 0 when inputs are the same
+				\item Key property: $x \oplus x = 0$ and $x \oplus 0 = x$
+				\item Self-inverse: $(M \oplus K) \oplus K = M$
+			\end{itemize}
+		}
+		\column{0.4\textwidth}{
+			\begin{center}
+				\begin{tikzpicture}[scale=0.8]
+					\draw[thick] (0,0) circle (1.5);
+					\draw[thick] (1,0) circle (1.5);
+					\node at (0,-2) {A};
+					\node at (1,-2) {B};
+					\begin{scope}
+						\clip (0,0) circle (1.5);
+						\clip (1,0) circle (1.5);
+						\fill[cyan!30] (-1.5,-1.5) rectangle (2.5,1.5);
+					\end{scope}
+					\draw[thick] (0,0) circle (1.5);
+					\draw[thick] (1,0) circle (1.5);
+					\node at (0.5,0) {$A \oplus B$};
+				\end{tikzpicture}
+			\end{center}
+		}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{One-time pad}{What's so special about XOR?}
+	\begin{columns}[c]
+		\begin{column}{0.7\textwidth}
+			\begin{itemize}[<+->]
+				\item Let's replace $\oplus$ with $\land$. What would happen?
+				\item Output no longer uniform!
+			\end{itemize}
+			\begin{table}
+				\centering
+				\begin{tabular}{|c|c|c|}
+					\hline
+					\textbf{A} & \textbf{B} & \textbf{A $\land$ B} \\
+					\hline
+					\bit{0}    & \bit{0}    & \bit{0}              \\
+					\hline
+					\bit{0}    & \bit{1}    & \bit{0}              \\
+					\hline
+					\bit{1}    & \bit{0}    & \bit{0}              \\
+					\hline
+					\bit{1}    & \bit{1}    & \bit{1}              \\
+					\hline
+				\end{tabular}
+				\caption{Truth table for AND operation}
+			\end{table}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+			\sssubroutine{Attack}{M}{
+				$K \twoheadleftarrow \bits^{n}$ \\
+				$C \coloneq K \land M$ \\
 				return $C$
 			}{1.5}
 		\end{column}
@@ -460,6 +543,93 @@
 		\huge \textit{``Real or random?''}
 	\end{center}
 \end{frame}
+
+\begin{frame}{One-time pad}{What about $\pmod{n}$?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item Let's replace $\oplus$ with $\pmod{n}$. What would happen?
+				\item Still good!
+				\item Can you prove correctness and security?
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sssubroutine{Attack}{M}{
+				$K \twoheadleftarrow \mathbb{Z}_{n}$ \\
+				$C \coloneq (K + M)\ \pmod{n}$ \\
+				return $C$
+			}{1.5}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\section{Breaking One-Time Pads}
+
+\begin{frame}{Two-time pads}{What happens when we reuse a key?}
+	\begin{columns}[c]
+		\column{1\textwidth}{
+			\begin{itemize}[<+->]
+				\item Alice sends two messages with the same key:
+				\item $C_1 = M_1 \oplus K$
+				\item $C_2 = M_2 \oplus K$
+				\item What can Eve learn from $C_1$ and $C_2$?
+				\item $C_1 \oplus C_2 = (M_1 \oplus K) \oplus (M_2 \oplus K)$
+				\item $C_1 \oplus C_2 = M_1 \oplus M_2 \oplus (K \oplus K)$
+				\item $C_1 \oplus C_2 = M_1 \oplus M_2$
+				\item \alert{The key cancels out completely!}
+			\end{itemize}
+		}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Exploiting $M_1 \oplus M_2$}{Why is this dangerous?}
+	\begin{itemize}[<+->]
+		\item Knowing $M_1 \oplus M_2$ allows statistical attacks:
+		\item \textbf{Language patterns}: Natural language has predictable structure
+		      \begin{itemize}[<+->]
+			      \item Common words: ``the'', ``and'', ``of'', ``to''
+			      \item Letter frequencies: E is most common in English (12.7\%)
+			      \item Spaces are very frequent (about 18\% of characters)
+		      \end{itemize}
+		\item \textbf{Crib dragging}: Try XORing common words at different positions
+		\item \textbf{Example}: If we guess ``the'' at position $i$ in $M_1$:
+		      \begin{itemize}[<+->]
+			      \item Extract: $(M_1 \oplus M_2)[i:i+3] \oplus \text{``the''}$
+			      \item If result looks like valid text, we may have found part of $M_2$!
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Malleability of one-time pads}{Another practical weakness}
+	\begin{columns}[c]
+		\column{1\textwidth}{
+			\begin{itemize}[<+->]
+				\item OTP provides confidentiality but not integrity
+				\item \textbf{Malleability}: Attacker can modify ciphertext predictably
+				\item Given $C = M \oplus K$
+				\item Attacker creates $C' = C \oplus \Delta$
+				\item Decryption: $C' \oplus K = (M \oplus K \oplus \Delta) \oplus K$
+				\item Result: $M' = M \oplus \Delta$
+				\item \alert{Attacker controls the change without knowing $M$ or $K$!}
+			\end{itemize}
+		}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Practical attack}{Bit flipping}
+	\begin{itemize}[<+->]
+		\item \textbf{Scenario}: Bank transfer message
+		\item Original: ``Transfer \$0100.00 to Account 12345''
+		\item Attacker knows position of amount field
+		\item Flips bit to change `1' (ASCII 49 = \texttt{00110001}) to `9' (ASCII 57 = \texttt{00111001})
+		\item XOR difference: \texttt{00110001} $\oplus$ \texttt{00111001} = \texttt{00001000}
+		\item Apply $\Delta$ = \texttt{00001000} at correct position in ciphertext
+		\item Result: ``Transfer \$0900.00 to Account 12345''
+		\item \alert{No need to break encryption or know the key!}
+	\end{itemize}
+\end{frame}
+
+\section{Limitations of Security Proofs}
 
 \begin{frame}{Limitations of security proofs}{Part 1}
 	\begin{itemize}[<+->]
@@ -556,126 +726,6 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{One-time pad}{What's so special about XOR?}
-	\begin{columns}[c]
-		\begin{column}{0.7\textwidth}
-			\begin{itemize}[<+->]
-				\item Let's replace $\oplus$ with $\land$. What would happen?
-				\item Output no longer uniform!
-			\end{itemize}
-			\begin{table}
-				\centering
-				\begin{tabular}{|c|c|c|}
-					\hline
-					\textbf{A} & \textbf{B} & \textbf{A $\land$ B} \\
-					\hline
-					\bit{0}    & \bit{0}    & \bit{0}              \\
-					\hline
-					\bit{0}    & \bit{1}    & \bit{0}              \\
-					\hline
-					\bit{1}    & \bit{0}    & \bit{0}              \\
-					\hline
-					\bit{1}    & \bit{1}    & \bit{1}              \\
-					\hline
-				\end{tabular}
-				\caption{Truth table for AND operation}
-			\end{table}
-		\end{column}
-		\begin{column}{0.3\textwidth}
-			\sssubroutine{Attack}{M}{
-				$K \twoheadleftarrow \bits^{n}$ \\
-				$C \coloneq K \land M$ \\
-				return $C$
-			}{1.5}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{One-time pad}{What about $\pmod{n}$?}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
-				\item Let's replace $\oplus$ with $\pmod{n}$. What would happen?
-				\item Still good!
-				\item Can you prove correctness and security?
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\sssubroutine{Attack}{M}{
-				$K \twoheadleftarrow \mathbb{Z}_{n}$ \\
-				$C \coloneq (K + M)\ \pmod{n}$ \\
-				return $C$
-			}{1.5}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\section{Breaking One-Time Pads}
-
-\begin{frame}{Two-time pads}{What happens when we reuse a key?}
-	\begin{columns}[c]
-		\column{1\textwidth}{
-			\begin{itemize}[<+->]
-				\item Alice sends two messages with the same key:
-				\item $C_1 = M_1 \oplus K$
-				\item $C_2 = M_2 \oplus K$
-				\item What can Eve learn from $C_1$ and $C_2$?
-				\item $C_1 \oplus C_2 = (M_1 \oplus K) \oplus (M_2 \oplus K)$
-				\item $C_1 \oplus C_2 = M_1 \oplus M_2 \oplus (K \oplus K)$
-				\item $C_1 \oplus C_2 = M_1 \oplus M_2$
-				\item \alert{The key cancels out completely!}
-			\end{itemize}
-		}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Exploiting $M_1 \oplus M_2$}{Why is this dangerous?}
-	\begin{itemize}[<+->]
-		\item Knowing $M_1 \oplus M_2$ allows statistical attacks:
-		\item \textbf{Language patterns}: Natural language has predictable structure
-		      \begin{itemize}[<+->]
-			      \item Common words: ``the'', ``and'', ``of'', ``to''
-			      \item Letter frequencies: E is most common in English (12.7\%)
-			      \item Spaces are very frequent (about 18\% of characters)
-		      \end{itemize}
-		\item \textbf{Crib dragging}: Try XORing common words at different positions
-		\item \textbf{Example}: If we guess ``the'' at position $i$ in $M_1$:
-		      \begin{itemize}[<+->]
-			      \item Extract: $(M_1 \oplus M_2)[i:i+3] \oplus \text{``the''}$
-			      \item If result looks like valid text, we may have found part of $M_2$!
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Malleability of one-time pads}{Another practical weakness}
-	\begin{columns}[c]
-		\column{1\textwidth}{
-			\begin{itemize}[<+->]
-				\item OTP provides confidentiality but not integrity
-				\item \textbf{Malleability}: Attacker can modify ciphertext predictably
-				\item Given $C = M \oplus K$
-				\item Attacker creates $C' = C \oplus \Delta$
-				\item Decryption: $C' \oplus K = (M \oplus K \oplus \Delta) \oplus K$
-				\item Result: $M' = M \oplus \Delta$
-				\item \alert{Attacker controls the change without knowing $M$ or $K$!}
-			\end{itemize}
-		}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Practical attack}{Bit flipping}
-	\begin{itemize}[<+->]
-		\item \textbf{Scenario}: Bank transfer message
-		\item Original: ``Transfer \$0100.00 to Account 12345''
-		\item Attacker knows position of amount field
-		\item Flips bit to change `1' (ASCII 49 = \texttt{00110001}) to `9' (ASCII 57 = \texttt{00111001})
-		\item XOR difference: \texttt{00110001} $\oplus$ \texttt{00111001} = \texttt{00001000}
-		\item Apply $\Delta$ = \texttt{00001000} at correct position in ciphertext
-		\item Result: ``Transfer \$0900.00 to Account 12345''
-		\item \alert{No need to break encryption or know the key!}
-	\end{itemize}
-\end{frame}
-
 \begin{frame}{Key Distribution Problem}{The elephant in the room}
 	\begin{columns}[c]
 		\column{0.5\textwidth}{
@@ -713,30 +763,6 @@
 			\end{center}
 		}
 	\end{columns}
-\end{frame}
-
-\begin{frame}{Lessons from OTP in practice}
-	\begin{itemize}[<+->]
-		\item \textbf{Perfect in theory $\neq$ Perfect in practice}
-		      \begin{itemize}[<+->]
-			      \item Mathematical security doesn't guarantee practical security
-			      \item Implementation details matter enormously
-		      \end{itemize}
-		\item \textbf{Common failure modes}:
-		      \begin{itemize}[<+->]
-			      \item Key reuse (breaks confidentiality completely)
-			      \item Predictable ``random'' numbers
-			      \item Malleability attacks (no integrity protection)
-			      \item Key distribution challenges
-		      \end{itemize}
-		\item \textbf{Modern best practices}:
-		      \begin{itemize}[<+->]
-			      \item Use authenticated encryption (AE/AEAD)
-			      \item Proper random number generation
-			      \item Key management systems
-			      \item Defense in depth
-		      \end{itemize}
-	\end{itemize}
 \end{frame}
 
 \begin{frame}{From theory to practice}
