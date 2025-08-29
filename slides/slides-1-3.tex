@@ -43,7 +43,7 @@
 \begin{frame}{Subroutines}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item ``Victim'' chooses their key.
 				\item Adversary chooses the message and receives the ciphertext.
 				\item We say that \textbf{the adversary has access to an encryption oracle}.
@@ -58,7 +58,7 @@
 \begin{frame}{Attack scenarios as libraries}
 	\begin{columns}[c]
 		\begin{column}{0.65\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item This is a \textbf{library} with two \textbf{subroutines} and a \textbf{global variable} $D$.
 				\item Victim holds a 6-sided die.
 				\item The first line of the library represents an initialization step.
@@ -119,10 +119,10 @@
 \begin{frame}{Programs and libraries}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \prog{} is a \textbf{program} that calls \textbf{library} \lib{}{dice-guess}.
 				\item Programs can only see the output of function calls to libraries.
-				      \begin{itemize}[<+->]
+				      \begin{itemize}
 					      \item Programs can't read the values of library variables,
 					      \item Programs can't measure how long it took to run a subroutine,
 					      \item Etc.
@@ -155,9 +155,9 @@
 \begin{frame}{When are libraries interchangeable?}
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Libraries are \textbf{interchangeable} when they:
-				      \begin{itemize}[<+->]
+				      \begin{itemize}
 					      \item Have the same interface,
 					      \item \prob{\prog{}\link\lib{}{1} \Rightarrow \texttt{true}} $=$ \prob{\prog{}\link\lib{}{2} \Rightarrow \texttt{true}}
 				      \end{itemize}
@@ -489,7 +489,7 @@
 \begin{frame}{Proving two libraries are interchangeable}{Step 2}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Let's add a new variable $X'$.
 				\item Note that $X = X'$:
 				      \begin{itemize}
@@ -515,7 +515,7 @@
 \begin{frame}{Proving two libraries are interchangeable}{Step 3}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item So, we can return $(X', Y)$ without any change on the library's effect.
 				      \begin{itemize}
 					      \item $X' = Y \oplus M = (X \oplus M) \oplus M = X$.
@@ -540,7 +540,7 @@
 \begin{frame}{Proving two libraries are interchangeable}{Step 4}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item The first two lines of \func{sample}{M} are the same as \func{otp.enc}{M}, so we link it and use it instead.
 			\end{itemize}
 		\end{column}
@@ -652,7 +652,7 @@
 \begin{frame}{Proving two libraries are interchangeable}{Result}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Interchangeable!
 				\item Note how we had to show equivalence \textbf{at each step}.
 			\end{itemize}
@@ -682,11 +682,11 @@
 \end{frame}
 
 \begin{frame}{Cryptographic primitives}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item Specific algorithms like OTP are important in cryptography, but OTP is just one instance of an \textbf{encryption scheme}.
 		\item In cryptography, useful abstractions like ``encryption scheme'' are called \textbf{primitives}.
 		\item Three things are important when defining a cryptographic primitive:
-		      \begin{enumerate}[<+->]
+		      \begin{enumerate}
 			      \item \textbf{Syntax}: The basic raw interface - algorithms, inputs/outputs and their types.
 			      \item \textbf{Correctness}: Basic functionality without adversaries - e.g., ``decryption should be the inverse of encryption''.
 			      \item \textbf{Security}: Guarantees that hold in specific attack scenarios with adversaries.
@@ -726,7 +726,7 @@
 			}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item The definition involves a probability because $\Sigma.\textsf{Enc}$ may be a randomized algorithm.
 				\item This means that decryption should \textbf{always} recover the original message.
 				\item Even if encryption adds randomness, decryption must be deterministic for each key-ciphertext pair.
@@ -805,7 +805,7 @@
 \begin{frame}{Creating a distinguisher program}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Can you write a distinguisher program showing that these libraries are \textbf{not} interchangeable?
 				\item \ssprogram{}{
 					      $M \coloneq \bit{0}^n$\\
@@ -913,7 +913,7 @@
 \end{frame}
 
 \begin{frame}{Computational scale of Bitcoin mining}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item Let's consider cryptocurrencies based on proof-of-work, like Bitcoin.
 		\item These systems incentivize users to perform truly obscene amounts of computation.
 		\item In Bitcoin's proof-of-work mechanism:
@@ -928,7 +928,7 @@
 \end{frame}
 
 \begin{frame}{The asymptotic approach to provable security}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item The concrete approach gives practical guidance (e.g., key sizes) but requires managing tedious quantitative details.
 		\item The asymptotic approach:
 		      \begin{itemize}
@@ -944,7 +944,7 @@
 \begin{frame}{AES: An example of asymptotic security analysis}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item The Advanced Encryption Standard (AES) is a common symmetric-key encryption algorithm.
 				\item It comes in different variants: AES-128, AES-192, AES-256.
 				\item In asymptotic analysis, we'd say:
@@ -956,7 +956,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Concrete security for AES-128:
 				      \begin{itemize}
 					      \item Best known attack: $\approx 2^{126.1}$ operations
@@ -975,7 +975,7 @@
 \begin{frame}{Polynomial running time}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item In the asymptotic approach, we focus only on adversaries that run in polynomial time.
 				\item The security parameter $\lambda$ determines the level of security:
 				      \begin{itemize}
@@ -1005,7 +1005,7 @@
 			}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{You can probably ignore the definition and just think about this intuitively:}
 				\item In cryptography, we want attack probabilities to be negligible in the security parameter $\lambda$.
 				\item Negligible probability: essentially zero for practical purposes when $\lambda$ is large enough.
@@ -1034,7 +1034,7 @@
 \end{frame}
 
 \begin{frame}{Birthday paradox}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item With just 23 people, probability exceeds 50\%
 		\item Formula for $n$ people:
 		      \begin{align*}
@@ -1048,7 +1048,7 @@
 \begin{frame}{Birthday probabilities}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Many cryptographic algorithms fail if two executions sample the same random value.
 				\item General question: If we take $q$ independent uniform samples from a set of $N$ items, what's the probability some value is chosen more than once?
 				\item This probability is called $\func{birthday}{q,N}$
@@ -1058,7 +1058,7 @@
 			\begin{align*}
 				\func{birthday}{q,N} = 1 - \prod_{i=1}^{q-1} \left(1 - \frac{i}{N}\right)
 			\end{align*}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Surprisingly high probability!
 				\item With $q \approx 1.2\sqrt{N}$, probability $\approx 0.5$
 				\item For birthdays: only need 23 people for $>50\%$ chance
@@ -1079,7 +1079,7 @@
 			}
 		\end{column}
 		\begin{column}{0.4\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Previously, libraries were interchangeable when probabilities were \textbf{identical}.
 				\item Now, libraries are indistinguishable when probabilities are \textbf{negligibly close}.
 				\item Again: this is intuitive, no need to stress about the formal definition.
@@ -1100,10 +1100,10 @@
 \end{frame}
 
 \begin{frame}{The ``bad event'' proof technique}{Key insights}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \prog{}'s advantage is bounded by \prob{\prog{} \link \lib{}{1} \func{trigger}{\texttt{bad}}}.
 		\item Practical application:
-		      \begin{itemize}[<+->]
+		      \begin{itemize}
 			      \item Define a sequence of hybrid libraries.
 			      \item Identify ``bad events'' between consecutive hybrids.
 			      \item Show these events occur with negligible probability.
@@ -1257,16 +1257,16 @@
 \end{frame}
 
 \begin{frame}{The ``end-of-time'' strategy for bad events}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item Sometimes analyzing bad events can be complex, especially when values are chosen by the adversary.
 		\item The end-of-time strategy:
-		      \begin{enumerate}[<+->]
+		      \begin{enumerate}
 			      \item Postpone all bad-event logic to the end of the library execution.
 			      \item Collect information during normal execution.
 			      \item Check for bad events only at the very end.
 		      \end{enumerate}
 		\item Advantages:
-		      \begin{itemize}[<+->]
+		      \begin{itemize}
 			      \item Simplifies analysis by separating normal behavior from bad-event checking.
 			      \item Makes it easier to bound the probability of bad events.
 			      \item Particularly useful for complex cryptographic proofs.
