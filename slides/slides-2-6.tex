@@ -1076,7 +1076,7 @@
 			\textbf{Public parameters:}
 			\begin{itemize}
 				\item Matrix $A \in \mathbb{Z}_q^{n \times n}$
-				\item Modulus $q$ (e.g., 3329)\footnote{3329 is congruent to 1 modulo 256, and therefore the polynomial $X^{256} + 1$ splits into a product of degreen $2$ polynomials of the form $(X^2 - r_{i}).$}\footnote{\url{https://appliedcryptography.page/paper/\#basic-lattice}}
+				\item Modulus $q$ (e.g., 3329)\footnote{3329 is congruent to 1 modulo 256, and therefore the polynomial $X^{256} + 1$ splits into a product of degree $2$ polynomials of the form $(X^2 - r_{i}).$}\footnote{\url{https://appliedcryptography.page/paper/\#basic-lattice}}
 				\item Error distribution $\mathcal{E}$
 			\end{itemize}
 			\textbf{Bob's key generation:}
@@ -1096,7 +1096,7 @@
 				\item Compute:
 				      \begin{itemize}
 					      \item $\vec{u}^T = \vec{r}^{T}A + \vec{e}_{2}^{T}$
-					      \item $v = \vec{r}^T\vec{t} + e_3 + \lfloor q/2 \rfloor \cdot \mu$
+					      \item $v = \vec{r}^T\vec{b} + e_3 + \lfloor q/2 \rfloor \cdot \mu$
 				      \end{itemize}
 				\item Send ciphertext: $(\vec{u}, v)$
 			\end{enumerate}
