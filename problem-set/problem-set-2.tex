@@ -19,20 +19,13 @@
 \subsection{Pseudorandom Generators (10 points)}
 
 \begin{enumerate}
-	\item (3 points) Explain the limitations of the one-time pad for practical encryption and why pseudorandom generators (PRGs) are needed in modern cryptographic systems.
+	\item (5 points) Explain the limitations of the one-time pad for practical encryption and why pseudorandom generators (PRGs) are needed in modern cryptographic systems.
 
-	\item (3 points) Analyze the security implications of the following PRG construction, where $G$ is a secure PRG:
+	\item (5 points) Analyze the security implications of the following PRG construction, where $G$ is a secure PRG:
 	      \begin{align*}
 		      H(S) = A \| B \| C \| D \text{ where } A \| B = G(S) \text{ and } C \| D = G(B)
 	      \end{align*}
 	      Determine whether $H$ is a secure PRG. If not, provide a distinguisher that can tell apart $H(S)$ from a truly random string with non-negligible advantage.
-
-	\item (4 points) Consider the stream cipher RC4:
-	      \begin{enumerate}
-		      \item Describe the key components of RC4's design and how it generates a pseudorandom keystream.
-		      \item Explain two significant weaknesses that led to RC4 being considered cryptographically broken today.
-		      \item What modern alternatives would you recommend as replacements for RC4, and why?
-	      \end{enumerate}
 \end{enumerate}
 
 \subsection{Pseudorandom Functions and Permutations (10 points)}
@@ -183,7 +176,7 @@
 \begin{enumerate}
 	\item (10 points) \textbf{Block Cipher Modes Analysis}
 
-	      With reference to the block cipher modes covered in lectures 1-4, 1-5, and 1-6, analyze the following scenarios:
+	      With reference to the block cipher modes covered in our lectures, analyze the following scenarios:
 	      \begin{enumerate}
 		      \item A secure file storage application needs to encrypt user files at rest. Compare CBC, CTR, and AES-GCM modes for this application, discussing:
 		            \begin{itemize}
