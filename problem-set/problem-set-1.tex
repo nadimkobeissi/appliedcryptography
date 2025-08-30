@@ -147,7 +147,7 @@
 \subsection{Security Proofs (10 points)}
 
 \begin{enumerate}
-	\item (5 points) Let $\Sigma = (\textsf{KeyGen}, \textsf{Enc}, \textsf{Dec})$ be a secure encryption scheme for messages in $\bits^n$. Consider the following modified scheme $\Sigma' = (\textsf{KeyGen}', \textsf{Enc}', \textsf{Dec}')$:
+	\item (5 points) Let $\Sigma = (\textsf{KeyGen}, \textsf{Enc}, \textsf{Dec})$ be a secure one-time pad encryption scheme for messages in $\bits^n$. Consider the following modified scheme $\Sigma' = (\textsf{KeyGen}', \textsf{Enc}', \textsf{Dec}')$:
 	      \begin{align*}
 		      \textsf{KeyGen}'()           & = K \twoheadleftarrow \textsf{KeyGen}()                                                                                               \\
 		      \textsf{Enc}'(K, M)          & = (C_1, C_2) \text{ where } C_1 \twoheadleftarrow \textsf{Enc}(K, M) \text{ and } C_2 \twoheadleftarrow \textsf{Enc}(K, M \oplus 1^n) \\
