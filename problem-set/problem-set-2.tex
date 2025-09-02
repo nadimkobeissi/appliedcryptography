@@ -4,7 +4,7 @@
 \title{Applied Cryptography - Problem Set 2: Symmetric Cryptography}
 \author{Nadim Kobeissi}
 \subject{Problem set covering symmetric cryptography topics including pseudorandomness, chosen-plaintext/ciphertext attacks, hash functions, and applied cryptography case studies.}
-\keywords{pseudorandom generators, PRF, PRP, stream ciphers, Feistel ciphers, CPA security, CCA security, authenticated encryption, AES-GCM, hash functions, collision resistance, password hashing, block cipher modes}
+\keywords{pseudorandom generators, PRF, PRP, stream ciphers, CPA security, CCA security, authenticated encryption, AES-GCM, hash functions, collision resistance, password hashing, block cipher modes}
 
 \begin{document}
 \classhandoutheader
@@ -31,19 +31,13 @@
 \subsection{Pseudorandom Functions and Permutations (10 points)}
 
 \begin{enumerate}
-	\item (3 points) Consider the following PRF construction: $F(K, X) = G(K) \oplus X$, where $G$ is a secure PRG.
+	\item (5 points) Consider the following PRF construction: $F(K, X) = G(K) \oplus X$, where $G$ is a secure PRG.
 	      \begin{enumerate}
 		      \item Is $F$ a secure PRF? If not, describe a distinguisher that can effectively tell $F$ apart from a random function.
 		      \item Explain how this example illustrates the ``Golden Rule of PRFs.''
 	      \end{enumerate}
 
-	\item (4 points) For Feistel ciphers:
-	      \begin{enumerate}
-		      \item Explain why a 2-round Feistel cipher cannot be a secure pseudorandom permutation (PRP).
-		      \item Prove that Feistel ciphers are always permutations, regardless of the security of their round functions.
-	      \end{enumerate}
-
-	\item (3 points) Compare and contrast PRFs and PRPs:
+	\item (5 points) Compare and contrast PRFs and PRPs:
 	      \begin{enumerate}
 		      \item Explain the key differences in their definitions and properties.
 		      \item Describe how PRPs can be ``downgraded'' to PRFs, but not necessarily vice versa.

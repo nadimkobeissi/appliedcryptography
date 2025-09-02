@@ -1176,9 +1176,9 @@
 				\item An $r$-round \textbf{Feistel cipher} with \textbf{round functions} $F_1,\ldots,F_r$ is defined as follows:\\
 				      \begin{center}
 					      \sssubroutine{$\mathbb{F}$}{X_{0}\|X_{1}}{
-					      for $i = 1$ to $r$:\\
-					      \quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(X_{i})$\\
-					      return $X_{r}\|X_{r+1}$
+						      for $i = 1$ to $r$:\\
+						      \quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(X_{i})$\\
+						      return $X_{r}\|X_{r+1}$
 					      }{1}
 				      \end{center}
 				\item A Feistel cipher is always a permutation on $\bits^{2n}$, regardless of its round functions.
@@ -1214,9 +1214,9 @@
 				\item $\mathbb{F}^{-1}$ is the \textbf{inversion}, allowing Feistel ciphers to function as PRPs:
 				      \begin{center}
 					      \sssubroutine{$\mathbb{F}^{-1}$}{X_{r}\|X_{r+1}}{
-					      for $i = r$ \hl{down to} $1$:\\
-					      \quad $X_{i-1} \coloneq X_{i+1} \oplus F_{i}(X_{i})$\\
-					      return $X_{0}\|X_{1}$
+						      for $i = r$ \hl{down to} $1$:\\
+						      \quad $X_{i-1} \coloneq X_{i+1} \oplus F_{i}(X_{i})$\\
+						      return $X_{0}\|X_{1}$
 					      }{1}
 				      \end{center}
 			\end{itemize}
@@ -1232,18 +1232,18 @@
 		\begin{column}{0.5\textwidth}
 			\begin{center}
 				\sssubroutine{$\mathbb{F}$}{X_{0}\|X_{1}}{
-				for $i = 1$ to $r$:\\
-				\quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(X_{i})$\\
-				return $X_{r}\|X_{r+1}$
+					for $i = 1$ to $r$:\\
+					\quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(X_{i})$\\
+					return $X_{r}\|X_{r+1}$
 				}{1.2}
 			\end{center}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{center}
 				\sssubroutine{$\mathbb{F}^{-1}$}{X_{r}\|X_{r+1}}{
-				for $i = r$ down to $1$:\\
-				\quad $X_{i-1} \coloneq X_{i+1} \oplus F_{i}(X_{i})$\\
-				return $X_{0}\|X_{1}$
+					for $i = r$ down to $1$:\\
+					\quad $X_{i-1} \coloneq X_{i+1} \oplus F_{i}(X_{i})$\\
+					return $X_{0}\|X_{1}$
 				}{1.2}
 			\end{center}
 		\end{column}
@@ -1263,9 +1263,9 @@
 		\begin{column}{0.4\textwidth}
 			\begin{center}
 				\sssubroutine{$\mathbb{F}$}{K_1\|\cdots\|K_r,\ X_0\|X_1}{
-				for $i = 1$ to $r$:\\
-				\quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(K_{i}, X_{i})$\\
-				return $X_{r}\|X_{r+1}$
+					for $i = 1$ to $r$:\\
+					\quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(K_{i}, X_{i})$\\
+					return $X_{r}\|X_{r+1}$
 				}{1}
 			\end{center}
 		\end{column}
@@ -1290,9 +1290,9 @@
 		\begin{column}{0.35\textwidth}
 			\begin{center}
 				\sssubroutine{$\mathbb{F}$}{K,\ X_0\|X_1}{
-				for $i = 1$ to $r$:\\
-				\quad $X_{i+1} \coloneq X_{i-1} \oplus F(K, X_{i})$\\
-				return $X_{r}\|X_{r+1}$
+					for $i = 1$ to $r$:\\
+					\quad $X_{i+1} \coloneq X_{i-1} \oplus F(K, X_{i})$\\
+					return $X_{r}\|X_{r+1}$
 				}{1}
 			\end{center}
 		\end{column}
@@ -1309,9 +1309,9 @@
 		\begin{column}{0.5\textwidth}
 			\begin{center}
 				\sssubroutine{$\mathbb{F}$}{K_1\|K_2,\ X_0\|X_1}{
-				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
-				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
-				return $X_{2}\|X_{3}$
+					$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+					$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+					return $X_{2}\|X_{3}$
 				}{1}
 			\end{center}
 		\end{column}
@@ -1329,25 +1329,25 @@
 		\begin{column}{0.6\textwidth}
 			\begin{center}
 				\sslinked{
-				\sslibrary{\mathbb{F}}{prp-real}{
-				$K_1\|K_2 \twoheadleftarrow \bits^{2\lambda}$\\[1em]
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
-				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
-				return $X_{2}\|X_{3}$
-				}{1}
-				}{0.8}
+					\sslibrary{\mathbb{F}}{prp-real}{
+						$K_1\|K_2 \twoheadleftarrow \bits^{2\lambda}$\\[1em]
+						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+							$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+							$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+							return $X_{2}\|X_{3}$
+						}{1}
+					}{0.8}
 				}{\cancel{\approxeq}}{
-				\sslibrary{\mathbb{F}}{prp-rand}{
-				$L \coloneq$ [\ ]\\[1em]
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
-				if $L[X]$ undefined:\\
-				\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
-				\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
-				\quad $L[X] \coloneq Y$\\
-				return $L[X]$
-				}{1}
-				}{0.8}
+					\sslibrary{\mathbb{F}}{prp-rand}{
+						$L \coloneq$ [\ ]\\[1em]
+						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
+							if $L[X]$ undefined:\\
+							\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+							\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+							\quad $L[X] \coloneq Y$\\
+							return $L[X]$
+						}{1}
+					}{0.8}
 				}
 			\end{center}
 		\end{column}
@@ -1375,20 +1375,20 @@
 		\begin{column}{0.6\textwidth}
 			\begin{center}
 				\sslinked{
-				\ssprogram{}{
-				$Y_1\|Y_2 = \func{prp.query}{A\|B}$\\
-				$Y^{'}_1\|Y^{'}_2 = \func{prp.query}{A^{'}\|B}$\\
-				return $Y_1 \oplus Y^{'}_1 == A \oplus A^{'}$
-				}{0.8}
+					\ssprogram{}{
+						$Y_1\|Y_2 = \func{prp.query}{A\|B}$\\
+						$Y^{'}_1\|Y^{'}_2 = \func{prp.query}{A^{'}\|B}$\\
+						return $Y_1 \oplus Y^{'}_1 == A \oplus A^{'}$
+					}{0.8}
 				}{\link}{
-				\sslibrary{\mathbb{F}}{prp-real}{
-				$K_1\|K_2 \twoheadleftarrow \bits^{2\lambda}$\\[1em]
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
-				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
-				return $X_{2}\|X_{3}$
-				}{1}
-				}{0.8}
+					\sslibrary{\mathbb{F}}{prp-real}{
+						$K_1\|K_2 \twoheadleftarrow \bits^{2\lambda}$\\[1em]
+						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+							$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+							$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+							return $X_{2}\|X_{3}$
+						}{1}
+					}{0.8}
 				}
 			\end{center}
 		\end{column}
@@ -1398,40 +1398,40 @@
 \begin{frame}{However, a 3+ round Feistel cipher is fine!}
 	\begin{center}
 		\sslinked{
-		\sslinked{
-		\ssprogram{}{
-		$Y_1\|Y_2 = \func{prp.query}{A\|B}$\\
-		$Y^{'}_1\|Y^{'}_2 = \func{prp.query}{A^{'}\|B}$\\
-		return $Y_1 \oplus Y^{'}_1 == A \oplus A^{'}$
-		}{0.7}
-		}{\link}{
-		\sslibrary{\mathbb{F}}{prp-real}{
-		$K_1\|K_2 \twoheadleftarrow \bits^{2\lambda}$\\[1em]
-		\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-		$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
-		$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
-		return $X_{2}\|X_{3}$
-		}{1}
-		}{0.7}
-		}
+			\sslinked{
+				\ssprogram{}{
+					$Y_1\|Y_2 = \func{prp.query}{A\|B}$\\
+					$Y^{'}_1\|Y^{'}_2 = \func{prp.query}{A^{'}\|B}$\\
+					return $Y_1 \oplus Y^{'}_1 == A \oplus A^{'}$
+				}{0.7}
+			}{\link}{
+				\sslibrary{\mathbb{F}}{prp-real}{
+					$K_1\|K_2 \twoheadleftarrow \bits^{2\lambda}$\\[1em]
+					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+						$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+						$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+						return $X_{2}\|X_{3}$
+					}{1}
+				}{0.7}
+			}
 		}{\cancel{\approxeq}}{
-		\sslinked{
-		\ssprogram{}{
-		$Y_1\|Y_2 = \func{prp.query}{A\|B}$\\
-		$Y^{'}_1\|Y^{'}_2 = \func{prp.query}{A^{'}\|B}$\\
-		return $Y_1 \oplus Y^{'}_1 == A \oplus A^{'}$
-		}{0.7}
-		}{\link}{
-		\sslibrary{\mathbb{F}}{prp-real}{
-		$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
-		\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-		$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
-		$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
-		$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
-		return $X_{3}\|X_{4}$
-		}{1}
-		}{0.7}
-		}
+			\sslinked{
+				\ssprogram{}{
+					$Y_1\|Y_2 = \func{prp.query}{A\|B}$\\
+					$Y^{'}_1\|Y^{'}_2 = \func{prp.query}{A^{'}\|B}$\\
+					return $Y_1 \oplus Y^{'}_1 == A \oplus A^{'}$
+				}{0.7}
+			}{\link}{
+				\sslibrary{\mathbb{F}}{prp-real}{
+					$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+						$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+						$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+						$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+						return $X_{3}\|X_{4}$
+					}{1}
+				}{0.7}
+			}
 		}
 	\end{center}
 \end{frame}
@@ -1447,26 +1447,26 @@
 		\begin{column}{0.6\textwidth}
 			\begin{center}
 				\sslinked{
-				\sslibrary{\mathbb{F}}{prp-real}{
-				$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
-				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
-				$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
-				return $X_{3}\|X_{4}$
-				}{1}
-				}{0.8}
+					\sslibrary{\mathbb{F}}{prp-real}{
+						$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+							$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+							$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+							$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+							return $X_{3}\|X_{4}$
+						}{1}
+					}{0.8}
 				}{\approxeq}{
-				\sslibrary{\mathbb{F}}{prp-rand}{
-				$L \coloneq$ [\ ]\\[1em]
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
-				if $L[X]$ undefined:\\
-				\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
-				\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
-				\quad $L[X] \coloneq Y$\\
-				return $L[X]$
-				}{1}
-				}{0.8}
+					\sslibrary{\mathbb{F}}{prp-rand}{
+						$L \coloneq$ [\ ]\\[1em]
+						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
+							if $L[X]$ undefined:\\
+							\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+							\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+							\quad $L[X] \coloneq Y$\\
+							return $L[X]$
+						}{1}
+					}{0.8}
 				}
 			\end{center}
 		\end{column}
@@ -1527,33 +1527,33 @@
 		\begin{column}{0.6\textwidth}
 			\begin{center}
 				\sslinked{
-				\sslibrary{\mathbb{F}}{prp-real}{
-				$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
-				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
-				$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
-				return $X_{3}\|X_{4}$
-				}{1}
-				}{0.8}
+					\sslibrary{\mathbb{F}}{prp-real}{
+						$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+							$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+							$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+							$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+							return $X_{3}\|X_{4}$
+						}{1}
+					}{0.8}
 				}{\approxeq}{
-				\sslibrary{\mathbb{F}}{prp-rand}{
-				$L \coloneq$ [\ ]\\[1em]
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
-				if $L[X]$ undefined:\\
-				\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
-				\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
-				\quad $L[X] \coloneq Y$\\
-				return $L[X]$
-				}{1}
-				}{0.8}
+					\sslibrary{\mathbb{F}}{prp-rand}{
+						$L \coloneq$ [\ ]\\[1em]
+						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
+							if $L[X]$ undefined:\\
+							\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+							\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+							\quad $L[X] \coloneq Y$\\
+							return $L[X]$
+						}{1}
+					}{0.8}
 				}
 			\end{center}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 1}
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 1 (this content is optional)}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
@@ -1563,20 +1563,20 @@
 		\begin{column}{0.5\textwidth}
 			\begin{center}
 				\sslibrary{\mathbb{F}}{prp-real}{
-				$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-				$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
-				$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
-				$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
-				return $X_{3}\|X_{4}$
-				}{1}
+					$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+						$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+						$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+						$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+						return $X_{3}\|X_{4}$
+					}{1}
 				}{0.8}
 			\end{center}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 2}
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 2 (this content is optional)}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
@@ -1586,22 +1586,22 @@
 		\begin{column}{0.5\textwidth}
 			\begin{center}
 				\sslibrary{\mathbb{F}}{prp-real}{
-				$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-				\hl{if $L[X_0\|X_1]$ undefined:}\\
-				\quad $X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
-				\quad $X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
-				\quad $X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
-				\quad \hl{$L[X_0\|X_1] \coloneq X_3\|X_4$}\\
-				return \hl{$L[X_0\|X_1]$}
-				}{1}
+					$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+						\hl{if $L[X_0\|X_1]$ undefined:}\\
+						\quad $X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+						\quad $X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+						\quad $X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+						\quad \hl{$L[X_0\|X_1] \coloneq X_3\|X_4$}\\
+						return \hl{$L[X_0\|X_1]$}
+					}{1}
 				}{0.8}
 			\end{center}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 3}
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 3 (this content is optional)}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
@@ -1633,7 +1633,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 4}
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 4 (this content is optional)}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
@@ -1665,7 +1665,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 5}
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 5 (this content is optional)}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
@@ -1697,7 +1697,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 6}
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 6 (this content is optional)}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
@@ -1729,7 +1729,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 7}
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 7 (this content is optional)}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
@@ -1743,10 +1743,10 @@
 			\begin{center}
 				\sslibrary{\mathbb{F}}{prp-real}{
 				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-				if $L[X_0\|X_1]$ undefined:\\
-				\quad \hl{$L[X_0\|X_1] \coloneq \bits^{2\lambda}$}\\
-				\quad \hl{$\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$}\\
-				\quad return $L[X_0\|X_1]$
+					if $L[X_0\|X_1]$ undefined:\\
+					\quad \hl{$L[X_0\|X_1] \coloneq \bits^{2\lambda}$}\\
+					\quad \hl{$\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$}\\
+					\quad return $L[X_0\|X_1]$
 				}{1}\\[1em]
 				\sslibrarysubroutine{\hl{end of time}}{}{
 				\hl{for each $X_0\|X_1 \in \mathcal{X}:$}\\
@@ -1765,7 +1765,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 8}
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 8 (this content is optional)}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
@@ -1784,10 +1784,10 @@
 			\begin{center}
 				\sslibrary{\mathbb{F}}{prp-real}{
 				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-				if $L[X_0\|X_1]$ undefined:\\
-				\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
-				\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
-				\quad return $L[X_0\|X_1]$
+					if $L[X_0\|X_1]$ undefined:\\
+					\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+					\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
+					\quad return $L[X_0\|X_1]$
 				}{1}\\[1em]
 				\sslibrarysubroutine{end of time}{}{
 				for each $X_0\|X_1 \in \mathcal{X}:$\\
@@ -1806,7 +1806,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 9}
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 9 (this content is optional)}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}[<+->]
@@ -1825,10 +1825,10 @@
 			\begin{center}
 				\sslibrary{\mathbb{F}}{prp-real}{
 				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-				if $L[X_0\|X_1]$ undefined:\\
-				\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
-				\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
-				\quad return $L[X_0\|X_1]$
+					if $L[X_0\|X_1]$ undefined:\\
+					\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+					\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
+					\quad return $L[X_0\|X_1]$
 				}{1}\\[1em]
 				\sslibrarysubroutine{end of time}{}{
 				for each $X_0\|X_1 \in \mathcal{X}:$\\
@@ -1864,10 +1864,10 @@
 			\begin{center}
 				\sslibrary{\mathbb{F}}{prp-real}{
 				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-				if $L[X_0\|X_1]$ undefined:\\
-				\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
-				\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
-				\quad return $L[X_0\|X_1]$
+					if $L[X_0\|X_1]$ undefined:\\
+					\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+					\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
+					\quad return $L[X_0\|X_1]$
 				}{1}\\[1em]
 				\sslibrarysubroutine{end of time}{}{
 				for each $X_0\|X_1 \in \mathcal{X}:$\\
@@ -1886,7 +1886,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 11}
+\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 11  (this content is optional)}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}[<+->]
@@ -1902,10 +1902,10 @@
 			\begin{center}
 				\sslibrary{\mathbb{F}}{prp-real}{
 				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-				if $L[X_0\|X_1]$ undefined:\\
-				\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
-				\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
-				\quad return $L[X_0\|X_1]$
+					if $L[X_0\|X_1]$ undefined:\\
+					\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+					\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
+					\quad return $L[X_0\|X_1]$
 				}{1}\\[1em]
 				\sslibrarysubroutine{end of time}{}{
 				for each $X_0\|X_1 \in \mathcal{X}:$\\
@@ -1924,7 +1924,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Proof of security for 3-round Feistel cipher}
+\begin{frame}{Proof of security for 3-round Feistel cipher}{This content is optional}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
@@ -1934,24 +1934,24 @@
 		\begin{column}{0.5\textwidth}
 			\begin{center}
 				\sslinked{
-				\sslibrary{\mathbb{F}}{prp-real}{
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-				if $L[X_0\|X_1]$ undefined:\\
-				\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
-				\quad return $L[X_0\|X_1]$
-				}{1}
-				}{0.7}
+					\sslibrary{\mathbb{F}}{prp-real}{
+						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+							if $L[X_0\|X_1]$ undefined:\\
+							\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+							\quad return $L[X_0\|X_1]$
+						}{1}
+					}{0.7}
 				}{\approxeq}{
-				\sslibrary{\mathbb{F}}{prp-rand}{
-				$L \coloneq$ [\ ]\\[1em]
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
-				if $L[X]$ undefined:\\
-				\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
-				\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
-				\quad $L[X] \coloneq Y$\\
-				return $L[X]$
-				}{1}
-				}{0.7}
+					\sslibrary{\mathbb{F}}{prp-rand}{
+						$L \coloneq$ [\ ]\\[1em]
+						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
+							if $L[X]$ undefined:\\
+							\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+							\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+							\quad $L[X] \coloneq Y$\\
+							return $L[X]$
+						}{1}
+					}{0.7}
 				}
 			\end{center}
 		\end{column}
