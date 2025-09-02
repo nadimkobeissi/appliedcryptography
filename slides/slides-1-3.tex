@@ -438,7 +438,7 @@
 			\begin{itemize}[<+->]
 				\item Are these libraries interchangeable?
 				\item Let's find out!
-				\item \textbf{Goal:} transform \lib{}{xor-samp-1} to \lib{}{xor-samp-2}, proving that each transformation step does not effect any change on calling programs.
+				\item \textbf{Goal:} transform \lib{}{xor-samp-1} to \lib{}{xor-samp-2}, proving that each transformation step does not cause any change whatsoever to the library's functionality.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -805,18 +805,6 @@
 \begin{frame}{Creating a distinguisher program}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item Can you write a distinguisher program showing that these libraries are \textbf{not} interchangeable?
-				\item \ssprogram{}{
-					      $M \coloneq \bit{0}^n$\\
-					      $C \coloneq \func{ots.enc}{M}$\\
-					      return $C == \bit{0}^n$
-				      }{1}
-				\item \prob{A\link\lib{}{ots-real} \Rightarrow \texttt{true}} $= 1$
-				\item \prob{A\link\lib{}{ots-rand} \Rightarrow \texttt{true}} $= \frac{1}{2^n}$
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
 			\begin{center}
 				\sslinked{
 					\sslibrary{}{ots-real}{
@@ -836,6 +824,19 @@
 				}
 			\end{center}
 		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Can you write a distinguisher program showing that these libraries are \textbf{not} interchangeable?
+				      \pause
+				\item \ssprogram{}{
+					      $M \coloneq \bit{0}^n$\\
+					      $C \coloneq \func{ots.enc}{M}$\\
+					      return $C == \bit{0}^n$
+				      }{1}
+				\item \prob{A\link\lib{}{ots-real} \Rightarrow \texttt{true}} $= 1$
+				\item \prob{A\link\lib{}{ots-rand} \Rightarrow \texttt{true}} $= \frac{1}{2^n}$
+			\end{itemize}
+		\end{column}
 	\end{columns}
 \end{frame}
 
@@ -850,11 +851,11 @@
 		      \end{itemize}
 		\item Modern provable security takes a more practical approach:
 		      \begin{itemize}
-			      \item We dismiss attacks with ``astronomically'' high computational cost.
-			      \item We dismiss attacks with ``astronomically'' tiny success probability.
+			      \item We dismiss attacks with ``ridiculously'' high computational cost.
+			      \item We dismiss attacks with ``ridiculously'' tiny success probability.
 		      \end{itemize}
 		\item Instead of ``no attack can succeed, not even in principle'',
-		\item We prove: ``every attack has either astronomically high cost or astronomically small success probability''.
+		\item We prove: ``every attack has either ridiculously high cost or ridiculously small success probability''.
 	\end{itemize}
 \end{frame}
 
@@ -870,6 +871,8 @@
 		\item This gives users a concrete basis for security decisions.
 	\end{itemize}
 \end{frame}
+
+\subsection{Asymptotic approach to security}
 
 \begin{frame}{Monetary cost of huge computations}
 	\begin{itemize}
@@ -893,6 +896,51 @@
 	\end{table}
 \end{frame}
 
+\begin{frame}{Exponential vs polynomial growth}{Quick side-note}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Important insight: $2^{n+1} = 2 \times 2^n$
+				      \begin{itemize}
+					      \item $2^{51} = 2 \times 2^{50}$
+					      \item $2^{128} = 2^{64} \times 2^{64}$
+				      \end{itemize}
+				\item Each additional bit doubles the computational cost!
+				\item Compare growth rates:
+				      \begin{itemize}
+					      \item Linear: $f(n) = n$
+					      \item Polynomial: $f(n) = n^2$
+					      \item Exponential: $f(n) = 2^n$
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.8]
+					\begin{axis}[
+							xlabel={$n$},
+							ylabel={$f(n)$},
+							xmin=0, xmax=10,
+							ymin=0, ymax=1100,
+							legend pos=north west,
+							grid=major,
+							width=8cm,
+							height=6cm,
+						]
+						\addplot[domain=0:10, samples=100, thick, blue] {x};
+						\addlegendentry{$n$ (linear)}
+						\addplot[domain=0:10, samples=100, thick, red] {x^2};
+						\addlegendentry{$n^2$ (polynomial)}
+						\addplot[domain=0:10, samples=100, thick, green!50!black] {2^x};
+						\addlegendentry{$2^n$ (exponential)}
+					\end{axis}
+				\end{tikzpicture}
+			\end{center}
+			\textit{\small Note: Exponential growth quickly surpasses all polynomial functions!}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Understanding tiny probabilities}
 	\begin{itemize}
 		\item Let's put extremely small probabilities in perspective:
@@ -912,6 +960,22 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Why $2^{-x}$ for probabilities?}{Quick side-note}
+	\begin{itemize}
+		\item We've been using notation like $2^{-40}$, $2^{-64}$, $2^{-128}$ for probabilities. Why the negative exponent?
+		\item Recall that $2^{-x} = \frac{1}{2^x}$
+		      \begin{itemize}
+			      \item $2^{-40} = \frac{1}{2^{40}} = \frac{1}{1,099,511,627,776}$
+			      \item This is approximately 1 in a trillion
+		      \end{itemize}
+		\item Probabilities must be between 0 and 1:
+		      \begin{itemize}
+			      \item $2^{40}$ would be a huge number (over a trillion) - not a valid probability!
+			      \item $2^{-40}$ is a tiny fraction - exactly what we want for unlikely events
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{Computational scale of Bitcoin mining}
 	\begin{itemize}
 		\item Let's consider cryptocurrencies based on proof-of-work, like Bitcoin.
@@ -928,17 +992,21 @@
 \end{frame}
 
 \begin{frame}{The asymptotic approach to provable security}
-	\begin{itemize}
-		\item The concrete approach gives practical guidance (e.g., key sizes) but requires managing tedious quantitative details.
-		\item The asymptotic approach:
-		      \begin{itemize}
-			      \item Makes qualitative, all-or-nothing statements
-			      \item Considers behavior as key size approaches infinity
-			      \item Hides tedious quantitative details
-		      \end{itemize}
-		\item Similar to asymptotic analysis using big-O notation.
-		\item Example: Instead of calculating that an operation takes exactly $16n^2 + 24n + 74$ steps, we can simply say it takes $\mathcal{O}(n^2)$ steps
-	\end{itemize}
+	\begin{columns}
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item The concrete approach gives practical guidance (e.g., key sizes) but requires managing tedious quantitative details.
+				\item The asymptotic approach\footnote{Asymptotic means ``approaching a limit''. In computer science, we study how algorithms behave as input size approaches infinity, focusing on the general trend rather than exact values.}:
+				      \begin{itemize}
+					      \item Makes qualitative, all-or-nothing statements
+					      \item Considers behavior as key size approaches infinity
+					      \item Hides tedious quantitative details
+				      \end{itemize}
+				\item Similar to asymptotic analysis using big-O notation.
+				\item Example: Instead of calculating that an operation takes exactly $16n^2 + 24n + 74$ steps, we can simply say it takes $\mathcal{O}(n^2)$ steps
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{AES: An example of asymptotic security analysis}
@@ -967,6 +1035,23 @@
 					      \item Far beyond capability of any conceivable computation
 				      \end{itemize}
 				\item Asymptotic approach: Both are ``computationally secure''
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why does a 128-bit key mean $2^{128}$ possible keys?}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item Each bit can be either 0 or 1
+				\item For AES-128:
+				      \begin{itemize}
+					      \item Key has 128 bits
+					      \item Each bit: 2 choices
+					      \item Total combinations: $\underbrace{2 \times 2 \times 2 \times \ldots \times 2}_{128 \text{ times}} = 2^{128}$
+				      \end{itemize}
+				\item That's approximately $3.4 \times 10^{38}$ different keys!
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1013,6 +1098,29 @@
 		\end{column}
 	\end{columns}
 \end{frame}
+
+\begin{frame}{Indistinguishability in computational security}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\definitionbox{Indistinguishability}{
+				Let \lib{}{1} and \lib{}{2} be two libraries with the same interface. The \textbf{advantage} of a calling program \prog{} in distinguishing \lib{}{1} and \lib{}{2} is:
+				\begin{align*}
+					\left| \prob{\prog{} \link \lib{}{1} \Rightarrow \texttt{true}} - \prob{\prog{} \link \lib{}{2} \Rightarrow \texttt{true}} \right|
+				\end{align*}
+				\lib{}{1} $\approxeq$ \lib{}{2}, if every polynomial-time calling program has only negligible advantage in distinguishing them.
+			}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item Previously, libraries were interchangeable when probabilities were \textbf{identical}.
+				\item Now, libraries are indistinguishable when probabilities are \textbf{negligibly close}.
+				\item Again: this is intuitive, no need to stress about the formal definition.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{Birthday paradox}
 
 \begin{frame}{Birthday paradox}
 	\begin{columns}[c]
@@ -1067,26 +1175,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Indistinguishability in computational security}
-	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
-			\definitionbox{Indistinguishability}{
-				Let \lib{}{1} and \lib{}{2} be two libraries with the same interface. The \textbf{advantage} of a calling program \prog{} in distinguishing \lib{}{1} and \lib{}{2} is:
-				\begin{align*}
-					\left| \prob{\prog{} \link \lib{}{1} \Rightarrow \texttt{true}} - \prob{\prog{} \link \lib{}{2} \Rightarrow \texttt{true}} \right|
-				\end{align*}
-				\lib{}{1} $\approxeq$ \lib{}{2}, if every polynomial-time calling program has only negligible advantage in distinguishing them.
-			}
-		\end{column}
-		\begin{column}{0.4\textwidth}
-			\begin{itemize}
-				\item Previously, libraries were interchangeable when probabilities were \textbf{identical}.
-				\item Now, libraries are indistinguishable when probabilities are \textbf{negligibly close}.
-				\item Again: this is intuitive, no need to stress about the formal definition.
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
+\subsection{``Bad event'' proof technique}
 
 \begin{frame}{The ``bad event'' proof technique}{Definition}
 	\definitionbox{Bad Event Technique}{
