@@ -1,20 +1,20 @@
 \documentclass[10pt,a4paper,american]{exam}
 \usepackage{../misc/macros/classhandout}
 
-\title{Applied Cryptography - Lab Project F: Private Set Intersection for Contact Discovery}
+\title{Applied Cryptography - Project F: Private Set Intersection for Contact Discovery}
 \author{Nadim Kobeissi}
 \subject{Lab project exploring privacy-preserving contact discovery using Private Set Intersection (PSI) and Oblivious Pseudorandom Functions (OPRF).}
 \keywords{private set intersection, PSI, OPRF, contact discovery, privacy-preserving protocols, secure multiparty computation, oblivious PRF, peppered hashing}
 
 \begin{document}
 \classhandoutheader
-\section*{Lab Project F: Private Set Intersection for Contact Discovery}
+\section*{Project F: Private Set Intersection for Contact Discovery}
 
 \subsection*{Overview}
-In this lab project, you will tackle a fundamental privacy challenge in modern communication apps: how can users discover which of their contacts are using a service without revealing their entire address book? You'll build a privacy-preserving contact discovery system using Private Set Intersection (PSI), a cryptographic technique that allows two parties to find common elements in their sets without revealing non-matching items. Starting with the theoretical foundations of PSI protocols, you'll implement an Oblivious Pseudorandom Function (OPRF) based approach where the client can query whether specific contacts are registered while the server learns nothing about unsuccessful queries. The project guides you through designing secure wire protocols, implementing both server and client components, and addressing real-world security challenges such as preventing offline enumeration attacks through peppered hashing and implementing rate limiting to prevent abuse. You'll evaluate your system's performance with realistic address book sizes, exploring optimization techniques like batching and streaming to handle thousands of contacts efficiently. Advanced extensions include bandwidth optimization using probabilistic data structures like Bloom filters, adding authentication layers for enhanced security, and comparing your implementation against production systems used by Signal, WhatsApp, and other messaging platforms. By completing this lab, you'll gain deep understanding of how cryptographic protocols can preserve privacy in everyday applications while maintaining usability and performance.
+In this project, you will tackle a fundamental privacy challenge in modern communication apps: how can users discover which of their contacts are using a service without revealing their entire address book? You'll build a privacy-preserving contact discovery system using Private Set Intersection (PSI), a cryptographic technique that allows two parties to find common elements in their sets without revealing non-matching items. Starting with the theoretical foundations of PSI protocols, you'll implement an Oblivious Pseudorandom Function (OPRF) based approach where the client can query whether specific contacts are registered while the server learns nothing about unsuccessful queries. The project guides you through designing secure wire protocols, implementing both server and client components, and addressing real-world security challenges such as preventing offline enumeration attacks through peppered hashing and implementing rate limiting to prevent abuse. You'll evaluate your system's performance with realistic address book sizes, exploring optimization techniques like batching and streaming to handle thousands of contacts efficiently. Advanced extensions include bandwidth optimization using probabilistic data structures like Bloom filters, adding authentication layers for enhanced security, and comparing your implementation against production systems used by Signal, WhatsApp, and other messaging platforms. By completing this project, you'll gain deep understanding of how cryptographic protocols can preserve privacy in everyday applications while maintaining usability and performance.
 
 \subsection*{Learning Objectives}
-After completing this lab, you should be able to:
+After completing this project, you should be able to:
 \begin{itemize}
 	\item Implement Private Set Intersection protocols using Oblivious Pseudorandom Functions (OPRF).
 	\item Design and build secure wire protocols for privacy-preserving contact discovery.

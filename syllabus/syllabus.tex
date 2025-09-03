@@ -14,7 +14,7 @@
 \textit{Applied Cryptography} explores the core theory of modern cryptography and how to apply these fundamental principles to build and analyze real-world secure systems. We start with foundational concepts—such as Kerckhoff's Principle, computational hardness, and provable security—before moving on to key cryptographic primitives like pseudorandom generators, block ciphers, and hash functions. Building on this solid groundwork, we will survey how these technologies power critical real-world deployments such as TLS, secure messaging protocols (e.g., Signal), and post-quantum cryptography. We will also delve into specialized topics like high-assurance cryptographic implementations, elliptic-curve-based systems, and zero-knowledge proofs to give you a complete understanding of contemporary cryptography's scope and impact. By the end of the semester, you will have gained both a rigorous theoretical perspective and practical hands-on experience, enabling you to evaluate, design, and implement cryptographic solutions.
 
 \section{Course Objectives \& Outcomes}
-This course is designed to bridge the theoretical foundations of cryptography with its practical applications in contemporary secure systems. By engaging with lectures, lab projects, problem sets, and project work, you will develop a thorough understanding of modern cryptographic concepts and gain the hands-on skills needed to implement, assess, and communicate security solutions.
+This course is designed to bridge the theoretical foundations of cryptography with its practical applications in contemporary secure systems. By engaging with lectures, projects, problem sets, and project work, you will develop a thorough understanding of modern cryptographic concepts and gain the hands-on skills needed to implement, assess, and communicate security solutions.
 
 Upon successful completion of this course, a student should be able to:
 
@@ -47,45 +47,43 @@ If you want to understand whether you have the sufficient background for this co
 The course schedule is available on the course website, where it is always kept up-to-date, including details about the lecture topics, materials, resources and easy access to slides: \url{https://appliedcryptography.page}
 
 \section{Assessment Items \& Grading Criteria}
-In this course, your performance will be evaluated through multiple components designed to measure both your theoretical understanding and your practical skills in cryptography. By staying current with the readings, attending and participating in lectures and lab projects, and completing all assigned work, you will gain a thorough mastery of the material.
+In this course, your performance will be evaluated through multiple components designed to measure both your theoretical understanding and your practical skills in cryptography. By staying current with the readings, attending and participating in lectures and projects, and completing all assigned work, you will gain a thorough mastery of the material.
 
 Overall, these graded components are designed to ensure that you not only grasp the theoretical underpinnings of cryptography but also develop the practical expertise needed to implement, analyze, and innovate within the field.
 
 \subsection{This Is Your Classroom}
-An essential facet in this course's design is encouraging students to produce work that is entirely theirs, without resorting to AI technologies. This ensures that students are embracing their full learning potential and makes grading more fair throughout the classroom. As such, the class sessions and lab projects will favor \textbf{engagement}:
+An essential facet in this course's design is encouraging students to produce work that is entirely theirs, without resorting to AI technologies. This ensures that students are embracing their full learning potential and makes grading more fair throughout the classroom. As such, the class sessions and projects will favor \textbf{engagement}:
 
 \begin{itemize}
 	\item \textbf{Interactive lectures:} Classes will incorporate interactive elements such as in-class exercises, discussions, and collaborative problem-solving to encourage active participation.
 	\item \textbf{Real-time feedback:} Students will regularly have opportunities to demonstrate their understanding through low-stakes activities, receiving immediate feedback to guide their learning.
 	\item \textbf{Peer teaching:} Students will occasionally be invited to explain concepts to their peers, reinforcing their own understanding while creating a collaborative learning environment.
-	\item \textbf{Lab progress discussions:} Students will be encouraged to openly discuss their progress on lab projects as they work, allowing for real-time problem-solving and knowledge sharing.
-	\item \textbf{Security strategy workshops:} Throughout lab projects, students will present their approaches to implementing security goals, receiving feedback from peers and instructors to refine their solutions.
+	\item \textbf{Lab progress discussions:} Students will be encouraged to openly discuss their progress on projects as they work, allowing for real-time problem-solving and knowledge sharing.
+	\item \textbf{Security strategy workshops:} Throughout projects, students will present their approaches to implementing security goals, receiving feedback from peers and instructors to refine their solutions.
 	\item \textbf{Collaborative troubleshooting:} Labs will incorporate structured time for students to collectively address challenges, fostering a community where security insights and implementation techniques are freely exchanged.
 \end{itemize}
 
 \subsection{Problem Sets}
-Problem sets will be assigned periodically throughout the semester to reinforce and deepen your understanding of the lecture material. Each set will include a range of exercises—some focused on theoretical proofs and problem-solving, others requiring short coding tasks or computational experiments. These assignments are designed to bridge the gap between abstract cryptographic concepts and their concrete applications. You are encouraged to start working on each problem set early and to seek guidance during office hours or lab projects if you encounter difficulties.
+Problem sets will be assigned periodically throughout the semester to reinforce and deepen your understanding of the lecture material. Each set will include a range of exercises—some focused on theoretical proofs and problem-solving, others requiring short coding tasks or computational experiments. These assignments are designed to bridge the gap between abstract cryptographic concepts and their concrete applications. You are encouraged to start working on each problem set early and to seek guidance during office hours or projects if you encounter difficulties.
 
-\subsection{Lab Projects}
-Lab projects will be worked on weekly during lab sessions intended to serve as a hands-on complement to the lectures. Each group of (one to three) students is expected to pick one (or, if you're feeling adventurous, at most two) lab topics and work on them throughout the entire course. During each lab, you will experiment with real-world libraries, and even simulate attacks or vulnerabilities to understand why certain security practices are necessary. These sessions will also help you become comfortable with relevant tools and environments, including formal analysis tools. After discussions with the department, it was determined that Lab Sessions will be optional since the mix of 60+ graduate and undergraduate students is making it impossible to find a time and place that accommodates everyone. However, attendance is strongly recommended: labs offer an excellent opportunity for collaborative problem-solving and immediate feedback on your work. Labs offer an excellent opportunity for collaborative problem-solving and immediate feedback on your work.
+\subsection{Projects}
+Take-home projects are intended to serve as a hands-on complement to the lectures. Each group of (one to three) students is expected to pick one (or, if you're feeling adventurous, at most two) project topics and work on them throughout the entire course. During each project, you will experiment with real-world libraries, and even simulate attacks or vulnerabilities to understand why certain security practices are necessary. These sessions will also help you become comfortable with relevant tools and environments, including formal analysis tools. Take-home projects are mandatory.
 
-Example lab sessions include:
+Example projects include:
 
 \begin{itemize}
 	\item \textbf{Designing a Password Manager:} Design and implement a secure password manager application, learning about secure password storage techniques, key derivation functions, and encryption methods for sensitive data. You'll implement features such as master password protection, secure password generation, and encrypted storage while analyzing potential vulnerabilities and implementing countermeasures against common attacks.
-	\item \textbf{Designing a Secure Messenger:} Build a secure messaging application implementing end-to-end encryption using cryptographic libraries for key exchange protocols, message encryption, and authentication mechanisms. This lab covers essential features like perfect forward secrecy, deniability, and secure group messaging while exploring practical challenges such as key verification and metadata protection.
-	\item \textbf{Protocol Modeling and Verification with ProVerif:} Design and formally verify a Transport Layer Security (TLS)-like protocol using ProVerif, a formal verification tool for cryptographic protocols. This lab provides practical experience with cryptographic protocol design, formal verification, and security property specification for protocols that provide confidentiality, integrity, and authentication for network communications.
-	\item \textbf{Designing a Battleship Game Using Zero-Knowledge Systems:} Design and implement a zero-knowledge battleship game using RISC Zero, a zero-knowledge virtual machine (zkVM). This lab demonstrates how players can validate moves without revealing the entire game state, providing practical experience with zero-knowledge proofs, zkVMs, and cryptographic protocol design.
+	\item \textbf{Designing a Secure Messenger:} Build a secure messaging application implementing end-to-end encryption using cryptographic libraries for key exchange protocols, message encryption, and authentication mechanisms. This project covers essential features like perfect forward secrecy, deniability, and secure group messaging while exploring practical challenges such as key verification and metadata protection.
+	\item \textbf{Protocol Modeling and Verification with ProVerif:} Design and formally verify a Transport Layer Security (TLS)-like protocol using ProVerif, a formal verification tool for cryptographic protocols. This project provides practical experience with cryptographic protocol design, formal verification, and security property specification for protocols that provide confidentiality, integrity, and authentication for network communications.
+	\item \textbf{Designing a Battleship Game Using Zero-Knowledge Systems:} Design and implement a zero-knowledge battleship game using RISC Zero, a zero-knowledge virtual machine (zkVM). This project demonstrates how players can validate moves without revealing the entire game state, providing practical experience with zero-knowledge proofs, zkVMs, and cryptographic protocol design.
 	\item \textbf{Post-Quantum Cryptography Migration:} Explore the practical challenges of migrating existing systems to post-quantum cryptography using NIST's standardized algorithms, integrating ML-KEM (Kyber) for key encapsulation and ML-DSA (Dilithium) for digital signatures. You'll analyze performance impacts, message size increases, and integration challenges when replacing pre-quantum primitives with quantum-resistant alternatives.
-	\item \textbf{Private Set Intersection for Contact Discovery:} Build a privacy-preserving contact discovery system using Private Set Intersection (PSI), implementing an Oblivious Pseudorandom Function (OPRF) based approach. This lab covers designing secure wire protocols, implementing server and client components, and addressing security challenges like preventing offline enumeration attacks through peppered hashing and rate limiting.
+	\item \textbf{Private Set Intersection for Contact Discovery:} Build a privacy-preserving contact discovery system using Private Set Intersection (PSI), implementing an Oblivious Pseudorandom Function (OPRF) based approach. This project covers designing secure wire protocols, implementing server and client components, and addressing security challenges like preventing offline enumeration attacks through peppered hashing and rate limiting.
 	\item \textbf{Privacy-Preserving Age Verification:} Build a privacy-preserving age verification system that proves age thresholds without revealing personal information using cryptographic commitments and signatures. You'll implement zero-knowledge proofs that verify statements like "I am 18 or older" while tackling challenges including credential revocation, preventing credential sharing, and ensuring efficient mobile verification.
 	\item \textbf{Building a Time-Locked Message Capsule:} Build a practical timelock encryption system that enables messages to be encrypted such that they can only be decrypted after a specific future time. You'll implement the tlock protocol using the League of Entropy's distributed randomness beacon, exploring real-world applications including scheduled disclosures, commitment schemes for auctions, and "digital time capsules" for personal messages.
 \end{itemize}
 
-Lab participation will be graded based on preparedness, engagement, demonstrated understanding during checkpoints, and the successful completion of in-lab activities.
-
 \subsection{Exams}
-There will be a midterm exam and a final exam. The exams will test your command of topics discussed throughout the semester. You are expected to come to each exam prepared, having thoroughly reviewed lecture notes, and lab material.
+There will be a midterm exam and a final exam. The exams will test your command of topics discussed throughout the semester. You are expected to come to each exam prepared, having thoroughly reviewed lecture notes.
 
 \subsection{Grading Breakdown}
 The final course grade will be computed using the following breakdown:
@@ -98,11 +96,13 @@ The final course grade will be computed using the following breakdown:
 		\hline
 		Attendance \& Participation & $10\%$              \\
 		\hline
-		Problem Sets                & $30\%$              \\
+		Problem Sets                & $22.5\%$            \\
 		\hline
-		Midterm Exam                & $30\%$              \\
+		Take-Home Project           & $22.5\%$            \\
 		\hline
-		Final Exam                  & $30\%$              \\
+		Midterm Exam                & $22.5\%$            \\
+		\hline
+		Final Exam                  & $22.5\%$            \\
 		\hline
 	\end{tabular}
 \end{center}
@@ -124,7 +124,7 @@ Join us for collaborative discussions of seminal and cutting-edge cryptography p
 \subsubsection*{Week 2: Student Presentations}
 \textbf{Theme:} \textit{Communicating Complex Ideas}
 
-Practice your presentation skills with 15-minute talks on cryptographic topics, followed by constructive peer feedback. Topics include explaining cryptographic constructions, analyzing recent attacks or vulnerabilities, presenting lab project progress, or proposing research ideas. We'll also have ``lightning talks'' for 3-minute research pitches and practice with visual aids and demos.
+Practice your presentation skills with 15-minute talks on cryptographic topics, followed by constructive peer feedback. Topics include explaining cryptographic constructions, analyzing recent attacks or vulnerabilities, presenting project progress, or proposing research ideas. We'll also have ``lightning talks'' for 3-minute research pitches and practice with visual aids and demos.
 
 \textbf{Skills developed:} Public speaking, slide design, handling Q\&A, time management
 
@@ -154,7 +154,7 @@ Students are expected to strictly observe the following course policies:
 \textbf{Do not register for this course if you do not plan to attend all classes, labs, and exams.} You are expected to abide by the university's rules on attendance. You are expected to attend lectures and to be on time for all sessions and activities related to this course. Lectures are a sequence. Missing one lecture will almost certainly mean that you will not be able to keep up with the following lectures without studying the material covered in the missed lecture. Catching up with missed lectures is your responsibility and is done on your own time. You are responsible for all work, even when absent. Attendance may be recorded at every class session. Excessive absence, defined at the discretion of the instructor, will not be tolerated and will result in being dropped from the course.
 
 \subsection{Academic Misconduct \& Plagiarism}
-Lectures and labs start on time. You may not be allowed to come into the room or lab once class has started. Any class conduct that disturbs the learning atmosphere may be deemed misbehavior and will not be tolerated.
+Lectures and labs start on time. You may not be allowed to come into the room once class has started. Any class conduct that disturbs the learning atmosphere may be deemed misbehavior and will not be tolerated.
 
 This course has a strict \textbf{zero tolerance policy for cheating}. Any instance of cheating will result in an immediate, non-negotiable grade of 0 on the pertinent assignment and a report to the university faculty:
 \begin{itemize}
@@ -166,7 +166,7 @@ This course has a strict \textbf{zero tolerance policy for cheating}. Any instan
 
 Explaining how to use systems or tools and helping others with high-level design issues is not cheating.
 
-\textbf{Regarding AI Tools:} Any use of AI tools to produce answers to class assignments or lab projects is considered cheating.
+\textbf{Regarding AI Tools:} Any use of AI tools to produce answers to class assignments or projects is considered cheating.
 \begin{itemize}
 	\item Using AI tools like ChatGPT, GitHub Copilot, or similar to generate code, proofs, or written answers constitutes cheating.
 	\item Submitting AI-generated work without proper attribution and explanation is considered plagiarism.
