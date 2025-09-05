@@ -44,7 +44,7 @@ export const calendarInit = () => {
 				arrayOfDomNodes.push(notesEl)
 			}
 
-			if (arg.event.url) {
+			if (arg.event.extendedProps.url) {
 				let urlEl = document.createElement("div")
 				urlEl.classList.add("fc-event-url")
 				let urlLabel = document.createElement("strong")

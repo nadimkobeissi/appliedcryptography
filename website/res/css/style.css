@@ -117,6 +117,14 @@ strong {
 	font-weight: 600;
 }
 
+.mobile-only {
+	display: none;
+}
+
+.desktop-only {
+	display: none;
+}
+
 .container {
 	max-width: 1200px;
 	margin: 0 auto;
