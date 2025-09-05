@@ -119,6 +119,7 @@
 			\begin{itemize}[<+->]
 				\item We don't know how to make PRGs, or even if they exist.
 				\item So we simply invent functions that we think act close enough to PRGs (when subjected to statistical and mathematical analysis).
+				\item The concept of \textbf{computational indistinguishability} with \textbf{negligible difference} is again useful here!
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1436,17 +1437,133 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{However, a 3+ round Feistel cipher is fine!}
-	\begin{columns}[c]
-		\begin{column}{0.4\textwidth}
-			\begin{itemize}[<+->]
-				\item Luby and Rackoff proved that a 3-round Feistel cipher is indistinguishable from a pseudorandom permutation.\footnote{\url{https://appliedcryptography.page/paper/\#luby-rackoff}}
-				\item Can we also prove it using our provable security framework?
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.6\textwidth}
-			\begin{center}
-				\sslinked{
+\iffalse
+	\begin{frame}{However, a 3+ round Feistel cipher is fine!}
+		\begin{columns}[c]
+			\begin{column}{0.4\textwidth}
+				\begin{itemize}[<+->]
+					\item Luby and Rackoff proved that a 3-round Feistel cipher is indistinguishable from a pseudorandom permutation.\footnote{\url{https://appliedcryptography.page/paper/\#luby-rackoff}}
+					\item Can we also prove it using our provable security framework?
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.6\textwidth}
+				\begin{center}
+					\sslinked{
+						\sslibrary{\mathbb{F}}{prp-real}{
+							$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+							\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+								$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+								$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+								$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+								return $X_{3}\|X_{4}$
+							}{1}
+						}{0.8}
+					}{\approxeq}{
+						\sslibrary{\mathbb{F}}{prp-rand}{
+							$L \coloneq$ [\ ]\\[1em]
+							\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
+								if $L[X]$ undefined:\\
+								\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+								\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+								\quad $L[X] \coloneq Y$\\
+								return $L[X]$
+							}{1}
+						}{0.8}
+					}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{The ``bad event'' proof technique}{Reminder}
+		\definitionbox{Bad Event Technique}{
+			Let \lib{}{1} and \lib{}{2} be libraries that each include a boolean variable named \hl{\texttt{bad}}, and assume that after \texttt{bad} is set to \texttt{true} it remains \texttt{true} forever. We say that the bad event is triggered if the library ever sets \texttt{bad := true}.
+			\\[1em]
+			If \lib{}{1} and \lib{}{2} have identical source code, except for statements reachable only when \texttt{bad := true}, then:
+			\begin{align*}
+				\left| \prob{\prog{} \link \lib{}{1} \Rightarrow \texttt{true}} - \prob{\prog{} \link \lib{}{2} \Rightarrow \texttt{true}} \right| \leq \prob{\prog{} \link \lib{}{1} \func{trigger}{\texttt{bad}}}
+			\end{align*}
+		}
+	\end{frame}
+
+	\begin{frame}{The ``bad event'' proof technique}{Reminder}
+		\begin{itemize}[<+->]
+			\item \prog{}'s advantage is bounded by \prob{\prog{} \link \lib{}{1} \func{trigger}{\texttt{bad}}}.
+			\item Practical application:
+			      \begin{itemize}[<+->]
+				      \item Define a sequence of hybrid libraries.
+				      \item Identify ``bad events'' between consecutive hybrids.
+				      \item Show these events occur with negligible probability.
+			      \end{itemize}
+			\item Enables us to focus on analyzing specific failure cases rather than full behavior.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{The ``end-of-time'' strategy for bad events}{Reminder}
+		\begin{itemize}[<+->]
+			\item Sometimes analyzing bad events can be complex, especially when values are chosen by the adversary.
+			\item The end-of-time strategy:
+			      \begin{enumerate}[<+->]
+				      \item Postpone all bad-event logic to the end of the library execution.
+				      \item Collect information during normal execution.
+				      \item Check for bad events only at the very end.
+			      \end{enumerate}
+			\item Advantages:
+			      \begin{itemize}[<+->]
+				      \item Simplifies analysis by separating normal behavior from bad-event checking.
+				      \item Makes it easier to bound the probability of bad events.
+				      \item Particularly useful for complex cryptographic proofs.
+			      \end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{However, a 3+ round Feistel cipher is fine!}
+		\begin{columns}[c]
+			\begin{column}{0.4\textwidth}
+				\begin{itemize}
+					\item Luby and Rackoff proved that a 3-round Feistel cipher is indistinguishable from a pseudorandom permutation.\footnote{\url{https://appliedcryptography.page/paper/\#luby-rackoff}}
+					\item Can we also prove it using our provable security framework?
+					\item Yes, with the bad events proof technique!
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.6\textwidth}
+				\begin{center}
+					\sslinked{
+						\sslibrary{\mathbb{F}}{prp-real}{
+							$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+							\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+								$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+								$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+								$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+								return $X_{3}\|X_{4}$
+							}{1}
+						}{0.8}
+					}{\approxeq}{
+						\sslibrary{\mathbb{F}}{prp-rand}{
+							$L \coloneq$ [\ ]\\[1em]
+							\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
+								if $L[X]$ undefined:\\
+								\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+								\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+								\quad $L[X] \coloneq Y$\\
+								return $L[X]$
+							}{1}
+						}{0.8}
+					}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 1 (this content is optional)}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item We start at \lib{\mathbb{F}}{prp-real}.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
 					\sslibrary{\mathbb{F}}{prp-real}{
 						$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
 						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
@@ -1456,507 +1573,393 @@
 							return $X_{3}\|X_{4}$
 						}{1}
 					}{0.8}
-				}{\approxeq}{
-					\sslibrary{\mathbb{F}}{prp-rand}{
-						$L \coloneq$ [\ ]\\[1em]
-						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
-							if $L[X]$ undefined:\\
-							\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
-							\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
-							\quad $L[X] \coloneq Y$\\
-							return $L[X]$
-						}{1}
-					}{0.8}
-				}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
 
-\begin{frame}{The ``bad event'' proof technique}{Reminder}
-	\definitionbox{Bad Event Technique}{
-		Let \lib{}{1} and \lib{}{2} be libraries that each include a boolean variable named \hl{\texttt{bad}}, and assume that after \texttt{bad} is set to \texttt{true} it remains \texttt{true} forever. We say that the bad event is triggered if the library ever sets \texttt{bad := true}.
-		\\[1em]
-		If \lib{}{1} and \lib{}{2} have identical source code, except for statements reachable only when \texttt{bad := true}, then:
-		\begin{align*}
-			\left| \prob{\prog{} \link \lib{}{1} \Rightarrow \texttt{true}} - \prob{\prog{} \link \lib{}{2} \Rightarrow \texttt{true}} \right| \leq \prob{\prog{} \link \lib{}{1} \func{trigger}{\texttt{bad}}}
-		\end{align*}
-	}
-\end{frame}
-
-\begin{frame}{The ``bad event'' proof technique}{Reminder}
-	\begin{itemize}[<+->]
-		\item \prog{}'s advantage is bounded by \prob{\prog{} \link \lib{}{1} \func{trigger}{\texttt{bad}}}.
-		\item Practical application:
-		      \begin{itemize}[<+->]
-			      \item Define a sequence of hybrid libraries.
-			      \item Identify ``bad events'' between consecutive hybrids.
-			      \item Show these events occur with negligible probability.
-		      \end{itemize}
-		\item Enables us to focus on analyzing specific failure cases rather than full behavior.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{The ``end-of-time'' strategy for bad events}{Reminder}
-	\begin{itemize}[<+->]
-		\item Sometimes analyzing bad events can be complex, especially when values are chosen by the adversary.
-		\item The end-of-time strategy:
-		      \begin{enumerate}[<+->]
-			      \item Postpone all bad-event logic to the end of the library execution.
-			      \item Collect information during normal execution.
-			      \item Check for bad events only at the very end.
-		      \end{enumerate}
-		\item Advantages:
-		      \begin{itemize}[<+->]
-			      \item Simplifies analysis by separating normal behavior from bad-event checking.
-			      \item Makes it easier to bound the probability of bad events.
-			      \item Particularly useful for complex cryptographic proofs.
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{However, a 3+ round Feistel cipher is fine!}
-	\begin{columns}[c]
-		\begin{column}{0.4\textwidth}
-			\begin{itemize}
-				\item Luby and Rackoff proved that a 3-round Feistel cipher is indistinguishable from a pseudorandom permutation.\footnote{\url{https://appliedcryptography.page/paper/\#luby-rackoff}}
-				\item Can we also prove it using our provable security framework?
-				\item Yes, with the bad events proof technique!
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.6\textwidth}
-			\begin{center}
-				\sslinked{
+	\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 2 (this content is optional)}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item We add a cache $L[\cdot]$ so that each distinct output is computed only once.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
 					\sslibrary{\mathbb{F}}{prp-real}{
 						$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
 						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-							$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
-							$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
-							$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
-							return $X_{3}\|X_{4}$
+							\hl{if $L[X_0\|X_1]$ undefined:}\\
+							\quad $X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+							\quad $X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+							\quad $X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+							\quad \hl{$L[X_0\|X_1] \coloneq X_3\|X_4$}\\
+							return \hl{$L[X_0\|X_1]$}
 						}{1}
 					}{0.8}
-				}{\approxeq}{
-					\sslibrary{\mathbb{F}}{prp-rand}{
-						$L \coloneq$ [\ ]\\[1em]
-						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
-							if $L[X]$ undefined:\\
-							\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
-							\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
-							\quad $L[X] \coloneq Y$\\
-							return $L[X]$
-						}{1}
-					}{0.8}
-				}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
 
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 1 (this content is optional)}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item We start at \lib{\mathbb{F}}{prp-real}.
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{center}
-				\sslibrary{\mathbb{F}}{prp-real}{
-					$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
-					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-						$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
-						$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
-						$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
-						return $X_{3}\|X_{4}$
-					}{1}
-				}{0.8}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 2 (this content is optional)}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item We add a cache $L[\cdot]$ so that each distinct output is computed only once.
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{center}
-				\sslibrary{\mathbb{F}}{prp-real}{
-					$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
-					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-						\hl{if $L[X_0\|X_1]$ undefined:}\\
-						\quad $X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
-						\quad $X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
-						\quad $X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
-						\quad \hl{$L[X_0\|X_1] \coloneq X_3\|X_4$}\\
-						return \hl{$L[X_0\|X_1]$}
-					}{1}
-				}{0.8}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 3 (this content is optional)}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
-				\item We add additional sub-cache $L_i[\cdot]$ for each $F(K_i,\cdot)$
-				\item Since we already assume $F$ to be a secure PRF, we can replace it with the ideal PRF and remove $K$.
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\vspace{-1.5cm}
-			\begin{center}
-				\sslibrary{\mathbb{F}}{prp-real}{
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-				if $L[X_0\|X_1]$ undefined:\\
-				\quad \hl{if $L_1[X_1]$ undefined:}\\
-				\quad \quad \hl{$L_1[X_1] \twoheadleftarrow \bits^\lambda$}\\
-				\quad $X_{2} \coloneq X_{0} \oplus \hl{L_1[X_1]}$\\
-				\quad \hl{if $L_2[X_2]$ undefined:}\\
-				\quad \quad \hl{$L_2[X_2] \twoheadleftarrow \bits^\lambda$}\\
-				\quad $X_{3} \coloneq X_{1} \oplus \hl{L_2[X_2]}$\\
-				\quad \hl{if $L_3[X_3]$ undefined:}\\
-				\quad \quad \hl{$L_3[X_3] \twoheadleftarrow \bits^\lambda$}\\
-				\quad $X_{4} \coloneq X_{2} \oplus \hl{L_3[X_3]}$\\
-				\quad $L[X_0\|X_1] \coloneq X_3\|X_4$\\
-				return $L[X_0\|X_1]$
-				}{1}
-				}{0.8}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 4 (this content is optional)}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
-				\item We expect $X_2$ and $X_3$ to never repeat. So, we can trigger the bad event if they do.
-				\item Later, we must show that the bad event's probability is negligible.
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\vspace{-1.5cm}
-			\begin{center}
-				\sslibrary{\mathbb{F}}{prp-real}{
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-				if $L[X_0\|X_1]$ undefined:\\
-				\quad if $L_1[X_1]$ undefined:\\
-				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
-				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
-				\quad if $L_2[X_2]$ \hl{defined: $\texttt{bad} \coloneq \texttt{true}$}\\
-				\quad $L_2[X_2] \twoheadleftarrow \bits^\lambda$\\
-				\quad $X_{3} \coloneq X_{1} \oplus L_2[X_2]$\\
-				\quad if $L_3[X_3]$ \hl{defined: $\texttt{bad} \coloneq \texttt{true}$}\\
-				\quad $L_3[X_3] \twoheadleftarrow \bits^\lambda$\\
-				\quad $X_{4} \coloneq X_{2} \oplus L_3[X_3]$\\
-				\quad $L[X_0\|X_1] \coloneq X_3\|X_4$\\
-				return $L[X_0\|X_1]$
-				}{1}
-				}{0.8}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 5 (this content is optional)}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
-				\item Instead of sampling $L_2[X_2]$ uniformly and then computing $X_3$, we can sample $X_3$ uniformly and compute $L_2[X_2]$.
-				\item Same for $L_3[X_3]$ and $X_4$.
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\vspace{-1.5cm}
-			\begin{center}
-				\sslibrary{\mathbb{F}}{prp-real}{
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-				if $L[X_0\|X_1]$ undefined:\\
-				\quad if $L_1[X_1]$ undefined:\\
-				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
-				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
-				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
-				\quad \hl{$X_3 \twoheadleftarrow \bits^\lambda$}\\
-				\quad $L_2[X_2] \hl{\coloneq X_3 \oplus X_1}$\\
-				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
-				\quad \hl{$X_4 \twoheadleftarrow \bits^\lambda$}\\
-				\quad $L_3[X_3] \hl{\coloneq X_4 \oplus X_2}$\\
-				\quad $L[X_0\|X_1] \coloneq X_3\|X_4$\\
-				return $L[X_0\|X_1]$
-				}{1}
-				}{0.8}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 6 (this content is optional)}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
-				\item We can move the sampling steps to the top since they're no longer dependent on other variables.
-				\item Note how nothing after $L[X_0\|X_1] \coloneq X_3\|X_4$ affects what the adversary sees!
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\vspace{-1.5cm}
-			\begin{center}
-				\sslibrary{\mathbb{F}}{prp-real}{
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-				if $L[X_0\|X_1]$ undefined:\\
-				\quad \hl{$X_3 \twoheadleftarrow \bits^\lambda$}\\
-				\quad \hl{$X_4 \twoheadleftarrow \bits^\lambda$}\\
-				\quad \hl{$L[X_0\|X_1] \coloneq X_3\|X_4$}\\
-				\quad if $L_1[X_1]$ undefined:\\
-				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
-				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
-				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
-				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
-				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
-				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$\\
-				\hl{return $L[X_0\|X_1]$}
-				}{1}
-				}{0.8}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 7 (this content is optional)}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item We can move the sampling steps to the top since they're no longer dependent on other variables.
-				\item Note how nothing after $L[X_0\|X_1] \coloneq X_3\|X_4$ affects what the adversary sees!
-				\item So, we can move all bad-event logic to the end of time, without changing the bad event's overall probability.
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\vspace{-1.5cm}
-			\begin{center}
-				\sslibrary{\mathbb{F}}{prp-real}{
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-					if $L[X_0\|X_1]$ undefined:\\
-					\quad \hl{$L[X_0\|X_1] \coloneq \bits^{2\lambda}$}\\
-					\quad \hl{$\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$}\\
-					\quad return $L[X_0\|X_1]$
-				}{1}\\[1em]
-				\sslibrarysubroutine{\hl{end of time}}{}{
-				\hl{for each $X_0\|X_1 \in \mathcal{X}:$}\\
-				\quad \hl{$X_3\|X_4 \coloneq L[X_0\|X_1]$}\\
-				\quad if $L_1[X_1]$ undefined:\\
-				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
-				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
-				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
-				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
-				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
-				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
-				}{1}
-				}{0.7}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 8 (this content is optional)}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
-				\item We need to analyze the probability of the bad event happening.
-				\item Let's say the adversary makes $q$ queries.
-				\item The bad event happens if:
-				      \begin{itemize}[<+->]
-					      \item $X_2$ value collides with previous $X_2$.
-					      \item $X_3$ value collides with previous $X_3$.
-				      \end{itemize}
-				\item Recall: $X_2 = X_0 \oplus L_1[X_1]$ where $L_1[X_1]$ is chosen randomly.
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\vspace{-1.5cm}
-			\begin{center}
-				\sslibrary{\mathbb{F}}{prp-real}{
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-					if $L[X_0\|X_1]$ undefined:\\
-					\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
-					\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
-					\quad return $L[X_0\|X_1]$
-				}{1}\\[1em]
-				\sslibrarysubroutine{end of time}{}{
-				for each $X_0\|X_1 \in \mathcal{X}:$\\
-				\quad $X_3\|X_4 \coloneq L[X_0\|X_1]$\\
-				\quad if $L_1[X_1]$ undefined:\\
-				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
-				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
-				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
-				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
-				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
-				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
-				}{1}
-				}{0.7}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 9 (this content is optional)}
-	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
-				\item So, we need to analyze when $X_2$ collisions occur.
-				\item If $(X_0, X_1)$ and $(X_0', X_1')$ are two different inputs\ldots
-				\item A collision happens when $X_2 = X_2'$:
-				      \begin{align*}
-					      X_0 \oplus L_1[X_1] = X_0' \oplus L_1[X_1']
-				      \end{align*}
-				\item If $X_1 \neq X_1'$, then $L_1[X_1]$ and $L_1[X_1']$ are independent random values
-				\item The probability of this specific collision is $2^{-\lambda}$
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.4\textwidth}
-			\vspace{-1.5cm}
-			\begin{center}
-				\sslibrary{\mathbb{F}}{prp-real}{
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-					if $L[X_0\|X_1]$ undefined:\\
-					\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
-					\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
-					\quad return $L[X_0\|X_1]$
-				}{1}\\[1em]
-				\sslibrarysubroutine{end of time}{}{
-				for each $X_0\|X_1 \in \mathcal{X}:$\\
-				\quad $X_3\|X_4 \coloneq L[X_0\|X_1]$\\
-				\quad if $L_1[X_1]$ undefined:\\
-				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
-				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
-				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
-				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
-				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
-				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
-				}{1}
-				}{0.7}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 10 - Total probability analysis}
-	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
-				\item For $q$ queries, we have at most $q(q-1)/2$ pairs of queries
-				\item Prob. of any $X_2$ collision across $q$ queries:
-				      $q(q-1)/(2 \cdot 2^{\lambda}) \approx q^2/2^{\lambda+1}$
-				\item Similarly for $X_3$ values: the probability of any $X_3$ collision is at most $q^2/2^{\lambda+1}$.
-				\item Total probability of bad event: at most $q^2/2^{\lambda}$
-				\item With $\lambda \gg \log q$, this probability is negligible.
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.4\textwidth}
-			\vspace{-1.5cm}
-			\begin{center}
-				\sslibrary{\mathbb{F}}{prp-real}{
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-					if $L[X_0\|X_1]$ undefined:\\
-					\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
-					\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
-					\quad return $L[X_0\|X_1]$
-				}{1}\\[1em]
-				\sslibrarysubroutine{end of time}{}{
-				for each $X_0\|X_1 \in \mathcal{X}:$\\
-				\quad $X_3\|X_4 \coloneq L[X_0\|X_1]$\\
-				\quad if $L_1[X_1]$ undefined:\\
-				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
-				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
-				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
-				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
-				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
-				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
-				}{1}
-				}{0.7}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 11  (this content is optional)}
-	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
-				\item By the bad event technique, the advantage of any adversary is at most $q^2/2^{\lambda}$.
-				\item Without bad events, our last hybrid samples each response randomly.
-				\item Since the sampling logic is all that remains visible to the adversary, this is equivalent to the final simplified library.
-				\item This is indistinguishable from a truly random permutation for $q \ll 2^{\lambda/2}$ queries.
-				\item (The birthday bound tells us that's when collisions become likely)
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.4\textwidth}
-			\vspace{-1.5cm}
-			\begin{center}
-				\sslibrary{\mathbb{F}}{prp-real}{
-				\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-					if $L[X_0\|X_1]$ undefined:\\
-					\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
-					\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
-					\quad return $L[X_0\|X_1]$
-				}{1}\\[1em]
-				\sslibrarysubroutine{end of time}{}{
-				for each $X_0\|X_1 \in \mathcal{X}:$\\
-				\quad $X_3\|X_4 \coloneq L[X_0\|X_1]$\\
-				\quad if $L_1[X_1]$ undefined:\\
-				\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
-				\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
-				\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
-				\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
-				\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
-				\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
-				}{1}
-				}{0.7}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Proof of security for 3-round Feistel cipher}{This content is optional}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item Rest of the transition steps are trivial. $\qed$
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{center}
-				\sslinked{
+	\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 3 (this content is optional)}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item We add additional sub-cache $L_i[\cdot]$ for each $F(K_i,\cdot)$
+					\item Since we already assume $F$ to be a secure PRF, we can replace it with the ideal PRF and remove $K$.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\vspace{-1.5cm}
+				\begin{center}
 					\sslibrary{\mathbb{F}}{prp-real}{
-						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-							if $L[X_0\|X_1]$ undefined:\\
-							\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
-							\quad return $L[X_0\|X_1]$
-						}{1}
+					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+					if $L[X_0\|X_1]$ undefined:\\
+					\quad \hl{if $L_1[X_1]$ undefined:}\\
+					\quad \quad \hl{$L_1[X_1] \twoheadleftarrow \bits^\lambda$}\\
+					\quad $X_{2} \coloneq X_{0} \oplus \hl{L_1[X_1]}$\\
+					\quad \hl{if $L_2[X_2]$ undefined:}\\
+					\quad \quad \hl{$L_2[X_2] \twoheadleftarrow \bits^\lambda$}\\
+					\quad $X_{3} \coloneq X_{1} \oplus \hl{L_2[X_2]}$\\
+					\quad \hl{if $L_3[X_3]$ undefined:}\\
+					\quad \quad \hl{$L_3[X_3] \twoheadleftarrow \bits^\lambda$}\\
+					\quad $X_{4} \coloneq X_{2} \oplus \hl{L_3[X_3]}$\\
+					\quad $L[X_0\|X_1] \coloneq X_3\|X_4$\\
+					return $L[X_0\|X_1]$
+					}{1}
+					}{0.8}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 4 (this content is optional)}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item We expect $X_2$ and $X_3$ to never repeat. So, we can trigger the bad event if they do.
+					\item Later, we must show that the bad event's probability is negligible.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\vspace{-1.5cm}
+				\begin{center}
+					\sslibrary{\mathbb{F}}{prp-real}{
+					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+					if $L[X_0\|X_1]$ undefined:\\
+					\quad if $L_1[X_1]$ undefined:\\
+					\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+					\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+					\quad if $L_2[X_2]$ \hl{defined: $\texttt{bad} \coloneq \texttt{true}$}\\
+					\quad $L_2[X_2] \twoheadleftarrow \bits^\lambda$\\
+					\quad $X_{3} \coloneq X_{1} \oplus L_2[X_2]$\\
+					\quad if $L_3[X_3]$ \hl{defined: $\texttt{bad} \coloneq \texttt{true}$}\\
+					\quad $L_3[X_3] \twoheadleftarrow \bits^\lambda$\\
+					\quad $X_{4} \coloneq X_{2} \oplus L_3[X_3]$\\
+					\quad $L[X_0\|X_1] \coloneq X_3\|X_4$\\
+					return $L[X_0\|X_1]$
+					}{1}
+					}{0.8}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 5 (this content is optional)}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item Instead of sampling $L_2[X_2]$ uniformly and then computing $X_3$, we can sample $X_3$ uniformly and compute $L_2[X_2]$.
+					\item Same for $L_3[X_3]$ and $X_4$.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\vspace{-1.5cm}
+				\begin{center}
+					\sslibrary{\mathbb{F}}{prp-real}{
+					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+					if $L[X_0\|X_1]$ undefined:\\
+					\quad if $L_1[X_1]$ undefined:\\
+					\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+					\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+					\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+					\quad \hl{$X_3 \twoheadleftarrow \bits^\lambda$}\\
+					\quad $L_2[X_2] \hl{\coloneq X_3 \oplus X_1}$\\
+					\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+					\quad \hl{$X_4 \twoheadleftarrow \bits^\lambda$}\\
+					\quad $L_3[X_3] \hl{\coloneq X_4 \oplus X_2}$\\
+					\quad $L[X_0\|X_1] \coloneq X_3\|X_4$\\
+					return $L[X_0\|X_1]$
+					}{1}
+					}{0.8}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 6 (this content is optional)}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item We can move the sampling steps to the top since they're no longer dependent on other variables.
+					\item Note how nothing after $L[X_0\|X_1] \coloneq X_3\|X_4$ affects what the adversary sees!
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\vspace{-1.5cm}
+				\begin{center}
+					\sslibrary{\mathbb{F}}{prp-real}{
+					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+					if $L[X_0\|X_1]$ undefined:\\
+					\quad \hl{$X_3 \twoheadleftarrow \bits^\lambda$}\\
+					\quad \hl{$X_4 \twoheadleftarrow \bits^\lambda$}\\
+					\quad \hl{$L[X_0\|X_1] \coloneq X_3\|X_4$}\\
+					\quad if $L_1[X_1]$ undefined:\\
+					\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+					\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+					\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+					\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+					\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+					\quad $L_3[X_3] \coloneq X_4 \oplus X_2$\\
+					\hl{return $L[X_0\|X_1]$}
+					}{1}
+					}{0.8}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 7 (this content is optional)}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item We can move the sampling steps to the top since they're no longer dependent on other variables.
+					\item Note how nothing after $L[X_0\|X_1] \coloneq X_3\|X_4$ affects what the adversary sees!
+					\item So, we can move all bad-event logic to the end of time, without changing the bad event's overall probability.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\vspace{-1.5cm}
+				\begin{center}
+					\sslibrary{\mathbb{F}}{prp-real}{
+					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+						if $L[X_0\|X_1]$ undefined:\\
+						\quad \hl{$L[X_0\|X_1] \coloneq \bits^{2\lambda}$}\\
+						\quad \hl{$\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$}\\
+						\quad return $L[X_0\|X_1]$
+					}{1}\\[1em]
+					\sslibrarysubroutine{\hl{end of time}}{}{
+					\hl{for each $X_0\|X_1 \in \mathcal{X}:$}\\
+					\quad \hl{$X_3\|X_4 \coloneq L[X_0\|X_1]$}\\
+					\quad if $L_1[X_1]$ undefined:\\
+					\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+					\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+					\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+					\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+					\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+					\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
+					}{1}
 					}{0.7}
-				}{\approxeq}{
-					\sslibrary{\mathbb{F}}{prp-rand}{
-						$L \coloneq$ [\ ]\\[1em]
-						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
-							if $L[X]$ undefined:\\
-							\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
-							\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
-							\quad $L[X] \coloneq Y$\\
-							return $L[X]$
-						}{1}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 8 (this content is optional)}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}[<+->]
+					\item We need to analyze the probability of the bad event happening.
+					\item Let's say the adversary makes $q$ queries.
+					\item The bad event happens if:
+					      \begin{itemize}[<+->]
+						      \item $X_2$ value collides with previous $X_2$.
+						      \item $X_3$ value collides with previous $X_3$.
+					      \end{itemize}
+					\item Recall: $X_2 = X_0 \oplus L_1[X_1]$ where $L_1[X_1]$ is chosen randomly.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\vspace{-1.5cm}
+				\begin{center}
+					\sslibrary{\mathbb{F}}{prp-real}{
+					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+						if $L[X_0\|X_1]$ undefined:\\
+						\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+						\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
+						\quad return $L[X_0\|X_1]$
+					}{1}\\[1em]
+					\sslibrarysubroutine{end of time}{}{
+					for each $X_0\|X_1 \in \mathcal{X}:$\\
+					\quad $X_3\|X_4 \coloneq L[X_0\|X_1]$\\
+					\quad if $L_1[X_1]$ undefined:\\
+					\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+					\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+					\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+					\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+					\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+					\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
+					}{1}
 					}{0.7}
-				}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 9 (this content is optional)}
+		\begin{columns}[c]
+			\begin{column}{0.6\textwidth}
+				\begin{itemize}[<+->]
+					\item So, we need to analyze when $X_2$ collisions occur.
+					\item If $(X_0, X_1)$ and $(X_0', X_1')$ are two different inputs\ldots
+					\item A collision happens when $X_2 = X_2'$:
+					      \begin{align*}
+						      X_0 \oplus L_1[X_1] = X_0' \oplus L_1[X_1']
+					      \end{align*}
+					\item If $X_1 \neq X_1'$, then $L_1[X_1]$ and $L_1[X_1']$ are independent random values
+					\item The probability of this specific collision is $2^{-\lambda}$
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.4\textwidth}
+				\vspace{-1.5cm}
+				\begin{center}
+					\sslibrary{\mathbb{F}}{prp-real}{
+					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+						if $L[X_0\|X_1]$ undefined:\\
+						\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+						\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
+						\quad return $L[X_0\|X_1]$
+					}{1}\\[1em]
+					\sslibrarysubroutine{end of time}{}{
+					for each $X_0\|X_1 \in \mathcal{X}:$\\
+					\quad $X_3\|X_4 \coloneq L[X_0\|X_1]$\\
+					\quad if $L_1[X_1]$ undefined:\\
+					\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+					\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+					\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+					\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+					\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+					\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
+					}{1}
+					}{0.7}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 10 - Total probability analysis}
+		\begin{columns}[c]
+			\begin{column}{0.6\textwidth}
+				\begin{itemize}[<+->]
+					\item For $q$ queries, we have at most $q(q-1)/2$ pairs of queries
+					\item Prob. of any $X_2$ collision across $q$ queries:
+					      $q(q-1)/(2 \cdot 2^{\lambda}) \approx q^2/2^{\lambda+1}$
+					\item Similarly for $X_3$ values: the probability of any $X_3$ collision is at most $q^2/2^{\lambda+1}$.
+					\item Total probability of bad event: at most $q^2/2^{\lambda}$
+					\item With $\lambda \gg \log q$, this probability is negligible.
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.4\textwidth}
+				\vspace{-1.5cm}
+				\begin{center}
+					\sslibrary{\mathbb{F}}{prp-real}{
+					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+						if $L[X_0\|X_1]$ undefined:\\
+						\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+						\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
+						\quad return $L[X_0\|X_1]$
+					}{1}\\[1em]
+					\sslibrarysubroutine{end of time}{}{
+					for each $X_0\|X_1 \in \mathcal{X}:$\\
+					\quad $X_3\|X_4 \coloneq L[X_0\|X_1]$\\
+					\quad if $L_1[X_1]$ undefined:\\
+					\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+					\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+					\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+					\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+					\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+					\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
+					}{1}
+					}{0.7}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Proof of security for 3-round Feistel cipher}{Step 11  (this content is optional)}
+		\begin{columns}[c]
+			\begin{column}{0.6\textwidth}
+				\begin{itemize}[<+->]
+					\item By the bad event technique, the advantage of any adversary is at most $q^2/2^{\lambda}$.
+					\item Without bad events, our last hybrid samples each response randomly.
+					\item Since the sampling logic is all that remains visible to the adversary, this is equivalent to the final simplified library.
+					\item This is indistinguishable from a truly random permutation for $q \ll 2^{\lambda/2}$ queries.
+					\item (The birthday bound tells us that's when collisions become likely)
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.4\textwidth}
+				\vspace{-1.5cm}
+				\begin{center}
+					\sslibrary{\mathbb{F}}{prp-real}{
+					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+						if $L[X_0\|X_1]$ undefined:\\
+						\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+						\quad $\mathcal{X} \coloneq \mathcal{X} \cup \{X_0\|X_1\}$\\
+						\quad return $L[X_0\|X_1]$
+					}{1}\\[1em]
+					\sslibrarysubroutine{end of time}{}{
+					for each $X_0\|X_1 \in \mathcal{X}:$\\
+					\quad $X_3\|X_4 \coloneq L[X_0\|X_1]$\\
+					\quad if $L_1[X_1]$ undefined:\\
+					\quad \quad $L_1[X_1] \twoheadleftarrow \bits^\lambda$\\
+					\quad $X_{2} \coloneq X_{0} \oplus L_1[X_1]$\\
+					\quad if $L_2[X_2]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+					\quad $L_2[X_2] \coloneq X_3 \oplus X_1$\\
+					\quad if $L_3[X_3]$ defined: $\texttt{bad} \coloneq \texttt{true}$\\
+					\quad $L_3[X_3] \coloneq X_4 \oplus X_2$
+					}{1}
+					}{0.7}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+
+	\begin{frame}{Proof of security for 3-round Feistel cipher}{This content is optional}
+		\begin{columns}[c]
+			\begin{column}{0.5\textwidth}
+				\begin{itemize}
+					\item Rest of the transition steps are trivial. $\qed$
+				\end{itemize}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\begin{center}
+					\sslinked{
+						\sslibrary{\mathbb{F}}{prp-real}{
+							\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+								if $L[X_0\|X_1]$ undefined:\\
+								\quad $L[X_0\|X_1] \coloneq \bits^{2\lambda}$\\
+								\quad return $L[X_0\|X_1]$
+							}{1}
+						}{0.7}
+					}{\approxeq}{
+						\sslibrary{\mathbb{F}}{prp-rand}{
+							$L \coloneq$ [\ ]\\[1em]
+							\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
+								if $L[X]$ undefined:\\
+								\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
+								\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+								\quad $L[X] \coloneq Y$\\
+								return $L[X]$
+							}{1}
+						}{0.7}
+					}
+				\end{center}
+			\end{column}
+		\end{columns}
+	\end{frame}
+\fi
 
 \begin{frame}{DES: Feistel in practice}
 	\begin{columns}[c]
@@ -1993,7 +1996,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}[<+->]
-				\item In 1998, the Electronic Frontier Foundation built a special-purpose machine called ``Deep Crack''.\footnote{I'm not responsible for any readings into that name.}
+				\item In 1998, the Electronic Frontier Foundation built a special-purpose machine called ``Deep Crack''.
 				\item Cost: Only \$250,000 (far less than the NSA budget!)
 				\item Purpose: Prove that 56-bit DES keys were insufficient.
 			\end{itemize}
