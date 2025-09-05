@@ -63,7 +63,7 @@
 
 \section{Provable Security (20 points)}
 
-\subsection{Libraries and Interchangeability (10 points)}
+\subsection{Libraries and Indistinguishability (10 points)}
 
 \begin{enumerate}
 	\item (5 points) Consider the following libraries:
@@ -90,9 +90,9 @@
 			      }{1}
 		      }
 	      \end{center}
-	      Are these libraries interchangeable? Either prove they are interchangeable or provide a distinguisher program that can tell them apart with non-negligible probability.
+	      Are these libraries indistinguishable? Either prove they are indistinguishable or provide a distinguisher program that can tell them apart with non-negligible probability.
 
-	\item (5 points) For each of the following pairs of libraries, state whether they are interchangeable and briefly justify your answer:
+	\item (5 points) For each of the following pairs of libraries, state whether they are indistinguishable and briefly justify your answer:
 	      \begin{enumerate}
 		      \item
 		            \begin{center}
@@ -210,36 +210,32 @@
 			      }{1}
 		      }
 	      \end{center}
-	      Use the hybrid proof technique to show these libraries are interchangeable. Clearly describe each intermediate hybrid library.
-
-	\item (8 points) Consider the following two libraries that implement a simple encryption scheme:
+	      Use the hybrid proof technique to show these libraries are indistinguishable. Clearly describe each intermediate hybrid library.
+	\item (8 points) Consider a protocol where Alice wants to send encrypted messages to Bob. They use the following scheme:
 	      \begin{center}
 		      \sslinked{
 			      \sslibrary{}{real}{
 				      $K \twoheadleftarrow \bits^n$\\[1em]
 				      \sslibrarysubroutine{encrypt}{M}{
-					      $R \twoheadleftarrow \bits^n$\\
-					      $C \coloneq (R, F(K, R) \oplus M)$\\
-					      return $C$
+					      $R \twoheadleftarrow \bits^n$ \\
+					      $C_1 \coloneq R$ \\
+					      $C_2 \coloneq K \oplus R \oplus M$ \\
+					      return $(C_1, C_2)$
 				      }{1}
 			      }{1}
 		      }{\approxeq}{
-			      \sslibrary{}{random}{
+			      \sslibrary{}{ideal}{
 				      \sslibrarysubroutine{encrypt}{M}{
-					      $R \twoheadleftarrow \bits^n$\\
-					      $Y \twoheadleftarrow \bits^n$\\
-					      $C \coloneq (R, Y \oplus M)$\\
-					      return $C$
+					      $C_1 \twoheadleftarrow \bits^n$ \\
+					      $C_2 \twoheadleftarrow \bits^n$ \\
+					      return $(C_1, C_2)$
 				      }{1}
 			      }{1}
 		      }
 	      \end{center}
-	      where $F: \bits^n \times \bits^n \rightarrow \bits^n$ is a pseudorandom function (PRF).
-
 	      \begin{enumerate}
-		      \item Explain intuitively why these two libraries should be computationally indistinguishable if $F$ is a secure PRF.
-		      \item Write a distinguisher that can tell these libraries apart if $F$ is \textbf{not} a secure PRF, but instead always returns $0^n$ regardless of input.
-		      \item If a distinguisher $\mathcal{D}$ can tell these libraries apart with advantage $\varepsilon$, explain how you could use $\mathcal{D}$ to distinguish the PRF $F$ from a truly random function.
+		      \item The above libraries are not actually indistinguishable! Construct a distinguisher.
+		      \item Propose a minimal modification to make the above ``real'' library secure and explain why your modification works.
 	      \end{enumerate}
 \end{enumerate}
 
