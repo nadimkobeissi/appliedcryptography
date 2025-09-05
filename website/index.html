@@ -25,6 +25,15 @@
 		<link rel="stylesheet" href="res/css/style.css" />
 		<link rel="stylesheet" href="res/fonts/phosphor/phosphor.css" />
 		<link rel="stylesheet" href="res/fonts/google/google.css" />
+		<script type="importmap">
+			{
+				"imports": {
+					"@fullcalendar/core": "https://cdn.skypack.dev/@fullcalendar/core@6.1.19",
+					"@fullcalendar/list": "https://cdn.skypack.dev/@fullcalendar/list@6.1.19",
+					"@fullcalendar/icalendar": "https://cdn.skypack.dev/@fullcalendar/icalendar@6.1.18"
+				}
+			}
+		</script>
 		<script type="module" src="res/js/main.js"></script>
 		<script defer data-domain="appliedcryptography.page" data-api="https://restless-block-0a1e.symbolicsoft.workers.dev/oil-ocean/event" src="https://restless-block-0a1e.symbolicsoft.workers.dev/emerald-hill/script.js"></script>
 	</head>
@@ -40,6 +49,7 @@
 				</button>
 				<div class="navbar-links">
 					<a href="#welcome">Overview</a>
+					<a href="#calendar">Calendar</a>
 					<a href="#piazza">Piazza</a>
 					<a href="#resources">Resources</a>
 					<a href="#syllabus">Syllabus</a>
@@ -64,12 +74,20 @@
 				</div>
 				<div class="card card-highlight">
 					<p>Welcome to the website for the Applied Cryptography course at the American University of Beirut! This page serves as a unified and self-sufficient source of truth on everything concerning your course.</p>
-					<p class="mb-0">
-						<strong><i class="icon ph-duotone ph-video"></i><a href="https://www.youtube.com/watch?v=z6kK7rIbyB0">Check out this video about the course!</a></strong>
-					</p>
-					<p class="mb-0">
-						<strong><i class="icon ph-duotone ph-git-branch"></i>Last updated:</strong> <span id="lastUpdated"><em>Loading...</em></span>
-					</p>
+					<ul>
+						<li>
+							<strong><i class="icon ph-duotone ph-envelope"></i>Lecturer:</strong> Nadim Kobeissi (<a href="mailto:nk184@aub.edu.lb">nk184@aub.edu.lb</a>)
+						</li>
+						<li>
+							<strong><i class="icon ph-duotone ph-office-chair"></i>Office Hours:</strong> Weekdays, 2:00pm to 5:00pm, Bliss Hall, Office 238
+						</li>
+						<li>
+							<strong><i class="icon ph-duotone ph-git-branch"></i>Last Updated:</strong> <span id="lastUpdated"><em>Loading...</em></span>
+						</li>
+						<li>
+							<strong><i class="icon ph-duotone ph-video"></i>Ridiculous Video:</strong> <a href="https://www.youtube.com/watch?v=z6kK7rIbyB0">Available on YouTube</a>
+						</li>
+					</ul>
 				</div>
 
 				<div class="subsection">
@@ -82,46 +100,15 @@
 						<strong><i class="icon ph-duotone ph-info"></i>Note:</strong> This website is an informal resource, and not a substitute for the AUB learning management system.
 					</p>
 				</div>
+			</section>
 
-				<div class="two-columns">
-					<div class="subsection">
-						<h3 class="subsection-title">Course Dates & Times</h3>
-						<div class="card">
-							<ul>
-								<li>
-									<strong><i class="icon ph-duotone ph-chalkboard-teacher"></i>Lectures:</strong> Tuesday/Thursday, 12:30pm—1:45pm, Nicely Hall, Room 212
-								</li>
-								<li>
-									<strong><i class="icon ph-duotone ph-laptop"></i>Project Q&amp;A:</strong> Wednesday, 6:30pm—7:30pm, Bliss Hall, Room 205
-								</li>
-								<li>
-									<strong><i class="icon ph-duotone ph-office-chair"></i>Office Hours:</strong> Weekdays, 2:00pm to 5:00pm, Bliss Hall, Office 238
-								</li>
-								<li>
-									<strong
-										><i class="icon ph-duotone ph-coffee"></i><a href="#thekeyexchange"><em>The Key Exchange</em></a
-										>:</strong
-									>
-									Thursday, 6:00pm, West Hall, Auditorium A
-								</li>
-								<li>
-									<strong><i class="icon ph-duotone ph-envelope"></i>Instructor's Email:</strong> <a href="mailto:nk184@aub.edu.lb">nk184@aub.edu.lb</a>
-								</li>
-							</ul>
-							<p>Come visit me during office hours and ask me good questions!</p>
-						</div>
-					</div>
-
-					<div class="subsection">
-						<h3 class="subsection-title">Course Prerequisites</h3>
-						<div class="card">
-							<p>This course is intended for <strong>senior undergraduate</strong> students. <strong>Graduate students</strong> are also welcome to register provided that they are working on a research topic that is relevant to this course. The following prerequisites are <strong>optional but recommended</strong>:</p>
-							<ul>
-								<li><strong>CMPS 215:</strong> Theory of Computation</li>
-							</ul>
-							<p>If you want to understand whether you have the sufficient background for this course, <a href="https://joyofcryptography.com/pdf/chap0.pdf">review this revision chapter</a> and try to do all the exercises.</p>
-						</div>
-					</div>
+			<section id="calendar" class="section">
+				<div class="section-header">
+					<h2 class="section-title">Calendar</h2>
+				</div>
+				<p>Stay organized with our course calendar that displays all important dates including lectures, assignments, quizzes, and exams. The calendar below provides a comprehensive view of the semester's schedule, helping you plan ahead and manage your time effectively. You can also integrate this calendar directly into your own calendar app on your phone or laptop using <a href="https://user.fm/calendar/v1-e730b6a1ee5ac413a9972eed73a9da92/Applied%20Cryptography.ics">this ICS link</a>, ensuring you never miss an important deadline or class session.</p>
+				<div class="card card-highlight">
+					<div id="calendar-frame"></div>
 				</div>
 			</section>
 
