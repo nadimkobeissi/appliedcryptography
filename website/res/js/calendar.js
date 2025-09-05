@@ -1,5 +1,4 @@
 import { Calendar } from "@fullcalendar/core"
-import dayGridPlugin from "@fullcalendar/daygrid"
 import listPlugin from "@fullcalendar/list"
 import iCalendarPlugin from "@fullcalendar/icalendar"
 
@@ -7,7 +6,7 @@ export const calendarInit = () => {
 	var calendarEl = document.getElementById("calendar-frame")
 	var calendar = new Calendar(calendarEl, {
 		initialView: "listWeek",
-		plugins: [listPlugin, dayGridPlugin, iCalendarPlugin],
+		plugins: [listPlugin, iCalendarPlugin],
 		events: {
 			url: "https://user.fm/calendar/v1-e730b6a1ee5ac413a9972eed73a9da92/Applied%20Cryptography.ics",
 			format: "ics",
