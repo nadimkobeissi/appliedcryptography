@@ -44,20 +44,6 @@ export const calendarInit = () => {
 				arrayOfDomNodes.push(notesEl)
 			}
 
-			if (arg.event.extendedProps.url) {
-				let urlEl = document.createElement("div")
-				urlEl.classList.add("fc-event-url")
-				let urlLabel = document.createElement("strong")
-				urlLabel.textContent = "URL: "
-				urlEl.appendChild(urlLabel)
-				let urlLink = document.createElement("a")
-				urlLink.href = arg.event.url
-				urlLink.textContent = arg.event.url
-				urlLink.target = "_blank"
-				urlEl.appendChild(urlLink)
-				arrayOfDomNodes.push(urlEl)
-			}
-
 			return { domNodes: arrayOfDomNodes }
 		},
 	})
