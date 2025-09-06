@@ -256,12 +256,12 @@
 	\begin{columns}[c]
 		\begin{column}{0.45\textwidth}
 			\begin{itemize}
-				\item<1-3> Assume that $G(S)$ is a secure PRG.
-				\item<1-3> Is \func{h}{S} secure?
-				\item<1-3> \textbf{No}:
-				\item<1-3> \prob{\prog{}\link\lib{H}{prg-real} \Rightarrow \texttt{true}} $ = 1$
-				\item<2-3> \prob{\prog{}\link\lib{H}{prg-rand} \Rightarrow \texttt{true}} $ = \frac{1}{2^{2\lambda}}$
-				\item<2-3> Difference certainly not negligible.
+				\item<1-2> Assume that $G(S)$ is a secure PRG.
+				\item<1-2> Is \func{h}{S} secure?
+				\item<1-2> \textbf{No}:
+				\item<1-2> \prob{\prog{}\link\lib{H}{prg-real} \Rightarrow \texttt{true}} $ = 1$
+				\item<2-2> \prob{\prog{}\link\lib{H}{prg-rand} \Rightarrow \texttt{true}} $ = \frac{1}{2^{2\lambda}}$
+				\item<2-2> Difference certainly not negligible.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.55\textwidth}
