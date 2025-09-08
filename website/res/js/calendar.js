@@ -1,6 +1,8 @@
-import { Calendar } from "@fullcalendar/core"
-import listPlugin from "@fullcalendar/list"
-import iCalendarPlugin from "@fullcalendar/icalendar"
+import { Calendar } from "https://cdn.skypack.dev/@fullcalendar/core"
+import listPlugin from "https://cdn.skypack.dev/@fullcalendar/list"
+import iCalendarPlugin from "https://cdn.skypack.dev/@fullcalendar/icalendar@6.1.18"
+
+const calendarIcsUrl = "https://user.fm/calendar/v1-e730b6a1ee5ac413a9972eed73a9da92/Applied%20Cryptography.ics"
 
 export const calendarInit = () => {
 	var calendarEl = document.getElementById("calendar-frame")
@@ -8,7 +10,7 @@ export const calendarInit = () => {
 		initialView: "listWeek",
 		plugins: [listPlugin, iCalendarPlugin],
 		events: {
-			url: "https://user.fm/calendar/v1-e730b6a1ee5ac413a9972eed73a9da92/Applied%20Cryptography.ics",
+			url: calendarIcsUrl,
 			format: "ics",
 		},
 		eventColor: "green",
