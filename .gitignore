@@ -29,6 +29,9 @@ __latex*
 # Compiled PDFs
 objects/*/*.pdf
 
+# Exams
+exams/*.pdf
+
 # Rust
 starter-kit/target
 **/*.rs.bk
