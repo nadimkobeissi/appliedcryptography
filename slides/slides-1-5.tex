@@ -783,6 +783,28 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Understanding the CCA-rand library}
+	\begin{itemize}
+		\item The \lib{\Sigma}{cca-rand} library represents the \textbf{ideal} CCA-secure encryption:
+		      \begin{itemize}
+			      \item \func{cca.enc}{} returns completely random ciphertexts.
+			      \item The library secretly remembers what plaintext belongs to each ciphertext it created (stored in $\mathcal{D}$).
+			      \item \func{cca.dec}{} only returns the correct plaintext for ciphertexts it created itself.
+		      \end{itemize}
+		\item Why is this the ideal?
+		      \begin{itemize}
+			      \item Random ciphertexts reveal \textbf{nothing} about the plaintext (perfect confidentiality).
+			      \item The adversary learns nothing from decrypting their own modified ciphertexts.
+			      \item The adversary can only decrypt ciphertexts that the library explicitly created.
+		      \end{itemize}
+		\item If a real encryption scheme is indistinguishable from this ideal, then:
+		      \begin{itemize}
+			      \item Even with decryption access, adversaries can't learn anything useful.
+			      \item This captures exactly what we want from CCA security!
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{Remember our CPA-secure encryption scheme?}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -876,6 +898,69 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Evaluating our distinguisher}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{center}
+				\sslinked{
+					\ssprogram{}{
+						$M \twoheadleftarrow \bits^\lambda$\\
+						$\Delta := \text{arbitrary, nonzero, $\lambda$-bit string}$\\
+						$R\|S \coloneq \func{cca.enc}{M}$\\
+						$M' \coloneq \func{cca.dec}{R\|(S \oplus \Delta)}$\\
+						return $M' == M \oplus \Delta$
+					}{1}
+				}{\diamond}{
+					\sslibrary{}{cca-real}{
+						$K \twoheadleftarrow \bits^\lambda$\\[1em]
+						\sslibrarysubroutine{cca.enc}{M}{
+							$R \twoheadleftarrow \bits^\lambda$\\
+							$S \coloneq F(K, R) \oplus M$\\
+							return $R\|S$
+						}{1}\\[1em]
+						\sslibrarysubroutine{cca.dec}{R\|S}{
+							$M \coloneq F(K, R) \oplus S$\\
+							return $M$
+						}{1}
+					}{0.9}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Evaluating our distinguisher}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{center}
+				\sslinked{
+					\ssprogram{}{
+						$M \twoheadleftarrow \bits^\lambda$\\
+						$\Delta := \text{arbitrary, nonzero, $\lambda$-bit string}$\\
+						$R\|S \coloneq \func{cca.enc}{M}$\\
+						$M' \coloneq \func{cca.dec}{R\|(S \oplus \Delta)}$\\
+						return $M' == M \oplus \Delta$
+					}{1}
+				}{\diamond}{
+					\sslibrary{}{cca-rand}{
+						$K \twoheadleftarrow \bits^\lambda$\\[1em]
+						\sslibrarysubroutine{cca.enc}{M}{
+							$R\|S \twoheadleftarrow \bits^{2\lambda}$\\
+							$\mathcal{D}[R\|S] \coloneq M$\\
+							return $R\|S$
+						}{1}\\[1em]
+						\sslibrarysubroutine{cca.dec}{R\|S}{
+							if $\mathcal{D}[R\|S]$ defined: return $\mathcal{D}[R\|S]$\\
+							$M \coloneq F(K, R) \oplus S$\\
+							return $M$
+						}{1}
+					}{0.9}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Another example}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
@@ -897,6 +982,44 @@
 					return $M$
 				}{1}
 			}{0.85}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Wait, what's $F^{-1}$?}{Reminder: PRFs vs PRP}
+	\begin{columns}[c]
+		\begin{column}{0.65\textwidth}
+			\begin{itemize}
+				\item PRFs are \textbf{not} normally invertible.
+				\item But if $F$ is a \textbf{PRP} (like AES, a block cipher), then:
+				      \begin{itemize}
+					      \item $F(K, \cdot)$ is a permutation for each key $K$
+					      \item Every permutation has an inverse
+					      \item So $F^{-1}(K, Y)$ finds the unique $X$ where $F(K, X) = Y$
+				      \end{itemize}
+				\item For AES specifically:
+				      \begin{itemize}
+					      \item $\texttt{AES}(K, M) = C$ (encryption)
+					      \item $\texttt{AES}^{-1}(K, C) = M$ (decryption)
+					      \item Both directions use the same key $K$
+				      \end{itemize}
+				\item This only works for PRPs like block ciphers, not general PRFs!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.35\textwidth}
+			\definitionbox{PRF vs PRP}{
+				\textbf{PRF}: $F: \mathcal{K} \times \mathcal{X} \to \mathcal{Y}$
+				\begin{itemize}
+					\item Many inputs can map to same output
+					\item Not invertible in general
+				\end{itemize}
+				\vspace{0.5em}
+				\textbf{PRP}: $F: \mathcal{K} \times \mathcal{X} \to \mathcal{X}$
+				\begin{itemize}
+					\item For each key, $F(K, \cdot)$ is a permutation
+					\item Invertible: $F^{-1}$ exists
+				\end{itemize}
+			}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1514,7 +1637,7 @@
 
 \begin{frame}{ChaCha20-Poly1305}
 	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
+		\begin{column}{0.55\textwidth}
 			\begin{itemize}
 				\item ChaCha20-Poly1305 is a modern AEAD construction:
 				      \begin{itemize}
@@ -1530,7 +1653,7 @@
 				\item Widely used in TLS 1.3, Signal, WireGuard\ldots
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.4\textwidth}
+		\begin{column}{0.45\textwidth}
 			\begin{center}
 				\sssubroutine{ChaCha20-Poly1305.Enc}{K, N, A, M}{
 					$\text{key}_p \coloneq \texttt{ChaCha20}(K, N, 0)_{0..31}$\\
@@ -1549,23 +1672,23 @@
 	\begin{center}
 		\begin{tabular}{|l|c|c|c|}
 			\hline
-			\textbf{Property}       & \textbf{AES-GCM}  & \textbf{ChaCha20-Poly1305} & \textbf{AES+HMAC} \\
+			\textbf{Property}       & \textbf{AES-GCM} & \textbf{ChaCha20-Poly1305} & \textbf{AES+HMAC} \\
 			\hline
-			Performance (HW accel.) & Good              & Good                       & Good              \\
+			Performance (HW accel.) & Good             & Good                       & Good              \\
 			\hline
-			Performance (no accel.) & Okay              & Good                       & Okay              \\
+			Performance (no accel.) & Okay             & Good                       & Okay              \\
 			\hline
-			Security level          & 128-256 bits      & 256 bits                   & 128-256 bits      \\
+			Security level          & 128-256 bits     & 256 bits                   & 128-256 bits      \\
 			\hline
-			Side-channel resistance & Moderate          & Excellent                  & Moderate          \\
+			Side-channel resistance & Moderate         & Excellent                  & Moderate          \\
 			\hline
-			Parallelizable          & Yes               & Partially                  & No                \\
+			Parallelizable          & Yes              & Partially                  & No                \\
 			\hline
-			Nonce sensitivity       & Very high         & High                       & Moderate          \\
+			Nonce sensitivity       & Very high        & High                       & Moderate          \\
 			\hline
-			Overhead                & Low (single pass) & Low (single pass)          & Higher (two pass) \\
+			Overhead                & Low (1 pass)     & Low (1 pass)               & Higher (2 pass)   \\
 			\hline
-			Implem. complexity      & Moderate          & Low                        & Low               \\
+			Implem. complexity      & Moderate         & Low                        & Low               \\
 			\hline
 		\end{tabular}
 	\end{center}
