@@ -30,7 +30,7 @@ __latex*
 objects/*/*.pdf
 
 # Exams
-exams/*.pdf
+exams/*.tex
 
 # Rust
 starter-kit/target
