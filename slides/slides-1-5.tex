@@ -1158,6 +1158,29 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Why does the Frankenstein attack matter?}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item This can have practical implications:
+				\item \textbf{Message integrity violation}:
+				      \begin{itemize}
+					      \item Adversary can create new valid ciphertexts without knowing the key.
+					      \item These ``Frankenstein'' ciphertexts decrypt to valid (but unintended) plaintexts.
+				      \end{itemize}
+				\item \textbf{Real-world scenario}:
+				      \begin{itemize}
+					      \item Bank encrypts transaction records with this scheme.
+					      \item Attacker intercepts multiple encrypted transactions.
+					      \item By mixing parts, attacker creates valid ciphertexts for transactions that never happened.
+					      \item System accepts these as legitimate because they decrypt successfully!
+				      \end{itemize}
+				\item \textbf{Why CCA security matters}: It ensures that only ciphertexts created by legitimate parties will decrypt successfully.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \subsection{Message Authentication Codes}
 
 \begin{frame}{Symmetric primitive example: hash functions}{Reminder}
