@@ -1094,6 +1094,70 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Another example}
+	\begin{columns}[c]
+		\begin{column}{0.35\textwidth}
+			\begin{itemize}
+				\item When linked to \lib{}{cca-real}:
+				\item \prob{\prog{} \Rightarrow \texttt{true}} = 1
+				\item When linked to \lib{}{cca-rand}:
+				\item \prob{\prog{} \Rightarrow \texttt{true}} ≈ $\frac{1}{2^\lambda}$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.65\textwidth}
+			\sslinked{
+				\ssprogram{}{
+					$M \twoheadleftarrow \bits^\lambda$\\
+					$R_1\|S_1 \coloneq \func{cca.enc}{M}$\\
+					$R_2\|S_2 \coloneq \func{cca.enc}{M}$\\
+					$M_1^* \coloneq \func{cca.dec}{R_1\|S_2}$\\
+					$M_2^* \coloneq \func{cca.dec}{R_2\|S_1}$\\
+					return $M_1^* == M_2^*$
+				}{1}
+			}{\diamond}{
+				\sslibrary{}{cca-real}{
+					$K \twoheadleftarrow \bits^\lambda$\\[1em]
+					\sslibrarysubroutine{cca.enc}{M}{
+						$R \twoheadleftarrow \bits^\lambda$\\
+						$S \coloneq F(K, R) \oplus F(K, M)$\\
+						return $R\|S$
+					}{1}\\[1em]
+					\sslibrarysubroutine{cca.dec}{R\|S}{
+						$M \coloneq F^{-1}(K, F(K, R) \oplus S)$\\
+						return $M$
+					}{1}
+				}{0.85}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why does the Frankenstein attack work?}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item When linked to \lib{}{cca-real}:
+				\item Both $R_1\|S_1$ and $R_2\|S_2$ encrypt the same $M$:
+				      \begin{itemize}
+					      \item $S_1 = F(K, R_1) \oplus F(K, M)$
+					      \item $S_2 = F(K, R_2) \oplus F(K, M)$
+				      \end{itemize}
+				\item Decrypting $R_1\|S_2$:
+				      \begin{itemize}
+					      \item $M_1^* = F^{-1}(K, F(K, R_1) \oplus S_2)$
+					      \item $= F^{-1}(K, F(K, R_1) \oplus F(K, R_2) \oplus F(K, M))$
+				      \end{itemize}
+				\item Decrypting $R_2\|S_1$:
+				      \begin{itemize}
+					      \item $M_2^* = F^{-1}(K, F(K, R_2) \oplus S_1)$
+					      \item $= F^{-1}(K, F(K, R_2) \oplus F(K, R_1) \oplus F(K, M))$
+				      \end{itemize}
+				\item Both equal the same value!
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \subsection{Message Authentication Codes}
 
 \begin{frame}{Symmetric primitive example: hash functions}{Reminder}
