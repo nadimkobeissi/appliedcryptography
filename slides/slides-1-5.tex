@@ -51,10 +51,10 @@
 \end{frame}
 
 \begin{frame}{Why CPA security matters}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item CPA security means: \textit{``even if I let you encrypt any message you want, you can't obtain any distinguisher regarding my scheme.''}
 		\item \textbf{Why this matters in real life:}
-		      \begin{itemize}[<+->]
+		      \begin{itemize}
 			      \item Attackers often can trick systems into encrypting data they choose.
 			      \item Without CPA security, seeing these encryptions could reveal your secrets.
 			      \item Example: If bank transactions always encrypt to the same ciphertexts, attackers could identify your purchases.
@@ -65,10 +65,10 @@
 \end{frame}
 
 \begin{frame}{Message length: not important, not unimportant}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item Even with CPA security, the \textbf{length} of messages is still leaked.
 		\item This seemingly minor leak can reveal surprising information:
-		      \begin{itemize}[<+->]
+		      \begin{itemize}
 			      \item \textbf{Encrypted VoIP calls}: Length patterns can reveal which language is spoken.
 			      \item \textbf{Encrypted web traffic}: Sizes of requests/responses identify websites.
 			      \item \textbf{Encrypted messages}: Length patterns can reveal the type of content (document, image, etc.)
@@ -82,7 +82,7 @@
 \begin{frame}{CPA security is why we avoid deterministic encryption}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Deterministic encryption will always fail CPA security!
 				\item If the same message always encrypts to the same ciphertext:
 				      \begin{itemize}
@@ -106,10 +106,69 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{AES is a block cipher}{Reminder}
+	\begin{itemize}
+		\item<1-2> AES takes a 16-byte input, produces a 16-byte output.
+		\item<1-2> Key can be 16, 24 or 32 bytes.
+		\item<1-2> OK, so what if we want to encrypt more than 16 bytes? \pause
+		\item<2-2> \textbf{Proposal}: split the plaintext into 16 byte chunks, encrypt each of them with the same key.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Block cipher examples}
+	\begin{columns}
+		\begin{column}{0.33\textwidth}
+			\imagewithcaption{tux-plaintext.png}{What we start with}
+		\end{column}
+		\pause
+		\begin{column}{0.33\textwidth}
+			\imagewithcaption{tux-encrypted-ctr.png}{What we want}
+		\end{column}
+		\pause
+		\begin{column}{0.33\textwidth}
+			\imagewithcaption{tux-encrypted-ecb.png}{What we actually get}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{AES by itself is deterministic}
+	\begin{columns}[c]
+		\begin{column}{0.7\textwidth}
+			\begin{itemize}
+				\item AES as a block cipher is inherently \textbf{deterministic}:
+				      \begin{itemize}
+					      \item $\texttt{AES}(K, M) = C$ will always produce the same $C$.
+					      \item This makes raw AES fail CPA security.
+				      \end{itemize}
+				\item What makes AES secure in practice?
+				      \begin{itemize}
+					      \item \textbf{Block cipher modes} (CBC, CTR, GCM) add randomness/state using ``initialization vectors''
+					            \begin{itemize}
+						            \item IV is fancy name for ``random bytes used once''.\footnote{Also referred to as ``nonces'' for ``number used once'', although in some block cipher modes such as AES-CBC, they can technically be used multiple times without problems.}
+					            \end{itemize}
+					      \item IVs ensure the same plaintext encrypts differently each time.
+				      \end{itemize}
+				\item Without a proper mode, AES is like ECB mode: predictable patterns
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+			\begin{center}
+				\ssprogram{AES}{
+					$K \twoheadleftarrow \bits^{\lambda}$\\
+					$M \twoheadleftarrow \mathcal{M}$\\[0.5em]
+					$C_1 \coloneq \texttt{AES}(K, M)$\\
+					$C_2 \coloneq \texttt{AES}(K, M)$\\[0.5em]
+					$C_1 == C_2$
+				}{0.85}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Non-deterministic encryption isn't hard\ldots}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item AES-CTR turns AES into a non-deterministic PRF\ldots
 				\item AES-GCM even turns it into a non-deterministic authenticated cipher\ldots\footnote{More on these later. An authenticated cipher is one where the ciphertext can't be modified by the adversary without that being detected.}
 				\item We can just as easily make a PRF non-deterministic:
@@ -128,10 +187,10 @@
 \begin{frame}{\ldots but it can be fragile}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
-				\item We switch M and R's places in \lib{}{cpa-real}'s encryption function.
-				\item Is the scheme still secure?
-				\item \textbf{No!}
+			\begin{itemize}
+				\item<1-2> We switch M and R's places in \lib{}{cpa-real}'s encryption function.
+				\item<1-2> Is the scheme still secure?
+				\item<2-2> \textbf{No!}
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -154,20 +213,6 @@
 			}
 		\end{column}
 	\end{columns}
-\end{frame}
-
-\begin{frame}{The Golden Rule of PRFs}
-	\definitionbox{The Golden Rule of PRFs}{
-		If a PRF $F$ is being used as a component in a larger construction $H$, then security usually rests on how well $H$ can ensure distinct inputs to $F$.
-	}
-	\begin{itemize}[<+->]
-		\item When analyzing PRF security, focus on input uniqueness.
-		\item Repeated inputs to a PRF create exploitable patterns.
-		\item Even if $F$ is secure, $H$ can be broken if it causes $F$ to receive duplicate inputs.
-		\item Don't try to directly distinguish $F$'s outputs from uniform.
-		\item Instead, exploit how $H$ uses $F$ incorrectly.
-		\item Find input patterns that force collisions within $F$.
-	\end{itemize}
 \end{frame}
 
 \begin{frame}{\ldots but it can be fragile}
@@ -200,64 +245,18 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{AES is a block cipher}{Reminder}
-	\begin{itemize}[<+->]
-		\item AES takes a 16-byte input, produces a 16-byte output.
-		\item Key can be 16, 24 or 32 bytes. \pause
-		\item OK, so what if we want to encrypt more than 16 bytes? \pause
-		\item \textbf{Proposal}: split the plaintext into 16 byte chunks, encrypt
-		      each of them with the same key.
+\begin{frame}{The Golden Rule of PRFs}
+	\definitionbox{The Golden Rule of PRFs}{
+		If a PRF $F$ is being used as a component in a larger construction $H$, then security usually rests on how well $H$ can ensure distinct inputs to $F$.
+	}
+	\begin{itemize}
+		\item When analyzing PRF security, focus on input uniqueness.
+		\item Repeated inputs to a PRF create exploitable patterns.
+		\item Even if $F$ is secure, $H$ can be broken if it causes $F$ to receive duplicate inputs.
+		\item Don't try to directly distinguish $F$'s outputs from uniform.
+		\item Instead, exploit how $H$ uses $F$ incorrectly.
+		\item Find input patterns that force collisions within $F$.
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Block cipher examples}
-	\begin{columns}
-		\begin{column}{0.33\textwidth}
-			\imagewithcaption{tux-plaintext.png}{What we start with}
-		\end{column}
-		\pause
-		\begin{column}{0.33\textwidth}
-			\imagewithcaption{tux-encrypted-ctr.png}{What we want}
-		\end{column}
-		\pause
-		\begin{column}{0.33\textwidth}
-			\imagewithcaption{tux-encrypted-ecb.png}{What we actually get}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{AES by itself is deterministic}
-	\begin{columns}[c]
-		\begin{column}{0.7\textwidth}
-			\begin{itemize}[<+->]
-				\item AES as a block cipher is inherently \textbf{deterministic}:
-				      \begin{itemize}
-					      \item $\texttt{AES}(K, M) = C$ will always produce the same $C$.
-					      \item This makes raw AES fail CPA security.
-				      \end{itemize}
-				\item What makes AES secure in practice?
-				      \begin{itemize}
-					      \item \textbf{Block cipher modes} (CBC, CTR, GCM) add randomness/state using ``initialization vectors''
-					            \begin{itemize}
-						            \item IV is fancy name for ``random bytes used once''.\footnote{Also referred to as ``nonces'' for ``number used once'', although in some block cipher modes such as AES-CBC, they can technically be used multiple times without problems.}
-					            \end{itemize}
-					      \item IVs ensure the same plaintext encrypts differently each time.
-				      \end{itemize}
-				\item Without a proper mode, AES is like ECB mode: predictable patterns
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.3\textwidth}
-			\begin{center}
-				\ssprogram{AES}{
-					$K \twoheadleftarrow \bits^{\lambda}$\\
-					$M \twoheadleftarrow \mathcal{M}$\\[0.5em]
-					$C_1 \coloneq \texttt{AES}(K, M)$\\
-					$C_2 \coloneq \texttt{AES}(K, M)$\\[0.5em]
-					$C_1 == C_2$
-				}{0.85}
-			\end{center}
-		\end{column}
-	\end{columns}
 \end{frame}
 
 \begin{frame}{Block cipher modes of operation}
@@ -267,7 +266,7 @@
 \begin{frame}{CBC mode: a closer look}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item CBC (Cipher Block Chaining) uses previous ciphertext to randomize current block.
 				\item Requires a random initialization vector (IV).
 				\item Each block's encryption depends on all previous blocks.
@@ -294,7 +293,7 @@
 \begin{frame}{CTR mode: a closer look}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item CTR (Counter) mode turns a block cipher into a stream cipher.
 				\item Uses a nonce ($C_0$) plus a counter to create unique inputs to $F$.
 				\item Each block's encryption is independent of other blocks.
@@ -321,14 +320,14 @@
 \section{Chosen-Ciphertext Attacks}
 
 \begin{frame}{Introducing chosen-ciphertext attacks}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item Imagine this scenario at your company:
-		      \begin{itemize}[<+->]
+		      \begin{itemize}
 			      \item You discover a bug: software crashes when decrypting ciphertexts that yield plaintexts with null characters.
 			      \item You think: ``We never encrypt messages with null bytes, so no problem!''
 		      \end{itemize}
 		\item An attacker can:
-		      \begin{itemize}[<+->]
+		      \begin{itemize}
 			      \item Send specially crafted ciphertexts to your system
 			      \item Observe which ones crash your software (contain null bytes) and which don't
 			      \item Use this information to completely break your encryption scheme!
@@ -339,7 +338,7 @@
 \begin{frame}{Introducing chosen-ciphertext attacks}
 	\begin{itemize}
 		\item This is a \textbf{chosen-ciphertext attack} (CCA):
-		      \begin{itemize}[<+->]
+		      \begin{itemize}
 			      \item Attacker can submit arbitrary ciphertexts for decryption.
 			      \item System leaks information about the decryption results (the crash).
 			      \item Even small information leaks can completely compromise security.
@@ -381,7 +380,7 @@
 \begin{frame}{Format-oracle attacks \& malleability}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Scenario: victim using CTR mode decryption reveals if result contains a null character.
 				\item Information can leak through crashes, error messages, or behavior differences.
 				\item A single yes/no bit of information can be enough to break encryption!
@@ -419,7 +418,7 @@
 \end{frame}
 
 \begin{frame}{Why is it called \func{nulloracle}{c}?}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item In cryptography and computer science:
 		      \begin{itemize}
 			      \item An oracle is an algorithm that solves a specific problem.
@@ -437,7 +436,7 @@
 \begin{frame}{Null-oracle attack}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item An adversary who has access to \func{nulloracle}{C} can efficiently compute \texttt{Dec}$(K, C)$ for any $C$!
 				\item Yes, it really is enough.
 			\end{itemize}
@@ -461,7 +460,7 @@
 			}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item In CTR mode: $C_i = F(K, C_0 + i - 1) \oplus M_i$
 				\item Flipping a bit in $C_i$ flips exactly the same bit in $M_i$.
 				\item Attackers can make targeted modifications without knowing the key.
@@ -506,7 +505,7 @@
 \begin{frame}{CTR mode is malleable}{The attack}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Suppose adversary captures ciphertext $C$ and wants to find plaintext $M = \texttt{Dec}(K, C)$.
 				\item Let's focus on discovering just the last byte of $M$.
 				\item If the last byte of $M$ is $b$, then $M = M' \| b$.
@@ -529,7 +528,7 @@
 \begin{frame}{CTR mode is malleable}{Finding one byte}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Problem: We don't know $b$ in advance!
 				\item Solution: Try all 255 possible values for $b$.
 				\item For each guess $g$, we:
@@ -558,7 +557,7 @@
 \begin{frame}{CTR mode is malleable}{Finding all bytes}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item We can use the same approach for any byte in the plaintext.
 				\item To find the $i$-th byte:
 				      \begin{itemize}
@@ -589,7 +588,7 @@
 \end{frame}
 
 \begin{frame}{CTR mode is malleable}{The power of chosen-ciphertext attacks}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item With just 255 queries per byte, we can completely decrypt any ciphertext!
 		\item For context: decrypting a 1KB file would take about 250,000 queries.
 		\item This is extremely practical for an attacker.
@@ -604,7 +603,7 @@
 \end{frame}
 
 \begin{frame}{Is the null-oracle attack just brute-force?}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item Yes and no!
 		\item It's brute-force on each byte independently:
 		      \begin{itemize}
@@ -623,7 +622,7 @@
 \begin{frame}{Can we just rate-limit the number of queries?}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Rate-limiting might help, but:
 				      \begin{itemize}
 					      \item It only increases attack time, doesn't prevent it.
@@ -644,18 +643,18 @@
 \end{frame}
 
 \begin{frame}{Is fixing the null-byte bug enough?}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item The null-character bug is just one example of a broader class of attacks.
 		\item Format-oracle attacks can exist without implementation bugs!
 		\item They only need:
-		      \begin{itemize}[<+->]
+		      \begin{itemize}
 			      \item A system that accepts untrusted ciphertexts
 			      \item Decrypts them
 			      \item Behaves differently based on the decryption result
 			      \item In a way the attacker can observe
 		      \end{itemize}
 		\item This behavior can come from:
-		      \begin{itemize}[<+->]
+		      \begin{itemize}
 			      \item Accidental bugs (null-byte crashes)
 			      \item Intentional features (error messages, timing differences)
 			      \item Normal application logic (web app behaving differently based on decrypted data)
@@ -666,7 +665,7 @@
 \begin{frame}{Real-world format-oracle attacks}{Padding oracle}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item CBC mode requires padding to handle plaintexts that aren't block-aligned.
 				\item Many implementations crash when encountering invalid padding.
 				\item This exposes an oracle that tells attackers: ``Does $\texttt{Dec}(K, C)$ have valid padding?''
@@ -681,7 +680,7 @@
 \begin{frame}{Real-world format-oracle attacks}{Timing side-channel}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Victim interprets plaintext as a number $n$ and performs $n$ operations.
 				\item Attackers can measure how long the system takes to respond.
 				\item Response time reveals approximate numerical values inside $\texttt{Dec}(K, C)$.
@@ -696,7 +695,7 @@
 \begin{frame}{Real-world format-oracle attack}{Apple iMessage}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Older Apple iMessage versions used gzip compression.
 				\item System responded differently when a ciphertext decrypted to:
 				      \begin{itemize}
@@ -715,7 +714,7 @@
 \end{frame}
 
 \begin{frame}{Real-world format-oracle attack}{XML format Oracles}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item Many systems decrypt data expecting valid XML format.
 		\item If decrypted data isn't valid XML, system returns an error.
 		\item This exposes an oracle: ``Is $\texttt{Dec}(K, C)$ valid XML?''
@@ -726,7 +725,7 @@
 \end{frame}
 
 \begin{frame}{I thought CTR mode was secure?}{CPA vs. CCA security}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item CTR mode \textit{is} secure against chosen-plaintext attacks (CPA-secure).
 		      \begin{itemize}
 			      \item It uses randomness to ensure identical messages encrypt differently each time.
@@ -1000,7 +999,7 @@
 \begin{frame}{Expected properties of a hash function}{Reminder}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Collision resistance}: computationally infeasible to find
 				      two different inputs producing the same hash.
 				\item \textbf{Preimage resistance}: given the output of a hash function,
@@ -1017,7 +1016,7 @@
 \end{frame}
 
 \begin{frame}{Hash functions: what are they good for?}{Reminder}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Data integrity verification}: Hash a file. Later hash it
 		      again and compare hashes to check if the file has changed, suffered storage
 		      degradation, etc.
@@ -1035,7 +1034,7 @@
 			}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item A MAC provides \textbf{integrity} and \textbf{authenticity} for messages.
 				\item Unlike hash functions, MACs require a secret key
 				\item MACs address the malleability problem we saw with encryption schemes. Without a MAC, attackers could modify ciphertexts.
@@ -1048,7 +1047,7 @@
 \begin{frame}{PRFs as MACs}
 	\begin{columns}[c]
 		\begin{column}{0.4\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item A pseudorandom function (PRF) can be used directly as a MAC!
 				\item The MAC key is the PRF key $K$.
 				\item To authenticate a message $X$:
@@ -1088,7 +1087,7 @@
 \end{frame}
 
 \begin{frame}{From CPA to CCA security}{The Encrypt-then-MAC approach}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item CPA security isn't enough in the real world.
 		\item We need protection against chosen-ciphertext attacks.
 		\item Solution: combine encryption with a MAC!.
@@ -1136,7 +1135,7 @@
 			\definitionbox{CCA Security Claim}{
 				If $\Sigma$ is a CPA-secure encryption scheme and $F$ is a secure PRF, then the Encrypt-then-MAC construction is CCA-secure.
 			}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Key insight: \textbf{the MAC prevents tampering}
 				\item Without the MAC key, adversary can't create valid tags.
 				\item \textbf{Decryption oracle only returns plaintexts for ciphertexts with valid tags.}
@@ -1179,7 +1178,7 @@
 \end{frame}
 
 \begin{frame}{Combining MACs and encryption}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item Not every way of combining a MAC and CPA-secure encryption achieves CCA security.
 		\item There are three common approaches to combining them:
 		      \begin{itemize}
@@ -1194,7 +1193,7 @@
 \begin{frame}{Encrypt-then-MAC}{CCA-secure}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{MAC verifies ciphertext integrity} before decryption.
 				\item Prevents attackers from submitting modified ciphertexts.
 				\item \textbf{Always CCA-secure} if encryption is CPA-secure and MAC is secure.
@@ -1217,7 +1216,7 @@
 \begin{frame}{Encrypt-and-MAC}{Not even CPA-secure!}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{MAC is computed on the plaintext}
 				\item Same plaintext always produces same tag, leaking equality information.
 				\item \textbf{Not even CPA-secure}, let alone CCA-secure.
@@ -1241,7 +1240,7 @@
 \begin{frame}{MAC-then-encrypt}{It's complicated}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Tag is hidden inside the ciphertext}
 				\item Whether this is CCA-secure depends on the specific encryption scheme.
 				\item \textbf{Not generally CCA-secure} for all CPA-secure encryption schemes.
@@ -1277,7 +1276,7 @@
 		\end{tabular}
 	\end{center}
 	\vspace{1em}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Encrypt-then-MAC} is the safest option.
 		\item \textbf{Encrypt-and-MAC} should never be used.
 		\item \textbf{MAC-then-encrypt} requires case-by-case analysis.
@@ -1287,7 +1286,7 @@
 \subsection{Authenticated Encryption}
 
 \begin{frame}{Authenticated Encryption: beyond CCA security}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item CCA security is stronger than CPA security, but still not the gold standard.
 		\item CCA security says: adversary-generated ciphertexts won't reveal useful information.
 		\item But CCA security doesn't require that they decrypt to \texttt{err}.
@@ -1341,7 +1340,7 @@
 \begin{frame}{AE vs. CCA security}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Key difference: \textbf{how we handle adversary-created ciphertexts}.
 				\item In \lib{\Sigma}{ae-rand}, any ciphertext not created by the library always decrypts to \texttt{err}.
 				\item In \lib{\Sigma}{cca-rand}, such ciphertexts could decrypt to anything (not necessarily \texttt{err}).
@@ -1353,7 +1352,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item AE is \textbf{strictly stronger} than CCA security.
 				\item Every AE scheme is CCA-secure, but not every CCA-secure scheme is an AE.
 				\item Making the distinction explicit helps us design better protocols.
@@ -1366,7 +1365,7 @@
 \begin{frame}{How Encrypt-then-MAC achieves AE}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Remember our Encrypt-then-MAC construction:
 				      \begin{itemize}
 					      \item Encrypt the plaintext: $C \coloneq \Sigma.\texttt{Enc}(K_e, M)$
@@ -1395,16 +1394,16 @@
 \end{frame}
 
 \begin{frame}{Authenticated Encryption: in practice}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item Modern cryptographic protocols almost always use authenticated encryption.
 		\item Common AE implementations:
-		      \begin{itemize}[<+->]
+		      \begin{itemize}
 			      \item \textbf{AES-GCM} (Galois/Counter Mode): most widely used, combines CTR mode with a MAC.
 			      \item \textbf{ChaCha20-Poly1305}: popular alternative to AES-GCM, especially on devices without AES hardware.
 			      \item \textbf{AES-CBC + HMAC-SHA256}: older approach, uses Encrypt-then-MAC with AES in CBC mode.
 		      \end{itemize}
 		\item Important implementation rule: \textbf{verify before decrypt}!
-		      \begin{itemize}[<+->]
+		      \begin{itemize}
 			      \item Always check the MAC before decrypting.
 			      \item Prevents timing side-channels based on decryption behavior.
 			      \item Helps protect against padding oracle attacks and similar vulnerabilities.
@@ -1415,7 +1414,7 @@
 \begin{frame}{AES-GCM: Galois/Counter Mode}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item AES-GCM (Galois/Counter Mode) is the most widely used AEAD scheme.
 				\item Combines AES in CTR mode (for encryption) with GMAC (for authentication).
 				\item Extremely efficient:
@@ -1445,7 +1444,7 @@
 \begin{frame}{AES-GCM: Galois/Counter Mode}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Inputs}:
 				      \begin{itemize}
 					      \item Key $K$ (128, 192, or 256 bits)
@@ -1470,7 +1469,7 @@
 \begin{frame}{AES-GCM: Galois/Counter Mode}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Security strengths}:
 				      \begin{itemize}
 					      \item Provides confidentiality, integrity, and authenticity
@@ -1492,7 +1491,7 @@
 \begin{frame}{Key commitment in authenticated encryption}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Key commitment}: a ciphertext should only decrypt to a valid plaintext under the key used to generate it.
 				\item Most AEAD schemes (including AES-GCM) don't guarantee this property!\footnote{\url{https://appliedcryptography.page/paper/\#key-commitment}}
 				\item Attack scenario:
@@ -1516,7 +1515,7 @@
 \begin{frame}{ChaCha20-Poly1305}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item ChaCha20-Poly1305 is a modern AEAD construction:
 				      \begin{itemize}
 					      \item ChaCha20 stream cipher for encryption.
@@ -1597,7 +1596,7 @@
 \end{frame}
 
 \begin{frame}{Associated data}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item Solution 1: Include context in the plaintext
 		      \begin{itemize}
 			      \item ``\texttt{ACTION: DISPLAY}'' before the actual message.
@@ -1657,7 +1656,7 @@
 \end{frame}
 
 \begin{frame}{Usefulness of AEADs}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item AEAD (Authenticated Encryption with Associated Data) scheme guarantees:
 		      \begin{itemize}
 			      \item Ciphertexts reveal nothing about plaintexts (confidentiality).
@@ -1682,7 +1681,7 @@
 \begin{frame}{The Fujisaki-Okamoto Transform}{From CPA to CCA in public-key encryption}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item What about public-key encryption?
 				\item Many public-key schemes (RSA, ElGamal) are only CPA-secure.
 				\item The \textbf{Fujisaki-Okamoto (FO) transform} converts CPA-secure PKE to CCA-secure PKE.
