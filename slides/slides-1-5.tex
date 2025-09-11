@@ -1747,6 +1747,34 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{If GHASH is so great, why not use it everywhere?}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{GHASH limitations:}
+				      \begin{itemize}
+					      \item \textbf{Requires a secret key} - GHASH is a keyed function, not suitable for public verification
+					      \item \textbf{Not collision-resistant} without the key - anyone can find collisions trivially
+					      \item \textbf{Linear structure} - $\text{GHASH}_H(A \oplus B) = \text{GHASH}_H(A) \oplus \text{GHASH}_H(B)$
+					      \item \textbf{Forgeable if key is known} - completely breaks down with key exposure
+				      \end{itemize}
+				\item \textbf{When we need SHA-2/SHA-3:}
+				      \begin{itemize}
+					      \item \textbf{Public verification}: digital signatures, certificates, Git commits
+					      \item \textbf{Password hashing}: no secret key available
+					      \item \textbf{Proof of work}: Bitcoin mining, anti-spam
+					      \item \textbf{Key derivation}: generating keys from passwords (PBKDF2)
+				      \end{itemize}
+				\item \textbf{Different tools for different jobs:}
+				      \begin{itemize}
+					      \item GHASH: Fast MAC when you have a secret key
+					      \item SHA-2/3: Collision-resistant hash when you need public verifiability
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{AES-GCM: Galois/Counter Mode}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
