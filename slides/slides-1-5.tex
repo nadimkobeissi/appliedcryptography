@@ -1,4 +1,4 @@
-\documentclass[aspectratio=169, lualatex, handout]{beamer}
+\documentclass[aspectratio=169, lualatex]{beamer}
 \makeatletter\def\input@path{{theme/}}\makeatother\usetheme{cipher}
 
 \title{Applied Cryptography - 1.5: Chosen-Plaintext \& Chosen-Ciphertext Attacks}
@@ -271,7 +271,7 @@
 				\item Requires a random initialization vector (IV).
 				\item Each block's encryption depends on all previous blocks.
 				\item Changes to one block affect all subsequent ciphertext blocks.
-				\item Sequential encryption (can't parallelize).
+				\item Sequential encryption (\textbf{can't parallelize}).
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -297,7 +297,7 @@
 				\item CTR (Counter) mode turns a block cipher into a stream cipher.
 				\item Uses a nonce ($C_0$) plus a counter to create unique inputs to $F$.
 				\item Each block's encryption is independent of other blocks.
-				\item Highly parallelizable (unlike CBC).
+				\item \textbf{Highly parallelizable} (unlike CBC).
 				\item The nonce must never be reused with the same key.
 				\item Widely used in modern protocols (TLS, SSH, etc.)
 			\end{itemize}
@@ -1300,7 +1300,7 @@
 	\begin{itemize}
 		\item CPA security isn't enough in the real world.
 		\item We need protection against chosen-ciphertext attacks.
-		\item Solution: combine encryption with a MAC!.
+		\item Solution: combine encryption with a MAC!
 		\item \textbf{Encrypt-then-MAC}:
 		      \begin{itemize}
 			      \item Encrypt the message normally.
@@ -1630,7 +1630,7 @@
 				\item Extremely efficient:
 				      \begin{itemize}
 					      \item Single pass over the data.
-					      \item Parallelizable.
+					      \item \textbf{Parallelizable}.
 					      \item Hardware acceleration widely available.
 				      \end{itemize}
 				\item Used in: TLS 1.2/1.3, IPsec, SSH, and many other protocols.
@@ -1665,13 +1665,84 @@
 				\item \textbf{Encryption process}:
 				      \begin{itemize}
 					      \item AES-CTR for confidentiality.
-					      \item GHASH (Galois field multiplication) for authentication.
+					      \item GHASH (Galois field\footnote{``Galois field'' is another name for finite fields. We use those for Diffie-Hellman too, remember?} multiplication) for authentication.
 				      \end{itemize}
 				\item Authentication tag $T$ protects both ciphertext and associated data.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\imagewithcaption{gcm.pdf}{Source: The Joy of Cryptography}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{What is GHASH?}
+	\begin{columns}[c]
+		\begin{column}{0.7\textwidth}
+			\begin{itemize}
+				\item \textbf{GHASH} is a universal hash function based on Galois field arithmetic.
+				\item Key properties:
+				      \begin{itemize}
+					      \item Operates in the finite field $GF(2^{128})$
+					      \item Uses polynomial multiplication modulo an irreducible polynomial
+					      \item Extremely fast with hardware support
+				      \end{itemize}
+				\item How it works:
+				      \begin{itemize}
+					      \item Treats input blocks as coefficients of a polynomial
+					      \item Evaluates polynomial at secret point $H = \texttt{AES}(K, 0^{128})$
+					      \item Result: $\text{GHASH}_H(X) = X_1 \cdot H^n + X_2 \cdot H^{n-1} + \ldots + X_n \cdot H$
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+			\definitionbox{Galois Field $GF(2^{128})$}{
+				\begin{itemize}
+					\item Elements: 128-bit strings
+					\item Addition: XOR
+					\item Multiplication: polynomial multiplication mod $x^{128} + x^7 + x^2 + x + 1$
+					\item Every non-zero element has an inverse
+				\end{itemize}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why GHASH instead of HMAC?}
+	\begin{columns}[c]
+		\begin{column}{0.65\textwidth}
+			\begin{itemize}
+				\item \textbf{Why not use HMAC-SHA256 or similar?}
+				      \begin{itemize}
+					      \item HMAC would work, but it's much slower
+					      \item HMAC requires multiple passes over the data
+					      \item SHA-256 is inherently sequential
+				      \end{itemize}
+				\item \textbf{GHASH advantages:}
+				      \begin{itemize}
+					      \item Single multiplication per block (after setup)
+					      \item \textbf{Fully parallelizable} across blocks
+					      \item Hardware acceleration: Intel \texttt{PCLMULQDQ} instruction
+					      \item Can process at line speed (10+ Gbps)
+				      \end{itemize}
+				\item \textbf{Mathematical elegance:}
+				      \begin{itemize}
+					      \item Galois field operations have nice algebraic properties
+					      \item Security proofs are cleaner
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.35\textwidth}
+			\definitionbox{Performance Comparison}{
+				For 1KB message:
+				\begin{itemize}
+					\item \textbf{HMAC-SHA256}: ~3000 cycles
+					\item \textbf{GHASH (software)}: ~1500 cycles
+					\item \textbf{GHASH (hardware)}: ~200 cycles
+				\end{itemize}
+				\vspace{0.5em}
+				GHASH can be 15x faster with hardware support!
+			}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1703,7 +1774,7 @@
 		\begin{column}{1\textwidth}
 			\begin{itemize}
 				\item \textbf{Key commitment}: a ciphertext should only decrypt to a valid plaintext under the key used to generate it.
-				\item Most AEAD schemes (including AES-GCM) don't guarantee this property!\footnote{\url{https://appliedcryptography.page/paper/\#key-commitment}}
+				\item Most AEAD schemes (including AES-GCM) don't guarantee this property!
 				\item Attack scenario:
 				      \begin{enumerate}
 					      \item Attacker creates special ciphertext $C$.
@@ -1713,7 +1784,7 @@
 				      \end{enumerate}
 				\item Practical impact:
 				      \begin{itemize}
-					      \item Attacker can create ciphertexts that decrypt differently under different keys.
+					      \item Attacker can create ciphertexts that decrypt differently under different keys.\footnote{\url{https://appliedcryptography.page/paper/\#key-commitment}}
 					      \item Enables attacks in multi-recipient contexts.
 					      \item Affects real applications (e.g., messaging, encrypted files).
 				      \end{itemize}
@@ -1759,26 +1830,27 @@
 	\begin{center}
 		\begin{tabular}{|l|c|c|c|}
 			\hline
-			\textbf{Property}       & \textbf{AES-GCM} & \textbf{ChaCha20-Poly1305} & \textbf{AES+HMAC} \\
+			\textbf{Property}       & \textbf{AES-GCM} & \textbf{ChaCha20-Poly1305} & \textbf{AES-CBC+HMAC} \\
 			\hline
-			Performance (HW accel.) & Good             & Good                       & Good              \\
+			Performance (HW accel.) & Good             & Good                       & Okay                  \\
 			\hline
-			Performance (no accel.) & Okay             & Good                       & Okay              \\
+			Performance (no accel.) & Okay             & Good                       & Okay                  \\
 			\hline
-			Security level          & 128-256 bits     & 256 bits                   & 128-256 bits      \\
+			Security level          & 128-256 bits     & 256 bits                   & 128-256 bits          \\
 			\hline
-			Side-channel resistance & Moderate         & Excellent                  & Moderate          \\
+			Side-channel resistance & Moderate         & Excellent                  & Moderate              \\
 			\hline
-			Parallelizable          & Yes              & Partially                  & No                \\
+			Parallelizable          & Yes              & Partially                  & No                    \\
 			\hline
-			Nonce sensitivity       & Very high        & High                       & Moderate          \\
+			Nonce sensitivity       & Very high        & High                       & Moderate              \\
 			\hline
-			Overhead                & Low (1 pass)     & Low (1 pass)               & Higher (2 pass)   \\
+			Overhead                & Low (1 pass)     & Low (1 pass)               & Higher (2 pass)       \\
 			\hline
-			Implem. complexity      & Moderate         & Low                        & Low               \\
+			Implem. complexity      & Moderate         & Low                        & Low                   \\
 			\hline
 		\end{tabular}
 	\end{center}
+	Also, check out: \url{https://soatok.blog/2020/07/12/comparison-of-symmetric-encryption-methods/}
 \end{frame}
 
 \begin{frame}{Replay attacks}{Step 1: Alice sends original message}
@@ -1888,7 +1960,7 @@
 	\bigimagewithcaption{aead-scenario-4.pdf}{Source: The Joy of Cryptography}
 \end{frame}
 
-\begin{frame}{The Fujisaki-Okamoto Transform}{From CPA to CCA in public-key encryption}
+\begin{frame}{The Fujisaki-Okamoto Transform}{From CPA to CCA in public-key encryption (optional slide)}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
