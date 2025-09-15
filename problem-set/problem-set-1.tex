@@ -14,282 +14,288 @@
 	\textbf{Instructions:} This problem set covers the foundations of provable security from topics 1.1\footnote{\url{https://appliedcryptography.page/slides/\#1-1}}, 1.2\footnote{\url{https://appliedcryptography.page/slides/\#1-2}} and 1.3\footnote{\url{https://appliedcryptography.page/slides/\#1-3}} of the course. Submit your solutions as a neatly formatted PDF. You are encouraged to collaborate with classmates in studying the material, but your submitted solutions must be your own work. For proofs, clearly state your assumptions, steps, and conclusions.
 \end{tcolorbox}
 
-\section{Cryptographic Foundations (20 points)}
+\section*{Cryptographic Foundations}
+\begin{questions}
+	\question[10] \textbf{Basic Concepts}
 
-\subsection{Basic Concepts (10 points)}
+	\begin{parts}
+		\part[3] Define the three primary security goals of cryptography in your own words and provide a real-world example for each that wasn't explicitly mentioned in the lectures.
 
-\begin{enumerate}
-	\item (3 points) Define the three primary security goals of cryptography in your own words and provide a real-world example for each that wasn't explicitly mentioned in the lectures.
+		\part[3] Explain Kerckhoff's principle and why it remains fundamental to modern cryptography. Provide an example of a security system that violates this principle and describe the potential consequences.
 
-	\item (3 points) Explain Kerckhoff's principle and why it remains fundamental to modern cryptography. Provide an example of a security system that violates this principle and describe the potential consequences.
+		\part[4] Compare and contrast symmetric and asymmetric cryptography:
+		\begin{subparts}
+			\subpart Explain the fundamental difference in their key management approach.
+			\subpart For each type, identify which mathematical or computational assumptions their security typically relies on.
+			\subpart Describe a scenario where one would be clearly preferable to the other.
+		\end{subparts}
+	\end{parts}
 
-	\item (4 points) Compare and contrast symmetric and asymmetric cryptography:
-	      \begin{enumerate}
-		      \item Explain the fundamental difference in their key management approach.
-		      \item For each type, identify which mathematical or computational assumptions their security typically relies on.
-		      \item Describe a scenario where one would be clearly preferable to the other.
-	      \end{enumerate}
-\end{enumerate}
+	\question[10] \textbf{Perfect Secrecy}
 
-\subsection{Perfect Secrecy (10 points)}
+	\begin{parts}
+		\part[3] Consider a modified one-time pad where we use the bitwise AND ($\land$) operation instead of XOR ($\oplus$):
 
-\begin{enumerate}
-	\item (3 points) Consider a modified one-time pad where we use the bitwise AND ($\land$) operation instead of XOR ($\oplus$):
+		$\textsf{Enc}(K, M) = K \land M$ and $\textsf{Dec}(K, C) = ?$
 
-	      $\textsf{Enc}(K, M) = K \land M$ and $\textsf{Dec}(K, C) = ?$
+		\begin{subparts}
+			\subpart Is this scheme correct? If yes, specify the decryption function. If not, explain why.
+			\subpart Does this scheme provide perfect secrecy? Justify your answer.
+		\end{subparts}
 
-	      \begin{enumerate}
-		      \item Is this scheme correct? If yes, specify the decryption function. If not, explain why.
-		      \item Does this scheme provide perfect secrecy? Justify your answer.
-	      \end{enumerate}
+		\part[4] Consider the following variant of a one-time pad operating on decimal digits (0-9):
 
-	\item (4 points) Consider the following variant of a one-time pad operating on decimal digits (0-9):
+		$\textsf{Enc}(K, M) = (K + M) \pmod{10}$ and $\textsf{Dec}(K, C) = (C - K) \pmod{10}$
 
-	      $\textsf{Enc}(K, M) = (K + M) \pmod{10}$ and $\textsf{Dec}(K, C) = (C - K) \pmod{10}$
+		where $K, M, C \in \{0, 1, 2, \ldots, 9\}$.
 
-	      where $K, M, C \in \{0, 1, 2, \ldots, 9\}$.
+		\begin{subparts}
+			\subpart Prove that this scheme is correct.
+			\subpart Prove that this scheme provides perfect secrecy, assuming $K$ is chosen uniformly at random.
+		\end{subparts}
 
-	      \begin{enumerate}
-		      \item Prove that this scheme is correct.
-		      \item Prove that this scheme provides perfect secrecy, assuming $K$ is chosen uniformly at random.
-	      \end{enumerate}
+		\part[3] Consider a one-time pad where the key length is half the message length:
 
-	\item (3 points) Consider a one-time pad where the key length is half the message length:
+		$\textsf{Enc}(K, M) = (K \oplus M_1, K \oplus M_2)$ where $M = (M_1, M_2)$ and $|M_1| = |M_2| = |K|$.
 
-	      $\textsf{Enc}(K, M) = (K \oplus M_1, K \oplus M_2)$ where $M = (M_1, M_2)$ and $|M_1| = |M_2| = |K|$.
+		Provide a specific attack that breaks the confidentiality of this scheme, showing clearly the information an attacker can extract from the ciphertext.
+	\end{parts}
+\end{questions}
 
-	      Provide a specific attack that breaks the confidentiality of this scheme, showing clearly the information an attacker can extract from the ciphertext.
-\end{enumerate}
+\section*{Provable Security}
+\begin{questions}
+	\question[10] \textbf{Libraries and Indistinguishability}
 
-\section{Provable Security (20 points)}
+	\begin{parts}
+		\part[5] Consider the following libraries:
+		\begin{center}
+			\sslinked{
+				\sslibrary{}{1}{
+					\sslibrarysubroutine{init}{}{
+						$K \twoheadleftarrow \bits^n$
+					}{1}\\[1em]
+					\sslibrarysubroutine{query}{M}{
+						return $K \oplus M$
+					}{1}
+				}{1}
+			}{\approxeq}{
+				\sslibrary{}{2}{
+					\sslibrarysubroutine{init}{}{
+						$R_1 \twoheadleftarrow \bits^n$ \\
+						$R_2 \twoheadleftarrow \bits^n$
+					}{1}\\[1em]
+					\sslibrarysubroutine{query}{M}{
+						if $M = R_1$ return $R_2$ \\
+						else return $M \oplus R_1 \oplus R_2$
+					}{1}
+				}{1}
+			}
+		\end{center}
+		Are these libraries indistinguishable? Either prove they are indistinguishable or provide a distinguisher program that can tell them apart with non-negligible probability.
 
-\subsection{Libraries and Indistinguishability (10 points)}
+		\part[5] For each of the following pairs of libraries, state whether they are indistinguishable and briefly justify your answer:
+		\begin{subparts}
+			\subpart
+			\begin{center}
+				\sslinked{
+					\sslibrary{}{A}{
+						\sslibrarysubroutine{f}{x}{
+							$y \twoheadleftarrow \bits^n$ \\
+							return $y$
+						}{1}
+					}{1}
+				}{\approxeq}{
+					\sslibrary{}{B}{
+						\sslibrarysubroutine{f}{x}{
+							$y \twoheadleftarrow \bits^n$ \\
+							$z \twoheadleftarrow \bits^n$ \\
+							return $y$
+						}{1}
+					}{1}
+				}
+			\end{center}
 
-\begin{enumerate}
-	\item (5 points) Consider the following libraries:
-	      \begin{center}
-		      \sslinked{
-			      \sslibrary{}{1}{
-				      \sslibrarysubroutine{init}{}{
-					      $K \twoheadleftarrow \bits^n$
-				      }{1}\\[1em]
-				      \sslibrarysubroutine{query}{M}{
-					      return $K \oplus M$
-				      }{1}
-			      }{1}
-		      }{\approxeq}{
-			      \sslibrary{}{2}{
-				      \sslibrarysubroutine{init}{}{
-					      $R_1 \twoheadleftarrow \bits^n$ \\
-					      $R_2 \twoheadleftarrow \bits^n$
-				      }{1}\\[1em]
-				      \sslibrarysubroutine{query}{M}{
-					      if $M = R_1$ return $R_2$ \\
-					      else return $M \oplus R_1 \oplus R_2$
-				      }{1}
-			      }{1}
-		      }
-	      \end{center}
-	      Are these libraries indistinguishable? Either prove they are indistinguishable or provide a distinguisher program that can tell them apart with non-negligible probability.
+			\subpart
+			\begin{center}
+				\sslinked{
+					\sslibrary{}{C}{
+						$K \twoheadleftarrow \bits^n$\\[1em]
+						\sslibrarysubroutine{enc}{M}{
+							$C \coloneq K \oplus M$ \\
+							return $C$
+						}{1}\\[1em]
+						\sslibrarysubroutine{dec}{C}{
+							$M \coloneq K \oplus C$ \\
+							return $M$
+						}{1}
+					}{1}
+				}{\approxeq}{
+					\sslibrary{}{D}{
+						\sslibrarysubroutine{enc}{M}{
+							$C \twoheadleftarrow \bits^n$ \\
+							return $C$
+						}{1}\\[1em]
+						\sslibrarysubroutine{dec}{C}{
+							$M \twoheadleftarrow \bits^n$ \\
+							return $M$
+						}{1}
+					}{1}
+				}
+			\end{center}
+		\end{subparts}
+	\end{parts}
 
-	\item (5 points) For each of the following pairs of libraries, state whether they are indistinguishable and briefly justify your answer:
-	      \begin{enumerate}
-		      \item
-		            \begin{center}
-			            \sslinked{
-				            \sslibrary{}{A}{
-					            \sslibrarysubroutine{f}{x}{
-						            $y \twoheadleftarrow \bits^n$ \\
-						            return $y$
-					            }{1}
-				            }{1}
-			            }{\approxeq}{
-				            \sslibrary{}{B}{
-					            \sslibrarysubroutine{f}{x}{
-						            $y \twoheadleftarrow \bits^n$ \\
-						            $z \twoheadleftarrow \bits^n$ \\
-						            return $y$
-					            }{1}
-				            }{1}
-			            }
-		            \end{center}
+	\question[10] \textbf{Security Proofs}
 
-		      \item
-		            \begin{center}
-			            \sslinked{
-				            \sslibrary{}{C}{
-					            $K \twoheadleftarrow \bits^n$\\[1em]
-					            \sslibrarysubroutine{enc}{M}{
-						            $C \coloneq K \oplus M$ \\
-						            return $C$
-					            }{1}\\[1em]
-					            \sslibrarysubroutine{dec}{C}{
-						            $M \coloneq K \oplus C$ \\
-						            return $M$
-					            }{1}
-				            }{1}
-			            }{\approxeq}{
-				            \sslibrary{}{D}{
-					            \sslibrarysubroutine{enc}{M}{
-						            $C \twoheadleftarrow \bits^n$ \\
-						            return $C$
-					            }{1}\\[1em]
-					            \sslibrarysubroutine{dec}{C}{
-						            $M \twoheadleftarrow \bits^n$ \\
-						            return $M$
-					            }{1}
-				            }{1}
-			            }
-		            \end{center}
-	      \end{enumerate}
-\end{enumerate}
+	\begin{parts}
+		\part[5] Let $\Sigma = (\textsf{KeyGen}, \textsf{Enc}, \textsf{Dec})$ be a secure one-time pad encryption scheme for messages in $\bits^n$. Consider the following modified scheme $\Sigma' = (\textsf{KeyGen}', \textsf{Enc}', \textsf{Dec}')$:
+		\begin{align*}
+			\textsf{KeyGen}'()           & = K \twoheadleftarrow \textsf{KeyGen}()                                                                                               \\
+			\textsf{Enc}'(K, M)          & = (C_1, C_2) \text{ where } C_1 \twoheadleftarrow \textsf{Enc}(K, M) \text{ and } C_2 \twoheadleftarrow \textsf{Enc}(K, M \oplus 1^n) \\
+			\textsf{Dec}'(K, (C_1, C_2)) & = \textsf{Dec}(K, C_1)
+		\end{align*}
 
-\subsection{Security Proofs (10 points)}
+		Determine whether $\Sigma'$ is a secure encryption scheme. If it is secure, provide a formal proof. If it is not secure, describe a concrete attack that breaks its confidentiality and explain why the attack works.
 
-\begin{enumerate}
-	\item (5 points) Let $\Sigma = (\textsf{KeyGen}, \textsf{Enc}, \textsf{Dec})$ be a secure one-time pad encryption scheme for messages in $\bits^n$. Consider the following modified scheme $\Sigma' = (\textsf{KeyGen}', \textsf{Enc}', \textsf{Dec}')$:
-	      \begin{align*}
-		      \textsf{KeyGen}'()           & = K \twoheadleftarrow \textsf{KeyGen}()                                                                                               \\
-		      \textsf{Enc}'(K, M)          & = (C_1, C_2) \text{ where } C_1 \twoheadleftarrow \textsf{Enc}(K, M) \text{ and } C_2 \twoheadleftarrow \textsf{Enc}(K, M \oplus 1^n) \\
-		      \textsf{Dec}'(K, (C_1, C_2)) & = \textsf{Dec}(K, C_1)
-	      \end{align*}
+		\part[5] Consider the following game between a challenger and an adversary $\mathcal{A}$:
+		\begin{subparts}
+			\subpart The adversary selects two messages $M_0$ and $M_1$ of the same length.
+			\subpart The challenger selects a uniform random bit $b \twoheadleftarrow \bits$ and a uniform random key $K \twoheadleftarrow \bits^n$.
+			\subpart The challenger computes $C = K \oplus M_b$ and gives $C$ to the adversary.
+			\subpart The adversary outputs a bit $b'$ as its guess for $b$.
+		\end{subparts}
 
-	      Determine whether $\Sigma'$ is a secure encryption scheme. If it is secure, provide a formal proof. If it is not secure, describe a concrete attack that breaks its confidentiality and explain why the attack works.
+		Prove that for any adversary $\mathcal{A}$, the probability that $b' = b$ is exactly $1/2$. Explain what this result tells us about the security of the one-time pad.
+	\end{parts}
+\end{questions}
 
-	\item (5 points) Consider the following game between a challenger and an adversary $\mathcal{A}$:
-	      \begin{enumerate}
-		      \item The adversary selects two messages $M_0$ and $M_1$ of the same length.
-		      \item The challenger selects a uniform random bit $b \twoheadleftarrow \bits$ and a uniform random key $K \twoheadleftarrow \bits^n$.
-		      \item The challenger computes $C = K \oplus M_b$ and gives $C$ to the adversary.
-		      \item The adversary outputs a bit $b'$ as its guess for $b$.
-	      \end{enumerate}
+\section*{Computational Cryptography}
+\begin{questions}
+	\question[15] \textbf{Computational Security Concepts}
 
-	      Prove that for any adversary $\mathcal{A}$, the probability that $b' = b$ is exactly $1/2$. Explain what this result tells us about the security of the one-time pad.
-\end{enumerate}
+	\begin{parts}
+		\part[5] Explain why computational security is important in practice despite the existence of information-theoretic security. Discuss the limitations of both approaches.
 
-\section{Computational Cryptography (30 points)}
+		\part[5] Consider a brute-force attack on AES-128:
+		\begin{subparts}
+			\subpart Using the monetary cost table provided in the lecture, estimate how much it would cost to try all possible keys.
+			\subpart Discuss whether the computational approach to security makes sense in light of this cost.
+		\end{subparts}
 
-\subsection{Computational Security Concepts (15 points)}
+		\part[5] The ``birthday paradox'' is crucial for understanding many cryptographic attacks. If a hash function produces outputs of length $n$ bits:
+		\begin{subparts}
+			\subpart Approximately how many random inputs would you need to hash before finding a collision with 50\% probability?
+			\subpart How many bits of output would a hash function need to be reasonably secure against birthday attacks for the next decade?
+		\end{subparts}
+	\end{parts}
 
-\begin{enumerate}
-	\item (5 points) Explain why computational security is important in practice despite the existence of information-theoretic security. Discuss the limitations of both approaches.
+	\question[15] \textbf{Distinguishability}
 
-	\item (5 points) Consider a brute-force attack on AES-128:
-	      \begin{enumerate}
-		      \item Using the monetary cost table provided in the lecture, estimate how much it would cost to try all possible keys.
-		      \item Discuss whether the computational approach to security makes sense in light of this cost.
-	      \end{enumerate}
+	\begin{parts}
+		\part[7] Consider the following two libraries:
+		\begin{center}
+			\sslinked{
+				\sslibrary{}{1}{
+					\sslibrarysubroutine{sample}{}{
+						$X \twoheadleftarrow \bits^n$ \\
+						$Y \coloneq X \oplus 1^n$ \\
+						return $(X, Y)$
+					}{1}
+				}{1}
+			}{\approxeq}{
+				\sslibrary{}{2}{
+					\sslibrarysubroutine{sample}{}{
+						$Y \twoheadleftarrow \bits^n$ \\
+						$X \coloneq Y \oplus 1^n$ \\
+						return $(X, Y)$
+					}{1}
+				}{1}
+			}
+		\end{center}
+		Use the hybrid proof technique to show these libraries are indistinguishable. Clearly describe each intermediate hybrid library.
 
-	\item (5 points) The ``birthday paradox'' is crucial for understanding many cryptographic attacks. If a hash function produces outputs of length $n$ bits:
-	      \begin{enumerate}
-		      \item Approximately how many random inputs would you need to hash before finding a collision with 50\% probability?
-		      \item How many bits of output would a hash function need to be reasonably secure against birthday attacks for the next decade?
-	      \end{enumerate}
-\end{enumerate}
+		\part[8] Consider a protocol where Alice wants to send encrypted messages to Bob. They use the following scheme:
+		\begin{center}
+			\sslinked{
+				\sslibrary{}{real}{
+					$K \twoheadleftarrow \bits^n$\\[1em]
+					\sslibrarysubroutine{encrypt}{M}{
+						$R \twoheadleftarrow \bits^n$ \\
+						$C_1 \coloneq R$ \\
+						$C_2 \coloneq K \oplus R \oplus M$ \\
+						return $(C_1, C_2)$
+					}{1}
+				}{1}
+			}{\approxeq}{
+				\sslibrary{}{ideal}{
+					\sslibrarysubroutine{encrypt}{M}{
+						$C_1 \twoheadleftarrow \bits^n$ \\
+						$C_2 \twoheadleftarrow \bits^n$ \\
+						return $(C_1, C_2)$
+					}{1}
+				}{1}
+			}
+		\end{center}
+		\begin{subparts}
+			\subpart The above libraries are not actually indistinguishable! Construct a distinguisher.
+			\subpart Propose a minimal modification to make the above ``real'' library secure and explain why your modification works.
+		\end{subparts}
+	\end{parts}
+\end{questions}
 
-\subsection{Distinguishability (15 points)}
+\section*{Application of Cryptographic Principles}
+\begin{questions}
+	\question[15] \textbf{One-Time Pad in the Real World}
 
-\begin{enumerate}
-	\item (7 points) Consider the following two libraries:
-	      \begin{center}
-		      \sslinked{
-			      \sslibrary{}{1}{
-				      \sslibrarysubroutine{sample}{}{
-					      $X \twoheadleftarrow \bits^n$ \\
-					      $Y \coloneq X \oplus 1^n$ \\
-					      return $(X, Y)$
-				      }{1}
-			      }{1}
-		      }{\approxeq}{
-			      \sslibrary{}{2}{
-				      \sslibrarysubroutine{sample}{}{
-					      $Y \twoheadleftarrow \bits^n$ \\
-					      $X \coloneq Y \oplus 1^n$ \\
-					      return $(X, Y)$
-				      }{1}
-			      }{1}
-		      }
-	      \end{center}
-	      Use the hybrid proof technique to show these libraries are indistinguishable. Clearly describe each intermediate hybrid library.
-	\item (8 points) Consider a protocol where Alice wants to send encrypted messages to Bob. They use the following scheme:
-	      \begin{center}
-		      \sslinked{
-			      \sslibrary{}{real}{
-				      $K \twoheadleftarrow \bits^n$\\[1em]
-				      \sslibrarysubroutine{encrypt}{M}{
-					      $R \twoheadleftarrow \bits^n$ \\
-					      $C_1 \coloneq R$ \\
-					      $C_2 \coloneq K \oplus R \oplus M$ \\
-					      return $(C_1, C_2)$
-				      }{1}
-			      }{1}
-		      }{\approxeq}{
-			      \sslibrary{}{ideal}{
-				      \sslibrarysubroutine{encrypt}{M}{
-					      $C_1 \twoheadleftarrow \bits^n$ \\
-					      $C_2 \twoheadleftarrow \bits^n$ \\
-					      return $(C_1, C_2)$
-				      }{1}
-			      }{1}
-		      }
-	      \end{center}
-	      \begin{enumerate}
-		      \item The above libraries are not actually indistinguishable! Construct a distinguisher.
-		      \item Propose a minimal modification to make the above ``real'' library secure and explain why your modification works.
-	      \end{enumerate}
-\end{enumerate}
+	A startup claims to have developed a ``quantum-resistant ultra-secure messaging system'' based on the one-time pad. They provide the following details:
 
-\section{Application of Cryptographic Principles (30 points)}
+	\begin{itemize}
+		\item The system uses a hardware random number generator to produce one-time pads.
+		\item Each user receives a 1TB USB drive containing pre-generated pad data during account registration.
+		\item When sending a message, the app encrypts it with a portion of the pad, marks that portion as used, and sends the ciphertext.
+		\item When the user has used 80\% of their pad, the app automatically requests a new USB drive.
+	\end{itemize}
 
-\begin{enumerate}
-	\item (15 points) \textbf{One-Time Pad in the Real World}
+	Provide a detailed critique of this system:
+	\begin{parts}
+		\part Identify at least three practical problems with this implementation.
+		\part Explain how each problem compromises security or usability.
+		\part Suggest improvements to address each issue while maintaining the theoretical security of OTP.
+	\end{parts}
 
-	      A startup claims to have developed a ``quantum-resistant ultra-secure messaging system'' based on the one-time pad. They provide the following details:
+	\question[15] \textbf{Symmetric Encryption Protocol Analysis}
 
-	      \begin{itemize}
-		      \item The system uses a hardware random number generator to produce one-time pads.
-		      \item Each user receives a 1TB USB drive containing pre-generated pad data during account registration.
-		      \item When sending a message, the app encrypts it with a portion of the pad, marks that portion as used, and sends the ciphertext.
-		      \item When the user has used 80\% of their pad, the app automatically requests a new USB drive.
-	      \end{itemize}
+	A software company is implementing a secure communication protocol for their instant messaging application. They propose the following scheme:
 
-	      Provide a detailed critique of this system:
-	      \begin{enumerate}
-		      \item Identify at least three practical problems with this implementation.
-		      \item Explain how each problem compromises security or usability.
-		      \item Suggest improvements to address each issue while maintaining the theoretical security of OTP.
-	      \end{enumerate}
+	\begin{itemize}
+		\item Each user generates a random 128-bit key $K$ during account creation.
+		\item To send a message $M$, the sender computes $C = K \oplus M$ and transmits $C$.
+		\item When two users want to communicate, they first exchange their keys through a ``top secret channel'' established by the company's server.
+		\item The company claims their protocol is ``as secure as one-time pad'' because they use the XOR operation.
+	\end{itemize}
 
-	\item (15 points) \textbf{Symmetric Encryption Protocol Analysis}
-
-	      A software company is implementing a secure communication protocol for their instant messaging application. They propose the following scheme:
-
-	      \begin{itemize}
-		      \item Each user generates a random 128-bit key $K$ during account creation.
-		      \item To send a message $M$, the sender computes $C = K \oplus M$ and transmits $C$.
-		      \item When two users want to communicate, they first exchange their keys through a ``top secret channel'' established by the company's server.
-		      \item The company claims their protocol is ``as secure as one-time pad'' because they use the XOR operation.
-	      \end{itemize}
-
-	      Address the following aspects of this system:
-	      \begin{enumerate}
-		      \item Using the provable security framework discussed in class, analyze whether this scheme provides the confidentiality properties claimed by the company.
-		      \item Identify at least three major security vulnerabilities in the described approach.
-		      \item The company is considering having users generate new keys daily instead of just once. Explain whether this modification would address the vulnerabilities you identified.
-		      \item Propose a modified protocol that would significantly improve security while still using only symmetric cryptography concepts covered in class so far. Justify your choices using the security principles we've discussed.
-	      \end{enumerate}
-\end{enumerate}
+	Address the following aspects of this system:
+	\begin{parts}
+		\part Using the provable security framework discussed in class, analyze whether this scheme provides the confidentiality properties claimed by the company.
+		\part Identify at least three major security vulnerabilities in the described approach.
+		\part The company is considering having users generate new keys daily instead of just once. Explain whether this modification would address the vulnerabilities you identified.
+		\part Propose a modified protocol that would significantly improve security while still using only symmetric cryptography concepts covered in class so far. Justify your choices using the security principles we've discussed.
+	\end{parts}
+\end{questions}
 
 \begin{tcolorbox}[colframe=EarthBrown!30!white,colback=EarthBrown!5!white]
-	\textbf{Bonus Challenge (20 extra points):} The discrete logarithm problem is fundamental to many cryptographic systems. Consider a cyclic group $G$ of prime order $p$ with generator $g$. The discrete logarithm problem is: given $h \in G$, find $x$ such that $g^x = h$.
+	\section*{Bonus Question}
+	\begin{questions}
+		\bonusquestion[20] The discrete logarithm problem is fundamental to many cryptographic systems. Consider a cyclic group $G$ of prime order $p$ with generator $g$. The discrete logarithm problem is: given $h \in G$, find $x$ such that $g^x = h$.
 
-	Imagine a scenario where the discrete logarithm problem could be solved efficiently. Select one modern cryptographic protocol that relies on the hardness of this problem, and analyze:
+		Imagine a scenario where the discrete logarithm problem could be solved efficiently. Select one modern cryptographic protocol that relies on the hardness of this problem, and analyze:
 
-	\begin{enumerate}
-		\item The specific impact on the protocol's security.
-		\item How the protocol would need to be modified to remain secure.
-		\item Whether any alternative mathematical problems could serve as suitable replacements.
-	\end{enumerate}
+		\begin{parts}
+			\part The specific impact on the protocol's security.
+			\part How the protocol would need to be modified to remain secure.
+			\part Whether any alternative mathematical problems could serve as suitable replacements.
+		\end{parts}
+	\end{questions}
 \end{tcolorbox}
 
 \end{document}

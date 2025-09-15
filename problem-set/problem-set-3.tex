@@ -14,212 +14,218 @@
 	\textbf{Instructions:} This problem set covers topics in provable security from topics 1.7\footnote{\url{https://appliedcryptography.page/slides/\#1-7}} and 1.8\footnote{\url{https://appliedcryptography.page/slides/\#1-8}} of the course. Submit your solutions as a neatly formatted PDF. You are encouraged to collaborate with classmates in studying the material, but your submitted solutions must be your own work. For proofs, clearly state your assumptions, steps, and conclusions.
 \end{tcolorbox}
 
-\section{Cryptographic Hardness and Real-World Implications (20 points)}
+\section*{Cryptographic Hardness and Real-World Implications}
+\begin{questions}
+	\question[10] \textbf{Breaking Cryptography: Attack Scenarios}
 
-\subsection{Breaking Cryptography: Attack Scenarios (10 points)}
+	\begin{parts}
+		\part[5] \textbf{The Cryptographic Apocalypse Scenario:}
+		Imagine you wake up tomorrow to headlines: \textit{``Breakthrough Algorithm Solves P vs NP - Computer Scientists Prove P = NP!''}
+		\begin{subparts}
+			\subpart As the Chief Security Officer of a major bank, write a crisis response memo outlining which systems fail immediately, which have grace periods, and what emergency measures you would implement.
+			\subpart Design an alternative security model for online banking that could work in a post-P=NP world. What assumptions would you rely on instead?
+			\subpart Analyze why NP-complete problems, despite being \textit{``hard,''} wouldn't save us in this scenario. What's the fundamental difference between NP-complete hardness and cryptographic hardness?
+		\end{subparts}
 
-\begin{enumerate}
-	\item (5 points) \textbf{The Cryptographic Apocalypse Scenario:}
-	      Imagine you wake up tomorrow to headlines: \textit{``Breakthrough Algorithm Solves P vs NP - Computer Scientists Prove P = NP!''}
-	      \begin{enumerate}
-		      \item As the Chief Security Officer of a major bank, write a crisis response memo outlining which systems fail immediately, which have grace periods, and what emergency measures you would implement.
-		      \item Design an alternative security model for online banking that could work in a post-P=NP world. What assumptions would you rely on instead?
-		      \item Analyze why NP-complete problems, despite being \textit{``hard,''} wouldn't save us in this scenario. What's the fundamental difference between NP-complete hardness and cryptographic hardness?
-	      \end{enumerate}
-	\item (5 points) \textbf{The Weak DH Parameters Problem:}
-	      A security researcher discovers that a popular cryptographic library has been generating Diffie-Hellman parameters where the prime $p$ satisfies $p-1$ having many small factors, making 75\% of generated groups vulnerable to Pohlig-Hellman attacks that reduce the discrete log problem to much smaller subgroups.
-	      \begin{enumerate}
-		      \item Evaluate whether this discovery completely breaks Diffie-Hellman or only partially weakens it. Consider both the mathematical impact and practical deployment consequences.
-		      \item Design a strategy for systems using this library: should they immediately regenerate all parameters, implement parameter validation, or pursue a different approach?
-		      \item Compare this scenario to a hypothetical breakthrough that reduces the discrete logarithm problem in prime-order groups by a factor of $2^{20}$ but still leaves it exponential. Which vulnerability would be more urgent to address and why?
-	      \end{enumerate}
-\end{enumerate}
+		\part[5] \textbf{The Weak DH Parameters Problem:}
+		A security researcher discovers that a popular cryptographic library has been generating Diffie-Hellman parameters where the prime $p$ satisfies $p-1$ having many small factors, making 75\% of generated groups vulnerable to Pohlig-Hellman attacks that reduce the discrete log problem to much smaller subgroups.
+		\begin{subparts}
+			\subpart Evaluate whether this discovery completely breaks Diffie-Hellman or only partially weakens it. Consider both the mathematical impact and practical deployment consequences.
+			\subpart Design a strategy for systems using this library: should they immediately regenerate all parameters, implement parameter validation, or pursue a different approach?
+			\subpart Compare this scenario to a hypothetical breakthrough that reduces the discrete logarithm problem in prime-order groups by a factor of $2^{20}$ but still leaves it exponential. Which vulnerability would be more urgent to address and why?
+		\end{subparts}
+	\end{parts}
 
-\subsection{Discrete Logarithm Security Architecture (10 points)}
+	\question[10] \textbf{Discrete Logarithm Security Architecture}
 
-\begin{enumerate}
-	\item (5 points) \textbf{The Weak Parameter Disaster:}
-	      Your security audit discovers that a legacy system has been using $p = 2047$ (which factors as $23 \times 89$) for Diffie-Hellman key exchange, and the generator $g = 2$.
-	      \begin{enumerate}
-		      \item Analyze exactly why this parameter choice is catastrophically weak. Estimate how long it would take an attacker with a modern laptop to break this system.
-		      \item Design an emergency response plan: how do you migrate users to secure parameters while maintaining service availability?
-		      \item Compare the security implications if the system had instead used a proper 2048-bit prime but with a generator that only generates a small subgroup.
-	      \end{enumerate}
-	\item (5 points) \textbf{Elliptic Curve vs. Finite Field Trade-off Analysis:}
-	      You're designing a cryptographic protocol for IoT devices with severe computational and bandwidth constraints.
-	      \begin{enumerate}
-		      \item Compare elliptic curve and finite field DLP for your use case: which offers better security per bit of key size, and which offers better computational performance?
-		      \item Analyze why index calculus attacks work against finite fields but not elliptic curves. How does this fundamental difference affect your security margins?
-		      \item Design a hybrid approach that uses both elliptic curves and finite fields strategically. When might this provide benefits over using just one?
-	      \end{enumerate}
-\end{enumerate}
+	\begin{parts}
+		\part[5] \textbf{The Weak Parameter Disaster:}
+		Your security audit discovers that a legacy system has been using $p = 2047$ (which factors as $23 \times 89$) for Diffie-Hellman key exchange, and the generator $g = 2$.
+		\begin{subparts}
+			\subpart Analyze exactly why this parameter choice is catastrophically weak. Estimate how long it would take an attacker with a modern laptop to break this system.
+			\subpart Design an emergency response plan: how do you migrate users to secure parameters while maintaining service availability?
+			\subpart Compare the security implications if the system had instead used a proper 2048-bit prime but with a generator that only generates a small subgroup.
+		\end{subparts}
 
-\section{Diffie-Hellman in Hostile Environments (20 points)}
+		\part[5] \textbf{Elliptic Curve vs. Finite Field Trade-off Analysis:}
+		You're designing a cryptographic protocol for IoT devices with severe computational and bandwidth constraints.
+		\begin{subparts}
+			\subpart Compare elliptic curve and finite field DLP for your use case: which offers better security per bit of key size, and which offers better computational performance?
+			\subpart Analyze why index calculus attacks work against finite fields but not elliptic curves. How does this fundamental difference affect your security margins?
+			\subpart Design a hybrid approach that uses both elliptic curves and finite fields strategically. When might this provide benefits over using just one?
+		\end{subparts}
+	\end{parts}
+\end{questions}
 
-\subsection{Attack and Defense Scenarios (10 points)}
+\section*{Diffie-Hellman in Hostile Environments}
+\begin{questions}
+	\question[10] \textbf{Attack and Defense Scenarios}
 
-\begin{enumerate}
-	\item (5 points) \textbf{The Perfect Man-in-the-Middle:}
-	      An attacker has complete control over the network between Alice and Bob, can modify any message, and can initiate connections that appear to come from either party.
-	      \begin{enumerate}
-		      \item Design the most effective man-in-the-middle attack against unauthenticated Diffie-Hellman. Your attack should be undetectable to Alice and Bob during the key exchange.
-		      \item Alice and Bob have never met but each has the other's public key fingerprint written on a piece of paper. Design an authentication protocol that defeats your attack using only these fingerprints.
-		      \item Compare your fingerprint-based solution to certificate authorities and web-of-trust models. What are the usability and security trade-offs?
-		      \item The attacker now has quantum capabilities. How does this change your attack and defense strategies?
-	      \end{enumerate}
-	\item (5 points) \textbf{The Paranoid Whistleblower Scenario:}
-	      A whistleblower needs to securely communicate with a journalist. They assume the government monitors all internet traffic, has compromised most Certificate Authorities, and can perform man-in-the-middle attacks on any connection.
-	      \begin{enumerate}
-		      \item Design a key exchange protocol for this scenario using only methods available to ordinary civilians (no specialized hardware or pre-shared secrets).
-		      \item Analyze what happens if the government can also compromise one of their devices after the key exchange. How can you provide forward secrecy?
-		      \item Compare your solution to existing tools like Tor, Signal, and SecureDrop. What additional protection does your design provide?
-	      \end{enumerate}
-\end{enumerate}
+	\begin{parts}
+		\part[5] \textbf{The Perfect Man-in-the-Middle:}
+		An attacker has complete control over the network between Alice and Bob, can modify any message, and can initiate connections that appear to come from either party.
+		\begin{subparts}
+			\subpart Design the most effective man-in-the-middle attack against unauthenticated Diffie-Hellman. Your attack should be undetectable to Alice and Bob during the key exchange.
+			\subpart Alice and Bob have never met but each has the other's public key fingerprint written on a piece of paper. Design an authentication protocol that defeats your attack using only these fingerprints.
+			\subpart Compare your fingerprint-based solution to certificate authorities and web-of-trust models. What are the usability and security trade-offs?
+			\subpart The attacker now has quantum capabilities. How does this change your attack and defense strategies?
+		\end{subparts}
 
-\subsection{Protocol Design Challenge (10 points)}
+		\part[5] \textbf{The Paranoid Whistleblower Scenario:}
+		A whistleblower needs to securely communicate with a journalist. They assume the government monitors all internet traffic, has compromised most Certificate Authorities, and can perform man-in-the-middle attacks on any connection.
+		\begin{subparts}
+			\subpart Design a key exchange protocol for this scenario using only methods available to ordinary civilians (no specialized hardware or pre-shared secrets).
+			\subpart Analyze what happens if the government can also compromise one of their devices after the key exchange. How can you provide forward secrecy?
+			\subpart Compare your solution to existing tools like Tor, Signal, and SecureDrop. What additional protection does your design provide?
+		\end{subparts}
+	\end{parts}
 
-\begin{enumerate}
-	\item (10 points) \textbf{SSH Trust-on-First-Use Analysis:}
-	      Your organization wants to deploy SSH across 10,000 servers, but the current TOFU model creates security and usability problems at scale.
-	      \begin{enumerate}
-		      \item Analyze specific attack scenarios where the TOFU model fails in practice. When are users most vulnerable?
-		      \item Design an improved authentication model that maintains SSH's simplicity while providing better security guarantees than pure TOFU.
-		      \item Compare your solution to proposals like DNS-based SSH public key distribution (SSHFP records) and OAuth-based SSH certificates. What are the deployment challenges for each approach?
-	      \end{enumerate}
-\end{enumerate}
+	\question[10] \textbf{Protocol Design Challenge}
+
+	\textbf{SSH Trust-on-First-Use Analysis:}
+	Your organization wants to deploy SSH across 10,000 servers, but the current TOFU model creates security and usability problems at scale.
+	\begin{parts}
+		\part[3] Analyze specific attack scenarios where the TOFU model fails in practice. When are users most vulnerable?
+		\part[3] Design an improved authentication model that maintains SSH's simplicity while providing better security guarantees than pure TOFU.
+		\part[4] Compare your solution to proposals like DNS-based SSH public key distribution (SSHFP records) and OAuth-based SSH certificates. What are the deployment challenges for each approach?
+	\end{parts}
+\end{questions}
 
 \clearpage
 
-\section{Elliptic Curve Security Engineering (30 points)}
+\section*{Elliptic Curve Security Engineering}
+\begin{questions}
+	\question[15] \textbf{Curve Selection Under Pressure}
 
-\subsection{Curve Selection Under Pressure (15 points)}
+	\begin{parts}
+		\part[5] \textbf{The Government Backdoor Controversy:}
+		You're the security architect for a new messaging app. Cryptographers are debating whether NIST P-256 contains a government backdoor, while Curve25519 offers better security properties but less widespread hardware support.
+		\begin{subparts}
+			\subpart Analyze the specific concerns about NIST curves: what would a backdoor look like, and how could it be exploited without breaking the underlying mathematical problems?
+			\subpart Design a risk assessment framework for choosing between P-256 and Curve25519. What factors should influence your decision?
+			\subpart Your legal team reports that several countries require NIST-compliant cryptography for government sales. How does this constraint affect your technical decision?
+			\subpart Propose a solution that addresses both the backdoor concerns and the compliance requirements. What compromises would you make?
+		\end{subparts}
 
-\begin{enumerate}
-	\item (5 points) \textbf{The Government Backdoor Controversy:}
-	      You're the security architect for a new messaging app. Cryptographers are debating whether NIST P-256 contains a government backdoor, while Curve25519 offers better security properties but less widespread hardware support.
-	      \begin{enumerate}
-		      \item Analyze the specific concerns about NIST curves: what would a backdoor look like, and how could it be exploited without breaking the underlying mathematical problems?
-		      \item Design a risk assessment framework for choosing between P-256 and Curve25519. What factors should influence your decision?
-		      \item Your legal team reports that several countries require NIST-compliant cryptography for government sales. How does this constraint affect your technical decision?
-		      \item Propose a solution that addresses both the backdoor concerns and the compliance requirements. What compromises would you make?
-	      \end{enumerate}
+		\part[5] \textbf{The Invalid Curve Attack Scenario:}
+		A security researcher discovers that your ECDH implementation doesn't validate input points, making it vulnerable to invalid curve attacks.
+		\begin{subparts}
+			\subpart Design a specific attack exploiting this vulnerability. What information can an attacker extract, and how long would the attack take?
+			\subpart Analyze why this attack works: what mathematical properties of elliptic curves does it exploit?
+			\subpart Develop a comprehensive input validation strategy that prevents this attack class. What performance impact does your solution have?
+			\subpart Compare this vulnerability to other implementation mistakes like reusing nonces in ECDSA. Which class of error is more dangerous in practice?
+		\end{subparts}
 
-	\item (5 points) \textbf{The Invalid Curve Attack Scenario:}
-	      A security researcher discovers that your ECDH implementation doesn't validate input points, making it vulnerable to invalid curve attacks.
-	      \begin{enumerate}
-		      \item Design a specific attack exploiting this vulnerability. What information can an attacker extract, and how long would the attack take?
-		      \item Analyze why this attack works: what mathematical properties of elliptic curves does it exploit?
-		      \item Develop a comprehensive input validation strategy that prevents this attack class. What performance impact does your solution have?
-		      \item Compare this vulnerability to other implementation mistakes like reusing nonces in ECDSA. Which class of error is more dangerous in practice?
-	      \end{enumerate}
+		\part[5] \textbf{Mobile Performance Optimization Challenge:}
+		Your mobile app needs to perform thousands of ECDH operations per minute on low-end smartphones, but battery life and performance are critical concerns.
+		\begin{subparts}
+			\subpart Compare the performance characteristics of different elliptic curves for your use case. Consider both computational cost and memory usage.
+			\subpart Design an optimization strategy that balances security and performance. Would you use precomputed tables, special curve forms, or other techniques?
+			\subpart Analyze the security implications of your optimizations: what new attack surfaces do they create?
+			\subpart Evaluate whether quantum resistance should influence your current design decisions, given the mobile hardware lifecycle.
+		\end{subparts}
+	\end{parts}
 
-	\item (5 points) \textbf{Mobile Performance Optimization Challenge:}
-	      Your mobile app needs to perform thousands of ECDH operations per minute on low-end smartphones, but battery life and performance are critical concerns.
-	      \begin{enumerate}
-		      \item Compare the performance characteristics of different elliptic curves for your use case. Consider both computational cost and memory usage.
-		      \item Design an optimization strategy that balances security and performance. Would you use precomputed tables, special curve forms, or other techniques?
-		      \item Analyze the security implications of your optimizations: what new attack surfaces do they create?
-		      \item Evaluate whether quantum resistance should influence your current design decisions, given the mobile hardware lifecycle.
-	      \end{enumerate}
-\end{enumerate}
+	\question[15] \textbf{Implementation Vulnerability Analysis}
 
-\subsection{Implementation Vulnerability Analysis (15 points)}
+	\begin{parts}
+		\part[5] \textbf{The PlayStation 3 Forensics Challenge:}
+		You're a digital forensics expert investigating cryptocurrency theft. You discover that the thief's wallet software reused nonces in ECDSA signatures, similar to the PlayStation 3 vulnerability.
+		\begin{subparts}
+			\subpart Design a forensic analysis procedure to recover the private key from blockchain transaction signatures. What information do you need, and how would you process it?
+			\subpart Estimate how many transactions with reused nonces you would need to guarantee key recovery. How does this depend on the specific nonce reuse pattern?
+			\subpart Develop a tool to scan existing blockchains for this vulnerability. What would you look for, and how would you optimize the search?
+			\subpart Analyze the broader implications: if wallet software commonly had this bug, what percentage of cryptocurrency could be at risk?
+		\end{subparts}
 
-\begin{enumerate}
-	\item (5 points) \textbf{The PlayStation 3 Forensics Challenge:}
-	      You're a digital forensics expert investigating cryptocurrency theft. You discover that the thief's wallet software reused nonces in ECDSA signatures, similar to the PlayStation 3 vulnerability.
-	      \begin{enumerate}
-		      \item Design a forensic analysis procedure to recover the private key from blockchain transaction signatures. What information do you need, and how would you process it?
-		      \item Estimate how many transactions with reused nonces you would need to guarantee key recovery. How does this depend on the specific nonce reuse pattern?
-		      \item Develop a tool to scan existing blockchains for this vulnerability. What would you look for, and how would you optimize the search?
-		      \item Analyze the broader implications: if wallet software commonly had this bug, what percentage of cryptocurrency could be at risk?
-	      \end{enumerate}
+		\part[5] \textbf{Side-Channel Attack Laboratory:}
+		You're tasked with testing an embedded device's ECDSA implementation for side-channel vulnerabilities.
+		\begin{subparts}
+			\subpart Design a timing attack against variable-time scalar multiplication. What information would you measure, and how would you extract the private key?
+			\subpart Develop countermeasures that maintain performance while resisting your attack. What constant-time techniques would you implement?
+			\subpart Analyze power analysis attacks: how would an attacker use power consumption traces to recover cryptographic keys?
+			\subpart Evaluate the trade-offs between security and performance for different countermeasures. Which threats should you prioritize defending against?
+		\end{subparts}
 
-	\item (5 points) \textbf{Side-Channel Attack Laboratory:}
-	      You're tasked with testing an embedded device's ECDSA implementation for side-channel vulnerabilities.
-	      \begin{enumerate}
-		      \item Design a timing attack against variable-time scalar multiplication. What information would you measure, and how would you extract the private key?
-		      \item Develop countermeasures that maintain performance while resisting your attack. What constant-time techniques would you implement?
-		      \item Analyze power analysis attacks: how would an attacker use power consumption traces to recover cryptographic keys?
-		      \item Evaluate the trade-offs between security and performance for different countermeasures. Which threats should you prioritize defending against?
-	      \end{enumerate}
+		\part[5] \textbf{The Ed25519 Validation Crisis:}
+		You discover that two widely-used Ed25519 libraries accept different signatures as valid for the same message and public key, breaking interoperability.
+		\begin{subparts}
+			\subpart Investigate what causes this inconsistency: what validation steps do different implementations handle differently?
+			\subpart Analyze the security implications: could an attacker exploit these differences to create practical attacks?
+			\subpart Design a test suite to identify which Ed25519 implementations are compatible with each other. What edge cases would you test?
+			\subpart Propose a strategy for the cryptographic community to resolve this issue without breaking existing deployments.
+		\end{subparts}
+	\end{parts}
+\end{questions}
 
-	\item (5 points) \textbf{The Ed25519 Validation Crisis:}
-	      You discover that two widely-used Ed25519 libraries accept different signatures as valid for the same message and public key, breaking interoperability.
-	      \begin{enumerate}
-		      \item Investigate what causes this inconsistency: what validation steps do different implementations handle differently?
-		      \item Analyze the security implications: could an attacker exploit these differences to create practical attacks?
-		      \item Design a test suite to identify which Ed25519 implementations are compatible with each other. What edge cases would you test?
-		      \item Propose a strategy for the cryptographic community to resolve this issue without breaking existing deployments.
-	      \end{enumerate}
-\end{enumerate}
+\section*{Applied Cryptography Case Studies}
+\begin{questions}
+	\question[10] \textbf{Key Exchange Protocol Design:}
+	You are designing a secure messaging application that needs to establish encrypted communication channels between users who have never communicated before. The application must work on mobile devices with limited computational resources and intermittent network connectivity.
+	\begin{parts}
+		\part[4] Design a complete key exchange protocol using the cryptographic primitives from lectures 1.7 and 1.8. Your design should address:
+		\begin{itemize}
+			\item Initial key establishment between strangers
+			\item Authentication to prevent man-in-the-middle attacks
+			\item Forward secrecy for long-term security
+			\item Efficiency for mobile devices
+		\end{itemize}
+		\part[3] Analyze the security properties of your protocol. What attacks does it defend against, and what are its limitations?
+		\part[3] Discuss how your protocol would handle practical issues like key fingerprint verification and key rotation.
+	\end{parts}
 
-\section{Applied Cryptography Case Studies (30 points)}
+	\question[10] \textbf{Cryptocurrency Signature Scheme Analysis:}
+	A new cryptocurrency project is choosing between ECDSA and Ed25519 for transaction signatures. The system requirements include:
+	\begin{itemize}
+		\item High transaction throughput (thousands of signatures per second)
+		\item Long-term security (system should remain secure for decades)
+		\item Compatibility with hardware wallets and mobile devices
+		\item Deterministic transaction signing for reproducibility
+	\end{itemize}
+	Analyze this decision:
+	\begin{parts}
+		\part[2] Compare ECDSA and Ed25519 for each requirement above. Which algorithm better meets each criterion and why?
+		\part[2] Discuss the implications of signature malleability. How does this affect each algorithm and why might it matter for cryptocurrency applications?
+		\part[2] Analyze the quantum resistance of both options. What migration path would you recommend for long-term security?
+		\part[2] Consider the ecosystem effects: existing wallet software, hardware support, and developer familiarity. How do these practical factors influence the decision?
+		\part[2] Make a final recommendation with justification, considering both technical and practical factors.
+	\end{parts}
 
-\begin{enumerate}
-	\item (10 points) \textbf{Key Exchange Protocol Design:}
-	      You are designing a secure messaging application that needs to establish encrypted communication channels between users who have never communicated before. The application must work on mobile devices with limited computational resources and intermittent network connectivity.
-	      \begin{enumerate}
-		      \item Design a complete key exchange protocol using the cryptographic primitives from lectures 1.7 and 1.8. Your design should address:
-		            \begin{itemize}
-			            \item Initial key establishment between strangers
-			            \item Authentication to prevent man-in-the-middle attacks
-			            \item Forward secrecy for long-term security
-			            \item Efficiency for mobile devices
-		            \end{itemize}
-		      \item Analyze the security properties of your protocol. What attacks does it defend against, and what are its limitations?
-		      \item Discuss how your protocol would handle practical issues like key fingerprint verification and key rotation.
-	      \end{enumerate}
-
-	\item (10 points) \textbf{Cryptocurrency Signature Scheme Analysis:}
-	      A new cryptocurrency project is choosing between ECDSA and Ed25519 for transaction signatures. The system requirements include:
-	      \begin{itemize}
-		      \item High transaction throughput (thousands of signatures per second)
-		      \item Long-term security (system should remain secure for decades)
-		      \item Compatibility with hardware wallets and mobile devices
-		      \item Deterministic transaction signing for reproducibility
-	      \end{itemize}
-	      Analyze this decision:
-	      \begin{enumerate}
-		      \item Compare ECDSA and Ed25519 for each requirement above. Which algorithm better meets each criterion and why?
-		      \item Discuss the implications of signature malleability. How does this affect each algorithm and why might it matter for cryptocurrency applications?
-		      \item Analyze the quantum resistance of both options. What migration path would you recommend for long-term security?
-		      \item Consider the ecosystem effects: existing wallet software, hardware support, and developer familiarity. How do these practical factors influence the decision?
-		      \item Make a final recommendation with justification, considering both technical and practical factors.
-	      \end{enumerate}
-
-	\item (10 points) \textbf{Secure Communication System Architecture:}
-	      You are architecting a secure communication system for a large organization (10,000+ employees) that needs to protect against both external attackers and potential insider threats. The system must support real-time messaging, file sharing, and voice calls.
-	      Design and analyze a complete solution:
-	      \begin{enumerate}
-		      \item Specify your cryptographic algorithm choices for:
-		            \begin{itemize}
-			            \item Key exchange protocols
-			            \item Digital signature schemes
-			            \item Symmetric encryption algorithms
-			            \item Hash functions and MACs
-		            \end{itemize}
-		      \item Describe your key management architecture. How do you bootstrap trust, distribute keys, and handle key rotation?
-		      \item Analyze your system's security properties against various attack scenarios:
-		            \begin{itemize}
-			            \item Network eavesdropping
-			            \item Server compromise
-			            \item Endpoint compromise
-			            \item Insider attacks
-		            \end{itemize}
-		      \item Discuss the performance implications of your design choices and how you would optimize for a large-scale deployment.
-		      \item Evaluate your system's compliance with modern security standards and its readiness for post-quantum cryptography migration.
-	      \end{enumerate}
-\end{enumerate}
+	\question[10] \textbf{Secure Communication System Architecture:}
+	You are architecting a secure communication system for a large organization (10,000+ employees) that needs to protect against both external attackers and potential insider threats. The system must support real-time messaging, file sharing, and voice calls.
+	Design and analyze a complete solution:
+	\begin{parts}
+		\part[2] Specify your cryptographic algorithm choices for:
+		\begin{itemize}
+			\item Key exchange protocols
+			\item Digital signature schemes
+			\item Symmetric encryption algorithms
+			\item Hash functions and MACs
+		\end{itemize}
+		\part[2] Describe your key management architecture. How do you bootstrap trust, distribute keys, and handle key rotation?
+		\part[2] Analyze your system's security properties against various attack scenarios:
+		\begin{itemize}
+			\item Network eavesdropping
+			\item Server compromise
+			\item Endpoint compromise
+			\item Insider attacks
+		\end{itemize}
+		\part[2] Discuss the performance implications of your design choices and how you would optimize for a large-scale deployment.
+		\part[2] Evaluate your system's compliance with modern security standards and its readiness for post-quantum cryptography migration.
+	\end{parts}
+\end{questions}
 
 \begin{tcolorbox}[colframe=EarthBrown!30!white,colback=EarthBrown!5!white]
-	\textbf{Bonus Challenge (20 extra points):} The transition to post-quantum cryptography will require replacing current elliptic curve systems with quantum-resistant alternatives. Research and analyze one of the following aspects of this transition:
-	\begin{enumerate}
-		\item \textbf{NIST Post-Quantum Standards:} Analyze the recently standardized ML-KEM and ML-DSA algorithms. How do their key sizes, performance characteristics, and security assumptions compare to current ECC systems?
-		\item \textbf{Hybrid Classical/Post-Quantum Systems:} Describe approaches for combining classical and post-quantum algorithms during the transition period. What are the benefits and challenges of hybrid systems?
-		\item \textbf{Migration Timeline and Challenges:} Analyze the practical challenges of migrating existing systems (browsers, mobile apps, IoT devices) from ECC to post-quantum cryptography. What factors determine the migration timeline?
-	\end{enumerate}
-	Your answer should include: current standardization status, performance comparisons with existing systems, deployment challenges, and recommendations for practitioners preparing for the post-quantum transition. Check the Optional Readings under the topic listing for the Post-Quantum Cryptography on the course website for helpful references!
+	\section*{Bonus Question}
+	\begin{questions}
+		\bonusquestion[20] The transition to post-quantum cryptography will require replacing current elliptic curve systems with quantum-resistant alternatives. Research and analyze one of the following aspects of this transition:
+		\begin{parts}
+			\part \textbf{NIST Post-Quantum Standards:} Analyze the recently standardized ML-KEM and ML-DSA algorithms. How do their key sizes, performance characteristics, and security assumptions compare to current ECC systems?
+			\part \textbf{Hybrid Classical/Post-Quantum Systems:} Describe approaches for combining classical and post-quantum algorithms during the transition period. What are the benefits and challenges of hybrid systems?
+			\part \textbf{Migration Timeline and Challenges:} Analyze the practical challenges of migrating existing systems (browsers, mobile apps, IoT devices) from ECC to post-quantum cryptography. What factors determine the migration timeline?
+		\end{parts}
+		Your answer should include: current standardization status, performance comparisons with existing systems, deployment challenges, and recommendations for practitioners preparing for the post-quantum transition. Check the Optional Readings under the topic listing for the Post-Quantum Cryptography on the course website for helpful references!
+	\end{questions}
 \end{tcolorbox}
 
 \end{document}
