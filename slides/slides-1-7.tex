@@ -156,25 +156,6 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Time for more actual magic}
-	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
-				\item \textbf{Zero-knowledge proofs} allow you to prove that you know
-				      a secret without revealing any information about it.
-				\item They built ``zero-knowledge virtual machines'' where you can execute
-				      an entire program that runs as a zero-knowledge proof.
-				\item ZKP battleship game: server proves to the players that its
-				      output to their battleship guesses is correct, without revealing any
-				      additional information (e.g. ship location).
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.4\textwidth}
-			\imagewithcaption{battleship.jpg}{Battleship board game. Source: Hasbro}
-		\end{column}
-	\end{columns}
-\end{frame}
-
 \begin{frame}{Hard problems}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -430,7 +411,7 @@
 	\definitionbox{Class P}{
 		The union of all \textbf{TIME}$(n^k)$ classes for all constants $k$.
 		\begin{itemize}
-			\item P = \textbf{TIME}$(n) \cup$ \textbf{TIME}$(n^2) \cup$ \textbf{TIME}$(n^3) \cup \ldots$
+			\item P = $\textbf{TIME}(n) \cup \textbf{TIME}(n^2) \cup \textbf{TIME}(n^3) \cup \ldots$
 			\item Contains all problems solvable in polynomial time.
 			\item Generally considered ``efficiently solvable''.
 		\end{itemize}
@@ -482,6 +463,21 @@
 \end{frame}
 
 \begin{frame}{NP: A cryptographic example}
+	\textbf{Problem}: Given a hash value $H$, does there exist an input $M$ such that $\func{hash}{M} = H$?
+	\begin{itemize}[<+->]
+		\item \textbf{Finding the solution}: Could take exponential time (brute-force searching through possible inputs)
+		\item \textbf{Verifying a candidate solution}: Given a potential input $M_0$:
+		      \begin{enumerate}
+			      \item Compute $\func{hash}{M_0}$
+			      \item Check if $\func{hash}{M_0} = H$
+			      \item Return ``yes'' if they match, ``no'' otherwise
+		      \end{enumerate}
+		\item This verification runs in polynomial time!
+		\item Therefore, this hash preimage problem is in NP.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{NP: Another cryptographic example}
 	\textbf{Problem}: Given plaintext $P$ and ciphertext $C$, does there exist a key $K$ such that $C = E(K, P)$?
 	\begin{itemize}[<+->]
 		\item \textbf{Finding the solution}: Could take exponential time (brute-force key search)
@@ -769,8 +765,10 @@
 			\textbf{Average-case hardness (Crypto)}
 			\begin{itemize}[<+->]
 				\item Random instances are typically hard.
-				\item Few (if any) easy instances.
-				\item \textbf{Example}: Factoring random large integers.
+				      \begin{itemize}
+					      \item \textbf{Example}: Getting $a$ or $b$ if I know $(g^a \bmod p, g^b \bmod p, g^{ab} \bmod p)$ (Diffie-Hellman).
+					      \item \textbf{Example}: Factoring products of large primes (RSA).
+				      \end{itemize}
 				\item Perfect for cryptographic applications.
 			\end{itemize}
 		\end{column}
