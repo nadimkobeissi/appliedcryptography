@@ -79,10 +79,10 @@
 		\end{subparts}
 	\end{parts}
 
-	\question[10] \textbf{Cryptographic Lifecycle Management}
+	\question[5] \textbf{Cryptographic Lifecycle Management}
 
 	\begin{parts}
-		\part[10] \textbf{The Deprecation Timeline:}
+		\part[5] \textbf{The Deprecation Timeline:}
 		You're the cryptography lead at a software company with products deployed globally. Management asks you to create a comprehensive plan for deprecating weak algorithms.
 		\begin{subparts}
 			\subpart Using RC4's history as a case study, create a framework for monitoring cryptographic algorithms for weaknesses. What early warning signs should trigger migration planning?
@@ -95,9 +95,23 @@
 
 \section{Secure Messaging Protocols}
 \begin{questions}
-	\question[15] \textbf{Protocol Design and Analysis}
+	\question[20] \textbf{Protocol Design and Analysis}
 
 	\begin{parts}
+
+		\part[10] \textbf{Designing a Secure Handshake:}
+		\begin{subparts}
+			\subpart Design a complete key exchange protocol for a secure messenger. Your design should address:
+			\begin{itemize}
+				\item Initial key establishment between strangers
+				\item Authentication to prevent man-in-the-middle attacks
+				\item Forward secrecy for long-term security
+				\item Efficiency for mobile devices
+			\end{itemize}
+			\subpart Analyze the security properties of your protocol. What attacks does it defend against, and what are its limitations?
+			\subpart Discuss how your protocol would handle practical issues like key fingerprint verification and key rotation.
+		\end{subparts}
+
 		\part[5] \textbf{PGP vs Signal Design Philosophy:}
 		You're consulting for a government agency that needs end-to-end encrypted communications. They're debating between a PGP-based solution and a Signal-based approach.
 		\begin{subparts}

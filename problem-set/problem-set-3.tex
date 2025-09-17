@@ -98,7 +98,7 @@
 	\question[15] \textbf{Curve Selection Under Pressure}
 
 	\begin{parts}
-		\part[5] \textbf{The Government Backdoor Controversy:}
+		\part[7.5] \textbf{The Government Backdoor Controversy:}
 		You're the security architect for a new messaging app. Cryptographers are debating whether NIST P-256 contains a government backdoor, while Curve25519 offers better security properties but less widespread hardware support.
 		\begin{subparts}
 			\subpart Analyze the specific concerns about NIST curves: what would a backdoor look like, and how could it be exploited without breaking the underlying mathematical problems?
@@ -107,7 +107,7 @@
 			\subpart Propose a solution that addresses both the backdoor concerns and the compliance requirements. What compromises would you make?
 		\end{subparts}
 
-		\part[5] \textbf{The Invalid Curve Attack Scenario:}
+		\part[7.5] \textbf{The Invalid Curve Attack Scenario:}
 		A security researcher discovers that your ECDH implementation doesn't validate input points, making it vulnerable to invalid curve attacks.
 		\begin{subparts}
 			\subpart Design a specific attack exploiting this vulnerability. What information can an attacker extract, and how long would the attack take?
@@ -115,30 +115,12 @@
 			\subpart Develop a comprehensive input validation strategy that prevents this attack class. What performance impact does your solution have?
 			\subpart Compare this vulnerability to other implementation mistakes like reusing nonces in ECDSA. Which class of error is more dangerous in practice?
 		\end{subparts}
-
-		\part[5] \textbf{Mobile Performance Optimization Challenge:}
-		Your mobile app needs to perform thousands of ECDH operations per minute on low-end smartphones, but battery life and performance are critical concerns.
-		\begin{subparts}
-			\subpart Compare the performance characteristics of different elliptic curves for your use case. Consider both computational cost and memory usage.
-			\subpart Design an optimization strategy that balances security and performance. Would you use precomputed tables, special curve forms, or other techniques?
-			\subpart Analyze the security implications of your optimizations: what new attack surfaces do they create?
-			\subpart Evaluate whether quantum resistance should influence your current design decisions, given the mobile hardware lifecycle.
-		\end{subparts}
 	\end{parts}
 
 	\question[15] \textbf{Implementation Vulnerability Analysis}
 
 	\begin{parts}
-		\part[5] \textbf{The PlayStation 3 Forensics Challenge:}
-		You're a digital forensics expert investigating cryptocurrency theft. You discover that the thief's wallet software reused nonces in ECDSA signatures, similar to the PlayStation 3 vulnerability.
-		\begin{subparts}
-			\subpart Design a forensic analysis procedure to recover the private key from blockchain transaction signatures. What information do you need, and how would you process it?
-			\subpart Estimate how many transactions with reused nonces you would need to guarantee key recovery. How does this depend on the specific nonce reuse pattern?
-			\subpart Develop a tool to scan existing blockchains for this vulnerability. What would you look for, and how would you optimize the search?
-			\subpart Analyze the broader implications: if wallet software commonly had this bug, what percentage of cryptocurrency could be at risk?
-		\end{subparts}
-
-		\part[5] \textbf{Side-Channel Attack Laboratory:}
+		\part[7.5] \textbf{Side-Channel Attack Laboratory:}
 		You're tasked with testing an embedded device's ECDSA implementation for side-channel vulnerabilities.
 		\begin{subparts}
 			\subpart Design a timing attack against variable-time scalar multiplication. What information would you measure, and how would you extract the private key?
@@ -147,7 +129,7 @@
 			\subpart Evaluate the trade-offs between security and performance for different countermeasures. Which threats should you prioritize defending against?
 		\end{subparts}
 
-		\part[5] \textbf{The Ed25519 Validation Crisis:}
+		\part[7.5] \textbf{The Ed25519 Validation Crisis:}
 		You discover that two widely-used Ed25519 libraries accept different signatures as valid for the same message and public key, breaking interoperability.
 		\begin{subparts}
 			\subpart Investigate what causes this inconsistency: what validation steps do different implementations handle differently?
@@ -160,21 +142,7 @@
 
 \section{Applied Cryptography Case Studies}
 \begin{questions}
-	\question[10] \textbf{Key Exchange Protocol Design:}
-	You are designing a secure messaging application that needs to establish encrypted communication channels between users who have never communicated before. The application must work on mobile devices with limited computational resources and intermittent network connectivity.
-	\begin{parts}
-		\part[4] Design a complete key exchange protocol using the cryptographic primitives from lectures 1.7 and 1.8. Your design should address:
-		\begin{itemize}
-			\item Initial key establishment between strangers
-			\item Authentication to prevent man-in-the-middle attacks
-			\item Forward secrecy for long-term security
-			\item Efficiency for mobile devices
-		\end{itemize}
-		\part[3] Analyze the security properties of your protocol. What attacks does it defend against, and what are its limitations?
-		\part[3] Discuss how your protocol would handle practical issues like key fingerprint verification and key rotation.
-	\end{parts}
-
-	\question[10] \textbf{Cryptocurrency Signature Scheme Analysis:}
+	\question[15] \textbf{Cryptocurrency Signature Scheme Analysis:}
 	A new cryptocurrency project is choosing between ECDSA and Ed25519 for transaction signatures. The system requirements include:
 	\begin{itemize}
 		\item High transaction throughput (thousands of signatures per second)
@@ -184,34 +152,34 @@
 	\end{itemize}
 	Analyze this decision:
 	\begin{parts}
-		\part[2] Compare ECDSA and Ed25519 for each requirement above. Which algorithm better meets each criterion and why?
-		\part[2] Discuss the implications of signature malleability. How does this affect each algorithm and why might it matter for cryptocurrency applications?
-		\part[2] Analyze the quantum resistance of both options. What migration path would you recommend for long-term security?
-		\part[2] Consider the ecosystem effects: existing wallet software, hardware support, and developer familiarity. How do these practical factors influence the decision?
-		\part[2] Make a final recommendation with justification, considering both technical and practical factors.
+		\part[3] Compare ECDSA and Ed25519 for each requirement above. Which algorithm better meets each criterion and why?
+		\part[3] Discuss the implications of signature malleability. How does this affect each algorithm and why might it matter for cryptocurrency applications?
+		\part[3] Analyze the quantum resistance of both options. What migration path would you recommend for long-term security?
+		\part[3] Consider the ecosystem effects: existing wallet software, hardware support, and developer familiarity. How do these practical factors influence the decision?
+		\part[3] Make a final recommendation with justification, considering both technical and practical factors.
 	\end{parts}
 
-	\question[10] \textbf{Secure Communication System Architecture:}
+	\question[15] \textbf{Secure Communication System Architecture:}
 	You are architecting a secure communication system for a large organization (10,000+ employees) that needs to protect against both external attackers and potential insider threats. The system must support real-time messaging, file sharing, and voice calls.
 	Design and analyze a complete solution:
 	\begin{parts}
-		\part[2] Specify your cryptographic algorithm choices for:
+		\part[3] Specify your cryptographic algorithm choices for:
 		\begin{itemize}
 			\item Key exchange protocols
 			\item Digital signature schemes
 			\item Symmetric encryption algorithms
 			\item Hash functions and MACs
 		\end{itemize}
-		\part[2] Describe your key management architecture. How do you bootstrap trust, distribute keys, and handle key rotation?
-		\part[2] Analyze your system's security properties against various attack scenarios:
+		\part[3] Describe your key management architecture. How do you bootstrap trust, distribute keys, and handle key rotation?
+		\part[3] Analyze your system's security properties against various attack scenarios:
 		\begin{itemize}
 			\item Network eavesdropping
 			\item Server compromise
 			\item Endpoint compromise
 			\item Insider attacks
 		\end{itemize}
-		\part[2] Discuss the performance implications of your design choices and how you would optimize for a large-scale deployment.
-		\part[2] Evaluate your system's compliance with modern security standards and its readiness for post-quantum cryptography migration.
+		\part[3] Discuss the performance implications of your design choices and how you would optimize for a large-scale deployment.
+		\part[3] Evaluate your system's compliance with modern security standards and its readiness for post-quantum cryptography migration.
 	\end{parts}
 \end{questions}
 
