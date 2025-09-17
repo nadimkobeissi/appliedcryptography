@@ -9,7 +9,7 @@ This repository contains source code of the course materials for Applied Cryptog
 - `problem-set`: Problem sets.
 - `quiz`: Self-assessment quizzes.
 - `slides`: Lecture slides.
-- `starter-kit`: Cryptography implementations starter kit, written in Rust, for use during practical sessions.
+- `starter-kit`: Cryptography implementations starter kits, written in Go and Rust, for use during practical sessions.
 - `syllabus`: Course syllabus.
 - `website`: [Course website](https://appliedcryptography.page).
 

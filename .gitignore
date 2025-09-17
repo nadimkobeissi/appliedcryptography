@@ -32,13 +32,10 @@ objects/*/*.pdf
 # Exams
 exams/*.tex
 
-# Rust
-starter-kit/target
-**/*.rs.bk
-*.pdb
-Cargo.lock
-
 # Go
+starter-kit/go/bin
+starter-kit/go/pkg
+starter-kit/go/vendor
 *.exe
 *.exe~
 *.dll
@@ -47,3 +44,9 @@ Cargo.lock
 *.test
 *.out
 go.work
+
+# Rust
+starter-kit/rust/target
+**/*.rs.bk
+*.pdb
+Cargo.lock
