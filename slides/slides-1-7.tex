@@ -920,137 +920,6 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Why does $p$ need to be prime?}
-	\begin{itemize}[<+->]
-		\item \textbf{Critical requirement}: In Diffie-Hellman, $p$ must be a prime number.
-		\item \textbf{What happens with composite $p$?} Let's see with an example:
-		      \begin{itemize}
-			      \item Suppose $p = 15 = 3 \times 5$ (composite)
-			      \item The group $\mathbb{Z}_{15}^*$ has only 8 elements: $\{1, 2, 4, 7, 8, 11, 13, 14\}$
-			      \item Missing: $\{3, 5, 6, 9, 10, 12\}$ (share factors with 15)
-		      \end{itemize}
-		\item \textbf{With prime $p$}: The group $\mathbb{Z}_p^*$ has exactly $p-1$ elements
-		      \begin{itemize}
-			      \item Every non-zero element has an inverse
-			      \item Clean mathematical structure
-		      \end{itemize}
-		\item \textbf{Small subgroup attacks}: When $p-1$ has small factors, attackers can exploit them!
-		      \begin{itemize}
-			      \item Example: If $p-1 = 2 \times q$ where $q$ is small
-			      \item Attacker can solve DLP in the small subgroup of size $q$
-			      \item This dramatically reduces security!
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Why are these elements ``missing''?}
-	\begin{itemize}[<+->]
-		\item \textbf{The key requirement}: Elements in $\mathbb{Z}_n^*$ must be \textbf{coprime} to $n$
-		      \begin{itemize}
-			      \item Coprime means $\func{gcd}{a, n} = 1$ (no common factors)
-			      \item Only coprime elements have multiplicative inverses mod $n$
-		      \end{itemize}
-		\item \textbf{Let's check the missing elements} (with $n = 15 = 3 \times 5$):
-		      \begin{itemize}
-			      \item $\func{gcd}{3, 15} = 3$ (shares factor 3)
-			      \item $\func{gcd}{5, 15} = 5$ (shares factor 5)
-			      \item $\func{gcd}{6, 15} = 3$ (because $6 = 2 \times 3$)
-			      \item $\func{gcd}{9, 15} = 3$ (because $9 = 3^2$)
-			      \item $\func{gcd}{10, 15} = 5$ (because $10 = 2 \times 5$)
-			      \item $\func{gcd}{12, 15} = 3$ (because $12 = 4 \times 3$)
-		      \end{itemize}
-		\item \textbf{Why no inverse?} If $\func{gcd}{a, n} > 1$, then $ax \equiv 1 \pmod{n}$ has no solution
-		      \begin{itemize}
-			      \item Example: $3x \equiv 1 \pmod{15}$ is impossible because $3x$ is always divisible by 3
-			      \item But $1 \bmod 15$ leaves remainder 1, which is not divisible by 3!
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Small subgroup attack: a concrete example}
-	\textbf{Scenario}: Suppose we use a prime $p = 23$ (small for illustration)
-	\begin{itemize}[<+->]
-		\item Note that $p - 1 = 22 = 2 \times 11$
-		\item The group $\mathbb{Z}_{23}^*$ has subgroups of order 2, 11, and 22
-		\item \textbf{The attack}: Force the victim to work in a small subgroup!
-	\end{itemize}
-	\vspace{0.5cm}
-	\textbf{Attack execution}:
-	\begin{enumerate}[<+->]
-		\item \textbf{Attacker finds} an element of order 11: $g = 2$ has order 11 in $\mathbb{Z}_{23}^*$
-		      \begin{itemize}
-			      \item Check: $2^{11} \equiv 1 \pmod{23}$ (so order divides 11)
-			      \item Since 11 is prime, the order is exactly 11
-		      \end{itemize}
-		\item \textbf{Victim picks} secret $x$ and sends $g^x = 2^x \bmod 23$
-		\item \textbf{Problem}: There are only 11 possible values for $g^x$!
-		      \begin{itemize}
-			      \item Instead of checking all $\approx 22$ possible exponents
-			      \item Attacker only needs to check 11 values
-			      \item Security reduced by 50\%!
-		      \end{itemize}
-	\end{enumerate}
-\end{frame}
-
-\begin{frame}{Prime order groups: immunity to small subgroup attacks}
-	\textbf{Question}: Can we have small subgroup attacks in a prime order group?
-	\begin{itemize}[<+->]
-		\item \textbf{Short answer}: No! Prime order groups have no small subgroups.
-		\item \textbf{Lagrange's theorem}: In a group of order $n$, every subgroup's order divides $n$.
-		\item \textbf{Prime order consequence}: If group order = prime $q$, the only divisors are 1 and $q$.
-		      \begin{itemize}
-			      \item Subgroup of order 1 = $\{1\}$ (just the identity)
-			      \item Subgroup of order $q$ = the entire group
-			      \item \textbf{No other subgroups exist!}
-		      \end{itemize}
-	\end{itemize}
-	\vspace{0.5cm}
-	\textbf{Example}: Consider a group of prime order $q = 11$
-	\begin{itemize}[<+->]
-		\item \textbf{Every non-identity element} generates the whole group!
-		\item Pick any $g \neq 1$: the powers $g^1, g^2, \ldots, g^{10}, g^{11} = 1$ give all 11 elements
-		\item No element can generate a ``small'' subgroup—it's all or nothing
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{$\mathbb{Z}_p^*$ vs. prime order subgroups}
-	\textbf{Important distinction}: $\mathbb{Z}_p^*$ is usually \textbf{not} a prime order group!
-	\begin{itemize}[<+->]
-		\item For prime $p$, the group $\mathbb{Z}_p^*$ has order $p - 1$ (which is even for $p > 2$)
-		\item Example: $\mathbb{Z}_{23}^*$ has order 22 = $2 \times 11$
-		      \begin{itemize}
-			      \item This allows subgroups of order 1, 2, 11, and 22
-			      \item Elements of order 2 or 11 generate small subgroups!
-		      \end{itemize}
-	\end{itemize}
-	\vspace{0.5cm}
-	\textbf{Solution}: Work in a prime-order subgroup of $\mathbb{Z}_p^*$
-	\begin{itemize}[<+->]
-		\item Choose a safe prime: $p = 2q + 1$ where $q$ is also prime
-		\item The subgroup of order $q$ has no small subgroups
-		\item \textbf{Modern practice}: Use a generator of this order-$q$ subgroup
-		\item \textbf{Result}: Automatic immunity to small subgroup attacks!
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Small subgroup attack: devastating in practice}
-	\textbf{Real-world example}: LogJam attack (2015)\footnote{Adrian et al., Imperfect Forward Secrecy: How Diffie-Hellman Fails in Practice, CCS 2015}
-	\begin{itemize}[<+->]
-		\item Many servers used 512-bit DH with \textbf{weak primes}
-		\item Primes chosen where $p - 1 = 2 \times q$ with many small factors in $q$
-		\item \textbf{Result}: Nation-state attackers could break ``secure'' connections!
-	\end{itemize}
-	\vspace{0.5cm}
-	\textbf{Defense}: Use safe primes
-	\begin{itemize}[<+->]
-		\item A \textbf{safe prime} is a prime $p$ where $p = 2q + 1$ and $q$ is also prime
-		\item Example: $p = 23 = 2 \times 11 + 1$ (both 23 and 11 are prime)
-		\item This ensures the only subgroups have order 1, 2, $q$, or $2q$
-		\item The subgroup of order $q$ is large, preventing small subgroup attacks
-		\item Modern implementations require safe primes or equivalent protections
-	\end{itemize}
-\end{frame}
-
 \begin{frame}{DLP vs. factoring: equally hard}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -1232,6 +1101,8 @@
 	\end{itemize}
 \end{frame}
 
+\subsection{Real-World Diffie-Hellman}
+
 \begin{frame}{Real-world Diffie-Hellman}
 	\begin{itemize}[<+->]
 		\item \textbf{TLS/HTTPS}: Your browser uses Diffie-Hellman to establish secure connections.
@@ -1316,9 +1187,75 @@
 	\end{columns}
 \end{frame}
 
+\subsection{Attacks on Diffie-Hellman}
+
+\begin{frame}{Weak groups in the wild: the Logjam findings}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{center}
+				\Large\textbf{Not all Diffie-Hellman implementations are created equal}
+			\end{center}
+			\vspace{0.5cm}
+			\begin{itemize}[<+->]
+				\item The Logjam paper (2015)\footnote{\url{https://appliedcryptography.page/paper/\#imperfect-dh}} revealed widespread weaknesses in real-world DH deployments
+				\item Researchers scanned millions of servers and found shocking vulnerabilities
+				\item Three major categories of problems:
+				      \begin{itemize}
+					      \item Servers using 512-bit primes for non-export DHE.
+					      \item Composite-order subgroup attacks.
+					      \item Misconfigured DSA groups.
+				      \end{itemize}
+				\item \textbf{Observation}: Even correct algorithms fail when deployed incorrectly!
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Logjam finding: 512-bit primes still in use}
+	2,631 servers with browser-trusted certificates used 512-bit primes!
+	\begin{itemize}[<+->]
+		\item \textbf{Why this is bad}:
+		      \begin{itemize}
+			      \item 512-bit discrete logarithm is solvable with modest resources
+			      \item Passive eavesdropper can decrypt connections after the fact
+			      \item No active attack needed—just record and decrypt later!
+		      \end{itemize}
+		\item \textbf{Real-world proof}: Researchers decrypted test connections to www.fbi.gov
+		      \begin{itemize}
+			      \item FBI website used OpenSSL's default 512-bit group until April 2015
+			      \item Researchers had precomputed the discrete log table for this group
+			      \item Complete compromise of ``secure'' government communications!
+		      \end{itemize}
+		\item \textbf{The lesson}: Default configurations can be dangerously weak
+		      \begin{itemize}
+			      \item Many admins never change defaults
+			      \item OpenSSL's 512-bit default was catastrophically inadequate
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Another Logjam finding: Composite-order subgroup attacks}
+	\begin{itemize}[<+->]
+		\item Not all servers use ``safe'' primes where $(p-1)/2$ is also prime
+		      \begin{itemize}
+			      \item 4,800 out of 70,000 primes were not safe
+			      \item If $p-1$ has small factors, the group has weak subgroups
+			      \item \textbf{Note}: Even with non-safe primes, proper generator choice can maintain security
+		      \end{itemize}
+		\item Non-safe primes used with incorrectly chosen $g$:
+		      \begin{itemize}
+			      \item Servers use short exponents (160-256 bits) for ``efficiency''
+			      \item \textbf{AND} generator $g$ generates a small subgroup
+			      \item If $g$ generates the full group (order $p-1$), you're still secure!
+			      \item But many implementations chose $g$ poorly
+		      \end{itemize}
+		\item \textbf{Real impact}: 159 servers fully compromised, including VPN devices and web conferencing servers!
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{The dark side: unauthenticated Diffie-Hellman}
 	\begin{center}
-		\Large\textbf{But there's a serious problem\ldots}
+		\Large\textbf{Even with fully correct Diffie-Hellman implementations, there's a serious problem\ldots}
 	\end{center}
 	\vspace{0.5cm}
 	\begin{itemize}[<+->]
@@ -1466,6 +1403,8 @@
 	\end{itemize}
 	\textbf{Weakness}: TOFU is vulnerable on the very first connection!
 \end{frame}
+
+\subsection{The Future of Diffie-Hellman}
 
 \begin{frame}{Modern implementations: elliptic curves}
 	\begin{columns}[c]
