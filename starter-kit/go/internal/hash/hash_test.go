@@ -366,3 +366,92 @@ func TestConstantTimeComparison(t *testing.T) {
 		t.Error("VerifyMAC() failed to verify identical MAC")
 	}
 }
+func TestScrypt(t *testing.T) {
+	tests := []struct {
+		name     string
+		password []byte
+		salt     []byte
+		N, r, p  int
+		keyLen   int
+		expected string
+		wantErr  bool
+	}{
+		{
+			name:     "joy of cryptography / late submission",
+			password: []byte("joy of cryptography"),
+			salt:     []byte("late submission"),
+			N:        16384,
+			r:        8,
+			p:        1,
+			keyLen:   64,
+			expected: "e70a82c9ece9cde4ea574088f97b2b18727b1fa57ffe92abfdd16ba05f5934e17f27b57aefd80984e80ce224169f2a26104cbc5568951b566864bb7b12513824",
+			wantErr:  false,
+		},
+		{
+			name:     "hello nadim / random salt",
+			password: []byte("hello nadim"),
+			salt:     []byte("random salt"),
+			N:        16384,
+			r:        8,
+			p:        1,
+			keyLen:   64,
+			expected: "1f89d373ef4d7a11f940dffcab8ac30003814b1f2ec016a140de27cc8dd17b2c7221eaa86712540eb9e4ffab9ca7089a29906cb9e062002fdd0d99c87c121571",
+			wantErr:  false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := Scrypt(tt.password, tt.salt, tt.N, tt.r, tt.p, tt.keyLen)
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("Scrypt() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if tt.wantErr {
+				return
+			}
+
+			if len(got) != tt.keyLen {
+				t.Fatalf("Scrypt() returned %d bytes, want %d", len(got), tt.keyLen)
+			}
+
+			gotHex := hex.EncodeToString(got)
+			if gotHex != tt.expected {
+				t.Errorf("Scrypt() = %s, want %s", gotHex, tt.expected)
+			}
+		})
+	}
+}
+
+func TestScryptDefault(t *testing.T) {
+	tests := []struct {
+		name     string
+		password []byte
+		salt     []byte
+	}{
+		{
+			name:     "joy of cryptography / late submission",
+			password: []byte("joy of cryptography"),
+			salt:     []byte("late submission"),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dk1, err := ScryptDefault(tt.password, tt.salt)
+			if err != nil {
+				t.Fatalf("ScryptDefault() error = %v", err)
+			}
+			if len(dk1) != 32 {
+				t.Fatalf("ScryptDefault() returned %d bytes, want 32", len(dk1))
+			}
+
+			dk2, err := ScryptDefault(tt.password, tt.salt)
+			if err != nil {
+				t.Fatalf("ScryptDefault() second call error = %v", err)
+			}
+			if !bytes.Equal(dk1, dk2) {
+				t.Error("ScryptDefault() not deterministic for same inputs")
+			}
+		})
+	}
+}

@@ -113,3 +113,36 @@ func ExampleVerifyMAC() {
 	// Valid MAC: true
 	// Invalid MAC: false
 }
+
+func ExampleScrypt() {
+	password := []byte("Hello Suleiman")
+	salt := []byte("Hello carl")
+	N, r, p := 16384, 8, 1
+	keyLen := 64
+
+	dk, err := hash.Scrypt(password, salt, N, r, p, keyLen)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Derived key: %s\n", hex.EncodeToString(dk))
+	fmt.Printf("Length: %d bytes\n", len(dk))
+	// Output:
+	// Derived key: e4549587a6c797df0599a2afaa2fce5ef5f7564b8748da510924c178260df465a09fd941b5268ca9f5f079fa6e1d7c8c7bedce90c27de504fc00a5eb521ebb34
+	// Length: 64 bytes
+}
+
+func ExampleScryptDefault() {
+	password := []byte("AUB-Password(Important)")
+	salt := []byte("AUB-Salt(Also important)")
+	dk, err := hash.ScryptDefault(password, salt)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Length: %d bytes\n", len(dk))
+	// Output:
+	// Length: 32 bytes
+}

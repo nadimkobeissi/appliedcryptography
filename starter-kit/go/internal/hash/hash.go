@@ -10,6 +10,7 @@ import (
 	"fmt"
 
 	"golang.org/x/crypto/blake2b"
+	"golang.org/x/crypto/scrypt"
 )
 
 // SHA256 computes the SHA-256 hash of the input data.
@@ -80,4 +81,34 @@ func VerifyMAC(key, data, expectedMAC []byte) (bool, error) {
 
 	// Use subtle.ConstantTimeCompare for constant-time comparison to prevent timing attacks
 	return subtle.ConstantTimeCompare(computedMAC, expectedMAC) == 1, nil
+}
+
+// Scrypt derives a key from the provided password and salt using the scrypt KDF.
+// The parameters N (memory cost), r (block size), and p (parallelization) control the work factor.
+// The keyLen specifies the length of the derived key (in bytes).
+// Returns a key of length keyLen.
+// Typical secure values are N>=32768 (2^15), r=8, p=1, with a unique 16+ byte salt.
+func Scrypt(password, salt []byte, N, r, p, keyLen int) ([]byte, error) {
+	if keyLen <= 0 {
+		return nil, errors.New("keyLen must be positive")
+	}
+	// Delegate parameter validation to scrypt.Key as well; it returns descriptive errors
+	dk, err := scrypt.Key(password, salt, N, r, p, keyLen)
+	if err != nil {
+		return nil, fmt.Errorf("scrypt key derivation failed: %w", err)
+	}
+	return dk, nil
+}
+
+// ScryptDefault is just Scrypt with default parameters (for ease of use).
+// Defaults: N=32768, r=8, p=1. These are suitable for many applications but may be slow on constrained systems. Always use a unique, random salt.(can be changed if you find the values not suitable)
+// Returns a 32-byte key.
+func ScryptDefault(password, salt []byte) ([]byte, error) {
+	const (
+		defaultN   = 32768
+		defaultr   = 8
+		defaultp   = 1
+		defaultLen = 32
+	)
+	return Scrypt(password, salt, defaultN, defaultr, defaultp, defaultLen)
 }
