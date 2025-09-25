@@ -19,7 +19,7 @@
 \end{frame}
 
 \begin{frame}{Why we're interested in TLS}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item Encrypts all your web traffic (the \textbf{S} in HTTP\textbf{S}!)
 		\item Great way to introduce \textbf{authenticated key exchange}.
 		\item Great way to make you hate certificates and certificate authorities.
@@ -42,19 +42,10 @@
 	\bigimagewithcaption{tls-attacks-timeline-2015.png}{TLS attacks up until 2015.}
 \end{frame}
 
-\begin{frame}{TLS isn't very interesting}
-	\begin{itemize}
-		\item Too complicated for no good reason.
-		\item Doesn't accomplish properties as interesting as those of more modern protocols, or even Signal.
-		\item Certificate authorities.
-		\item Very important however to understand, basically a golden door into the world of protocols.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{\ldots and yet\ldots}
+\begin{frame}{TLS is everywhere}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Web browsing (HTTPS)
 				\item Email (IMAPS, POP3S, SMTPS)
 				\item Instant messaging (WhatsApp, Telegram)
@@ -68,7 +59,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Streaming services (Netflix, Spotify)
 				\item IoT device communication
 				\item Remote desktop protocols
@@ -87,7 +78,7 @@
 \section{Transport Layer Security}
 
 \begin{frame}{Primary applications that drove TLS development}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{E-commerce websites}
 		      \begin{itemize}
 			      \item Credit card numbers
@@ -148,7 +139,7 @@
 \end{frame}
 
 \begin{frame}{Key security goal: Defeating man-in-the-middle attacks}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{MITM attack scenario:}
 		      \begin{enumerate}
 			      \item Attacker intercepts encrypted traffic.
@@ -166,7 +157,7 @@
 \end{frame}
 
 \begin{frame}{Four requirements for wide TLS adoption}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Efficiency}
 		      \begin{itemize}
 			      \item Minimize performance penalty vs. unencrypted connections.
@@ -200,7 +191,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Efficiency matters for:}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Servers}
 				      \begin{itemize}
 					      \item Reduce hardware costs
@@ -215,7 +206,7 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Interoperability ensures:}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Works across different:
 				      \begin{itemize}
 					      \item Hardware platforms
@@ -233,7 +224,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Extensibility allows:}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Adding new cryptographic algorithms
 				\item Supporting new features
 				\item Adapting to security threats
@@ -242,7 +233,7 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Versatility means:}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Application-agnostic design
 				\item Like TCP: doesn't care about upper layers
 				\item Can secure any application protocol
@@ -253,7 +244,7 @@
 \end{frame}
 
 \begin{frame}{The confusing SSL/TLS naming}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{1995}: Netscape develops SSL (Secure Sockets Layer).
 		\item \textbf{SSL 2.0 and SSL 3.0}: Both had serious security flaws.
 		\item \textbf{Confusing terminology}: People still call TLS ``SSL''.
@@ -266,7 +257,7 @@
 \end{frame}
 
 \begin{frame}{TLS version evolution}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{TLS 1.0 (1999)}
 		      \begin{itemize}
 			      \item Least secure TLS version.
@@ -286,7 +277,7 @@
 \end{frame}
 
 \begin{frame}{TLS 1.3: The great cleanup}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Problem}: TLS 1.2 inherited decades of legacy features.
 		      \begin{itemize}
 			      \item Suboptimal security and performance.
@@ -319,7 +310,7 @@
 \end{frame}
 
 \begin{frame}{TLS architecture: Two main protocols}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Handshake Protocol}
 		      \begin{itemize}
 			      \item Determines secret keys shared between client and server.
@@ -337,7 +328,7 @@
 \end{frame}
 
 \begin{frame}{Cipher Suites: The building blocks of TLS security}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{What is a cipher suite?}
 		      \begin{itemize}
 			      \item A combination of cryptographic algorithms used together
@@ -362,7 +353,7 @@
 \end{frame}
 
 \begin{frame}{Common cipher suites in practice}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{TLS 1.2 cipher suites} (verbose naming):
 		      \begin{itemize}
 			      \item \texttt{TLS\_ECDHE\_RSA\_WITH\_AES\_256\_GCM\_SHA384}
@@ -389,7 +380,7 @@
 \begin{frame}{The TLS handshake: Basic flow}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Step 1}: Client initiates secure connection.
 				      \begin{itemize}
 					      \item Sends \texttt{ClientHello} message.
@@ -416,7 +407,7 @@
 \end{frame}
 
 \begin{frame}{Critical step: Certificate validation}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{The crux of TLS security}: Server authenticates itself to client
 		\item \textbf{What is a certificate?}
 		      \begin{itemize}
@@ -438,7 +429,7 @@
 \end{frame}
 
 \begin{frame}{Certificate Authorities: The trust foundation}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Problem}: How does the browser know which public key to use for verification?
 		\item \textbf{Solution}: Certificate Authorities (CAs)
 		      \begin{itemize}
@@ -457,7 +448,7 @@
 \end{frame}
 
 \begin{frame}{Traditional CA validation nightmare}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Getting a certificate before 2015}:
 		      \begin{itemize}
 			      \item Contact a Certificate Authority (Verisign, Thawte, etc.).
@@ -484,7 +475,7 @@
 \end{frame}
 
 \begin{frame}{Let's Encrypt: revolution in TLS certificates (2015)}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Game-changing}:
 		      \begin{itemize}
 			      \item \textbf{Free} certificates for everyone.
@@ -522,7 +513,7 @@
 \end{frame}
 
 \begin{frame}{Certificate chains in practice}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Real-world example}: Connecting to \texttt{www.google.com}
 		\item \textbf{Certificate chain structure}:
 		      \begin{itemize}
@@ -541,7 +532,7 @@
 \end{frame}
 
 \begin{frame}{Exploring certificates with OpenSSL}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Connect and view certificate}:
 		      \begin{itemize}
 			      \item \texttt{openssl s\_client -connect www.google.com:443}
@@ -562,7 +553,7 @@
 \end{frame}
 
 \begin{frame}{TLS Record Protocol: The data transport layer}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{What is the Record Protocol?}
 		      \begin{itemize}
 			      \item Transport protocol for all TLS data.
@@ -579,7 +570,7 @@
 \end{frame}
 
 \begin{frame}{TLS Record: Basic structure}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{TLS Record = chunk of data ≤ 16KB}
 		\item \textbf{Simple header structure}:
 		      \begin{itemize}
@@ -601,7 +592,7 @@
 \end{frame}
 
 \begin{frame}{TLS Record fields breakdown}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Byte 1 - ContentType}:
 		      \begin{itemize}
 			      \item \texttt{22} = Handshake data
@@ -644,7 +635,7 @@
 \end{frame}
 
 \begin{frame}{Encrypted records (ContentType = 23)}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{When ContentType = 23}:
 		      \begin{itemize}
 			      \item Payload is encrypted and authenticated.
@@ -665,7 +656,7 @@
 \end{frame}
 
 \begin{frame}{Nonces: Ensuring unique encryption}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Problem}: Each record needs a unique nonce for encryption.
 		\item \textbf{TLS solution}: Derive nonces from sequence numbers.
 		      \begin{itemize}
@@ -744,7 +735,7 @@
 \end{frame}
 
 \begin{frame}{TLS: the handshake protocol}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{The crux of TLS}: Process to establish shared secret keys.
 		\item \textbf{Goal}: Initiate secure communications between client and server.
 		\item \textbf{Key outcome}: Both parties agree on:
@@ -769,7 +760,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Client's role:}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Proposes} configurations
 				\item Lists supported TLS versions
 				\item Lists supported cipher suites
@@ -779,7 +770,7 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Server's role:}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Chooses} final configuration
 				\item Selects TLS version to use
 				\item Picks cipher suite from client's list
@@ -796,7 +787,7 @@
 \end{frame}
 
 \begin{frame}{ClientHello: ``I want to establish a TLS connection''}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Client's opening message to server}
 		\item \textbf{Key contents}:
 		      \begin{itemize}
@@ -814,7 +805,7 @@
 \end{frame}
 
 \begin{frame}{ServerHello: ``Here's what we'll use and who I am''}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Server's response}: Packed with crucial information!
 		\item \textbf{Configuration decisions}:
 		      \begin{itemize}
@@ -833,7 +824,7 @@
 \end{frame}
 
 \begin{frame}{Client verification: ``Can I trust this server?''}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{When client receives ServerHello}:
 		\item \textbf{Step 1}: Certificate validation
 		      \begin{itemize}
@@ -862,7 +853,7 @@
 	\begin{center}
 		\textbf{After successful verification:}
 	\end{center}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item Client is confident it's talking to the legitimate server.
 		\item Both parties have the same shared secret keys.
 		\item Ready to send encrypted application data!
@@ -879,7 +870,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Step 1}: Browser sends ClientHello
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Lists supported ciphers
 				\item Includes DH public key
 				\item Adds random nonce
@@ -887,7 +878,7 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Step 2}: Server responds
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Sends ServerHello
 				\item Provides certificate for ``\texttt{aub.edu.lb}''
 				\item Includes signature and MAC
@@ -898,7 +889,7 @@
 	\begin{center}
 		\textbf{Step 3}: Browser verification
 	\end{center}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item Certificate validated using browser's built-in CA certificates
 		\item Must be signed by trusted certificate authority
 		\item Certificate must match domain name: ``\texttt{aub.edu.lb}''
@@ -911,7 +902,7 @@
 \end{frame}
 
 \begin{frame}{Security guarantees after successful TLS handshake}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{All communications are encrypted and authenticated}
 		\item \textbf{What an eavesdropper can see}:
 		      \begin{itemize}
@@ -932,7 +923,7 @@
 \end{frame}
 
 \begin{frame}{Forward Secrecy: Protecting past communications}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{The problem}: What if a server's private key is compromised?
 		      \begin{itemize}
 			      \item Attacker could decrypt \textbf{all past} TLS sessions.
@@ -954,7 +945,7 @@
 \end{frame}
 
 \begin{frame}{How TLS achieves forward secrecy}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Ephemeral Diffie-Hellman key exchange}:
 		      \begin{itemize}
 			      \item Server generates fresh DH key pair for each session.
@@ -979,7 +970,7 @@
 \end{frame}
 
 \begin{frame}{How things can go wrong with TLS}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Common TLS failure scenarios:}
 		      \begin{itemize}
 			      \item Even with the most secure ciphers, TLS can be compromised
@@ -997,7 +988,7 @@
 \end{frame}
 
 \begin{frame}{Compromised Certificate Authority}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Root CAs}: Organizations that browsers trust to validate certificates
 		\item \textbf{Normal process}:
 		      \begin{itemize}
@@ -1021,7 +1012,7 @@
 \end{frame}
 
 \begin{frame}{Real-world example: DigiNotar}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{What happened}:
 		      \begin{itemize}
 			      \item Dutch certificate authority DigiNotar was hacked.
@@ -1047,7 +1038,7 @@
 \begin{frame}{Real-world example: Kazakhstan government certificate}
 	\begin{columns}[c]
 		\begin{column}{0.8\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{2015}: Kazakhstan government creates ``national security certificate''
 				      \begin{itemize}
 					      \item Root certificate that could enable MITM attacks.
@@ -1076,7 +1067,7 @@
 \end{frame}
 
 \begin{frame}{Kazakhstan case: Lessons for TLS security}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Government-level MITM attempts are real}
 		      \begin{itemize}
 			      \item Nation-states can create sophisticated infrastructure.
@@ -1100,7 +1091,7 @@
 \end{frame}
 
 \begin{frame}{Certificate Transparency}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{The problem}: CAs can issue certificates without anyone knowing.
 		      \begin{itemize}
 			      \item Rogue certificates for targeted attacks.
@@ -1127,7 +1118,7 @@
 \begin{frame}{Example: How Let's Encrypt uses CT}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{The Static CT API}: Evolution of Certificate Transparency.
 				      \begin{itemize}
 					      \item Logs represented as simple flat files (``tiles'').
@@ -1152,7 +1143,7 @@
 \end{frame}
 
 \begin{frame}{Critical examination: Are browser vendors truly neutral?}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Browser vendors as gatekeepers}:
 		      \begin{itemize}
 			      \item Google (Chrome), Mozilla (Firefox), Apple (Safari), Microsoft (Edge).
@@ -1177,7 +1168,7 @@
 \end{frame}
 
 \begin{frame}{Thinking beyond: Decentralized trust alternatives}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Why consider alternatives?}
 		      \begin{itemize}
 			      \item Reduce single points of failure.
@@ -1203,7 +1194,7 @@
 \end{frame}
 
 \begin{frame}{Compromised Server}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Worst-case scenario}: Server is fully controlled by attacker
 		\item \textbf{What the attacker gains}:
 		      \begin{itemize}
@@ -1223,7 +1214,7 @@
 \end{frame}
 
 \begin{frame}{Server compromise: Mitigation strategies}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Good news}: High-profile services are well-protected
 		      \begin{itemize}
 			      \item Gmail, iCloud, major banks
@@ -1249,7 +1240,7 @@
 \end{frame}
 
 \begin{frame}{Compromised Client}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Attack scenario}: Browser or client application is compromised
 		\item \textbf{What the attacker gains}:
 		      \begin{itemize}
@@ -1272,7 +1263,7 @@
 \end{frame}
 
 \begin{frame}{Client compromise: Attack techniques}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Malware installation}:
 		      \begin{itemize}
 			      \item Trojans, viruses, browser plugins
@@ -1343,7 +1334,7 @@
 \begin{frame}{Lucky Thirteen (2013)}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Target}: TLS's CBC (Cipher Block Chaining) mode with HMAC
 				\item \textbf{The vulnerability}: Timing differences in MAC verification\footnote{\url{https://appliedcryptography.page/paper/\#lucky-thirteen}}
 				      \begin{itemize}
@@ -1365,7 +1356,7 @@
 \end{frame}
 
 \begin{frame}{Lucky Thirteen: Technical details}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{CBC padding in TLS}:
 		      \begin{itemize}
 			      \item Messages padded to block boundary (16 bytes for AES)
@@ -1389,7 +1380,7 @@
 \end{frame}
 
 \begin{frame}{Lucky Thirteen: Real-world impact}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Affected systems}: All TLS 1.0-1.2 implementations using CBC
 		      \begin{itemize}
 			      \item OpenSSL, NSS, GnuTLS, SChannel
@@ -1414,7 +1405,7 @@
 \begin{frame}{POODLE (2014): Downgrade attacks strike}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Full name}: Padding Oracle On Downgraded Legacy Encryption\footnote{\url{https://appliedcryptography.page/paper/\#google-poodle}}
 				\item \textbf{Target}: SSL 3.0 (ancient protocol from 1996)
 				\item \textbf{The setup}:
@@ -1437,7 +1428,7 @@
 \end{frame}
 
 \begin{frame}{POODLE: The padding oracle vulnerability}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{SSL 3.0 padding flaw}:
 		      \begin{itemize}
 			      \item Padding bytes can contain \textbf{any values}
@@ -1461,7 +1452,7 @@
 \end{frame}
 
 \begin{frame}{POODLE: Industry response and lessons}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Immediate response}:
 		      \begin{itemize}
 			      \item Major browsers disabled SSL 3.0 support
@@ -1487,7 +1478,7 @@
 \begin{frame}{Triple Handshakes and Cookie Cutters (2014)}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Discovered by}: Inria Prosecco team (future TLS 1.3 verifiers!)
 				\item \textbf{Core problem}: TLS handshake can be \textbf{resumed} with different certificates\footnote{\url{https://appliedcryptography.page/paper/\#triple-handshakes}}
 				      \begin{itemize}
@@ -1509,7 +1500,7 @@
 \end{frame}
 
 \begin{frame}{Triple Handshakes: The technical attack}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Session resumption vulnerability}:
 		      \begin{itemize}
 			      \item TLS allows resuming sessions with different certificates
@@ -1529,7 +1520,7 @@
 \end{frame}
 
 \begin{frame}{Triple Handshakes: Fixes and prevention}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Extended Master Secret (RFC 7627)}:
 		      \begin{itemize}
 			      \item Bind session keys to handshake transcript
@@ -1554,7 +1545,7 @@
 \begin{frame}{Heartbleed (2014): The bug that broke the internet}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Not a protocol flaw}: Implementation bug in OpenSSL\footnote{\url{https://appliedcryptography.page/paper/\#matter-heartbleed}}
 				\item \textbf{The vulnerability}: Buffer over-read in heartbeat extension
 				      \begin{itemize}
@@ -1575,7 +1566,7 @@
 \end{frame}
 
 \begin{frame}{Heartbleed: What attackers could steal}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Server's private keys}:
 		      \begin{itemize}
 			      \item TLS private keys used for authentication
@@ -1619,7 +1610,7 @@
 		Server responds: \texttt{"A" + 65534 bytes of memory}
 	\end{center}
 	\pause
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{One line of C code}: \texttt{memcpy(bp, pl, payload);}
 		\item \textbf{Missing check}: \texttt{if (payload != 1 + 2 + hblen) error();}
 		\item \textbf{Lesson}: Simple bugs can have massive consequences
@@ -1627,7 +1618,7 @@
 \end{frame}
 
 \begin{frame}{Heartbleed: Global impact and response}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Affected systems}:
 		      \begin{itemize}
 			      \item 17\% of all SSL/TLS web servers (500,000+ sites)
@@ -1653,7 +1644,7 @@
 \begin{frame}{SMACK and FREAK: Two attacks from one paper (2015)}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Research by}: Inria Prosecco team (again!)
 				\item \textbf{Two major attack classes discovered}:
 				      \begin{itemize}
@@ -1677,7 +1668,7 @@
 \end{frame}
 
 \begin{frame}{SMACK: How state machine attacks work}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Example scenario}: Web server with two TLS libraries
 		      \begin{itemize}
 			      \item Library A handles initial handshake
@@ -1705,7 +1696,7 @@
 \end{frame}
 
 \begin{frame}{FREAK: Factoring RSA Export Keys}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Export-grade cryptography legacy}:
 		      \begin{itemize}
 			      \item 1990s US export restrictions required weak crypto
@@ -1726,7 +1717,7 @@
 \end{frame}
 
 \begin{frame}{When math was classified as weapons}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{US Export Administration Regulations (1970s-1990s)}:
 		      \begin{itemize}
 			      \item Cryptographic software classified as ``munitions''
@@ -1743,7 +1734,7 @@
 \end{frame}
 
 \begin{frame}{When math was classified as weapons}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Practical impact}:
 		      \begin{itemize}
 			      \item US software artificially weakened for international markets
@@ -1761,7 +1752,7 @@
 \begin{frame}{Bernstein v. United States}
 	\begin{columns}[c]
 		\begin{column}{0.7\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Daniel J. Bernstein}: Graduate student at UC Berkeley (1990s)
 				      \begin{itemize}
 					      \item Developed ``Snuffle'' encryption algorithm
@@ -1785,7 +1776,7 @@
 \begin{frame}{Bernstein v. United States}
 	\begin{columns}[c]
 		\begin{column}{0.7\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Key victories}:
 				      \begin{itemize}
 					      \item 1996: Court rules source code is speech
@@ -1824,7 +1815,7 @@
 \begin{frame}{The Cypherpunk Manifesto (1993)}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Key principles}:\footnote{\url{https://www.activism.net/cypherpunk/manifesto.html}}
 				      \begin{itemize}
 					      \item Cryptography essential for privacy
@@ -1844,7 +1835,7 @@
 \end{frame}
 
 \begin{frame}{The Moral Character of Cryptographic Work}{Rogaway, 2015}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Core thesis}: Cryptography is inherently political - it configures power
 		      \begin{itemize}
 			      \item Not just puzzles and math, but tools that shape society
@@ -1867,7 +1858,7 @@
 \end{frame}
 
 \begin{frame}{Rogaway's call to action}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Cryptographers' moral obligations}:
 		      \begin{itemize}
 			      \item Remember responsibility to humanity
@@ -1895,7 +1886,7 @@
 \end{frame}
 
 \begin{frame}{SMACK: Real vulnerabilities found}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{miTLS vs. OpenSSL}:
 		      \begin{itemize}
 			      \item Attacker can skip client authentication
@@ -1923,7 +1914,7 @@
 \begin{frame}{Logjam: When Diffie-Hellman goes wrong (2015)}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Research team}: 14 researchers from 10 institutions\footnote{\url{https://appliedcryptography.page/paper/\#imperfect-dh}}
 				\item \textbf{Target}: Diffie-Hellman key exchange in TLS
 				\item \textbf{Two main attacks}:
@@ -1943,7 +1934,7 @@
 \end{frame}
 
 \begin{frame}{Logjam: The downgrade attack}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Attack flow}:
 		      \begin{enumerate}
 			      \item Client offers strong DH groups (2048-bit)
@@ -1968,7 +1959,7 @@
 \end{frame}
 
 \begin{frame}{Logjam: Precomputation attacks on 1024-bit groups}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{The number field sieve algorithm}:
 		      \begin{itemize}
 			      \item Most efficient known algorithm for breaking DH
@@ -1996,7 +1987,7 @@
 \end{frame}
 
 \begin{frame}{Logjam: The ``well-known groups'' problem}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Common practice}: Everyone uses the same DH parameters
 		      \begin{itemize}
 			      \item RFC 5114 specifies ``standard'' groups
@@ -2024,7 +2015,7 @@
 \end{frame}
 
 \begin{frame}{Logjam: Countermeasures and lessons}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Immediate fixes}:
 		      \begin{itemize}
 			      \item Disable export-grade DH entirely
@@ -2050,7 +2041,7 @@
 \begin{frame}{SWEET32: Birthday attacks on 64-bit block ciphers (2016)}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Researchers}: Karthikeyan Bhargavan and Gaëtan Leurent (Inria)\footnote{\url{https://appliedcryptography.page/paper/\#inria-sweet32}}
 				\item \textbf{Target}: 64-bit block ciphers (3DES, Blowfish)
 				\item \textbf{Core vulnerability}: Birthday paradox in block cipher usage
@@ -2071,7 +2062,7 @@
 \end{frame}
 
 \begin{frame}{SWEET32: The birthday attack mechanics}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Birthday paradox}:
 		      \begin{itemize}
 			      \item For $n$-bit blocks, expect collision after $2^{n/2}$ blocks
@@ -2095,7 +2086,7 @@
 \end{frame}
 
 \begin{frame}{SWEET32: Real-world impact and remediation}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Vulnerable systems}:
 		      \begin{itemize}
 			      \item Legacy systems still using 3DES
@@ -2122,7 +2113,7 @@
 \begin{frame}{Transcript Collision Attacks (2016)}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item \textbf{Researchers}: Karthikeyan Bhargavan and Gaëtan Leurent (Inria)\footnote{\url{https://appliedcryptography.page/paper/\#inria-collisions}}
 				\item \textbf{Novel attack class}: Hash collision attacks on protocol transcripts
 				\item \textbf{Core idea}:
@@ -2147,7 +2138,7 @@
 \end{frame}
 
 \begin{frame}{Transcript Collision: Attack on TLS}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{TLS transcript hashing}:
 		      \begin{itemize}
 			      \item TLS computes hash of all handshake messages
@@ -2171,7 +2162,7 @@
 \end{frame}
 
 \begin{frame}{Transcript Collision: Cross-protocol attacks}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Cross-protocol confusion}:
 		      \begin{itemize}
 			      \item Same hash function used in multiple protocols
@@ -2207,7 +2198,7 @@
 \section{How TLS 1.3 Transformed Protocol Design}
 
 \begin{frame}{TLS 1.3: The great cleanup}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Problem}: TLS 1.2 inherited decades of legacy features.
 		      \begin{itemize}
 			      \item Suboptimal security and performance.
@@ -2226,7 +2217,7 @@
 \end{frame}
 
 \begin{frame}{TLS 1.3: Learning from TLS 1.2's mistakes}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{TLS 1.2's legacy problem}:
 		      \begin{itemize}
 			      \item Decades of accumulated features and algorithms
@@ -2247,7 +2238,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{TLS 1.2 supported:}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item MD5 (broken)
 				\item SHA-1 (broken)
 				\item RC4 (broken)
@@ -2258,7 +2249,7 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{TLS 1.3 only allows:}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Strong hash functions only
 				\item Authenticated encryption
 				\item Modern, secure algorithms
@@ -2273,7 +2264,7 @@
 \end{frame}
 
 \begin{frame}{Authenticated encryption: No more MAC-then-encrypt}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{TLS 1.2 approach}: MAC-then-encrypt
 		      \begin{itemize}
 			      \item Compute MAC over plaintext
@@ -2296,7 +2287,7 @@
 \end{frame}
 
 \begin{frame}{Supported cryptographic algorithms}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Authenticated Encryption} (only 3 algorithms):
 		      \begin{itemize}
 			      \item AES-GCM (128-bit or 256-bit keys)
@@ -2322,7 +2313,7 @@
 \end{frame}
 
 \begin{frame}{TLS 1.3 extensions and variations}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{TLS 1.3 supports many options}:
 		      \begin{itemize}
 			      \item Client certificate authentication
@@ -2346,7 +2337,7 @@
 \end{frame}
 
 \begin{frame}{TLS 1.3: formal verification during the design phase}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Revolutionary approach}: Protocol design meets formal methods
 		      \begin{itemize}
 			      \item Traditional approach: Design protocol \rightarrow\ implement \rightarrow\ find bugs \rightarrow\ patch
@@ -2369,7 +2360,7 @@
 \end{frame}
 
 \begin{frame}{Inria Prosecco: Proving TLS 1.3 security}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Team Prosecco} (Programming securely with cryptography):
 		      \begin{itemize}
 			      \item Led by Karthikeyan Bhargavan at Inria Paris
@@ -2392,7 +2383,7 @@
 \end{frame}
 
 \begin{frame}{Project Everest: Verified cryptographic implementations}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Project Everest}: Microsoft Research Cambridge initiative
 		      \begin{itemize}
 			      \item Goal: Provably secure, high-performance cryptographic code
@@ -2419,7 +2410,7 @@
 \end{frame}
 
 \begin{frame}{ProVerif: Automated protocol verification}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{What is ProVerif?}
 		      \begin{itemize}
 			      \item Automated tool for analyzing cryptographic protocols.
@@ -2446,7 +2437,7 @@
 \end{frame}
 
 \begin{frame}{\fstar: Functional programming with verification}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{What is \fstar?}
 		      \begin{itemize}
 			      \item Functional programming language with dependent types.
@@ -2474,7 +2465,7 @@
 \end{frame}
 
 \begin{frame}{Formal verification benefits for TLS 1.3}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Design-time bug prevention}:
 		      \begin{itemize}
 			      \item Subtle protocol flaws caught before standardization.
@@ -2502,7 +2493,7 @@
 \end{frame}
 
 \begin{frame}{Removing dangerous features: The CRIME attack example}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{TLS 1.2 feature}: Optional data compression
 		      \begin{itemize}
 			      \item Reduces bandwidth usage
@@ -2524,7 +2515,7 @@
 \end{frame}
 
 \begin{frame}{Zero padding: Defeating traffic analysis}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Traffic analysis attack}:
 		      \begin{itemize}
 			      \item Attackers observe encrypted traffic patterns.
@@ -2542,7 +2533,7 @@
 \end{frame}
 
 \begin{frame}{Downgrade protection: Preventing version rollback}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Downgrade attack scenario}:
 		      \begin{enumerate}
 			      \item Client sends ClientHello supporting TLS 1.3
@@ -2571,7 +2562,7 @@
 		\texttt{44 4F 57 4E 47 52 44 00} = ``\textbf{DOWNGRD}\textbackslash x00''
 	\end{center}
 	\pause
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Clever engineering}: Human-readable sentinel values
 		\item \textbf{Easy debugging}: Hex dumps show ``DOWNGRD'' string
 		\item \textbf{Security through visibility}: Makes downgrade attempts obvious
@@ -2586,7 +2577,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{TLS 1.2 handshake:}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Client \rightarrow\ Server: ClientHello
 				\item Client \leftarrow\ Server: ServerHello + Certificate
 				\item Client \rightarrow\ Server: Key exchange
@@ -2596,7 +2587,7 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{TLS 1.3 handshake:}
-			\begin{itemize}[<+->]
+			\begin{itemize}
 				\item Client \rightarrow\ Server: ClientHello + Key exchange
 				\item Client \leftarrow\ Server: ServerHello + Certificate + Finished
 				\item \textbf{1 round trip} before encrypted data
@@ -2610,7 +2601,7 @@
 \end{frame}
 
 \begin{frame}{Why single round-trip matters}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Real-world impact}:
 		      \begin{itemize}
 			      \item High-traffic servers: thousands of connections per second
@@ -2632,7 +2623,7 @@
 \end{frame}
 
 \begin{frame}{Session resumption: Even faster connections}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{The idea}: Reuse keys from previous connections
 		      \begin{itemize}
 			      \item Client and server remember shared \textbf{preshared key (PSK)}
@@ -2653,7 +2644,7 @@
 \end{frame}
 
 \begin{frame}{0-RTT}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Zero Round-Trip Time (0-RTT)}:
 		      \begin{itemize}
 			      \item Client sends encrypted data in \textbf{first message}
@@ -2672,7 +2663,7 @@
 \end{frame}
 
 \begin{frame}{0-RTT security considerations}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Replay attack vulnerability}:
 		      \begin{itemize}
 			      \item Attacker records 0-RTT data packet
@@ -2697,7 +2688,7 @@
 \end{frame}
 
 \begin{frame}{TLS 1.3: Summary of improvements}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{Security improvements}:
 		      \begin{itemize}
 			      \item Removed all weak algorithms and dangerous features
@@ -2721,7 +2712,7 @@
 \end{frame}
 
 \begin{frame}{The future of protocol design}
-	\begin{itemize}[<+->]
+	\begin{itemize}
 		\item \textbf{TLS 1.3 as a model}:
 		      \begin{itemize}
 			      \item First major protocol with end-to-end formal verification
