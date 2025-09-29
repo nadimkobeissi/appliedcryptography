@@ -16,43 +16,39 @@
 
 \section{Transport Layer Security}
 \begin{questions}
-	\question[20] \textbf{TLS Attack Analysis}
+	\question[15] \textbf{TLS Attack Analysis}
 
 	\begin{parts}
-		\part[10] \textbf{The Legacy Downgrade Scenario:}
+		\part[7] \textbf{The Legacy Downgrade Scenario:}
 		You are the security engineer for a major e-commerce platform. Your security scan reveals that 15\% of your customers are still using browsers that support SSL 3.0 and TLS 1.0.
 		\begin{subparts}
 			\subpart Design a migration strategy that balances security and business requirements. How would you phase out support for vulnerable protocols without losing customers?
 			\subpart An attacker attempts a POODLE attack by forcing downgrades to SSL 3.0. Explain step-by-step how this attack works and why modern TLS versions prevent it.
-			\subpart Your CEO asks: ``Can't we just keep supporting old protocols for compatibility?'' Write a technical risk assessment explaining why this is dangerous, using specific examples from the TLS attack timeline.
 		\end{subparts}
 
-		\part[10] \textbf{Certificate Authority Compromise:}
+		\part[8] \textbf{Certificate Authority Compromise:}
 		A major Certificate Authority has been compromised, similar to the DigiNotar incident. The attacker has issued valid certificates for your company's domains.
 		\begin{subparts}
 			\subpart Describe the immediate steps you would take upon discovering this compromise. Consider both technical measures and communication strategies.
 			\subpart Design a defense-in-depth strategy using Certificate Transparency, HPKP (HTTP Public Key Pinning), and other mechanisms to prevent future CA-related attacks.
-			\subpart Analyze the trade-offs between the CA model and alternative approaches like blockchain-based certificates or DANE. What would need to change for these alternatives to become practical?
 		\end{subparts}
 	\end{parts}
 
-	\question[15] \textbf{TLS 1.3 Design Decisions}
+	\question[10] \textbf{TLS 1.3 Design Decisions}
 
 	\begin{parts}
-		\part[7.5] \textbf{Forward Secrecy vs Performance:}
+		\part[5] \textbf{Forward Secrecy vs Performance:}
 		You're designing a high-traffic API service that needs to handle millions of TLS connections per day.
 		\begin{subparts}
 			\subpart Compare the performance implications of TLS 1.2's two-round-trip handshake versus TLS 1.3's single round-trip design. Quantify the latency savings for different geographic scenarios.
-			\subpart Analyze the security trade-offs of 0-RTT resumption. Design a policy for when your service should accept 0-RTT data and when it should refuse it.
-			\subpart Your infrastructure team wants to use RSA key exchange for ``simplicity.'' Explain why ephemeral Diffie-Hellman is crucial for forward secrecy, using concrete attack scenarios. Can RSA be used for ephemeral key exchange instead of Diffie-Hellman? Explain your answer.
+			\subpart Your infrastructure team wants to use RSA key exchange for ``simplicity.'' Explain why ephemeral Diffie-Hellman is crucial for forward secrecy, using concrete attack scenarios.
 		\end{subparts}
 
-		\part[7.5] \textbf{Enterprise Monitoring and Middleboxes:}
+		\part[5] \textbf{Enterprise Monitoring and Middleboxes:}
 		Your organization's security team demands the ability to inspect TLS traffic for data loss prevention and malware detection.
 		\begin{subparts}
 			\subpart TLS 1.3's encrypted handshake prevents passive monitoring that was possible with TLS 1.2. Compare different approaches for enterprise TLS inspection (proxy with custom CA, TLS interception devices, endpoint agents). What are the security implications of each?
-			\subpart Design a solution that balances enterprise security requirements with user privacy. Consider split-tunneling, certificate pinning exceptions, and audit logging. How do you prevent abuse while enabling legitimate monitoring?
-			\subpart Analyze the ``TLS Encrypted Client Hello'' (ECH) extension. How does it further complicate enterprise monitoring? Propose a deployment strategy that addresses both privacy advocates' and enterprise administrators' concerns.
+			\subpart Design a solution that balances enterprise security requirements with user privacy. Consider split-tunneling, certificate pinning exceptions, and audit logging.
 		\end{subparts}
 	\end{parts}
 \end{questions}
@@ -67,14 +63,12 @@
 		\begin{subparts}
 			\subpart Explain why simply increasing the key size doesn't fix WEP's fundamental problems. Focus on the IV structure and its interaction with RC4's weak keys.
 			\subpart Design an attack against this ``improved'' WEP that demonstrates key recovery is still feasible. How many packets would you need?
-			\subpart The company argues that their network has low traffic, making statistical attacks impractical. Describe how active attacks (packet injection) can accelerate key recovery.
 		\end{subparts}
 
 		\part[5] \textbf{RC4 in Modern Protocols:}
 		Despite RC4's prohibition in TLS, you discover a proprietary VPN protocol still using RC4 ``with modifications.''
 		\begin{subparts}
 			\subpart The developers claim they ``fixed'' RC4 by discarding the first 3072 bytes of keystream. Analyze whether this prevents the known biases and attacks.
-			\subpart Design a broadcast attack scenario against this VPN protocol, assuming you can observe the same message encrypted multiple times. How would you exploit RC4's statistical biases?
 			\subpart Compare RC4's failure modes to modern stream ciphers like ChaCha20. What design principles make ChaCha20 resistant to the attacks that broke RC4?
 		\end{subparts}
 	\end{parts}
@@ -87,60 +81,42 @@
 		\begin{subparts}
 			\subpart Using RC4's history as a case study, create a framework for monitoring cryptographic algorithms for weaknesses. What early warning signs should trigger migration planning?
 			\subpart Design a deprecation timeline that considers: academic attacks becoming practical, industry standards changing, and the cost of emergency migrations. Use specific examples from RC4, MD5, and SHA-1.
-			\subpart Your legacy product team argues that supporting old algorithms is necessary for backward compatibility. Develop a risk-based approach to determine when compatibility must be sacrificed for security.
-			\subpart Create a communication strategy for informing users about algorithm deprecation. How do you balance transparency about vulnerabilities with avoiding panic?
 		\end{subparts}
 	\end{parts}
 \end{questions}
 
 \section{Secure Messaging Protocols}
 \begin{questions}
-	\question[20] \textbf{Protocol Design and Analysis}
+	\question[15] \textbf{Protocol Design and Analysis}
 
 	\begin{parts}
-
-		\part[5] \textbf{Designing a Secure Handshake:}
-		\begin{subparts}
-			\subpart Design a complete key exchange protocol for a secure messenger. Your design should address:
-			\begin{itemize}
-				\item Initial key establishment between strangers
-				\item Authentication to prevent man-in-the-middle attacks
-				\item Forward secrecy for long-term security
-				\item Efficiency for mobile devices
-			\end{itemize}
-			\subpart Analyze the security properties of your protocol. What attacks does it defend against, and what are its limitations?
-			\subpart Discuss how your protocol would handle practical issues like key fingerprint verification and key rotation.
-		\end{subparts}
 
 		\part[5] \textbf{PGP vs Signal Design Philosophy:}
 		You're consulting for a government agency that needs end-to-end encrypted communications. They're debating between a PGP-based solution and a Signal-based approach.
 		\begin{subparts}
 			\subpart Compare the threat models of PGP and Signal. Which assumptions does each make about user behavior, key management, and trust establishment?
 			\subpart Analyze the usability trade-offs: PGP's explicit key management versus Signal's automatic key exchange. Use specific scenarios to illustrate when each approach fails.
-			\subpart Design a hybrid system that combines PGP's explicit trust model with Signal's usability. What compromises are necessary?
 		\end{subparts}
 
 		\part[5] \textbf{Signal Under Hostile Control:}
 		Signal has been taken over by a new President, Mischievous Whistletaker, whose intentions are unclear. You're advising journalists and activists who depend on Signal for their safety.
 		\begin{subparts}
 			\subpart Analyze which components of Signal could be compromised without breaking end-to-end encryption. Consider: metadata collection, client updates, key directory manipulation, and sealed sender weaknesses. How would users detect each type of compromise?
-			\subpart Signal's code is open source but lacks reproducible builds. Design a verification strategy that helps users determine if their client matches the published source. What are the limitations of this approach, and what attacks remain undetectable?
-			\subpart Evaluate the risk profile for different user groups (casual users, journalists, activists) if Whistletaker implements subtle backdoors. Consider: selective targeting, parallel construction risks, and the difference between passive monitoring and active attacks. What alternative architectures or protocols would provide better resistance to operator compromise?
+			\subpart Evaluate the risk profile for different user groups (casual users, journalists, activists) if Whistletaker implements subtle backdoors. What alternative architectures or protocols would provide better resistance to operator compromise?
 		\end{subparts}
 
 		\part[5] \textbf{Asynchronous Key Agreement:}
 		You're designing a secure messaging system for humanitarian workers in conflict zones with intermittent connectivity.
 		\begin{subparts}
 			\subpart Compare X3DH's pre-key approach with alternative designs for asynchronous key agreement. What are the trust assumptions and server requirements?
-			\subpart Analyze the security implications of storing pre-keys on a server. How does Signal minimize the trust required in the server?
 			\subpart Design a key agreement protocol that works even if the server is compromised. What functionality would you sacrifice?
 		\end{subparts}
 	\end{parts}
 
-	\question[30] \textbf{Authenticated Key Exchange and Ratcheting Analysis}
+	\question[25] \textbf{Authenticated Key Exchange and Ratcheting Analysis}
 
 	\begin{parts}
-		\part[6] \textbf{Basic Authentication Properties:}
+		\part[5] \textbf{Basic Authentication Properties:}
 		Analyze the following authenticated key exchange protocols. For each protocol, determine whether it provides mutual authentication, key confirmation, and protection against man-in-the-middle attacks.
 
 		\textbf{Protocol A:}
@@ -167,7 +143,7 @@
 		\end{center}
 		Both parties compute $K = g^{xy}$ as the shared key.
 
-		\part[8] \textbf{Identity Binding and Forward Secrecy:}
+		\part[7] \textbf{Identity Binding and Forward Secrecy:}
 		The following protocols attempt to provide authenticated key exchange. Identify which protocols are vulnerable to identity misbinding, key compromise impersonation (KCI), replay attacks, or lack perfect forward secrecy.
 
 		\textbf{Protocol C:}
@@ -194,7 +170,7 @@
 		\end{center}
 		Where $a$ is $A$'s long-term private key, $b$ is $B$'s long-term private key, and the session key is $K = g^{xy}$.
 
-		\part[16] \textbf{Broken Ratcheting Protocols:}
+		\part[13] \textbf{Broken Ratcheting Protocols:}
 		The following two ratcheting protocols are used in messaging applications. Both contain subtle flaws that compromise their security properties. For each protocol, identify the vulnerabilities and explain their impact on forward secrecy, backward secrecy (post-compromise security), and message authentication.
 
 		\textbf{Ratchet Protocol 1: \textit{``SimpleSafe''}}
@@ -233,7 +209,6 @@
 			\subpart What happens if an attacker compromises a device mid-conversation?
 			\subpart Can old messages be decrypted after key compromise?
 			\subpart Can an attacker forge future messages after temporary access?
-			\subpart Are there any replay or reordering vulnerabilities?
 		\end{subparts}
 	\end{parts}
 \end{questions}
@@ -241,7 +216,7 @@
 \begin{tcolorbox}[colframe=EarthBrown!30!white,colback=EarthBrown!5!white]
 	\section*{Bonus Question}
 	\begin{questions}
-		\bonusquestion[30] The evolution from SSL to TLS 1.3 represents one of the most important case studies in applied cryptography. Choose one of the following research topics:
+		\bonusquestion[20] The evolution from SSL to TLS 1.3 represents one of the most important case studies in applied cryptography. Choose one of the following research topics:
 		\begin{parts}
 			\part \textbf{Formal Verification Impact}: Analyze how ProVerif, \fstar, and other formal methods influenced TLS 1.3's design. Compare sections of the protocol that were formally verified versus those that weren't. What bugs were caught during design versus after deployment?
 			\part \textbf{The RC4 Retrospective}: Create a detailed timeline of RC4's cryptanalysis from 1994 to 2015. For each major attack, explain: the mathematical insight, the gap between theory and practice, and the community's response. What lessons does RC4 teach about cipher design and deprecation?

@@ -16,22 +16,21 @@
 
 \section{Understanding E2EE Cloud Storage}
 \begin{questions}
-	\question[15] \textbf{Threat Models and Trade-offs}
+	\question[15] \textbf{Threat Models and Key Management}
 
 	\begin{parts}
 		\part[7] \textbf{The Mud Puddle Test:}
 		You're designing an E2EE cloud storage service for a healthcare provider that must comply with HIPAA regulations.
 		\begin{subparts}
 			\subpart Explain the ``mud puddle test'' and why it's fundamental to true E2EE systems. What are the implications for password recovery mechanisms?
-			\subpart Your CEO insists on having a ``password recovery'' feature because ``users always forget passwords.'' Design three different approaches that balance security with usability, clearly stating the security trade-offs of each.
-			\subpart Compare Apple's Advanced Data Protection approach (optional E2EE with recovery options) versus a mandatory E2EE approach. Which would you recommend for the healthcare provider and why?
+			\subpart Your CEO insists on having a ``password recovery'' feature. Design two different approaches that balance security with usability, clearly stating the security trade-offs of each.
+			\subpart Compare Apple's Advanced Data Protection approach versus a mandatory E2EE approach. Which would you recommend for the healthcare provider and why?
 		\end{subparts}
 
 		\part[8] \textbf{Multi-Device Key Management:}
 		Design a key management system for an E2EE cloud storage service that supports seamless multi-device access.
 		\begin{subparts}
 			\subpart Compare password-based key derivation, device pairing, and cloud keychain approaches. What are the security and usability trade-offs of each?
-			\subpart Propose a solution using WebAuthn PRF extension for key derivation. How would this compare to traditional password-based approaches in terms of security and usability?
 			\subpart How would you handle device revocation when a user loses their phone? Consider both immediate security needs and the user's ability to recover their data.
 			\subpart Design a key rotation strategy that maintains backward compatibility while improving forward secrecy. How do you handle files shared with other users during rotation?
 		\end{subparts}
@@ -40,20 +39,19 @@
 	\question[10] \textbf{Authentication Protocols}
 
 	\begin{parts}
-		\part[10] \textbf{Password Authentication Comparison:}
+		\part[10] \textbf{OPAQUE and Password Authentication:}
 		You're evaluating authentication mechanisms for a new E2EE cloud storage service.
 		\begin{subparts}
-			\subpart Compare traditional password hashing (PBKDF2/Argon2) with SRP and OPAQUE. For each approach, explain what the server learns about the user's password and what attacks are possible after server compromise.
-			\subpart The OPAQUE protocol uses an OPRF (Oblivious Pseudorandom Function). Explain how the 2HashDH OPRF works and why the server cannot perform offline dictionary attacks even though it helps compute the function.
-			\subpart Your implementation team suggests using OPAQUE's shared session key for encrypting the backup key (like WhatsApp might be doing). Explain why this would be catastrophic for security and what should be used instead.
-			\subpart Design a migration path from password hashing to OPAQUE for an existing service with 10 million users. How do you handle the transition period where both systems must coexist?
+			\subpart Compare traditional password hashing (PBKDF2/Argon2) with OPAQUE. For each approach, explain what the server learns about the user's password and what attacks are possible after server compromise.
+			\subpart The OPAQUE protocol uses an OPRF. Explain how the 2HashDH OPRF works and why the server cannot perform offline dictionary attacks.
+			\subpart Your team suggests using OPAQUE's shared session key for encrypting the backup key. Explain why this would be catastrophic for security and what should be used instead.
 		\end{subparts}
 	\end{parts}
 \end{questions}
 
 \section{Cryptographic Attacks on Real Systems}
 \begin{questions}
-	\question[20] \textbf{MEGA Attack Analysis}
+	\question[18] \textbf{MEGA Attack Analysis}
 
 	\begin{parts}
 		\part[10] \textbf{RSA Key Recovery Attack:}
@@ -61,35 +59,32 @@
 		\begin{subparts}
 			\subpart MEGA uses AES-ECB to encrypt RSA private keys without integrity protection. Explain how this enables the RSA key recovery attack that works in just 2 login attempts.
 			\subpart The attack exploits RSA-CRT implementation. Describe how modifying the parameter $u' \neq u = q^{-1} \bmod p$ creates an oracle that leaks information about the prime factor $q$.
-			\subpart MEGA attempted to patch these vulnerabilities but introduced new ones. Explain why ad-hoc fixes to broken cryptographic designs are dangerous, using MEGA's patches as a case study.
+			\subpart MEGA attempted to patch these vulnerabilities but introduced new ones. Explain why ad-hoc fixes to broken cryptographic designs are dangerous.
 		\end{subparts}
 
-		\part[10] \textbf{Plaintext Recovery and System Compromise:}
+		\part[8] \textbf{Plaintext Recovery:}
 		Once the RSA key is recovered, an attacker can compromise the entire system.
 		\begin{subparts}
 			\subpart Explain how the recovered RSA key enables building an AES-ECB decryption oracle for all encrypted keys in MEGA's system.
-			\subpart MEGA uses a complex key hierarchy with a master key encrypting all other keys. Design a simpler, more secure key hierarchy that would prevent these cascading failures.
-			\subpart Compare MEGA's use of AES-ECB with proper authenticated encryption (AES-GCM). What specific attacks does authenticated encryption prevent?
+			\subpart Design a simpler, more secure key hierarchy that would prevent these cascading failures.
 		\end{subparts}
 	\end{parts}
 
-	\question[15] \textbf{Nextcloud Vulnerabilities}
+	\question[12] \textbf{Nextcloud Vulnerabilities}
 
 	\begin{parts}
-		\part[7] \textbf{Authentication Failures:}
+		\part[6] \textbf{Authentication Failures:}
 		Nextcloud's E2EE implementation has critical authentication flaws.
 		\begin{subparts}
-			\subpart Explain the ``Key Insertion Attack'' where the server can substitute metadata keys. Why doesn't RSA-OAEP provide authentication, and what does this mean for security?
-			\subpart Describe the ``Ghost Key Attack'' involving missing bounds checking. How can a simple programming error lead to files being encrypted with all zeros?
-			\subpart Propose fixes for both attacks that maintain backward compatibility with existing encrypted files.
+			\subpart Explain the ``Key Insertion Attack'' where the server can substitute metadata keys. Why doesn't RSA-OAEP provide authentication?
+			\subpart Describe the ``Ghost Key Attack'' involving missing bounds checking and propose fixes for both attacks.
 		\end{subparts}
 
-		\part[8] \textbf{AES-GCM IV Reuse:}
+		\part[6] \textbf{AES-GCM IV Reuse:}
 		Nextcloud reuses IVs when files are modified, breaking AES-GCM security.
 		\begin{subparts}
 			\subpart Explain why IV reuse in AES-GCM is catastrophic. What can an attacker learn from $C_1 \oplus C_2$ when the same IV is used?
 			\subpart Design an attack that recovers plaintext when you know one version of a file and observe another version encrypted with the same key and IV.
-			\subpart Nextcloud's response was to disable E2EE file sharing entirely. Was this an appropriate response? Design a better solution that preserves functionality while fixing the vulnerability.
 			\subpart Compare the security impact of IV reuse in AES-GCM versus AES-CBC. Why is GCM's authenticated encryption particularly vulnerable?
 		\end{subparts}
 	\end{parts}
@@ -97,53 +92,38 @@
 
 \section{WhatsApp Encrypted Backups}
 \begin{questions}
-	\question[10] \textbf{System Design Analysis}
+	\question[10] \textbf{HSM-Based Key Recovery}
 
 	\begin{parts}
-		\part[10] \textbf{HSM-Based Key Recovery:}
+		\part[10] \textbf{System Design and OPAQUE:}
 		WhatsApp uses Hardware Security Modules (HSMs) for their encrypted backup system.
 		\begin{subparts}
 			\subpart Explain WhatsApp's two-option approach: password-based recovery via HSM versus 64-digit user-managed keys. What are the security and usability trade-offs?
-			\subpart WhatsApp claims to use OPAQUE with HSM-enforced rate limiting. However, users cannot verify these claims. List three ways WhatsApp could provide transparency without compromising security.
-			\subpart The 64-digit key is unusually long (212 bits of entropy for 128-bit AES). Propose alternative key formats (like BIP39 mnemonics) that would be more user-friendly. Why might WhatsApp have chosen this inconvenient format?
-			\subpart Design an attack scenario where a malicious WhatsApp could compromise backups despite their claimed security architecture. What trust assumptions are users forced to make?
-		\end{subparts}
-	\end{parts}
-
-	\question[10] \textbf{OPAQUE Implementation}
-
-	\begin{parts}
-		\part[10] \textbf{OPAQUE Protocol Analysis:}
-		Analyze WhatsApp's use of OPAQUE for password-protected backups.
-		\begin{subparts}
 			\subpart WhatsApp's specification is ambiguous about whether they use OPAQUE's export key or shared session key for $\mathtt{OPAQUE}_K$. Explain why using the shared session key would completely break the security model.
-			\subpart During OPAQUE registration, the client sends the encrypted backup key to the server. Trace through the complete registration and retrieval process, identifying what each party learns at each step.
 			\subpart Compare WhatsApp's centralized HSM approach with Signal's SVR3 system that distributes trust across multiple enclaves. What are the advantages of Signal's approach?
-			\subpart The HSM enforces attempt limits to prevent brute-force attacks. Calculate how many attempts an attacker would need on average to crack a 6-digit PIN versus a 15-character password. How should the rate limiting policy differ for each?
+			\subpart The HSM enforces attempt limits to prevent brute-force attacks. Calculate how many attempts an attacker would need on average to crack a 6-digit PIN versus a 15-character password.
 		\end{subparts}
 	\end{parts}
 \end{questions}
 
 \section{Designing Secure E2EE Cloud Storage}
 \begin{questions}
-	\question[20] \textbf{Formal Protocol Design}
+	\question[15] \textbf{Formal Protocol Design}
 
 	\begin{parts}
-		\part[10] \textbf{Building a Secure Protocol:}
+		\part[8] \textbf{Building a Secure Protocol:}
 		Based on the formal treatment in the literature, sketch out components of a secure E2EE cloud storage protocol.
 		\begin{subparts}
 			\subpart Define a minimal key hierarchy with: root key $K_r$, file encryption keys $K_f$, and sharing keys $K_s$. How does separating these roles prevent MEGA's cascading failure pattern?
 			\subpart Sketch an authentication flow using OPAQUE that derives $K_r$ from the export key. What specific property of OPAQUE prevents offline attacks after server compromise?
-			\subpart Describe how per-recipient headers containing $\text{Enc}_{K_s}(K_f)$ enable file sharing. Why is this more efficient than re-encryption?
 			\subpart Identify three key security properties your design achieves that MEGA/Nextcloud lack. Give one specific attack each system suffers that your design prevents.
 		\end{subparts}
 
-		\part[10] \textbf{Implementation Considerations:}
+		\part[7] \textbf{Implementation Considerations:}
 		Consider practical aspects of deploying your E2EE cloud storage protocol.
 		\begin{subparts}
 			\subpart How would you handle password changes without re-encrypting all files? Design a key rotation mechanism that maintains security while being efficient.
 			\subpart Your protocol should support file versioning and deduplication. How do you implement these features without leaking information to the server?
-			\subpart Design a migration strategy for a service currently using server-side encryption to adopt your E2EE protocol. How do you handle the transition period?
 			\subpart What formal analysis tools (ProVerif, Tamarin, \fstar) would you use to verify your protocol? What security properties would you prove?
 		\end{subparts}
 	\end{parts}
@@ -152,7 +132,7 @@
 \begin{tcolorbox}[colframe=EarthBrown!30!white,colback=EarthBrown!5!white]
 	\section*{Bonus Question}
 	\begin{questions}
-		\bonusquestion[30] \textbf{The Cungadero Cloud Deluxe Audit}
+		\bonusquestion[20] \textbf{The Cungadero Cloud Deluxe Audit}
 
 		\begin{minipage}{0.15\textwidth}
 			\centering

@@ -16,87 +16,68 @@
 
 \section{Understanding Zero-Knowledge Properties}
 \begin{questions}
-	\question[15] \textbf{The Schnorr Protocol}
+	\question[20] \textbf{The Schnorr Protocol}
 
 	\begin{parts}
-		\part[7.5] \textbf{Protocol Analysis:}
+		\part[10] \textbf{Protocol Analysis:}
 		You are implementing authentication for a secure messaging app using the Schnorr identification protocol. Alice has public key $A = g^a$ where $a$ is her secret.
 		\begin{subparts}
 			\subpart Walk through one complete execution of the Schnorr protocol. Show all computations when Alice uses $y = 42$, the verifier challenges with $c = 7$, and Alice's secret is $a = 13$ (use modulo 101 for simplicity). Verify that the protocol accepts.
 			\subpart The protocol requires Alice to choose a fresh random $y$ for each execution. What attack becomes possible if Alice reuses the same $y$ for two different challenges $c_1$ and $c_2$? Show how to extract her secret.
 		\end{subparts}
 
-		\part[7.5] \textbf{Simulation and Deniability:}
+		\part[10] \textbf{Simulation and Zero-Knowledge:}
 		Bob claims he authenticated Alice using Schnorr's protocol and shows Charlie the transcript $(A, Y, c, r)$ as proof.
 		\begin{subparts}
 			\subpart Using the Robin Hood arrow analogy from the slides, explain why Charlie shouldn't be convinced. How is this similar to painting targets around arrows?
 			\subpart Write pseudocode for a simulator that generates valid-looking Schnorr transcripts without knowing the secret $a$.
+			\subpart Your colleague suggests ``optimizing'' the Schnorr protocol by having the prover send $y$ directly instead of $Y = g^y$. Explain why this breaks the zero-knowledge property.
 		\end{subparts}
 	\end{parts}
 
-	\question[10] \textbf{Three Essential Properties}
+	\question[15] \textbf{Soundness via Extraction}
 
+	You intercept two accepting transcripts from the same prover with the same commitment but different challenges: $(Y = g^{100}, c = 15, r = 250)$ and $(Y = g^{100}, c' = 22, r' = 341)$. The public key is $A = g^{17}$.
 	\begin{parts}
-		\part[5] \textbf{Soundness via Extraction:}
-		You intercept two accepting transcripts from the same prover with the same commitment but different challenges: $(Y = g^{100}, c = 15, r = 250)$ and $(Y = g^{100}, c' = 22, r' = 341)$. The public key is $A = g^{17}$.
-		\begin{subparts}
-			\subpart Extract the secret $a$ from these two transcripts. Show your work.
-			\subpart Explain why this extraction technique implies that a cheating prover has at most $\frac{1}{n}$ probability of fooling the verifier.
-		\end{subparts}
-
-		\part[5] \textbf{Zero-Knowledge Property:}
-		Your colleague suggests ``optimizing'' the Schnorr protocol by having the prover send $y$ directly instead of $Y = g^y$.
-		\begin{subparts}
-			\subpart Explain why this breaks the zero-knowledge property. What does the verifier learn?
-			\subpart Could you still simulate transcripts for this broken protocol? If not, why not?
-		\end{subparts}
+		\part[10] Extract the secret $a$ from these two transcripts. Show your work.
+		\part[5] Explain why this extraction technique implies that a cheating prover has at most $\frac{1}{n}$ probability of fooling the verifier.
 	\end{parts}
 \end{questions}
 
 \section{Sigma Protocols and Composition}
 \begin{questions}
-	\question[15] \textbf{Building Complex Proofs}
+	\question[20] \textbf{Building Complex Proofs}
 
 	\begin{parts}
-		\part[7.5] \textbf{OR Proofs:}
+		\part[10] \textbf{OR Proofs:}
 		You're building an anonymous whistleblower system where users can prove they're either a current employee (public key $A_1$) or a former employee with valid departure (public key $A_2$), without revealing which.
 		\begin{subparts}
 			\subpart Design an OR proof for this scenario. If the whistleblower knows the private key $a_1$ for $A_1$, outline how they generate the proof when the verifier's challenge is $C = 50$.
 			\subpart Explain why the verifier cannot determine whether the prover knows $a_1$ or $a_2$. Use the concept of simulated vs. real transcripts.
 		\end{subparts}
 
-		\part[7.5] \textbf{AND Proofs and Equality:}
+		\part[10] \textbf{AND Proofs and Equality:}
 		A cryptocurrency exchange needs users to prove they own accounts on three different blockchains, where each account has the same private key but different generators: $A_1 = g_1^a$, $A_2 = g_2^a$, $A_3 = g_3^a$.
 		\begin{subparts}
 			\subpart Construct a Sigma protocol that proves knowledge of $a$ such that all three discrete logs are equal. Show how using a single challenge $C$ for all three proofs maintains soundness.
 			\subpart Explain why running three separate Schnorr proofs (with independent challenges) would not achieve the same goal.
 		\end{subparts}
 	\end{parts}
-
-	\question[10] \textbf{Advanced Compositions}
-
-	\textbf{Proving Equality of Discrete Logs:}
-	You're implementing a system where users need to prove they control the same private key across multiple platforms with different generators.
-	\begin{parts}
-		\part Consider public keys $A_1 = g_1^a$, $A_2 = g_2^a$, and $A_3 = g_3^a$ where the generators $g_1, g_2, g_3$ are different but the private key $a$ is the same. Design a Sigma protocol that proves knowledge of $a$ and that all three discrete logs are equal.
-		\part Show the complete protocol execution: what does the prover send in the commitment phase, how does the single challenge $C$ get used, and what is the response? Write out the verification equations.
-		\part Explain why this AND proof maintains zero-knowledge. Could a verifier learn anything about $a$ from seeing the proof? Why is using a single challenge for all three proofs essential for proving equality?
-	\end{parts}
 \end{questions}
 
 \section{Non-Interactive Proofs and Fiat-Shamir}
 \begin{questions}
-	\question[15] \textbf{The Fiat-Shamir Transform}
+	\question[20] \textbf{The Fiat-Shamir Transform}
 
 	\begin{parts}
-		\part[7.5] \textbf{From Interactive to Non-Interactive:}
+		\part[10] \textbf{From Interactive to Non-Interactive:}
 		You're converting the Schnorr identification protocol to a signature scheme using Fiat-Shamir.
 		\begin{subparts}
 			\subpart Show the complete signing algorithm for message $m = \text{``Transfer \$1000 to Bob''}$. Include how the challenge is computed as $c = H(A, Y, m)$.
 			\subpart Explain why including the message $m$ in the hash is crucial. What attack becomes possible if we use $c = H(A, Y)$ instead?
 		\end{subparts}
 
-		\part[7.5] \textbf{Security in the Random Oracle Model:}
+		\part[10] \textbf{Security in the Random Oracle Model:}
 		The Fiat-Shamir transform assumes the hash function behaves as a random oracle.
 		\begin{subparts}
 			\subpart Explain what properties a random oracle has that a real hash function like SHA-256 might not perfectly achieve.
@@ -104,51 +85,31 @@
 		\end{subparts}
 	\end{parts}
 
-	\question[10] \textbf{Circuits and General-Purpose ZK}
+	\question[15] \textbf{Circuits and General-Purpose ZK}
 
-	\textbf{From Statements to Circuits:}
 	You want to prove knowledge of a value $x$ such that SHA-256($x$) = $y$ for a given $y$.
 	\begin{parts}
-		\part Explain why creating a custom Sigma protocol for this statement would be extremely difficult.
-		\part How does representing SHA-256 as a circuit make this proof feasible? What is the general approach?
-		\part Your application needs to prove ``I know $x$ such that $x^3 + x + 5 = 35$ in $\mathbb{Z}_{101}$.'' Would you use a custom protocol or circuits? Justify your choice.
+		\part[7.5] Explain why creating a custom Sigma protocol for this statement would be extremely difficult. How does representing SHA-256 as a circuit make this proof feasible?
+		\part[7.5] Your application needs to prove ``I know $x$ such that $x^3 + x + 5 = 35$ in $\mathbb{Z}_{101}$.'' Would you use a custom protocol or circuits? Justify your choice.
 	\end{parts}
 \end{questions}
 
 \section{Real-World Applications}
 \begin{questions}
-	\question[15] \textbf{Privacy-Preserving Systems}
+	\question[10] \textbf{Privacy-Preserving Systems}
 
+	\textbf{Zcash and Financial Privacy:}
+	Zcash uses zk-SNARKs to enable private transactions on a public blockchain.
 	\begin{parts}
-		\part[7.5] \textbf{Zcash and Financial Privacy:}
-		Zcash uses zk-SNARKs to enable private transactions on a public blockchain.
-		\begin{subparts}
-			\subpart Explain what a shielded transaction proves without revealing. Be specific about what remains hidden and what becomes public.
-			\subpart Zcash evolved from Sprout to Sapling to Halo 2 (no trusted setup). Why does eliminating the trusted setup matter for adoption?
-		\end{subparts}
-
-		\part[7.5] \textbf{Age Verification and Digital Identity:}
-		Google recently open-sourced ZK libraries for age verification in partnership with European banks.\footnote{\url{https://blog.google/technology/safety-security/opening-up-zero-knowledge-proof-technology-to-promote-privacy-in-age-assurance/}}
-		\begin{subparts}
-			\subpart Give a high-level sketch of a ZK protocol for proving ``I am over 18'' using a government-issued digital ID. Which ZK construction would you use? What would be the public instance and private witness?
-			\subpart List three privacy advantages of the ZK approach over traditional age verification (uploading photo ID or using credit cards).
-		\end{subparts}
-	\end{parts}
-
-	\question[10] \textbf{Future Implications}
-
-	\textbf{Critical Analysis:}
-	The slides present three possible futures: surveillance capitalism, privacy renaissance, or hybrid reality.
-	\begin{parts}
-		\part If Google controls much of the ZK infrastructure (as suggested by their open-source initiative), have we really gained privacy or just shifted trust? Explain your reasoning. Note that there is no ``correct answer'' here — your ability to defend your answer is what matters!
-		\part What would it take for average users to understand and demand ZK proofs? Propose one concrete step that could accelerate adoption.
+		\part[5] Explain what a shielded transaction proves without revealing. Be specific about what remains hidden and what becomes public.
+		\part[5] Zcash evolved from Sprout to Sapling to Halo 2 (no trusted setup). Why does eliminating the trusted setup matter for adoption?
 	\end{parts}
 \end{questions}
 
 \begin{tcolorbox}[colframe=EarthBrown!30!white,colback=EarthBrown!5!white]
 	\section*{Bonus Question}
 	\begin{questions}
-		\bonusquestion[30] You're designing a multi-signature wallet where any 2 out of 3 parties can authorize a transaction.
+		\bonusquestion[20] You're designing a multi-signature wallet where any 2 out of 3 parties can authorize a transaction.
 		\begin{parts}
 			\part Explain how you would use OR proofs to create a threshold signature scheme. Specifically, how can a subset of signers prove they collectively authorized a transaction without revealing which specific parties signed?
 			\part Consider the case where parties have public keys $A_1 = g^{a_1}$, $A_2 = g^{a_2}$, and $A_3 = g^{a_3}$. If parties 1 and 3 want to sign together, outline the Sigma protocol they would use.
