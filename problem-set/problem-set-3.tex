@@ -18,39 +18,75 @@
 \begin{questions}
 	\question[10] \textbf{Breaking Cryptography: Attack Scenarios}
 
-	\textbf{The Cryptographic Apocalypse Scenario:}
-	Imagine you wake up tomorrow to headlines: \textit{``Breakthrough Algorithm Solves P vs NP - Computer Scientists Prove P = NP!''}
 	\begin{parts}
-		\part[5] As the Chief Security Officer of a major bank, write a crisis response memo outlining which systems fail immediately, which have grace periods, and what emergency measures you would implement.
-		\part[5] Design an alternative security model for online banking that could work in a post-P=NP world. What assumptions would you rely on instead? Why wouldn't NP-complete problems save us in this scenario?
+		\part[5] \textbf{The Cryptographic Apocalypse Scenario:}
+		Imagine you wake up tomorrow to headlines: \textit{``Breakthrough Algorithm Solves P vs NP - Computer Scientists Prove P = NP!''}
+		\begin{subparts}
+			\subpart As the Chief Security Officer of a major bank, write a crisis response memo outlining which systems fail immediately and what emergency measures you would implement.
+			\subpart Design an alternative security model for online banking that could work in a post-P=NP world. What assumptions would you rely on instead?
+		\end{subparts}
+
+		\part[5] \textbf{The Weak DH Parameters Problem:}
+		A security researcher discovers that a popular cryptographic library has been generating Diffie-Hellman parameters where the prime $p$ satisfies $p-1$ having many small factors, making 75\% of generated groups vulnerable to Pohlig-Hellman attacks.
+		\begin{subparts}
+			\subpart Evaluate whether this discovery completely breaks Diffie-Hellman or only partially weakens it. Consider both the mathematical impact and practical deployment consequences.
+			\subpart Design a strategy for systems using this library: should they immediately regenerate all parameters, implement parameter validation, or pursue a different approach?
+		\end{subparts}
 	\end{parts}
 
-	\question[10] \textbf{Discrete Logarithm Security}
+	\question[10] \textbf{Discrete Logarithm Security Architecture}
 
-	\textbf{The Weak Parameter Disaster:}
-	Your security audit discovers that a legacy system has been using $p = 2047$ (which factors as $23 \times 89$) for Diffie-Hellman key exchange, and the generator $g = 2$.
 	\begin{parts}
-		\part[5] Analyze exactly why this parameter choice is catastrophically weak. Estimate how long it would take an attacker with a modern laptop to break this system.
-		\part[5] Design an emergency response plan: how do you migrate users to secure parameters while maintaining service availability? Compare the security implications if the system had instead used a proper 2048-bit prime but with a generator that only generates a small subgroup.
+		\part[5] \textbf{The Weak Parameter Disaster:}
+		Your security audit discovers that a legacy system has been using $p = 2047$ (which factors as $23 \times 89$) for Diffie-Hellman key exchange, and the generator $g = 2$.
+		\begin{subparts}
+			\subpart Analyze exactly why this parameter choice is catastrophically weak. Estimate how long it would take an attacker with a modern laptop to break this system.
+			\subpart Design an emergency response plan: how do you migrate users to secure parameters while maintaining service availability?
+		\end{subparts}
+
+		\part[5] \textbf{Elliptic Curve vs. Finite Field Trade-off Analysis:}
+		You're designing a cryptographic protocol for IoT devices with severe computational and bandwidth constraints.
+		\begin{subparts}
+			\subpart Compare elliptic curve and finite field DLP for your use case: which offers better security per bit of key size, and which offers better computational performance?
+			\subpart Analyze why index calculus attacks work against finite fields but not elliptic curves. How does this fundamental difference affect your security margins?
+		\end{subparts}
 	\end{parts}
 \end{questions}
 
 \section{Diffie-Hellman in Hostile Environments}
 \begin{questions}
-	\question[15] \textbf{Attack and Defense Scenarios}
+	\question[10] \textbf{Attack and Defense Scenarios}
 
-	\textbf{The Perfect Man-in-the-Middle:}
-	An attacker has complete control over the network between Alice and Bob, can modify any message, and can initiate connections that appear to come from either party.
 	\begin{parts}
-		\part[5] Design the most effective man-in-the-middle attack against unauthenticated Diffie-Hellman. Your attack should be undetectable to Alice and Bob during the key exchange.
-		\part[5] Alice and Bob have never met but each has the other's public key fingerprint written on a piece of paper. Design an authentication protocol that defeats your attack using only these fingerprints.
-		\part[5] The attacker now has quantum capabilities. How does this change your attack and defense strategies? Compare your solution to certificate authorities and web-of-trust models.
+		\part[5] \textbf{The Perfect Man-in-the-Middle:}
+		An attacker has complete control over the network between Alice and Bob, can modify any message, and can initiate connections that appear to come from either party.
+		\begin{subparts}
+			\subpart Design the most effective man-in-the-middle attack against unauthenticated Diffie-Hellman. Your attack should be undetectable to Alice and Bob during the key exchange.
+			\subpart Alice and Bob have never met but each has the other's public key fingerprint written on a piece of paper. Design an authentication protocol that defeats your attack using only these fingerprints.
+			\subpart Compare your fingerprint-based solution to certificate authorities and web-of-trust models. What are the usability and security trade-offs?
+		\end{subparts}
+
+		\part[5] \textbf{The Paranoid Whistleblower Scenario:}
+		A whistleblower needs to securely communicate with a journalist. They assume the government monitors all internet traffic, has compromised most Certificate Authorities, and can perform man-in-the-middle attacks on any connection.
+		\begin{subparts}
+			\subpart Design a key exchange protocol for this scenario using only methods available to ordinary civilians (no specialized hardware or pre-shared secrets).
+			\subpart Analyze what happens if the government can also compromise one of their devices after the key exchange. How can you provide forward secrecy?
+		\end{subparts}
+	\end{parts}
+
+	\question[10] \textbf{Protocol Design Challenge}
+
+	\textbf{SSH Trust-on-First-Use Analysis:}
+	Your organization wants to deploy SSH across 10,000 servers, but the current TOFU model creates security and usability problems at scale.
+	\begin{parts}
+		\part[5] Analyze specific attack scenarios where the TOFU model fails in practice. When are users most vulnerable?
+		\part[5] Design an improved authentication model that maintains SSH's simplicity while providing better security guarantees than pure TOFU.
 	\end{parts}
 \end{questions}
 
 \section{Elliptic Curve Security Engineering}
 \begin{questions}
-	\question[15] \textbf{Curve Selection and Implementation}
+	\question[15] \textbf{Curve Selection Under Pressure}
 
 	\begin{parts}
 		\part[8] \textbf{The Government Backdoor Controversy:}
@@ -61,18 +97,36 @@
 			\subpart Your legal team reports that several countries require NIST-compliant cryptography for government sales. Propose a solution that addresses both the backdoor concerns and the compliance requirements.
 		\end{subparts}
 
-		\part[7] \textbf{The Small Subgroup Attack on Curve25519:}
-		A security audit reveals that your Curve25519 ECDH implementation doesn't properly handle low-order points, potentially leaking information about secret keys.
+		\part[7] \textbf{The Invalid Curve Attack Scenario:}
+		A security researcher discovers that your ECDH implementation doesn't validate input points, making it vulnerable to invalid curve attacks.
 		\begin{subparts}
-			\subpart Explain how an attacker could exploit Curve25519's cofactor of 8 to mount a small subgroup attack. What specific low-order points could be used, and what information about the secret key could be recovered?
-			\subpart Design a defense strategy that prevents small subgroup attacks while maintaining Curve25519's performance advantages. Should you reject low-order points, or use a different approach? Justify your choice.
+			\subpart Design a specific attack exploiting this vulnerability. What information can an attacker extract?
+			\subpart Develop a comprehensive input validation strategy that prevents this attack class. What performance impact does your solution have?
+		\end{subparts}
+	\end{parts}
+
+	\question[15] \textbf{Implementation Vulnerability Analysis}
+
+	\begin{parts}
+		\part[8] \textbf{Side-Channel Attack Laboratory:}
+		You're tasked with testing an embedded device's ECDSA implementation for side-channel vulnerabilities.
+		\begin{subparts}
+			\subpart Design a timing attack against variable-time scalar multiplication. What information would you measure, and how would you extract the private key?
+			\subpart Develop countermeasures that maintain performance while resisting your attack. What constant-time techniques would you implement?
+		\end{subparts}
+
+		\part[7] \textbf{The Ed25519 Validation Crisis:}
+		You discover that two widely-used Ed25519 libraries accept different signatures as valid for the same message and public key, breaking interoperability.
+		\begin{subparts}
+			\subpart Investigate what causes this inconsistency: what validation steps do different implementations handle differently?
+			\subpart Analyze the security implications: could an attacker exploit these differences to create practical attacks?
 		\end{subparts}
 	\end{parts}
 \end{questions}
 
-\section{Applied Cryptography Case Study}
+\section{Applied Cryptography Case Studies}
 \begin{questions}
-	\question[20] \textbf{Cryptocurrency Signature Scheme Analysis:}
+	\question[15] \textbf{Cryptocurrency Signature Scheme Analysis:}
 	A new cryptocurrency project is choosing between ECDSA and Ed25519 for transaction signatures. The system requirements include:
 	\begin{itemize}
 		\item High transaction throughput (thousands of signatures per second)
@@ -82,9 +136,30 @@
 	\end{itemize}
 	Analyze this decision:
 	\begin{parts}
-		\part[7] Compare ECDSA and Ed25519 for each requirement above. Which algorithm better meets each criterion and why?
-		\part[7] Discuss the implications of signature malleability. How does this affect each algorithm and why might it matter for cryptocurrency applications?
-		\part[6] Analyze the quantum resistance of both options. What migration path would you recommend for long-term security? Make a final recommendation with justification.
+		\part[5] Compare ECDSA and Ed25519 for each requirement above. Which algorithm better meets each criterion and why?
+		\part[5] Discuss the implications of signature malleability. How does this affect each algorithm and why might it matter for cryptocurrency applications?
+		\part[5] Make a final recommendation with justification, considering both technical and practical factors.
+	\end{parts}
+
+	\question[15] \textbf{Secure Communication System Architecture:}
+	You are architecting a secure communication system for a large organization (10,000+ employees) that needs to protect against both external attackers and potential insider threats. The system must support real-time messaging, file sharing, and voice calls.
+	Design and analyze a complete solution:
+	\begin{parts}
+		\part[5] Specify your cryptographic algorithm choices for:
+		\begin{itemize}
+			\item Key exchange protocols
+			\item Digital signature schemes
+			\item Symmetric encryption algorithms
+			\item Hash functions and MACs
+		\end{itemize}
+		\part[5] Describe your key management architecture. How do you bootstrap trust, distribute keys, and handle key rotation?
+		\part[5] Analyze your system's security properties against various attack scenarios:
+		\begin{itemize}
+			\item Network eavesdropping
+			\item Server compromise
+			\item Endpoint compromise
+			\item Insider attacks
+		\end{itemize}
 	\end{parts}
 \end{questions}
 
