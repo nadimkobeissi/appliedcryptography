@@ -1565,30 +1565,6 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Heartbleed: What attackers could steal}
-	\begin{itemize}
-		\item \textbf{Server's private keys}:
-		      \begin{itemize}
-			      \item TLS private keys used for authentication
-			      \item Allows impersonation of legitimate servers
-			      \item Forward secrecy completely broken
-		      \end{itemize}
-		\item \textbf{Session keys and user data}:
-		      \begin{itemize}
-			      \item Active TLS session keys
-			      \item Usernames, passwords, session cookies
-			      \item Credit card numbers, personal information
-		      \end{itemize}
-		\item \textbf{Memory contents}:
-		      \begin{itemize}
-			      \item Random 64KB chunks of server memory
-			      \item Could contain anything: keys, data, code
-			      \item Repeated requests reveal more memory
-		      \end{itemize}
-		\item \textbf{No evidence of exploitation}: Attack leaves no traces in logs
-	\end{itemize}
-\end{frame}
-
 \begin{frame}{Heartbleed: The simple attack}
 	\begin{center}
 		\textbf{Normal heartbeat request:}
@@ -1614,6 +1590,30 @@
 		\item \textbf{One line of C code}: \texttt{memcpy(bp, pl, payload);}
 		\item \textbf{Missing check}: \texttt{if (payload != 1 + 2 + hblen) error();}
 		\item \textbf{Lesson}: Simple bugs can have massive consequences
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Heartbleed: What attackers could steal}
+	\begin{itemize}
+		\item \textbf{Server's private keys}:
+		      \begin{itemize}
+			      \item TLS private keys used for authentication
+			      \item Allows impersonation of legitimate servers
+			      \item Forward secrecy completely broken
+		      \end{itemize}
+		\item \textbf{Session keys and user data}:
+		      \begin{itemize}
+			      \item Active TLS session keys
+			      \item Usernames, passwords, session cookies
+			      \item Credit card numbers, personal information
+		      \end{itemize}
+		\item \textbf{Memory contents}:
+		      \begin{itemize}
+			      \item Random 64KB chunks of server memory
+			      \item Could contain anything: keys, data, code
+			      \item Repeated requests reveal more memory
+		      \end{itemize}
+		\item \textbf{No evidence of exploitation}: Attack leaves no traces in logs
 	\end{itemize}
 \end{frame}
 
@@ -1668,6 +1668,31 @@
 \end{frame}
 
 \begin{frame}{SMACK: How state machine attacks work}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{TLS state machine}:
+				      \begin{itemize}
+					      \item Defines valid message sequences
+					      \item Each state expects specific messages
+					      \item Transitions based on received messages
+				      \end{itemize}
+				\item \textbf{The attack}:
+				      \begin{itemize}
+					      \item Send unexpected messages
+					      \item Force invalid state transitions
+					      \item Bypass security checks
+				      \end{itemize}
+				\item \textbf{Result}: Authentication bypass or downgrade
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{tls-smack.png}{TLS state machine}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{SMACK: How state machine attacks work}
 	\begin{itemize}
 		\item \textbf{Example scenario}: Web server with two TLS libraries
 		      \begin{itemize}
@@ -1689,10 +1714,6 @@
 		      \end{itemize}
 		\item \textbf{Discovery method}: Systematic testing with model checking
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{SMACK: How state machine attacks work}
-	\bigimagewithcaption{tls-smack.png}{}
 \end{frame}
 
 \begin{frame}{FREAK: Factoring RSA Export Keys}
