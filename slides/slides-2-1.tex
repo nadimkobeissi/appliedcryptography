@@ -1716,6 +1716,32 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{SMACK: Real vulnerabilities found}
+	\begin{itemize}
+		\item \textbf{miTLS vs. OpenSSL}:
+		      \begin{itemize}
+			      \item Attacker can skip client authentication
+			      \item Exploit differences in certificate validation
+		      \end{itemize}
+		\item \textbf{NSS (Firefox) vulnerabilities}:
+		      \begin{itemize}
+			      \item Early application data acceptance
+			      \item Certificate validation bypass
+		      \end{itemize}
+		\item \textbf{Java JSSE attacks}:
+		      \begin{itemize}
+			      \item Premature transition to application data
+			      \item Authentication bypass in specific configurations
+		      \end{itemize}
+		\item \textbf{The root cause}: Complex state machines without formal verification
+		\item \textbf{Solution approach}: Model checking and formal verification
+		      \begin{itemize}
+			      \item Systematically test all possible message sequences
+			      \item Verify implementations match specifications
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{FREAK: Factoring RSA Export Keys}
 	\begin{itemize}
 		\item \textbf{Export-grade cryptography legacy}:
@@ -1735,6 +1761,10 @@
 		\item \textbf{Vulnerable systems}: 36.7\% of all browser-trusted sites
 		\item \textbf{Impact}: Complete compromise of TLS connections
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{FREAK}
+	\bigimagewithcaption{tls-freak.png}{}
 \end{frame}
 
 \begin{frame}{When math was classified as weapons}
@@ -1898,36 +1928,6 @@
 			      \item Build cryptographic commons beyond corporate/government reach
 			      \item Make surveillance more expensive
 			      \item Create ``boring crypto'' that just works for people
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{FREAK}
-	\bigimagewithcaption{tls-freak.png}{}
-\end{frame}
-
-\begin{frame}{SMACK: Real vulnerabilities found}
-	\begin{itemize}
-		\item \textbf{miTLS vs. OpenSSL}:
-		      \begin{itemize}
-			      \item Attacker can skip client authentication
-			      \item Exploit differences in certificate validation
-		      \end{itemize}
-		\item \textbf{NSS (Firefox) vulnerabilities}:
-		      \begin{itemize}
-			      \item Early application data acceptance
-			      \item Certificate validation bypass
-		      \end{itemize}
-		\item \textbf{Java JSSE attacks}:
-		      \begin{itemize}
-			      \item Premature transition to application data
-			      \item Authentication bypass in specific configurations
-		      \end{itemize}
-		\item \textbf{The root cause}: Complex state machines without formal verification
-		\item \textbf{Solution approach}: Model checking and formal verification
-		      \begin{itemize}
-			      \item Systematically test all possible message sequences
-			      \item Verify implementations match specifications
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
