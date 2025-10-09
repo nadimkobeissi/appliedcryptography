@@ -516,30 +516,74 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Why not this?}
-	\begin{center}
-		\begin{tikzpicture}[>=Stealth]
-			\node (A) at (0,0) {$A$};
-			\node (B) at (8,0) {$B$};
-			\draw[->] (0.5,0) -- (7.5,0) node[midway,above] {$g^x$};
-			\draw[<-] (0.5,-1) -- (7.5,-1) node[midway,above] {$g^y, g^B, \func{sign}{B, (g^x, g^y)}$};
-			\draw[->] (0.5,-2) -- (7.5,-2) node[midway,above] {$g^A, \func{sign}{A, (g^y, g^x)}$};
-		\end{tikzpicture}
-	\end{center}
+\begin{frame}{Why not simplify?}
+	\begin{columns}[c]
+		\begin{column}{0.475\textwidth}
+			Instead of this...
+			\begin{center}
+				\begin{tikzpicture}[>=Stealth, scale=0.75, transform shape]
+					\node (A) at (0,0) {$A$};
+					\node (B) at (8,0) {$B$};
+					\draw[->] (0.5,0) -- (7.5,0) node[midway,above] {$g^x$};
+					\draw[<-] (0.5,-1) -- (7.5,-1) node[midway,above] {$g^y, g^B, \func{sign}{B, (g^x, g^y)}, \func{hmac}{K_m, g^B}$};
+					\draw[->] (0.5,-2) -- (7.5,-2) node[midway,above] {$g^A, \func{sign}{A, (g^y, g^x)}, \func{hmac}{K_m, g^A}$};
+				\end{tikzpicture}
+			\end{center}
+		\end{column}
+		\begin{column}{0.05\textwidth}
+		\end{column}
+		\begin{column}{0.475\textwidth}
+			...why not this?
+			\begin{center}
+				\begin{tikzpicture}[>=Stealth, scale=0.75, transform shape]
+					\node (A) at (0,0) {$A$};
+					\node (B) at (8,0) {$B$};
+					\draw[->] (0.5,0) -- (7.5,0) node[midway,above] {$g^x$};
+					\draw[<-] (0.5,-1) -- (7.5,-1) node[midway,above] {$g^y, g^B, \func{sign}{B, (g^x, g^y)}$};
+					\draw[->] (0.5,-2) -- (7.5,-2) node[midway,above] {$g^A, \func{sign}{A, (g^y, g^x)}$};
+				\end{tikzpicture}
+			\end{center}
+		\end{column}
+	\end{columns}
 \end{frame}
 
-\begin{frame}{Because\ldots}{Note that Bob records the exchange of the \textit{same} key with Eve that Alice exchanged with Bob!}
-	\begin{center}
-		\begin{tikzpicture}[>=Stealth]
-			\node (A) at (0,0) {$A$};
-			\node (B) at (8,0) {$B$};
-			\draw[->] (0.5,0) -- (7.5,0) node[midway,above] {$g^x$};
-			\draw[<-] (0.5,-1) -- (7.5,-1) node[midway,above] {$g^y, g^B, \func{sign}{B, (g^x, g^y)}$};
-			\draw[->, red] (0.5,-2) -- (7.5,-2) node[midway,above] (crossed) {\textcolor{red}{$g^A, \func{sign}{A, (g^y, g^x)}$}};
-			\draw[red, thick] (crossed.south west) -- (crossed.north east);
-			\draw[->] (0.5,-2.7) -- (7.5,-2.7) node[midway,above] {$g^E, \func{sign}{E, (g^y, g^x)}$};
-		\end{tikzpicture}
-	\end{center}
+\begin{frame}{Because\ldots}{Identity substitution attack: Eve can replace Alice's identity}
+	\vspace{-1cm}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The Attack:}
+			\begin{itemize}
+				\item Eve intercepts Alice's final message
+				\item Eve sends $g^E$ instead of $g^A$
+				\item Bob accepts $g^E$ as peer identity
+			\end{itemize}
+			\textbf{Why it works:}
+			\begin{itemize}
+				\item Signature only covers ephemeral keys
+				\item Identity $g^A$ not authenticated
+				\item Eve can sign $(g^y, g^x)$ herself
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[>=Stealth, scale=0.9, transform shape]
+					\node (A) at (0,0) {$A$};
+					\node (B) at (8,0) {$B$};
+					\draw[->] (0.5,0) -- (7.5,0) node[midway,above] {$g^x$};
+					\draw[<-] (0.5,-1) -- (7.5,-1) node[midway,above] {$g^y, g^B, \func{sign}{B, (g^x, g^y)}$};
+					\draw[->, red] (0.5,-2) -- (7.5,-2) node[midway,above] (crossed) {\textcolor{red}{$g^A, \func{sign}{A, (g^y, g^x)}$}};
+					\draw[red, thick] (crossed.south west) -- (crossed.north east);
+					\draw[->] (0.5,-2.7) -- (7.5,-2.7) node[midway,above] {$g^E, \func{sign}{E, (g^y, g^x)}$};
+					\node[right, text width=2cm, align=left] at (8.5,-2.35) {\scriptsize\textcolor{red}{Eve intercepts}};
+				\end{tikzpicture}
+			\end{center}
+			\textbf{Result:}
+			\begin{itemize}
+				\item Bob records $g^E$ as peer
+				\item No cryptographic link between identity and key exchange
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{But why HMAC though?}{Why not just add the identity key to the signature?}
@@ -719,6 +763,7 @@
 				\item \textbf{Timestamps}: Messages expire
 				\item \textbf{Sequence numbers}: Detect duplicates
 				\item \textbf{HKDF}: Context binding
+				\item \textbf{AEAD}: Also a form of context binding
 			\end{itemize}
 			\textbf{In secure messaging:}
 			\begin{itemize}
