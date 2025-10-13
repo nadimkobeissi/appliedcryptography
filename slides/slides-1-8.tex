@@ -1063,11 +1063,6 @@
 			      \item Breaks encryption, authentication, or any derived keys.
 			      \item Complete compromise, not just partial information leakage.
 		      \end{itemize}
-		\item \textbf{Real-world example:} Curve25519 without proper validation.
-		      \begin{itemize}
-			      \item Has points of order 1, 2, 4, 8, $\ell$, $2\ell$, $4\ell$, $8\ell$.
-			      \item Unvalidated ECDH can produce predictable shared secrets.
-		      \end{itemize}
 		\item \textbf{Defense:} Validate points belong to correct subgroup or use protocols that eliminate the threat.
 	\end{itemize}
 \end{frame}
