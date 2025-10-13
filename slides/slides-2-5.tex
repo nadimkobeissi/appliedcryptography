@@ -2293,7 +2293,7 @@
 			\begin{enumerate}
 				\item \texttt{if (secret\_bit) \{ ... \}}
 				\item \texttt{array[secret\_index]}
-				\item Return early \texttt{if secret == 0}
+				\item Return early \texttt{if secret $\stackrel{?}{=}$ 0}
 				\item Use division only when \texttt{secret != 0}\footnote{\url{https://kyberslash.cr.yp.to}}
 			\end{enumerate}
 		\end{column}

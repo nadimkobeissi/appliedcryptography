@@ -656,7 +656,7 @@
 				\item Password verification is trivial:
 				      \begin{itemize}
 					      \item User enters password $P'$
-					      \item Server checks if $P' == P$
+					      \item Server checks if $P' \stackrel{?}{=} P$
 				      \end{itemize}
 				\item If server is compromised, attacker immediately learns all passwords.
 				\item Users often reuse passwords across sites, compounding the damage.
@@ -728,7 +728,7 @@
 		\begin{column}{0.55\textwidth}
 			\begin{itemize}
 				\item For a user with password $P$, the server stores $h = H(P)$.
-				\item On login, server checks if $H(P') == h$.
+				\item On login, server checks if $H(P') \stackrel{?}{=} h$.
 				\item Advantages over cleartext:
 				      \begin{itemize}
 					      \item Attacker doesn't immediately get passwords.
@@ -792,7 +792,7 @@
 					\item A random salt $S$ (unique per user)
 					\item The hash value $h = H(S \| P)$
 				\end{itemize}
-				To verify a login with password $P'$, the server checks if $H(S \| P') == h$.
+				To verify a login with password $P'$, the server checks if $H(S \| P') \stackrel{?}{=} h$.
 			}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -940,7 +940,7 @@
 			      \item \textbf{ROMix}: Core memory-hard function.
 			      \item \textbf{BlockMix}: Based on Salsa20/8 core function.
 		      \end{itemize}
-		\item{Parameters:}
+		      \item{Parameters:}
 		      \begin{itemize}
 			      \item \texttt{N}: CPU/memory cost
 			      \item \texttt{r}: Block size

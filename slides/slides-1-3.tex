@@ -75,7 +75,7 @@
 				\sslibrary{}{dice-guess}{
 					$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$ \\[1em]
 					\sslibrarysubroutine{guess}{G}{
-						return $D == G$
+						return $D \stackrel{?}{=} G$
 					}{1} \\[1em]
 					\sslibrarysubroutine{reroll}{G}{
 						$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$
@@ -141,7 +141,7 @@
 				\sslibrary{}{dice-guess}{
 					$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$ \\[1em]
 					\sslibrarysubroutine{guess}{G}{
-						return $D == G$
+						return $D \stackrel{?}{=} G$
 					}{1} \\[1em]
 					\sslibrarysubroutine{reroll}{G}{
 						$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$
@@ -346,7 +346,7 @@
 					\ssprogram{}{
 						$C_1 \coloneq \func{otp.enc}{\bit{0}^n}$\\
 						$C_2 \coloneq \func{otp.enc}{\bit{0}^n}$\\
-						return $C_1 == C_2$
+						return $C_1 \stackrel{?}{=} C_2$
 					}{1}
 				}{\link}{
 					\sslibrary{}{a}{
@@ -380,7 +380,7 @@
 					\ssprogram{}{
 						$C_1 \coloneq \func{otp.enc}{\bit{0}^n}$\\
 						$C_2 \coloneq \func{otp.enc}{\bit{0}^n}$\\
-						return $C_1 == C_2$
+						return $C_1 \stackrel{?}{=} C_2$
 					}{1}
 				}{\link}{
 					\sslibrary{}{b}{
@@ -416,7 +416,7 @@
 						$M_2 \twoheadleftarrow \bits^n$\\
 						$C_1 \coloneq \func{otp.enc}{M_1}$\\
 						$C_2 \coloneq \func{otp.enc}{M_2}$\\
-						return $C_1 \oplus C_2 == M_1 \oplus M_2$
+						return $C_1 \oplus C_2 \stackrel{?}{=} M_1 \oplus M_2$
 					}{0.85}
 				}{\link}{
 					\sslibrary{}{a}{
@@ -831,7 +831,7 @@
 				\item \ssprogram{}{
 					      $M \coloneq \bit{0}^n$\\
 					      $C \coloneq \func{ots.enc}{M}$\\
-					      return $C == \bit{0}^n$
+					      return $C \stackrel{?}{=} \bit{0}^n$
 				      }{1}
 				\item \prob{A\link\lib{}{ots-real} \Rightarrow \texttt{true}} $= 1$
 				\item \prob{A\link\lib{}{ots-rand} \Rightarrow \texttt{true}} $= \frac{1}{2^n}$
@@ -1214,7 +1214,7 @@
 				\sslibrary{}{1}{
 					\sslibrarysubroutine{predict}{x}{
 						$R \twoheadleftarrow \bits^\lambda$\\
-						return $R == X$
+						return $R \stackrel{?}{=} X$
 					}{1}
 				}{1}
 			}{\overset{?}{\approxeq}}{
@@ -1242,7 +1242,7 @@
 				\sslibrary{'}{1}{
 					\sslibrarysubroutine{predict}{x}{
 						$R \twoheadleftarrow \bits^\lambda$\\
-						if $R == X$:\\
+						if $R \stackrel{?}{=} X$:\\
 						\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
 						\quad return \hl{\texttt{true}}\\
 						return \texttt{false}
@@ -1252,7 +1252,7 @@
 				\sslibrary{'}{2}{
 					\sslibrarysubroutine{predict}{x}{
 						$R \twoheadleftarrow \bits^\lambda$\\
-						if $R == X$:\\
+						if $R \stackrel{?}{=} X$:\\
 						\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
 						\quad return \hl{\texttt{false}}\\
 						return \texttt{false}
@@ -1269,14 +1269,14 @@
 			\sslibrary{}{1}{
 				\sslibrarysubroutine{predict}{x}{
 					$R \twoheadleftarrow \bits^\lambda$\\
-					return $R == X$
+					return $R \stackrel{?}{=} X$
 				}{1}
 			}{1}
 		}{\interchangeable{}}{
 			\sslibrary{'}{1}{
 				\sslibrarysubroutine{predict}{x}{
 					$R \twoheadleftarrow \bits^\lambda$\\
-					if $R == X$:\\
+					if $R \stackrel{?}{=} X$:\\
 					\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
 					\quad return \hl{\texttt{true}}\\
 					return \texttt{false}
@@ -1288,7 +1288,7 @@
 			\sslibrary{'}{2}{
 				\sslibrarysubroutine{predict}{x}{
 					$R \twoheadleftarrow \bits^\lambda$\\
-					if $R == X$:\\
+					if $R \stackrel{?}{=} X$:\\
 					\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
 					\quad return \hl{\texttt{false}}\\
 					return \texttt{false}
@@ -1310,7 +1310,7 @@
 			\begin{itemize}
 				\item We need to analyze how likely it is that the bad event happens:
 				      \begin{itemize}
-					      \item The bad event occurs when $R == X$.
+					      \item The bad event occurs when $R \stackrel{?}{=} X$.
 					      \item Since $R$ is randomly chosen from a huge set, this match is extremely unlikely.
 					      \item Even if an adversary makes many attempts, the chance of seeing this bad event remains tiny.
 					      \item As we increase the security parameter $\lambda$, the chance becomes vanishingly small.
@@ -1324,7 +1324,7 @@
 				\sslibrary{'}{1}{
 					\sslibrarysubroutine{predict}{x}{
 						$R \twoheadleftarrow \bits^\lambda$\\
-						if $R == X$:\\
+						if $R \stackrel{?}{=} X$:\\
 						\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
 						\quad return \hl{\texttt{true}}\\
 						return \texttt{false}
@@ -1334,7 +1334,7 @@
 				\sslibrary{'}{2}{
 					\sslibrarysubroutine{predict}{x}{
 						$R \twoheadleftarrow \bits^\lambda$\\
-						if $R == X$:\\
+						if $R \stackrel{?}{=} X$:\\
 						\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
 						\quad return \hl{\texttt{false}}\\
 						return \texttt{false}

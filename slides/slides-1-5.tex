@@ -99,7 +99,7 @@
 					$M \twoheadleftarrow \mathcal{M}$\\
 					$C_1 \coloneq \func{cpa.enc}{M}$\\
 					$C_2 \coloneq \func{cpa.enc}{M}$\\
-					return $C_1 == C_2$
+					return $C_1 \stackrel{?}{=} C_2$
 				}{1}
 			\end{center}
 		\end{column}
@@ -158,7 +158,7 @@
 					$M \twoheadleftarrow \mathcal{M}$\\[0.5em]
 					$C_1 \coloneq \texttt{AES}(K, M)$\\
 					$C_2 \coloneq \texttt{AES}(K, M)$\\[0.5em]
-					$C_1 == C_2$
+					$C_1 \stackrel{?}{=} C_2$
 				}{0.85}
 			\end{center}
 		\end{column}
@@ -229,7 +229,7 @@
 					$M \twoheadleftarrow \mathcal{M}$\\
 					$R_1\|S_1 \coloneq \func{cpa.enc}{M}$\\
 					$R_2\|S_2 \coloneq \func{cpa.enc}{M}$\\
-					return $S_1 \oplus S_2 == R_1 \oplus R_2$
+					return $S_1 \oplus S_2 \stackrel{?}{=} R_1 \oplus R_2$
 				}{0.8}
 			}{\link}{
 				\sslibrary{}{cpa-real}{
@@ -571,17 +571,17 @@
 		\end{column}
 		\begin{column}{0.4\textwidth}
 			\ssprogram{null-oracle}{
-				$n := |C_1\|\cdots\|C_{\ell}|$\\
-				$M := ""$\\
-				\\
-				for $i = 1$ to $n$:\\
-				$\quad$ for each $b \in \{\bit{0}\bit{1}, \ldots, \bit{f}\bit{f}\}$:\\
-				$\quad\quad$ $\Delta := (\bit{0}\bit{0})^n$\\
-				$\quad\quad$ $\Delta[i] := b$\\
-				$\quad\quad$ if $\func{nulloracle}{C \oplus (0^\lambda \| \Delta)}$:\\
-				$\quad\quad\quad$ $M := M \| b$\\
-				$\quad\quad\quad$ next $i$\\
-				return $M$
+			$n := |C_1\|\cdots\|C_{\ell}|$\\
+			$M := ""$\\
+			\\
+			for $i = 1$ to $n$:\\
+			$\quad$ for each $b \in \{\bit{0}\bit{1}, \ldots, \bit{f}\bit{f}\}$:\\
+			$\quad\quad$ $\Delta := (\bit{0}\bit{0})^n$\\
+			$\quad\quad$ $\Delta[i] := b$\\
+			$\quad\quad$ if $\func{nulloracle}{C \oplus (0^\lambda \| \Delta)}$:\\
+			$\quad\quad\quad$ $M := M \| b$\\
+			$\quad\quad\quad$ next $i$\\
+			return $M$
 			}{0.8}
 		\end{column}
 	\end{columns}
@@ -892,7 +892,7 @@
 				$\Delta := \text{arbitrary, nonzero, $\lambda$-bit string}$\\
 				$R\|S \coloneq \func{cca.enc}{M}$\\
 				$M' \coloneq \func{cca.dec}{R\|(S \oplus \Delta)}$\\
-				return $M' == M \oplus \Delta$
+				return $M' \stackrel{?}{=} M \oplus \Delta$
 			}{1}
 		\end{column}
 	\end{columns}
@@ -908,7 +908,7 @@
 						$\Delta := \text{arbitrary, nonzero, $\lambda$-bit string}$\\
 						$R\|S \coloneq \func{cca.enc}{M}$\\
 						$M' \coloneq \func{cca.dec}{R\|(S \oplus \Delta)}$\\
-						return $M' == M \oplus \Delta$
+						return $M' \stackrel{?}{=} M \oplus \Delta$
 					}{1}
 				}{\diamond}{
 					\sslibrary{}{cca-real}{
@@ -939,7 +939,7 @@
 						$\Delta := \text{arbitrary, nonzero, $\lambda$-bit string}$\\
 						$R\|S \coloneq \func{cca.enc}{M}$\\
 						$M' \coloneq \func{cca.dec}{R\|(S \oplus \Delta)}$\\
-						return $M' == M \oplus \Delta$
+						return $M' \stackrel{?}{=} M \oplus \Delta$
 					}{1}
 				}{\diamond}{
 					\sslibrary{}{cca-rand}{
@@ -1088,7 +1088,7 @@
 				$R_2\|S_2 \coloneq \func{cca.enc}{M}$\\
 				$M_1^* \coloneq \func{cca.dec}{R_1\|S_2}$\\
 				$M_2^* \coloneq \func{cca.dec}{R_2\|S_1}$\\
-				return $M_1^* == M_2^*$
+				return $M_1^* \stackrel{?}{=} M_2^*$
 			}{1}
 		\end{column}
 	\end{columns}
@@ -1112,7 +1112,7 @@
 					$R_2\|S_2 \coloneq \func{cca.enc}{M}$\\
 					$M_1^* \coloneq \func{cca.dec}{R_1\|S_2}$\\
 					$M_2^* \coloneq \func{cca.dec}{R_2\|S_1}$\\
-					return $M_1^* == M_2^*$
+					return $M_1^* \stackrel{?}{=} M_2^*$
 				}{1}
 			}{\diamond}{
 				\sslibrary{}{cca-real}{
@@ -1273,7 +1273,7 @@
 					\sslibrary{}{mac-real}{
 						$K \twoheadleftarrow \bits^\lambda$\\[1em]
 						\sslibrarysubroutine{mac.guess}{X, Y}{
-							return $Y == F(K, X)$
+							return $Y \stackrel{?}{=} F(K, X)$
 						}{1}\\[1em]
 						\sslibrarysubroutine{mac.reveal}{X}{
 							return $F(K, X)$
@@ -1283,7 +1283,7 @@
 					\sslibrary{}{mac-ideal}{
 						\sslibrarysubroutine{mac.guess}{X, Y}{
 							if $L[X]$ undefined: return $\texttt{false}$\\
-							return $Y == L[X]$
+							return $Y \stackrel{?}{=} L[X]$
 						}{1}\\[1em]
 						\sslibrarysubroutine{mac.reveal}{X}{
 							if $L[X]$ undefined: $L[X] \twoheadleftarrow \bits^\lambda$\\
@@ -1842,12 +1842,12 @@
 		\begin{column}{0.45\textwidth}
 			\begin{center}
 				\sssubroutine{ChaCha20-Poly1305.Enc}{K, N, A, M}{
-					$\text{key}_p \coloneq \texttt{ChaCha20}(K, N, 0)_{0..31}$\\
-					$C \coloneq M \oplus \texttt{ChaCha20}(K, N, 1)$\\
-					$\text{data} \coloneq \text{pad}(A) \| \text{pad}(C) \|$\\
-					$\quad\quad \text{len}(A) \| \text{len}(C)$\\
-					$T \coloneq \texttt{Poly1305}_{\text{key}_p}(\text{data})$\\
-					$\textbf{return } C\|T$
+				$\text{key}_p \coloneq \texttt{ChaCha20}(K, N, 0)_{0..31}$\\
+				$C \coloneq M \oplus \texttt{ChaCha20}(K, N, 1)$\\
+				$\text{data} \coloneq \text{pad}(A) \| \text{pad}(C) \|$\\
+				$\quad\quad \text{len}(A) \| \text{len}(C)$\\
+				$T \coloneq \texttt{Poly1305}_{\text{key}_p}(\text{data})$\\
+				$\textbf{return } C\|T$
 				}{0.87}
 			\end{center}
 		\end{column}
