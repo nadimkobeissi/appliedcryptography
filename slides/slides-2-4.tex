@@ -312,98 +312,6 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{$\mathsf{PRF}: F_{k}= X \rightarrow Y$}{Reminder}
-	\begin{columns}[c]
-		\begin{column}{0.4\textwidth}
-			\begin{itemize}
-				\item We want the mapping to be:
-				      \begin{itemize}
-					      \item One-way
-					      \item ``Randomized''
-					      \item Relations between inputs not reflected in outputs
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-
-		\begin{column}{0.8\textwidth}
-			\begin{tikzpicture}[scale=0.38]
-				% Define colors
-				\definecolor{domaingreen}{RGB}{102, 170, 68}
-				\definecolor{rangegreen}{RGB}{170, 187, 136}
-				\definecolor{circlecolor}{RGB}{235, 137, 85}
-				\definecolor{purplearrow}{RGB}{160, 78, 160}
-				\definecolor{redarrow}{RGB}{237, 50, 36}
-
-				% Input space (domain) X - made square
-				\draw[dashed, thick, domaingreen, fill=domaingreen]
-				(0,0) rectangle (8,8);
-				\node[text width=6.5cm, align=center, font=\normalsize]
-				at
-				(4,-0.8)
-				{Size: infinite!};
-				\node[font=\small] at (4,9) {Input space (domain) $X$};
-
-				% Output (range) Y - made square - moved more to the right
-				\draw[thick, rangegreen, fill=rangegreen] (15,2) rectangle (20,7);
-				\node[text width=4cm, align=center, font=\normalsize]
-				at
-				(17.5,1.2)
-				{Size: fixed};
-				\node[font=\small] at (17.5,8.5) {Output (range) $Y$};
-				% Input dots - adjusted positions for square domain
-				\filldraw[circlecolor] (2,7) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(2,7) -- (16.2,6.4);
-				\pause
-				\filldraw[circlecolor] (16.2,6.4) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (3,6) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(3,6) -- (18.6,5.3);
-				\pause
-				\filldraw[circlecolor] (18.6,5.3) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (2,5) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(2,5) -- (16.8,4.2);
-				\pause
-				\filldraw[circlecolor] (16.8,4.2) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (4,3.5) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(4,3.5) -- (18.4,3.2);
-				\pause
-				\filldraw[circlecolor] (18.4,3.2) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (2,2) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(2,2) -- (17.1,2.7);
-				\pause
-				\filldraw[circlecolor] (17.1,2.7) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (3,1) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, ultra thick, redarrow]
-				(3,1) -- (16.8,4.2);
-				\node[redarrow, font=\scriptsize\bfseries, rotate=14]
-				at
-				(10,3)
-				{Collisions are inevitable};
-			\end{tikzpicture}
-		\end{column}
-	\end{columns}
-\end{frame}
-
 \begin{frame}{Using passkeys for key management}{Quick aside}
 	\begin{itemize}
 		\item Potential architecture combining passkeys with E2EE:
@@ -595,38 +503,6 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Quick reminder: What does $x^{-1}$ mean?}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{In modular arithmetic:}
-			\begin{itemize}
-				\item $x^{-1}$ is the \textbf{modular inverse} of $x$
-				\item It's the number that, when multiplied by $x$, gives 1
-				\item $x \cdot x^{-1} \equiv 1 \pmod{n}$
-			\end{itemize}
-			\vspace{0.5em}
-			\textbf{Example:}
-			\begin{itemize}
-				\item If $x = 3$ and $n = 7$
-				\item Then $x^{-1} = 5$ because $3 \cdot 5 = 15 \equiv 1 \pmod{7}$
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{In group elements:}
-			\begin{itemize}
-				\item If $A = g^a$, then $A^{-1} = g^{-a}$
-				\item $A \cdot A^{-1} = g^a \cdot g^{-a} = g^{a-a} = g^0 = 1$
-				\item It's the element that ``cancels out'' $A$
-			\end{itemize}
-			\vspace{0.5em}
-			\begin{alertblock}{Key property}
-				$(A^c)^{-1} = A^{-c}$ \\
-				This is why we can rewrite expressions!
-			\end{alertblock}
-		\end{column}
-	\end{columns}
-\end{frame}
-
 \begin{frame}{Attack 1: RSA key recovery attack}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
@@ -750,6 +626,38 @@
 				% Iteration count
 				\node[draw, rectangle, fill=red!20] at (4.5,0) {512 iterations};
 			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Quick reminder: What does $x^{-1}$ mean?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{In modular arithmetic:}
+			\begin{itemize}
+				\item $x^{-1}$ is the \textbf{modular inverse} of $x$
+				\item It's the number that, when multiplied by $x$, gives 1
+				\item $x \cdot x^{-1} \equiv 1 \pmod{n}$
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Example:}
+			\begin{itemize}
+				\item If $x = 3$ and $n = 7$
+				\item Then $x^{-1} = 5$ because $3 \cdot 5 = 15 \equiv 1 \pmod{7}$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{In group elements:}
+			\begin{itemize}
+				\item If $A = g^a$, then $A^{-1} = g^{-a}$
+				\item $A \cdot A^{-1} = g^a \cdot g^{-a} = g^{a-a} = g^0 = 1$
+				\item It's the element that ``cancels out'' $A$
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{alertblock}{Key property}
+				$(A^c)^{-1} = A^{-c}$ \\
+				This is why we can rewrite expressions!
+			\end{alertblock}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1586,32 +1494,32 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
 				\item[1.]\textbf{Client starts OPRF:}
-				      \begin{itemize}
-					      \item Blinds password: $\alpha = H(pw)^r$
-					      \item Sends $\alpha$ to server
-					      \item Note: This $r$ is freshly randomized - different from registration and each login
-				      \end{itemize}
+				\begin{itemize}
+					\item Blinds password: $\alpha = H(pw)^r$
+					\item Sends $\alpha$ to server
+					\item Note: This $r$ is freshly randomized - different from registration and each login
+				\end{itemize}
 				\item[2.]\textbf{Server responds:}
-				      \begin{itemize}
-					      \item Computes $\beta = \alpha^k = H(pw)^{rk}$
-					      \item Sends back $\beta$ and encrypted envelope $env$
-				      \end{itemize}
+				\begin{itemize}
+					\item Computes $\beta = \alpha^k = H(pw)^{rk}$
+					\item Sends back $\beta$ and encrypted envelope $env$
+				\end{itemize}
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
 				\item[3.]\textbf{Client recovers private key:}
-				      \begin{itemize}
-					      \item Unblinds: $rwd = \beta^{1/r} = H(pw)^k$
-					      \item Decrypts: $sk_c = \text{Dec}(rwd, env)$
-					      \item If wrong password, decryption fails!
-				      \end{itemize}
+				\begin{itemize}
+					\item Unblinds: $rwd = \beta^{1/r} = H(pw)^k$
+					\item Decrypts: $sk_c = \text{Dec}(rwd, env)$
+					\item If wrong password, decryption fails!
+				\end{itemize}
 				\item[4.]\textbf{Authenticated key exchange:}
-				      \begin{itemize}
-					      \item Client and server run AKE using their key pairs
-					      \item Derives session key and export key
-					      \item Mutual authentication achieved
-				      \end{itemize}
+				\begin{itemize}
+					\item Client and server run AKE using their key pairs
+					\item Derives session key and export key
+					\item Mutual authentication achieved
+				\end{itemize}
 			\end{itemize}
 		\end{column}
 	\end{columns}
