@@ -39,7 +39,7 @@
 			window.addEventListener(`load`, () => {
 				const anchor = window.location.hash.substring(1)
 				if (typeof anchor === `string` && /^\d-\d{1,2}$/.test(anchor)) {
-					const viewer = document.createElement(`iframe`)
+					const viewer = document.createElement(`embed`)
 					viewer.id = `viewer`
 					viewer.src = `https://objects.appliedcryptography.page/quiz/quiz-${anchor}.pdf`
 					document.body.appendChild(viewer)

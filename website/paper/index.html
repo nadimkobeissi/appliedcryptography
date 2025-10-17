@@ -39,7 +39,7 @@
 		window.addEventListener(`load`, () => {
 			const anchor = window.location.hash.substring(1)
 			if (typeof anchor === `string` && /^\w{1,32}(-\w{1,32})?$/.test(anchor)) {
-				const viewer = document.createElement(`iframe`)
+				const viewer = document.createElement(`embed`)
 				viewer.id = `viewer`
 				viewer.src = `https://appliedcryptography.page/paper/${anchor}.pdf`
 				document.body.appendChild(viewer)
