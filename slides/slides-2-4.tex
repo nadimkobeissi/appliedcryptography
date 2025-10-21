@@ -1283,8 +1283,6 @@
 		      \begin{itemize}
 			      \item Stronger security proofs in UC framework
 			      \item Protection against pre-computation attacks
-			      \item Forward secrecy for passwords
-			      \item Quantum-resistant variants possible
 		      \end{itemize}
 		\item \textbf{Key innovation:} Oblivious PRF (OPRF)
 		      \begin{itemize}
@@ -1296,25 +1294,22 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Signal's SVR3: Multi-enclave key recovery}
+\begin{frame}{Forward secrecy in OPAQUE}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
-				\item Signal faced same challenge: E2EE backups need secure key recovery
-				\item \textbf{SVR3 (Secure Value Recovery 3)\footnote{\url{https://appliedcryptography.page/paper/\#signal-recovery}}:} PIN-based key recovery
+				\item \textbf{What is forward secrecy for passwords?}
 				      \begin{itemize}
-					      \item Distributes trust across 3 different hardware enclaves
-					      \item Intel SGX (Azure), AMD SEV-SNP (Google Cloud), Nitro (AWS)
-					      \item Attacker must compromise ALL three to access keys
+					      \item If server is compromised \textit{after} authentication
+					      \item Attacker cannot test password guesses offline
+					      \item Past sessions remain secure even with server data
 				      \end{itemize}
-				\item \textbf{Key features:}
+				\item \textbf{Contrast with traditional password hashing:}
 				      \begin{itemize}
-					      \item Uses Password Protected Secret Sharing (PPSS)
-					      \item Limits PIN guesses via secure hardware
-					      \item No single point of failure
-					      \item Cost: \$0.0025/user/year
+					      \item Hash database breach $\rightarrow$ offline cracking possible
+					      \item OPAQUE breach $\rightarrow$ still need online guessing
+					      \item Rate limiting remains effective
 				      \end{itemize}
-				\item Already deployed to millions of Signal users
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1665,30 +1660,31 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{HSM-based Backup Key Vault: The safe deposit box analogy}
+\begin{frame}{Signal's SVR3: Multi-enclave key recovery}{Quick aside}
 	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{Traditional Bank Safe Deposit Box}
+		\begin{column}{1\textwidth}
 			\begin{itemize}
-				\item User has unique key
-				\item Bank cannot open box
-				\item Requires physical presence
-				\item Lost key = lost contents
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{WhatsApp's Key Vault}
-			\begin{itemize}
-				\item Password protects key
-				\item WhatsApp cannot access
-				\item Remote recovery possible
-				\item Password attempts limited
+				\item Signal faced same challenge: E2EE backups need secure key recovery
+				\item \textbf{SVR3 (Secure Value Recovery 3)\footnote{\url{https://appliedcryptography.page/paper/\#signal-recovery}}:} PIN-based key recovery
+				      \begin{itemize}
+					      \item Distributes trust across 3 different hardware enclaves
+					      \item Intel SGX (Azure), AMD SEV-SNP (Google Cloud), Nitro (AWS)
+					      \item Attacker must compromise ALL three to access keys
+				      \end{itemize}
+				\item \textbf{Key features:}
+				      \begin{itemize}
+					      \item Uses Password Protected Secret Sharing (PPSS)
+					      \item Limits PIN guesses via secure hardware
+					      \item No single point of failure
+					      \item Cost: \$0.0025/user/year
+				      \end{itemize}
+				\item Already deployed to millions of Signal users
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{System architecture}
+\begin{frame}{WhatsApp Encrypted Backups: System architecture}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
@@ -1714,6 +1710,29 @@
 		\end{column}
 		\begin{column}{0.4\textwidth}
 			\imagewithcaption{whatsapp-backups.png}{Source: \url{https://appliedcryptography.page/paper/\#whatsapp-backups}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{HSM-based Backup Key Vault}{The safe deposit box analogy}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Traditional Bank Safe Deposit Box}
+			\begin{itemize}
+				\item User has unique key
+				\item Bank cannot open box
+				\item Requires physical presence
+				\item Lost key = lost contents
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{WhatsApp's Key Vault}
+			\begin{itemize}
+				\item Password protects key
+				\item WhatsApp cannot access
+				\item Remote recovery possible
+				\item Password attempts limited
+			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1774,6 +1793,9 @@
 			\begin{enumerate}
 				\item Client initiates OPAQUE login with password
 				\item Server decrements attempt counter
+				      \begin{itemize}
+					      \item Enforced via HSM
+				      \end{itemize}
 				\item Server returns credential response
 				\item Client completes login:
 				      \begin{itemize}
@@ -2092,6 +2114,7 @@
 				      \begin{itemize}
 					      \item Deliberate friction to push HSM option?
 					      \item Making self-custody intentionally hard?
+					      \item Or maybe using passphrases is just hard to localize into many languages
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
