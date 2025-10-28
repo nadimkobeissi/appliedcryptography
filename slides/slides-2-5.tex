@@ -954,26 +954,6 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Tamarin: Noise protocols}
-	\begin{itemize}
-		\item Same framework as ProVerif analyzed
-		\item Verification time: Seconds to hours
-		\item Depends on protocol complexity
-	\end{itemize}
-	\vspace{1em}
-	\begin{center}
-		\Large
-		Tool comparisons are difficult!
-	\end{center}
-	\vspace{0.5em}
-	\begin{itemize}
-		\item Even on similar case studies
-		\item Different modeling choices
-		\item Different property formulations
-		\item \textbf{Take performance numbers with a grain of salt!}
-	\end{itemize}
-\end{frame}
-
 \begin{frame}{Computational analysis tools overview}
 	\bigimagewithcaption{verif-computational.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
 \end{frame}
@@ -1105,28 +1085,6 @@
 	\begin{center}
 		Smaller TCB = Higher confidence
 	\end{center}
-\end{frame}
-
-\begin{frame}{Specification languages}
-	\textbf{How do you write your cryptographic code?}
-	\vspace{0.5em}
-	\begin{itemize}
-		\item \textbf{Functional core}: Express operation semantics
-		      \begin{itemize}
-			      \item Supported by all tools
-			      \item Natural for algorithms
-		      \end{itemize}
-		\item \textbf{Imperative language}: Write security games
-		      \begin{itemize}
-			      \item Familiar to programmers
-			      \item Direct game representation
-		      \end{itemize}
-		\item \textbf{Process calculus}: Protocol communication
-		      \begin{itemize}
-			      \item Natural for message exchange
-			      \item Well-suited for protocols
-		      \end{itemize}
-	\end{itemize}
 \end{frame}
 
 \begin{frame}{Achievements: Real-world impact}
