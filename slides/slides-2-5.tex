@@ -1077,7 +1077,7 @@
 	\vspace{0.5em}
 	\textbf{Three common TCB levels:}
 	\begin{enumerate}
-		\item \textbf{Theorem prover}: Coq, Isabelle (minimal TCB)
+		\item \textbf{Theorem prover}: Rocq, Isabelle (minimal TCB)
 		\item \textbf{Tool implementation}: Custom logic implementation
 		\item \textbf{SMT solvers}: Z3 and similar (for automation)
 	\end{enumerate}
@@ -1310,7 +1310,7 @@
 	\vspace{1em}
 	\textbf{What you can do:}
 	\begin{itemize}
-		\item Run hax on Rust code \rightarrow\ See \fstar, Coq, or ProVerif output
+		\item Run hax on Rust code \rightarrow\ See \fstar, Rocq, or ProVerif output
 		\item Run \fstar typechecker to verify generated code
 		\item Inspect Rust ASTs (THIR/MIR) interactively
 		\item Share snippets with others
@@ -1380,7 +1380,7 @@
 \begin{frame}{One codebase, three provers, thorough verification}
 	\textbf{Their approach with hax:}
 	\begin{itemize}
-		\item \textbf{SSProve (Coq)}: Prove cryptographic security of key schedule
+		\item \textbf{SSProve (Rocq)}: Prove cryptographic security of key schedule
 		\item \textbf{ProVerif}: Prove authentication and confidentiality of protocol
 		\item \textbf{\fstar}: Prove runtime safety and parsing correctness
 	\end{itemize}
@@ -1739,7 +1739,7 @@
 	\begin{itemize}
 		\item \textbf{Dafny}: High-level imperative
 		\item \textbf{\fstar}: Functional with effects
-		\item \textbf{Gallina} (Coq): Pure functional
+		\item \textbf{Gallina} (Rocq): Pure functional
 		\item \textbf{WhyML} (Why3): Functional core
 	\end{itemize}
 	\vspace{0.5em}
@@ -1786,7 +1786,7 @@
 	\textbf{Common trust dependencies:}
 	\begin{itemize}
 		\item SMT solvers (Z3, CVC4, etc.)
-		\item Theorem provers (Coq, Isabelle)
+		\item Theorem provers (Rocq, Isabelle)
 		\item Tool implementations themselves
 		\item Interoperability glue code
 		\item Specifications of external libraries
