@@ -18,6 +18,30 @@
 	\titlepage
 \end{frame}
 
+\begin{frame}{Acknowledgments}
+	\begin{center}
+		\Large
+		Much of this slide deck is based on:
+
+		\vspace{1em}
+
+		\normalsize
+		Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao and Bryan Parno
+
+		\vspace{0.5em}
+
+		\textit{SoK: Computer-Aided Cryptography}
+
+		\vspace{0.5em}
+
+		IEEE Symposium on Security and Privacy, 2021
+
+		\vspace{0.5em}
+
+		\url{https://appliedcryptography.page/paper/\#sok-verif}
+	\end{center}
+\end{frame}
+
 \section{Introduction}
 
 \begin{frame}{Securely implementing cryptography}
@@ -685,64 +709,6 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Equivalence properties: Beyond traces}
-	\begin{itemize}
-		\item Some properties \textbf{cannot} be expressed as traces
-		\item Example: ``Adversary cannot tell if vote was for Alice or Bob''
-		\item Requires comparing protocol executions
-		\item Three main notions:
-		      \begin{enumerate}
-			      \item Trace equivalence
-			      \item Open bisimilarity
-			      \item Diff-equivalence
-		      \end{enumerate}
-	\end{itemize}
-	\begin{center}
-		\textit{Each notion has different strengths and use cases}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Trace equivalence}
-	\begin{itemize}
-		\item \textbf{Weakest} equivalence notion (most expressive)
-		\item For each trace in protocol A\ldots
-		\item \ldots exists corresponding trace in protocol B\ldots
-		\item \ldots with indistinguishable messages
-	\end{itemize}
-	\vspace{1em}
-	\begin{center}
-		\Large
-		Most natural for privacy properties
-	\end{center}
-\end{frame}
-
-\begin{frame}{Open bisimilarity}
-	\begin{itemize}
-		\item \textbf{Stronger} than trace equivalence
-		\item Uses ``bi-traces'' to track adversary knowledge
-		\item Each action in one protocol\ldots
-		\item \ldots can be simulated in the other
-		\item While maintaining consistency
-	\end{itemize}
-	\vspace{1em}
-	\begin{center}
-		Often an intermediate step toward proving trace equivalence
-	\end{center}
-\end{frame}
-
-\begin{frame}{Diff-equivalence}
-	\begin{itemize}
-		\item \textbf{Strongest} notion (most restrictive)
-		\item Protocols must have \textbf{identical structure}
-		\item Differ only in messages exchanged
-		\item All tests succeed/fail identically in both
-	\end{itemize}
-	\vspace{1em}
-	\begin{center}
-		Preserves protocol structure during execution
-	\end{center}
-\end{frame}
-
 \begin{frame}{Equational theories: Modeling cryptography}
 	\begin{itemize}
 		\item Cryptographic operations have algebraic properties
@@ -1107,29 +1073,6 @@
 	\begin{center}
 		Making bounded analysis more practical
 	\end{center}
-\end{frame}
-
-\begin{frame}{The unbounded equivalence challenge}
-	\begin{itemize}
-		\item \textbf{Diff-equivalence} remains the only fully automated approach
-		\item First introduced in ProVerif
-		\item Later adopted by:
-		      \begin{itemize}
-			      \item Maude-NPA
-			      \item Tamarin
-		      \end{itemize}
-	\end{itemize}
-	\vspace{1em}
-	\begin{center}
-		\Large
-		But it's too restrictive!
-	\end{center}
-	\vspace{0.5em}
-	\begin{itemize}
-		\item Trace equivalence is most natural for privacy
-		\item Many properties cannot be expressed as diff-equivalence
-		\item Verifying general equivalence for unbounded sessions remains an open challenge
-	\end{itemize}
 \end{frame}
 
 \begin{frame}{Computational analysis tools overview}

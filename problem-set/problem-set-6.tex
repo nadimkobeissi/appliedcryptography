@@ -37,14 +37,19 @@
 	Receipt-freeness means that even if Alice wants to prove she voted for candidate A (perhaps under coercion), she cannot produce evidence that distinguishes her voting for A from voting for B. This inherently involves comparing two scenarios.
 
 	\begin{parts}
-		\part[6] Explain why receipt-freeness cannot be expressed as a trace property.\footnote{Hint: Consider what information would need to be examined in a single trace versus across multiple traces.} Then formulate receipt-freeness as an equivalence property in the symbolic model.\footnote{Hint: Think about what two processes should be indistinguishable to model this property.}
-		\part[6] There exist different notions of equivalence:\footnote{\url{https://appliedcryptography.page/paper/\#sok-verif}}
+		\part[6] Explain why receipt-freeness is naturally formulated as an equivalence property rather than a trace property.\footnote{Hint: Consider what distinguishes trace properties (examining individual executions) from equivalence properties (comparing multiple scenarios).} Then formulate receipt-freeness as an equivalence property in the symbolic model.\footnote{Hint: Think about what two processes should be indistinguishable to model this property.}
+		\part[6] The slides describe three levels of leakage models for implementation security:\footnote{\url{https://appliedcryptography.page/slides/\#2-5}}
 		\begin{itemize}
-			\item \textbf{Trace equivalence}: Two processes are equivalent if they produce the same set of observable traces.
-			\item \textbf{Open bisimilarity}: A stronger notion where processes must match each other's behavior step-by-step, even when the attacker provides inputs.
-			\item \textbf{Diff-equivalence}: The strongest (most restrictive) notion where two protocols must have identical structure, differing only in the messages exchanged. All tests must succeed or fail identically in both protocols, preserving protocol structure during execution.
+			\item \textbf{Program counter (PC) model}: Leaks only control flow (which branches taken, loop iterations).
+			\item \textbf{Constant-time model}: Leaks PC plus memory addresses accessed (but not values).
+			\item \textbf{Size-respecting model}: Leaks PC, memory addresses, and operand sizes.
 		\end{itemize}
-		Compare these three approaches for modeling receipt-freeness. Which would be most appropriate and why? What can you say about the analysis's precision of the analysis and the computational complexity?
+		For a password verification function that compares user input against a stored password:
+		\begin{enumerate}
+			\item Give a concrete example of how this function could violate each of the three models.
+			\item For each violation, explain what information an attacker could learn.
+			\item Show how to rewrite the function to satisfy the constant-time model. What is the performance trade-off?
+		\end{enumerate}
 	\end{parts}
 
 	\subsection*{Tool Selection and Application}
