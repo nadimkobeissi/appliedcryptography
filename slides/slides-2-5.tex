@@ -2350,6 +2350,28 @@
 	\end{center}
 \end{frame}
 
+\begin{frame}{Size-respecting leakage}
+	\begin{center}
+		\Large
+		The strongest model: PC + memory + operand sizes
+	\end{center}
+	\vspace{1em}
+	\textbf{Additionally leaks:}
+	\begin{itemize}
+		\item Sizes of operands in operations
+		\item Which instruction variants are used
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{Example violation:}
+	\begin{flushleft}
+		\texttt{result = secret / divisor;~~// Division time varies with operand size}
+	\end{flushleft}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Variable-time instructions can leak operand magnitudes}
+	\end{center}
+\end{frame}
+
 \begin{frame}{The verification promise}
 	\begin{center}
 		\Large
@@ -2384,7 +2406,7 @@
 	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{We prove security in our model, not absolute security}
+		\textit{We prove security \textbf{in our model}, not absolute security}
 	\end{center}
 \end{frame}
 
@@ -2407,6 +2429,59 @@
 		\item Verify at assembly level
 		\item Use verified compilers
 		\item Hardware/software co-design
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Example: Hardware attacks on TEEs (TEE.fail)}
+	\begin{center}
+		What if we attack the memory bus itself?\footnote{\url{https://tee.fail/}}
+	\end{center}
+	\vspace{1em}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{TEE.fail (2025):}
+			\begin{itemize}
+				\item Physical interposition on DDR5 memory bus
+				\item Built with cheap, off-the-shelf electronics
+				\item Inspects all memory traffic in real-time
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Devastating impact:}
+			\begin{itemize}
+				\item Breaks Intel TDX
+				\item Breaks AMD SEV-SNP (even with Ciphertext Hiding!)
+				\item Extracts attestation keys
+				\item Compromises Nvidia GPU Confidential Computing
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Hardware-level attacks bypass all software protections}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Real-world impact of TEE.fail}
+	\begin{center}
+		\Large
+		When hardware is compromised, everything fails
+	\end{center}
+	\vspace{1em}
+	\textbf{What attackers can do:}
+	\begin{itemize}
+		\item Extract cryptographic keys from ``secure'' TEEs
+		\item Steal attestation keys from fully updated machines
+		\item Run AI workloads without TEE protections
+		\item Potentially extract millions from crypto/cloud services
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{The lesson:}
+	\begin{itemize}
+		\item Physical access = game over
+		\item TEEs assume trusted hardware
+		\item Memory bus is a critical attack surface
+		\item DDR5's complexity doesn't prevent interposition
 	\end{itemize}
 \end{frame}
 
