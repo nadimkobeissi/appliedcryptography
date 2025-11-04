@@ -810,6 +810,40 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{The LWE distinguishing challenge: What does it mean?}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\textbf{Scenario 1: LWE samples}
+			\begin{itemize}
+				\item Alice picks secret $\vec{s}$
+				\item Computes $\vec{x} = M\vec{s} + \vec{e}$
+				\item Gives you $(M, \vec{x})$
+			\end{itemize}
+			\textbf{Scenario 2: Random}
+			\begin{itemize}
+				\item Alice picks random $\vec{x}$
+				\item Gives you $(M, \vec{x})$
+			\end{itemize}
+			\textbf{Your task}: Tell which scenario you're in!
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\textbf{Why is this hard?}
+			\begin{itemize}
+				\item Noise $\vec{e}$ makes $\vec{x}$ look random
+				\item Without the secret $\vec{s}$, can't tell the difference
+				\item Like trying to find a hidden pattern in static
+			\end{itemize}
+			\textbf{Cryptographic use:}
+			\begin{itemize}
+				\item If you can't distinguish, you can't break the crypto
+				\item Real samples $\rightarrow$ encrypted messages
+				\item Random samples $\rightarrow$ meaningless noise
+				\item Adversary can't tell which is which!
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{LWE: Mathematical formulation}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -1081,7 +1115,7 @@
 			\end{itemize}
 			\textbf{Bob's key generation:}
 			\begin{enumerate}
-				\item Sample $(\vec{s}, \vec{e}_1) \twoheadleftarrow [\mathcal{E}]^n$
+				\item Sample $\vec{s}, (\vec{e}_1 \twoheadleftarrow [\mathcal{E}]^n)$
 				\item Private key: $\vec{s}$
 				\item Public key: $\vec{b} = A\vec{s} + \vec{e}_1$
 				\item Publish $(A, \vec{b})$
@@ -1090,7 +1124,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Alice's encapsulation:}
 			\begin{enumerate}
-				\item Sample $(\vec{r}, \vec{e}_2) \twoheadleftarrow [\mathcal{E}]^n$
+				\item Sample $\vec{r}, (\vec{e}_2 \twoheadleftarrow [\mathcal{E}]^n)$
 				\item Sample $e_3 \twoheadleftarrow \mathcal{E}$
 				\item Message bit: $\mu \in \bits$
 				\item Compute:
