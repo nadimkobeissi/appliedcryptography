@@ -1058,7 +1058,6 @@
 				\item $x \twoheadleftarrow S$ means ``randomly pick $x$ from set $S$''
 				\item Like rolling dice or drawing from a hat
 			\end{itemize}
-			\vspace{3mm}
 			\textbf{Error distribution $\mathcal{E}$:}
 			\begin{itemize}
 				\item A probability distribution over small integers
@@ -1442,6 +1441,85 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{McEliece encryption: The basic setup}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\textbf{Bob creates his keys:}
+			\begin{enumerate}
+				\item Pick a ``nice'' error-correcting code
+				      \begin{itemize}
+					      \item Has special structure (secret)
+					      \item Can efficiently correct $t$ errors
+					      \item Generator matrix: $G'$
+				      \end{itemize}
+				\item Disguise it with random matrices
+				      \begin{itemize}
+					      \item $S$: Random invertible matrix
+					      \item $P$: Random permutation matrix
+					      \item Compute: $G = S \cdot G' \cdot P$
+				      \end{itemize}
+				\item Public key: $G$ (looks random!)
+				\item Private key: $(S, G', P)$
+			\end{enumerate}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{McEliece encryption: How Alice sends a message}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\textbf{Alice wants to send message $m$ to Bob:}
+			\begin{enumerate}
+				\item Encode using \textcolor{blue}{Bob's public key $(G, t)$}
+				      \begin{itemize}
+					      \item Compute: $c_0 = m \cdot \textcolor{blue}{G}$
+					      \item This is a valid codeword
+				      \end{itemize}
+				\item Add random errors
+				      \begin{itemize}
+					      \item Pick error vector $e$
+					      \item Exactly $\textcolor{blue}{t}$ bits set to 1
+					      \item Compute: $c = c_0 + e$
+				      \end{itemize}
+				\item Send ciphertext $c$ to Bob
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\textbf{Why add errors?}
+			\begin{itemize}
+				\item Makes $c$ look random
+				\item Hides the structure
+				\item Like adding noise to a signal
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{McEliece decryption: How Bob recovers the message}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\textbf{Bob receives $c = c_0 + e$ from Alice:}
+			\begin{enumerate}
+				\item Undo the permutation using \textcolor{blue}{his private key $P$}
+				      \begin{itemize}
+					      \item Compute: $c' = c \cdot P^{-1}$
+					      \item This gives: $c' = m \cdot S \cdot G' + e'$
+				      \end{itemize}
+				\item Use special structure of \textcolor{blue}{his private key $G'$}
+				      \begin{itemize}
+					      \item Error-correct $c'$ using $G'$
+					      \item Removes the $t$ errors
+					      \item Gets: $m \cdot S \cdot G'$
+				      \end{itemize}
+				\item Recover original message using \textcolor{blue}{his private key $S$}
+				      \begin{itemize}
+					      \item Apply $S^{-1}$ to get $m$
+				      \end{itemize}
+			\end{enumerate}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Why is McEliece secure?}
 	\begin{itemize}
 		\item \textbf{The underlying problem}: Decoding random linear codes
@@ -1480,7 +1558,7 @@
 			\textbf{Disadvantages:}
 			\begin{itemize}
 				\item[$\times$] Large public keys (100+ KB)
-				\item[$\times$] Not selected by NIST (yet)
+				\item[$\times$] Not selected by NIST (yet?)
 				\item[$\times$] Less deployment experience
 			\end{itemize}
 
@@ -1507,39 +1585,55 @@
 \end{frame}
 
 \begin{frame}{The building block: One-time signatures}
-	\begin{itemize}
-		\item \textbf{One-time signature}: Can sign only ONE message with each key
-		\item \textbf{Why accept this limitation?}
-		      \begin{itemize}
-			      \item Extremely simple construction
-			      \item Provably secure (if hash is secure)
-			      \item Building block for multi-use schemes
-		      \end{itemize}
-		\item \textbf{Real-world analogy}: Like a wax seal
-		      \begin{itemize}
-			      \item Break the seal to verify authenticity
-			      \item Can't reuse it for another letter
-			      \item Need a new seal for each message
-		      \end{itemize}
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{0.65\textwidth}
+			\begin{itemize}
+				\item \textbf{One-time signature}: Can sign only ONE message with each key
+				\item \textbf{Why accept this limitation?}
+				      \begin{itemize}
+					      \item Extremely simple construction
+					      \item Provably secure (if hash is secure)
+					      \item Building block for multi-use schemes
+				      \end{itemize}
+				\item \textbf{Real-world analogy}: Like a wax seal
+				      \begin{itemize}
+					      \item Break the seal to verify authenticity
+					      \item Can't reuse it for another letter
+					      \item Need a new seal for each message
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.35\textwidth}
+			\imagewithcaption{wax-seal.jpg}{Letter sealed with red wax.}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Winternitz One-Time Signature (WOTS)}
 	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\textbf{Setup (for messages 0 to $w-1$):}
+		\begin{column}{0.5\textwidth}
+			\textbf{Setup (parameter $w$ = maximum value):}
 			\begin{itemize}
 				\item Private key: Random string $K$
 				\item Public key: $\text{Hash}^w(K)$
 				      \begin{itemize}
-					      \item Apply hash $w$ times
+					      \item Apply hash $w$ times to get the public key
 				      \end{itemize}
 			\end{itemize}
 
-			\textbf{To sign message $M$:}
+			\textbf{To sign message $M$ (where $0 \leq M \leq w-1$):}
 			\begin{itemize}
+				\item First hash the actual message to get a value in range $[0, w-1]$
 				\item Signature: $\text{Hash}^M(K)$
 				\item Apply hash $M$ times to $K$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Example with $w = 256$:}
+			\begin{itemize}
+				\item Can sign any byte (0-255)
+				\item Hash message $\rightarrow$ byte value $M$
+				\item Sign by computing $\text{Hash}^M(K)$
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1729,7 +1823,7 @@
 			\begin{itemize}
 				\item[$\times$] Large signatures (10-50 KB)
 				\item[$\times$] Signatures only (no encryption)
-				\item[$\times$] Complex key generation
+				\item[$\times$] Complex/costly key generation
 				\item[$\times$] Stateful variants risky
 			\end{itemize}
 		\end{column}
@@ -1878,6 +1972,10 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{X-Wing Design}
+	\bigimagewithcaption{xwing-design.png}{Source: \url{https://appliedcryptography.page/paper/\#xwing-hybrid}}
+\end{frame}
+
 \subsection{Post-Quantum TLS}
 
 \begin{frame}{TLS migration timeline}
@@ -1935,7 +2033,6 @@
 			\hline
 		\end{tabular}
 	\end{center}
-	\vspace{3mm}
 	\begin{itemize}
 		\item \textbf{Size penalty}: ML-KEM is 25-50\times\ larger than X25519
 		\item \textbf{Speed bonus}: ML-KEM can be faster
@@ -1945,7 +2042,6 @@
 
 \begin{frame}{Hybrid key agreement: Belt and suspenders}
 	\textbf{Common deployment}: X25519 + ML-KEM-768
-	\vspace{3mm}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Why ML-KEM-768?}
@@ -2146,7 +2242,6 @@
 				\item ML-KEM-1024: 1,568 bytes sent
 				\item Compare to X25519: 32 bytes!
 			\end{itemize}
-			\vspace{3mm}
 			\textbf{PQ3's solution:}
 			\begin{itemize}
 				\item Can't send new KEM key with every message
@@ -2162,7 +2257,6 @@
 				\item Can ratchet with \textit{every} message
 				\item Immediate post-compromise recovery
 			\end{itemize}
-			\vspace{3mm}
 			\textbf{PQ3 (post-quantum):}
 			\begin{itemize}
 				\item Large KEM keys (1KB+)
@@ -2204,7 +2298,6 @@
 				\item One-time pre-keys (OPK)
 				\item Ephemeral keys (EK)
 			\end{itemize}
-			\vspace{3mm}
 			\textbf{PQXDH additions:}
 			\begin{itemize}
 				\item \textcolor{blue}{+ KEM key pairs (PQSPK)}
@@ -2224,7 +2317,6 @@
 					      \item \textcolor{blue}{+ KEM shared secret}
 				      \end{itemize}
 			\end{enumerate}
-			\vspace{3mm}
 			\textbf{Result}: Key secure if either DH or KEM remains unbroken
 		\end{column}
 	\end{columns}
@@ -2309,7 +2401,6 @@
 				\item If recipient offline: resends 2272 bytes repeatedly!
 				\item Worst case: 50\times\ overhead
 			\end{itemize}
-			\vspace{3mm}
 			\textbf{Triple Ratchet's solution:}
 			\begin{itemize}
 				\item Split KEM message using erasure codes
@@ -2375,7 +2466,6 @@
 			\hline
 		\end{tabular}
 	\end{center}
-	\vspace{3mm}
 	\begin{itemize}
 		\item \textbf{p}: Probability sender continues without waiting for response
 		\item \textbf{Balanced}: TR competitive even in best case for PQ3
@@ -2602,7 +2692,6 @@
 			\hline
 		\end{tabular}
 	\end{center}
-	\vspace{3mm}
 	\textbf{Key insight}: Different problems need different solutions
 \end{frame}
 
@@ -2870,7 +2959,6 @@
 				\item Revoke old keys
 				\item \textcolor{green!70!black}{Recoverable}
 			\end{itemize}
-			\vspace{3mm}
 			\textbf{Hardware signatures:}
 			\begin{itemize}
 				\item Keys burned in ROM/fuses
@@ -2926,7 +3014,6 @@
 				\item Laptops: 3-5 years
 				\item \textcolor{green!70!black}{Painful but manageable}
 			\end{itemize}
-			\vspace{3mm}
 			\textbf{Critical infrastructure:}
 			\begin{itemize}
 				\item Power plants: 30-50 years?
@@ -2944,7 +3031,6 @@
 				\item Controls \$1M+ equipment
 				\item Can't extract and replace
 			\end{itemize}
-			\vspace{3mm}
 			\textbf{Example}: Car ECUs
 			\begin{itemize}
 				\item Cars may have multiple ECUs
@@ -2974,7 +3060,6 @@
 			\hline
 		\end{tabular}
 	\end{center}
-	\vspace{3mm}
 	\begin{center}
 		\textbf{Reality}: Both are potential disasters with different characteristics
 	\end{center}
@@ -3028,7 +3113,6 @@
 				\item Global auto industry: Trillions?
 				\item Satellite constellation: Who knows
 			\end{itemize}
-			\vspace{3mm}
 			\textbf{Bottom line}: Potentially massive cost
 		\end{column}
 	\end{columns}
