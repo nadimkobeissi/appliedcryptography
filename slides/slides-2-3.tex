@@ -699,8 +699,8 @@
 					\node (A) at (0,0) {$A$};
 					\node (B) at (8,0) {$B$};
 					\draw[->] (0.5,0) -- (7.5,0) node[midway,above] {$g^x$};
-					\draw[<-] (0.5,-1) -- (7.5,-1) node[midway,above] {$g^y, B, \func{sign}{B, (g^x,g^y)}, \func{hmac}{K_m, g^B}$};
-					\draw[->] (0.5,-2) -- (7.5,-2) node[midway,above] {$A, \func{sign}{A, (g^y,g^x)}, \func{hmac}{K_m, g^A}$};
+					\draw[<-] (0.5,-1) -- (7.5,-1) node[midway,above] {$g^y, g^B, \func{sign}{B, (g^x,g^y)}, \func{hmac}{K_m, g^B}$};
+					\draw[->] (0.5,-2) -- (7.5,-2) node[midway,above] {$g^A, \func{sign}{A, (g^y,g^x)}, \func{hmac}{K_m, g^A}$};
 				\end{tikzpicture}
 			\end{center}
 		\end{column}
