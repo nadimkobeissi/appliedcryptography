@@ -7,7 +7,7 @@ In alphabetical order:
 - [Diego F. Aranha](https://dfaranha.github.io/): full review of Slides 1.8 (Elliptic Curve Cryptography) with corrections.
 - [Jean-Philippe Aumasson](https://aumasson.jp): general feedback and advice.
 - [Kenneth Paterson](https://inf.ethz.ch/people/person-detail.paterson.html): highly significant general feedback, guidance and advice across many domains.
-- [Lucas Meier](https://cronokirby.com): General feedback and advice.
+- [Lucas Meier](https://cronokirby.com): general feedback and advice.
 - [Rolfe Schmidt](https://www.linkedin.com/m/in/rolfeschmidt): discussions and clarifications regarding Signal's cryptography today.
 
 It's possible that you've contributed something and that I forgot to add your name here. If that is the case, please shoot me an email at [n@nadim.email](mailto:n@nadim.email).
