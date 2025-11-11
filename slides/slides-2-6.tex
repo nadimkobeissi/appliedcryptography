@@ -462,7 +462,7 @@
 	\vspace{2mm}
 	\footnotesize
 	{\scriptsize
-	\textbf{Mathematical note:} The equation $\vec{b} = A\vec{s}$ represents a \emph{linear transformation} $T: \mathbb{Z}_q^5 \to \mathbb{Z}_q^5$ defined by $T(\vec{s}) = A\vec{s}$. Gaussian elimination $\rightarrow$ \emph{equivalent systems} via row operations that correspond to invertible elementary matrices.
+		\textbf{Mathematical note:} The equation $\vec{b} = A\vec{s}$ represents a \emph{linear transformation} $T: \mathbb{Z}_q^5 \to \mathbb{Z}_q^5$ defined by $T(\vec{s}) = A\vec{s}$. Gaussian elimination $\rightarrow$ \emph{equivalent systems} via row operations that correspond to invertible elementary matrices.
 	}
 \end{frame}
 
@@ -718,14 +718,14 @@
 	\begin{itemize}
 		\item \textbf{Theoretical complexity}: $O(n^3)$ for $n \times n$ system
 		      \begin{itemize}
-				{\scriptsize
+			      {\scriptsize
 			      \item Compare to brute force: $O(q^n)$ where $q$ is field size
 			      \item For $n=1000$: $\sim 10^9$ operations vs $q^{1000}$ (astronomical!)}
 		      \end{itemize}
 
 		\item \textbf{Algorithmic refinements} for practical speed:
 		      \begin{itemize}
-				{\scriptsize
+			      {\scriptsize
 			      \item \textbf{Pivoting strategies}: Choose best pivot to minimize numerical errors
 			      \item \textbf{Sparse methods}: Exploit matrices with mostly zeros
 			      \item \textbf{Block algorithms}: Optimize for memory cache hierarchies}
@@ -733,13 +733,13 @@
 
 		\item \textbf{Hardware acceleration} (critical for modern implementations):
 		      \begin{itemize}
-								{\scriptsize
+			      {\scriptsize
 			      \item \textbf{GPU parallelism}: Thousands of cores compute simultaneously
 			      \item \textbf{SIMD instructions}: Process multiple data elements per CPU cycle
 			      \item \textbf{Optimized libraries}: BLAS, LAPACK, cuBLAS exploit hardware
 			      \item \textbf{Real speedup}: 50--100$\times$ faster with good implementation}
 		      \end{itemize}
-		{\scriptsize
+		      {\scriptsize
 		\item \textbf{Works in finite fields}: Same techniques apply modulo $q$}
 	\end{itemize}}
 
@@ -1121,9 +1121,9 @@
 		\item \textbf{Matrix-vector multiplication (dimensions matter!)}:
 		      \begin{itemize}
 			      \item $A\vec{s}$ where $A \in \mathbb{Z}_q^{m \times n}$ and $\vec{s} \in \mathbb{Z}_q^n$:
-				   $(A\vec{s})_i = \sum_{j=1}^n A_{ij}s_j \quad \text{(result is vector in $\mathbb{Z}_q^m$)}$
+			            $(A\vec{s})_i = \sum_{j=1}^n A_{ij}s_j \quad \text{(result is vector in $\mathbb{Z}_q^m$)}$
 			      \item $\vec{b}^T\vec{r}$ where $\vec{b}, \vec{r} \in \mathbb{Z}_q^n$ (inner product):
-			       $\vec{b}^T\vec{r} = \sum_{i=1}^n b_i r_i \quad \text{(result is scalar in $\mathbb{Z}_q$)}$
+			            $\vec{b}^T\vec{r} = \sum_{i=1}^n b_i r_i \quad \text{(result is scalar in $\mathbb{Z}_q$)}$
 
 			      \item The transpose ${}^T$ ensures dimensional consistency: $1 \times n$ times $n \times 1$ yields $1 \times 1$ (scalar)
 		      \end{itemize}
@@ -2325,7 +2325,6 @@
 	\end{itemize}
 \end{frame}
 
-
 \begin{frame}{Apple iMessage: PQ3}
 	\bigimagewithcaption{pq3-apple.png}{Source: Apple Security Engineering and Architecture (SEAR)}
 \end{frame}
@@ -2345,6 +2344,119 @@
 			      \item At the time, Signal only used PQ crypto in setup (PQXDH), not in ratcheting
 		      \end{itemize}
 		\item \textbf{Security guarantee}: Must break BOTH classical and PQ crypto to compromise
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Apple iMessage PQ3: High-level overview}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Device-to-device messaging:}\footnote{\url{https://appliedcryptography.page/paper/\#pq3-analysis}}
+			\begin{itemize}
+				\item Asynchronous communication
+				\item Either party can send anytime
+				\item Works when peer is offline
+			\end{itemize}
+
+			\textbf{Key components:}
+			\begin{itemize}
+				\item Apple IDentity Service (IDS)
+				\item Long-term identity keys
+				\item Pre-key material
+				\item Double ratchet + PQ
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Session establishment:}
+			\begin{enumerate}
+				\item Query IDS for peer's pre-keys
+				\item Derive initial keys
+				\item Send first encrypted message
+				\item Peer verifies and derives keys
+				\item Session established
+			\end{enumerate}
+
+			\textbf{Two ratchet types:}
+			\begin{itemize}
+				\item \textbf{Symmetric}: Same direction
+				\item \textbf{Public-key}: Direction change
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{PQ3: Hybrid cryptographic construction}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\textbf{Key material used:}
+			\begin{itemize}
+				\item \textbf{Classical}: ECDH key pairs
+				      \begin{itemize}
+					      \item Ephemeral keys (per session)
+					      \item Pre-keys (for async start)
+				      \end{itemize}
+				\item \textbf{Post-quantum}: ML-KEM key pairs
+				      \begin{itemize}
+					      \item ML-KEM-768 (ephemeral)
+					      \item ML-KEM-1024 (pre-keys)
+				      \end{itemize}
+			\end{itemize}
+
+			\textbf{Root key derivation:}
+			\begin{itemize}
+				\item Previous root key (or 0x0)
+				\item ECDH shared secret
+				\item KEM shared secret (or 0x0)
+				\item Combined via HKDF
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\textbf{The ratcheting mechanism:}
+			\begin{itemize}
+				\item \textbf{Symmetric ratchet}:
+				      \begin{itemize}
+					      \item Chain key $\rightarrow$ Message key
+					      \item Chain key $\rightarrow$ New chain key
+					      \item No root key update
+				      \end{itemize}
+				\item \textbf{Public-key ratchet}:
+				      \begin{itemize}
+					      \item New ECDH ephemeral keys
+					      \item Sometimes: New KEM keys
+					      \item Update root key
+					      \item Derive new chain key
+				      \end{itemize}
+			\end{itemize}
+
+			\textbf{KEM refresh heuristic:}
+			\begin{itemize}
+				\item Every \approx50 messages, OR
+				\item At least once per week
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{PQ3: Security guarantees}
+	\begin{itemize}
+		\item \textbf{Hybrid construction benefits:}
+		      \begin{itemize}
+			      \item Secure if EITHER classical OR PQ remains unbroken
+			      \item At minimum: Classical security level
+			      \item Plus: Protection against quantum adversaries
+		      \end{itemize}
+		\item \textbf{Post-compromise security:}
+		      \begin{itemize}
+			      \item Regular KEM ratcheting provides PQ healing
+			      \item Even if KEM shared secret compromised
+			      \item Next KEM refresh restores security
+			      \item Works against ``harvest now, decrypt later''
+		      \end{itemize}
+		\item \textbf{Forward secrecy:}
+		      \begin{itemize}
+			      \item Per-message keys from chain ratchet
+			      \item Delete old keys immediately
+			      \item Past messages safe even if current key leaked
+		      \end{itemize}
 	\end{itemize}
 \end{frame}
 
@@ -2384,25 +2496,30 @@
 \end{frame}
 
 \begin{frame}{Signal's Triple Ratchet}
-	\begin{itemize}
-		\item \textbf{The problem with PQXDH}: Only initial handshake is PQ-secure
-		      \begin{itemize}
-			      \item No post-quantum post-compromise security (PCS)
-			      \item If device compromised after setup, future messages vulnerable
-		      \end{itemize}
-		\item \textbf{Signal's new approach}: Triple Ratchet protocol (2025)
-		      \begin{itemize}
-			      \item Bandwidth-efficient hybrid-secure messaging
-			      \item Addresses PQ3's communication inefficiencies
-			      \item Actively being evaluated by Signal team
-		      \end{itemize}
-		\item \textbf{Key innovation}: Three parallel ratchets
-		      \begin{enumerate}
-			      \item Classical public ratchet (DH-based)
-			      \item Post-quantum public ratchet (lattice-based)
-			      \item Symmetric ratchet (as before)
-		      \end{enumerate}
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{The problem with PQXDH:}
+				      \begin{itemize}
+					      \item Only initial handshake is PQ-secure
+					      \item No post-quantum post-compromise security (PCS)
+				      \end{itemize}
+				\item \textbf{Signal's new approach:}
+				      \begin{itemize}
+					      \item Triple Ratchet protocol (2025)\footnote{\url{https://appliedcryptography.page/paper/\#triple-ratchet}}
+					      \item Bandwidth-efficient hybrid-secure messaging
+					      \item Addresses PQ3's communication inefficiencies
+					      \item Actively being evaluated by Signal team
+				      \end{itemize}
+				\item \textbf{Key innovation}: Three parallel ratchets
+				      \begin{enumerate}
+					      \item Classical public ratchet (DH-based)
+					      \item Post-quantum public ratchet (lattice-based)
+					      \item Symmetric ratchet (as before)
+				      \end{enumerate}
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{The erasure code innovation}
@@ -2485,6 +2602,44 @@
 		\item \textbf{Realistic scenarios}: TR dramatically better (up to 5\times\ improvement)
 		\item \textbf{Combines}: Erasure coding + efficient Katana RKEM
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Understanding the communication cost table}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\textbf{Key parameter: p}
+			\begin{itemize}
+				\item Probability sender continues without receiving reply
+				\item p = 0: Perfectly balanced (sender waits for reply)
+				\item p = 0.5: Realistic (typing indicators, read receipts)
+				\item p = 0.9: Offline device (laptop turned off)
+			\end{itemize}
+
+			\textbf{Why PQ3 costs explode:}
+			\begin{itemize}
+				\item Sends full Kyber-768 (2,272B) repeatedly
+				\item Until acknowledgment received
+				\item High p = many retransmissions
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\textbf{Why TR stays efficient:}
+			\begin{itemize}
+				\item Erasure codes spread data across messages
+				\item Each message carries one chunk
+				\item No repeated full KEM messages
+				\item Works even with offline devices
+			\end{itemize}
+
+			\textbf{Real-world impact:}
+			\begin{itemize}
+				\item Typing indicators common
+				\item Linked devices often offline
+				\item p = 0.9 realistic for Signal
+				\item TR: 5\times\ better than PQ3
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Triple Ratchet: Technical challenges}
