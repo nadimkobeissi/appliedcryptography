@@ -2243,63 +2243,6 @@
 \end{frame}
 
 \subsection{Post-Quantum Secure Messaging}
-% PQ3
-\begin{frame}{Apple iMessage: PQ3}
-	\bigimagewithcaption{pq3-apple.png}{Source: Apple Security Engineering and Architecture (SEAR)}
-\end{frame}
-
-\begin{frame}{iMessage PQ3: Post-quantum double ratchet}
-	\begin{itemize}
-		\item \textbf{PQ3}: Apple's post-quantum secure messaging protocol (2024)
-		\item \textbf{Hybrid approach}: Combines classical (ECDH) and post-quantum (ML-KEM) cryptography
-		\item \textbf{Double ratchet construction} (like Signal):
-		      \begin{itemize}
-			      \item Outer ratchet: Public-key ratchet (conversation direction changes)
-			      \item Inner ratchet: Symmetric ratchet (same sender keeps sending)
-		      \end{itemize}
-		\item \textbf{Key innovation}: ML-KEM integrated into both initialization AND ratcheting
-		      \begin{itemize}
-			      \item Provides post-compromise security against quantum adversaries
-			      \item Signal only uses PQ crypto in setup (PQXDH), not in ratcheting
-		      \end{itemize}
-		\item \textbf{Security guarantee}: Must break BOTH classical and PQ crypto to compromise
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{PQ3's bandwidth challenge: Ratcheting trade-offs}
-	\begin{columns}[c]
-		\begin{column}{0.55\textwidth}
-			\textbf{The KEM size problem:}
-			\begin{itemize}
-				\item ML-KEM-768: 1,184 bytes sent
-				\item ML-KEM-1024: 1,568 bytes sent
-				\item Compare to X25519: 32 bytes!
-			\end{itemize}
-			\textbf{PQ3's solution:}
-			\begin{itemize}
-				\item Can't send new KEM key with every message
-				\item Heuristic: New KEM key every \approx50 messages
-				\item Or at least once per week
-				\item Trade-off: Less frequent PQ ratcheting
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.45\textwidth}
-			\textbf{Signal (classical):}
-			\begin{itemize}
-				\item Small DH keys (32 bytes)
-				\item Can ratchet with \textit{every} message
-				\item Immediate post-compromise recovery
-			\end{itemize}
-			\textbf{PQ3 (post-quantum):}
-			\begin{itemize}
-				\item Large KEM keys (1KB+)
-				\item Ratchets every \approx50 messages
-				\item Delayed post-compromise recovery
-				\item But quantum-resistant!
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
 
 \begin{frame}{Signal: PQXDH for initial key agreement}
 	\begin{itemize}
@@ -2382,6 +2325,64 @@
 	\end{itemize}
 \end{frame}
 
+
+\begin{frame}{Apple iMessage: PQ3}
+	\bigimagewithcaption{pq3-apple.png}{Source: Apple Security Engineering and Architecture (SEAR)}
+\end{frame}
+
+\begin{frame}{iMessage PQ3: Post-quantum double ratchet}
+	\begin{itemize}
+		\item \textbf{PQ3}: Apple's post-quantum secure messaging protocol (2024)
+		\item \textbf{Hybrid approach}: Combines classical (ECDH) and post-quantum (ML-KEM) cryptography
+		\item \textbf{Double ratchet construction} (like Signal):
+		      \begin{itemize}
+			      \item Outer ratchet: Public-key ratchet (conversation direction changes)
+			      \item Inner ratchet: Symmetric ratchet (same sender keeps sending)
+		      \end{itemize}
+		\item \textbf{Key innovation}: ML-KEM integrated into both initialization AND ratcheting
+		      \begin{itemize}
+			      \item Provides post-compromise security against quantum adversaries
+			      \item At the time, Signal only used PQ crypto in setup (PQXDH), not in ratcheting
+		      \end{itemize}
+		\item \textbf{Security guarantee}: Must break BOTH classical and PQ crypto to compromise
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{PQ3's bandwidth challenge: Ratcheting trade-offs}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\textbf{The KEM size problem:}
+			\begin{itemize}
+				\item ML-KEM-768: 1,184 bytes sent
+				\item ML-KEM-1024: 1,568 bytes sent
+				\item Compare to X25519: 32 bytes!
+			\end{itemize}
+			\textbf{PQ3's solution:}
+			\begin{itemize}
+				\item Can't send new KEM key with every message
+				\item Heuristic: New KEM key every \approx50 messages
+				\item Or at least once per week
+				\item Trade-off: Less frequent PQ ratcheting
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\textbf{Signal (classical):}
+			\begin{itemize}
+				\item Small DH keys (32 bytes)
+				\item Can ratchet with \textit{every} message
+				\item Immediate post-compromise recovery
+			\end{itemize}
+			\textbf{PQ3 (post-quantum):}
+			\begin{itemize}
+				\item Large KEM keys (1KB+)
+				\item Ratchets every \approx50 messages
+				\item Delayed post-compromise recovery
+				\item But quantum-resistant!
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Signal's Triple Ratchet}
 	\begin{itemize}
 		\item \textbf{The problem with PQXDH}: Only initial handshake is PQ-secure
@@ -2402,27 +2403,6 @@
 			      \item Symmetric ratchet (as before)
 		      \end{enumerate}
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Why ``Triple Ratchet''?}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\textbf{Original Double Ratchet:}
-			\begin{itemize}
-				\item Public ratchet (DH)
-				\item Symmetric ratchet
-				\item Two moving parts
-			\end{itemize}
-			\vspace{5mm}
-			\textbf{Triple Ratchet:}
-			\begin{itemize}
-				\item Classical public ratchet
-				\item \textcolor{blue}{+ PQ public ratchet}
-				\item Symmetric ratchet
-				\item Three moving parts!
-			\end{itemize}
-		\end{column}
-	\end{columns}
 \end{frame}
 
 \begin{frame}{The erasure code innovation}
@@ -2465,7 +2445,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Katana: Optimized lattice RKEM}{Note: Not yet adopted in Signal}
+\begin{frame}{Katana: Optimized lattice RKEM}
 	\begin{itemize}
 		\item \textbf{Ratcheting KEM (RKEM)}: KEM where ciphertext also serves as next public key
 		      \begin{itemize}
@@ -2539,7 +2519,6 @@
 				\item Full KEM every \approx50 messages
 				\item Good for balanced chats
 				\item \textcolor{red}{Bad for unbalanced scenarios}
-				\item Already deployed
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -2549,7 +2528,6 @@
 				\item Chunks spread across messages
 				\item Efficient in all scenarios
 				\item More complex implementation
-				\item Under evaluation
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -2685,7 +2663,7 @@
 				\item \textbf{Symmetric crypto}
 				      \begin{itemize}
 					      \item \textcolor{green!70!black}{Practically safe from QC}
-					      \item Grover's gives only $\sqrt{n}$ speedup
+					      \item Grover's gives ``only'' $\sqrt{n}$ speedup
 				      \end{itemize}
 			\end{enumerate}
 		\end{column}
