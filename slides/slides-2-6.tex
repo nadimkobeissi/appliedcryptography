@@ -453,26 +453,35 @@
 			\]
 		\end{column}
 	\end{columns}
-	\vspace{5mm}
+	\vspace{3mm}
 	\begin{itemize}
 		\item Solution: Invert the matrix and multiply
 		\item Polynomial time algorithm exists
 		\item Adding more constraints (rows) doesn't make it harder
 	\end{itemize}
+	\vspace{2mm}
+	\footnotesize
+	{\scriptsize
+	\textbf{Mathematical note:} The equation $\vec{b} = A\vec{s}$ represents a \emph{linear transformation} $T: \mathbb{Z}_q^5 \to \mathbb{Z}_q^5$ defined by $T(\vec{s}) = A\vec{s}$. Gaussian elimination $\rightarrow$ \emph{equivalent systems} via row operations that correspond to invertible elementary matrices.
+	}
 \end{frame}
 
 \begin{frame}{What is Gaussian elimination?}
 	\begin{itemize}
 		\item \textbf{Goal}: Solve systems of linear equations systematically
-		\item \textbf{Basic idea}: Transform the system into a simpler form that's easy to solve
+		\item \textbf{Basic idea}: Transform into an equivalent, simpler form
 		\item \textbf{Method}: Use row operations to eliminate variables step by step
+		\item \textbf{Key insight}: Each row operation creates an \emph{equivalent system}
+		      \begin{itemize}
+			      \item Equivalent $\equiv$ different equations, same solutions
+			      \item Each operation corresponds to multiplication by an elementary matrix
+			      \item Result: Same solution set, easier to solve
+		      \end{itemize}
 		\item \textbf{Notation}:
 		      \begin{itemize}
-			      \item $R_1$ = Row 1 (first equation)
-			      \item $R_2$ = Row 2 (second equation)
-			      \item $R_3$ = Row 3 (third equation), etc.
+			      \item $R_1, R_2, R_3, \ldots$ = Row 1, Row 2, Row 3, etc.
 		      \end{itemize}
-		\item We'll work with an \textbf{augmented matrix}: the coefficient matrix with the constants column attached
+		\item \textbf{Augmented matrix} $[A|\vec{b}]$: coefficient matrix with constants attached
 	\end{itemize}
 \end{frame}
 
@@ -704,20 +713,38 @@
 \end{frame}
 
 \begin{frame}{Why is this process efficient?}
-	\textbf{Key observation}: Gaussian elimination is:
+	Gaussian elimination achieves polynomial-time complexity:
+	{\scriptsize
 	\begin{itemize}
-		\item \textbf{Deterministic}: Same steps work every time
-		\item \textbf{Polynomial time}: About $n^3$ operations for $n$ equations
+		\item \textbf{Theoretical complexity}: $O(n^3)$ for $n \times n$ system
 		      \begin{itemize}
-			      \item Compare to trying all possible solutions: $2^n$ operations!
+				{\scriptsize
+			      \item Compare to brute force: $O(q^n)$ where $q$ is field size
+			      \item For $n=1000$: $\sim 10^9$ operations vs $q^{1000}$ (astronomical!)}
 		      \end{itemize}
-		\item \textbf{Works modulo $q$}: Can solve equations in finite fields
-		\item \textbf{Always finds the solution} (if one exists)
-	\end{itemize}
 
-	\textbf{This is why exact linear equations are easy!}
+		\item \textbf{Algorithmic refinements} for practical speed:
+		      \begin{itemize}
+				{\scriptsize
+			      \item \textbf{Pivoting strategies}: Choose best pivot to minimize numerical errors
+			      \item \textbf{Sparse methods}: Exploit matrices with mostly zeros
+			      \item \textbf{Block algorithms}: Optimize for memory cache hierarchies}
+		      \end{itemize}
 
-	Computers can solve systems with millions of variables in seconds.
+		\item \textbf{Hardware acceleration} (critical for modern implementations):
+		      \begin{itemize}
+								{\scriptsize
+			      \item \textbf{GPU parallelism}: Thousands of cores compute simultaneously
+			      \item \textbf{SIMD instructions}: Process multiple data elements per CPU cycle
+			      \item \textbf{Optimized libraries}: BLAS, LAPACK, cuBLAS exploit hardware
+			      \item \textbf{Real speedup}: 50--100$\times$ faster with good implementation}
+		      \end{itemize}
+		{\scriptsize
+		\item \textbf{Works in finite fields}: Same techniques apply modulo $q$}
+	\end{itemize}}
+
+	\vspace{2mm}
+	{\scriptsize \textbf{Bottom line:} Modern systems solve $n \sim 10^6$ variables in seconds!}
 \end{frame}
 
 \begin{frame}{Making it hard: approximate equations}
@@ -1003,8 +1030,8 @@
 			\begin{itemize}
 				\item One party generates the key
 				\item Alice: Generates random key $k$
-				\item Alice: Encapsulates $k$ \rightarrow\ ciphertext $c$
-				\item Bob: Decapsulates $c$ \rightarrow\ key $k$
+				\item Alice: Encapsulates $k$ in ciphertext $c$
+				\item Bob: Decapsulates key $k$ from ciphertext $c$
 				\item \textbf{Asymmetric}: One generates, one recovers
 			\end{itemize}
 		\end{column}
@@ -1032,20 +1059,22 @@
 
 \begin{frame}{Mathematical notation primer}
 	\begin{itemize}
-		\item \textbf{Vectors}: Written with arrows, e.g., $\vec{s}$, $\vec{r}$
+		\item \textbf{Vectors}: Elements of $\mathbb{Z}_q^n$, written $\vec{v} \in \mathbb{Z}_q^n$
 		      \begin{itemize}
-			      \item A vector is a list of numbers: $\vec{s} = \begin{bmatrix} s_1 \\ s_2 \\ \vdots \\ s_n \end{bmatrix}$
-			      \item Length $n$ vector has $n$ components
+			      \item \textbf{By abuse of notation}, we represent $\vec{v}$ as an $n \times 1$
+			            matrix (column): $\vec{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{bmatrix}$
+			      \item This convention enables matrix-vector multiplication: $A\vec{v}$
+			      \item Vectors aren't inherently ``row'' or ``column''---that's a matrix representation
 		      \end{itemize}
-		\item \textbf{Matrices}: 2D arrays of numbers, e.g., $A \in \mathbb{Z}_q^{n \times n}$
+
+		\item \textbf{Matrices}: 2D arrays, e.g., $A \in \mathbb{Z}_q^{n \times n}$
+		      ($n$ rows, $n$ columns)
+
+		\item \textbf{Matrix transpose} $A^T$: Flip rows and columns, so $(A^T)_{ij} = A_{ji}$
 		      \begin{itemize}
-			      \item $n \times n$ means $n$ rows and $n$ columns
-			      \item $\mathbb{Z}_q$ means integers modulo $q$ (from 0 to $q-1$)
-		      \end{itemize}
-		\item \textbf{Matrix transpose}: Flip rows and columns
-		      \begin{itemize}
-			      \item If $A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$, then $A^T = \begin{bmatrix} 1 & 3 \\ 2 & 4 \end{bmatrix}$
-			      \item For vectors: $\vec{v}^T$ turns a column into a row
+			      \item For vectors: $\vec{v}^T$ transposes the $n \times 1$ column to $1 \times n$ row
+			      \item Example: $\begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}^T = \begin{bmatrix} 1 & 2 & 3 \end{bmatrix}$
+			      \item $\vec{v}^T\vec{w}$ is valid ($1 \times n$ times $n \times 1$ = scalar) but $\vec{v}\vec{w}$ is undefined ($n \times 1$ times $n \times 1$)
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -1089,10 +1118,14 @@
 			      \item $\lfloor q/2 \rfloor$ = halfway point in $\mathbb{Z}_q$
 			      \item If $q = 3329$, then $\lfloor q/2 \rfloor = 1664$
 		      \end{itemize}
-		\item \textbf{Matrix-vector multiplication}:
+		\item \textbf{Matrix-vector multiplication (dimensions matter!)}:
 		      \begin{itemize}
-			      \item $A\vec{s}$: Matrix $A$ times vector $\vec{s}$ gives a vector
-			      \item $\vec{b}^T\vec{r}$: Row vector times column vector gives a scalar (number)
+			      \item $A\vec{s}$ where $A \in \mathbb{Z}_q^{m \times n}$ and $\vec{s} \in \mathbb{Z}_q^n$:
+				   $(A\vec{s})_i = \sum_{j=1}^n A_{ij}s_j \quad \text{(result is vector in $\mathbb{Z}_q^m$)}$
+			      \item $\vec{b}^T\vec{r}$ where $\vec{b}, \vec{r} \in \mathbb{Z}_q^n$ (inner product):
+			       $\vec{b}^T\vec{r} = \sum_{i=1}^n b_i r_i \quad \text{(result is scalar in $\mathbb{Z}_q$)}$
+
+			      \item The transpose ${}^T$ ensures dimensional consistency: $1 \times n$ times $n \times 1$ yields $1 \times 1$ (scalar)
 		      \end{itemize}
 		\item \textbf{The shared bit $\mu$}:
 		      \begin{itemize}
@@ -1611,7 +1644,7 @@
 
 \begin{frame}{Winternitz One-Time Signature (WOTS)}
 	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
+		\begin{column}{0.5\textwidth}
 			\textbf{Setup (parameter $w$ = maximum value):}
 			\begin{itemize}
 				\item Private key: Random string $K$
@@ -1628,7 +1661,7 @@
 				\item Apply hash $M$ times to $K$
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.4\textwidth}
+		\begin{column}{0.5\textwidth}
 			\textbf{Example with $w = 256$:}
 			\begin{itemize}
 				\item Can sign any byte (0-255)
