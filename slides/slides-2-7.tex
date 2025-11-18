@@ -285,6 +285,48 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Difficulty adjustment: The technical details}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{What Bitcoin measures:}
+			\begin{itemize}
+				\item Every 2016 blocks
+				\item Calculate actual time taken
+				\item Target: 20,160 minutes (2 weeks)
+				\item Compare actual vs. target
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{The adjustment formula:}\footnote{\url{https://learnmeabitcoin.com/beginners/guide/difficulty/}}
+			\begin{itemize}
+				\item New difficulty = Old difficulty $\times$ $\frac{\text{Target time}}{\text{Actual time}}$
+				\item Blocks too fast? Difficulty $\uparrow$
+				\item Blocks too slow? Difficulty $\downarrow$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Example calculation:}
+			\begin{itemize}
+				\item 2016 blocks in 10 days
+				      \begin{itemize}
+					      \item Too fast! (should be 14 days)
+					      \item Ratio = 14/10 = 1.4
+					      \item Increase difficulty by 40\%
+				      \end{itemize}
+				\item 2016 blocks in 20 days
+				      \begin{itemize}
+					      \item Too slow!
+					      \item Ratio = 14/20 = 0.7
+					      \item Decrease difficulty by 30\%
+				      \end{itemize}
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{alertblock}{Safety limit}
+				Maximum adjustment: 4x up or down per period (prevents manipulation)
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{The mining process: Finding the golden ticket}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
