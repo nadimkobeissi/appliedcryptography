@@ -1736,6 +1736,40 @@
 	\end{exampleblock}
 \end{frame}
 
+\begin{frame}{Example: Git is a blockchain!}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Git commits are blocks:}
+			\begin{itemize}
+				\item Each commit has:
+				      \begin{itemize}
+					      \item Content (like transactions)
+					      \item Timestamp
+					      \item Hash of parent commit
+					      \item Author signature
+				      \end{itemize}
+				\item Forms a chain back to initial commit
+				\item Change any commit \rightarrow\ all subsequent hashes change
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Key differences:}
+			\begin{itemize}
+				\item Git: Centralized (GitHub)
+				\item Bitcoin: Decentralized (P2P)
+				\item Git: No proof-of-work
+				\item Bitcoin: Mining required
+				\item Git: Trust repository owner
+				\item Bitcoin: Trust no one
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{exampleblock}{Same primitive}
+				Both use Merkle trees and hash chains for tamper-evident history!
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \section{Ethereum and Smart Contracts}
 
 \begin{frame}{Bitcoin's limitation: Just digital cash}
