@@ -1317,6 +1317,82 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Where do Merkle proofs come from?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The question:}
+			\begin{itemize}
+				\item You have the Merkle root
+				\item You want to verify a transaction
+				\item But you need sibling hashes
+				\item Where do they come from?
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{The answer:}
+			\begin{itemize}
+				\item \textbf{Full nodes have everything}\footnote{\url{https://learnmeabitcoin.com/technical/block/merkle-root/}}
+				\item \textbf{They store the entire block}
+				\item \textbf{Including all transactions}
+				\item Can compute any proof
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{How full nodes generate proofs:}
+			\begin{enumerate}
+				\item Store all transactions in block
+				\item Rebuild the Merkle tree
+				\item Find transaction's position
+				\item Walk up tree, collect siblings
+				\item Return proof path
+			\end{enumerate}
+			\vspace{0.5em}
+			\begin{alertblock}{Key point}
+				Full nodes can generate proofs for any transaction because they have the complete block data!
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Full node verification workflow}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{When full node receives block:}
+			\begin{enumerate}
+				\item Download all transactions
+				\item Build Merkle tree locally
+				\item Compute root
+				\item Compare with block header
+				\item If match: block valid!
+			\end{enumerate}
+			\vspace{0.5em}
+			\textbf{To verify specific transaction:}
+			\begin{itemize}
+				\item Already has full tree
+				\item Extract sibling path
+				\item Verify against root
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Example scenario:}
+			\begin{itemize}
+				\item Your wallet queries your full node
+				\item ``Is transaction X in block 850000?''
+				\item Full node:
+				      \begin{enumerate}
+					      \item Has block 850000 stored
+					      \item Locates transaction X
+					      \item Generates proof path
+					      \item Returns proof to wallet
+				      \end{enumerate}
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{exampleblock}{Trust model}
+				Full nodes trust no one - they verify everything themselves!
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{SPV: Simplified Payment Verification}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
