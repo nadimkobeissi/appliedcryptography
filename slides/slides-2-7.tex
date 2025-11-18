@@ -515,6 +515,45 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Why miners keep mining despite halvings}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The concern:}
+			\begin{itemize}
+				\item Block reward keeps halving
+				\item Started at 50 BTC (2009)
+				\item Now 3.125 BTC\footnote{\url{https://learnmeabitcoin.com/technical/mining/block-reward/}}
+				\item Eventually approaches zero
+				\item Won't miners quit?
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Why it works:}
+			\begin{itemize}
+				\item Bitcoin price tends to rise
+				      \begin{itemize}
+					      \item 50 BTC in 2009: \$0
+					      \item 3.125 BTC in 2024: \$200K
+				      \end{itemize}
+				\item Transaction fees increase
+				      \begin{itemize}
+					      \item More users = more fees
+					      \item Will eventually dominate
+				      \end{itemize}
+				\item Difficulty adjusts down
+				      \begin{itemize}
+					      \item If miners leave, easier to mine
+					      \item Self-regulating system
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.5em}
+	\begin{alertblock}{Long-term transition}
+		Gradually shifting from subsidy-funded to fee-funded security model
+	\end{alertblock}
+\end{frame}
+
 \begin{frame}{The environmental elephant in the room}
 	\begin{center}
 		\textbf{All this computation uses massive energy}
