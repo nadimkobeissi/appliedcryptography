@@ -151,11 +151,11 @@ return SUCCESS;
 
 		Analyze which elements of the cryptography stack Allen Gumm could compromise that would bypass the formal verification guarantees:
 		\begin{parts}
-			\part[10] \textbf{Beyond the Verification Boundary:} Identify at least three components or interfaces that typically fall outside the formal verification scope outlined above but are critical for security. For each, explain how Allen could introduce vulnerabilities and why the verification wouldn't catch them.
+			\part \textbf{Beyond the Verification Boundary:} Identify at least three components or interfaces that typically fall outside the formal verification scope outlined above but are critical for security. For each, explain how Allen could introduce vulnerabilities and why the verification wouldn't catch them.
 
-			\part[10] \textbf{Trust Assumptions:} Formal verification relies on various trust assumptions. List specific assumptions made by \haclstar and ProVerif that Allen could violate in practice. How could he exploit the gap between the formal model and the deployed system?
+			\part \textbf{Trust Assumptions:} Formal verification relies on various trust assumptions. List specific assumptions made by \haclstar and ProVerif that Allen could violate in practice. How could he exploit the gap between the formal model and the deployed system?
 
-			\part[10] \textbf{Deployment Sabotage:} Even with verified code and protocols, deployment introduces new attack surfaces. Propose three realistic ways Allen could compromise the system during build, deployment, or runtime without modifying the verified components themselves. What additional verification or monitoring would be needed to detect his sticky schemes?
+			\part \textbf{Deployment Sabotage:} Even with verified code and protocols, deployment introduces new attack surfaces. Propose three realistic ways Allen could compromise the system during build, deployment, or runtime without modifying the verified components themselves. What additional verification or monitoring would be needed to detect his sticky schemes?
 		\end{parts}
 
 		Your analysis should be concrete and technically sound, focusing on practical vulnerabilities rather than theoretical limitations. Consider real-world deployment scenarios and the boundaries of current verification technology.
