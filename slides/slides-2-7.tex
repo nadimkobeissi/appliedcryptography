@@ -1914,6 +1914,73 @@ contract SimpleStorage {
 	\end{columns}
 \end{frame}
 
+\begin{frame}{How do you get gas? Understanding the gas market}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{You don't ``buy'' gas directly:}
+			\begin{itemize}
+				\item Gas is just a unit of measurement
+				\item Like ``miles'' or ``kilowatts''
+				\item You pay for gas in ETH
+			\end{itemize}
+			\textbf{How it works:}
+			\begin{itemize}
+				\item Have ETH in your account
+				\item Send transaction
+				\item Specify gas price you'll pay
+				\item Miners/validators choose which txs to include
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{What sets gas prices?}
+			\begin{itemize}
+				\item \textbf{Supply \& demand!}
+				\item Network congested? Prices up
+				\item Quiet period? Prices down
+				\item Users bid for block space
+			\end{itemize}
+			\begin{alertblock}{Auto-suggestion algorithm}
+				Wallet automatically suggests gas price based on current market!
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The gas auction: Priority fees}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Post-EIP-1559 (2021):}
+			\begin{itemize}
+				\item Base fee (burned)
+				      \begin{itemize}
+					      \item Set by protocol
+					      \item Adjusts with demand
+				      \end{itemize}
+				\item Priority fee (tip)
+				      \begin{itemize}
+					      \item Goes to validator
+					      \item You choose amount
+					      \item Higher tip = faster inclusion
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Fee calculation:}
+			\begin{itemize}
+				\item Total fee = (Base fee + Priority fee) $\times$ Gas used
+				\item Base fee: 30 gwei
+				\item Your tip: 2 gwei
+				\item Gas used: 21,000
+				\item Cost: (30 + 2) $\times$ 21,000 = 672,000 gwei = 0.000672 ETH
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\begin{exampleblock}{Market dynamics}
+		High demand $\rightarrow$ Base fee increases\\
+		Want fast tx $\rightarrow$ Increase tip
+	\end{exampleblock}
+\end{frame}
+
 \begin{frame}[fragile]{A real example: Simple token}
 	\scriptsize
 	\begin{verbatim}
@@ -1931,8 +1998,45 @@ contract SimpleToken {
     return true;
   }
 }
-		\end{verbatim}
+\end{verbatim}
 	\textbf{Key concepts:} \texttt{msg.sender} (who called this?), \texttt{mapping} (key-value storage), \texttt{require} (check conditions)
+\end{frame}
+
+\begin{frame}{Decentralized Autonomous Organizations (DAOs)}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{What is a DAO?}
+			\begin{itemize}
+				\item Organization governed by code
+				\item Rules encoded in smart contracts
+				\item No central authority
+				\item Token holders vote on decisions
+				\item Treasury controlled by members
+			\end{itemize}
+			\textbf{How they work:}
+			\begin{itemize}
+				\item Members hold governance tokens
+				\item Proposals submitted on-chain
+				\item Token-weighted voting
+				\item Automatic execution if passed
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Examples:}
+			\begin{itemize}
+				\item MakerDAO: Manages DAI stablecoin
+				\item Uniswap DAO: Protocol governance
+				\item ConstitutionDAO: Attempted to buy US Constitution (\$47M raised!)
+			\end{itemize}
+			\textbf{Use cases:}
+			\begin{itemize}
+				\item Investment clubs
+				\item Protocol governance
+				\item Grant distribution
+				\item Collective ownership
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{The DAO hack: When code goes wrong}
@@ -1961,8 +2065,50 @@ contract SimpleToken {
 				\item Attacker calls withdraw again!
 				\item Repeat until drained
 			\end{enumerate}
-			\begin{alertblock}{Lesson}
-				Code is law... but bugs are expensive! Led to Ethereum hard fork.
+		\end{column}
+	\end{columns}
+	\begin{alertblock}{Lesson}
+		Code is law... but bugs are expensive! Led to Ethereum hard fork.
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{The aftermath: Ethereum Classic}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The controversial solution:}
+			\begin{itemize}
+				\item Community debated: What to do?
+				\item Funds locked, attacker waiting
+				\item Hard fork proposed
+				\item Rewrite history to undo hack
+				\item Return stolen funds
+			\end{itemize}
+			\textbf{The split (July 2016):}
+			\begin{itemize}
+				\item Majority forked (Ethereum)
+				\item Minority refused (Ethereum Classic)
+				\item Same code, different chains
+				\item Both still exist today
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{The philosophical divide:}
+			\begin{itemize}
+				\item \textbf{Ethereum (ETH):}
+				      \begin{itemize}
+					      \item ``Code is not law if broken''
+					      \item Pragmatic approach
+					      \item Protect users
+				      \end{itemize}
+				\item \textbf{Ethereum Classic (ETC):}
+				      \begin{itemize}
+					      \item ``Code is law, no exceptions''
+					      \item Immutability above all
+					      \item No human intervention
+				      \end{itemize}
+			\end{itemize}
+			\begin{alertblock}{The debate continues}
+				Was the fork the right choice? Still controversial in crypto community!
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -2022,6 +2168,44 @@ contract SimpleToken {
 			\begin{alertblock}{The impact}
 				\$50B+ locked in DeFi protocols!
 			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{NFTs: Non-Fungible Tokens}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{What are NFTs?}
+			\begin{itemize}
+				\item Non-fungible = unique, not interchangeable
+				\item Token standard (ERC-721)
+				\item Proves ownership of digital asset
+				\item Metadata points to content
+			\end{itemize}
+			\textbf{How they work:}
+			\begin{itemize}
+				\item Smart contract tracks ownership
+				\item TokenID uniquely identifies each NFT
+				\item Transfer ownership on-chain
+				\item Anyone can verify authenticity
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Use cases:}
+			\begin{itemize}
+				\item Digital art (Beeple: \$69M sale)
+				\item Profile pictures (Bored Apes)
+				\item Gaming items
+				\item Event tickets
+				\item Domain names (ENS)
+			\end{itemize}
+			\textbf{The controversy:}
+			\begin{itemize}
+				\item Speculation bubble?
+				\item Right-click save problem
+				\item Environmental concerns (pre-Merge)
+				\item What are you really buying?
+			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -2122,6 +2306,123 @@ contract SimpleToken {
 	\end{columns}
 \end{frame}
 
+\begin{frame}{What incentivizes honest behavior?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Carrots (rewards):}
+			\begin{itemize}
+				\item Attestation rewards
+				      \begin{itemize}
+					      \item Vote on correct chain head
+					      \item \approx0.02 ETH per day
+				      \end{itemize}
+				\item Block proposal rewards
+				      \begin{itemize}
+					      \item Randomly selected
+					      \item Transaction fees + tips
+					      \item Can be substantial
+				      \end{itemize}
+				\item Sync committee rewards
+				      \begin{itemize}
+					      \item Help light clients
+					      \item Additional yield
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Sticks (penalties):}
+			\begin{itemize}
+				\item Inactivity leaks
+				      \begin{itemize}
+					      \item Offline? Lose rewards
+					      \item Proportional to downtime
+				      \end{itemize}
+				\item Slashing
+				      \begin{itemize}
+					      \item Double-sign? Lose 1+ ETH
+					      \item Forced exit from validator set
+					      \item Slashed funds burned
+				      \end{itemize}
+				\item Opportunity cost
+				      \begin{itemize}
+					      \item Capital locked up
+					      \item Acting honestly more profitable
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\begin{center}
+		\textbf{Expected return: \approx4-5\% APR for honest validators}
+	\end{center}
+\end{frame}
+
+\begin{frame}{How is dishonesty detected?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The watchers:}
+			\begin{itemize}
+				\item Every validator watches every other validator
+				\item All attestations are public
+				\item All blocks are public
+			\end{itemize}
+			\textbf{Slashable offenses:}
+			\begin{itemize}
+				\item \textbf{Double proposal:}
+				      \begin{itemize}
+					      \item Propose 2 blocks at same height
+					      \item Trying to fork the chain
+				      \end{itemize}
+				\item \textbf{Surround vote:}
+				      \begin{itemize}
+					      \item Attest to conflicting checkpoints
+					      \item Violates finality rules
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Detection mechanism:}
+			\begin{enumerate}
+				\item Validator misbehaves
+				\item Creates cryptographic evidence
+				      \begin{itemize}
+					      \item Two signed messages
+					      \item Both with validator's signature
+					      \item Provably conflicting
+				      \end{itemize}
+				\item Anyone can submit proof
+				\item Proof included in block
+				\item Slashing automatically executed
+			\end{enumerate}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Critiques of Proof of Stake}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Nothing at stake:}
+			\begin{itemize}
+				\item In PoW, mining on multiple chains wastes energy
+				\item In PoS, validating multiple chains is free
+				\item Could validators hedge by validating all forks?
+				\item Mitigation: Slashing for double-signing
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Wealth concentration:}
+			\begin{itemize}
+				\item Rich get richer (staking rewards)
+				\item High barrier to entry (32 ETH)
+				\item Centralization concern
+				\item Counter: Staking pools, but adds trust
+			\end{itemize}
+			\begin{alertblock}{The debate}
+				Is economic security as strong as energy security?
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \subsection{Scaling: Layer 2s}
 
 \begin{frame}{The blockchain trilemma}
@@ -2164,7 +2465,7 @@ contract SimpleToken {
 			\begin{itemize}
 				\item Not every node needs to execute every transaction
 				\item Execute elsewhere
-				\item Post results to Ethereum
+				\item Post results to Ethereum smart contract
 				\item Prove correctness
 			\end{itemize}
 			\textbf{L1 (Ethereum):}
@@ -2187,6 +2488,52 @@ contract SimpleToken {
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{Visualizing Layer 1 and Layer 2}
+	\begin{center}
+		\begin{tikzpicture}[
+				scale=0.75,
+				transform shape,
+				node distance=1.5cm,
+				box/.style={rectangle, draw, rounded corners, minimum width=3cm, minimum height=1cm, font=\small, align=center},
+				arrow/.style={->, thick, >=stealth}
+			]
+
+			% Layer 1
+			\node[box, fill=blue!20, minimum width=12cm, minimum height=2.5cm] (l1) at (0,0) {};
+			\node[above] at (l1.north) {\textbf{Layer 1: Ethereum (Security \& Settlement)}};
+
+			\node[box, fill=green!30] (block1) at (-4,0) {Block\\Headers};
+			\node[box, fill=green!30] (block2) at (0,0) {State\\Roots};
+			\node[box, fill=green!30] (block3) at (4,0) {Rollup\\Data};
+
+			% Layer 2s
+			\node[box, fill=orange!30, minimum width=3.5cm] (l2a) at (-4,3.5) {L2A: Arbitrum\\Execute txs\\Post results};
+			\node[box, fill=orange!30, minimum width=3.5cm] (l2b) at (0,3.5) {L2B: Optimism\\Execute txs\\Post results};
+			\node[box, fill=orange!30, minimum width=3.5cm] (l2c) at (4,3.5) {L2C: zkSync\\Execute txs\\Post proofs};
+
+			% Users
+			\node[box, fill=purple!20] (user1) at (-4,6) {Users};
+			\node[box, fill=purple!20] (user2) at (0,6) {Users};
+			\node[box, fill=purple!20] (user3) at (4,6) {Users};
+
+			% Arrows
+			\draw[arrow] (l2a) -- (block1);
+			\draw[arrow] (l2b) -- (block2);
+			\draw[arrow] (l2c) -- (block3);
+
+			\draw[arrow] (user1) -- (l2a);
+			\draw[arrow] (user2) -- (l2b);
+			\draw[arrow] (user3) -- (l2c);
+
+			% Labels
+			\node[font=\tiny, align=center] at (-4,2.3) {Batch\\transactions};
+			\node[font=\tiny, align=center] at (0,2.3) {Commit\\state};
+			\node[font=\tiny, align=center] at (4,2.3) {ZK\\proof};
+
+		\end{tikzpicture}
+	\end{center}
 \end{frame}
 
 \begin{frame}{Two types of rollups}
