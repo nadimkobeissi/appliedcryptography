@@ -123,7 +123,6 @@
 				\item Pages linked together in order
 				\item Can't tear out or reorder pages
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{But it's distributed:}
 			\begin{itemize}
 				\item Everyone has a copy
@@ -142,7 +141,6 @@
 					      \item Special ``proof'' (we'll see why!)
 				      \end{itemize}
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Key insight}
 				The hash links make history tamper-proof - change one block and all subsequent hashes break!
 			\end{alertblock}
@@ -154,7 +152,6 @@
 	\begin{center}
 		\textbf{In a decentralized system with no leader, how do we decide?}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Can't use traditional voting:}
@@ -180,7 +177,6 @@
 				\item Winners prove they did work
 				\item Can't fake the work
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{This is Proof-of-Work}
 				Replace ``one identity = one vote'' with ``one CPU cycle = one vote''
 			\end{exampleblock}
@@ -215,7 +211,6 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{alertblock}{Key property}
 		You prove you spent resources without revealing anything sensitive
 	\end{alertblock}
@@ -246,7 +241,6 @@
 					      \item No good, try again
 				      \end{itemize}
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Why hashing?}
 				Each attempt is independent - can't get ``closer'' to solution, only keep trying
 			\end{exampleblock}
@@ -258,7 +252,6 @@
 	\begin{center}
 		\textbf{Let's look at real Bitcoin numbers}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Current difficulty (2024):}
@@ -277,7 +270,6 @@
 				\item All to find one valid block
 				\item Every 10 minutes on average
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Mind-boggling scale}
 				More computations than there are grains of sand on Earth, every 10 minutes!
 			\end{alertblock}
@@ -295,7 +287,6 @@
 				\item Target: 20,160 minutes (2 weeks)
 				\item Compare actual vs. target
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{The adjustment formula:}\footnote{\url{https://learnmeabitcoin.com/beginners/guide/difficulty/}}
 			\begin{itemize}
 				\item New difficulty = Old difficulty $\times$ $\frac{\text{Target time}}{\text{Actual time}}$
@@ -319,7 +310,6 @@
 					      \item Decrease difficulty by 30\%
 				      \end{itemize}
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Safety limit}
 				Maximum adjustment: 4x up or down per period (prevents manipulation)
 			\end{alertblock}
@@ -355,7 +345,6 @@
 				\item Finding one is valuable
 				\item Rewards early participants
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{The reward}
 				Winner gets to create new bitcoins (currently 3.125 BTC ≈ \$200K) plus transaction fees
 			\end{exampleblock}
@@ -367,7 +356,6 @@
 	\begin{center}
 		\textbf{Remember the challenges? PoW solves them all!}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Problem 1: Sybil attacks}
@@ -376,7 +364,6 @@
 				\item 1000 fake identities with 1 hash/sec each = same as 1 identity with 1000 hash/sec
 				\item No advantage to splitting!
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Problem 2: Who decides ordering?}
 			\begin{itemize}
 				\item Whoever solves puzzle first
@@ -395,7 +382,6 @@
 				      \end{itemize}
 				\item Cost grows exponentially!
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Security guarantee}
 				As long as honest miners have >50\% of computing power, the system is secure
 			\end{alertblock}
@@ -413,7 +399,6 @@
 				\item No way to predict winner
 				\item Can't save progress
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{This creates fairness:}
 			\begin{itemize}
 				\item 10\% of hashpower = 10\% chance to win
@@ -429,7 +414,6 @@
 				\item Everyone racing simultaneously
 				\item First to find solution wins
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Beautiful property}
 				Pure democracy of computation - the most physically real form of voting!
 			\end{exampleblock}
@@ -446,7 +430,6 @@
 				\item Miners leave \rightarrow\ blocks too slow
 				\item Want consistent 10-minute blocks
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{The solution:}
 			\begin{itemize}
 				\item Every 2016 blocks (\approx2 weeks)
@@ -469,7 +452,6 @@
 					      \item Makes puzzle easier
 				      \end{itemize}
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Result}
 				Stable 10-minute block time for 15+ years, despite massive hashpower growth!
 			\end{alertblock}
@@ -506,7 +488,6 @@
 					      \item Vary by network congestion
 				      \end{itemize}
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Equilibrium}
 				Total mining cost ≈ Total rewards\\
 				This ensures appropriate security!
@@ -548,7 +529,6 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{alertblock}{Long-term transition}
 		Gradually shifting from subsidy-funded to fee-funded security model
 	\end{alertblock}
@@ -558,7 +538,6 @@
 	\begin{center}
 		\textbf{All this computation uses massive energy}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{The scale:}
@@ -606,7 +585,6 @@
 				\item Centralization in few hands
 				\item Is this the vision?
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Attempted solutions:}
 			\begin{itemize}
 				\item Memory-hard algorithms
@@ -622,7 +600,6 @@
 				\item ASICs less advantageous
 				\item GPUs competitive
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{The trade-off}
 				More democratic access vs. more complex verification and potential security issues
 			\end{alertblock}
@@ -642,7 +619,6 @@
 				\item Hash of previous block
 				\item Nonce (the solution!)
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{This creates a chain:}
 			\begin{itemize}
 				\item Block N points to Block N-1
@@ -659,7 +635,6 @@
 				\item Must redo all subsequent work
 				\item Must outpace honest miners
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Security grows over time}
 				Each new block makes all previous blocks more secure!
 			\end{exampleblock}
@@ -689,7 +664,6 @@
 				\item Everyone switches to longer chain
 				\item Losing block becomes ``orphaned''
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Self-healing}
 				The system automatically converges without any coordination!
 			\end{alertblock}
@@ -701,7 +675,6 @@
 	\begin{center}
 		\textbf{Simple rule: Always follow the longest valid chain}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Why ``longest''?}
@@ -723,7 +696,6 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{center}
 		\textbf{This is Nakamoto consensus - the heart of Bitcoin!}
 	\end{center}
@@ -739,7 +711,6 @@
 				\item Can double-spend their own transactions
 				\item Can censor other transactions
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{But CANNOT:}
 			\begin{itemize}
 				\item Steal others' coins (need private keys)
@@ -754,7 +725,6 @@
 				\item Attack destroys attacker's investment
 				\item More profitable to mine honestly!
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Economic security}
 				The cost to attack exceeds any possible gain - this is game-theoretic security!
 			\end{alertblock}
@@ -801,7 +771,6 @@
 					      \item Only you can retrieve mail
 				      \end{itemize}
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Critical rule}
 				Not your keys, not your coins!
 			\end{alertblock}
@@ -818,7 +787,6 @@
 				\item Have a \$20 and a \$5 bill
 				\item That's 2 UTXOs totaling \$25
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Example transaction:}
 			\begin{itemize}
 				\item Want to send \$15
@@ -841,7 +809,6 @@
 					      \item Output 3: 0.1 BTC = miner fee
 				      \end{itemize}
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Why this model?}
 				Prevents double-spending more naturally than account balances!
 			\end{exampleblock}
@@ -853,7 +820,6 @@
 	\begin{center}
 		\textbf{A coin is just a chain of digital signatures}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{To transfer a coin:}
@@ -863,7 +829,6 @@
 				\item Sign with your private key
 				\item This becomes new transaction
 			\end{enumerate}
-			\vspace{0.5em}
 			\textbf{Anyone can verify:}
 			\begin{itemize}
 				\item Check all signatures in chain
@@ -878,7 +843,6 @@
 					\item Transaction not tampered with
 				\end{itemize}
 			\end{alertblock}
-			\vspace{0.5em}
 			\textbf{But one problem\ldots}
 			\begin{itemize}
 				\item What prevents signing twice?
@@ -928,7 +892,6 @@
 	\begin{center}
 		\textbf{How do we agree which transaction came first?}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Why this is hard:}
@@ -948,7 +911,6 @@
 				\item Everyone trusts the bank
 				\item But we want to avoid that!
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Need}
 				Cryptographic proof of order that everyone agrees on
 			\end{alertblock}
@@ -966,7 +928,6 @@
 				\item Each block hashes previous block
 				\item Chain of timestamps!
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Why this works:}
 			\begin{itemize}
 				\item Can't backdate a block
@@ -985,7 +946,6 @@
 				\item Difficulty prevents spam
 				\item Proof-of-work proves timestamp
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Beautiful circularity}
 				PoW enables timestamping\\
 				Timestamping prevents double-spend\\
@@ -1061,7 +1021,6 @@
 					      \item 6 blocks: \approx0.5\% success
 				      \end{itemize}
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Security grows}
 				Each confirmation exponentially decreases attack probability!
 			\end{exampleblock}
@@ -1073,7 +1032,6 @@
 	\begin{center}
 		\textbf{How all the pieces work together}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Transactions:}
@@ -1082,7 +1040,6 @@
 				\item Spent outputs consumed
 				\item New outputs created
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Blocks:}
 			\begin{itemize}
 				\item Bundle transactions together
@@ -1097,7 +1054,6 @@
 				\item Economic incentives align
 				\item Difficulty adjusts automatically
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Consensus:}
 			\begin{itemize}
 				\item Longest chain wins
@@ -1106,7 +1062,6 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{center}
 		\textbf{Result: Trustless digital cash!}
 	\end{center}
@@ -1118,7 +1073,6 @@
 	\begin{center}
 		\textbf{Problem: Bitcoin blocks are huge!}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{The challenge:}
@@ -1139,7 +1093,6 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{alertblock}{The question}
 		Can you verify a transaction is in a block without downloading the entire block?
 	\end{alertblock}
@@ -1154,7 +1107,6 @@
 				\item Just need to prove one transaction is included
 				\item Use cryptographic hashing!
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{What Bitcoin does:}
 			\begin{itemize}
 				\item Build \textbf{tree of hashes}
@@ -1170,7 +1122,6 @@
 				\item Merkle proof: \approx400 bytes
 				\item Reduction: 2500$\times$ smaller!
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Named after}
 				Ralph Merkle (1979) - pioneer of public-key cryptography (worked closely with Diffie and Hellman)
 			\end{exampleblock}
@@ -1200,7 +1151,6 @@
 				\item Root completely changes!
 				\item This is the commitment
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Key property}
 				The root cryptographically commits to every transaction in the block
 			\end{alertblock}
@@ -1257,7 +1207,6 @@
 				\item These are the leaves
 				\item Think: bottom of the tree
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Build upward:}
 			\begin{enumerate}
 				\item Pair adjacent hashes
@@ -1293,7 +1242,6 @@
 	\begin{center}
 		\textbf{This is where Merkle trees shine!}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{To prove Tx2 is in the block:}
@@ -1317,7 +1265,6 @@
 				\item 1 million txs: Need 20 hashes
 				\item Path length = $\log_2(n)$
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Incredible efficiency}
 				Proof stays tiny even as block grows huge!
 			\end{exampleblock}
@@ -1369,7 +1316,6 @@
 				\item Merkle proof: [H(Tx3), H0-1, H4-7]
 				\item Block header with root
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{What verifier does:}
 			\begin{enumerate}
 				\item Hash Tx2 \rightarrow\ H(Tx2)
@@ -1386,11 +1332,9 @@
 				\item Hash \rightarrow\ Computed Root
 				\item Compare with header
 			\end{enumerate}
-			\vspace{0.5em}
 			\begin{alertblock}{If they match}
 				Tx2 is definitely in the block! Can't fake this without breaking SHA-256.
 			\end{alertblock}
-			\vspace{0.5em}
 			\textbf{Data transferred:}\\
 			Tx2 + 3 hashes = \approx400 bytes\\
 			Instead of 1 MB!
@@ -1408,7 +1352,6 @@
 				\item But you need sibling hashes
 				\item Where do they come from?
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{The answer:}
 			\begin{itemize}
 				\item \textbf{Full nodes have everything}\footnote{\url{https://learnmeabitcoin.com/technical/block/merkle-root/}}
@@ -1426,7 +1369,6 @@
 				\item Walk up tree, collect siblings
 				\item Return proof path
 			\end{enumerate}
-			\vspace{0.5em}
 			\begin{alertblock}{Key point}
 				Full nodes can generate proofs for any transaction because they have the complete block data!
 			\end{alertblock}
@@ -1445,7 +1387,6 @@
 				\item Compare with block header
 				\item If match: block valid!
 			\end{enumerate}
-			\vspace{0.5em}
 			\textbf{To verify specific transaction:}
 			\begin{itemize}
 				\item Already has full tree
@@ -1466,7 +1407,6 @@
 					      \item Returns proof to wallet
 				      \end{enumerate}
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Trust model}
 				Full nodes trust no one - they verify everything themselves!
 			\end{exampleblock}
@@ -1485,7 +1425,6 @@
 				\item Requirement: \approx500 GB
 				\item Time to sync: Days
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Not practical for most users!}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1497,7 +1436,6 @@
 				\item Syncs in minutes
 				\item Requests Merkle proofs as needed
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{8000$\times$ smaller!}
 				This is why Bitcoin works on phones!
 			\end{exampleblock}
@@ -1515,7 +1453,6 @@
 				\item Store locally (tiny!)
 				\item Now ready
 			\end{enumerate}
-			\vspace{0.5em}
 			\textbf{When payment arrives:}
 			\begin{enumerate}
 				\item Peer says: ``You got paid!''
@@ -1536,7 +1473,6 @@
 				\item Wait for confirmations
 				\item Connect to multiple peers
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Trade-off}
 				Less security than full node, but good enough for most use cases
 			\end{alertblock}
@@ -1553,7 +1489,6 @@
 				\item What if 5 transactions?
 				\item Can't pair the last one
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Bitcoin's solution:}
 			\begin{itemize}
 				\item Duplicate the last hash
@@ -1570,7 +1505,6 @@
 				\item Transaction only in block once
 				\item Prevents weird edge cases
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Visual}
 				Leaves: H(Tx0), H(Tx1), H(Tx2), H(Tx3), H(Tx4), \textcolor{red}{H(Tx4)}
 			\end{exampleblock}
@@ -1588,7 +1522,6 @@
 				\item Enables light clients
 				\item Mobile-friendly
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Security:}
 			\begin{itemize}
 				\item Tamper-evident
@@ -1604,14 +1537,12 @@
 				\item Don't reveal others
 				\item Selective disclosure
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Storage:}
 			\begin{itemize}
 				\item Old nodes can prune
 				\item Keep headers only
 				\item Serve proofs on demand
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Fundamental primitive}
 				Merkle trees make Bitcoin scalable!
 			\end{alertblock}
@@ -1631,7 +1562,6 @@
 				\item Root in header changes
 				\item Breaks PoW!
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Collision resistance:}
 			\begin{itemize}
 				\item From SHA-256
@@ -1649,7 +1579,6 @@
 				      \end{itemize}
 				\item Can't change after PoW
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Second preimage resistance:}
 			\begin{itemize}
 				\item Can't find different tx with same proof path
@@ -1669,7 +1598,6 @@
 				\item Valid Merkle proof though!
 				\item SPV client can't tell
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Why it's hard:}
 			\begin{itemize}
 				\item Full nodes reject invalid blocks
@@ -1686,7 +1614,6 @@
 				\item Check PoW chain is longest
 				\item For large amounts: run full node
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Security model}
 				SPV trusts that majority hashpower is honest - same as full nodes!
 			\end{alertblock}
@@ -1700,14 +1627,13 @@
 			\textbf{Other blockchains:}
 			\begin{itemize}
 				\item Ethereum: 3 Merkle trees per block
-				      \begin{itemize}
-					      \item Transactions
-					      \item Receipts
-					      \item State (accounts)
-				      \end{itemize}
+				      \begin{enumerate}
+					      \item \small Transactions
+					      \item \small Receipts
+					      \item \small State (accounts)
+				      \end{enumerate}
 				\item Most cryptocurrencies use them
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Beyond crypto:}
 			\begin{itemize}
 				\item Git version control
@@ -1721,7 +1647,6 @@
 				\item MLS (Secure Messaging)
 				\item TreeKEM for group keys
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Future variants:}
 			\begin{itemize}
 				\item Verkle trees (smaller proofs)
@@ -1730,7 +1655,6 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.25cm}
 	\begin{exampleblock}{Universal primitive}
 		Merkle trees: A fundamental tool for authenticated data structures
 	\end{exampleblock}
@@ -1762,12 +1686,11 @@
 				\item Git: Trust repository owner
 				\item Bitcoin: Trust no one
 			\end{itemize}
-			\vspace{0.5em}
-			\begin{exampleblock}{Same primitive}
-				Both use Merkle trees and hash chains for tamper-evident history!
-			\end{exampleblock}
 		\end{column}
 	\end{columns}
+	\begin{exampleblock}{Same primitive}
+		Both use Merkle trees and hash chains for tamper-evident history!
+	\end{exampleblock}
 \end{frame}
 
 \section{Ethereum and Smart Contracts}
@@ -1781,7 +1704,6 @@
 				\item Simple spending conditions
 				\item No loops or complex logic
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Why?}
 			\begin{itemize}
 				\item Intentionally limited scripting
@@ -1797,7 +1719,6 @@
 				\item Digital property
 				\item Autonomous organizations
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{The vision}
 				Programmable money with arbitrary logic!
 			\end{exampleblock}
@@ -1809,7 +1730,6 @@
 	\begin{center}
 		\textbf{What if the blockchain could run any program?}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{The idea (2013):}
@@ -1828,12 +1748,11 @@
 				\item Global consensus on computation
 				\item Anyone can deploy code
 			\end{itemize}
-			\vspace{0.5em}
-			\begin{alertblock}{Result}
-				``Smart contracts'' - code that runs trustlessly on the blockchain
-			\end{alertblock}
 		\end{column}
 	\end{columns}
+	\begin{alertblock}{Result}
+		``Smart contracts'' - code that runs trustlessly on the blockchain
+	\end{alertblock}
 \end{frame}
 
 \begin{frame}{From Bitcoin to Ethereum}
@@ -1884,12 +1803,11 @@
 				\item Executes automatically
 				\item Can't be stopped or changed
 			\end{itemize}
-			\vspace{0.5em}
-			\begin{exampleblock}{Four key properties}
-				Immutable • Deterministic • Autonomous • Transparent
-			\end{exampleblock}
 		\end{column}
 	\end{columns}
+	\begin{exampleblock}{Four key properties}
+		Immutable • Deterministic • Autonomous • Transparent
+	\end{exampleblock}
 \end{frame}
 
 \begin{frame}[fragile]{Your first smart contract}
@@ -1920,7 +1838,6 @@ contract SimpleStorage {
 				\item Anyone can read it
 				\item Lives forever on blockchain
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Language: Solidity}
 			\begin{itemize}
 				\item Like JavaScript + types
@@ -1969,7 +1886,6 @@ contract SimpleStorage {
 				\item What prevents spam?
 				\item How to price CPU time?
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Solution: Gas}
 			\begin{itemize}
 				\item Every operation costs gas
@@ -1985,14 +1901,12 @@ contract SimpleStorage {
 				\item Multiply: 5 gas
 				\item Store data: 20,000 gas
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{How it works:}
 			\begin{itemize}
 				\item Set gas limit \& price
 				\item Fee = gas used $\times$ price
 				\item Out of gas? Reverts!
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Brilliance}
 				Solves halting problem with economics!
 			\end{exampleblock}
@@ -2018,7 +1932,6 @@ contract SimpleToken {
   }
 }
 		\end{verbatim}
-	\vspace{0.5em}
 	\textbf{Key concepts:} \texttt{msg.sender} (who called this?), \texttt{mapping} (key-value storage), \texttt{require} (check conditions)
 \end{frame}
 
@@ -2032,7 +1945,6 @@ contract SimpleToken {
 				\item Decentralized VC fund
 				\item All controlled by code
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{The attack:}
 			\begin{itemize}
 				\item Reentrancy vulnerability
@@ -2049,7 +1961,6 @@ contract SimpleToken {
 				\item Attacker calls withdraw again!
 				\item Repeat until drained
 			\end{enumerate}
-			\vspace{0.5em}
 			\begin{alertblock}{Lesson}
 				Code is law... but bugs are expensive! Led to Ethereum hard fork.
 			\end{alertblock}
@@ -2077,7 +1988,6 @@ contract SimpleToken {
 				\item Professional audits
 				\item Bug bounties
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Remember}
 				Can't patch code after deployment!
 			\end{exampleblock}
@@ -2094,7 +2004,6 @@ contract SimpleToken {
 				\item Aave: Lending/borrowing
 				\item MakerDAO: Stablecoin
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{NFTs:}
 			\begin{itemize}
 				\item Digital art ownership
@@ -2110,7 +2019,6 @@ contract SimpleToken {
 				\item Multi-sig wallets
 				\item Prediction markets
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{The impact}
 				\$50B+ locked in DeFi protocols!
 			\end{alertblock}
@@ -2130,7 +2038,6 @@ contract SimpleToken {
 				\item 78 TWh/year
 				\item More than Austria!
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{The question:}
 			\begin{itemize}
 				\item Can we secure network...
@@ -2146,7 +2053,6 @@ contract SimpleToken {
 				\item Get randomly selected
 				\item Misbehave? Lose your stake!
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Core insight}
 				Economic security instead of energy security
 			\end{exampleblock}
@@ -2158,7 +2064,6 @@ contract SimpleToken {
 	\begin{center}
 		\textbf{One of the most ambitious upgrades in tech history}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{What happened:}
@@ -2181,7 +2086,6 @@ contract SimpleToken {
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{center}
 		\textbf{From 13,000 households worth of energy to just 10}
 	\end{center}
@@ -2197,7 +2101,6 @@ contract SimpleToken {
 				\item Stay online
 				\item Act honestly
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Rewards:}
 			\begin{itemize}
 				\item \approx4-5\% annual yield
@@ -2212,7 +2115,6 @@ contract SimpleToken {
 				\item Double-sign? Slashed!
 				\item Lose stake + ejected
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Skin in the game}
 				Can't fake having stake. Attack costs real money you'll lose!
 			\end{alertblock}
@@ -2226,7 +2128,6 @@ contract SimpleToken {
 	\begin{center}
 		\textbf{Pick any two:}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.33\textwidth}
 			\centering
@@ -2251,7 +2152,6 @@ contract SimpleToken {
 		Visa: 65,000 TPS\\
 		Gap: 4,000$\times$
 	\end{center}
-	\vspace{0.5em}
 	\begin{alertblock}{Why so slow?}
 		Every node processes every transaction. Can't just use bigger servers!
 	\end{alertblock}
@@ -2267,7 +2167,6 @@ contract SimpleToken {
 				\item Post results to Ethereum
 				\item Prove correctness
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{L1 (Ethereum):}
 			\begin{itemize}
 				\item Security layer
@@ -2283,7 +2182,6 @@ contract SimpleToken {
 				\item Much faster
 				\item Inherit L1 security
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{The result}
 				100x cheaper fees, 100x higher throughput, same security!
 			\end{exampleblock}
@@ -2301,7 +2199,6 @@ contract SimpleToken {
 				\item Anyone can prove fraud
 				\item If fraud found, rollback
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Examples:}
 			\begin{itemize}
 				\item Arbitrum (\$15B TVL)
@@ -2317,7 +2214,6 @@ contract SimpleToken {
 				\item No waiting period
 				\item Math proves correctness
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Examples:}
 			\begin{itemize}
 				\item zkSync
@@ -2326,7 +2222,6 @@ contract SimpleToken {
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{center}
 		\textbf{Both inherit Ethereum's security. Different trade-offs on speed vs complexity.}
 	\end{center}
@@ -2351,7 +2246,6 @@ contract SimpleToken {
 				\item Preserves decentralization
 				\item No compromise on security
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{The future}
 				Ethereum = settlement layer\\
 				L2s = execution layer\\
