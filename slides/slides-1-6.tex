@@ -292,33 +292,39 @@
 
 \section{Attacks on Hash Functions}
 
-\begin{frame}{Example hash functions}{From historical to modern}
-	\begin{itemize}
-		\item \textbf{Historical/broken hash functions:}
-		      \begin{itemize}
-			      \item \textbf{MD4} (1990): 128-bit, completely broken, collisions found instantly
-			      \item \textbf{MD5} (1992): 128-bit, collisions found in 2004, still widely misused
-			      \item \textbf{SHA-0} (1993): 160-bit, withdrawn shortly after release
-			      \item \textbf{SHA-1} (1995): 160-bit, practical collisions demonstrated in 2017
-		      \end{itemize}
-		\item \textbf{Current standard hash functions:}
-		      \begin{itemize}
-			      \item \textbf{SHA-2 family} (2001): SHA-224, SHA-256, SHA-384, SHA-512
-			      \item \textbf{SHA-3 family} (2015): Based on the Keccak sponge construction
-		      \end{itemize}
-		\item \textbf{Modern alternatives:}
-		      \begin{itemize}
-			      \item \textbf{BLAKE2} (2012): Faster than MD5, more secure than SHA-3
-			      \item \textbf{BLAKE3} (2020): Highly parallelizable, extremely fast
-		      \end{itemize}
-	\end{itemize}
+\begin{frame}{Example hash functions}
+	\vspace{-0.4cm}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Historical/broken hash functions:}
+				      \begin{itemize}
+					      \item \textbf{MD4} (1990): 128-bit, completely broken, collisions found instantly
+					      \item \textbf{MD5} (1992): 128-bit, collisions found in 2004, still widely misused
+					      \item \textbf{SHA-0} (1993): 160-bit, withdrawn shortly after release
+					      \item \textbf{SHA-1} (1995): 160-bit, practical collisions demonstrated in 2017
+				      \end{itemize}
+				\item \textbf{Current standard hash functions:}
+				      \begin{itemize}
+					      \item \textbf{SHA-2 family} (2001): SHA-224, SHA-256, SHA-384, SHA-512
+					      \item \textbf{SHA-3 family} (2015): Based on the Keccak sponge construction
+				      \end{itemize}
+				\item \textbf{Modern alternatives:}
+				      \begin{itemize}
+					      \item \textbf{BLAKE2} (2012): Faster than MD5\footnote{\url{https://www.blake2.net}}
+					      \item \textbf{BLAKE3} (2020): Highly parallelizable, extremely fast\footnote{\url{https://github.com/BLAKE3-team/BLAKE3}}
+					      \item \textbf{KangarooTwelve} (2018) and \textbf{TurboSHAKE} (2023): High-performance variants\footnote{\url{https://datatracker.ietf.org/doc/rfc9861/}}
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Evaluating a hash function's quality}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
-				\item \textbf{Recall}:
+				\item \textbf{At a high level}:
 				      \begin{itemize}
 					      \item \textbf{Asymmetric primitives} are based on mathematical
 					            problems, can be mathematically proven secure (given assumptions!)
@@ -333,6 +339,31 @@
 
 		\begin{column}{0.4\textwidth}
 			\imagewithcaption{qiao.png}{Cryptanalysis of AES.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{A more nuanced view on provable security}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item Reality is more nuanced:
+				      \begin{itemize}
+					      \item \textbf{Asymmetric primitives}: While based on mathematical problems, these are \textbf{conjectures}, not proofs.
+					            \begin{itemize}
+						            \item No proven lower bounds on factoring complexity.
+						            \item Many newer problems (lattices, code-based) receive less scrutiny.
+						            \item Real implementations often have exotic side assumptions.
+					            \end{itemize}
+					      \item \textbf{Symmetric primitives}: Some properties \textit{can} be formally proven!
+					            \begin{itemize}
+						            \item Example: No 4-round AES trail activates fewer than 25 bytes.
+						            \item This excludes entire classes of attacks.
+						            \item Modes of operation (encryption, hashing) often have security proofs.
+					            \end{itemize}
+				      \end{itemize}
+				\item In both cases, security rests on assumptions - the difference is in the \textit{type} of assumptions, not their existence.
+			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -494,7 +525,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The Sponge construction}{SHA-3, BLAKE}
+\begin{frame}{The Sponge construction}{SHA-3}
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}
 			\begin{itemize}
@@ -940,7 +971,7 @@
 			      \item \textbf{ROMix}: Core memory-hard function.
 			      \item \textbf{BlockMix}: Based on Salsa20/8 core function.
 		      \end{itemize}
-		      \item{Parameters:}
+		\item{Parameters:}
 		      \begin{itemize}
 			      \item \texttt{N}: CPU/memory cost
 			      \item \texttt{r}: Block size

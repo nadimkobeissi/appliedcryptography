@@ -6,6 +6,7 @@ In alphabetical order:
 - [Bas Westerbaan](https://bas.westerbaan.name/): full review of Slides 2.6 (Post-Quantum Cryptography) with corrections.
 - [Daniel Dia](https://danieldia-dev.github.io/): improvements to the lattice cryptography math slides in Slides 2.6 (Post-Quantum Cryptography). 
 - [Diego F. Aranha](https://dfaranha.github.io/): full review of Slides 1.8 (Elliptic Curve Cryptography) with corrections.
+- [Gilles Van Assche](https://gva.noekeon.org/): corrections and improvements to Slides 1.6 (Collision-Resistant Hash Functions).
 - [Jad Elmoghraby](https://www.linkedin.com/in/jad-elmoghraby/): scrypt implementation for the Go Starter Kit.
 - [Jean-Philippe Aumasson](https://aumasson.jp): general feedback and advice.
 - [Kenneth Paterson](https://inf.ethz.ch/people/person-detail.paterson.html): highly significant general feedback, guidance and advice across many domains.
