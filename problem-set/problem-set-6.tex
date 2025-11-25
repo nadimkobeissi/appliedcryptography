@@ -4,7 +4,7 @@
 \title{Applied Cryptography - Problem Set 6: High-Assurance Cryptography}
 \author{Nadim Kobeissi}
 \subject{Problem set covering high-assurance cryptography topics including formal verification methods, symbolic vs computational models, side-channel resistance, and practical deployment of verified cryptographic systems.}
-\keywords{formal verification, ProVerif, CryptoVerif, symbolic model, computational model, side channels, constant-time implementation, HACL*, protocol verification, equivalence properties}
+\keywords{formal verification, ProVerif, CryptoVerif, symbolic model, computational model, side channels, constant-time implementation, protocol verification, equivalence properties}
 
 \begin{document}
 \classhandoutheader
@@ -98,18 +98,11 @@ return SUCCESS;
 \begin{questions}
 	\subsection*{Verification Case Studies}
 
-	\question[10] \textbf{\haclstar Success Story:}
+	\question[20] \textbf{\haclstar Success Story:}
 	Mozilla integrated \haclstar into Firefox, replacing hand-written assembly with verified \fstar code.
 	\begin{parts}
-		\part[5] Analyze why \haclstar succeeded where previous verification efforts failed. Consider performance, API compatibility, and development process.
-		\part[5] The \haclstar team claims ``verification for free'' - no performance penalty. Examine this claim critically. What optimizations might verified code miss compared to expert assembly? Design a gradual migration strategy for replacing OpenSSL with verified implementations.
-	\end{parts}
-
-	\question[10] \textbf{hax and the Future of Verification:}
-	The hax toolchain\footnote{\url{https://hax.cryspen.com}} promises to extract formal models from Rust implementations.
-	\begin{parts}
-		\part[5] Analyze the benefits and risks of extracting ProVerif models from implementation code versus writing them manually. What semantic gaps might arise?
-		\part[5] Design a development workflow using hax that ensures both protocol-level and implementation-level security. How do you maintain consistency as the code evolves?
+		\part[10] Analyze why \haclstar succeeded where previous verification efforts failed. Consider performance, API compatibility, and development process.
+		\part[10] The \haclstar team claims ``verification for free'' - no performance penalty. Examine this claim critically. What optimizations might verified code miss compared to expert assembly? Design a gradual migration strategy for replacing OpenSSL with verified implementations.
 	\end{parts}
 
 	\subsection*{Building Verified Systems}
