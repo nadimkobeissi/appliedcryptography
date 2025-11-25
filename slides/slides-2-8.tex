@@ -48,19 +48,25 @@
 \end{frame}
 
 \begin{frame}{What makes zero-knowledge proofs special?}
-	\textbf{Traditional proof:}
-	\begin{itemize}
-		\item ``Here's my password: \texttt{hunter2}''
-		\item You learn the secret itself
-		\item You could now impersonate me
-	\end{itemize}
-	\textbf{Zero-Knowledge proof:}
-	\begin{itemize}
-		\item ``I'll convince you I know the password''
-		\item You learn \textit{only} that I know it
-		\item You gain no ability to prove it yourself
-		\item You can't replay my proof to others
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{0.45\textwidth}
+			\textbf{Traditional proof:}
+			\begin{itemize}
+				\item ``Here's my password: \texttt{hunter2}''
+				\item You learn the secret itself
+				\item You could now impersonate me
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.55\textwidth}
+			\textbf{Zero-Knowledge proof:}
+			\begin{itemize}
+				\item ``I'll convince you I know the password''
+				\item You learn \textit{\textbf{only}} that I know it
+				\item You gain no ability to prove it yourself
+				\item You can't replay my proof to others
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{The three zero-knowledge properties}
@@ -102,7 +108,7 @@
 			\begin{itemize}
 				\item \textbf{Knowledge Soundness:}
 				      \begin{itemize}
-					      \item If prover succeeds, they \textit{know} a witness
+					      \item If prover succeeds, they \textit{know} a witness\footnote{A witness is the secret information or evidence that proves a statement is true - like the private key that corresponds to a public key, or the solution to a puzzle.}
 					      \item ``Can extract the witness from successful prover''
 					      \item Example: Can extract the actual value $a$
 					      \item Stronger guarantee
