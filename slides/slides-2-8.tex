@@ -39,7 +39,6 @@
 			\begin{block}{Zero-knowledge property}
 				A proof that reveals \textbf{nothing} except the truth of the statement being proven
 			\end{block}
-			\vspace{0.5em}
 			\begin{alertblock}{The paradox}
 				Convince you completely while teaching you nothing
 			\end{alertblock}
@@ -79,7 +78,6 @@
 	\begin{block}{3. Zero-Knowledge}
 		The verifier learns nothing beyond the validity of the statement
 	\end{block}
-	\vspace{0.25em}
 	\begin{center}
 		\textbf{These three properties together create the ``magic''}
 	\end{center}
@@ -150,7 +148,6 @@
 					\item You can't prove to others that I know it
 				\end{itemize}
 			\end{alertblock}
-			\vspace{0.5em}
 			\begin{exampleblock}{No ``trace'' or ``evidence''}
 				The interaction leaves no transferable evidence
 			\end{exampleblock}
@@ -449,7 +446,6 @@
 					\item $2^7 \cdot (2^3)^{-1} = 128 \cdot \frac{1}{8} = 16$ \mycheckmark
 				\end{itemize}
 			\end{exampleblock}
-			\vspace{0.5em}
 			\begin{alertblock}{Observe how\ldots}
 				This manipulation lets us separate the secret exponent $a$ from the computation!
 			\end{alertblock}
@@ -544,7 +540,6 @@
 	\begin{center}
 		\textbf{Zero-knowledge is not limited to proving identity!}
 	\end{center}
-	\vspace{0.25em}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
@@ -582,7 +577,6 @@
 				\item What if we want to prove other statements?
 				\item Enter \textbf{Sigma protocols}: a general framework
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{The pattern:}
 			\begin{itemize}
 				\item Public instance: $X$
@@ -786,7 +780,6 @@
 	\begin{center}
 		\textbf{Sigma protocols can prove almost any statement!}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Graph Problems:}
@@ -821,7 +814,6 @@
 	\begin{center}
 		\textbf{What makes a Sigma protocol actually work?}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Mathematical guarantees:}
@@ -841,7 +833,6 @@
 			\end{alertblock}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{center}
 		\textbf{All three are essential for a useful protocol!}
 	\end{center}
@@ -856,7 +847,6 @@
 			\item The verifier \textit{always} accepts
 		\end{itemize}
 	\end{block}
-	\vspace{0.5em}
 	\textbf{In other words:}
 	\begin{itemize}
 		\item If you actually know the secret, you can always prove it
@@ -869,7 +859,6 @@
 	\begin{center}
 		\textbf{Why does Schnorr always work for honest provers?}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{The honest execution:}
@@ -890,7 +879,6 @@
 			\end{align*}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{exampleblock}{Perfect completeness}
 		Honest prover succeeds with probability 1
 	\end{exampleblock}
@@ -906,7 +894,6 @@
 				\item Can't predict what challenge will be
 				\item Must be ready for \textit{any} challenge!
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{The extraction principle:}
 			\begin{itemize}
 				\item If you can answer two different challenges\ldots
@@ -918,7 +905,6 @@
 			\begin{alertblock}{Key insight}
 				Being able to handle multiple challenges proves knowledge
 			\end{alertblock}
-			\vspace{0.5em}
 			\begin{exampleblock}{Why ``special''?}
 				This specific form of soundness is unique to Sigma protocols
 			\end{exampleblock}
@@ -937,7 +923,6 @@
 			\item Such that $P(X, W) = \text{true}$
 		\end{itemize}
 	\end{block}
-	\vspace{0.5em}
 	\textbf{Interpretation:} If you can answer two different challenges for the same commitment, you must know the secret!
 \end{frame}
 
@@ -945,7 +930,6 @@
 	\begin{center}
 		\textbf{Given two accepting transcripts with same $Y$ but different challenges:}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Transcript 1:}
@@ -994,7 +978,6 @@
 			\begin{alertblock}{Soundness guarantee}
 				Cheating probability $\leq \frac{1}{\text{number of challenges}}$
 			\end{alertblock}
-			\vspace{0.5em}
 			\begin{exampleblock}{For Schnorr}
 				$|\mathcal{C}| = n$ (prime order)\\
 				Cheating probability $\approx \frac{1}{2^{256}}$\\
@@ -1013,7 +996,6 @@
 			\item These simulated transcripts are indistinguishable from real ones
 		\end{itemize}
 	\end{block}
-	\vspace{0.5em}
 	\textbf{In other words:}
 	\begin{itemize}
 		\item If fake transcripts look identical to real ones\ldots
@@ -1033,7 +1015,6 @@
 				\item Chooses challenges randomly
 				\item Doesn't try to be clever
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{What about cheating verifiers?}
 			\begin{itemize}
 				\item Might choose challenges adaptively
@@ -1045,7 +1026,6 @@
 			\begin{exampleblock}{Good news}
 				For most applications, honest-verifier ZK is sufficient
 			\end{exampleblock}
-			\vspace{0.5em}
 			\begin{alertblock}{Later: Fiat-Shamir}
 				We'll see how to make protocols secure against any verifier by removing interaction entirely!
 			\end{alertblock}
@@ -1057,7 +1037,6 @@
 	\begin{center}
 		\textbf{A Sigma protocol is useful when it has all three properties:}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.33\textwidth}
 			\begin{block}{Completeness}
@@ -1099,7 +1078,6 @@
 	\begin{center}
 		\textbf{What if we need to prove more complex statements?}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{OR statements:}
@@ -1120,7 +1098,6 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{alertblock}{The challenge}
 		How to combine Sigma protocols while preserving zero-knowledge?
 	\end{alertblock}
@@ -1194,7 +1171,6 @@
 \begin{frame}{OR proofs: the construction}
 	\textbf{Given:} Sigma protocols $\Sigma_0$ for condition $P_0$ and $\Sigma_1$ for condition $P_1$\\
 	\textbf{Goal:} Prove ``I know $W$ such that $P_0(X,W)$ OR $P_1(X,W)$''
-	\vspace{0.5em}
 	\begin{block}{The protocol}
 		\begin{enumerate}
 			\item \textbf{Commit:} Prover sends $(Y_0, Y_1)$ - commitments for both protocols
@@ -1232,7 +1208,6 @@
 				\item Verifier can't tell which is which!
 				\item Distribution looks identical regardless of which witness we have
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{The trick}
 				Prover controls one challenge completely, must adapt to the other
 			\end{alertblock}
@@ -1326,7 +1301,6 @@
 				\item Receive one challenge
 				\item Respond to all with same challenge
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{How it works}
 				Reusing the challenge maintains both soundness and zero-knowledge
 			\end{exampleblock}
@@ -1337,7 +1311,6 @@
 \begin{frame}{AND proof construction}
 	\textbf{Given:} Sigma protocols $\Sigma_1, \Sigma_2, \ldots, \Sigma_k$ for conditions $P_1, P_2, \ldots, P_k$\\
 	\textbf{Goal:} Prove ``I know $W$ such that $P_1(X,W)$ AND $P_2(X,W)$ AND \ldots AND $P_k(X,W)$''
-	\vspace{0.5em}
 	\begin{block}{The protocol}
 		\begin{enumerate}
 			\item \textbf{Commit:} Run commit phase for all protocols
@@ -1390,7 +1363,6 @@
 			\end{enumerate}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{alertblock}{Single response proves all!}
 		One value $R$ satisfies all three equations if and only if all discrete logs are equal
 	\end{alertblock}
@@ -1400,13 +1372,11 @@
 	\begin{center}
 		\textbf{We can build complex logical statements!}
 	\end{center}
-	\vspace{0.5em}
 	\textbf{Example:} ``I know the private key for ($A_1$ OR $A_2$) AND ($B_1$ OR $B_2$)''
 	\begin{itemize}
 		\item Meaning: I'm one of users $\{A_1, A_2\}$ AND one of users $\{B_1, B_2\}$
 		\item Four possible combinations, but verifier learns nothing about which!
 	\end{itemize}
-	\vspace{0.5em}
 	\textbf{Construction approach:}
 	\begin{enumerate}
 		\item Build OR protocols for each clause
@@ -1423,7 +1393,6 @@
 	\begin{center}
 		\textbf{The limitation of interactive proofs}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Interactive Sigma protocols:}
@@ -1442,7 +1411,6 @@
 				\item No interaction needed
 				\item But still zero-knowledge!
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{The challenge}
 				How to ensure $C$ comes after $Y$ without a verifier?
 			\end{alertblock}
@@ -1454,7 +1422,6 @@
 	\begin{center}
 		\textbf{Replace the verifier with a hash function!}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
@@ -1511,7 +1478,6 @@
 			\end{enumerate}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{center}
 		\textbf{The proof is just $(Y, R)$ - no interaction needed!}
 	\end{center}
@@ -1540,7 +1506,6 @@
 			\end{enumerate}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{alertblock}{This is a digital signature!}
 		If we include a message $m$ in the hash: $c = \func{hash}{A, Y, m}$, we get the Schnorr signature scheme!
 	\end{alertblock}
@@ -1598,7 +1563,6 @@
 	\begin{block}{Lemma (Forking Lemma)}
 		If an algorithm $A$ can produce valid Fiat-Shamir proofs with non-negligible probability, then we can extract a valid witness with non-negligible probability.
 	\end{block}
-	\vspace{0.5em}
 	\textbf{The extraction strategy:}
 	\begin{enumerate}
 		\item Run $A$ until it outputs valid proof $(Y, R)$
@@ -1612,29 +1576,37 @@
 	\end{enumerate}
 \end{frame}
 
-\begin{frame}{Forking Lemma: the challenge}
+\begin{frame}{Wait, how can the hash give different outputs?}
+	\vspace{-0.5cm}
+	\begin{center}
+		\textbf{If $\func{hash}{X, Y}$ is deterministic, how do we get $C' \neq C$?}
+	\end{center}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Why extraction is tricky:}
 			\begin{itemize}
-				\item $A$ might query hash many times
-				\item Don't know which query to rewind to
-				\item After rewinding, $A$ might:
-				      \begin{itemize}
-					      \item Not output a valid proof
-					      \item Output proof with different $Y$
-					      \item Behave completely differently
-				      \end{itemize}
+				\item We're in the \textbf{random oracle model}
+				\item The extractor \textit{controls} the oracle
+				\item We can ``reprogram'' hash outputs!
+				\item Same input, different output (in simulation)
 			\end{itemize}
+			\textbf{How rewinding works:}
+			\begin{enumerate}
+				\item Run algorithm $A$ with oracle $H$
+				\item Record query $\func{hash}{X, Y} = C$
+				\item Rewind to that point
+				\item Answer with $C' \neq C$ instead
+			\end{enumerate}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{The solution:}
-			\begin{itemize}
-				\item Save state at every hash query
-				\item After valid proof, rewind to $\func{hash}{X, Y}$
-				\item Try multiple times if needed
-				\item Analysis shows this works with non-negligible probability
-			\end{itemize}
+			\begin{alertblock}{This is a proof technique}
+				\begin{itemize}
+					\item Not how real hashes work!
+					\item Extractor is a \textit{thought experiment}
+					\item Shows: if you can forge proofs, you must know the witness
+					\item Real hash functions are deterministic
+				\end{itemize}
+			\end{alertblock}
+			If $A$ succeeds for \textit{any} hash output, it must be able to handle multiple challenges $\Rightarrow$ extraction works
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1643,7 +1615,6 @@
 	\begin{center}
 		\textbf{Fiat-Shamir destroys the deniability property}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Interactive Sigma protocol:}
@@ -1666,7 +1637,6 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{alertblock}{Trade-off}
 		We gain non-interactivity but lose deniability. The proof becomes a permanent, transferable piece of evidence.
 	\end{alertblock}
@@ -1676,7 +1646,6 @@
 	\begin{center}
 		\textbf{Fiat-Shamir is widely used in practice}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Digital signatures:}
@@ -1685,7 +1654,6 @@
 				\item EdDSA (used in many systems)
 				\item BLS signatures (with pairings)
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Blockchain applications:}
 			\begin{itemize}
 				\item Proof of reserves
@@ -1700,7 +1668,6 @@
 				\item STARKs (transparent proofs)
 				\item Proof of knowledge of signature
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{Key advantage}
 				Convert any interactive ZK proof into a non-interactive one that can be verified by anyone, anytime
 			\end{alertblock}
@@ -1714,7 +1681,6 @@
 	\begin{center}
 		\textbf{Wait, why are we suddenly talking about circuits?}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{So far, we proved statements like:}
@@ -1723,7 +1689,6 @@
 				\item ``I know a 3-coloring of this graph''
 				\item Specific mathematical relations
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{But what if we want to prove:}
 			\begin{itemize}
 				\item ``I computed this SHA-256 correctly''
@@ -1735,7 +1700,6 @@
 			\begin{alertblock}{The idea}
 				Any computation can be represented as a circuit!
 			\end{alertblock}
-			\vspace{0.5em}
 			\begin{exampleblock}{Think of it like:}
 				Instead of proving ``I know $x$'', we prove ``I know $x$ such that circuit $C(x) = y$''
 			\end{exampleblock}
@@ -1794,7 +1758,6 @@
 	\begin{center}
 		\textbf{The fundamental shift in thinking}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Old way (Sigma protocols):}
@@ -1815,7 +1778,6 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{alertblock}{This changes everything!}
 		Instead of crafting clever protocols, we write programs and prove we executed them correctly
 	\end{alertblock}
@@ -1825,7 +1787,6 @@
 	\begin{center}
 		\textbf{Claim: ``I know $x$ such that SHA256($x$) = $y$''}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{As a Sigma protocol:}
@@ -1834,7 +1795,7 @@
 				\item SHA-256 has 64 rounds
 				\item Each round has bitwise operations
 				\item No elegant mathematical structure
-				\item Basically impossible to design!
+				\item Basically impossible in practice!
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1860,7 +1821,6 @@
 				\item ZK protocol proves circuit execution
 				\item Developer doesn't see the circuit!
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Example (Circom syntax):}
 			\begin{verbatim}
 template IsZero() {
@@ -1879,7 +1839,6 @@ template IsZero() {
 				\item Constraint system
 				\item ZK proof
 			\end{enumerate}
-			\vspace{0.5em}
 			\begin{alertblock}{We've come full circle}
 				Started with ``I know a secret''\\
 				Now: ``I ran this program correctly''\\
@@ -1893,7 +1852,6 @@ template IsZero() {
 	\begin{center}
 		\textbf{Circuit ZK is powerful but comes with trade-offs}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Advantages:}
@@ -1914,7 +1872,6 @@ template IsZero() {
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.5em}
 	\begin{exampleblock}{Rule of thumb}
 		Use custom Sigma protocols for simple statements (like Schnorr)\\
 		Use circuit ZK for complex computations (like program execution)
@@ -1927,7 +1884,6 @@ template IsZero() {
 	\begin{center}
 		\textbf{Can we actually trust Fiat-Shamir in practice?}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{The promise:}
@@ -1936,7 +1892,6 @@ template IsZero() {
 				\item Replace oracle with concrete hash
 				\item Should be secure in practice
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Known theoretical attacks:}
 			\begin{itemize}
 				\item Canetti-Goldreich-Halevi (2004)
@@ -1967,7 +1922,6 @@ template IsZero() {
 				\item Works for bounded-depth circuits
 				\item Combined with polynomial commitments
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{The claim being proved:}
 			\begin{itemize}
 				\item Circuit $C$, input $x$, witness $w$
@@ -1982,7 +1936,6 @@ template IsZero() {
 				\item Considered secure with Fiat-Shamir
 				\item Foundation of many SNARKs
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{The protocol flow}
 				\begin{enumerate}
 					\item Commit to witness $w$
@@ -1995,11 +1948,194 @@ template IsZero() {
 	\end{columns}
 \end{frame}
 
+\begin{frame}{The attack: exploiting self-reference}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The circular dependency problem:}
+			\begin{itemize}
+				\item Circuit $C^*$ determines challenge $r$
+				\item Changing $C^*$ changes $r$
+				\item How to break this cycle?
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{The solution: self-describing circuits}
+			\begin{itemize}
+				\item Give the circuit its own description!
+				\item Witness $w = \langle C^* \rangle$ (circuit digest)
+				\item Now circuit can compute $r$ internally
+				\item No circular dependency
+			\end{itemize}
+			\begin{alertblock}{The trick}
+				Circuit outputs $(γ, γ-1)$ where $γ = \func{hash}{\langle C^* \rangle, y^*, \text{comm}(w)}$. Claim output is $(0,0)$ --- always false!
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{What is a circuit digest?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{From circuit to digest:}
+			\begin{itemize}
+				\item A circuit $C$ is a computation graph
+				\item Gates, wires, input/output structure
+				\item Can be serialized to bytes
+				\item \textbf{Circuit digest:} $\psi = \langle C \rangle$
+			\end{itemize}
+			\textbf{The encoding process:}
+			\begin{enumerate}
+				\item Enumerate all gates in order
+				\item Record gate types and connections
+				\item Include input/output specifications
+				\item Hash or encode to fixed-size digest
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Why digests matter for the attack:}
+			\begin{itemize}
+				\item Circuit can ``know itself''
+				\item Pass $\psi = \langle C^* \rangle$ as witness
+				\item Circuit computes hash of own description
+				\item Creates self-reference needed for attack
+			\end{itemize}
+			\begin{alertblock}{If a circuit is deep enough, it can:}
+				\begin{itemize}
+					\item Take its own digest as input
+					\item Compute $\func{hash}{\psi, \ldots}$
+					\item Predict its own challenge!
+				\end{itemize}
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{How the attack works step by step}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The attacking circuit $C^*$:}
+			\begin{enumerate}
+				\item Input: witness $w$
+				\item Interpret $w$ as circuit digest $\psi$
+				\item Compute $\alpha = \text{comm}(w)$
+				\item Compute $\gamma = \func{hash}{\psi, y^*, \alpha}$
+				\item Output: $(\gamma, \gamma - 1)$
+			\end{enumerate}
+			\textbf{The false claim:}
+			\begin{itemize}
+				\item Prover claims: $\exists w: C^*(w) = (0,0)$
+				\item Reality: Output is always $(\gamma, \gamma-1) \neq (0,0)$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Why verification passes:}
+			\begin{itemize}
+				\item Set $w = \langle C^* \rangle$
+				\item Verifier computes: $r = \func{hash}{\langle C^* \rangle, y^*, \alpha}$
+				\item But this equals $\gamma$ by construction!
+				\item MLE of real output at $r$: $\hat{y}(r) = \gamma - r = 0$
+				\item MLE of claimed $(0,0)$ at $r$: also $0$
+				\item They match! GKR proceeds honestly from here
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\begin{center}
+		\textbf{At exactly the challenge point $r$, real and fake outputs have the same MLE value}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Understanding the attack: a real-world analogy}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Imagine a magic lock:}
+			\begin{itemize}
+				\item The lock asks you a random question
+				\item You must answer correctly to open it
+				\item The question depends on what you show it
+				\item Normally: you can't predict the question
+			\end{itemize}
+			\textbf{The honest scenario:}
+			\begin{enumerate}
+				\item Show the lock your credentials
+				\item Lock generates random challenge
+				\item You answer based on your secret
+				\item Lock verifies and opens
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{The attack:}
+			\begin{itemize}
+				\item You build a special mirror
+				\item Mirror shows the lock... itself!
+				\item Lock's question now depends on the mirror
+				\item But mirror was built knowing the lock
+				\item You pre-computed the ``random'' question!
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The attack analogy continued: exam cheating}
+	\begin{columns}[c]
+		\begin{column}{0.67\textwidth}
+			\textbf{Think of it like an exam:}
+			\begin{itemize}
+				\item Professor creates exam based on submitted essay
+				\item Questions are ``random'' but derived from your essay
+				\item Write essay first, then face unknown questions
+			\end{itemize}
+			\textbf{The cheater's trick:}
+			\begin{enumerate}
+				\item Submit an essay on ``how this exam will be graded''
+				\item Essay contains the grading algorithm itself
+				\item Essay predicts exactly which questions will be asked
+				\item Cheater embeds the answers in the essay!
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.33\textwidth}
+			\textbf{Why it works:}
+			\begin{itemize}
+				\item ``Random'' challenge comes from hashing your input
+				\item But your input describes the hash process
+				\item You compute the hash inside your submission
+				\item Your answer is tailored to that exact challenge
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why this attack is devastating}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{What makes this different:}
+			\begin{itemize}
+				\item GKR is widely used
+				\item Works for \textit{any} hash
+				\item Affects real deployed systems
+			\end{itemize}
+			\textbf{The depth requirement:}
+			\begin{itemize}
+				\item Attack needs: $d \geq d_{\text{comm}} + d_h + O(1)$
+				\item Circuit must be deep enough to compute hash + commitment
+				\item Many practical circuits satisfy this!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Key properties exploited:}
+			\begin{itemize}
+				\item GKR doesn't commit to computation trace
+				\item Challenge point determined by hash of transcript
+				\item Circuit can embed cryptographic operations
+				\item Self-reference through witness
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Extended attack: backdooring any circuit}
 	\begin{center}
 		\textbf{We can insert a backdoor into ANY circuit!}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Given:}
@@ -2007,7 +2143,6 @@ template IsZero() {
 				\item Any circuit $C(x,w) \rightarrow y$
 				\item Desired input $x^*$ and output $y^*$
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{We construct:}
 			\begin{itemize}
 				\item Circuit $C^*$ functionally equivalent to $C$
@@ -2023,7 +2158,6 @@ template IsZero() {
 				\item If yes, manipulate output
 				\item Otherwise, output $y$
 			\end{enumerate}
-			\vspace{0.5em}
 			\begin{alertblock}{Critical insight}
 				Security depends on circuit \textit{implementation}, not just functionality!
 			\end{alertblock}
@@ -2035,7 +2169,6 @@ template IsZero() {
 	\begin{center}
 		\textbf{What does this mean for real systems?}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Immediate impact:}
@@ -2045,7 +2178,6 @@ template IsZero() {
 				\item No ``safe'' hash function choice
 				\item Circuit implementation matters!
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Particularly concerning:}
 			\begin{itemize}
 				\item Recursive proof composition
@@ -2061,48 +2193,8 @@ template IsZero() {
 				\item Use canonical representations
 				\item Domain separation techniques
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Silver lining}
 				Simple circuits (e.g., for lookups) seem safe - they have canonical forms
-			\end{exampleblock}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Lessons learned}
-	\begin{center}
-		\textbf{The Fiat-Shamir transform is more fragile than we thought}
-	\end{center}
-	\vspace{0.5em}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{Key takeaways:}
-			\begin{itemize}
-				\item Random oracle model $\neq$ real world
-				\item Natural protocols can fail
-				\item Implementation details matter
-				\item Need extreme care in practice
-			\end{itemize}
-			\vspace{0.5em}
-			\textbf{Open questions:}
-			\begin{itemize}
-				\item Which protocols are safe?
-				\item Better security models?
-				\item Practical alternatives to FS?
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{alertblock}{Remember}
-				\begin{itemize}
-					\item This isn't a hash function weakness
-					\item It's a fundamental protocol issue
-					\item Affects any FS hash choice
-					\item First attack on ``real'' protocol
-				\end{itemize}
-			\end{alertblock}
-			\vspace{0.5em}
-			\begin{exampleblock}{Future work}
-				Need provably secure alternatives based on standard assumptions
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
@@ -2177,7 +2269,6 @@ template IsZero() {
 				\item Create ZK proof of constraints
 				\item Output: proof + public result
 			\end{enumerate}
-			\vspace{0.5em}
 			\begin{exampleblock}{Examples in practice}
 				RISC Zero, SP1, Jolt, Cairo VM - each with different trade-offs
 			\end{exampleblock}
@@ -2319,6 +2410,175 @@ template IsZero() {
 					            \end{itemize}
 				      \end{itemize}
 			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{ZK Battleship: proving without revealing}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The classic problem:}
+			\begin{itemize}
+				\item Player 1 (server) has a secret board
+				\item Player 2 makes guesses (shots)
+				\item Server responds: hit, miss, sunk
+				\item How can Player 2 trust the responses?
+			\end{itemize}
+			\textbf{Traditional solutions:}
+			\begin{itemize}
+				\item Trusted third party
+				\item Reveal board at end
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{The zkVM solution:}
+			\begin{itemize}
+				\item Server proves each response is correct
+				\item Without revealing ship positions!
+				\item Player 2 verifies proof cryptographically
+				\item Cheating is mathematically impossible
+			\end{itemize}
+			\begin{alertblock}{The witness}
+				The secret \texttt{GameState}: 5 ships with positions, orientations, and a random ``pepper'' for hiding
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{ZK Battleship: the initialization proof}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\textbf{Step 1: Prove valid board setup}
+			\begin{itemize}
+				\item Server commits to initial board state
+				\item Proves all ships are placed correctly:
+				      \begin{itemize}
+					      \item All 5 ships present (correct types)
+					      \item Ships within 10$\times$10 bounds
+					      \item No ships overlap
+				      \end{itemize}
+				\item Outputs only a SHA-256 commitment hash
+			\end{itemize}
+			\begin{exampleblock}{What verifier learns}
+				``Server has a valid board configuration''\\
+				Nothing about where ships are located!
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\textbf{The guest program (init.rs):}
+			\begin{verbatim}
+fn main() {
+  // Read secret state
+  let state: GameState =
+    env::read();
+  // Validate the board
+  if !state.check() {
+    panic!("Invalid!");
+  }
+  // Output commitment
+  env::commit(&state.commit());
+}
+\end{verbatim}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{ZK Battleship: the round proof}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\textbf{Step 2: Prove each shot response}
+			\begin{itemize}
+				\item For each shot, server proves:
+				      \begin{enumerate}
+					      \item Started with committed state
+					      \item Applied the shot correctly
+					      \item Computed right result (hit/miss/sunk)
+					      \item Produced valid new state
+				      \end{enumerate}
+				\item Outputs: old commit, new commit, shot, result
+			\end{itemize}
+			\begin{alertblock}{Chain of commitment: prevents tampering}
+				Each round's \texttt{old\_state} must match previous round's \texttt{new\_state}
+			\end{alertblock}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\textbf{The guest program (round.rs):}
+			\begin{verbatim}
+fn main() {
+  let old = state.commit();
+  let hit =
+    state.apply_shot(shot);
+  let new = state.commit();
+  env::commit(&RoundCommit {
+    old_state: old,
+    new_state: new,
+    shot, hit,
+  });
+}
+\end{verbatim}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{ZK Battleship: verification and security}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\textbf{What the host verifies:}
+			\begin{enumerate}
+				\item \textbf{Init proof valid:} Board follows game rules
+				\item \textbf{Round proof valid:} Shot computed correctly
+				\item \textbf{State consistency:} \texttt{old\_state} matches previous \texttt{new\_state}
+				\item \textbf{Shot consistency:} Proof uses the actual shot sent
+			\end{enumerate}
+			\textbf{Security guarantees:}
+			\begin{itemize}
+				\item \textbf{Privacy:} Board never revealed to verifier
+				\item \textbf{Soundness:} Cannot lie about hit/miss results
+				\item \textbf{Integrity:} Cannot change board mid-game
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{ZK Battleship: verification and security}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\vspace{-2cm}
+			\begin{center}
+				\resizebox{0.6\textwidth}{!}{
+					\begin{msc}{}
+						\setmscvalues{small}
+						\drawframe{none}
+						\setlength{\instdist}{6cm}
+						\setlength{\instwidth}{2cm}
+						\declinst{server}{}{Server}
+						\declinst{player}{}{Player}
+						\action*{$\begin{array}{l}
+									\text{Secret board:}~\mathcal{B} \\
+									C_0 := \func{hash}{\mathcal{B}}
+								\end{array}$}{server}
+						\nextlevel[4]
+						\mess{Init proof, $C_0$}{server}{player}
+						\nextlevel[1]
+						\action*{Verify init proof}{player}
+						\nextlevel[3]
+						\mess{Shot $(x, y)$}{player}{server}
+						\nextlevel[1]
+						\action*{$\begin{array}{l}
+									\text{result} := \text{apply}(\mathcal{B}, x, y) \\
+									C_1 := \func{hash}{\mathcal{B}'}
+								\end{array}$}{server}
+						\nextlevel[5]
+						\mess{Round proof: $(C_0, C_1, \text{result})$}{server}{player}
+						\nextlevel[1]
+						\action*{$\begin{array}{l}
+									\text{Verify proof} \\
+									\text{Check } C_0 = \text{prev commit}
+								\end{array}$}{player}
+						\nextlevel[3]
+					\end{msc}
+				}
+			\end{center}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -2596,7 +2856,6 @@ template IsZero() {
 				\item Sender owns the input notes
 				\item No double spending
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{The magic}
 				All this is proved without revealing which notes are spent or created!
 			\end{alertblock}
@@ -2637,7 +2896,6 @@ template IsZero() {
 				\item Unified addresses
 				\item Hardware wallet support
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{alertblock}{The trade-off}
 				Privacy comes at a cost: shielded transactions are more expensive and complex than transparent ones
 			\end{alertblock}
@@ -2655,7 +2913,6 @@ template IsZero() {
 				\item Inspired countless other projects
 				\item Advanced the field significantly
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Challenges faced:}
 			\begin{itemize}
 				\item Regulatory concerns
@@ -2672,7 +2929,6 @@ template IsZero() {
 				\item Trust assumptions are critical
 				\item Regulatory environment is key
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{exampleblock}{Legacy}
 				Zcash showed the world that zero-knowledge proofs aren't just theory - they can secure billions in value
 			\end{exampleblock}
@@ -2692,7 +2948,6 @@ template IsZero() {
 				\item Focus on EU age assurance
 				\item Code available on GitHub\footnote{https://github.com/google/longfellow-zk}
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Why this matters:}
 			\begin{itemize}
 				\item Tech giant embracing privacy tech
@@ -2704,7 +2959,6 @@ template IsZero() {
 			\begin{exampleblock}{The promise fulfilled}
 				``In layperson's terms, ZKP makes it possible for people to prove that something about them is true without exchanging any other data.''
 			\end{exampleblock}
-			\vspace{0.5em}
 			\begin{alertblock}{Think about it}
 				We've spent this lecture learning the theory. Now it's becoming everyday technology!
 			\end{alertblock}
@@ -2722,7 +2976,6 @@ template IsZero() {
 				\item Face recognition + AI
 				\item Third-party identity services
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Problems:}
 			\begin{itemize}
 				\item Privacy nightmare
@@ -2740,7 +2993,6 @@ template IsZero() {
 				\item No tracking possible
 				\item Cryptographically secure
 			\end{itemize}
-			\vspace{0.5em}
 			\begin{block}{Question for you}
 				What other attributes could we prove this way? Think beyond age...
 			\end{block}
@@ -2811,11 +3063,12 @@ template IsZero() {
 	\end{columns}
 \end{frame}
 
+\subsection{The Future of Real-World Zero-Knowledge Systems}
+
 \begin{frame}{Beyond age verification: the possibilities}
 	\begin{center}
 		\textbf{Where else could ZK proofs transform our digital lives?}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Financial services:}
@@ -2824,7 +3077,6 @@ template IsZero() {
 				\item Credit worthiness without credit score
 				\item KYC without identity exposure
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Healthcare:}
 			\begin{itemize}
 				\item Vaccination status
@@ -2839,7 +3091,6 @@ template IsZero() {
 				\item Community membership
 				\item Reputation without identity
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Government services:}
 			\begin{itemize}
 				\item Voting eligibility
@@ -2849,8 +3100,6 @@ template IsZero() {
 		\end{column}
 	\end{columns}
 \end{frame}
-
-\subsection{The Future of Real-World Zero-Knowledge Systems}
 
 \begin{frame}{Technical challenges ahead}
 	\begin{columns}[c]
@@ -2863,7 +3112,6 @@ template IsZero() {
 				\item Trusted setup ceremonies
 				\item Quantum resistance
 			\end{itemize}
-			\vspace{0.5em}
 			\textbf{Research frontiers:}
 			\begin{itemize}
 				\item Recursive proof composition
@@ -2888,7 +3136,6 @@ template IsZero() {
 	\begin{center}
 		\textbf{Three possible futures - which will we choose?}
 	\end{center}
-	\vspace{0.5em}
 	\begin{columns}[c]
 		\begin{column}{0.33\textwidth}
 			\begin{block}{Surveillance capitalism}
@@ -2926,13 +3173,9 @@ template IsZero() {
 \begin{frame}{Questions to ponder}
 	\begin{enumerate}
 		\item \textbf{Trust models:} If Google controls the ZK infrastructure, have we really gained privacy or just shifted trust?
-		      \vspace{0.5em}
 		\item \textbf{Adoption barriers:} What will it take for average users to understand and demand ZK proofs?
-		      \vspace{0.5em}
 		\item \textbf{Economic incentives:} Who profits from privacy? Who loses? How does this affect adoption?
-		      \vspace{0.5em}
 		\item \textbf{Global implications:} How will authoritarian regimes respond to unbreakable privacy tech?
-		      \vspace{0.5em}
 		\item \textbf{Your role:} Will you be a builder, a critic, a user, or an advocate of this technology?
 	\end{enumerate}
 \end{frame}
