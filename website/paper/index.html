@@ -36,17 +36,19 @@
 		</style>
 		<script defer data-domain="appliedcryptography.page" data-api="https://restless-block-0a1e.symbolicsoft.workers.dev/oil-ocean/event" src="https://restless-block-0a1e.symbolicsoft.workers.dev/emerald-hill/script.js"></script>
 		<script async type="module">
-		window.addEventListener(`load`, () => {
-			const anchor = window.location.hash.substring(1)
-			if (typeof anchor === `string` && /^\w{1,32}(-\w{1,32})?$/.test(anchor)) {
-				const viewer = document.createElement(`embed`)
-				viewer.id = `viewer`
-				viewer.src = `https://appliedcryptography.page/paper/${anchor}.pdf`
-				document.body.appendChild(viewer)
-			} else {
-				window.location.href = `/`
-			}
-		})
+			window.addEventListener(`load`, () => {
+				const anchor = window.location.hash.substring(1)
+				if (typeof anchor === `string` && /^\w{1,32}(-\w{1,32})?$/.test(anchor)) {
+					const pdfUrl = `https://objects.appliedcryptography.page/paper/${anchor}.pdf`
+					const viewer = document.createElement(`iframe`)
+					viewer.id = `viewer`
+					viewer.src = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`
+					viewer.setAttribute(`allowfullscreen`, `true`)
+					document.body.appendChild(viewer)
+				} else {
+					window.location.href = `/`
+				}
+			})
 		</script>
 	</head>
 
