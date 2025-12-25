@@ -1,4 +1,6 @@
-import { Calendar } from "https://cdn.skypack.dev/@fullcalendar/core"
+import {
+	Calendar
+} from "https://cdn.skypack.dev/@fullcalendar/core"
 import listPlugin from "https://cdn.skypack.dev/@fullcalendar/list"
 import iCalendarPlugin from "https://cdn.skypack.dev/@fullcalendar/icalendar@6.1.18"
 
@@ -15,7 +17,7 @@ export const calendarInit = () => {
 		},
 		eventColor: "green",
 		height: 700,
-		eventContent: function (arg) {
+		eventContent: function(arg) {
 			let arrayOfDomNodes = []
 
 			let titleEl = document.createElement("div")
@@ -46,7 +48,9 @@ export const calendarInit = () => {
 				arrayOfDomNodes.push(notesEl)
 			}
 
-			return { domNodes: arrayOfDomNodes }
+			return {
+				domNodes: arrayOfDomNodes
+			}
 		},
 	})
 	calendar.render()
