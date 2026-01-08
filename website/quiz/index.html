@@ -40,7 +40,7 @@
 		window.addEventListener(`load`, () => {
 			const anchor = window.location.hash.substring(1)
 			if (typeof anchor === `string` && /^\d-\d{1,2}$/.test(anchor)) {
-				const pdfUrl = `https://objects.appliedcryptography.page/quiz/quiz-${anchor}.pdf`
+				const pdfUrl = `https://appliedcryptography.page/quiz/quiz-${anchor}.pdf`
 				const viewer = document.createElement(`iframe`)
 				viewer.id = `viewer`
 				viewer.src = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`
