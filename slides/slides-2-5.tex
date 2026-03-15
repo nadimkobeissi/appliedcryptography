@@ -3,8 +3,8 @@
 
 \title{Applied Cryptography - 2.5: High-Assurance Cryptography}
 \author{Nadim Kobeissi}
-\subject{An exploration of high-assurance cryptography through computer-aided design, verification, and implementation techniques for building secure cryptographic systems.}
-\keywords{computer-aided cryptography, formal verification, symbolic security, computational security, protocol analysis, ProVerif, Tamarin, F*, implementation correctness, side-channel resistance}
+\subject{An exploration of high-assurance cryptography through computer-aided design, verification, and implementation techniques, followed by a critical examination of verification boundaries in practice.}
+\keywords{computer-aided cryptography, formal verification, verification boundaries, verification theatre, symbolic security, computational security, ProVerif, Tamarin, F*, side-channel resistance}
 \institute{American University of Beirut}
 \instituteimage{images/aub-white.png}
 \date{\today}
@@ -12,6 +12,8 @@
 \coverpartname{Part 2: Real-World Cryptography}
 \covertopicname{2.5: High-Assurance Cryptography}
 \coverwebsite{https://appliedcryptography.page}
+
+\usetikzlibrary{decorations.pathreplacing, fit}
 
 \begin{document}
 \begin{frame}[plain]
@@ -21,9 +23,9 @@
 \begin{frame}{Acknowledgments}
 	\begin{center}
 		\Large
-		Much of this slide deck is based on:
+		Part 1 of this slide deck is based on:
 
-		\vspace{1em}
+		\vspace{0.5em}
 
 		\normalsize
 		Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao and Bryan Parno
@@ -39,117 +41,76 @@
 		\vspace{0.5em}
 
 		\url{https://appliedcryptography.page/paper/\#sok-verif}
+
+		\vspace{1em}
+
+		Part 2 is based on new research by the instructor.
 	\end{center}
 \end{frame}
+
+%% ====================================================================
+%%  PART 1: COMPUTER-AIDED CRYPTOGRAPHY
+%% ====================================================================
 
 \section{Introduction}
 
 \begin{frame}{Securely implementing cryptography}
 	\begin{itemize}
 		\item Designing, implementing, and deploying cryptographic mechanisms is notoriously hard
-		\item Regular discoveries of:
-		      \begin{itemize}
-			      \item High-profile design flaws
-			      \item Devastating implementation bugs
-			      \item Side-channel vulnerabilities
-		      \end{itemize}
+		\item Regular discoveries of high-profile design flaws, devastating implementation bugs, and side-channel vulnerabilities
 		\item Even in \textbf{widely deployed} mechanisms!
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Three levels of complexity}
+	\vspace{1em}
 	\begin{center}
 		\Large
+		Three levels of complexity:
 		\begin{enumerate}
-			\item \textbf{Design Level}
-			\item \textbf{Implementation Level}
-			\item \textbf{Deployment Level}
+			\item \textbf{Design Level}: Security proofs, adversarial models
+			\item \textbf{Implementation Level}: Correctness, performance, memory safety
+			\item \textbf{Deployment Level}: Side-channel resistance
 		\end{enumerate}
-		\vspace{1em}
-		\normalsize
-		Each level is highly involved and fraught with pitfalls
 	\end{center}
-\end{frame}
-
-\begin{frame}{Design level challenges}
-	\begin{itemize}
-		\item Must achieve specific security goals
-		\item Against well-defined classes of attackers
-		\item Requires composing sophisticated building blocks:
-		      \begin{itemize}
-			      \item Abstract constructions \rightarrow\ Primitives
-			      \item Primitives \rightarrow\ Protocols
-			      \item Protocols \rightarrow\ Systems
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Implementation level challenges}
-	\begin{itemize}
-		\item High-level designs need concrete functional details:
-		      \begin{itemize}
-			      \item Data formats
-			      \item Session state
-			      \item Programming interfaces
-		      \end{itemize}
-		\item Must optimize for:
-		      \begin{itemize}
-			      \item Interoperability
-			      \item Performance
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Deployment level challenges}
-	\begin{itemize}
-		\item Must account for low-level threats absent at design level
-		\item Primary concern: Side-channel attacks
-		\item Implementations must protect against various leakage channels
-		\item Ad-hoc constant-time coding recipes are:
-		      \begin{itemize}
-			      \item Tricky to implement
-			      \item May not cover all leakage channels
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Vast attack surface}
-	\begin{center}
-		\Large Attackers can:
-		\vspace{1em}
-	\end{center}
-	\begin{itemize}
-		\item Break high-level designs
-		\item Exploit implementation bugs
-		\item Recover secrets via side-channels
-		\item \textbf{Any combination of the above!}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Current methods fall short}
-	\begin{itemize}
-		\item \textbf{Pen-and-paper proofs}:
-		      \begin{itemize}
-			      \item Consider only pared-down ``cores''
-			      \item Still highly complex and error-prone
-		      \end{itemize}
-		\item \textbf{Aggressive optimization}:
-		      \begin{itemize}
-			      \item Increases risk of bugs
-			      \item Difficult to catch by testing or auditing
-		      \end{itemize}
-		\item \textbf{Current modus operandi}: Select few experts with rudimentary tools
-	\end{itemize}
 \end{frame}
 
 \begin{frame}{The problem}
 	\begin{center}
 		\Large
-		The current approach \textbf{cannot keep pace} with the rate of innovation and development in cryptography
-		\vspace{2em}
+		Attackers can break designs, exploit bugs, recover secrets via side-channels, or \textbf{any combination}
+	\end{center}
+	\vspace{1em}
+	\begin{itemize}
+		\item \textbf{Pen-and-paper proofs}: Consider only ``cores,'' still error-prone
+		\item \textbf{Aggressive optimization}: Increases bug risk
+		\item \textbf{Current modus operandi}: Select few experts with rudimentary tools
+	\end{itemize}
+	\vspace{1em}
+	\begin{center}
+		This approach \textbf{cannot keep pace} with the rate of innovation in cryptography
+	\end{center}
+\end{frame}
 
-		\normalsize
-		We need a better solution\ldots
+\begin{frame}{Enter: Computer-Aided Cryptography (CAC)}
+	\begin{itemize}
+		\item Active area of research: \textbf{formal, machine-checkable} approaches to designing, analyzing, and implementing cryptography
+		\item \textbf{Design level}: Tools manage complexity of security proofs, can reveal subtle flaws
+		\item \textbf{Implementation level}: Guarantee correct behavior, even for highly optimized code
+		\item \textbf{Deployment level}: Check side-channel protections
+	\end{itemize}
+	\vspace{1em}
+	\begin{center}
+		Individual tools may only address \textit{part} of the problem, but when \textbf{combined}, they provide a \textbf{high degree of assurance}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Success stories}
+	\begin{itemize}
+		\item Computer-aided security analyses were influential in \textbf{TLS 1.3} standardization
+		\item \textbf{\haclstar library}: Integrated into Mozilla Firefox's NSS
+		\item \textbf{Fiat Cryptography}: Elliptic curve code in Google's BoringSSL
+		\item \textbf{EverCrypt}: Routines used in Linux kernel's Zinc crypto library
+	\end{itemize}
+	\begin{center}
+		\textbf{Formally verified code at Internet scale!}
 	\end{center}
 \end{frame}
 
@@ -163,178 +124,61 @@
 			      \item Library dependencies
 			      \item Hardware abstraction layers
 		      \end{itemize}
-		\item Each layer introduces:
-		      \begin{itemize}
-			      \item New attack surfaces
-			      \item Integration complexities
-			      \item Performance constraints
-			      \item Unexpected interactions
-		      \end{itemize}
+		\item Each layer introduces new attack surfaces and unexpected interactions
 		\item \textbf{Result}: Security proofs may not hold in practice!
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Enter: Computer-Aided Cryptography (CAC)}
-	\begin{itemize}
-		\item Active area of research addressing these challenges
-		\item Encompasses \textbf{formal, machine-checkable} approaches to:
-		      \begin{itemize}
-			      \item Designing cryptography
-			      \item Analyzing cryptography
-			      \item Implementing cryptography
-		      \end{itemize}
-		\item Different tools address different parts of the problem space
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{CAC at different levels}
-	\begin{itemize}
-		\item \textbf{Design level}: Tools manage complexity of security proofs
-		      \begin{itemize}
-			      \item Can reveal subtle flaws
-			      \item May discover unknown attacks
-		      \end{itemize}
-		\item \textbf{Implementation level}: Guarantee correct behavior
-		      \begin{itemize}
-			      \item Even for highly optimized code
-			      \item On all possible inputs
-		      \end{itemize}
-		\item \textbf{Deployment level}: Check side-channel protections
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Combining the tools}
-	\begin{center}
-		\Large
-		Individual tools may only address \textit{part} of the problem
-
-		\vspace{1em}
-
-		But when \textbf{combined}, they provide a \textbf{high degree of assurance}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Success stories: standards}
-	\begin{itemize}
-		\item Computer-aided security analyses were influential in \textbf{TLS 1.3} standardization
-		\item Multiple formal verification efforts contributed
-		\item Helped identify and fix potential vulnerabilities before deployment
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Success stories: real-world deployment}
-	\begin{itemize}
-		\item \textbf{\haclstar library}: Integrated into Mozilla Firefox's NSS
-		\item \textbf{Fiat Cryptography}: Elliptic curve code in Google's BoringSSL
-		\item \textbf{EverCrypt}: Routines used in Linux kernel's Zinc crypto library
-	\end{itemize}
-	\begin{center}
-		\textbf{Formally verified code at Internet scale!}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Growing enthusiasm}
-	\begin{itemize}
-		\item Rapid emergence of a dynamic community:
-		      \begin{itemize}
-			      \item Theoretical cryptographers
-			      \item Applied cryptographers
-			      \item Cryptography engineers
-			      \item Formal methods practitioners
-		      \end{itemize}
-		\item Goal: Achieve broader adoption of CAC
-		\item Blending ideas from many fields
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Risks and challenges}
+\begin{frame}{Challenges ahead}
 	\begin{itemize}
 		\item CAC risks becoming a \textbf{victim of its own success}
-		\item \textbf{Trust can be undermined by}:
-		      \begin{itemize}
-			      \item Difficulty understanding guarantees
-			      \item Fine-print caveats of CAC artifacts
-		      \end{itemize}
-		\item Field is increasingly:
-		      \begin{itemize}
-			      \item Broad
-			      \item Complex
-			      \item Rapidly evolving
-		      \end{itemize}
+		\item Trust can be undermined by difficulty understanding guarantees and fine-print caveats
+		\item Field is increasingly broad, complex, and rapidly evolving
+		\item \textbf{Post-quantum transition}: New algorithms need verification
+		\item \textbf{Scaling}: Moving from primitives to whole cryptographic systems
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Pressing challenges ahead}
-	\begin{itemize}
-		\item \textbf{Post-quantum transition}: Expected transition to post-quantum cryptography
-		\item \textbf{Scaling challenges}: Moving from lower-level primitives to whole cryptographic systems
-		\item No one has complete understanding of every facet
-	\end{itemize}
+	\vspace{1em}
+	\begin{center}
+		\textit{No one has complete understanding of every facet}
+	\end{center}
 \end{frame}
 
 \section{Design-Level Security}
+
+\begin{frame}{Symbolic security: Example}
+	\textbf{Symmetric encryption modeled by:}
+	\begin{itemize}
+		\item Functions: \texttt{Enc} and \texttt{Dec}
+		\item Equational theory:
+	\end{itemize}
+	\begin{center}
+		\Large
+		\texttt{Dec(Enc(m,k),k) = m}
+	\end{center}
+	\begin{itemize}
+		\item Decrypting ciphertext \texttt{Enc(m,k)} with key \texttt{k} recovers plaintext \texttt{m}
+		\item Adversary can only use specified primitives and equations
+		\item Can decrypt only if it has the \textbf{entire} secret key
+	\end{itemize}
+\end{frame}
 
 \begin{frame}{Two flavors of design-level security}
 	\begin{itemize}
 		\item Developed over years in \textbf{two separate communities}:
 		      \vspace{0.5em}
-		\item \textbf{Symbolic Security}
+		\item \textbf{Symbolic Security} (Formal methods community)
 		      \begin{itemize}
-			      \item Formal methods community
-			      \item Abstract model of cryptography
+			      \item Messages are abstract \textbf{symbols}, not bits
+			      \item Cryptographic primitives are \textbf{perfect black boxes}
+			      \item Can only decrypt with the \textbf{exact} key
 		      \end{itemize}
 		      \vspace{0.5em}
-		\item \textbf{Computational Security}
+		\item \textbf{Computational Security} (Cryptography community)
 		      \begin{itemize}
-			      \item Cryptography community
-			      \item Concrete algorithms and probabilities
+			      \item Messages are \textbf{bitstrings} of specific length
+			      \item Encryption is a \textbf{probabilistic algorithm}
+			      \item Adversaries have \textbf{bounded computational power}
 		      \end{itemize}
-	\end{itemize}
-	\begin{center}
-		\textit{Two complementary strands of work}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Symbolic model: Cryptography as algebra}
-	\begin{center}
-		\Large
-		Treats cryptography as \textbf{perfect black boxes}
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Messages are abstract \textbf{symbols}, not bits
-		\item Encryption is a symbolic function
-		\item Can only decrypt with \textbf{exact} key
-		\item No partial information leakage
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Think of it like:}
-	\begin{itemize}
-		\item A locked box that's either fully open or fully closed
-		\item No way to peek inside without the key
-		\item Adversary can only manipulate whole messages
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Computational model: Cryptography as algorithms}
-	\begin{center}
-		\Large
-		Models real cryptography with \textbf{concrete algorithms}
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Messages are \textbf{bitstrings} of specific length
-		\item Encryption is a probabilistic algorithm
-		\item Security holds with \textbf{high probability}
-		\item Adversaries have \textbf{bounded computational power}
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Think of it like:}
-	\begin{itemize}
-		\item A safe that takes time to crack
-		\item Harder safes take more time
-		\item Given enough time, anything can be broken
-		\item We just ensure it takes \textit{too long} to be practical
 	\end{itemize}
 \end{frame}
 
@@ -357,7 +201,6 @@
 		\end{tabular}
 	\end{center}
 	\vspace{1em}
-	\textbf{When to use which?}
 	\begin{itemize}
 		\item \textbf{Symbolic}: Quick protocol flaw detection, automated analysis
 		\item \textbf{Computational}: Concrete security guarantees, cryptographic proofs
@@ -365,102 +208,225 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Symbolic security properties}
+	Two main flavors:
+	\vspace{0.5em}
+	\begin{enumerate}
+		\item \textbf{Trace properties}
+		      \begin{itemize}
+			      \item Bad events never occur on any execution trace
+			      \item Example: Secret data never in adversarial knowledge
+		      \end{itemize}
+		      \vspace{0.5em}
+		\item \textbf{Equivalence properties}
+		      \begin{itemize}
+			      \item Adversary cannot distinguish between two protocols
+			      \item Example: Cannot differentiate real secret from random value
+		      \end{itemize}
+	\end{enumerate}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Equivalence properties cannot be naturally expressed as trace properties}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Computational security properties}
+	Characterized along two axes:
+	\vspace{0.5em}
+	\begin{center}
+		\begin{tabular}{|c|c|}
+			\hline
+			\textbf{Type}    & \textbf{Quantification} \\
+			\hline
+			Game-based       & Concrete                \\
+			Simulation-based & Asymptotic              \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{0.5em}
+	\begin{itemize}
+		\item CAC tools primarily focus on \textbf{game-based, concrete security}
+		\item Simulation-based proofs: More complex, support composition
+		\item Concrete security implies asymptotic security
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{How protocol models end up, intuitively}
 	\bigimagewithcaption{cas-comparison.png}{Source: Cas Cremers}
 \end{frame}
 
-\begin{frame}{Why is design-level security important?}
+\begin{frame}{Why design-level security matters}
 	\begin{itemize}
 		\item Mathematical arguments are the \textbf{only way} to demonstrate security against entire classes of attacks
 		\item Security proofs are \textbf{necessary} for any new standard
-		\item Applies at all levels:
-		      \begin{itemize}
-			      \item Primitives
-			      \item Protocols
-			      \item Systems
-		      \end{itemize}
-		\item Critical to understand:
-		      \begin{itemize}
-			      \item Security notions
-			      \item Adversarial models
-			      \item Deployment environments
-		      \end{itemize}
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{How can design-level security fail?}
-	\begin{center}
-		\Large
-		Pen-and-paper arguments are \textbf{alarmingly fragile}
-	\end{center}
 	\vspace{1em}
-	Two main reasons:
+	\textbf{But pen-and-paper arguments are alarmingly fragile:}
 	\begin{enumerate}
-		\item \textbf{Erroneous arguments}
-		\item \textbf{Inappropriate modeling}
+		\item \textbf{Erroneous arguments}: Tedious, error-prone, errors go unnoticed for years
+		\item \textbf{Inappropriate modeling}: Simplified models miss real attacks
 	\end{enumerate}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{CAC tools can detect flaws and manage complexity beyond pen-and-paper reach}
+	\end{center}
 \end{frame}
 
-\begin{frame}{Failure mode 1: Erroneous arguments}
+\begin{frame}{Key features of symbolic analysis tools}
 	\begin{itemize}
-		\item Writing security arguments is:
-		      \begin{itemize}
-			      \item Tedious
-			      \item Error-prone
-			      \item Difficult even for experts
-		      \end{itemize}
-		\item Primarily done on pen-and-paper
-		\item Errors are difficult to catch
-		\item Can go unnoticed for \textbf{years}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Failure mode 2: Inappropriate modeling}
-	\begin{itemize}
-		\item Even correct arguments can miss attacks outside the model
-		\item Known and common pitfall
-		\item To make analysis tractable:
-		      \begin{itemize}
-			      \item Models are heavily simplified
-			      \item Focus on ``cryptographic core''
-			      \item Elide many details
-		      \end{itemize}
-		\item \textbf{Result}: Attacks often found outside this core
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Current approaches (without CAC)}
-	\textbf{To minimize erroneous arguments:}
-	\begin{itemize}
-		\item Methodological frameworks developed:
-		      \begin{itemize}
-			      \item Code-based game playing
-			      \item Universal composability
-		      \end{itemize}
-		\item Goal: Decompose into simpler arguments
-		\item Still complex and error-prone!
+		\item \textbf{Unbounded sessions}: Can analyze arbitrary number of concurrent sessions, proving \textbf{absence of attacks} in the model
+		\item \textbf{Trace properties}: Bad events never occur on any execution trace
+		\item \textbf{Equivalence properties}: Adversary cannot distinguish between two protocols
+		\item \textbf{Equational theories}: Model algebraic properties of crypto operations (XOR, DH, etc.)
+		\item \textbf{Global mutable state}: Support for shared databases, key servers
 	\end{itemize}
 	\vspace{0.5em}
-	\textbf{To reduce inappropriate modeling:}
+	\begin{center}
+		Modern unbounded tools often \textbf{outperform} bounded tools, even for small session counts!
+	\end{center}
+\end{frame}
+
+\begin{frame}{Symbolic analysis tools overview}
+	\bigimagewithcaption{verif-symbolic.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
+\end{frame}
+
+\begin{frame}{ProVerif: Real-world success stories}
+	\textbf{TLS 1.0}: Verification in seconds to hours
+	\vspace{0.3em}
+
+	\textbf{TLS 1.3} (part of my Ph.D. thesis!): $\sim$1 hour
+	\vspace{0.3em}
+
+	\textbf{Signal Protocol} (part of my Ph.D. thesis!): Minutes to days
+	\vspace{0.3em}
+
+	\textbf{Noise Protocol Framework} (also part of my Ph.D. thesis!): Seconds to days
 	\begin{itemize}
-		\item ``Real-world provable security'' approach
-		\item More accurate models
-		\item But: Added realism \rightarrow\ Greater complexity
+		\item Demo: \url{https://noiseexplorer.com}
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\Large
+		Key insight: More Diffie-Hellman operations = longer analysis
+	\end{center}
+\end{frame}
+
+\begin{frame}{Tamarin: Tackling massive protocols}
+	\textbf{5G Authentication Key Exchange}: $\sim$5 hours
+	\vspace{0.3em}
+
+	\textbf{TLS 1.3}: $\sim$1 week, 100GB RAM!
+	\vspace{0.3em}
+
+	\textbf{DNP3 SAv5} (power grid security): Several minutes
+	\vspace{1em}
+
+	\textbf{Why ProVerif and Tamarin succeed:}
+	\begin{itemize}
+		\item Extensive documentation and tutorials
+		\item Library of case studies
+		\item Practical features: Tamarin has a GUI, ProVerif reconstructs attacks in HTML
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{How CAC helps at the design level}
+\begin{frame}{Computational analysis tools overview}
+	\bigimagewithcaption{verif-computational.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
+\end{frame}
+
+\begin{frame}{Game-based security}
 	\begin{itemize}
-		\item \textbf{Detect flaws} in cryptographic designs
-		\item \textbf{Manage complexity} of security proofs
-		\item Crystallize benefits of:
-		      \begin{itemize}
-			      \item On-paper methodologies
-			      \item Real-world provable security
-		      \end{itemize}
-		\item Enable trustworthy analyses for complex designs
-		\item Go beyond reach of pen-and-paper analysis
+		\item Probabilistic experiment: ``game'' between challenger and adversary
+		\item Security statement:
+		      \begin{center}
+			      \textit{``For all adversaries, probability of achieving goal $\leq$\ threshold''}
+		      \end{center}
+		\item Core methodology: \textbf{Game hopping}
+		      \begin{enumerate}
+			      \item Start with original game
+			      \item Transform step-by-step
+			      \item Reach game where success probability is known
+			      \item Bound probability increases at each step
+			      \item Similar to what we saw in Part 1 of this course!
+		      \end{enumerate}
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Key features of computational analysis tools}
+	\textbf{Automation vs. Expressivity:} Every tool makes this tradeoff
+	\begin{itemize}
+		\item Automated tools: Push-button proofs, limited patterns
+		\item Expressive tools: Arbitrary arguments, more manual effort
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{Other key dimensions:}
+	\begin{itemize}
+		\item \textbf{Composition support}: Can we reason about pieces separately?
+		\item \textbf{Concrete security bounds}: Not just ``secure'' but ``how secure''
+		\item \textbf{Link to implementation}: Can guarantees reach real code?
+		\item \textbf{Trusted computing base}: Theorem prover? Tool itself? SMT solver?
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		Smaller TCB = Higher confidence
+	\end{center}
+\end{frame}
+
+\begin{frame}{CryptoVerif: Automated protocol analysis}
+	\begin{center}
+		\Large
+		Best for highly automated protocol analysis
+	\end{center}
+	\vspace{0.5em}
+	\begin{itemize}
+		\item Both proof-finding and proof-checking
+		\item Excellent for key exchange protocols
+		\item Applied $\pi$-calculus input language
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{Success stories:}
+	\begin{itemize}
+		\item TLS 1.3 (part of my Ph.D. thesis!)
+		\item Signal Protocol (part of my Ph.D. thesis!)
+		\item WireGuard VPN
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{\fstar: Beyond the cryptographic core}
+	\begin{center}
+		\Large
+		Best for analyzing full protocols and systems
+	\end{center}
+	\vspace{0.5em}
+	\begin{itemize}
+		\item General-purpose verification language with \textbf{dependent types}
+		\item A well-typed program is a \textbf{proof of its specification}
+		\item Type checking = Proof checking, with Z3 doing the heavy lifting!
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{Example:}
+	\begin{itemize}
+		\item Type: \texttt{point : \{(x,y) : int * int | y*y = x*x*x + a*x + b\}}
+		\item This type \textbf{only} accepts valid elliptic curve points
+		\item Your code literally cannot process invalid points if it type-checks
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{\fstar: Real-world impact}
+	\textbf{How \fstar handles computational proofs:}
+	\begin{enumerate}
+		\item Start with detailed protocol description
+		\item Transform into ideal program with ideal crypto functionalities
+		\item Validate transformation manually, verify final program automatically
+	\end{enumerate}
+	\vspace{0.5em}
+	\textbf{Success stories:}
+	\begin{itemize}
+		\item Discovered new attacks on TLS
+		\item miTLS: Verified reference implementation of TLS 1.2
+		\item Implemented and verified TLS 1.3 record layer
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{EasyCrypt successes:} AWS Key Management System, SHA-3 standard
 \end{frame}
 
 \begin{frame}{The fine print}
@@ -475,853 +441,40 @@
 		\item Reconstructing top-level statements is hard, even for experts
 		\item Tools may have bugs (like any software)
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Symbolic security: The basics}
-	\begin{itemize}
-		\item Messages represented \textbf{symbolically} as terms
-		\item Terms are \textbf{atomic data}
-		      \begin{itemize}
-			      \item Cannot be split into bitstrings
-		      \end{itemize}
-		\item Cryptographic primitives = \textbf{black-box functions}
-		\item Related by \textbf{equational theories}
-	\end{itemize}
-	\vspace{1em}
-	\begin{center}
-		Abstract model for representing and analyzing protocols
-	\end{center}
-\end{frame}
-
-\begin{frame}{Symbolic security: Example}
-	\textbf{Symmetric encryption modeled by:}
-	\begin{itemize}
-		\item Functions: \texttt{Enc} and \texttt{Dec}
-		\item Equational theory:
-	\end{itemize}
-	\begin{center}
-		\Large
-		\texttt{Dec(Enc(m,k),k) = m}
-	\end{center}
-	\begin{itemize}
-		\item Decrypting ciphertext \texttt{Enc(m,k)} with key \texttt{k} recovers plaintext \texttt{m}
-		\item Adversary can only use specified primitives and equations
-		\item Can decrypt only if it has the \textbf{entire} secret key
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Symbolic security properties}
-	Two main flavors:
-	\vspace{1em}
-	\begin{enumerate}
-		\item \textbf{Trace properties}
-		      \begin{itemize}
-			      \item Bad events never occur on any execution trace
-			      \item Example: Secret data never in adversarial knowledge
-		      \end{itemize}
-		      \vspace{0.5em}
-		\item \textbf{Equivalence properties}
-		      \begin{itemize}
-			      \item Adversary cannot distinguish between two protocols
-			      \item Example: Cannot differentiate real secret from random value
-		      \end{itemize}
-	\end{enumerate}
-	\vspace{1em}
-	\begin{center}
-		\textit{Equivalence properties cannot be naturally expressed as trace properties}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Computational security: The basics}
-	\begin{itemize}
-		\item Messages are \textbf{bitstrings}
-		\item Primitives are \textbf{probabilistic algorithms}
-		\item Adversaries are \textbf{probabilistic Turing machines}
-		\item Security properties are \textbf{probabilistic}
-	\end{itemize}
-	\vspace{1em}
-	Example: Symmetric encryption = (Gen, Enc, Dec)
-	\begin{itemize}
-		\item Gen: Probabilistic key generation
-		\item Enc/Dec: Encryption/decryption algorithms
-		\item Correctness: Dec(Enc(m,k),k) = m for all valid k, m
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Computational security properties}
-	Characterized along two axes:
-	\vspace{1em}
-	\begin{center}
-		\begin{tabular}{|c|c|}
-			\hline
-			\textbf{Type}    & \textbf{Quantification} \\
-			\hline
-			Game-based       & Concrete                \\
-			Simulation-based & Asymptotic              \\
-			\hline
-		\end{tabular}
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item CAC tools primarily focus on \textbf{game-based, concrete security}
-		\item Simulation-based proofs: More complex, support composition
-		\item Concrete security implies asymptotic security
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Game-based security}
-	\begin{itemize}
-		\item Probabilistic experiment: ``game'' between challenger and adversary
-		\item Explicit goal condition for adversary
-		\item Security statement:
-		      \begin{center}
-			      \textit{``For all adversaries, probability of achieving goal \leq\ threshold''}
-		      \end{center}
-		\item Core methodology: \textbf{Game hopping}
-		      \begin{enumerate}
-			      \item Start with original game
-			      \item Transform step-by-step
-			      \item Reach game where success probability is known
-			      \item Bound probability increases at each step
-			      \item Similar to what we saw in Part 1 of this course!
-		      \end{enumerate}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Simulation-based security}
-	Two probabilistic experiments:
-	\vspace{0.5em}
-	\begin{enumerate}
-		\item \textbf{Real game}: Runs the actual scheme
-		\item \textbf{Ideal game}: Runs idealized scheme with trusted third-party
-	\end{enumerate}
-	\vspace{0.5em}
-	Security statement:
-	\begin{center}
-		\textit{``For all real adversaries, exists simulator that translates attacks''}
-	\end{center}
-	\vspace{0.5em}
-	\begin{itemize}
-		\item Ideal functionality secure by definition
-		\item Therefore real scheme must be secure
-		\item More complex than game-based proofs
-		\item But: Support composition theorems!
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Concrete vs. Asymptotic security}
-	\textbf{Concrete security:}
-	\begin{itemize}
-		\item Scheme is $(t,\epsilon)$-secure
-		\item Every adversary running time \leq\ $t$ succeeds with probability \leq\ $\epsilon$
-		\item Specific numerical bounds
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Asymptotic security:}
-	\begin{itemize}
-		\item Running time and success probability = functions of security parameter
-		\item Scheme secure if PPT adversaries succeed with negligible probability
-		\item Prevailing paradigm in cryptography
-	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{Proving concrete security \rightarrow\ Asymptotic security follows}
+		\textit{We will return to this theme in Part 2\ldots}
 	\end{center}
-\end{frame}
-
-\begin{frame}{Symbolic analysis tools overview}
-	\bigimagewithcaption{verif-symbolic.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
-\end{frame}
-
-\begin{frame}{Key features of symbolic analysis tools}
-	\begin{center}
-		\Large
-		What distinguishes different symbolic analysis tools?
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Different tools have different capabilities
-		\item Understanding these helps choose the right tool
-		\item We'll explore the key dimensions of comparison
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Unbounded sessions: The challenge}
-	\begin{itemize}
-		\item Real protocols run \textbf{many concurrent sessions}
-		\item Some protocols are secure for $N$ sessions\ldots
-		\item \ldots but become \textbf{insecure} with $N+1$ sessions!
-	\end{itemize}
-	\vspace{1em}
-	\begin{center}
-		\Large
-		How many sessions should we analyze?
-	\end{center}
-\end{frame}
-
-\begin{frame}{Bounded vs. Unbounded analysis}
-	\textbf{Bounded tools:}
-	\begin{itemize}
-		\item Explicitly limit analyzed sessions
-		\item Cannot detect attacks beyond cut-off
-		\item Simpler but incomplete
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Unbounded tools:}
-	\begin{itemize}
-		\item Analyze arbitrary number of sessions
-		\item Can prove \textbf{absence of attacks} in the model
-		\item More complex, may not terminate (undecidable)
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Performance paradox}
-	\begin{center}
-		\Large
-		Modern unbounded tools often \textbf{outperform} bounded tools
-
-		\vspace{0.5em}
-
-		\normalsize
-		Even for small numbers of sessions!
-	\end{center}
-	\vspace{1em}
-	Why?
-	\begin{itemize}
-		\item Bounded tools naively enumerate options
-		\item Growth is \textbf{exponential} in session count
-		\item Unbounded tools use clever algorithms
-		\item When they terminate, analysis is session-independent
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Trace properties}
-	\begin{itemize}
-		\item Verify that \textbf{bad things never happen}
-		\item Examples:
-		      \begin{itemize}
-			      \item Secret keys never leaked
-			      \item Authentication always succeeds
-			      \item Adversary never learns password
-		      \end{itemize}
-		\item Most basic form of security property
-		\item Supported by nearly all tools
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Equational theories: Modeling cryptography}
-	\begin{itemize}
-		\item Cryptographic operations have algebraic properties
-		\item Example: XOR satisfies $x \oplus x = 0$
-		\item More properties \rightarrow\ More potential attacks detected
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Three levels of support:}
-	\begin{enumerate}
-		\item Fixed/no theories
-		\item User-defined (without AC axioms)
-		\item User-defined with associative-commutative (AC)
-	\end{enumerate}
-	\vspace{0.5em}
-	\begin{center}
-		AC support enables modeling XOR, abelian groups, DH
-	\end{center}
-\end{frame}
-
-\begin{frame}{Global mutable state}
-	\begin{itemize}
-		\item Real protocols often use:
-		      \begin{itemize}
-			      \item Shared databases
-			      \item Key servers
-			      \item Shared memory
-		      \end{itemize}
-		\item Enables complex stateful attacks
-		\item Example: Replay attacks on counters
-		\item Not all tools support this
-	\end{itemize}
-	\vspace{1em}
-	\begin{center}
-		\Large
-		Critical for analyzing real-world protocols
-	\end{center}
-\end{frame}
-
-\begin{frame}{Link to implementation}
-	\begin{center}
-		\Large
-		Can symbolic guarantees translate to real code?
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Some tools extract/generate executable code
-		\item Links abstract model to concrete implementation
-		\item Bridges design and implementation levels
-		\item Reduces gap between proof and practice
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Abstractions: Trading precision for efficiency}
-	\begin{itemize}
-		\item Some tools use abstraction techniques
-		\item Overestimate adversary capabilities
-		\item Example: Compute superset of adversary knowledge
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Benefits:}
-	\begin{itemize}
-		\item More efficient analysis
-		\item Fully automatic
-		\item Workaround for undecidability
-	\end{itemize}
-	\textbf{Cost:}
-	\begin{itemize}
-		\item May find false attacks
-		\item May return ``don't know''
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Interactive mode: Human in the loop}
-	\begin{itemize}
-		\item Push-button automation isn't always enough
-		\item Tools may fail opaquely due to:
-		      \begin{itemize}
-			      \item Undecidability barriers
-			      \item Complex protocol structure
-			      \item Resource limits
-		      \end{itemize}
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Interactive modes allow:}
-	\begin{itemize}
-		\item Inspecting partial proofs
-		\item Providing hints
-		\item Guiding analysis past barriers
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Trade automation for control}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Independent verifiability: Trust but verify}
-	\begin{itemize}
-		\item Symbolic tools implement \textbf{complex algorithms}
-		\item May have bugs and return incorrect results
-		\item Usually in the trusted computing base
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Some tools provide:}
-	\begin{itemize}
-		\item Machine-checkable proof scripts
-		\item Explicit evidence of claims
-		\item Can be verified independently
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Examples: Scyther-proof (Isabelle), SPEC (evidence)}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Specification languages}
-	How do you describe protocols to the tool?
-	\vspace{0.5em}
-	\begin{enumerate}
-		\item \textbf{Domain-specific languages}
-		      \begin{itemize}
-			      \item Designed for security protocols
-			      \item Natural for cryptographers
-		      \end{itemize}
-		\item \textbf{Process calculi}
-		      \begin{itemize}
-			      \item Formal concurrent processes
-			      \item Familiar to formal methods experts
-		      \end{itemize}
-		\item \textbf{Multiset rewriting}
-		      \begin{itemize}
-			      \item Lower-level, more general
-			      \item Natural for state machines
-		      \end{itemize}
-		\item \textbf{General programming languages}
-		      \begin{itemize}
-			      \item Most familiar to developers
-		      \end{itemize}
-	\end{enumerate}
-\end{frame}
-
-\begin{frame}{Achievements: Real-world symbolic analysis}
-	\begin{center}
-		\Large
-		From theory to practice: Symbolic tools tackle real protocols
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Two tools stand out for real-world analysis:
-		      \begin{itemize}
-			      \item \textbf{ProVerif}
-			      \item \textbf{Tamarin}
-		      \end{itemize}
-		\item Unprecedented combination of:
-		      \begin{itemize}
-			      \item Scalability
-			      \item Expressivity
-		      \end{itemize}
-		\item Can handle complex systems and properties
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Why ProVerif and Tamarin succeed}
-	\begin{itemize}
-		\item \textbf{Extensive documentation}
-		      \begin{itemize}
-			      \item Detailed tutorials
-			      \item Theory explanations
-		      \end{itemize}
-		\item \textbf{Library of case studies}
-		      \begin{itemize}
-			      \item Learn from examples
-			      \item Reusable components
-		      \end{itemize}
-		\item \textbf{Practical usability features}
-		      \begin{itemize}
-			      \item Professional packaging
-			      \item Tamarin: Graphical user interface
-			      \item ProVerif: Attack reconstruction in HTML
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{ProVerif: Real-world success stories}
-	\textbf{TLS 1.0}
-	\begin{itemize}
-		\item Verification time: Seconds to hours
-		\item Depends on security property
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{TLS 1.3} (part of my Ph.D. thesis!)
-	\begin{itemize}
-		\item Modern protocol standard
-		\item Verification time: $\sim$1 hour
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Signal Protocol} (part of my Ph.D. thesis!)
-	\begin{itemize}
-		\item End-to-end encrypted messaging
-		\item Verification time: Minutes to days
-		\item Complex properties take longer
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{ProVerif: Noise protocol framework}
-	\begin{itemize}
-		\item Framework for building secure channels
-		\item Verification time: Seconds to days
-		\item Varies by specific protocol variant
-		\item (Also part of my Ph.D. thesis!)
-		\item Super accessible and informative demo: \url{https://noiseexplorer.com}
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\Large
-		Key insight: More Diffie-Hellman operations = longer analysis
-	\end{center}
-	\vspace{0.5em}
-	\begin{itemize}
-		\item DH operations particularly expensive to analyze
-		\item Signal and Noise use many DH exchanges
-		\item Explains wide time variations
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Tamarin: Tackling massive protocols}
-	\textbf{5G Authentication Key Exchange}
-	\begin{itemize}
-		\item Critical infrastructure protocol
-		\item Verification time: $\sim$5 hours
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{TLS 1.3}
-	\begin{itemize}
-		\item Complete analysis
-		\item Verification time: $\sim$1 week
-		\item Resource requirement: 100GB RAM!
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{DNP3 SAv5}
-	\begin{itemize}
-		\item Power grid security protocol
-		\item Verification time: Several minutes
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Computational analysis tools overview}
-	\bigimagewithcaption{verif-computational.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
-\end{frame}
-
-\begin{frame}{Computational analysis tools: Overview}
-	\begin{itemize}
-		\item Wide variety of tools for computational security
-		\item Different strengths and focuses
-		\item Understanding their capabilities helps choose the right tool
-	\end{itemize}
-	\vspace{1em}
-	\begin{center}
-		\Large
-		Let's explore what distinguishes these tools
-	\end{center}
-\end{frame}
-
-\begin{frame}{Reasoning focus: Automation vs. Expressivity}
-	\begin{center}
-		\Large
-		Every tool makes a fundamental tradeoff
-	\end{center}
-	\vspace{1em}
-	\textbf{Automation focus:}
-	\begin{itemize}
-		\item Produce proofs automatically
-		\item Light interaction required
-		\item Limited to certain proof patterns
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Expressivity focus:}
-	\begin{itemize}
-		\item Express arbitrary arguments
-		\item Handle complex reasoning
-		\item More manual effort required
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Automated proof-finding}
-	\begin{itemize}
-		\item Some automation-focused tools go further
-		\item Can find proofs \textbf{completely automatically}
-		\item But only in restricted settings:
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Examples:}
-	\begin{itemize}
-		\item \textbf{AutoG\&P}: Pairing-based schemes
-		\item \textbf{CryptoVerif}: Key exchange with built-in transformations
-		\item \textbf{ZooCrypt}: Padding-based public key encryption
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		Push-button verification for specific domains
-	\end{center}
-\end{frame}
-
-\begin{frame}{Composition support}
-	\begin{center}
-		\Large
-		Can we break down complex systems?
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Real cryptographic systems are built from components
-		\item Need to reason about each piece separately
-		\item Then combine the results
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Compositional reasoning:}
-	\begin{itemize}
-		\item Essential for scalability
-		\item Not all tools support it
-		\item Key differentiator
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Concrete security bounds}
-	\begin{itemize}
-		\item Can the tool prove \textbf{specific numerical bounds}?
-		\item Not just ``secure'' but ``how secure''
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Three levels of support:}
-	\begin{enumerate}
-		\item \textbf{No support}: Only asymptotic security
-		\item \textbf{Probability only}: Bounds on success probability
-		\item \textbf{Full support}: Both probability and time bounds
-	\end{enumerate}
-	\vspace{0.5em}
-	\begin{center}
-		Concrete bounds crucial for real-world deployment
-	\end{center}
-\end{frame}
-
-\begin{frame}{Linking to implementation}
-	\begin{center}
-		\Large
-		Can computational guarantees reach real code?
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Some tools can extract/generate executable code
-		\item Links abstract specifications to implementations
-		\item Ensures proved properties hold in practice
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Without this link:}
-	\begin{itemize}
-		\item Gap between proof and code
-		\item Implementation may diverge from spec
-		\item Security guarantees may not transfer
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Trusted computing base}
-	\begin{itemize}
-		\item What must we trust for the proof to be valid?
-		\item Critical consideration for high-assurance
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Three common TCB levels:}
-	\begin{enumerate}
-		\item \textbf{Theorem prover}: Rocq, Isabelle (minimal TCB)
-		\item \textbf{Tool implementation}: Custom logic implementation
-		\item \textbf{SMT solvers}: Z3 and similar (for automation)
-	\end{enumerate}
-	\vspace{0.5em}
-	\begin{center}
-		Smaller TCB = Higher confidence
-	\end{center}
-\end{frame}
-
-\begin{frame}{Achievements: Real-world impact}
-	\begin{center}
-		\Large
-		Computational tools have analyzed major cryptographic systems
-	\end{center}
-	\vspace{1em}
-	\textbf{CryptoVerif successes:}
-	\begin{itemize}
-		\item TLS 1.3 (part of my Ph.D. thesis!)
-		\item Signal Protocol (part of my Ph.D. thesis!)
-		\item WireGuard VPN
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{EasyCrypt successes:}
-	\begin{itemize}
-		\item AWS Key Management System
-		\item SHA-3 standard
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{More achievements}
-	\textbf{F7 milestone:}
-	\begin{itemize}
-		\item miTLS: Reference implementation of TLS 1.2
-		\item Verified computational security at code level
-		\item Pioneering work in verified implementations
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{\fstar contribution:}
-	\begin{itemize}
-		\item Implemented and verified TLS 1.3 record layer
-		\item Full protocol analysis beyond cryptographic core
-		\item Discovered new attacks on real protocols
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{CryptoVerif: The protocol analyzer}
-	\begin{center}
-		\Large
-		Best for highly automated protocol analysis
-	\end{center}
-	\vspace{1em}
-	\textbf{Key strengths:}
-	\begin{itemize}
-		\item Both proof-finding and proof-checking
-		\item Excellent for key exchange protocols
-		\item Automatic or light-guided proof discovery
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Why it works well:}
-	\begin{itemize}
-		\item Applied π-calculus input language
-		\item Perfect for sequential message exchange
-		\item Carefully crafted security assumptions
-		\item Helps automated proof discovery
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{CryptoVerif: Handling complexity}
-	\begin{itemize}
-		\item Automation crucial for large games
-		\item Handles many different cases
-		\item Common in protocol proofs
-	\end{itemize}
-	\vspace{1em}
-	\begin{center}
-		\Large
-		When protocols get complex, automation saves the day
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Manual proof management becomes infeasible
-		\item Tool tracks all cases systematically
-		\item Finds proof steps human might miss
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{\fstar: Beyond the cryptographic core}
-	\begin{center}
-		\Large
-		Best for analyzing full protocols and systems
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item General-purpose verification language
-		\item Goes beyond just cryptographic primitives
-		\item Analyzes complete protocol implementations
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Key insight:}
-	\begin{itemize}
-		\item Critical issues arise in \textbf{detailed descriptions}
-		\item Not just in cryptographic cores
-		\item Need to verify the full system
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{\fstar: Types are proofs!}
-	\begin{center}
-		\Large
-		The magic of dependent types
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item In \fstar, types can \textbf{depend on values}
-		\item A well-typed program is a \textbf{proof of its specification}
-		\item Type checking = Proof checking!
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Example: Array bounds}
-	\begin{itemize}
-		\item Type: \texttt{array int \{n:nat | n < len\}}
-		\item Accessing with this type \textbf{proves} no buffer overflow
-		\item Compiler rejects code that might overflow
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Your program literally cannot go wrong if it type-checks!}
-	\end{center}
-\end{frame}
-
-\begin{frame}{\fstar: Z3 does the heavy lifting!}
-	\begin{center}
-		\Large
-		SMT solving during type checking!
-	\end{center}
-	\vspace{0.5em}
-	\begin{itemize}
-		\item \fstar doesn't just check types, it \textbf{proves theorems}
-		\item Every type check = Verification condition sent to Z3
-		\item Z3 proves your code satisfies its specification
-		\item If Z3 says ``yes'', your code is mathematically correct!
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Example: Point on elliptic curve}
-	\begin{itemize}
-		\item Type: \texttt{point : \{(x,y) : int * int | y*y = x*x*x + a*x + b\}}
-		\item This type \textbf{only} accepts valid curve points!
-		\item Try to create invalid point? \textbf{Type error!}
-		\item Function accepting this type? \textbf{Guaranteed} valid input!
-	\end{itemize}
-	\vspace{0.1em}
-	\begin{center}
-		\textit{Your elliptic curve code literally cannot process invalid points}
-	\end{center}
-\end{frame}
-
-\begin{frame}{\fstar: the approach}
-	\textbf{How \fstar handles computational proofs:}
-	\begin{enumerate}
-		\item Start with detailed protocol description
-		\item Transform into ideal program
-		\item Use ideal functionalities for crypto primitives
-		\item Validate transformation manually
-		\item Verify final program automatically
-	\end{enumerate}
-	\vspace{0.5em}
-	\textbf{Success stories:}
-	\begin{itemize}
-		\item Discovered new attacks on TLS
-		\item Verified concrete designs and implementations
-		\item Bridges theory-practice gap
-	\end{itemize}
 \end{frame}
 
 \section{Functional Correctness and Efficiency}
 
-\begin{frame}{Building correct and fast cryptographic code}
+\begin{frame}{The fundamental tension}
 	\begin{center}
 		\Large
 		Design-level security is not enough!
 
-		\vspace{1em}
-
-		We need implementations that are:
-		\begin{itemize}
-			\item \textbf{Functionally correct}
-			\item \textbf{Performant}
-			\item \textbf{Memory safe}
-		\end{itemize}
-	\end{center}
-\end{frame}
-
-\begin{frame}{The implementation challenge}
-	\begin{itemize}
-		\item Even perfect designs can fail in implementation
-		\item Must accurately translate proven designs to code
-		\item \textbf{Functional correctness}: Same input/output behavior as specification
-	\end{itemize}
-	\vspace{1em}
-	\begin{center}
-		\Large
-		But that's not enough\ldots
-	\end{center}
-\end{frame}
-
-\begin{frame}{The efficiency imperative}
-	\begin{center}
-		\Large
-		Cryptography is on the critical path!
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Every TLS packet
-		\item Every encrypted file operation
-		\item Every secure communication
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Even a few extra clock cycles matter at scale}
-	\end{center}
-\end{frame}
-
-\begin{frame}{The fundamental tension}
-	\begin{center}
-		\Large
-		Easy path: Use reference implementation
-
 		\vspace{0.5em}
 
-		\normalsize
-		\mycheckmark Straightforward correctness \\
-		\times Terrible performance
+		We need implementations that are \textbf{correct}, \textbf{fast}, and \textbf{memory safe}
 	\end{center}
 	\vspace{1em}
-	\begin{center}
-		\Large
-		Hard path: Optimize aggressively
-
-		\vspace{0.5em}
-
-		\normalsize
-		\mycheckmark Blazing fast \\
-		\times Correctness becomes a nightmare
-	\end{center}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Easy path: Reference implementation}
+			\begin{itemize}
+				\item \mycheckmark Straightforward correctness
+				\item \times Terrible performance
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Hard path: Optimize aggressively}
+			\begin{itemize}
+				\item \mycheckmark Blazing fast
+				\item \times Correctness nightmare
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{How far will developers go for speed?}
@@ -1333,12 +486,12 @@
 		\item \ldots to produce C preprocessor input\ldots
 		\item \ldots which generates platform-specific assembly!
 	\end{enumerate}
-	\vspace{1em}
+	\vspace{0.5em}
 	\begin{center}
 		\Large
 		This is one of the \textit{fastest} crypto libraries
 
-		\vspace{0.5em}
+		\vspace{0.3em}
 
 		\normalsize
 		But imagine verifying \textit{that}
@@ -1350,7 +503,7 @@
 		\Large
 		High-level languages? Too slow.
 	\end{center}
-	\vspace{1em}
+	\vspace{0.5em}
 	\textbf{Reality of high-performance crypto:}
 	\begin{itemize}
 		\item C for ``portable'' performance
@@ -1361,71 +514,34 @@
 	\textbf{The cost:}
 	\begin{itemize}
 		\item Memory safety becomes critical concern
-		\item Bugs can leak secrets (remember Heartbleed?)
+		\item Bugs can leak secrets (Heartbleed)
 		\item Verification becomes much harder
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Beyond compiler optimizations}
+	\vspace{0.3em}
 	\begin{center}
-		\Large
-		Why not let compilers handle optimization?
-	\end{center}
-	\vspace{1em}
-	\textbf{The harsh truth:}
-	\begin{itemize}
-		\item Best-in-class crypto needs manual optimization
-		\item Compilers can't match expert assembly
-		\item Platform-specific tricks matter
-		\item Compilers can be problematic (more on this later\ldots)
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{These optimizations are painstakingly repeated for each architecture}
+		\textit{Best-in-class crypto needs manual optimization; compilers can't match expert assembly}
 	\end{center}
 \end{frame}
 
-\begin{frame}{Current approach: Trust the experts}
+\begin{frame}{Even experts make mistakes}
 	\begin{center}
 		\Large
 		A handful of experts write all high-speed crypto
 	\end{center}
-	\vspace{1em}
-	\textbf{But even experts make mistakes:}
+	\vspace{0.5em}
+	\textbf{But even they get it wrong:}
 	\begin{itemize}
 		\item OpenSSL AES-GCM optimization \rightarrow\ message forgeries
 		\item OpenSSL arithmetic bug \rightarrow\ full key recovery
-		\item 24 vulnerabilities in libcrypto (2016-2019)
+		\item 24 vulnerabilities in libcrypto (2016--2019)
+		\item Heartbleed: Memory safety bug leaked secrets
 	\end{itemize}
 	\vspace{0.5em}
-	\begin{center}
-		Despite widespread usage and scrutiny!
-	\end{center}
-\end{frame}
-
-\begin{frame}{Traditional quality assurance}
-	\textbf{Current solutions:}
-	\vspace{0.5em}
-	\begin{enumerate}
-		\item \textbf{Auditing} (my full-time job when not teaching this course!)
-		      \begin{itemize}
-			      \item Expensive in time and expertise
-			      \item Can miss subtle bugs
-			      \item Not scalable
-		      \end{itemize}
-		      \vspace{0.5em}
-		\item \textbf{Testing}
-		      \begin{itemize}
-			      \item Cannot cover all inputs
-			      \item Cryptographic input space is huge
-			      \item Edge cases matter
-		      \end{itemize}
-	\end{enumerate}
-	\vspace{1em}
-	\begin{center}
-		\Large
-		Clearly inadequate for high-assurance crypto!
-	\end{center}
+	\textbf{Traditional QA is inadequate:}
+	\begin{itemize}
+		\item Auditing: Expensive, can miss subtle bugs, doesn't scale
+		\item Testing: Cannot cover the huge cryptographic input space
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{Enter program verification}
@@ -1433,154 +549,48 @@
 		\Large
 		Cryptographic code is an \textbf{ideal target} for verification
 	\end{center}
-	\vspace{1em}
-	\textbf{Why?}
-	\begin{itemize}
-		\item Critically important to get right
-		\item Relatively small codebase
-		\item Well-defined specifications
-		\item Clear correctness criteria
-	\end{itemize}
 	\vspace{0.5em}
-	\begin{center}
-		\textit{Heavy-weight formal methods are justified here}
-	\end{center}
-\end{frame}
-
-\begin{frame}{The promise of verification}
-	\begin{center}
-		\Large
-		We can have our cake and eat it too!
-	\end{center}
-	\vspace{1em}
-	\textbf{Program verification enables:}
-	\begin{itemize}
-		\item Complex optimizations
-		\item Guaranteed correctness
-		\item Memory safety proofs
-		\item Platform-specific code
-	\end{itemize}
+	\textbf{Why?} Critically important, relatively small codebase, well-defined specs
 	\vspace{0.5em}
-	\begin{center}
-		All within reach of existing tools and reasonable effort
-	\end{center}
-\end{frame}
 
-\begin{frame}{The fine print: Implicit assumptions}
-	\begin{center}
-		\Large
-		What are we \textit{actually} trusting?
-	\end{center}
-	\vspace{1em}
-	\textbf{Common implicit assumptions:}
-	\begin{itemize}
-		\item Hardware behaves as modeled
-		\item Verification done on ``friendly'' code representation
-		\item External libraries are correct
-		\item Verification tools have no bugs
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Important to understand what guarantees you're getting}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Two approaches to correctness}
-	\begin{center}
-		\Large
-		How do we prove code is correct?
-	\end{center}
-	\vspace{1em}
+	\textbf{Two approaches to correctness:}
 	\begin{enumerate}
-		\item \textbf{Equivalence to reference}
-		      \begin{itemize}
-			      \item Compare to trusted implementation
-			      \item Same outputs for same inputs
-			      \item Natural for optimizations
-		      \end{itemize}
-		      \vspace{0.5em}
-		\item \textbf{Functional specification}
-		      \begin{itemize}
-			      \item Pre-conditions on inputs
-			      \item Post-conditions on outputs
-			      \item More flexible approach
-		      \end{itemize}
+		\item \textbf{Equivalence to reference}: Same outputs for same inputs
+		\item \textbf{Functional specification}: Pre/post-conditions on inputs and outputs
 	\end{enumerate}
-\end{frame}
-
-\begin{frame}{The mathematical challenge}
-	\begin{center}
-		\Large
-		Crypto proofs need non-trivial mathematics
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Modular arithmetic properties
-		\item Field operations
-		\item Group theory
-		\item Number-theoretic facts
-	\end{itemize}
 	\vspace{0.5em}
-	\textbf{The balance:}
+	\textbf{The compiler gap:}
 	\begin{itemize}
-		\item Too much automation \rightarrow\ can't handle the math
-		\item Too manual \rightarrow\ overwhelming effort
-		\item SMT solvers help find the sweet spot
+		\item Most verification happens at source level, but we execute machine code
+		\item Solution: Verified compilers (CompCert) or assembly-level verification
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{From source to machine code}
-	\begin{center}
-		\Large
-		The compiler gap
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Most verification happens at source level
-		\item But we execute machine code!
-		\item Regular compilers can introduce bugs
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Solution: Verified compilers}
-	\begin{itemize}
-		\item CompCert: Formally verified C compiler
-		\item Guarantees preservation of properties
-		\item Trade-off: Fewer optimizations, fewer platforms
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Program verification tools landscape}
-	\begin{center}
-		\Large
-		A rich ecosystem of verification tools
-	\end{center}
-	\vspace{1em}
-	\textbf{Key dimensions to consider:}
-	\begin{itemize}
-		\item Memory safety guarantees
-		\item Level of automation
-		\item Parametric verification support
-		\item Input languages
-		\item Analysis targets
-		\item Trust requirements
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Memory safety: Table stakes}
-	\begin{center}
-		\Large
-		Can the tool prove absence of memory errors?
-	\end{center}
-	\vspace{1em}
-	\textbf{Critical for crypto code:}
-	\begin{itemize}
-		\item Buffer overflows can leak secrets
-		\item Use-after-free exposes sensitive data
-		\item Null pointer dereferences crash systems
-	\end{itemize}
+\begin{frame}{Real deployment success stories}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{\haclstar in Firefox's NSS:}
+			\begin{itemize}
+				\item Replaced entire ciphersuite
+				\item Performance within 5\% of OpenSSL
+				\item Professional packaging
+				\item Perfect timing: post-Heartbleed trust crisis
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Three critical success factors:}
+			\begin{enumerate}
+				\item Performance parity
+				\item API compatibility (drop-in)
+				\item Industry collaboration
+			\end{enumerate}
+			\vspace{0.5em}
+			\textbf{Fiat Crypto}: Powers Google's BoringSSL
+		\end{column}
+	\end{columns}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{Most modern verification tools provide this as baseline}
+		\textit{Billions of users rely on verified crypto every day}
 	\end{center}
 \end{frame}
 
@@ -1590,7 +600,6 @@
 		\item \textbf{Dafny}: High-level imperative
 		\item \textbf{\fstar}: Functional with effects
 		\item \textbf{Gallina} (Rocq): Pure functional
-		\item \textbf{WhyML} (Why3): Functional core
 	\end{itemize}
 	\vspace{0.5em}
 	\textbf{Assembly-like languages:}
@@ -1600,198 +609,16 @@
 		\item \textbf{Vale}: Structured assembly
 	\end{itemize}
 	\vspace{0.5em}
-	\textbf{Existing languages:}
-	\begin{itemize}
-		\item Some tools verify C, Java directly
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Analysis targets: Source vs. Assembly}
 	\begin{center}
-		\Large
-		Where does verification happen?
-	\end{center}
-	\vspace{1em}
-	\textbf{Source-level analysis:}
-	\begin{itemize}
-		\item Easier to verify
-		\item Need verified compiler for guarantees
-		\item Performance penalty from compiler limitations
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Assembly-level analysis:}
-	\begin{itemize}
-		\item Harder to verify
-		\item Direct machine-code guarantees
-		\item No compiler performance penalty
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{The trust question}
-	\begin{center}
-		\Large
-		What's in the trusted computing base?
-	\end{center}
-	\vspace{1em}
-	\textbf{Common trust dependencies:}
-	\begin{itemize}
-		\item SMT solvers (Z3, CVC4, etc.)
-		\item Theorem provers (Rocq, Isabelle)
-		\item Tool implementations themselves
-		\item Interoperability glue code
-		\item Specifications of external libraries
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{``Who verifies the verifiers?''}
+		Source-level verification needs a verified compiler for guarantees;\\
+		assembly-level verification gives direct machine-code guarantees
 	\end{center}
 \end{frame}
 
-\begin{frame}{Real deployment success stories}
-	\begin{center}
-		\Large
-		Verified crypto is no longer just academic!
-	\end{center}
-	\vspace{1em}
-	\textbf{Major deployments:}
-	\begin{itemize}
-		\item \textbf{\haclstar}: Used in Mozilla Firefox's NSS
-		\item \textbf{Fiat Cryptography}: Powers Google's BoringSSL
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Billions of users rely on verified crypto every day}
-	\end{center}
-\end{frame}
-
-\begin{frame}{What made these deployments succeed?}
-	\begin{center}
-		\Large
-		Three critical success factors
-	\end{center}
-	\vspace{1em}
-	\begin{enumerate}
-		\item \textbf{Performance parity}
-		      \begin{itemize}
-			      \item As fast or faster than existing code
-			      \item No performance penalty for verification
-		      \end{itemize}
-		      \vspace{0.5em}
-		\item \textbf{API compatibility}
-		      \begin{itemize}
-			      \item Drop-in replacement
-			      \item Fits existing infrastructure
-		      \end{itemize}
-		      \vspace{0.5em}
-		\item \textbf{Industry collaboration}
-		      \begin{itemize}
-			      \item Team members worked with companies
-			      \item Understood real-world needs
-		      \end{itemize}
-	\end{enumerate}
-\end{frame}
-
-\begin{frame}{The \haclstar approach}
-	\begin{center}
-		\Large
-		Going beyond just verification
-	\end{center}
-	\vspace{1em}
-	\textbf{What \haclstar did right:}
-	\begin{itemize}
-		\item Replaced entire ciphersuite
-		\item Not just individual primitives
-		\item Comprehensive testing infrastructure
-		\item Professional packaging
-	\end{itemize}
-	\vspace{1em}
-	\begin{center}
-		\textit{Willing to do the ``boring'' work that matters for adoption}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Why \haclstar succeeded where others failed}
-	\begin{center}
-		\large
-		Previous verified crypto almost never made it to production
-	\end{center}
-	\vspace{1em}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{What previous efforts got wrong:}
-			\begin{itemize}
-				\item Too slow (10-100\times\ performance penalty)
-				\item Academic prototypes, not production code
-				\item Missing critical algorithms
-				\item No testing infrastructure
-				\item Incompatible APIs
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{What \haclstar did differently:}
-			\begin{itemize}
-				\item Performance within 5\% of OpenSSL
-				\item Professional software engineering
-				\item Complete ciphersuite coverage
-				\item Extensive test vectors
-				\item \textbf{Perfect timing}: Post-Heartbleed trust crisis
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{A paradigm shift in verification}
-	\begin{center}
-		\Large
-		Old wisdom: Verified code = Slow code
-
-		\vspace{1em}
-
-		\textbf{New reality: Verified code matches or beats unverified!}
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Decades of skepticism overcome
-		\item Proof burden no longer prohibitive
-		\item Performance penalty eliminated
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{No conceptual barrier to verifying the fastest implementations}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Case study: Curve25519 performance}
-	\begin{center}
-		\Large
-		Let's look at real numbers
-	\end{center}
-	\vspace{1em}
-	\textbf{Curve25519:}
-	\begin{itemize}
-		\item Widely used elliptic curve
-		\item Speed competition among implementers
-		\item Verification community joined the race
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{The benchmark:}
-	\begin{itemize}
-		\item Scalar multiplication operation
-		\item Measured in CPU cycles
-		\item Intel i7-8565U @ 1.8 GHz
-		\item Compared against donna64 (fast unverified C)
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Curve25519: The results}
-	\begin{center}
-		\Large
-		Verified implementations win!
-	\end{center}
-	\vspace{1em}
+\begin{frame}{Curve25519: Verified implementations win}
 	\textbf{C implementations:}
 	\begin{itemize}
-		\item \textbf{hacl} (verified) \rightarrow\ Beats donna64
+		\item \textbf{hacl} (verified) \rightarrow\ Beats donna64 (fast unverified C)
 		\item \textbf{fiat} (verified) \rightarrow\ Beats donna64
 		\item Multiple verified implementations faster than best unverified C
 	\end{itemize}
@@ -1799,20 +626,21 @@
 	\textbf{Assembly implementations:}
 	\begin{itemize}
 		\item \textbf{evercrypt} (verified) \rightarrow\ Matches fastest unverified
-		\item \textbf{precomp} (unverified) \rightarrow\ The target to beat
 	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{Verification no longer means compromise on speed}
+		\Large
+		Old wisdom: Verified code = Slow code
+
+		\textbf{New reality: Verified code matches or beats unverified!}
+
+		\normalsize
+		\vspace{0.3em}
+		No conceptual barrier to verifying the fastest implementations
 	\end{center}
 \end{frame}
 
 \begin{frame}{The verification effort spectrum}
-	\begin{center}
-		\Large
-		Higher performance = Higher verification effort
-	\end{center}
-	\vspace{1em}
 	\begin{center}
 		\begin{tikzpicture}[scale=0.8]
 			\draw[->] (0,0) -- (10,0) node[right] {Performance};
@@ -1827,90 +655,33 @@
 			\draw[dashed,gray] (8,0) -- (8,3.5);
 		\end{tikzpicture}
 	\end{center}
-\end{frame}
-
-\begin{frame}{Looking ahead}
+	\vspace{0.5em}
 	\begin{center}
-		\Large
-		Verified crypto is becoming the new normal
+		Higher performance = Higher verification effort
+
+		\textit{But even at the assembly level, verification is now practical}
 	\end{center}
-	\vspace{0.5em}
-	\textbf{What we've achieved:}
-	\begin{itemize}
-		\item Performance parity with unverified code
-		\item Real-world deployment at scale
-		\item Growing ecosystem of tools
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{What's next:}
-	\begin{itemize}
-		\item Better automation
-		\item Shared infrastructure
-		\item More platforms
-		\item Broader adoption
-	\end{itemize}
 \end{frame}
 
 \section{Implementation-Level Security}
 
-\begin{frame}{The gap between theory and practice}
-	\begin{center}
-		\Large
-		Design-level security is not enough!
-	\end{center}
-	\vspace{1em}
-	\textbf{What we assume at design level:}
-	\begin{itemize}
-		\item Attackers choose inputs
-		\item Attackers observe outputs
-		\item That's it!
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Reality:}
-	\begin{itemize}
-		\item Attackers see much more
-		\item Implementation details leak information
-		\item Side-channels everywhere
-	\end{itemize}
-\end{frame}
-
 \begin{frame}{Side channels: The hidden attack surface}
 	\begin{center}
 		\Large
-		What are side channels?
+		Design-level security assumes attackers only see inputs and outputs.
+
+		\normalsize
+		Reality: implementations leak much more!
 	\end{center}
-	\vspace{1em}
+	\vspace{0.5em}
 	\textbf{Information leaks through:}
 	\begin{itemize}
 		\item \textbf{Timing}: How long operations take
-		\item \textbf{Memory access}: Which addresses are accessed
-		\item \textbf{Power consumption}: How much energy is used
-		\item \textbf{Electromagnetic radiation}: EM emissions
-		\item \textbf{Acoustic}: Sound of computation
+		\item \textbf{Memory access}: Which cache lines are touched
+		\item \textbf{Power consumption}, \textbf{EM radiation}, \textbf{acoustics}
 	\end{itemize}
 	\vspace{0.5em}
-	\begin{center}
-		\textit{These are side-effects of computation, not intended outputs}
-	\end{center}
-\end{frame}
-
-\begin{frame}{The devastating impact}
-	\begin{center}
-		\Large
-		Side channels aren't just theoretical!
-	\end{center}
-	\vspace{1em}
-	\textbf{Real attacks on real systems:}
-	\begin{itemize}
-		\item \textbf{RSA key recovery}: Full private keys extracted
-		\item \textbf{AES key recovery}: Secret keys leaked
-		\item \textbf{TLS attacks}: Lucky 13, Lucky Microseconds
-		\item \textbf{Cloud attacks}: Cross-VM key extraction
-	\end{itemize}
-	\vspace{1em}
-	\begin{center}
-		\textit{Even ``secure'' algorithms become vulnerable in practice}
-	\end{center}
+	\textbf{Real attacks:} RSA/AES key recovery, Lucky 13, cross-VM extraction
 \end{frame}
 
 \begin{frame}{The constant-time solution}
@@ -1918,17 +689,39 @@
 		\Large
 		Make execution independent of secrets
 	\end{center}
-	\vspace{1em}
-	\textbf{Constant-time coding guidelines:}
+	\vspace{0.5em}
+	\textbf{Rules:} No secret-dependent branches, no secret-dependent memory access, no variable-time operations on secrets
+	\vspace{0.5em}
+
+	\textbf{Example --- constant-time selection:}
+	\begin{flushleft}
+		\textit{Insecure:} \texttt{if (secret\_bit) \{ result = a; \} else \{ result = b; \}}
+	\end{flushleft}
+	\begin{flushleft}
+		\textit{Secure:} \texttt{mask = -secret\_bit; result = (a \& mask) | (b \& \textasciitilde mask);}
+	\end{flushleft}
+	\vspace{0.5em}
+	\begin{center}
+		Same result, no branches, \textit{much harder to understand}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Compilers and hardware betray you}
+	\textbf{The compiler problem:}
 	\begin{itemize}
-		\item No secret-dependent branches
-		\item No secret-dependent memory access
-		\item No variable-time operations on secrets
-		\item Same number of operations regardless of secret values
+		\item Compiler ``optimizations'' can reintroduce branches, use lookup tables, short-circuit operations
+		\item The compiler doesn't know about your security requirements
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{The hardware problem:}
+	\begin{itemize}
+		\item Branch prediction, speculative execution, cache hierarchies
+		\item Variable-latency instructions
+		\item Spectre/Meltdown-style attacks
 	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{Note: ``Constant-time'' is about logical flow, not wall-clock time!}
+		\textit{Even perfect constant-time source code may not survive to execution!}
 	\end{center}
 \end{frame}
 
@@ -1958,6 +751,50 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{The TLS patching cycle}
+	\begin{center}
+		\Large
+		Even experts get constant-time wrong
+	\end{center}
+	\vspace{0.5em}
+	\textbf{The vicious cycle:}
+	\begin{enumerate}
+		\item Original TLS timing vulnerability discovered
+		\item Developers patch it
+		\item The patch itself creates Lucky 13
+		\item Lucky 13 gets patched
+		\item The Lucky 13 patch introduces a \textit{new} timing vulnerability!
+	\end{enumerate}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Each ``fix'' introduced new vulnerabilities!}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Formal leakage models}
+	\textbf{Three levels of increasing strictness:}
+	\vspace{0.5em}
+	\begin{enumerate}
+		\item \textbf{Program counter (PC) model}: Leaks control flow only
+		      \begin{itemize}
+			      \item Protects against simple timing attacks
+		      \end{itemize}
+		\item \textbf{Constant-time model}: Leaks PC + memory addresses
+		      \begin{itemize}
+			      \item Protects against cache and timing attacks
+			      \item Most common in practice
+		      \end{itemize}
+		\item \textbf{Size-respecting model}: Leaks PC + memory + operand sizes
+		      \begin{itemize}
+			      \item Protects against variable-time instruction attacks
+		      \end{itemize}
+	\end{enumerate}
+	\vspace{0.5em}
+	\begin{center}
+		Security = Leakage independent of secrets (\textbf{observational non-interference})
+	\end{center}
+\end{frame}
+
 \begin{frame}{Example: Constant-time selection}
 	\textbf{Insecure (natural) code:}
 	\begin{flushleft}
@@ -1967,331 +804,49 @@
 		\texttt{~~~~result = b;}\\
 		\texttt{\}}
 	\end{flushleft}
-	\vspace{0.5em}
+	\vspace{0.3em}
 	\textbf{Secure (constant-time) code:}
 	\begin{flushleft}
 		\texttt{mask = -secret\_bit;~~// 0x00...0 or 0xFF...F}\\
 		\texttt{result = (a \& mask) | (b \& \textasciitilde mask);}
 	\end{flushleft}
-	\vspace{0.5em}
+	\vspace{0.3em}
 	\begin{center}
 		\textit{Same result, no branches, harder to understand!}
 	\end{center}
 \end{frame}
 
-\begin{frame}{The compiler: Friend or foe?}
-	\begin{center}
-		\Large
-		Your carefully written constant-time code\ldots
-
-		\vspace{0.5em}
-
-		...may not survive compilation!
-	\end{center}
-	\vspace{1em}
-	\textbf{Compiler ``optimizations'' can:}
-	\begin{itemize}
-		\item Reintroduce branches
-		\item Use lookup tables
-		\item Short-circuit operations
-		\item Use variable-time instructions
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{The compiler doesn't know about your security requirements}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Hardware betrays you too}
-	\begin{center}
-		\Large
-		Even perfect assembly isn't safe
-	\end{center}
-	\vspace{1em}
-	\textbf{Modern CPUs ``optimize'' behind your back:}
-	\begin{itemize}
-		\item Branch prediction
-		\item Speculative execution
-		\item Cache hierarchies
-		\item Variable-latency instructions
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Result:}
-	\begin{itemize}
-		\item Timing variations you can't control
-		\item Spectre/Meltdown-style attacks
-		\item Cache timing attacks
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Current practice: Hope and prayer}
-	\begin{center}
-		\Large
-		How do we check constant-time today?
-	\end{center}
-	\vspace{1em}
-	\textbf{1. Manual auditing}
-	\begin{itemize}
-		\item Expensive
-		\item Time-consuming
-		\item Error-prone
-		\item Doesn't scale
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{2. Testing wall-clock time}
-	\begin{itemize}
-		\item Fundamentally flawed approach
-		\item Misunderstands constant-time
-		\item Can't test all inputs
-		\item Misses subtle leaks
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{A history of patches creating vulnerabilities}
-	\begin{center}
-		\Large
-		Even experts get it wrong
-	\end{center}
-	\vspace{1em}
-	\textbf{The vicious cycle in TLS:}
-	\begin{enumerate}
-		\item Original TLS timing vulnerability discovered
-		\item Developers create a patch to fix it
-		\item The patch itself is flawed
-		\item This creates the Lucky 13 vulnerability
-		\item Lucky 13 gets patched
-		\item The Lucky 13 patch introduces a new timing vulnerability!
-	\end{enumerate}
-	\vspace{1em}
-	\begin{center}
-		\textit{Each ``fix'' introduced new vulnerabilities!}
-	\end{center}
-\end{frame}
-
-\begin{frame}{The assembly escape hatch}
-	\begin{center}
-		\Large
-		Can't trust the compiler? Skip it!
-	\end{center}
-	\vspace{1em}
-	\textbf{Current practice:}
-	\begin{itemize}
-		\item Write critical code in assembly
-		\item Implement constant-time directly
-		\item Control every instruction
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{The cost:}
-	\begin{itemize}
-		\item Platform-specific implementations
-		\item Harder to audit
-		\item More error-prone
-		\item Maintenance nightmare
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Enter computer-aided cryptography}
+\begin{frame}{CAC for implementation security}
 	\begin{center}
 		\Large
 		What if we could \textbf{prove} constant-time?
 	\end{center}
-	\vspace{1em}
+	\vspace{0.5em}
 	\textbf{CAC tools can:}
 	\begin{itemize}
-		\item Automatically check constant-time compliance
+		\item Automatically check constant-time compliance for all possible inputs
 		\item Find subtle violations
-		\item Even repair non-compliant code!
+		\item Even repair non-compliant code
 		\item Provide formal guarantees
 	\end{itemize}
 	\vspace{0.5em}
-	\begin{center}
-		\textit{Turn informal best practices into verified properties}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Formal leakage models}
-	\begin{center}
-		\Large
-		What exactly does the attacker see?
-	\end{center}
-	\vspace{1em}
-	\textbf{We must formally model leakage:}
-	\begin{itemize}
-		\item Define what operations leak
-		\item Specify what information is revealed
-		\item Abstract real-world observations
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Key insight:}
-	\begin{center}
-		\textit{Security = Leakage independent of secrets}
-	\end{center}
-	\vspace{0.5em}
-	This is \textbf{observational non-interference}
-\end{frame}
-
-\begin{frame}{Hierarchy of leakage models}
-	\begin{center}
-		\Large
-		Different models for different threats
-	\end{center}
-	\vspace{1em}
-	\textbf{1. Program counter (PC) model}
-	\begin{itemize}
-		\item Leaks: Control flow only
-		\item Protects against: Simple timing attacks
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{2. Constant-time model}
-	\begin{itemize}
-		\item Leaks: PC + memory addresses
-		\item Protects against: Cache attacks, timing attacks
-		\item Most common in practice
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{3. Size-respecting model}
-	\begin{itemize}
-		\item Leaks: PC + memory + operand sizes
-		\item Protects against: Variable-time operations
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Program counter leakage}
-	\begin{center}
-		\Large
-		The simplest model: Control flow leaks
-	\end{center}
-	\vspace{1em}
-	\textbf{What leaks:}
-	\begin{itemize}
-		\item Which branch was taken
-		\item How many loop iterations
-		\item Which functions were called
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Example violation:}
-	\begin{flushleft}
-		\texttt{if (password[i] != input[i]) \{}\\
-		\texttt{~~~~return FAIL;~~// Early exit leaks position}\\
-		\texttt{\}}
-	\end{flushleft}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Timing reveals where passwords differ!}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Constant-time leakage}
-	\begin{center}
-		\Large
-		The standard model: PC + memory access
-	\end{center}
-	\vspace{1em}
-	\textbf{Additionally leaks:}
-	\begin{itemize}
-		\item Which memory addresses are accessed
-		\item Not the values, just the addresses!
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Example violation:} \texttt{result = lookup\_table[secret\_index]}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Cache attacks can recover \texttt{secret\_index}}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Size-respecting leakage}
-	\begin{center}
-		\Large
-		The strongest model: PC + memory + operand sizes
-	\end{center}
-	\vspace{1em}
-	\textbf{Additionally leaks:}
-	\begin{itemize}
-		\item Sizes of operands in operations
-		\item Which instruction variants are used
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Example violation:}
-	\begin{flushleft}
-		\texttt{result = secret / divisor;~~// Division time varies with operand size}
-	\end{flushleft}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Variable-time instructions can leak operand magnitudes}
-	\end{center}
-\end{frame}
-
-\begin{frame}{The verification promise}
-	\begin{center}
-		\Large
-		Prove once, secure forever
-	\end{center}
-	\vspace{1em}
-	\textbf{Verification tools can prove:}
-	\begin{itemize}
-		\item Code follows constant-time discipline
-		\item For all possible secret values
-		\item Through all execution paths
-		\item Despite complex control flow
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{No more hoping your tests caught everything}
-	\end{center}
-\end{frame}
-
-\begin{frame}{The fine print}
-	\begin{center}
-		\Large
-		What are we actually proving?
-	\end{center}
-	\vspace{1em}
 	\textbf{Important caveats:}
 	\begin{itemize}
 		\item Proofs are relative to the leakage model
-		\item Hardware may leak more than modeled
-		\item New attacks may require new models
-		\item Speculative execution is particularly tricky
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{We prove security \textbf{in our model}, not absolute security}
-	\end{center}
-\end{frame}
-
-\begin{frame}{The gap remains}
-	\begin{center}
-		\Large
-		From verified code to secure execution
-	\end{center}
-	\vspace{1em}
-	\textbf{Remaining challenges:}
-	\begin{itemize}
-		\item Compiler may still break guarantees
-		\item Hardware may not respect assumptions
-		\item Micro-architectural attacks (Spectre/Meltdown)
-		\item Physical side channels
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Partial solutions:}
-	\begin{itemize}
-		\item Verify at assembly level
-		\item Use verified compilers
-		\item Hardware/software co-design
+		\item Hardware may leak more than modeled (e.g., Spectre)
+		\item Physical attacks bypass all software protections
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Example: Hardware attacks on TEEs (TEE.fail)}
-	\begin{center}
-		What if we attack the memory bus itself?\footnote{\url{https://tee.fail/}}
-	\end{center}
-	\vspace{1em}
+\begin{frame}{Implementation verification tools overview}
+	\bigimagewithcaption{verif-implementations.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
+\end{frame}
+
+\begin{frame}{Hardware attacks: TEE.fail (2025)}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{TEE.fail (2025):}
+			\textbf{Physical interposition on DDR5 bus:}
 			\begin{itemize}
-				\item Physical interposition on DDR5 memory bus
 				\item Built with cheap, off-the-shelf electronics
 				\item Inspects all memory traffic in real-time
 			\end{itemize}
@@ -2300,7 +855,7 @@
 			\textbf{Devastating impact:}
 			\begin{itemize}
 				\item Breaks Intel TDX
-				\item Breaks AMD SEV-SNP (even with Ciphertext Hiding!)
+				\item Breaks AMD SEV-SNP
 				\item Extracts attestation keys
 				\item Compromises Nvidia GPU Confidential Computing
 			\end{itemize}
@@ -2309,137 +864,33 @@
 	\vspace{0.5em}
 	\begin{center}
 		\textit{Hardware-level attacks bypass all software protections}
+
+		\vspace{0.3em}
+
+		\url{https://tee.fail/}
 	\end{center}
 \end{frame}
 
-\begin{frame}{Real-world impact of TEE.fail}
+\section{Case Study: Lessons from TLS}
+
+\begin{frame}{TLS before 1.3: Reactive patching}
 	\begin{center}
 		\Large
-		When hardware is compromised, everything fails
+		One of the most important deployments of cryptography
+
+		\normalsize
+		Powers HTTPS, secures billions of connections daily
 	\end{center}
-	\vspace{1em}
-	\textbf{What attackers can do:}
-	\begin{itemize}
-		\item Extract cryptographic keys from ``secure'' TEEs
-		\item Steal attestation keys from fully updated machines
-		\item Run AI workloads without TEE protections
-		\item Potentially extract millions from crypto/cloud services
-	\end{itemize}
 	\vspace{0.5em}
-	\textbf{The lesson:}
-	\begin{itemize}
-		\item Physical access = game over
-		\item TEEs assume trusted hardware
-		\item Memory bus is a critical attack surface
-		\item DDR5's complexity doesn't prevent interposition
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Looking forward}
-	\begin{center}
-		\Large
-		Implementation security is an arms race
-	\end{center}
-	\vspace{1em}
-	\textbf{The cycle continues:}
+	\textbf{The endless loop (pre-1.3):}
 	\begin{enumerate}
-		\item New side channels discovered
-		\item Update leakage models
-		\item Develop countermeasures
-		\item Verify implementations
-		\item Repeat\ldots
+		\item Attack found \rightarrow\ Quick patch \rightarrow\ Long-term fix \rightarrow\ New attack
 	\end{enumerate}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{CAC tools help us stay ahead in this race}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Computational analysis tools overview}
-	\bigimagewithcaption{verif-implementations.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
-\end{frame}
-
-\section{Case Study: Lessons Learned from TLS}
-
-\begin{frame}{Case Study: Transport Layer Security (TLS)}
-	\begin{center}
-		\Large
-		One of the most important real-world deployments of cryptography
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Powers HTTPS everywhere
-		\item Secures email, VPNs, messaging
-		\item Protects billions of connections daily
-	\end{itemize}
-	\vspace{1em}
-	\begin{center}
-		\textit{But the road to secure TLS was long and painful\ldots}
-	\end{center}
-\end{frame}
-
-\begin{frame}{The dark ages: TLS before 1.3}
-	\begin{center}
-		\Large
-		A reactive cycle of attacks and patches
-	\end{center}
-	\vspace{1em}
-	\textbf{The endless loop:}
-	\begin{enumerate}
-		\item \textbf{Attack found} -- Security researchers discover vulnerability
-		\item \textbf{Quick patch} -- Rushed fix deployed to stop bleeding
-		\item \textbf{Long-term fix} -- More thoughtful solution developed
-		\item \textbf{Next version} -- Protocol updated with fixes
-		\item \textbf{Back to step 1} -- New attacks emerge on ``fixed'' version
-	\end{enumerate}
-	\vspace{0.5em}
+	\vspace{0.3em}
+	\textbf{When academics looked at real TLS:} BEAST, CRIME, Lucky 13, POODLE, Logjam\ldots
+	\vspace{0.3em}
 	\begin{center}
 		\textit{No substantial academic analysis during design}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Early academic analysis: Too simple}
-	\begin{center}
-		\Large
-		Academics studied ``toy'' versions of TLS
-	\end{center}
-	\vspace{1em}
-	\textbf{Why oversimplified models?}
-	\begin{itemize}
-		\item Full protocol too complex
-		\item Analysis tools couldn't handle it
-		\item Focused on cryptographic core only
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{The consequence:}
-	\begin{itemize}
-		\item Missed many real attacks
-		\item False sense of security
-		\item Gap between theory and practice
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{The complexity explosion}
-	\begin{center}
-		\Large
-		When academics looked at \textit{real} TLS\ldots
-	\end{center}
-	\vspace{1em}
-	\begin{center}
-		\textbf{Many new attacks discovered!}
-	\end{center}
-	\vspace{0.5em}
-	\begin{itemize}
-		\item BEAST
-		\item CRIME
-		\item Lucky 13
-		\item POODLE
-		\item Logjam
-		\item And many more, as discussed in our TLS session!
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{The devil was in the details we'd been ignoring}
 	\end{center}
 \end{frame}
 
@@ -2448,195 +899,46 @@
 		\Large
 		From reactive patching to proactive design
 	\end{center}
-	\vspace{1em}
-	\textbf{Revolutionary changes:}
-	\begin{itemize}
-		\item Academic community consulted \textbf{during} design
-		\item Multiple drafts analyzed formally
-		\item 28 drafts over 4+ years!
-		\item Unprecedented collaboration
-	\end{itemize}
 	\vspace{0.5em}
-	\begin{center}
-		\textit{First major protocol designed with formal analysis in mind}
-	\end{center}
+	\begin{itemize}
+		\item Academic community consulted \textbf{during} design: 28 drafts over 4+ years
+		\item Multiple CAC tools applied: ProVerif, Tamarin, CryptoVerif, \fstar
+		\item Real attacks found and fixed \textbf{before} standardization:
+		      \begin{itemize}
+			      \item Draft 10: Client impersonation in PSK-resumption
+			      \item Draft 13: Attack on 0-RTT client authentication
+			      \item Draft 21: Unexpected authentication behavior
+		      \end{itemize}
+	\end{itemize}
 \end{frame}
 
-\begin{frame}{Computer-aided cryptography joins the party}
+\begin{frame}{Three lessons from TLS 1.3}
+	\textbf{Lesson 1: Formal methods find real flaws}
+	\begin{itemize}
+		\item Just \textit{trying} to write formal specs uncovers ambiguities and corner cases
+		\item \textit{``If you can't specify it clearly, it's probably broken''}
+	\end{itemize}
+	\vspace{0.3em}
+	\textbf{Lesson 2: Protocols are moving targets}
+	\begin{itemize}
+		\item 28 drafts = 28 different protocols to verify
+		\item Machine-checked proofs can evolve with the protocol; manual proofs can't keep pace
+	\end{itemize}
+	\vspace{0.3em}
+	\textbf{Lesson 3: Design for verifiability}
+	\begin{itemize}
+		\item Small changes (key separation, consistent tagging) dramatically simplify analysis
+		\item Negligible performance impact, huge verification benefit
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Impact beyond TLS}
 	\begin{center}
 		\Large
-		Multiple tools, multiple approaches
+		TLS 1.3 proved formal methods can scale
 	\end{center}
-	\vspace{1em}
-	\textbf{Verified implementations:}
-	\begin{itemize}
-		\item Implementations with cryptographic proofs
-	\end{itemize}
 	\vspace{0.5em}
-	\textbf{Symbolic analysis:}
-	\begin{itemize}
-		\item ProVerif models
-		\item Tamarin models
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Computational analysis:}
-	\begin{itemize}
-		\item CryptoVerif proofs
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{A comprehensive assault on insecurity!}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Lesson 1: Formal methods find real flaws}
-	\begin{center}
-		\Large
-		The process of formally specifying reveals bugs
-	\end{center}
-	\vspace{1em}
-	\textbf{Just trying to write formal specs uncovers issues:}
-	\begin{itemize}
-		\item Ambiguities in the standard
-		\item Implicit assumptions
-		\item Corner cases
-		\item Unclear security goals
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{If you can't specify it clearly, it's probably broken}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Real attacks found by formal analysis}
-	\begin{center}
-		\Large
-		These aren't theoretical problems!
-	\end{center}
-	\vspace{1em}
-	\textbf{TLS 1.2 analysis (Bhargavan et al.):}
-	\begin{itemize}
-		\item Alert fragmentation attacks
-		\item Fingerprinting attacks
-		\item Led to Triple Handshake attack discovery
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{TLS 1.3 draft 10 (Cremers et al.):}
-	\begin{itemize}
-		\item Client impersonation in PSK-resumption
-		\item Fixed in draft 11
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{More attacks from formal analysis}
-	\textbf{TLS 1.3 draft 13 (Bhargavan et al.):}
-	\begin{itemize}
-		\item New attack on 0-RTT client authentication
-		\item ProVerif found what humans missed
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{TLS 1.3 draft 21 (Cremers et al.):}
-	\begin{itemize}
-		\item Unexpected behavior affecting authentication
-		\item Tamarin revealed subtle issues
-	\end{itemize}
-	\vspace{1em}
-	\begin{center}
-		\Large
-		Nearly all discoveries led to protocol improvements!
-	\end{center}
-\end{frame}
-
-\begin{frame}{Lesson 2: Protocols are moving targets}
-	\begin{center}
-		\Large
-		28 drafts = 28 different protocols!
-	\end{center}
-	\vspace{1em}
-	\textbf{The challenge:}
-	\begin{itemize}
-		\item Significant changes between drafts
-		\item Previous analyses quickly outdated
-		\item Manual proofs become stale
-		\item Months of work invalidated
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{How do you hit a moving target?}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Machine-checked proofs to the rescue}
-	\begin{center}
-		\Large
-		Automated tools can evolve with the protocol
-	\end{center}
-	\vspace{1em}
-	\textbf{Key advantages:}
-	\begin{itemize}
-		\item Update models incrementally
-		\item Re-run verification automatically
-		\item Catch regressions immediately
-		\item Ensure fixes don't break other properties
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Manual proofs can't compete:}
-	\begin{itemize}
-		\item Too slow to update
-		\item Error-prone modifications
-		\item Can't keep pace with drafts
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Lesson 3: Design for verifiability}
-	\begin{center}
-		\Large
-		Small changes can dramatically simplify analysis
-	\end{center}
-	\vspace{1em}
-	\textbf{TLS 1.3 embraced verification-friendly changes:}
-	\begin{itemize}
-		\item Better key separation in key schedule
-		\item Consistent message tagging
-		\item More transcript information in exchanges
-		\item Cleaner state machine
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Negligible performance impact, huge verification benefit}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Examples of verification-friendly changes}
-	\textbf{Key separation:}
-	\begin{itemize}
-		\item Different keys for different purposes
-		\item Enables modular security proofs
-		\item Prevents cross-protocol attacks
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Consistent tagging:}
-	\begin{itemize}
-		\item Every message type clearly labeled
-		\item No ambiguity in parsing
-		\item Simplifies formal models
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Transcript inclusion:}
-	\begin{itemize}
-		\item Include history in handshake messages
-		\item Makes consistency proofs easier
-		\item Prevents replay attacks
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{The impact: A new standard for standards}
-	\begin{center}
-		\Large
-		TLS 1.3 changed how protocols should be designed
-	\end{center}
-	\vspace{1em}
-	\textbf{The new playbook:}
+	\textbf{The new playbook for protocol design:}
 	\begin{enumerate}
 		\item Involve formal methods experts early
 		\item Design with verification in mind
@@ -2646,26 +948,1063 @@
 	\end{enumerate}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{From ``ship and patch'' to ``verify and ship''}
+		From ``ship and patch'' to ``verify and ship''
+
+		\vspace{0.3em}
+
+		\textit{This is the future of secure protocol design}
 	\end{center}
 \end{frame}
 
-\begin{frame}{Why this matters beyond TLS}
+%% ====================================================================
+%%  PART 2: VERIFICATION THEATRE
+%% ====================================================================
+
+\begin{frame}[plain]
+	\begin{center}
+		\vspace{4em}
+		{\Huge Part 2}
+
+		\vspace{1em}
+
+		{\Large Verification Theatre:}
+
+		{\Large Critically Examining High-Assurance Cryptography}
+
+		\vspace{2em}
+
+		\normalsize
+		Based on: Nadim Kobeissi, \textit{Verification Theatre: False Assurance in Formally Verified Cryptographic Libraries}, 2026.
+	\end{center}
+\end{frame}
+
+\section{The Verification Boundary}
+
+\begin{frame}{What is a verification boundary?}
 	\begin{center}
 		\Large
-		TLS 1.3 proved formal methods can scale
+		Every formally verified system embeds a \textbf{verification boundary}
 	\end{center}
 	\vspace{1em}
-	\textbf{Key achievements:}
 	\begin{itemize}
-		\item Analyzed a \textit{real} protocol, not a toy
-		\item Found and fixed \textit{real} vulnerabilities
-		\item Kept pace with \textit{real} development
-		\item Influenced \textit{real} design decisions
+		\item The interface between code with \textbf{machine-checked proofs} and code that is \textbf{trusted without them}
+		\item Outside the boundary: compilers, OS, hardware, platform intrinsics, ``glue code''
+		\item The existence of this boundary is well understood\ldots
 	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{This is the future of secure protocol design}
+		\textit{But it is not always communicated clearly}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Good boundary documentation exists}
+	\begin{itemize}
+		\item \textbf{CompCert}: Explicitly documents which compiler passes are verified and which (parser, assembler, linker) are not
+		\item \textbf{seL4}: Maintains a dedicated page listing every trust assumption about hardware behavior
+		\item \textbf{EverCrypt}: Explicitly identifies compiler, Vale embedding semantics, and hardware as trusted components
+		\item \textbf{Jasmin}: Documents which compiler passes have machine-checked proofs
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\Large
+		These projects treat verification boundaries as \textbf{first-class documentation}
+	\end{center}
+\end{frame}
+
+\begin{frame}{When boundaries go wrong}
+	\begin{center}
+		\Large
+		What happens when a library is marketed as ``formally verified'' \textbf{without qualification}?
+	\end{center}
+	\vspace{1em}
+	\begin{itemize}
+		\item Users reasonably interpret this as a comprehensive guarantee
+		\item The gap between verification \textit{claims} and verification \textit{reality} creates false assurance
+		\item We call this gap \textbf{``verification theatre''}
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Deploying formal methods with unqualified claims creates an appearance of correctness while leaving significant code paths unverified}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Case study: Cryspen's libcrux}
+	\begin{itemize}
+		\item Cryspen: ``services and software for high assurance software''
+		\item libcrux repository: ``the formally verified crypto library''
+		\item Documentation: ``every implementation in libcrux is formally verified''
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{Real-world deployment:}
+	\begin{itemize}
+		\item ML-KEM implementation used internally at Google
+		\item hpke-rs is a dependency of Signal's \texttt{signal-crypto} crate
+		\item hpke-rs used by OpenMLS
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\Large
+		I found \textbf{13 vulnerabilities} that escaped formal verification
+	\end{center}
+\end{frame}
+
+\begin{frame}{The 13 vulnerabilities at a glance}
+	\begin{center}
+		\small
+		\begin{tabular}{|c|l|l|}
+			\hline
+			\textbf{ID} & \textbf{Description}            & \textbf{Component} \\
+			\hline
+			V1          & Incorrect ARM64 SHA-3 intrinsic & libcrux ML-KEM     \\
+			V2          & Cross-backend endianness        & libcrux ML-KEM     \\
+			V3          & Missing X25519 zero check       & hpke-rs            \\
+			V4          & Nonce reuse via u32 overflow    & hpke-rs            \\
+			V5          & ECDSA missing low-$S$           & libcrux ECDSA      \\
+			V6          & Ed25519 double clamping         & libcrux Ed25519    \\
+			V7          & AES-GCM decrypt panic           & libcrux-psq        \\
+			V8          & ML-DSA dead norm check          & libcrux ML-DSA     \\
+			V9          & ML-DSA hint bound skip          & libcrux ML-DSA     \\
+			V10         & Wrong decompression constant    & ML-KEM spec        \\
+			V11         & Missing inverse NTT             & ML-KEM spec        \\
+			V12         & False serialization proof       & ML-KEM proof       \\
+			V13         & Wrong multiplication spec       & ML-DSA spec        \\
+			\hline
+		\end{tabular}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Verification status reality}
+	\begin{center}
+		\small
+		\textbf{ML-KEM verification status as documented by Cryspen}
+		\vspace{0.3em}
+
+		\begin{tabular}{|l|l|c|c|c|}
+			\hline
+			\textbf{Backend} & \textbf{Module}           & \textbf{Lax} & \textbf{Safety} & \textbf{Correct.} \\
+			\hline
+			Generic          & const\_time, hash, \ldots & $\checkmark$ & $\checkmark$    & $\checkmark$      \\
+			                 & ntt/invert\_ntt           & $\checkmark$ & $\checkmark$    & --                \\
+			                 & matrix/serial./sampl      & $\checkmark$ & --              & --                \\
+			\hline
+			Portable         & arith/ntt/serial.\ldots   & $\checkmark$ & $\checkmark$    & $\checkmark$      \\
+			                 & sampling                  & $\checkmark$ & $\checkmark$    & --                \\
+			\hline
+			AVX2             & arith/ntt/serial.         & $\checkmark$ & $\checkmark$    & $\checkmark$      \\
+			                 & compr/sampling            & $\checkmark$ & $\checkmark$    & --                \\
+			\hline
+			NEON             & \textit{all modules}      & $\checkmark$ & --              & --                \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{0.3em}
+	\begin{center}
+		The NEON backend---implicated in a platform-dependent output failure---has \textbf{no completed proofs} for any module beyond lax checking
+	\end{center}
+\end{frame}
+
+\section{A Taxonomy of Verification Failures}
+
+\begin{frame}{Five types of verification boundary failure}
+	\begin{center}
+		\begin{tabular}{|c|l|l|}
+			\hline
+			\textbf{Type} & \textbf{Category}                & \textbf{Vulns} \\
+			\hline
+			I             & Unverified platform abstractions & V1, V2         \\
+			\hline
+			II            & Unverified protocol logic        & V3, V4         \\
+			\hline
+			III           & Specification incompleteness     & V5             \\
+			\hline
+			IV            & Unverified wrapper logic         & V6, V7, V8, V9 \\
+			\hline
+			V             & Spec errors \& false proofs      & V10--V13       \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{1em}
+	\begin{itemize}
+		\item Types I--IV: Bugs at or \textbf{beyond} the verification boundary
+		\item Type V: Bugs \textbf{inside} the formally verified code itself
+		\item Type V is the most insidious: it corrupts the foundation
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The verification boundary, visually}
+	\begin{center}
+		\resizebox{!}{6.5cm}{%
+			\definecolor{cI}{HTML}{D35400}%
+			\definecolor{cII}{HTML}{2471A3}%
+			\definecolor{cIII}{HTML}{B7950B}%
+			\definecolor{cIV}{HTML}{7D3C98}%
+			\definecolor{cV}{HTML}{C0392B}%
+			\definecolor{cBnd}{HTML}{922B21}%
+			\definecolor{cCore}{HTML}{1A7A4C}%
+			\begin{tikzpicture}[font=\sffamily, >=latex]
+
+				% == LAYER 1 — Protocol / Application Logic (Type II) ==
+				\node[draw=cII!50!black, thick, fill=cII!6, rounded corners=3pt,
+					minimum width=7.2cm, minimum height=1.4cm] (L1) at (0, 7.6) {};
+				\node[font=\sffamily\scriptsize\bfseries, text=cII!80!black] at (0, 8.1) {Protocol / Application Logic};
+
+				\node[circle, draw=cII!70!black, fill=cII!20, thick,
+					minimum size=5mm, font=\sffamily\scriptsize\bfseries, inner sep=0pt] (v3) at (-1.8, 7.2) {V3};
+				\node[font=\sffamily\tiny, text=black!55, anchor=west] at (-1.35, 7.2) {Missing zero check};
+
+				\node[circle, draw=cII!70!black, fill=cII!20, thick,
+					minimum size=5mm, font=\sffamily\scriptsize\bfseries, inner sep=0pt] (v4) at (1.2, 7.2) {V4};
+				\node[font=\sffamily\tiny, text=black!55, anchor=west] at (1.65, 7.2) {Nonce reuse};
+
+				\node[font=\sffamily\scriptsize\itshape, text=cII!65!black, anchor=west, align=left] at (3.9, 7.8) {\textit{Type\,II}};
+				\node[font=\sffamily\tiny, text=cII!55!black, anchor=west, align=left] at (3.9, 7.45) {Unverified\\[-1pt]protocol logic};
+
+				% == LAYER 2 — Unverified / Admitted Implementation (Type IV) ==
+				\node[draw=cIV!50!black, thick, fill=cIV!6, rounded corners=3pt,
+					minimum width=7.2cm, minimum height=1.8cm] (L2) at (0, 5.55) {};
+				\node[font=\sffamily\scriptsize\bfseries, text=cIV!80!black] at (0, 6.2) {Unverified / Admitted Implementation};
+
+				\node[circle, draw=cIV!70!black, fill=cIV!20, thick,
+					minimum size=5mm, font=\sffamily\scriptsize\bfseries, inner sep=0pt] (v6) at (-1.8, 5.7) {V6};
+				\node[font=\sffamily\tiny, text=black!55, anchor=west] at (-1.35, 5.7) {Double clamping};
+
+				\node[circle, draw=cIV!70!black, fill=cIV!20, thick,
+					minimum size=5mm, font=\sffamily\scriptsize\bfseries, inner sep=0pt] (v7) at (1.2, 5.7) {V7};
+				\node[font=\sffamily\tiny, text=black!55, anchor=west] at (1.65, 5.7) {Decrypt panic};
+
+				\node[circle, draw=cIV!70!black, fill=cIV!20, thick,
+					minimum size=5mm, font=\sffamily\scriptsize\bfseries, inner sep=0pt] (v8) at (-1.8, 5.0) {V8};
+				\node[font=\sffamily\tiny, text=black!55, anchor=west] at (-1.35, 5.0) {Dead norm check};
+
+				\node[circle, draw=cIV!70!black, fill=cIV!20, thick,
+					minimum size=5mm, font=\sffamily\scriptsize\bfseries, inner sep=0pt] (v9) at (1.2, 5.0) {V9};
+				\node[font=\sffamily\tiny, text=black!55, anchor=west] at (1.65, 5.0) {Hint overflow};
+
+				\node[font=\sffamily\scriptsize\itshape, text=cIV!65!black, anchor=west, align=left] at (3.9, 5.8) {\textit{Type\,IV}};
+				\node[font=\sffamily\tiny, text=cIV!55!black, anchor=west, align=left] at (3.9, 5.45) {Unverified wrapper\\[-1pt]\& admitted logic};
+
+				% == VERIFICATION BOUNDARY (enclosing the verified core) ==
+				\node[draw=cBnd, line width=1.8pt, double, double distance=1.2pt,
+					rounded corners=5pt,
+					minimum width=7.6cm, minimum height=4.0cm,
+					fill=cCore!4] (bnd) at (0, 2.3) {};
+
+				% Boundary label
+				\node[fill=white, draw=cBnd, thin, rounded corners=2pt,
+					font=\sffamily\scriptsize\bfseries, text=cBnd,
+					inner xsep=5pt, inner ysep=1.5pt] at (0, 4.3) {\strut VERIFICATION BOUNDARY};
+
+				% Verified Implementation
+				\node[draw=cCore!35, fill=cCore!7, rounded corners=2pt,
+					minimum width=6.6cm, minimum height=0.9cm] (impl) at (0, 3.3) {};
+				\node[font=\sffamily\scriptsize, text=cCore!65!black] at (0, 3.3) {Verified Implementation};
+
+				% V5 (Type III) — straddles the boundary edge
+				\node[circle, draw=cIII!70!black, fill=cIII!20, thick,
+					minimum size=5mm, font=\sffamily\scriptsize\bfseries, inner sep=0pt] (v5) at (3.8, 4.3) {V5};
+				\node[font=\sffamily\tiny, text=cIII!70!black, anchor=north west] at (4.1, 3.95) {Spec gap};
+
+				\node[font=\sffamily\scriptsize\itshape, text=cIII!65!black, anchor=west, align=left] at (4.4, 4.45) {\textit{Type\,III}};
+				\node[font=\sffamily\tiny, text=cIII!55!black, anchor=west, align=left] at (4.4, 4.1) {Specification\\[-1pt]incompleteness};
+
+				% Formal Specification (where Type V corrupts)
+				\node[draw=cCore!35, fill=cCore!7, rounded corners=2pt,
+					minimum width=6.6cm, minimum height=1.2cm] (spec) at (0, 1.4) {};
+				\node[font=\sffamily\scriptsize, text=cCore!65!black] at (0, 1.8) {Formal Specification};
+
+				% V10--V13 (spec errors & false proofs)
+				\node[circle, draw=cV!70!black, fill=cV!20, thick,
+					minimum size=5mm, font=\sffamily\scriptsize\bfseries, inner sep=0pt] (v10) at (-2.4, 1.3) {V10};
+				\node[font=\sffamily\tiny, text=black!55] at (-2.4, 0.9) {Wrong const};
+
+				\node[circle, draw=cV!70!black, fill=cV!20, thick,
+					minimum size=5mm, font=\sffamily\scriptsize\bfseries, inner sep=0pt] (v11) at (-0.8, 1.3) {V11};
+				\node[font=\sffamily\tiny, text=black!55] at (-0.8, 0.9) {Missing iNTT};
+
+				\node[circle, draw=cV!70!black, fill=cV!20, thick,
+					minimum size=5mm, font=\sffamily\scriptsize\bfseries, inner sep=0pt] (v12) at (0.8, 1.3) {V12};
+				\node[font=\sffamily\tiny, text=black!55] at (0.8, 0.9) {False proof};
+
+				\node[circle, draw=cV!70!black, fill=cV!20, thick,
+					minimum size=5mm, font=\sffamily\scriptsize\bfseries, inner sep=0pt] (v13) at (2.4, 1.3) {V13};
+				\node[font=\sffamily\tiny, text=black!55] at (2.4, 0.9) {Wrong mul spec};
+
+				\node[font=\sffamily\scriptsize\itshape, text=cV!65!black, anchor=west, align=left] at (3.9, 1.6) {\textit{Type\,V}};
+				\node[font=\sffamily\tiny, text=cV!55!black, anchor=west, align=left] at (3.9, 1.2) {Spec errors \&\\[-1pt]false proofs};
+
+				% == LAYER 3 — Platform Abstractions (Type I) ==
+				\node[draw=cI!50!black, thick, fill=cI!6, rounded corners=3pt,
+					minimum width=7.2cm, minimum height=1.2cm] (L3) at (0, -0.7) {};
+				\node[font=\sffamily\scriptsize\bfseries, text=cI!80!black] at (0, -0.3) {Platform Abstractions};
+
+				\node[circle, draw=cI!70!black, fill=cI!20, thick,
+					minimum size=5mm, font=\sffamily\scriptsize\bfseries, inner sep=0pt] (v1) at (-1.2, -0.9) {V1};
+				\node[font=\sffamily\tiny, text=black!55, anchor=west] at (-0.75, -0.9) {Incorrect intrinsic};
+
+				\node[circle, draw=cI!70!black, fill=cI!20, thick,
+					minimum size=5mm, font=\sffamily\scriptsize\bfseries, inner sep=0pt] (v2) at (1.5, -0.9) {V2};
+				\node[font=\sffamily\tiny, text=black!55, anchor=west] at (1.95, -0.9) {Endianness bug};
+
+				\node[font=\sffamily\scriptsize\itshape, text=cI!65!black, anchor=west, align=left] at (3.9, -0.5) {\textit{Type\,I}};
+				\node[font=\sffamily\tiny, text=cI!55!black, anchor=west, align=left] at (3.9, -0.85) {Unverified platform\\[-1pt]abstractions};
+
+				% == TRUST-FLOW ARROWS ==
+				\draw[->, gray!30, thick] (L1.south) -- (L2.north);
+				\draw[->, gray!30, thick] (L2.south) -- (bnd.north);
+				\draw[->, gray!30, thick] (bnd.south) -- (L3.north);
+
+				% == REGION LABELS (left-side braces) ==
+				\draw[decorate, decoration={brace, amplitude=4pt, mirror}, gray!30, thick]
+				(-4.1, 4.5) -- (-4.1, 6.9)
+				node[midway, left=5pt, font=\sffamily\tiny, text=black!35, align=center] {\itshape Unverified};
+
+				\draw[decorate, decoration={brace, amplitude=4pt, mirror}, cCore!30, thick]
+				(-4.1, 0.3) -- (-4.1, 4.3)
+				node[midway, left=5pt, font=\sffamily\tiny, text=cCore!50!black, align=center] {\itshape Verified};
+
+				\draw[decorate, decoration={brace, amplitude=4pt, mirror}, gray!30, thick]
+				(-4.1, -1.3) -- (-4.1, 0.0)
+				node[midway, left=5pt, font=\sffamily\tiny, text=black!35, align=center] {\itshape Unverified};
+
+			\end{tikzpicture}%
+		}% end resizebox
+	\end{center}
+\end{frame}
+
+\begin{frame}{The formal verification pipeline}
+	\begin{center}
+		\Large
+		How does Cryspen's verification work?
+	\end{center}
+	\vspace{0.5em}
+	\begin{enumerate}
+		\item \textbf{Specification}: Algorithm spec written in hacspec (Rust subset) or \fstar
+		\item \textbf{Implementation}: Optimized Rust with multiple backends (portable, AVX2, NEON)
+		\item \textbf{Extraction and Proof}: hax toolchain extracts Rust to \fstar; provers verify correctness, safety, and secret independence
+		\item \textbf{Compilation}: Verified source compiled by \textbf{unverified} compiler (LLVM/rustc)
+	\end{enumerate}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Each stage introduces a trust boundary}
+	\end{center}
+\end{frame}
+
+\section{Type I: Unverified Platform Abstractions}
+
+\begin{frame}{Type I: Unverified Platform Abstractions}
+	\begin{center}
+		\Large
+		The verified code depends on platform intrinsics treated as \textbf{axioms}
+	\end{center}
+	\vspace{1em}
+	\begin{itemize}
+		\item Formal proofs \textbf{assume} these operations implement their specified semantics
+		\item The actual implementations may contain bugs
+		\item Marked \texttt{\#[hax\_lib::opaque]}: verifier accepts specification without proof
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{V1: Incorrect ARM64 SHA-3 intrinsic}
+	\begin{itemize}
+		\item The \texttt{\_vxarq\_u64} intrinsic wrapper for ARM64 SHA-3
+		\item On platforms \textbf{without} SHA-3 hardware support, a fallback path is used
+		\item The fallback implementation was \textbf{incorrect}
+		\item Produced wrong cryptographic output on certain ARM64 devices
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{Why verification missed it:}
+	\begin{itemize}
+		\item Function marked as opaque to the verifier
+		\item Verifier accepted the \textit{specification} as an axiom
+		\item The axiom was correct; the \textit{implementation} was wrong
+		\item Discovered independently by Filippo Valsorda
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{V2: Cross-backend endianness bug}
+	\begin{itemize}
+		\item ML-KEM incremental API: \texttt{from\_bytes}/\texttt{to\_bytes} serialization
+		\item Portable backend used \textbf{different byte order} than SIMD backends
+		\item Serialize state on one platform, deserialize on another \rightarrow\ \textbf{failure}
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{Real-world impact:}
+	\begin{itemize}
+		\item Caused \textbf{decryption failures in Signal's post-quantum ratchet}
+		\item Reported by GuuJiang (December 2025)
+		\item Each backend was individually correct, but they were \textbf{mutually incompatible}
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Verification proved each backend correct in isolation; the cross-backend property was never specified}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Type I: Lessons}
+	\begin{center}
+		\Large
+		What Type I failures teach us
+	\end{center}
+	\vspace{1em}
+	\begin{itemize}
+		\item Platform abstractions are \textbf{axioms}: the verifier takes them on faith
+		\item Cross-platform properties (endianness, representation) are rarely specified
+		\item Testing each backend individually is \textbf{not enough}
+		\item Need cross-backend compatibility testing
+		\item Axiomatized specifications should be \textbf{proved or exhaustively tested} against a reference
+	\end{itemize}
+\end{frame}
+
+\section{Type II: Unverified Protocol Logic}
+
+\begin{frame}{Type II: Unverified Protocol Logic}
+	\begin{center}
+		\Large
+		Verified primitives used correctly\ldots
+
+		but the protocol logic around them has bugs
+	\end{center}
+	\vspace{1em}
+	\textbf{V3: Missing X25519 zero check}
+	\begin{itemize}
+		\item RFC 9180 \textbf{requires} checking if DH output is all-zero
+		\item hpke-rs returns the raw result without validation
+		\item Small-subgroup attack: adversary can force shared secret to zero
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{V4: Nonce reuse via integer overflow}
+	\begin{itemize}
+		\item HPKE sequence counter is \texttt{u32} (wraps at $2^{32}$)
+		\item In release builds, wrapping is \textbf{silent}: counter goes back to 0
+		\item After $2^{32}$ messages: \textbf{nonce reuse!}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Type II: Lessons}
+	\begin{center}
+		\Large
+		What Type II failures teach us
+	\end{center}
+	\vspace{1em}
+	\begin{itemize}
+		\item Verifying the \textbf{crypto primitive} does not verify the \textbf{protocol}
+		\item Standard-mandated checks (RFC 9180 zero check) live in protocol logic
+		\item Integer overflow behavior depends on build mode (debug vs.\ release)
+		\item Protocol-level code needs its own analysis---symbolic or otherwise
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{The most dangerous bugs live in the space \textbf{between} verified components}
+	\end{center}
+\end{frame}
+
+\section{Type III: Specification Incompleteness}
+
+\begin{frame}{Type III: Specification Incompleteness}
+	\begin{center}
+		\Large
+		Code is \textbf{provably correct} per its spec\ldots
+
+		but the spec doesn't capture all real-world requirements
+	\end{center}
+	\vspace{1em}
+	\textbf{V5: ECDSA missing low-$S$ normalization}
+	\begin{itemize}
+		\item ECDSA signatures have a malleability: both $(r, s)$ and $(r, n-s)$ are valid
+		\item Bitcoin, Ethereum, and other systems \textbf{require} $s \leq n/2$ (``low-$S$'')
+		\item libcrux's \fstar specification doesn't include this requirement
+		\item Implementation is provably correct per spec, but \textbf{rejected by practical systems}
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{The spec was incomplete, not the proof}
+	\end{center}
+\end{frame}
+
+\section{Type IV: Unverified Wrapper Logic}
+
+\begin{frame}{Type IV: Unverified Wrapper Logic}
+	\begin{center}
+		\Large
+		The verified core is correct, but the \textbf{API layer} introduces defects
+	\end{center}
+	\vspace{1em}
+	\textbf{V6: Ed25519 double clamping}
+	\begin{itemize}
+		\item Key generation wrapper applies clamping \textbf{before} hashing
+		\item Should be: hash first, then clamp the result
+		\item Reduces entropy of generated keys
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{V7: AES-GCM decryption panic}
+	\begin{itemize}
+		\item Decryption wrapper calls \texttt{.unwrap()} on the result
+		\item If decryption fails (e.g., tampered ciphertext): \textbf{program panics}
+		\item Denial-of-service via any invalid ciphertext
+		\item The correct error handling was \textit{commented out} in the source
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{V8: ML-DSA norm check rendered dead code}
+	\textbf{FIPS 204 requirement:} Reject signature if signer response exceeds $\gamma_1 - \beta$
+	\vspace{0.5em}
+
+	\textbf{The bug:}
+	\begin{flushleft}
+		\texttt{if vector\_infinity\_norm\_exceeds(response, \textbf{(2 << GAMMA1\_EXPONENT)} - BETA)}
+	\end{flushleft}
+	\vspace{0.3em}
+	\begin{itemize}
+		\item \texttt{2 << GAMMA1\_EXPONENT} computes $2\gamma_1$, not $\gamma_1$
+		\item The bound is \textbf{doubled}: $2\gamma_1 - \beta$ instead of $\gamma_1 - \beta$
+		\item Since the signer response is already bounded by $\gamma_1 - \beta$, the check \textbf{always passes}
+		\item A FIPS 204 security check is effectively \textbf{dead code}
+	\end{itemize}
+	\vspace{0.3em}
+	\begin{center}
+		\textit{libcrux accepts non-conforming ML-DSA signatures}
+	\end{center}
+\end{frame}
+
+\begin{frame}{V9: ML-DSA hint deserialization off-by-one}
+	\textbf{FIPS 204 requirement:} Check that hint count does not exceed maximum
+	\vspace{0.5em}
+
+	\textbf{The bug:} The overflow check compares against the \textbf{previous} iteration's count, not the current one
+	\begin{flushleft}
+		\texttt{if (\textbf{previous\_true\_hints\_seen} > max\_ones\_in\_hint) \{}\\
+		\texttt{~~~~malformed\_hint = true;}\\
+		\texttt{\}}
+	\end{flushleft}
+	\begin{itemize}
+		\item Should check \texttt{current\_true\_hints\_seen > max\_ones\_in\_hint}
+		\item The final iteration's bound is \textbf{never validated}
+		\item Allows non-conforming signatures to pass verification
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Types I--IV: Summary}
+	\begin{center}
+		\Large
+		Nine vulnerabilities outside the verified core
+	\end{center}
+	\vspace{0.5em}
+	\begin{itemize}
+		\item \textbf{Real-world impact}: Signal PQ ratchet failures (V2), potential DoS (V7), non-conforming ML-DSA signatures (V8, V9)
+		\item \textbf{Common pattern}: The verified primitive works correctly, but everything \textit{around} it is unverified
+		\item \textbf{Key insight}: Formal verification of primitives provides a \textbf{false sense of security} when the surrounding code is not analyzed
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{But the most surprising findings are still ahead\ldots}
+	\end{center}
+\end{frame}
+
+\section{Type V: Specification Errors and False Proofs}
+
+\begin{frame}{Type V: The most insidious failures}
+	\begin{center}
+		\Large
+		Bugs \textbf{inside} the formally verified code itself
+	\end{center}
+	\vspace{1em}
+	\begin{itemize}
+		\item The formal \textbf{specification} is wrong
+		\item Or the \textbf{proofs} contain false claims silently accepted by the build system
+		\item These undermine the \textbf{entire foundation} on which all verification rests
+		\item Even complete proofs only establish correctness with respect to the \textbf{wrong definition}
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Four concrete examples in ML-KEM and ML-DSA\ldots}
+	\end{center}
+\end{frame}
+
+\begin{frame}{How can bugs exist inside ``verified'' code?}
+	\begin{center}
+		\Large
+		Three mechanisms that allow false proofs to survive
+	\end{center}
+	\vspace{0.5em}
+	\begin{enumerate}
+		\item \textbf{Wrong specifications}: The formal spec is a mathematical statement---if the statement is wrong, proving it correct doesn't help
+		\item \textbf{Admitted proofs}: The build system can skip proof checking entirely while reporting success
+		\item \textbf{False axioms}: Unproved assumptions can contradict reality; all downstream proofs become unsound
+	\end{enumerate}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Let's see each mechanism in action\ldots}
+	\end{center}
+\end{frame}
+
+\begin{frame}{V10: Wrong decompression constant}
+	\textbf{FIPS 203 specification:}
+	\begin{flushleft}
+		$\mathtt{decompress}_d(x) = \lceil x \cdot q / 2^d \rfloor = (x \cdot 3329 + 2^{d-1}) / 2^d$
+	\end{flushleft}
+	\vspace{0.3em}
+	\textbf{libcrux \fstar specification:}
+	\begin{flushleft}
+		\texttt{let decompress\_d d x = (x * v\_FIELD\_MODULUS + \textbf{1664}) / pow2 d}
+	\end{flushleft}
+	\vspace{0.5em}
+	\begin{itemize}
+		\item $1664 = 2^{11-1} = 2^{10}$, so this is only correct when $d = 11$
+		\item For $d \neq 11$, the rounding constant is \textbf{wrong}
+		\item ML-KEM uses $d \in \{1, 4, 5, 10, 11\}$: four out of five values produce wrong results
+	\end{itemize}
+	\vspace{0.3em}
+	\begin{center}
+		\textit{The specification disagrees with the standard it claims to formalize}
+	\end{center}
+\end{frame}
+
+\begin{frame}{V11: Missing inverse NTT}
+	\textbf{ML-KEM encryption computes:}
+	\begin{itemize}
+		\item $\mathbf{u} = \text{NTT}^{-1}(\hat{A}^T \circ \hat{r}) + e_1$ \quad (correct in spec)
+		\item $v = \text{NTT}^{-1}(\hat{t}^T \circ \hat{r}) + e_2 + \lceil q/2 \rfloor \cdot m$ \quad (FIPS 203)
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{libcrux \fstar specification for $v$:}
+	\begin{flushleft}
+		\texttt{let v = poly\_add (poly\_add (\textbf{vector\_dot\_product\_ntt} t\_as\_ntt r\_as\_ntt) error\_2) mu}
+	\end{flushleft}
+	\vspace{0.3em}
+	\begin{itemize}
+		\item The result of \texttt{vector\_dot\_product\_ntt} is in the \textbf{NTT domain}
+		\item But \texttt{error\_2} and \texttt{mu} are in the \textbf{coefficient domain}
+		\item Adding them together is mathematically \textbf{nonsensical}
+		\item The missing \texttt{poly\_inv\_ntt} call makes the spec wrong
+		\item Yet it \textbf{type-checks} because both are just polynomial types
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{V12: A false serialization proof}
+	\textbf{The claim:}
+	\begin{flushleft}
+		\texttt{let deserialize\_12\_bit\_vec\_lemma\_bounded (v: t\_Array u8 (sz 24))}\\
+		\texttt{~~: squash (forall (i: nat \{i < 16\}).}\\
+		\texttt{~~~~~~bounded (Seq.index result.f\_elements i) \textbf{1})}
+	\end{flushleft}
+	\vspace{0.5em}
+	\begin{itemize}
+		\item This claims that 12-bit deserialized values are bounded by $2^{\textbf{1}} = 2$
+		\item The correct bound should be $2^{12} = 4096$
+		\item This is \textbf{obviously false}: 12-bit values can be up to 4095
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\Large
+		How does a false proof get accepted?
+	\end{center}
+\end{frame}
+
+\begin{frame}{The lax-mode escape hatch}
+	\textbf{The proof tactic:}
+	\begin{flushleft}
+		\texttt{let prove\_bit\_vector\_equality' () : Tac unit =}\\
+		\texttt{~~if \textbf{lax\_on ()}}\\
+		\texttt{~~then \textbf{iterAll tadmit}}\\
+		\texttt{~~else prove\_bit\_vector\_equality'' ()}
+	\end{flushleft}
+	\vspace{0.5em}
+	\textbf{Three-layer failure mechanism:}
+	\begin{enumerate}
+		\item The Makefile \textbf{admits this module by default} (\texttt{ADMIT\_MODULES})
+		\item When admitted, \texttt{lax\_on()} returns true
+		\item The tactic calls \texttt{tadmit}: \textbf{all proof goals are accepted unconditionally}
+	\end{enumerate}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{A false proof becomes a ``verified'' proof whenever the module is admitted}
+
+		\textit{Full verification is \textbf{never triggered} in any automated pipeline}
+	\end{center}
+\end{frame}
+
+\begin{frame}{V13: Wrong multiplication specification}
+	\textbf{ML-DSA AVX2 intrinsics specification:}
+	\begin{flushleft}
+		\texttt{let i16\_mul\_32extended (x y: i16): i32 =}\\
+		\texttt{~~(cast x : i32) *! (cast \textbf{x} : i32) ~~// should be: cast \textbf{y}}
+	\end{flushleft}
+	\vspace{0.5em}
+	\begin{itemize}
+		\item The second parameter \texttt{y} is \textbf{completely ignored}
+		\item The body computes $x^2$ instead of $x \cdot y$
+		\item This specification is \textbf{axiomatized}: marked \texttt{[@@ "opaque\_to\_smt"]}
+		\item The axiom is \textbf{never proved} against a reference model
+		\item All proofs building on this axiom are \textbf{unsound}
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{The verified ML-DSA AVX2 proofs prove properties about $x^2$, not $x \cdot y$}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Why Type V bugs survive}
+	\begin{center}
+		\Large
+		Why do specification errors and false proofs persist?
+	\end{center}
+	\vspace{0.5em}
+	\begin{enumerate}
+		\item \textbf{Build system admits proofs by default}: \texttt{ADMIT\_MODULES} in Makefile
+		\item \textbf{Lax-mode escape hatches}: Tactics silently accept all claims
+		\item \textbf{Axioms are never proved}: \texttt{val} declarations without implementations
+		\item \textbf{Full verification never triggered}: Not in CI, not on any automated pipeline
+		\item \textbf{Manual status documents}: Can claim verification that doesn't exist
+	\end{enumerate}
+	\vspace{0.5em}
+	\begin{center}
+		Specifications can contain mathematical errors, proofs can make false claims, axioms can contradict their definitions---\textbf{all simultaneously}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Type V: Summary}
+	\begin{center}
+		\Large
+		Four bugs inside the ``verified'' code
+	\end{center}
+	\vspace{0.5em}
+	\begin{center}
+		\begin{tabular}{|l|l|l|}
+			\hline
+			\textbf{Vuln} & \textbf{Description}         & \textbf{Algorithm} \\
+			\hline
+			V10           & Wrong rounding constant      & ML-KEM             \\
+			\hline
+			V11           & Missing inverse NTT          & ML-KEM             \\
+			\hline
+			V12           & False serialization bound    & ML-KEM             \\
+			\hline
+			V13           & $x^2$ instead of $x \cdot y$ & ML-DSA             \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{0.5em}
+	\begin{itemize}
+		\item The deployed Rust implementations are currently correct---the risk is \textbf{indirect}
+		\item A developer who trusts the spec and refactors to match it would silently introduce the errors
+		\item The proofs are \textbf{not checked in any CI pipeline}
+	\end{itemize}
+\end{frame}
+
+\section{Systemic Issues}
+
+\begin{frame}{The ADMIT\_MODULES pattern}
+	\textbf{From the ML-KEM extraction Makefile:}
+	\begin{flushleft}
+		\texttt{ADMIT\_MODULES = Libcrux\_ml\_kem.Ind\_cpa.fst \textbackslash}\\
+		\texttt{~~~~Libcrux\_ml\_kem.Sampling.fst \textbackslash}\\
+		\texttt{~~~~Libcrux\_ml\_kem.Vector.Neon.Arithmetic.fst \textbackslash}\\
+		\texttt{~~~~Libcrux\_ml\_kem.Vector.Neon.Compress.fst \textbackslash}\\
+		\texttt{~~~~...}
+	\end{flushleft}
+	\vspace{0.5em}
+	\begin{itemize}
+		\item These modules are \textbf{admitted by default}: proofs are not checked
+		\item ``Lax checking'' means the \fstar type-checker accepts the code, but proofs are \textbf{not verified}
+		\item Like spell-checking a math proof: syntax is fine, content may be wrong
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Admitted proofs as systemic risk}
+	\begin{center}
+		\Large
+		Admitted proofs are \textbf{more dangerous} than unverified code
+	\end{center}
+	\vspace{0.5em}
+	\textbf{Unverified code (V1--V9):}
+	\begin{itemize}
+		\item Was never claimed to be verified
+		\item Developers and users can identify it as a risk
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{Admitted proofs (V10--V13):}
+	\begin{itemize}
+		\item Code \textit{is} claimed to be verified
+		\item But the proofs are \textbf{silently not checked}
+		\item Creates false confidence in the verified core
+		\item A developer who trusts the spec and refactors the implementation to match it would \textbf{introduce the spec's errors into production}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What ``lax checking'' actually means}
+	\begin{center}
+		\begin{tabular}{|l|c|c|c|}
+			\hline
+			\textbf{Level}    & \textbf{Syntax} & \textbf{Types} & \textbf{Proofs} \\
+			\hline
+			Lax checking      & $\checkmark$    & $\checkmark$   & --              \\
+			\hline
+			Runtime safety    & $\checkmark$    & $\checkmark$   & Partial         \\
+			\hline
+			Full verification & $\checkmark$    & $\checkmark$   & $\checkmark$    \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{1em}
+	\begin{itemize}
+		\item Lax checking confirms the code is \textbf{well-formed} \fstar
+		\item It does \textbf{not} confirm that the proofs are valid
+		\item A false lemma claiming $2^{12} < 2^1$ passes lax checking
+		\item The NEON backend has \textbf{only} lax checking for all modules
+	\end{itemize}
+\end{frame}
+
+\section{Comparative Analysis}
+
+\begin{frame}{How AWS does it differently}
+	\begin{center}
+		\Large
+		The same failure types exist in AWS's verified libcrypto---but they are managed differently
+	\end{center}
+	\vspace{0.5em}
+	\textbf{AWS verification projects:}
+	\begin{itemize}
+		\item aws-lc-verification (SAW/Cryptol)
+		\item s2n-bignum (HOL Light)
+		\item mlkem-native (CBMC)
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		Same verification boundary challenges, \textbf{very different practices}
+	\end{center}
+\end{frame}
+
+\begin{frame}{What good boundary management looks like}
+	\begin{center}
+		\begin{tabular}{|l|c|c|}
+			\hline
+			\textbf{Practice}               & \textbf{Cryspen} & \textbf{AWS} \\
+			\hline
+			Soundness documents             & Manual/stale     & Structured   \\
+			\hline
+			Proofs in CI                    & Not triggered    & Every commit \\
+			\hline
+			Admitted modules documented     & In Makefile only & Explicit     \\
+			\hline
+			Verification scope communicated & Unqualified      & Qualified    \\
+			\hline
+			Axioms tested/proved            & Neither          & Tested       \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{0.5em}
+	\begin{itemize}
+		\item AWS's soundness documents enumerate: verified properties, assumptions, residual risks, and open gaps
+		\item The gold standard remains \textbf{seL4}: dedicated page listing every trust assumption
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Parallels with CompCert}
+	\begin{center}
+		\Large
+		Yang et al.'s Csmith campaign (2011)
+	\end{center}
+	\vspace{0.5em}
+	\begin{itemize}
+		\item Randomly generated C programs to find compiler bugs
+		\item \textbf{Found zero wrong-code bugs} in CompCert's verified middle-end
+		\item \textbf{Did find bugs} in the unverified front-end
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{Direct parallel to our findings:}
+	\begin{itemize}
+		\item libcrux's verified core is more robust than its wrappers
+		\item But we go further: the verified core can contain \textbf{specification errors} (V10, V11), \textbf{false proofs} (V12), and \textbf{false axioms} (V13) when the build system doesn't check them
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Thompson's ``Reflections on Trusting Trust''}
+	\begin{center}
+		\Large
+		``Who verifies the verifiers?''
+	\end{center}
+	\vspace{1em}
+	\begin{itemize}
+		\item Ken Thompson (1984): You can't trust code you didn't write yourself
+		\item Remains relevant: proofs dispatched through \textbf{unverified SMT solvers}
+		\item \fstar relies on Z3 for proof obligations
+		\item Z3 is a complex piece of software with its own bugs
+		\item The trusted computing base is \textbf{never zero}
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{But we can at least ensure the proofs are \textbf{actually run}}
+	\end{center}
+\end{frame}
+
+\section{Recommendations and Lessons}
+
+\begin{frame}{Five recommendations}
+	\begin{enumerate}
+		\item \textbf{Machine-readable verification manifests}: Every release should include a manifest of which code paths are verified, against which properties, for which platforms. Generated from build system, not manually maintained.
+		\item \textbf{Proofs in CI on every commit}: All proof obligations discharged in CI. Too-slow proofs flagged as incomplete, not silently admitted.
+		\item \textbf{No lax-mode escape hatches}: Proof tactics should fail loudly in lax mode, not silently admit all goals.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Five recommendations (continued)}
+	\begin{enumerate}
+		\setcounter{enumi}{3}
+		\item \textbf{Clear scope communication}: Claims of ``formally verified'' should specify which properties, which code paths, which platforms. Unqualified claims should be reserved for systems with minimal TCB (CompCert, seL4 level).
+		\item \textbf{Defense in depth}: Formal verification is one component of a defense-in-depth strategy. Code review, specification compliance auditing, cross-platform testing, and fuzzing catch categories of bugs that formal verification does not.
+	\end{enumerate}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Traditional practices remain essential alongside formal methods}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Disclosure: A cautionary tale}
+	\begin{itemize}
+		\item Feb 5, 2026: We submit PRs with tested fixes for V3--V6
+		\item Feb 5--6: Cryspen \textbf{blocks our GitHub account}, closes all PRs
+		\item Feb 9: Cryspen merges our fixes \textbf{without attribution}
+		\item Feb 12: Cryspen publishes response stating ``no bugs have been found in the verified code''
+		\item Feb 17: We disclose V8--V9 (FIPS 204 violations)
+		\item Mar 4: Cryspen merges fixes for V8--V9, crediting the discoverer
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{``No bugs in the verified code'' is directly contradicted by V10--V13}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Why this matters: The trust chain}
+	\begin{center}
+		\Large
+		Users trust the library \rightarrow\ Library trusts the proofs \rightarrow\ Proofs trust the spec
+	\end{center}
+	\vspace{1em}
+	\begin{itemize}
+		\item If the spec is wrong (V10, V11): the entire chain is broken
+		\item If the proofs are false (V12): the chain is illusory
+		\item If axioms are wrong (V13): the chain is unsound
+		\item If proofs are never checked: the chain doesn't exist
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Trust is only as strong as the weakest link}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Connecting Part 1 and Part 2}
+	\begin{center}
+		\Large
+		Part 1 showed us the \textbf{promise} of CAC
+
+		\vspace{0.5em}
+
+		Part 2 shows us the \textbf{pitfalls}
+	\end{center}
+	\vspace{0.5em}
+	\begin{itemize}
+		\item The same \fstar technology behind \haclstar (success story) powers libcrux
+		\item The difference is not the tools---it's the \textbf{engineering practices}
+		\item EverCrypt documents its trust assumptions; libcrux does not
+		\item \haclstar ran full proofs in CI; libcrux admits modules by default
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Verification is only as strong as the process around it}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Auditing methodology}
+	\begin{center}
+		\Large
+		A lightweight methodology for detecting verification boundary failures
+	\end{center}
+	\vspace{0.5em}
+	\begin{enumerate}
+		\item \textbf{Map the verification boundary}: Find extraction annotations, build system admission flags, unverified wrappers, platform-specific code paths
+		\item \textbf{Audit specifications against standards}: Check constants, domain transformations, required validations against FIPS/RFC
+		\item \textbf{Verify proofs are actually checked}: Run the full verifier, not just lax checking; look for \texttt{tadmit} and \texttt{assume}
+		\item \textbf{Cross-reference documentation}: Compare claimed verification status against actual build system behavior
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{What ``formally verified'' should mean}
+	\begin{center}
+		\Large
+		A spectrum of claims
+	\end{center}
+	\vspace{0.5em}
+	\begin{enumerate}
+		\item \textbf{``Lax-checked''}: Syntax and types are valid (minimal guarantee)
+		\item \textbf{``Partially verified''}: Some modules have completed proofs, others are admitted
+		\item \textbf{``Verified with caveats''}: All proofs checked, but with documented trust assumptions (compiler, hardware, axioms)
+		\item \textbf{``Fully verified''}: Minimal TCB, all proofs in CI, explicit boundary documentation (CompCert/seL4 level)
+	\end{enumerate}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Most projects are at level 2 or 3. Claims should reflect this.}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Verification theatre, defined}
+	\begin{center}
+		\Large
+		\textbf{Verification theatre} is the practice of deploying formal methods in a manner that:
+	\end{center}
+	\vspace{0.5em}
+	\begin{enumerate}
+		\item Establishes machine-checked proofs for a \textbf{subset} of code and properties, where some proofs may themselves be \textbf{unchecked, vacuous, or built on false axioms}
+		\item Communicates these proofs using language that implies \textbf{comprehensive coverage}
+		\item Fails to adequately disclose the verification boundary, unverified components, unchecked proofs, or properties not covered
+	\end{enumerate}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Echoes Schneier's ``security theater'': an appearance of security that doesn't match reality}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Looking forward: Post-quantum transition}
+	\begin{center}
+		\Large
+		The stakes are rising
+	\end{center}
+	\vspace{0.5em}
+	\begin{itemize}
+		\item ML-KEM and ML-DSA are the \textbf{new NIST standards} for post-quantum cryptography
+		\item They will be deployed in virtually every secure communication system
+		\item Getting their implementations right is \textbf{critical}
+		\item libcrux provides the ML-KEM implementation used by Google
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{The post-quantum transition is the moment when verification boundary practices matter most}
+	\end{center}
+\end{frame}
+
+\begin{frame}{The bottom line}
+	\begin{center}
+		\Large
+		Formal verification is genuinely valuable
+	\end{center}
+	\vspace{0.5em}
+	\begin{itemize}
+		\item Machine-checked proofs of correctness, memory safety, and secret independence are real contributions to software security
+		\item \haclstar, Fiat-Crypto, Jasmin, EverCrypt: these are genuine achievements
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\Large
+		But partial verification $\neq$ comprehensive assurance
+	\end{center}
+	\vspace{0.3em}
+	\begin{itemize}
+		\item Treat verification boundaries as first-class documentation
+		\item Ensure build systems actually verify the proofs they claim to check
+		\item Formal methods \textbf{complement}, rather than replace, engineering practices
+	\end{itemize}
+	\vspace{0.3em}
+	\begin{center}
+		\textbf{Verify the verifiers.}
 	\end{center}
 \end{frame}
 
