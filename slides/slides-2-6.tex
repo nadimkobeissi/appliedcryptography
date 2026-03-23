@@ -5,10 +5,10 @@
 \author{Nadim Kobeissi}
 \subject{An introduction to post-quantum cryptography covering the quantum threat to current cryptographic systems and new quantum-resistant algorithms like Learning with Errors (LWE).}
 \keywords{post-quantum cryptography, quantum computing, Shor's algorithm, Grover's algorithm, Learning with Errors, LWE, lattice-based cryptography, CRYSTALS-Kyber, key encapsulation, NIST PQC}
-\institute{American University of Beirut}
-\instituteimage{images/aub-white.png}
+\institute{Symbolic Software}
+\instituteimage{images/symbolicsoft-white.png}
 \date{\today}
-\coversubtitle{CMPS 297AD/396AI\\Fall 2025}
+\coversubtitle{Summer 2026}
 \coverpartname{Part 2: Real-World Cryptography}
 \covertopicname{2.6: Post-Quantum Cryptography}
 \coverwebsite{https://appliedcryptography.page}
@@ -715,33 +715,33 @@
 \begin{frame}{Why is this process efficient?}
 	Gaussian elimination achieves polynomial-time complexity:
 	{\scriptsize
-	\begin{itemize}
-		\item \textbf{Theoretical complexity}: $O(n^3)$ for $n \times n$ system
-		      \begin{itemize}
-			      {\scriptsize
-			      \item Compare to brute force: $O(q^n)$ where $q$ is field size
-			      \item For $n=1000$: $\sim 10^9$ operations vs $q^{1000}$ (astronomical!)}
-		      \end{itemize}
+		\begin{itemize}
+			\item \textbf{Theoretical complexity}: $O(n^3)$ for $n \times n$ system
+			      \begin{itemize}
+				      {\scriptsize
+					      \item Compare to brute force: $O(q^n)$ where $q$ is field size
+					      \item For $n=1000$: $\sim 10^9$ operations vs $q^{1000}$ (astronomical!)}
+			      \end{itemize}
 
-		\item \textbf{Algorithmic refinements} for practical speed:
-		      \begin{itemize}
-			      {\scriptsize
-			      \item \textbf{Pivoting strategies}: Choose best pivot to minimize numerical errors
-			      \item \textbf{Sparse methods}: Exploit matrices with mostly zeros
-			      \item \textbf{Block algorithms}: Optimize for memory cache hierarchies}
-		      \end{itemize}
+			\item \textbf{Algorithmic refinements} for practical speed:
+			      \begin{itemize}
+				      {\scriptsize
+					      \item \textbf{Pivoting strategies}: Choose best pivot to minimize numerical errors
+					      \item \textbf{Sparse methods}: Exploit matrices with mostly zeros
+					      \item \textbf{Block algorithms}: Optimize for memory cache hierarchies}
+			      \end{itemize}
 
-		\item \textbf{Hardware acceleration} (critical for modern implementations):
-		      \begin{itemize}
+			\item \textbf{Hardware acceleration} (critical for modern implementations):
+			      \begin{itemize}
+				      {\scriptsize
+					      \item \textbf{GPU parallelism}: Thousands of cores compute simultaneously
+					      \item \textbf{SIMD instructions}: Process multiple data elements per CPU cycle
+					      \item \textbf{Optimized libraries}: BLAS, LAPACK, cuBLAS exploit hardware
+					      \item \textbf{Real speedup}: 50--100$\times$ faster with good implementation}
+			      \end{itemize}
 			      {\scriptsize
-			      \item \textbf{GPU parallelism}: Thousands of cores compute simultaneously
-			      \item \textbf{SIMD instructions}: Process multiple data elements per CPU cycle
-			      \item \textbf{Optimized libraries}: BLAS, LAPACK, cuBLAS exploit hardware
-			      \item \textbf{Real speedup}: 50--100$\times$ faster with good implementation}
-		      \end{itemize}
-		      {\scriptsize
-		\item \textbf{Works in finite fields}: Same techniques apply modulo $q$}
-	\end{itemize}}
+			\item \textbf{Works in finite fields}: Same techniques apply modulo $q$}
+		\end{itemize}}
 
 	\vspace{2mm}
 	{\scriptsize \textbf{Bottom line:} Modern systems solve $n \sim 10^6$ variables in seconds!}
@@ -1720,12 +1720,12 @@
 					      \item Need up to 255 hash operations
 					      \item Manageable
 				      \end{itemize}
-				\item 32-bit message: $M \in [0, 2^{32}-1]$
+				\item 32-bit message: $M \in [, 2^{32}-1]$
 				      \begin{itemize}
 					      \item Need up to 4 billion hashes!
 					      \item Impractical
 				      \end{itemize}
-				\item 128-bit message: $M \in [0, 2^{128}-1]$
+				\item 128-bit message: $M \in [, 2^{128}-1]$
 				      \begin{itemize}
 					      \item Need up to $2^{128}$ hashes
 					      \item Impossible

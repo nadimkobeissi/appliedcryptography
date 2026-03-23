@@ -5,10 +5,10 @@
 \author{Nadim Kobeissi}
 \subject{An exploration of end-to-end encrypted cloud storage systems, their security challenges, and cryptographic attacks on real-world implementations.}
 \keywords{end-to-end encryption, cloud storage, MEGA, Nextcloud, cryptographic attacks, key management, authentication, OPAQUE, SRP, password security}
-\institute{American University of Beirut}
-\instituteimage{images/aub-white.png}
+\institute{Symbolic Software}
+\instituteimage{images/symbolicsoft-white.png}
 \date{\today}
-\coversubtitle{CMPS 297AD/396AI\\Fall 2025}
+\coversubtitle{Summer 2026}
 \coverpartname{Part 2: Real-World Cryptography}
 \covertopicname{2.4: End-to-End Encrypted Cloud Storage}
 \coverwebsite{https://appliedcryptography.page}
@@ -1489,32 +1489,32 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
 				\item[1.]\textbf{Client starts OPRF:}
-				\begin{itemize}
-					\item Blinds password: $\alpha = H(pw)^r$
-					\item Sends $\alpha$ to server
-					\item Note: This $r$ is freshly randomized - different from registration and each login
-				\end{itemize}
+				      \begin{itemize}
+					      \item Blinds password: $\alpha = H(pw)^r$
+					      \item Sends $\alpha$ to server
+					      \item Note: This $r$ is freshly randomized - different from registration and each login
+				      \end{itemize}
 				\item[2.]\textbf{Server responds:}
-				\begin{itemize}
-					\item Computes $\beta = \alpha^k = H(pw)^{rk}$
-					\item Sends back $\beta$ and encrypted envelope $env$
-				\end{itemize}
+				      \begin{itemize}
+					      \item Computes $\beta = \alpha^k = H(pw)^{rk}$
+					      \item Sends back $\beta$ and encrypted envelope $env$
+				      \end{itemize}
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
 				\item[3.]\textbf{Client recovers private key:}
-				\begin{itemize}
-					\item Unblinds: $rwd = \beta^{1/r} = H(pw)^k$
-					\item Decrypts: $sk_c = \text{Dec}(rwd, env)$
-					\item If wrong password, decryption fails!
-				\end{itemize}
+				      \begin{itemize}
+					      \item Unblinds: $rwd = \beta^{1/r} = H(pw)^k$
+					      \item Decrypts: $sk_c = \text{Dec}(rwd, env)$
+					      \item If wrong password, decryption fails!
+				      \end{itemize}
 				\item[4.]\textbf{Authenticated key exchange:}
-				\begin{itemize}
-					\item Client and server run AKE using their key pairs
-					\item Derives session key and export key
-					\item Mutual authentication achieved
-				\end{itemize}
+				      \begin{itemize}
+					      \item Client and server run AKE using their key pairs
+					      \item Derives session key and export key
+					      \item Mutual authentication achieved
+				      \end{itemize}
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -2492,8 +2492,8 @@
 					      \item Server computes: $\beta = \alpha^k = H_1(x)^{rk}$ and returns it
 					      \item Client unblinds: $\beta^{1/r} = H_1(x)^k$
 					            {\footnotesize\begin{itemize}
-								            \item The client removes the blinding by raising the server's response to the power of $1/r$ (the multiplicative inverse of $r$), which cancels out the $r$ in the exponent, leaving just $H_1(x)^k$
-							            \end{itemize}}
+							            \item The client removes the blinding by raising the server's response to the power of $1/r$ (the multiplicative inverse of $r$), which cancels out the $r$ in the exponent, leaving just $H_1(x)^k$
+						            \end{itemize}}
 					      \item Client outputs: $y = H_2(x, \beta^{1/r})$
 				      \end{enumerate}
 			\end{itemize}

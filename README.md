@@ -1,6 +1,6 @@
 # Applied Cryptography
 
-This repository contains source code of the course materials for Applied Cryptography (CMPS 297AD/396AI) at the American University of Beirut.
+This repository contains source code of the course materials for Applied Cryptography by Symbolic Software.
 
 ## Contents
 
@@ -48,4 +48,4 @@ _It really is that simple!_
 
 ## Author & License
 
-Applied Cryptography at the American University of Beirut by Nadim Kobeissi is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+Applied Cryptography by Symbolic Software by Nadim Kobeissi is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
