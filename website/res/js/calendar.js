@@ -2,14 +2,20 @@ import {
 	Calendar
 } from "https://cdn.skypack.dev/@fullcalendar/core"
 import listPlugin from "https://cdn.skypack.dev/@fullcalendar/list"
-import iCalendarPlugin from "https://cdn.skypack.dev/@fullcalendar/icalendar@6.1.18"
+import iCalendarPlugin from "https://cdn.skypack.dev/@fullcalendar/icalendar"
 
-const calendarIcsUrl = "https://user.fm/calendar/v1-e730b6a1ee5ac413a9972eed73a9da92/Applied%20Cryptography.ics"
+const calendarIcsUrl = "https://calendar.google.com/calendar/ical/classroom101341617761136608909%40group.calendar.google.com/public/basic.ics"
 
 export const calendarInit = () => {
 	var calendarEl = document.getElementById("calendar-frame")
+
+	const today = new Date()
+	const june8 = new Date(today.getFullYear(), 5, 8)
+	const initialDate = today < june8 ? june8 : today
+
 	var calendar = new Calendar(calendarEl, {
 		initialView: "listWeek",
+		initialDate: initialDate,
 		plugins: [listPlugin, iCalendarPlugin],
 		events: {
 			url: calendarIcsUrl,
