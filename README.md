@@ -48,4 +48,4 @@ _It really is that simple!_
 
 ## Author & License
 
-Applied Cryptography by Symbolic Software by Nadim Kobeissi is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+Applied Cryptography by Symbolic Software is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
