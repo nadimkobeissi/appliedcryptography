@@ -254,6 +254,10 @@ strong {
 	flex-wrap: wrap;
 }
 
+.hero-cta .icon {
+	margin-right: 0.4rem;
+}
+
 .hero-btn-primary {
 	background-color: var(--accent);
 	color: var(--dark);
