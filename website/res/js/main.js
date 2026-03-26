@@ -10,12 +10,9 @@ import {
 import {
 	updatedInit
 } from "./updated.js";
-// import { calendarInit } from "./calendar.js"
-
 document.addEventListener("DOMContentLoaded", () => {
 	mobileInit();
 	menuInit();
 	collapsibleInit();
 	updatedInit();
-	// calendarInit()
 });

@@ -15,7 +15,7 @@
 	<meta property="og:description" content="Learn modern cryptography principles and applications in this comprehensive course covering cryptographic theory, practical implementations, and real-world security systems." />
 	<meta property="og:url" content="https://appliedcryptography.page" />
 	<meta property="og:type" content="website" />
-	<meta property="og:image" content="https://appliedcryptography.page/res/images/og.gif" />
+	<meta property="og:image" content="https://appliedcryptography.page/res/images/og.png" />
 	<meta property="og:image:type" content="image/gif" />
 	<meta property="og:image:width" content="1200" />
 	<meta property="og:image:height" content="630" />
@@ -42,7 +42,6 @@
 			<div class="navbar-links">
 				<a href="#overview">Overview</a>
 				<a href="#registration">Register (Summer 2026)</a>
-				<!-- <a href="#calendar">Calendar</a> -->
 				<a href="#resources">Resources</a>
 				<a href="#syllabus">Syllabus</a>
 				<a href="#assignments">Assignments</a>
@@ -196,21 +195,6 @@
 			</div>
 		</section>
 
-		<!--
-			<section id="calendar" class="section">
-				<div class="section-header">
-					<h2 class="section-title">Calendar</h2>
-				</div>
-				<p>Stay organized with our course calendar that displays all important dates including lectures, assignments, quizzes, and exams. The calendar below provides a comprehensive view of the semester's schedule, helping you plan ahead and manage your time effectively.</p>
-				<div class="card card-highlight mobile-only">
-					<a href="https://user.fm/calendar/v1-e730b6a1ee5ac413a9972eed73a9da92/Applied%20Cryptography.ics" class="btn btn-primary"> <i class="icon ph-duotone ph-calendar-plus"></i> Add to Your Calendar App </a>
-					<p style="margin-top: 10px; font-size: 14px; color: #666"><strong>Recommended for smartphones!</strong> Sync this calendar with your iPhone, Android, or any calendar app to never miss an important deadline or class session.</p>
-				</div>
-				<div class="card card-highlight desktop-only">
-					<div id="calendar-frame"></div>
-				</div>
-			</section>
-		-->
 
 		<section id="resources" class="section">
 			<div class="section-header">
@@ -1356,7 +1340,7 @@
 					</div>
 
 					<div class="topic">
-						<a href=#" class=topic-slides-btn topic-slides-not-available><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
+						<a href="#" class="topic-slides-btn topic-slides-not-available"><i class="icon ph-duotone ph-projector-screen"></i>Slides</a>
 						<span class="topic-number">Topic 2.10</span>
 						<h4 class="topic-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Fully Homomorphic Encryption</h4>
 						<p class="topic-overview">This topic explores Fully Homomorphic Encryption (FHE), a groundbreaking cryptographic primitive that enables arbitrary computations on encrypted data without ever decrypting it. We begin with the fundamental concept of homomorphic operations, distinguishing between partially homomorphic schemes (such as RSA's multiplicative homomorphism and Paillier's additive homomorphism), somewhat homomorphic encryption, and the holy grail of fully homomorphic encryption that supports both addition and multiplication on ciphertexts. The topic traces the history of FHE from Rivest, Adleman, and Dertouzos's 1978 open problem through Craig Gentry's landmark 2009 construction based on ideal lattices, which introduced the bootstrapping technique to manage ciphertext noise growth. We'll analyze the core technical challenge of noise accumulation in lattice-based ciphertexts and how bootstrapping—homomorphically evaluating the decryption circuit—enables unlimited computation depth. Students will study modern FHE schemes including BGV, BFV, CKKS (which supports approximate arithmetic on real numbers), and TFHE (which enables fast gate-by-gate bootstrapping), understanding the trade-offs between these approaches in terms of supported operations, performance, and precision. The topic covers practical considerations including parameter selection, noise budgeting, SIMD-style batching through the Chinese Remainder Theorem, and the significant computational overhead that remains a barrier to widespread adoption. We'll examine real-world applications of FHE including privacy-preserving cloud computing, encrypted database queries, secure machine learning inference, and confidential data analytics, analyzing deployments by companies like Google, Microsoft, and IBM. The topic also explores the relationship between FHE and other lattice-based primitives studied in post-quantum cryptography, and recent advances in hardware acceleration and compiler toolchains (such as Google's FHE compiler and Microsoft's SEAL library) that are making FHE increasingly practical. We conclude by discussing open challenges including performance optimization, standardization efforts, and the potential for FHE to fundamentally reshape how sensitive data is processed in untrusted environments.</p>
