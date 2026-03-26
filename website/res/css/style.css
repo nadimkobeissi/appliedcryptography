@@ -178,53 +178,111 @@ strong {
 
 .hero {
 	position: relative;
-	background-image: linear-gradient(var(--hero-overlay-dark), var(--hero-overlay-light)), url("../images/cedar.avif");
-	background-size: cover;
-	background-position: center;
-	min-height: 40vh;
+	overflow: hidden;
+	min-height: 45vh;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	color: var(--white);
 	text-align: center;
-	padding: var(--spacing-lg) 0;
+	padding: var(--spacing-lg) var(--spacing-md);
+}
+
+.hero::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-image: linear-gradient(var(--hero-overlay-dark), var(--hero-overlay-light)), url("../images/cedar.avif");
+	background-size: cover;
+	background-position: center center;
+	z-index: 0;
 }
 
 .hero-content {
+	position: relative;
+	z-index: 1;
 	max-width: 800px;
 	margin: 0 auto;
+	animation: heroFadeIn 0.8s ease-out;
+}
+
+@keyframes heroFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.hero-eyebrow {
+	margin-bottom: 1.25rem;
+}
+
+.hero-eyebrow img {
+	max-width: 200px;
+	height: auto;
+	background-color: black;
+	padding: 0.5rem 1.25rem;
+	border-radius: var(--border-radius);
 }
 
 .hero h1 {
-	font-size: 3.5rem;
-	margin-bottom: 1rem;
+	font-size: 4rem;
+	margin-bottom: 1.25rem;
 	color: var(--white);
 	text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.75);
 	font-weight: 800;
+	line-height: 1.1;
+	letter-spacing: -0.02em;
 }
 
-.hero-subtitle {
-	font-size: 1.5rem;
-	margin-bottom: 2rem;
-	opacity: 0.9;
+.hero-tagline {
+	font-size: 1.35rem;
+	margin-bottom: 2.5rem;
+	opacity: 0.85;
 	font-weight: 400;
+	color: var(--white);
 }
 
-.hero-subtitle img {
-	max-width: 30%;
-	height: auto;
+.hero-cta {
+	display: flex;
+	gap: 1rem;
+	justify-content: center;
+	flex-wrap: wrap;
 }
 
-.hero-course-code {
-	display: inline-block;
+.hero-btn-primary {
 	background-color: var(--accent);
 	color: var(--dark);
-	padding: 0.5rem 1.5rem;
-	font-family: "JetBrains Mono", monospace;
-	font-weight: 600;
+	font-weight: 700;
+	padding: 0.9rem 2rem;
 	border-radius: var(--border-radius);
-	margin-top: 1.5rem;
-	letter-spacing: 1px;
+	box-shadow: var(--shadow-lg);
+}
+
+.hero-btn-primary:hover {
+	background-color: var(--white);
+	color: var(--primary-dark);
+	transform: translateY(-2px);
+}
+
+.hero-btn-secondary {
+	background-color: transparent;
+	color: var(--white);
+	font-weight: 600;
+	padding: 0.9rem 2rem;
+	border: 2px solid rgba(255, 255, 255, 0.5);
+	border-radius: var(--border-radius);
+}
+
+.hero-btn-secondary:hover {
+	background-color: rgba(255, 255, 255, 0.15);
+	color: var(--white);
+	border-color: var(--white);
+	transform: translateY(-2px);
 }
 
 .section {
@@ -572,11 +630,11 @@ strong {
 	}
 
 	.hero h1 {
-		font-size: 2.5rem;
+		font-size: 2.8rem;
 	}
 
-	.hero-subtitle {
-		font-size: 1.2rem;
+	.hero-tagline {
+		font-size: 1.15rem;
 	}
 
 	.section-title {
@@ -587,6 +645,15 @@ strong {
 @media (max-width: 576px) {
 	.hero h1 {
 		font-size: 2rem;
+	}
+
+	.hero-tagline {
+		font-size: 1rem;
+	}
+
+	.hero-cta {
+		flex-direction: column;
+		align-items: center;
 	}
 
 	.section {
@@ -802,6 +869,49 @@ strong {
 	}
 }
 
+.instructor-photo {
+	width: 150px;
+	height: 150px;
+	object-fit: cover;
+	border-radius: 50%;
+	box-shadow: var(--shadow);
+	flex-shrink: 0;
+	transition: var(--transition);
+}
+
+.instructor-photo:hover {
+	transform: translateY(-5px);
+	box-shadow: var(--shadow-lg);
+}
+
+.ta-photo {
+	width: 100px;
+	height: 100px;
+	object-fit: cover;
+	border-radius: 50%;
+	box-shadow: var(--shadow);
+	flex-shrink: 0;
+	transition: var(--transition);
+}
+
+.ta-photo:hover {
+	transform: translateY(-5px);
+	box-shadow: var(--shadow-lg);
+}
+
+.ta-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 20px;
+}
+
+@media (max-width: 576px) {
+	.instructor-photo,
+	.ta-photo {
+		display: none;
+	}
+}
+
 .collapsible-header {
 	display: flex;
 	align-items: center;
@@ -927,8 +1037,7 @@ strong {
 		color: var(--button-text-dark);
 	}
 
-	.news-entry.new::before,
-	.hero-course-code {
+	.news-entry.new::before {
 		background-color: var(--accent);
 		color: var(--button-text-dark);
 		font-weight: 700;

@@ -52,9 +52,13 @@
 
 	<div class="hero">
 		<div class="hero-content">
+			<p class="hero-eyebrow"><img src="res/images/symbolicsoft-white.png" alt="Symbolic Software" /></p>
 			<h1>Applied Cryptography</h1>
-			<p class="hero-subtitle"><img src="res/images/symbolicsoft-white.png" alt="Symbolic Software" /></p>
-			<!-- <div class="hero-course-code">CMPS 297AD/396AI</div> -->
+			<p class="hero-tagline">From provable security to real-world protocols.</p>
+			<div class="hero-cta">
+				<a href="#registration" class="btn hero-btn-primary"><i class="icon ph-duotone ph-pencil-simple-line"></i>Register for Summer 2026</a>
+				<a href="#syllabus" class="btn hero-btn-secondary"><i class="icon ph-duotone ph-book-open-text"></i>Explore the Syllabus</a>
+			</div>
 		</div>
 	</div>
 
@@ -64,19 +68,8 @@
 				<h2 class="section-title">Overview</h2>
 			</div>
 			<div class="card card-highlight">
-				<p>Welcome to the website for the Applied Cryptography course by Symbolic Software! This page serves as a unified and self-sufficient source of truth on everything concerning your course.</p>
+				<p><em>Applied Cryptography</em> explores the core theory of modern cryptography and how to apply these fundamental principles to build and analyze real-world secure systems. We start with foundational concepts—such as Kerckhoff's Principle, computational hardness, and provable security—before moving on to key cryptographic primitives like pseudorandom generators, block ciphers, and hash functions. Building on this solid groundwork, we will survey how these technologies power critical real-world deployments such as TLS, secure messaging protocols (e.g., Signal), and post-quantum cryptography. We will also delve into specialized topics like high-assurance cryptographic implementations, elliptic-curve-based systems, and zero-knowledge proofs to give you a complete understanding of contemporary cryptography's scope and impact. By the end of the semester, you will have gained both a rigorous theoretical perspective and practical hands-on experience, enabling you to evaluate, design, and implement cryptographic solutions.</p>
 				<ul>
-					<li>
-						<strong><i class="icon ph-duotone ph-envelope"></i>Lecturer:</strong> Nadim Kobeissi (<a href="mailto:n@nadim.email">n@nadim.email</a>)
-					</li>
-					<!--
-					<li>
-						<strong><i class="icon ph-duotone ph-office-chair"></i>Office Hours:</strong> Tuesdays and Thursdays, 2:00pm to 5:00pm, Bliss Hall, Office 238
-					</li>
-					<li>
-						<strong><i class="icon ph-duotone ph-kanban"></i>News, Discussions, Q&amp;A:</strong> <a href="https://piazza.com/aub.edu.lb/fall2025/cmps297ad396ai/info">Piazza</a>
-					</li>
-					-->
 					<li>
 						<strong><i class="icon ph-duotone ph-git-branch"></i>Last Updated:</strong> <span id="lastUpdated"><em>Loading...</em></span>
 					</li>
@@ -91,9 +84,51 @@
 					</li>
 				</ul>
 			</div>
+
 			<div class="subsection">
-				<h3 class="subsection-title">Course Description</h3>
-				<p><em>Applied Cryptography</em> explores the core theory of modern cryptography and how to apply these fundamental principles to build and analyze real-world secure systems. We start with foundational concepts—such as Kerckhoff's Principle, computational hardness, and provable security—before moving on to key cryptographic primitives like pseudorandom generators, block ciphers, and hash functions. Building on this solid groundwork, we will survey how these technologies power critical real-world deployments such as TLS, secure messaging protocols (e.g., Signal), and post-quantum cryptography. We will also delve into specialized topics like high-assurance cryptographic implementations, elliptic-curve-based systems, and zero-knowledge proofs to give you a complete understanding of contemporary cryptography's scope and impact. By the end of the semester, you will have gained both a rigorous theoretical perspective and practical hands-on experience, enabling you to evaluate, design, and implement cryptographic solutions.</p>
+				<h3 class="subsection-title"><i class="icon ph-duotone ph-chalkboard-teacher"></i>Meet Your Instructor</h3>
+				<div class="card">
+					<div class="book-display">
+						<img src="res/images/nadim.jpg" alt="Dr. Nadim Kobeissi" class="instructor-photo" loading="lazy" />
+						<div>
+							<h4 class="mb-2"><i class="icon ph-duotone ph-user"></i>Dr. Nadim Kobeissi</h4>
+							<p class="mb-0">Nadim Kobeissi is a cryptography researcher, the founder of <a href="https://symbolic.software">Symbolic Software</a> and a Senior Cryptography auditor at <a href="https://cure53.de">Cure53</a>, where he has participating in auditing over 300 real-world cryptographic systems. His work focuses on the formal verification of cryptographic protocols and high-assurance cryptographic implementations. He is the creator of <a href="https://verifpal.com">Verifpal</a>, a cryptographic protocol analysis tool, and has contributed to the verification of protocols including TLS 1.3 and the Signal messaging protocol. Nadim holds a Ph.D. in applied cryptography from Paris Sciences et Lettres University and has held teaching positions at the American University of Beirut and New York University.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="subsection">
+				<h3 class="subsection-title"><i class="icon ph-duotone ph-users-three"></i>Teaching Assistants</h3>
+				<div class="ta-grid">
+					<div class="card">
+						<div class="book-display">
+							<img src="res/images/faysal.jpg" alt="Faysal Elestwani" class="ta-photo" loading="lazy" />
+							<div>
+								<h4 class="mb-2"><i class="icon ph-duotone ph-user"></i>Faysal Elestwani</h4>
+								<p class="mb-0">Faysal is a graduate student at the American University of Beirut, where he previously took the Applied Cryptography course.</p>
+							</div>
+						</div>
+					</div>
+					<div class="card">
+						<div class="book-display">
+							<img src="res/images/abdelkader.jpg" alt="Abd El Kader Kahil" class="ta-photo" loading="lazy" />
+							<div>
+								<h4 class="mb-2"><i class="icon ph-duotone ph-user"></i>Abd El Kader Kahil</h4>
+								<p class="mb-0">Abd El Kader is a graduate student at the American University of Beirut, where he previously took the Applied Cryptography course.</p>
+							</div>
+						</div>
+					</div>
+					<div class="card">
+						<div class="book-display">
+							<img src="res/images/rabab.jpg" alt="Rabab Salim" class="ta-photo" loading="lazy" />
+							<div>
+								<h4 class="mb-2"><i class="icon ph-duotone ph-user"></i>Rabab Salim</h4>
+								<p class="mb-0">Rabab Salim is a graduate student at the American University of Beirut, where she previously took the Applied Cryptography course.</p>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</section>
 
