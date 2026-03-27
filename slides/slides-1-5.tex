@@ -71,7 +71,7 @@
 		      \begin{itemize}
 			      \item \textbf{Encrypted VoIP calls}: Length patterns can reveal which language is spoken.
 			      \item \textbf{Encrypted web traffic}: Sizes of requests/responses identify websites.
-			      \item \textbf{Encrypted messages}: Length patterns can reveal the type of content (document, image, etc.)
+			      \item \textbf{Encrypted messages}: Length patterns can reveal the type of content (document, image, etc.).
 			      \item \textbf{Encrypted commands}: Length often reveals which command was issued.
 		      \end{itemize}
 		\item Mitigation typically involves padding messages to fixed lengths or standard increments.
@@ -111,7 +111,7 @@
 		\item<1-2> AES takes a 16-byte input, produces a 16-byte output.
 		\item<1-2> Key can be 16, 24 or 32 bytes.
 		\item<1-2> OK, so what if we want to encrypt more than 16 bytes? \pause
-		\item<2-2> \textbf{Proposal}: split the plaintext into 16 byte chunks, encrypt each of them with the same key.
+		\item<2-2> \textbf{Proposal}: split the plaintext into 16-byte chunks, encrypt each of them with the same key.
 	\end{itemize}
 \end{frame}
 
@@ -144,7 +144,7 @@
 				      \begin{itemize}
 					      \item \textbf{Block cipher modes} (CBC, CTR, GCM) add randomness/state using ``initialization vectors''
 					            \begin{itemize}
-						            \item IV is fancy name for ``random bytes used once''.\footnote{Also referred to as ``nonces'' for ``number used once''. Note: in CBC mode the IV must be \emph{unpredictable}, while in CTR mode the nonce must be \emph{unique} but need not be random.}
+						            \item IV is a fancy name for ``random bytes used once''.\footnote{Also referred to as ``nonces'' for ``number used once''. Note: in CBC mode the IV must be \emph{unpredictable}, while in CTR mode the nonce must be \emph{unique} but need not be random.}
 					            \end{itemize}
 					      \item IVs ensure the same plaintext encrypts differently each time.
 				      \end{itemize}
@@ -299,7 +299,7 @@
 				\item Each block's encryption is independent of other blocks.
 				\item \textbf{Highly parallelizable} (unlike CBC).
 				\item The nonce must never be reused with the same key.
-				\item Widely used in modern protocols (TLS, SSH, etc.)
+				\item Widely used in modern protocols (TLS, SSH, etc.).
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -399,7 +399,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Why is it called \func{nulloracle}{c}?}
+\begin{frame}{Why is it called \func{nulloracle}{C}?}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
@@ -417,7 +417,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Why is it called \func{nulloracle}{c}?}
+\begin{frame}{Why is it called \func{nulloracle}{C}?}
 	\begin{itemize}
 		\item In cryptography and computer science:
 		      \begin{itemize}
@@ -425,7 +425,7 @@
 			      \item You can query it but can't see its internal workings.
 			      \item Oracles are often used as theoretical tools in security proofs.
 		      \end{itemize}
-		\item Our \func{nulloracle}{c} reveals only:
+		\item Our \func{nulloracle}{C} reveals only:
 		      \begin{itemize}
 			      \item Whether a decrypted ciphertext contains null (\bit{0}\bit{0}) characters.
 			      \item Just a single bit of information (yes/no).
@@ -437,7 +437,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
-				\item An adversary who has access to \func{nulloracle}{C} can efficiently compute \texttt{Dec}$(K, C)$ for any $C$!
+				\item An adversary who has access to \func{nulloracle}{C} can efficiently compute $\texttt{Dec}(K, C)$ for any $C$!
 				\item Yes, it really is enough.
 			\end{itemize}
 		\end{column}
@@ -608,12 +608,12 @@
 		\item It's brute-force on each byte independently:
 		      \begin{itemize}
 			      \item To recover $n$-byte plaintext: at most $255n$ oracle queries
-			      \item True brute-force on entire plaintext: $255^n$ (exponentially worse!)
+			      \item True brute-force on entire plaintext: $256^n$ (exponentially worse!)
 		      \end{itemize}
 		\item For a 16-byte message:
 		      \begin{itemize}
 			      \item Null-oracle attack: $\approx 4{,}080$ queries ($16 \times 255$)
-			      \item True brute-force: $\approx 10^{38}$ queries ($255^{16}$)
+			      \item True brute-force: $\approx 10^{38}$ queries ($256^{16}$)
 		      \end{itemize}
 		\item This attack is exponentially more efficient than traditional brute-force.
 	\end{itemize}
@@ -692,7 +692,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Real-world format-oracle attack}{Apple iMessage}
+\begin{frame}{Real-world format-oracle attacks}{Apple iMessage}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
@@ -713,7 +713,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Real-world format-oracle attack}{XML format Oracles}
+\begin{frame}{Real-world format-oracle attacks}{XML format oracles}
 	\begin{itemize}
 		\item Many systems decrypt data expecting valid XML format.
 		\item If decrypted data isn't valid XML, system returns an error.
@@ -1247,7 +1247,7 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
 				\item A MAC provides \textbf{integrity} and \textbf{authenticity} for messages.
-				\item Unlike hash functions, MACs require a secret key
+				\item Unlike hash functions, MACs require a secret key.
 				\item MACs address the malleability problem we saw with encryption schemes. Without a MAC, attackers could modify ciphertexts.
 				\item A secure MAC should be unforgeable, even after seeing MACs for chosen messages.
 			\end{itemize}

@@ -484,7 +484,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{SIGMA: SIGn-and-Mac Authenticated Key Exchange}
+\begin{frame}{SIGMA: SIGn-and-MAc Authenticated Key Exchange}
 	\begin{columns}
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}
@@ -675,7 +675,7 @@
 	\end{alertblock}
 \end{frame}
 
-\begin{frame}{SIGMA: SIGn-and-Mac Authenticated Key Exchange}
+\begin{frame}{SIGMA: SIGn-and-MAc Authenticated Key Exchange}
 	\begin{columns}
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}
@@ -836,7 +836,7 @@
 				\begin{tikzpicture}[>=Stealth, scale=0.67, transform shape]
 					\draw[<-] (0.5,-1) -- (9.5,-1) node[midway,above] {$\begin{array}{rcl}
 								g^x                                    & =                 & \func{dec}{r, \func{enc}{r, g^x}}      \\
-								g^x                                    & \overset{?}{=}    & \func{hash}{g^x}                       \\
+								\func{hash}{g^x}                       & \overset{?}{=}    & \func{hash}{g^x}                       \\
 								s                                      & =                 & g^{xy}                                 \\
 								(c, c', m_{1}, m_{1}', m_{2}, m_{2}')  & \twoheadleftarrow & \func{hash}{s}                         \\
 								\func{hmac}{m_{2}, \func{enc}{c, X_A}} & \overset{?}{=}    & \func{hmac}{m_{2}, \func{enc}{c, X_A}} \\
@@ -886,7 +886,7 @@
 		      \begin{itemize}
 			      \item Extract entropy and produce uniform output
 			      \item Can generate multiple keys from one shared secret
-			      \item Examples: HKDF, scrypt, Argon2
+			      \item Examples: HKDF, NIST SP 800-56C, TLS-PRF
 		      \end{itemize}
 		\item \textbf{Proper approach}: $\func{kdf}{g^{xy}, \texttt{context}} \rightarrow (K_{\texttt{enc}}, K_{\texttt{mac}}, K_{\texttt{auth}}, \ldots)$
 	\end{itemize}
@@ -1482,7 +1482,7 @@
 				\begin{tikzpicture}[>=Stealth, scale=0.67, transform shape]
 					\draw[<-] (0.5,-1) -- (9.5,-1) node[midway,above] {$\begin{array}{rcl}
 								g^x                                    & =                 & \func{dec}{r, \func{enc}{r, g^x}}      \\
-								g^x                                    & \overset{?}{=}    & \func{hash}{g^x}                       \\
+								\func{hash}{g^x}                       & \overset{?}{=}    & \func{hash}{g^x}                       \\
 								s                                      & =                 & g^{xy}                                 \\
 								(c, c', m_{1}, m_{1}', m_{2}, m_{2}')  & \twoheadleftarrow & \func{hash}{s}                         \\
 								\func{hmac}{m_{2}, \func{enc}{c, X_A}} & \overset{?}{=}    & \func{hmac}{m_{2}, \func{enc}{c, X_A}} \\
@@ -1597,7 +1597,7 @@
 	\begin{itemize}
 		\item \textbf{Every message gets fresh keys}
 		      \begin{itemize}
-			      \item Chain key advances: $ck_{i+1} = \func{hmac}{ck_i, c_3}$
+			      \item Chain key advances: $ck_{i+1} = \func{hmac}{ck_i, c_5}$
 			      \item Message key derived: $e_i = \func{hkdf}{\func{hmac}{ck_i, c_3}, c_1, c_4}$
 			      \item Old chain keys immediately deleted
 			      \item Compromise of $e_i$ reveals nothing about $e_{i-1}$ or $e_{i+1}$
@@ -2210,7 +2210,7 @@
 			\begin{itemize}
 				\item Combines asymmetric + symmetric crypto
 				\item Encrypts to public key, no interaction needed
-				\item Used in TLS 1.3, MLS, and more
+				\item Used in MLS, TLS Encrypted Client Hello, and more
 			\end{itemize}
 			\textbf{Two-step process:}
 			\begin{enumerate}

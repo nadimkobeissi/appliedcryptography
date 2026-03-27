@@ -145,7 +145,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{$\mathsf{PRF}: F_{k}= X \rightarrow Y$}
+\begin{frame}{$\mathsf{PRF}: F_{k}\colon X \rightarrow Y$}
 	\begin{columns}[c]
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}
@@ -883,9 +883,9 @@
 		      \end{itemize}
 		\item Simple approach: Iterate the hash function thousands of times.
 		      \begin{itemize}
-			      \item $H(S, H(S, ... H(S,P)...))$ with many iterations.
+			      \item $H(S \| H(S \| \ldots H(S \| P)\ldots))$ with many iterations.
 			      \item \textbf{Obsolete examples}: PBKDF2.
-			      \item \textbf{Modern examples}: Argon2, Scrypt
+			      \item \textbf{Modern examples}: Argon2, Scrypt.
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -949,7 +949,7 @@
 	\begin{itemize}
 		\item Bitcoin and blockchain technology rely heavily on hash functions:
 		      \begin{itemize}
-			      \item \textbf{Proof-of-work}: Finding partial hash collisions (leading zeros).
+			      \item \textbf{Proof-of-work}: Finding partial preimages (leading zeros).
 			      \item \textbf{Merkle trees}: Efficient verification of large datasets.
 			      \item \textbf{Block chaining}: Each block contains the hash of the previous block.
 		      \end{itemize}
@@ -971,7 +971,7 @@
 			      \item \textbf{ROMix}: Core memory-hard function.
 			      \item \textbf{BlockMix}: Based on Salsa20/8 core function.
 		      \end{itemize}
-		\item{Parameters:}
+		\item \textbf{Parameters:}
 		      \begin{itemize}
 			      \item \texttt{N}: CPU/memory cost
 			      \item \texttt{r}: Block size
@@ -1013,7 +1013,7 @@
 			      \item SHA-1: 10+ billion hashes/second
 			      \item SHA-256: 2+ billion hashes/second
 			      \item bcrypt (cost 12): 20,000 hashes/second
-			      \item Scrypt: <1,000 hashes/second
+			      \item Scrypt: $<$1,000 hashes/second
 		      \end{itemize}
 		\item This is why specialized password hashing algorithms are essential.
 		\item The stark speed difference (billions vs. thousands) is a critical security factor.
@@ -1129,7 +1129,7 @@
 		\item Use a dedicated password hashing function (not raw SHA-256).
 		\item Always use random, unique salts (at least 16 bytes).
 		\item Store salts alongside hashes - they don't need to be secret.
-		\item Consider modern memory-hard functions like Scrypt.
+		\item Consider modern memory-hard functions like Argon2 or Scrypt.
 		      \begin{itemize}
 			      \item Tune parameters based on your server capabilities.
 			      \item Aim for 0.5-1 second processing time per hash.
@@ -1228,7 +1228,7 @@
 \end{frame}
 
 \begin{frame}{Limitations of the Random Oracle Model}
-	\begin{columns}
+	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
 				\item \textbf{Gap between theory and practice}:

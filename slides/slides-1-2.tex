@@ -20,7 +20,7 @@
 
 \section{Math Review}
 
-\begin{frame}{Logs \& Exponents}
+\begin{frame}{Logs \& exponents}
 	\begin{itemize}[<+->]
 		\item Key identities to remember:
 		      \begin{align*}
@@ -32,7 +32,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Modular Arithmetic}{Key definitions}
+\begin{frame}{Modular arithmetic}{Key definitions}
 	\begin{itemize}[<+->]
 		\item \textbf{Integers}: $\mathbb{Z} = \{\ldots, -2, -1, 0, 1, 2, \ldots\}$
 		\item \textbf{Natural numbers}: $\mathbb{N} = \{0, 1, 2, \ldots\}$
@@ -41,7 +41,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{The Modulo Operation}
+\begin{frame}{The modulo operation}
 	\begin{itemize}[<+->]
 		\item $a \bmod n$ gives the remainder when dividing $a$ by $n$
 		\item Result is always in $\{0, 1, \ldots, n-1\}$
@@ -55,7 +55,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Understanding Modulo with clocks}
+\begin{frame}{Understanding modulo with clocks}
 	\begin{columns}[c]
 		\column{0.5\textwidth}{
 			\begin{itemize}[<+->]
@@ -91,7 +91,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Binary Strings}
+\begin{frame}{Binary strings}
 	\begin{itemize}[<+->]
 		\item $\bits^n$ = set of $n$-bit binary strings
 		\item $|x|$ = length of string $x$
@@ -237,17 +237,16 @@
 		\column{0.4\textwidth}{
 			\begin{center}
 				\begin{tikzpicture}[scale=0.8]
+					\fill[cyan!30] (0,0) circle (1.5);
+					\fill[cyan!30] (1,0) circle (1.5);
+					\begin{scope}
+						\clip (0,0) circle (1.5);
+						\fill[white] (1,0) circle (1.5);
+					\end{scope}
 					\draw[thick] (0,0) circle (1.5);
 					\draw[thick] (1,0) circle (1.5);
 					\node at (0,-2) {A};
 					\node at (1,-2) {B};
-					\begin{scope}
-						\clip (0,0) circle (1.5);
-						\clip (1,0) circle (1.5);
-						\fill[cyan!30] (-1.5,-1.5) rectangle (2.5,1.5);
-					\end{scope}
-					\draw[thick] (0,0) circle (1.5);
-					\draw[thick] (1,0) circle (1.5);
 					\node at (0.5,0) {$A \oplus B$};
 				\end{tikzpicture}
 			\end{center}
@@ -284,7 +283,7 @@
 			      \textsf{Dec}(K, \textsf{Enc}(K, M)) & = \textsf{Dec}(K, K \oplus M) \\
 			                                          & = K \oplus (K \oplus M)       \\
 			                                          & = (K \oplus K) \oplus M       \\
-			                                          & = 0^n \oplus M                \\
+			                                          & = \bit{0}^n \oplus M          \\
 			                                          & = M \quad \qed
 		      \end{align*}
 	\end{itemize}
@@ -369,8 +368,8 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item \textbf{Generally}: a cipher is secure if the adversary can't distinguish the output of calls to $ATTACK$ from random junk.
-				\item \textbf{Formally}: For all positive integers $n$ and all choices of plaintext $M \in \{\bit{0}, \bit{1}\}^n$, the output of the following subroutine is uniformly distributed:
+				\item \textbf{Generally}: a cipher is secure if the adversary can't distinguish the output of calls to \textsc{Attack} from random junk.
+				\item \textbf{Formally}: For all positive integers $n$ and all choices of plaintext $M \in \bits^n$, the output of the following subroutine is uniformly distributed:
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -437,17 +436,16 @@
 		\column{0.4\textwidth}{
 			\begin{center}
 				\begin{tikzpicture}[scale=0.8]
+					\fill[cyan!30] (0,0) circle (1.5);
+					\fill[cyan!30] (1,0) circle (1.5);
+					\begin{scope}
+						\clip (0,0) circle (1.5);
+						\fill[white] (1,0) circle (1.5);
+					\end{scope}
 					\draw[thick] (0,0) circle (1.5);
 					\draw[thick] (1,0) circle (1.5);
 					\node at (0,-2) {A};
 					\node at (1,-2) {B};
-					\begin{scope}
-						\clip (0,0) circle (1.5);
-						\clip (1,0) circle (1.5);
-						\fill[cyan!30] (-1.5,-1.5) rectangle (2.5,1.5);
-					\end{scope}
-					\draw[thick] (0,0) circle (1.5);
-					\draw[thick] (1,0) circle (1.5);
 					\node at (0.5,0) {$A \oplus B$};
 				\end{tikzpicture}
 			\end{center}
@@ -496,7 +494,7 @@
 			\begin{itemize}[<+->]
 				\item What if this is true only for $M = \bit{01}$?
 				\item Fine, let's pick any $M, C \in \bits^n$.
-				\item What is \prob{\textsc{Attack}$(M) = C$}?
+				\item What is \prob{\textsc{Attack}(M) = C}?
 				\item Answer: Exactly when $C = \textsf{Enc}(K, M) = K \oplus M$.
 				\item \ldots which occurs for exactly one $K$.
 				\item Since $K$ is chosen uniformly from $\bits^n$, the probability of choosing that $K$ is $\frac{1}{2^n}. \quad \qed$
@@ -724,7 +722,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Key Distribution Problem}{The elephant in the room}
+\begin{frame}{Key distribution problem}{The elephant in the room}
 	\begin{columns}[c]
 		\column{0.5\textwidth}{
 			\begin{itemize}[<+->]

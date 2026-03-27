@@ -165,7 +165,7 @@
 				\item ``Asymmetric'' because there is a ``public key'' and a ``private
 				      key'' for each party.
 				\item Algebraic, assume the hardness of mathematical problems (as seen
-				      just now.)
+				      just now).
 			\end{itemize}
 		\end{column}
 
@@ -217,7 +217,7 @@
 			      \end{itemize}
 			\item \textbf{Search problems}: Questions that require finding a specific value
 			      \begin{itemize}
-				      \item Example: ``How many instances of \textit{`i'}s appear in \textit{`incomprehensibilities'}?''
+				      \item Example: ``How many instances of the letter \textit{`i'} appear in \textit{`incomprehensibilities'}?''
 			      \end{itemize}
 		\end{itemize}
 	}
@@ -296,7 +296,7 @@
 			\textbf{Hard Problems}
 			\begin{itemize}[<+->]
 				\item No known polynomial-time solution.
-				\item \textbf{Example}: Factorizing product of two large primes.
+				\item \textbf{Example}: Factoring product of two large primes.
 				\item Running time: Often exponential, e.g., $\mathcal{O}(2^n)$
 				\item Becomes impractical quickly as input grows.
 				\item Includes NP-hard, NP-complete classes.
@@ -312,7 +312,7 @@
 			      \item RSA: Integer factorization problem.
 			      \item Diffie-Hellman: Discrete logarithm problem.
 		      \end{itemize}
-		\item Cryptography leverages these problems to maximize security assurance,
+		\item Cryptography leverages these problems to maximize security assurance.
 		\item The security of these schemes depends on the continued hardness of these problems.
 	\end{itemize}
 \end{frame}
@@ -329,7 +329,7 @@
 			      \item Multivariate cryptography.
 			      \item Isogeny-based cryptography.
 		      \end{itemize}
-		\item NIST is currently standardizing post-quantum cryptographic algorithms to replace our vulnerable systems.
+		\item NIST has standardized post-quantum cryptographic algorithms to replace our vulnerable systems.
 	\end{itemize}
 \end{frame}
 
@@ -343,7 +343,7 @@
 				      \begin{itemize}
 					      \item Sets security standards used worldwide.
 					      \item Evaluates and approves cryptographic algorithms.
-					      \item Currently leading the standardization of post-quantum cryptography.
+					      \item Led the standardization of post-quantum cryptography.
 				      \end{itemize}
 				\item When NIST standardizes an algorithm, it often becomes the global industry standard.
 			\end{itemize}
@@ -801,7 +801,7 @@
 \begin{frame}{The magic of Diffie-Hellman}
 	\begin{itemize}[<+->]
 		\item Whitfield Diffie and Martin Hellman solved this ``impossible'' problem.
-		\item Their solution came one year \textbf{before} RSA (1977).
+		\item Their solution (1976) came one year \textbf{before} RSA (1977).
 		\item Uses the \textbf{discrete logarithm problem} as its foundation.
 		\item Allows two strangers to create a shared secret in public!
 	\end{itemize}
@@ -920,7 +920,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{DLP vs. factoring: equally hard}
+\begin{frame}{DLP vs. factoring: similarly hard}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Factoring Problem}
@@ -1387,7 +1387,7 @@
 	\begin{itemize}[<+->]
 		\item \textbf{First connection}: Server presents its ``host key'' along with DH public value
 		      \begin{itemize}
-			      \item SSH shows you a fingerprint: \texttt{SHA256:ABC123...}
+			      \item SSH shows you a fingerprint: \texttt{SHA256:ABC123\ldots}
 			      \item You're supposed to verify this out-of-band (but nobody does!)
 		      \end{itemize}
 		\item \textbf{Trust on first use (TOFU)}: Client remembers the host key
@@ -1421,7 +1421,7 @@
 			\textbf{Elliptic Curve DH (ECDH)}
 			\begin{itemize}[<+->]
 				\item Uses elliptic curve groups
-				\item 256-bit keys $\approx$ 2048-bit traditional DH
+				\item 256-bit keys $\approx$ 3072-bit traditional DH
 				\item Much faster computations
 				\item Smaller public keys, less bandwidth
 			\end{itemize}
@@ -1579,7 +1579,7 @@
 	\vspace{0.5cm}
 	\textbf{Key sizes and security}:
 	\begin{itemize}[<+->]
-		\item 1024-bit RSA: Broken, considered insecure since 2010
+		\item 1024-bit RSA: Deprecated, considered insecure since 2010
 		\item 2048-bit RSA: Current minimum, but showing its age
 		\item 4096-bit RSA: Secure but slow and unwieldy
 		\item Compare to ECDSA: 256-bit keys offer similar security to 3072-bit RSA!
@@ -1605,8 +1605,8 @@
 		      \end{itemize}
 		\item \textbf{Performance issues}: Terribly slow compared to alternatives
 		      \begin{itemize}
-			      \item 4096-bit RSA signature: ~10ms
-			      \item Ed25519 signature: ~0.1ms (100x faster!)
+			      \item 4096-bit RSA signature: $\sim$10ms
+			      \item Ed25519 signature: $\sim$0.1ms (100x faster!)
 		      \end{itemize}
 		\item \textbf{Implementation pitfalls}: Padding oracle attacks, timing attacks, etc.
 		\item \textbf{The future is elliptic curves and post-quantum}: Time better spent there!

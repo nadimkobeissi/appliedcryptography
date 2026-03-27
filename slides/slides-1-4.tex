@@ -180,14 +180,14 @@
 			If:
 			\sslinked{
 				\sslibrary{}{prg-real}{
-					\sslibrarysubroutine{ots.enc}{}{
+					\sslibrarysubroutine{prg.sample}{}{
 						$S \twoheadleftarrow \bits^\lambda$\\
 						return $G(S)$
 					}{1}
 				}{1}
 			}{\approxeq}{
 				\sslibrary{}{prg-rand}{
-					\sslibrarysubroutine{ots.enc}{}{
+					\sslibrarysubroutine{prg.sample}{}{
 						$Y \twoheadleftarrow \bits^{\lambda+\ell}$\\
 						return $Y$
 					}{1}
@@ -233,7 +233,7 @@
 		\begin{column}{0.5\textwidth}
 			\sslinked{
 				\sslibrary{H}{prg-real}{
-					\sslibrarysubroutine{ots.enc}{}{
+					\sslibrarysubroutine{prg.sample}{}{
 						$S \twoheadleftarrow \bits^\lambda$ \\
 						$A \| B \coloneq G(S)$ \\
 						$C \| D \coloneq G(B)$ \\
@@ -242,7 +242,7 @@
 				}{1}
 			}{\overset{?}{\approxeq}}{
 				\sslibrary{H}{prg-rand}{
-					\sslibrarysubroutine{ots.enc}{}{
+					\sslibrarysubroutine{prg.sample}{}{
 						$Y \twoheadleftarrow \bits^{4\lambda}$ \\
 						return $Y$
 					}{1}
@@ -268,12 +268,12 @@
 			\begin{flushright}
 				\sslinked{
 					\ssprogram{}{
-						$A \| B \| C \| D \coloneq \func{ots.enc}{}$ \\
+						$A \| B \| C \| D \coloneq \func{prg.sample}{}$ \\
 						return $G(B) \stackrel{?}{=} C \| D$
 					}{0.9}
 				}{\link}{
 					\sslibrary{H}{prg-rand}{
-						\sslibrarysubroutine{ots.enc}{}{
+						\sslibrarysubroutine{prg.sample}{}{
 							$Y \twoheadleftarrow \bits^{4\lambda}$ \\
 							return $Y$
 						}{1}
@@ -382,16 +382,6 @@
 					      \item $G: \bits^\lambda \rightarrow \bits^{\lambda+\ell}$
 				      \end{itemize}
 			\end{itemize}
-			\begin{center}
-				\sslibrary{F}{prf-rand}{
-					$L \coloneq$ [\ ]\\[1em]
-					\sslibrarysubroutine{prf.query}{X}{
-						if $L[X]$ undefined:\\
-						\quad $L[X] \twoheadleftarrow \bits^m$\\
-						return $L[X]$
-					}{1}
-				}{0.7}
-			\end{center}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
@@ -404,11 +394,21 @@
 				      \end{itemize}
 				\item PRFs enable ``selective access'' to pseudorandom values without generating the entire sequence
 			\end{itemize}
+			\begin{center}
+				\sslibrary{F}{prf-rand}{
+					$L \coloneq$ [\ ]\\[1em]
+					\sslibrarysubroutine{prf.query}{X}{
+						if $L[X]$ undefined:\\
+						\quad $L[X] \twoheadleftarrow \bits^m$\\
+						return $L[X]$
+					}{1}
+				}{0.7}
+			\end{center}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{$\mathsf{PRF}: F_{k}= X \rightarrow Y$}
+\begin{frame}{$\mathsf{PRF}: F_{k}\colon X \rightarrow Y$}
 	\begin{columns}[c]
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}
@@ -784,7 +784,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{$\mathsf{PRF}: F_{k}= X \rightarrow Y$}
+\begin{frame}{$\mathsf{PRF}: F_{k}\colon X \rightarrow Y$}
 	\begin{columns}[c]
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}
@@ -871,7 +871,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{$\mathsf{PRP}: F_{k}= X \rightarrow X$}
+\begin{frame}{$\mathsf{PRP}: F_{k}\colon X \rightarrow X$}
 	\begin{columns}[c]
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}
@@ -1059,7 +1059,7 @@
 				A keyed permutation $F^{\pm}$ is a secure pseudorandom permutation (PRP) if the following two libraries are indistinguishable:
 			}
 			\begin{itemize}
-				\item $n$ the input length of the PRP. Also the output length!
+				\item $n$ is the input length of the PRP. Also the output length!
 				\item $\lambda$ is the key size and hence the security parameter.
 			\end{itemize}
 		\end{column}
@@ -1933,9 +1933,9 @@
 				\item \textbf{Triple DES (3DES)} replaced it:
 				      \begin{itemize}
 					      \item Uses three DES operations in sequence.
-					      \item $C = E_{K3}(D_{K2}(E_{K1}(P)))$
+					      \item $C = E_{K_3}(D_{K_2}(E_{K_1}(P)))$
 					      \item Effectively doubles the key length.
-					      \item Compatible with legacy DES when $K1 = K2 = K3$
+					      \item Compatible with legacy DES when $K_1 = K_2 = K_3$
 				      \end{itemize}
 				\item 3DES still used in legacy systems, but largely replaced by AES for performance reasons.
 				\item Lesson: Feistel structure made it possible to adapt DES rather than abandon it.

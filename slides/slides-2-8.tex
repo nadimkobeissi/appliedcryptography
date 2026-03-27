@@ -57,7 +57,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.55\textwidth}
-			\textbf{Zero-Knowledge proof:}
+			\textbf{Zero-knowledge proof:}
 			\begin{itemize}
 				\item ``I'll convince you I know the password''
 				\item You learn \textit{\textbf{only}} that I know it
@@ -1260,8 +1260,8 @@
 	\begin{enumerate}
 		\item \textbf{Commit phase:}
 		      \begin{itemize}
-			      \item Real: Pick $y_0 \leftarrow \mathbb{Z}_n$, compute $Y_0 = g^{y_0}$
-			      \item Fake: Pick $C_1, R_1 \leftarrow \mathbb{Z}_n$, compute $Y_1 = g^{R_1} \cdot A_1^{-C_1}$
+			      \item Real: Pick $y_0 \twoheadleftarrow \mathbb{Z}_n$, compute $Y_0 = g^{y_0}$
+			      \item Fake: Pick $C_1, R_1 \twoheadleftarrow \mathbb{Z}_n$, compute $Y_1 = g^{R_1} \cdot A_1^{-C_1}$
 			      \item Send $(Y_0, Y_1)$
 		      \end{itemize}
 		\item \textbf{Challenge:} Receive $C$ from verifier
@@ -1337,7 +1337,7 @@
 			\begin{enumerate}
 				\item \textbf{Commit:}
 				      \begin{itemize}
-					      \item Pick $y \leftarrow \mathbb{Z}_n$
+					      \item Pick $y \twoheadleftarrow \mathbb{Z}_n$
 					      \item Compute $Y_1 = g_1^y$
 					      \item Compute $Y_2 = g_2^y$
 					      \item Compute $Y_3 = g_3^y$
@@ -1652,7 +1652,7 @@
 			\begin{itemize}
 				\item Schnorr signatures
 				\item EdDSA (used in many systems)
-				\item BLS signatures (with pairings)
+				\item ECDSA (related derivation from ElGamal)
 			\end{itemize}
 			\textbf{Blockchain applications:}
 			\begin{itemize}
@@ -3074,7 +3074,7 @@ fn main() {
 			\textbf{Financial services:}
 			\begin{itemize}
 				\item Prove income without revealing amount
-				\item Credit worthiness without credit score
+				\item Creditworthiness without credit score
 				\item KYC without identity exposure
 			\end{itemize}
 			\textbf{Healthcare:}

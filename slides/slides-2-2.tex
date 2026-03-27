@@ -26,7 +26,7 @@
 		      \begin{itemize}
 			      \item \textbf{Birth (1987):} Proprietary stream cipher at RSA Security
 			      \item \textbf{Rise (1990s):} Became the world's most widely deployed stream cipher
-			      \item \textbf{Golden Era (2000s):} Powered WEP, SSL, and TLS protocols globally
+			      \item \textbf{Golden Era (1990s-2000s):} Powered WEP, SSL, and TLS protocols globally
 			      \item \textbf{Decline (2001-2015):} A series of devastating cryptanalytic breakthroughs
 			      \item \textbf{Demise (2015):} Formal prohibition by IETF, browser vendors
 		      \end{itemize}
@@ -93,7 +93,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{$\mathsf{PRP}: F_{k}= X \rightarrow X$}{Reminder}
+\begin{frame}{$\mathsf{PRP}: F_{k}\colon X \rightarrow X$}{Reminder}
 	\begin{columns}[c]
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}
@@ -251,7 +251,7 @@
 		\item \textbf{Ubiquitous protocol adoption:}
 		      \begin{itemize}
 			      \item \textbf{WEP (1997):} Wi-Fi security standard used RC4 exclusively
-			      \item \textbf{SSL 3.0/TLS 1.0 (1995-1999):} RC4 as preferred cipher suite
+			      \item \textbf{SSL 3.0/TLS 1.0 (1996-1999):} RC4 as preferred cipher suite
 			      \item \textbf{SSH-1 (1995):} Early secure shell implementations
 			      \item \textbf{Microsoft Office:} Document password protection
 			      \item \textbf{Adobe PDF:} File encryption standard
@@ -260,7 +260,7 @@
 		      \begin{itemize}
 			      \item 5-10x faster than DES in software implementations
 			      \item Minimal memory requirements (perfect for embedded systems)
-			      \item No export restrictions (unlike strong block ciphers)
+			      \item Fewer export restrictions than strong block ciphers
 			      \item Simple to implement correctly
 		      \end{itemize}
 	\end{itemize}
@@ -270,13 +270,13 @@
 
 \begin{frame}{Early RC4 weaknesses (1995-2000)}
 	\begin{itemize}
-		\item \textbf{1995:} First statistical biases discovered by Wagner and Goldberg
+		\item \textbf{1995:} Roos discovered correlations between key bytes and initial permutation
 		      \begin{itemize}
-			      \item Found that the second byte of RC4 keystream was biased
-			      \item Probability of being zero was $2/256$ instead of $1/256$
-			      \item Seemed like a minor curiosity at the time\ldots
+			      \item Found that RC4's key scheduling leaks information about the key
+			      \item Wagner and Goldberg identified flaws in SSL 3.0's use of RC4
+			      \item Seemed like minor curiosities at the time\ldots
 		      \end{itemize}
-		\item \textbf{1997:} Golic discovered more biases in the keystream
+		\item \textbf{1997:} Goli\'{c} discovered more biases in the keystream
 		      \begin{itemize}
 			      \item Certain byte positions showed statistical irregularities
 			      \item Still considered mostly theoretical concerns
@@ -793,7 +793,7 @@
 				      \draw[red, ultra thick] (2*1.2-0.1,1.9) rectangle (3*1.2+1.1,3.1);
 				      \node[red, below] at (5,1.75) {Repeated ``ll'' pattern};
 				      \draw[->, thick, blue] (2.5,1) -- (2.5,1.8);
-				      \node[blue, below] at (2.5,1) {ABSAB: $(l,l,*,l,l)$ occurs 1024\times more!};
+				      \node[blue, below] at (2.5,1) {ABSAB: $(l,l,*,l,l)$ occurs $1024\times$ more!};
 			      \end{tikzpicture}
 		      \end{center}
 		\item \textbf{Step 3:} After $2^{26}$ samples, frequency analysis reveals:
@@ -898,7 +898,7 @@
 		\item \textbf{2011:} BEAST attack increases RC4 usage
 		\item \textbf{2013:} AlFardan et al. show TLS attacks are almost practical
 		\item \textbf{2014:} POODLE compromises SSL 3.0
-		\item \textbf{2015:} Garman et al. improves password recovery
+		\item \textbf{2015:} Garman et al. improve password recovery
 		\item \textbf{2015:} IETF prohibits RC4 (RFC 7465)
 		\item \textbf{2016:} RC4 removed from browsers
 		\item \textbf{Today:} RC4 is cryptographically dead

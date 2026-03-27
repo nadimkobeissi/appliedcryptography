@@ -77,7 +77,7 @@
 					\sslibrarysubroutine{guess}{G}{
 						return $D \stackrel{?}{=} G$
 					}{1} \\[1em]
-					\sslibrarysubroutine{reroll}{G}{
+					\sslibrarysubroutine{reroll}{}{
 						$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$
 					}{1}
 				}{1}
@@ -143,7 +143,7 @@
 					\sslibrarysubroutine{guess}{G}{
 						return $D \stackrel{?}{=} G$
 					}{1} \\[1em]
-					\sslibrarysubroutine{reroll}{G}{
+					\sslibrarysubroutine{reroll}{}{
 						$D \twoheadleftarrow \{1, 2, 3, 4, 5, 6\}$
 					}{1}
 				}{0.95}
@@ -833,8 +833,8 @@
 					      $C \coloneq \func{ots.enc}{M}$\\
 					      return $C \stackrel{?}{=} \bit{0}^n$
 				      }{1}
-				\item \prob{A\link\lib{}{ots-real} \Rightarrow \texttt{true}} $= 1$
-				\item \prob{A\link\lib{}{ots-rand} \Rightarrow \texttt{true}} $= \frac{1}{2^n}$
+				\item \prob{\prog{}\link\lib{}{ots-real} \Rightarrow \texttt{true}} $= 1$
+				\item \prob{\prog{}\link\lib{}{ots-rand} \Rightarrow \texttt{true}} $= \frac{1}{2^n}$
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -946,7 +946,7 @@
 		\item Let's put extremely small probabilities in perspective:
 		      \begin{itemize}
 			      \item In 2009, Patricia Demauro rolled dice 154 consecutive times without getting a 7 in craps.
-			      \item Probability of this event: $(30/36)^{154} \approx 2^{-40.6}$
+			      \item Probability of this event: $(30/36)^{154} \approx 2^{-40.5}$
 			      \item Often cited as one of the most improbable documented events in gambling history.
 		      \end{itemize}
 		\item Other extremely unlikely gambling events:
@@ -985,7 +985,7 @@
 			      \item Users race to perform SHA-256 hash computations as fast as possible.
 			      \item The collective Bitcoin network has performed approximately $2^{95}$ SHA-256 hashes in total.
 			      \item In the last 12 months alone: approximately $2^{93.6}$ hashes.
-			      \item Current market cap for Bitcoin: approximately 400 billion USD.
+			      \item Current market cap for Bitcoin: approximately 1.7 trillion USD.
 		      \end{itemize}
 		\item This shows the enormous scale of computation that economic incentives can support.
 	\end{itemize}

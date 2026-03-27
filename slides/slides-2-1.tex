@@ -340,7 +340,7 @@
 			      \item \textbf{Key exchange algorithm}: How to establish shared keys (RSA, ECDHE, DHE)
 			      \item \textbf{Authentication algorithm}: How to verify identity (RSA, ECDSA)
 			      \item \textbf{Bulk encryption algorithm}: How to encrypt data (AES, ChaCha20)
-			      \item \textbf{MAC algorithm}: How to ensure integrity (SHA256, SHA384, Poly1305)
+			      \item \textbf{MAC algorithm}: How to ensure integrity (SHA256, SHA384)
 		      \end{enumerate}
 		\item \textbf{Example}: \texttt{TLS\_ECDHE\_RSA\_WITH\_AES\_128\_GCM\_SHA256}
 		      \begin{itemize}
@@ -422,7 +422,7 @@
 		      \begin{enumerate}
 			      \item Browser receives certificate from server
 			      \item Verifies the certificate's signature
-			      \item If signature is valid \rightarrow certificate and public key are trusted
+			      \item If signature is valid $\rightarrow$ certificate and public key are trusted
 			      \item Browser proceeds with connection
 		      \end{enumerate}
 	\end{itemize}
@@ -601,8 +601,8 @@
 		      \end{itemize}
 		\item \textbf{Bytes 2-3 - ProtocolVersion}:
 		      \begin{itemize}
-			      \item Always \texttt{03 01} (historical reasons)
-			      \item Same across TLS versions (confusing!)
+			      \item \texttt{03 03} in TLS 1.2 and 1.3 (historical reasons)
+			      \item TLS 1.3 reuses TLS 1.2's value for compatibility
 		      \end{itemize}
 		\item \textbf{Bytes 4-5 - Length}:
 		      \begin{itemize}
@@ -2088,11 +2088,11 @@
 		      \begin{itemize}
 			      \item For $n$-bit blocks, expect collision after $2^{n/2}$ blocks
 			      \item 64-bit blocks: collision after $2^{32} = 4$ billion blocks
-			      \item At 1 Mbps: 9 hours, at 10 Mbps: 1 hour
+			      \item At 1 MB/s: $\approx$9.5 hours, at 10 MB/s: $\approx$1 hour
 		      \end{itemize}
 		\item \textbf{Collision exploitation}:
 		      \begin{itemize}
-			      \item When same plaintext block encrypted twice \rightarrow\ same ciphertext
+			      \item When two ciphertext blocks collide \rightarrow\ reveals XOR of plaintext blocks
 			      \item Attacker identifies when collision occurs
 			      \item Can deduce relationships between plaintext blocks
 		      \end{itemize}
@@ -2313,7 +2313,7 @@
 		      \begin{itemize}
 			      \item AES-GCM (128-bit or 256-bit keys)
 			      \item AES-CCM (128-bit keys, slightly less efficient than GCM)
-			      \item ChaCha20-Poly1305 (256-bit keys, from RFC 7539)
+			      \item ChaCha20-Poly1305 (256-bit keys, from RFC 8439)
 		      \end{itemize}
 		\item \textbf{Key Derivation Function (KDF)}:
 		      \begin{itemize}
@@ -2325,9 +2325,9 @@
 			      \item \textbf{Elliptic Curves}: 3 NIST curves + Curve25519 + Curve448
 			      \item \textbf{Integer Groups}: 2,048, 3,072, 4,096, 6,144, 8,192 bits (RFC 7919)
 		      \end{itemize}
-		\item \textbf{Security note}: 2,048-bit DH provides $<$100-bit security
+		\item \textbf{Security note}: 2,048-bit DH provides $\approx$112-bit security
 		      \begin{itemize}
-			      \item Inconsistent with other 128-bit security choices
+			      \item Falls short of 128-bit security target
 			      \item Still practically impossible to break
 		      \end{itemize}
 	\end{itemize}
@@ -2566,7 +2566,7 @@
 		      \begin{itemize}
 			      \item Server encodes connection type in last 8 bytes of random value
 			      \item TLS 1.2: \texttt{44 4F 57 4E 47 52 44 01}
-			      \item TLS 1.1: \texttt{44 4F 57 4E 47 52 44 00}
+			      \item TLS 1.1 or below: \texttt{44 4F 57 4E 47 52 44 00}
 			      \item TLS 1.3: Random bytes (no pattern)
 		      \end{itemize}
 		\item \textbf{Attack detection}: Client sees wrong pattern \rightarrow\ knows it's under attack!

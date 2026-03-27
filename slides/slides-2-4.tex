@@ -25,7 +25,7 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
 				\item Cloud storage is a prevalent computing paradigm today
-				\item Outsources data storage to third party services
+				\item Outsources data storage to third-party services
 				\item Benefits for users:
 				      \begin{itemize}
 					      \item No need to worry about backups
@@ -153,7 +153,7 @@
 				\item Three common approaches:
 				      \begin{itemize}
 					      \item \textbf{Dual-password:} Separate login and encryption passwords
-					      \item \textbf{SRP (Secure Remote Password):} Zero-knowledge proof of password
+					      \item \textbf{SRP (Secure Remote Password):} Password-authenticated key exchange
 					      \item \textbf{Hardware-backed authentication:} Passkeys, Apple Secure Enclave, etc.
 				      \end{itemize}
 				\item Trade-offs:
@@ -358,7 +358,7 @@
 		      \end{itemize}
 		\item Smaller providers:
 		      \begin{itemize}
-			      \item icedrive, pCloud, Seafile, Tresorit
+			      \item Icedrive, pCloud, Seafile, Tresorit
 			      \item Tens of millions of users collectively
 		      \end{itemize}
 	\end{itemize}
@@ -367,7 +367,7 @@
 \begin{frame}{Security concerns with current E2EE providers}
 	\begin{itemize}
 		\item Recent analyses found attacks on MEGA and Nextcloud
-		\item Both providers use complex, ad hoc cryptographic designs
+		\item Both providers use complex, ad-hoc cryptographic designs
 		\item Lack formal security guarantees
 		\item MEGA's challenges:
 		      \begin{itemize}
@@ -545,7 +545,7 @@
 				\draw[->, thick] (client) -- (result);
 
 				% Attack count
-				\node at (3.5,2) {\textbf{2 logins}};
+				\node at (3.5,2) {\textbf{512 logins}};
 			\end{tikzpicture}
 		\end{column}
 	\end{columns}
@@ -1307,8 +1307,8 @@
 				\item \textbf{Contrast with traditional password hashing:}
 				      \begin{itemize}
 					      \item Hash database breach $\rightarrow$ offline cracking possible
-					      \item OPAQUE breach $\rightarrow$ still need online guessing
-					      \item Rate limiting remains effective
+					      \item OPAQUE breach $\rightarrow$ offline cracking possible, but no pre-computation advantage
+					      \item Past session keys remain secure (AKE forward secrecy)
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -1331,7 +1331,7 @@
 			\textbf{SRP}
 			\vspace{0.3cm}
 			\begin{itemize}
-				\item[\textcolor{green}{\mycheckmark}] No offline attacks
+				\item[\textcolor{green}{\mycheckmark}] No eavesdropper offline attacks
 				\item[\textcolor{green}{\mycheckmark}] Proven secure
 				\item[\textcolor{orange}{$\sim$}] Complex protocol
 				\item[\textcolor{red}{$\times$}] Pre-computation attacks
@@ -1395,7 +1395,7 @@
 				\item \textbf{Key properties:}
 				      \begin{itemize}
 					      \item \textbf{Oblivious:} Server doesn't learn client's input
-					      \item \textbf{Verifiable:} Client can verify correct computation
+					      \item \textbf{Verifiable (VOPRF variant):} Client can verify correct computation
 					      \item \textbf{Deterministic:} Same input always gives same output
 				      \end{itemize}
 			\end{itemize}
@@ -1413,7 +1413,7 @@
 				      \begin{itemize}
 					      \item Send blinded $H(pw)^r$
 					      \item Get back $(H(pw)^r)^k$
-					      \item Compute $rwd = H(pw)^k = (H(pw)^r)^{k/r}$
+					      \item Unblind: $rwd = ((H(pw)^r)^k)^{1/r} = H(pw)^k$
 				      \end{itemize}
 				\item Generate random private key $sk_c$
 				\item Encrypt: $env = \text{Enc}(rwd, sk_c)$
@@ -1552,8 +1552,8 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Against server compromise:}
 			\begin{itemize}
-				\item[\textcolor{green}{\mycheckmark}] No offline dictionary attacks
-				\item[\textcolor{green}{\mycheckmark}] Forward secrecy for passwords
+				\item[\textcolor{green}{\mycheckmark}] No pre-computation advantage
+				\item[\textcolor{green}{\mycheckmark}] Forward secrecy for session keys
 				\item[\textcolor{green}{\mycheckmark}] Past sessions remain secure
 			\end{itemize}
 		\end{column}
@@ -1852,7 +1852,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Infrastructure resilience}
 			\begin{itemize}
-				\item 5 datacenter deployment
+				\item 5-datacenter deployment
 				\item Majority consensus system
 				\item Tolerates multiple failures
 				\item Geographic distribution
@@ -1861,7 +1861,7 @@
 	\end{columns}
 	\vspace{0.5cm}
 	\begin{center}
-		\textbf{Transport security:} Noise Protocol Framework for client-server communication (here used as an alternative to TLS, but in reality it's a whole thing that lets you design a versatile amount of protocols)
+		\textbf{Transport security:} Noise Protocol Framework for client-server communication (here used as an alternative to TLS, but in reality it's a whole thing that lets you design a wide variety of protocols)
 	\end{center}
 \end{frame}
 
@@ -2094,7 +2094,7 @@
 			\begin{itemize}
 				\item \textbf{Why 64 digits?}
 				      \begin{itemize}
-					      \item 64 digits = ~212 bits of entropy
+					      \item 64 digits = ${\sim}$212 bits of entropy
 					      \item Much more than needed for 128-bit AES key
 					      \item Difficult for humans to manage
 					      \item Error-prone to transcribe
@@ -2430,7 +2430,7 @@
 				      \begin{itemize}
 					      \item Formal security definitions for E2EE storage
 					      \item Clean, analyzable protocol design
-					      \item Security proofs in the UC framework
+					      \item Game-based security proofs
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -2442,7 +2442,7 @@
 		\begin{column}{1\textwidth}
 			\textbf{Core cryptographic primitives:}
 			\begin{itemize}
-				\item \textbf{PRF (Pseudorandom Function):} $F: \{0,1\}^{kl} \times \{0,1\}^* \to \{0,1\}^{kl}$
+				\item \textbf{PRF (Pseudorandom Function):} $F: \{0,1\}^{\kappa} \times \{0,1\}^* \to \{0,1\}^{\kappa}$
 				\item \textbf{MAC (Message Authentication Code):} For integrity verification
 				\item \textbf{AEAD (Authenticated Encryption):} AES-GCM or ChaCha20-Poly1305
 				\item \textbf{2HashDH OPRF:} Password hardening against offline attacks
@@ -2459,7 +2459,7 @@
 			\begin{itemize}
 				\item \textbf{Problem:} How to derive keys from passwords without server learning them?
 				\item \textbf{Challenge:} Server needs to help with computation, but shouldn't learn password
-				\item \textbf{Solution:} Oblivious Pseudorandom Function (OPRF) (Similar to OPAQUE)
+				\item \textbf{Solution:} Oblivious Pseudorandom Function (OPRF) (also used by OPAQUE)
 				      \begin{itemize}
 					      \item Client has secret input (account ID + password)
 					      \item Server has key $k$

@@ -25,7 +25,7 @@
 		\item \textbf{Revolutionary introduction (1985):} Elliptic Curve Cryptography (ECC) transformed public-key cryptography.
 		\item \textbf{Superior efficiency:} More powerful than RSA and classical Diffie-Hellman.
 		      \begin{itemize}
-			      \item ECC with 256-bit key $\approx$ RSA with 4,096-bit key (security).
+			      \item ECC with 256-bit key $\approx$ RSA with 3,072-bit key (security).
 			      \item Significantly smaller key sizes for equivalent security.
 		      \end{itemize}
 		\item \textbf{Mathematical foundation:} Operations on points of elliptic curves.
@@ -47,7 +47,7 @@
 	\begin{itemize}
 		\item \textbf{Key size efficiency:} ECC provides equivalent security with much smaller keys.
 		      \begin{itemize}
-			      \item 256-bit ECC key $\simeq$ 4,096-bit RSA key $\simeq$ 15,360-bit finite field DH.
+			      \item 256-bit ECC key $\approx$ 3,072-bit RSA key $\approx$ 3,072-bit finite field DH.
 			      \item Exponential security advantage as key sizes increase.
 			      \item Good resource for estimating key length: \url{https://keylength.com}
 		      \end{itemize}
@@ -177,13 +177,13 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Elliptic curves over real numbers vs. integers}
+\begin{frame}{Elliptic curves over real numbers vs. finite fields}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\imagewithcaption{elliptic-curve-real.png}{Elliptic curve over the real numbers (includes negative numbers, decimals)\ldots}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\imagewithcaption{elliptic-curve-integers.png}{Same elliptic curve over the integers (only whole positive numbers)}
+			\imagewithcaption{elliptic-curve-integers.png}{Same elliptic curve over a finite field (only whole positive numbers)}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -442,7 +442,7 @@
 	\begin{itemize}
 		\item \textbf{Elliptic Curve Digital Signature Algorithm (ECDSA):}
 		      \begin{itemize}
-			      \item NIST standardized in the early 1990s.
+			      \item Proposed in 1992, ANSI standardized in 1999, NIST in 2000.
 			      \item Elliptic curve version of the Digital Signature Algorithm (DSA).
 			      \item Widely adopted in blockchain and web security.
 		      \end{itemize}
@@ -558,7 +558,7 @@
 				\item \textbf{Compute public key:} $A = a \cdot B$ (precomputed)
 				\item \textbf{Generate nonce deterministically:} $r = \func{hash}{h \parallel M}$
 				\item \textbf{Compute signature point:} $R = r \cdot B$
-				\item \textbf{Compute signature scalar:} $S = r + \func{hash}{R, A, M} \times a$
+				\item \textbf{Compute signature scalar:} $S = r + \func{hash}{R, A, M} \cdot a$
 				\item \textbf{Output signature:} $(R, S)$
 			\end{enumerate}
 		\end{column}
@@ -586,10 +586,10 @@
 			\vspace{0.5cm}
 			\textbf{Why this works:}
 			\begin{itemize}
-				\item From signing: $S = r + \func{hash}{R, A, M} \times a$
-				\item So: $S \cdot B = (r + \func{hash}{R, A, M} \times a) \cdot B$
-				\item $= r \cdot B + \func{hash}{R, A, M} \times a \cdot B$
-				\item $= R + \func{hash}{R, A, M} \times A$
+				\item From signing: $S = r + \func{hash}{R, A, M} \cdot a$
+				\item So: $S \cdot B = (r + \func{hash}{R, A, M} \cdot a) \cdot B$
+				\item $= r \cdot B + \func{hash}{R, A, M} \cdot a \cdot B$
+				\item $= R + \func{hash}{R, A, M} \cdot A$
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -809,12 +809,12 @@
 		\item \textbf{Security improvements:}
 		      \begin{itemize}
 			      \item No suspicious constants—all parameters have clear origins.
-			      \item Unified addition formula (same for $P + Q$ and $P + P$).
+			      \item Edwards form (Ed25519) has complete addition formulas.
 			      \item Resistant to timing attacks.
 		      \end{itemize}
 		\item \textbf{Mathematical form:} $y^2 = x^3 + 486662x^2 + x$
 		      \begin{itemize}
-			      \item Works modulo $2^{255} - 19$ (closest prime to $2^{255}$).
+			      \item Works modulo $2^{255} - 19$ (largest prime below $2^{255}$, enabling fast reduction).
 			      \item Coefficient 486662 is the smallest integer satisfying security criteria.
 		      \end{itemize}
 	\end{itemize}
@@ -849,7 +849,7 @@
 		      \end{itemize}
 		\item \textbf{Modern alternatives:}
 		      \begin{itemize}
-			      \item \textbf{Curve41417:} Variant of Curve25519 with higher security ($\approx$200 bits).
+			      \item \textbf{Curve41417:} 414-bit curve by Bernstein et al. with higher security ($\approx$200 bits).
 			      \item \textbf{Ed448-Goldilocks:} 448-bit curve (RFC 8032, 2017).
 			      \item \textbf{Aranha et al. curves:} Six high-security curves (rarely used).
 		      \end{itemize}
@@ -1041,7 +1041,7 @@
 			      \item Total points: $8 \times \ell$ where $\ell$ is a large prime.
 			      \item Has a subgroup of order 8 (small!).
 			      \item Has a subgroup of order $\ell$ (large, secure).
-			      \item Every point belongs to one of these subgroups.
+			      \item Cryptographic operations target the large subgroup of order $\ell$.
 		      \end{itemize}
 		\item \textbf{Security implication:} Attackers try to push operations into small subgroups where discrete log is easy.
 	\end{itemize}
@@ -1325,7 +1325,7 @@
 		\item \textbf{Challenge:} Replace RSA key exchange with elliptic curve alternatives.
 		\item \textbf{Implementation impact:}
 		      \begin{itemize}
-			      \item X25519 ECDH: 40-100x faster than 2048-bit RSA key exchange.
+			      \item X25519 ECDH: significantly faster than 2048-bit RSA key exchange.
 			      \item Smaller certificates reduce network overhead.
 			      \item Enables features like 0-RTT handshakes.
 		      \end{itemize}

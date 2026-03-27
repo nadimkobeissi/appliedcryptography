@@ -1410,7 +1410,7 @@
 	\vspace{1em}
 	\textbf{V5: ECDSA missing low-$S$ normalization}
 	\begin{itemize}
-		\item ECDSA signatures have a malleability: both $(r, s)$ and $(r, n-s)$ are valid
+		\item ECDSA signatures exhibit malleability: both $(r, s)$ and $(r, n-s)$ are valid
 		\item Bitcoin, Ethereum, and other systems \textbf{require} $s \leq n/2$ (``low-$S$'')
 		\item libcrux's \fstar specification doesn't include this requirement
 		\item Implementation is provably correct per spec, but \textbf{rejected by practical systems}
@@ -1989,7 +1989,7 @@
 	\vspace{0.5em}
 	\begin{itemize}
 		\item Machine-checked proofs of correctness, memory safety, and secret independence are real contributions to software security
-		\item \haclstar, Fiat-Crypto, Jasmin, EverCrypt: these are genuine achievements
+		\item \haclstar, Fiat Crypto, Jasmin, EverCrypt: these are genuine achievements
 	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}

@@ -153,7 +153,7 @@
 					             \end{cases}
 				      \end{align*}
 				\item \textbf{Result}: Grover finds the correct key in $\mathcal{O}(2^{\lambda/2})$ time\footnote{Note: Grover's algorithm is inherently sequential (cannot be parallelized efficiently)}
-				\item \textbf{Defense}: Double the key size\footnote{Cryptographers argue about this recommendation in different points, some thinking it's too simplistic, others thinking that with hash functions, you may not need to go from SHA-256 to SHA-512 with SHA-384 being enough, etc.}
+				\item \textbf{Defense}: Double the key size\footnote{Cryptographers argue about this recommendation on various points, some thinking it's too simplistic, others thinking that with hash functions, you may not need to go from SHA-256 to SHA-512 with SHA-384 being enough, etc.}
 				      \begin{itemize}
 					      \item AES-128 $\rightarrow$ AES-256 (to maintain 128-bit security)
 					      \item SHA-256 $\rightarrow$ SHA-512 (for collision resistance)
@@ -172,7 +172,7 @@
 			      \item Solving the discrete logarithm problem in any cyclic group of order $< 2^k$, even groups based on elliptic curves
 		      \end{itemize}
 		\item Both algorithms use a common approach called \textit{Shor's algorithm}
-		\item \textbf{Implication}: All public-key cryptography based on factoring (RSA) or discrete logarithm (Diffie-Hellman, El Gamal, Schnorr) can be broken by quantum computers
+		\item \textbf{Implication}: All public-key cryptography based on factoring (RSA) or discrete logarithm (Diffie-Hellman, ElGamal, Schnorr) can be broken by quantum computers
 	\end{itemize}
 \end{frame}
 
@@ -227,7 +227,7 @@
 				      \begin{itemize}
 					      \item AES, SHA-256 $\rightarrow$ Weakened but not broken
 					      \item Grover's algorithm: Provides quadratic speedup
-					      \item Solution: Double the key size (AES-128 $\rightarrow$ AES-256)\footnote{Cryptographers argue about this recommendation in different points, some thinking it's too simplistic, others thinking that with hash functions, you may not need to go from SHA-256 to SHA-512 with SHA-384 being enough, etc.}
+					      \item Solution: Double the key size (AES-128 $\rightarrow$ AES-256)\footnote{Cryptographers argue about this recommendation on various points, some thinking it's too simplistic, others thinking that with hash functions, you may not need to go from SHA-256 to SHA-512 with SHA-384 being enough, etc.}
 				      \end{itemize}
 				\item \textbf{Hash functions}: Similar to symmetric crypto
 				      \begin{itemize}
@@ -1797,9 +1797,13 @@
 				\node[draw,circle] (n5) at (5,1) {};
 				\node[draw,circle] (n6) at (7,1) {};
 				\node[draw,rectangle] (pk1) at (0,0) {$PK_1$};
-				\node[draw,rectangle] (pk2) at (2,0) {$PK_2$};
-				\node[draw,rectangle] (pk3) at (4,0) {$PK_3$};
-				\node[draw,rectangle] (pk4) at (6,0) {$PK_4$};
+				\node[draw,rectangle] (pk2) at (1.5,0) {$PK_2$};
+				\node[draw,rectangle] (pk3) at (2.5,0) {$PK_3$};
+				\node[draw,rectangle] (pk4) at (4,0) {$PK_4$};
+				\node[draw,rectangle] (pk5) at (5,0) {$PK_5$};
+				\node[draw,rectangle] (pk6) at (6.5,0) {$PK_6$};
+				\node[draw,rectangle] (pk7) at (7.5,0) {$PK_7$};
+				\node[draw,rectangle] (pk8) at (8,0) {$PK_8$};
 
 				\draw (root) -- (n1);
 				\draw (root) -- (n2);
@@ -1811,6 +1815,10 @@
 				\draw (n3) -- (pk2);
 				\draw (n4) -- (pk3);
 				\draw (n4) -- (pk4);
+				\draw (n5) -- (pk5);
+				\draw (n5) -- (pk6);
+				\draw (n6) -- (pk7);
+				\draw (n6) -- (pk8);
 			\end{tikzpicture}
 		\end{column}
 	\end{columns}
@@ -1923,8 +1931,8 @@
 			\begin{itemize}
 				\item One party generates the key
 				\item Alice: Generates random key $k$
-				\item Alice: Encapsulates $k$ \rightarrow\ ciphertext $c$
-				\item Bob: Decapsulates $c$ \rightarrow\ key $k$
+				\item Alice: Encapsulates $k$ $\rightarrow$ ciphertext $c$
+				\item Bob: Decapsulates $c$ $\rightarrow$ key $k$
 				\item \textbf{Asymmetric}: One generates, one recovers
 			\end{itemize}
 		\end{column}
@@ -1962,7 +1970,7 @@
 			      \item Natural fit: ``Encrypt'' a random key with public key
 			      \item Avoid complex reconciliation mechanisms
 			      \item Better bandwidth usage
-			      \item Potentially less round trips
+			      \item Potentially fewer round trips
 		      \end{itemize}
 		\item \textbf{Mathematical limitations}:
 		      \begin{itemize}
@@ -2048,7 +2056,7 @@
 			      \item ML-KEM-768: Targets AES-192 equivalent security
 			      \item ML-KEM-1024: Targets AES-256 equivalent security
 		      \end{itemize}
-		\item \textbf{First NIST PQ key agreement standard}
+		\item \textbf{First NIST PQ key encapsulation standard}
 	\end{itemize}
 \end{frame}
 
@@ -2062,12 +2070,12 @@
 			ML-KEM-512         & \mycheckmark & 800                                        & 768                                   & 45,000 & 70,000 \\
 			ML-KEM-768         & \mycheckmark & 1,184                                      & 1,088                                 & 29,000 & 45,000 \\
 			ML-KEM-1024        & \mycheckmark & 1,568                                      & 1,568                                 & 20,000 & 30,000 \\
-			X25519             & \times       & 32                                         & 32                                    & 19,000 & 19,000 \\
+			X25519             & $\times$     & 32                                         & 32                                    & 19,000 & 19,000 \\
 			\hline
 		\end{tabular}
 	\end{center}
 	\begin{itemize}
-		\item \textbf{Size penalty}: ML-KEM is 25-50\times\ larger than X25519
+		\item \textbf{Size penalty}: ML-KEM is 25--50$\times$ larger than X25519
 		\item \textbf{Speed bonus}: ML-KEM can be faster
 		\item \textbf{Trade-off}: Bandwidth vs computation
 	\end{itemize}
@@ -2429,7 +2437,7 @@
 
 			\textbf{KEM refresh heuristic:}
 			\begin{itemize}
-				\item Every \approx50 messages, OR
+				\item Every $\approx$50 messages, OR
 				\item At least once per week
 			\end{itemize}
 		\end{column}
@@ -2472,7 +2480,7 @@
 			\textbf{PQ3's solution:}
 			\begin{itemize}
 				\item Can't send new KEM key with every message
-				\item Heuristic: New KEM key every \approx50 messages
+				\item Heuristic: New KEM key every $\approx$50 messages
 				\item Or at least once per week
 				\item Trade-off: Less frequent PQ ratcheting
 			\end{itemize}
@@ -2487,7 +2495,7 @@
 			\textbf{PQ3 (post-quantum):}
 			\begin{itemize}
 				\item Large KEM keys (1KB+)
-				\item Ratchets every \approx50 messages
+				\item Ratchets every $\approx$50 messages
 				\item Delayed post-compromise recovery
 				\item But quantum-resistant!
 			\end{itemize}
@@ -2527,9 +2535,9 @@
 		\begin{column}{0.55\textwidth}
 			\textbf{PQ3's problem:}
 			\begin{itemize}
-				\item Sends full Kyber key every \approx50 messages
+				\item Sends full Kyber key every $\approx$50 messages
 				\item If recipient offline: resends 2272 bytes repeatedly!
-				\item Worst case: 50\times\ overhead
+				\item Worst case: 50$\times$ overhead
 			\end{itemize}
 			\textbf{Triple Ratchet's solution:}
 			\begin{itemize}
@@ -2599,7 +2607,7 @@
 	\begin{itemize}
 		\item \textbf{p}: Probability sender continues without waiting for response
 		\item \textbf{Balanced}: TR competitive even in best case for PQ3
-		\item \textbf{Realistic scenarios}: TR dramatically better (up to 5\times\ improvement)
+		\item \textbf{Realistic scenarios}: TR dramatically better (up to 5$\times$ improvement)
 		\item \textbf{Combines}: Erasure coding + efficient Katana RKEM
 	\end{itemize}
 \end{frame}
@@ -2636,7 +2644,7 @@
 				\item Typing indicators common
 				\item Linked devices often offline
 				\item p = 0.9 realistic for Signal
-				\item TR: 5\times\ better than PQ3
+				\item TR: 5$\times$ better than PQ3
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -2671,7 +2679,7 @@
 			\textbf{Apple PQ3:}
 			\begin{itemize}
 				\item Simple amortization strategy
-				\item Full KEM every \approx50 messages
+				\item Full KEM every $\approx$50 messages
 				\item Good for balanced chats
 				\item \textcolor{red}{Bad for unbalanced scenarios}
 			\end{itemize}
@@ -2808,7 +2816,7 @@
 				\item \textbf{Digital signatures}
 				      \begin{itemize}
 					      \item Broken by Shor's algorithm
-					      \item \textcolor{green!70!black}{Not vulnerable to SNDL (Store Now, Decrypt Later)}
+					      \item \textcolor{green!70!black}{Not vulnerable to SNDL (Store-Now-Decrypt-Later)}
 				      \end{itemize}
 				\item \textbf{``Fancy'' crypto}
 				      \begin{itemize}
@@ -2888,17 +2896,17 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Certificate chains today:}
 			\begin{itemize}
-				\item Root CA: \approx1KB
-				\item Intermediate: \approx1KB
-				\item Leaf cert: \approx1KB
-				\item \textbf{Total}: \approx3KB
+				\item Root CA: $\approx$1KB
+				\item Intermediate: $\approx$1KB
+				\item Leaf cert: $\approx$1KB
+				\item \textbf{Total}: $\approx$3KB
 			\end{itemize}
 			\vspace{5mm}
 			\textbf{With PQ signatures:}
 			\begin{itemize}
 				\item Each cert: >5KB
 				\item 3-cert chain: >15KB
-				\item \textbf{5\times\ increase!}
+				\item \textbf{5$\times$ increase!}
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -2931,7 +2939,7 @@
 			\textbf{1. Nation states}
 			\begin{itemize}
 				\item Most likely first adopters
-				\item Will use ``deniably'' to hide capability
+				\item Will use deniability to hide capability
 				\item Target: High-value stored data
 				\item Focus on static keys (PKI)
 			\end{itemize}
