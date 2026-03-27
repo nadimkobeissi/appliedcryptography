@@ -258,11 +258,13 @@ export async function initViewer(pdfUrl, options = {}) {
 	function updatePageInfo() {
 		const canvases = container.querySelectorAll(`canvas`)
 		if (!canvases.length) return
-		const mid = container.scrollTop + container.clientHeight / 2
+		const containerRect = container.getBoundingClientRect()
+		const containerMid = containerRect.top + containerRect.height / 2
 		let current = 1
 		let best = Infinity
 		canvases.forEach((c) => {
-			const d = Math.abs(c.offsetTop + c.offsetHeight / 2 - mid)
+			const rect = c.getBoundingClientRect()
+			const d = Math.abs(rect.top + rect.height / 2 - containerMid)
 			if (d < best) {
 				best = d
 				current = +c.dataset.page
