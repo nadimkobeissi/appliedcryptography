@@ -113,7 +113,7 @@
 				      \end{itemize}
 				\item \textbf{Essential when:}
 				      \begin{itemize}
-					      \item Building signatures schemes
+					      \item Building signature schemes
 					      \item Proving knowledge credentials
 					      \item Composition with other protocols
 				      \end{itemize}
@@ -298,7 +298,7 @@
 					return $(A, Y, c, r)$
 				}{1}
 			}{1}
-		}{\interchangeable}{
+		}{\interchangeable{}}{
 			\sslibrary{}{schnorr-fake}{
 				\sslibrarysubroutine{schnorr.transcript}{a}{
 					$A := g^a$ \\
@@ -370,7 +370,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item $r$ is essentially a OTP encryption of plaintext $ca$ under key $y$, using a variant of OTP with addition $\bmod\ n$.
+				\item $r$ is essentially an OTP encryption of plaintext $ca$ under key $y$, using a variant of OTP with addition $\bmod\ n$.
 				\item We can achieve the same distribution by choosing $r$ uniformly and solving for $y$.
 			\end{itemize}
 		\end{column}
@@ -466,7 +466,7 @@
 					return $(A, Y, c, r)$
 				}{1}
 			}{1}
-		}{\interchangeable}{
+		}{\interchangeable{}}{
 			\sslibrary{}{schnorr-fake}{
 				\sslibrarysubroutine{schnorr.transcript}{a}{
 					$A := g^a$ \\
@@ -698,7 +698,7 @@
 	\end{block}
 \end{frame}
 
-\begin{frame}{Example: Schnorr as Sigma protocols}
+\begin{frame}{Example: Schnorr as a Sigma protocol}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Instance and Witness:}
@@ -722,7 +722,7 @@
 				\item $\mathcal{C} = \mathbb{Z}_n$ (all possible challenges)
 				\item \textbf{Respond}$(\sigma = y, c)$:
 				      \begin{itemize}
-					      \item Return $r = y + ca \bmod n$
+					      \item Return $r = (y + ca) \bmod n$
 				      \end{itemize}
 				\item \textbf{Check}$(A, Y, c, r)$:
 				      \begin{itemize}
@@ -842,7 +842,7 @@
 	\begin{block}{Definition: Completeness}
 		A Sigma protocol is \textbf{complete} if:
 		\begin{itemize}
-			\item For any instance $X$ and witness $W$ where $P(X,W) = \text{true}$
+			\item For any instance $X$ and witness $W$ where $R(X,W) = \text{true}$
 			\item When the prover follows the protocol honestly
 			\item The verifier \textit{always} accepts
 		\end{itemize}
@@ -920,7 +920,7 @@
 			\item With same instance $X$ and commitment $Y$
 			\item But different challenges $c \neq c'$
 			\item \textbf{Extract}$(X, Y, c, r, c', r')$ outputs witness $W$
-			\item Such that $P(X, W) = \text{true}$
+			\item Such that $R(X, W) = \text{true}$
 		\end{itemize}
 	\end{block}
 	\textbf{Interpretation:} If you can answer two different challenges for the same commitment, you must know the secret!
@@ -1901,7 +1901,7 @@ template IsZero() {
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{alertblock}{New result (2025)}
-				First practical attack on a standard protocol!\footnote{https://appliedcryptography.page/paper/\#prove-false}
+				First practical attack on a standard protocol!\footnote{\url{https://appliedcryptography.page/paper/\#prove-false}}
 				\begin{itemize}
 					\item Targets GKR-based proof systems
 					\item Used in real deployed systems
@@ -2608,7 +2608,7 @@ fn main() {
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item\textbf{The hard truth:}
+				\item \textbf{The hard truth:}
 				      \begin{itemize}
 					      \item Projects claiming to use zkVMs for security today are either:
 					            \begin{itemize}
@@ -2924,7 +2924,7 @@ fn main() {
 			\textbf{Lessons for ZK adoption:}
 			\begin{itemize}
 				\item Privacy must be easy to use
-				\item Optional privacy \rightarrow\ limited adoption
+				\item Optional privacy $\rightarrow$ limited adoption
 				\item Performance matters enormously
 				\item Trust assumptions are critical
 				\item Regulatory environment is key
@@ -2946,7 +2946,7 @@ fn main() {
 				\item Google open-sourced ZKP libraries
 				\item Partnership with Sparkasse (German bank)
 				\item Focus on EU age assurance
-				\item Code available on GitHub\footnote{https://github.com/google/longfellow-zk}
+				\item Code available on GitHub\footnote{\url{https://github.com/google/longfellow-zk}}
 			\end{itemize}
 			\textbf{Why this matters:}
 			\begin{itemize}

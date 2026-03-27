@@ -150,7 +150,7 @@
 			\begin{itemize}
 				\item Traditional services: Server stores password hash
 				\item E2EE requirement: Server must never see encryption key
-				\item Two common approaches:
+				\item Three common approaches:
 				      \begin{itemize}
 					      \item \textbf{Dual-password:} Separate login and encryption passwords
 					      \item \textbf{SRP (Secure Remote Password):} Zero-knowledge proof of password
@@ -493,9 +493,9 @@
 				      \end{itemize}
 				\item \textbf{Should use:} Argon2, scrypt, or PBKDF2
 				      \begin{itemize}
-					      \item Memory-hard functions
+					      \item Memory-hard (Argon2, scrypt) or iterative (PBKDF2) functions
 					      \item Configurable iteration counts
-					      \item Resistance to GPU/ASIC attacks
+					      \item Resistance to GPU/ASIC attacks (especially memory-hard functions)
 				      \end{itemize}
 				\item Enables offline dictionary attacks on user passwords
 			\end{itemize}
@@ -570,7 +570,7 @@
 				      \end{itemize}
 				\item \textbf{Attack efficiency:}
 				      \begin{itemize}
-					      \item Binary search requires ~512 login attempts\footnote{Later improved to 2 logins: \url{https://appliedcryptography.page/paper/\#mega-recovery}}
+					      \item Binary search requires ${\sim}$512 login attempts\footnote{Later improved to 2 logins: \url{https://appliedcryptography.page/paper/\#mega-recovery}}
 					      \item Each login leaks 1 bit of information about $q$
 				      \end{itemize}
 			\end{itemize}
@@ -1289,7 +1289,7 @@
 			      \item Server helps compute PRF without learning input
 			      \item Prevents server from testing password guesses
 		      \end{itemize}
-		\item Being standardized by IETF (RFC 9497)
+		\item Being standardized by IETF (OPRF component: RFC 9497)
 		\item Early adoption by WhatsApp for backup encryption
 	\end{itemize}
 \end{frame}
@@ -2620,7 +2620,7 @@
 	\end{columns}
 	\vspace{0.5cm}
 	\begin{center}
-		Separate headers from content enables efficient sharing!
+		Separating headers from content enables efficient sharing!
 	\end{center}
 \end{frame}
 

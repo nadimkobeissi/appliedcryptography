@@ -174,7 +174,7 @@
 			\begin{itemize}[<+->]
 				\item AES, SHA-2, ChaCha20, HMAC\ldots
 				\item ``Symmetric'' because there is one secret key.
-				\item Not algebraic but unstructured, but on their understood
+				\item Not algebraic but unstructured, relying on their understood
 				      resistance to $n$ years of cryptanalysis.
 				\item Can act as substitutes for assumptions in security proofs!
 				      \begin{itemize}
@@ -427,7 +427,7 @@
 	\begin{itemize}[<+->]
 		\item Time isn't everything—memory usage matters too!
 		\item A single memory access can be orders of magnitude slower than CPU operations.
-		\item \textbf{SPACE}$(f(n))$ = class of problems solvable using $O(f(n))$ bits of memory
+		\item \textbf{SPACE}$(f(n))$ = class of problems solvable using $\mathcal{O}(f(n))$ bits of memory
 		\item Examples:
 		      \begin{itemize}
 			      \item \textbf{SPACE}$(n)$ = problems using $\mathcal{O}(n)$ memory
@@ -556,7 +556,7 @@
 			\end{column}
 			\begin{column}{0.33\textwidth}
 				\textbf{Sudoku Puzzles}\\
-				\small Can you fill this 9 \times 9 grid following the rules?
+				\small Can you fill this $9 \times 9$ grid following the rules?
 			\end{column}
 		\end{columns}
 		\vspace{0.5cm}
@@ -830,7 +830,7 @@
 	Let's work with small numbers to see the pattern:
 	\vspace{0.5cm}
 	\begin{itemize}[<+->]
-		\item Let $p = 17$ (a prime) and $g = 2$ (a generator)
+		\item Let $p = 17$ (a prime) and $g = 2$ (a base)
 		\item \textbf{Computing powers is easy}:
 		      \begin{itemize}
 			      \item $2^1 \bmod 17 = 2$
@@ -986,13 +986,13 @@
 			\begin{itemize}[<+->]
 				\item Alice computes: $s = B^{\textcolor{red}{a}} \bmod p = 11^{\textcolor{red}{5}} \bmod 13$
 				      \begin{itemize}
-					      \item $= 161051 \bmod 13 = \textcolor{red}{9}$
+					      \item $= 161051 \bmod 13 = \textcolor{red}{7}$
 				      \end{itemize}
 				\item Bob computes: $s = A^{\textcolor{red}{b}} \bmod p = 6^{\textcolor{red}{7}} \bmod 13$
 				      \begin{itemize}
-					      \item $= 279936 \bmod 13 = \textcolor{red}{9}$
+					      \item $= 279936 \bmod 13 = \textcolor{red}{7}$
 				      \end{itemize}
-				\item \textcolor{red}{\textbf{Shared secret: $s = 9$}}
+				\item \textcolor{red}{\textbf{Shared secret: $s = 7$}}
 			\end{itemize}
 			\pause
 			\vspace{0.5cm}
@@ -1011,9 +1011,9 @@
 	}
 	\begin{itemize}[<+->]
 		\item \textbf{Motivation}: Even if an eavesdropper captures the public values $g^a$ and $g^b$, they shouldn't be able to determine the shared secret $g^{ab}$.
-		\item \textbf{Example}: Given $A = 13$ and $B = 4$ from our earlier example, can you compute $S = 9$?
+		\item \textbf{Example}: Given $A = 6$ and $B = 11$ from our earlier example, can you compute $S = 7$?
 		      \begin{itemize}
-			      \item Without knowing $a = 6$ and $b = 10$, this becomes very difficult!
+			      \item Without knowing $a = 5$ and $b = 7$, this becomes very difficult!
 		      \end{itemize}
 		\item \textbf{Real-world relevance}: This is exactly what an attacker faces when trying to break Diffie-Hellman.
 	\end{itemize}
@@ -1073,7 +1073,7 @@
 		      \end{itemize}
 		\item \textbf{Surprising fact}: DDH is \textbf{not hard} in certain groups!
 		      \begin{itemize}
-			      \item In $\mathbb{Z}_p^*$, DDH can be broken using pairing-based techniques.
+			      \item In $\mathbb{Z}_p^*$, DDH can be broken using the Legendre symbol (quadratic residuosity).
 			      \item But CDH remains hard in the same group.
 		      \end{itemize}
 		\item \textbf{Solution}: Use elliptic curve groups where DDH is believed hard.
@@ -1421,7 +1421,7 @@
 			\textbf{Elliptic Curve DH (ECDH)}
 			\begin{itemize}[<+->]
 				\item Uses elliptic curve groups
-				\item 256-bit keys ≈ 2048-bit traditional DH
+				\item 256-bit keys $\approx$ 2048-bit traditional DH
 				\item Much faster computations
 				\item Smaller public keys, less bandwidth
 			\end{itemize}

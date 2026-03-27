@@ -115,9 +115,8 @@
 		\begin{column}{0.4\textwidth}
 			\begin{exampleblock}{Example Fingerprint}
 				\ttfamily\scriptsize
-				D745 2D8B 9E3F 4F3D\\
-				7A82 F9B5 1C4A 6E9D\\
-				8B3F 2E4C 9A7D 5F8E
+				D745 2D8B 9E3F 4F3D 7A82\\
+				F9B5 1C4A 6E9D 8B3F 2E4C
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
@@ -626,7 +625,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Identity protection (variant)}{Identities are encrypted and are therefore cannot be learned by a passive attacker}
+\begin{frame}{Identity protection (variant)}{Identities are encrypted and therefore cannot be learned by a passive attacker}
 	\begin{center}
 		\begin{tikzpicture}[>=Stealth]
 			\node (A) at (0,0) {$A$};
@@ -1194,7 +1193,7 @@
 					      \item Both parties have MAC key
 					      \item Either could forge messages
 					      \item Old MAC keys revealed
-					      \item Now anyone can now forge past messages
+					      \item Now anyone can forge past messages
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -1751,7 +1750,7 @@
 				      \end{itemize}
 				\item \textbf{The Clever Observation:}
 				      \begin{itemize}
-					      \item Alice sends to Bob \rightarrow\ Bob likely replies within epoch
+					      \item Alice sends to Bob $\rightarrow$ Bob likely replies within epoch
 					      \item Other users also send/receive during this time
 					      \item But Alice appears more often in Bob's reply epochs
 				      \end{itemize}

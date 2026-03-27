@@ -144,7 +144,7 @@
 				      \begin{itemize}
 					      \item \textbf{Block cipher modes} (CBC, CTR, GCM) add randomness/state using ``initialization vectors''
 					            \begin{itemize}
-						            \item IV is fancy name for ``random bytes used once''.\footnote{Also referred to as ``nonces'' for ``number used once'', although in some block cipher modes such as AES-CBC, they can technically be used multiple times without problems.}
+						            \item IV is fancy name for ``random bytes used once''.\footnote{Also referred to as ``nonces'' for ``number used once''. Note: in CBC mode the IV must be \emph{unpredictable}, while in CTR mode the nonce must be \emph{unique} but need not be random.}
 					            \end{itemize}
 					      \item IVs ensure the same plaintext encrypts differently each time.
 				      \end{itemize}
@@ -612,8 +612,8 @@
 		      \end{itemize}
 		\item For a 16-byte message:
 		      \begin{itemize}
-			      \item Null-oracle attack: \approx$4,080$ queries (16 \times 255)
-			      \item True brute-force: \approx$10^{38}$ queries ($255^{16}$)
+			      \item Null-oracle attack: $\approx 4{,}080$ queries ($16 \times 255$)
+			      \item True brute-force: $\approx 10^{38}$ queries ($255^{16}$)
 		      \end{itemize}
 		\item This attack is exponentially more efficient than traditional brute-force.
 	\end{itemize}
@@ -1051,6 +1051,7 @@
 					$K \twoheadleftarrow \bits^\lambda$\\[1em]
 					\sslibrarysubroutine{cca.enc}{M}{
 						$R\|S \twoheadleftarrow \bits^{2\lambda}$\\
+						$\mathcal{D}[R\|S] \coloneq M$\\
 						return $R\|S$
 					}{1}\\[1em]
 					\sslibrarysubroutine{cca.dec}{R\|S}{
@@ -1099,9 +1100,9 @@
 		\begin{column}{0.35\textwidth}
 			\begin{itemize}
 				\item When linked to \lib{}{cca-real}:
-				\item \prob{\prog{} \Rightarrow \texttt{true}} = 1
+				\item \prob{\prog{} \Rightarrow \texttt{true}} $ = 1$
 				\item When linked to \lib{}{cca-rand}:
-				\item \prob{\prog{} \Rightarrow \texttt{true}} ≈ $\frac{1}{2^\lambda}$
+				\item \prob{\prog{} \Rightarrow \texttt{true}} $\approx \frac{1}{2^\lambda}$
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.65\textwidth}
@@ -1640,7 +1641,7 @@
 			\begin{center}
 				\sssubroutine{AES-GCM.Enc}{K, N, A, M}{
 					$H \coloneq \texttt{AES}(K, 0^{128})$\\
-					$\text{for } i=0 \text{ to } \lceil|M|/128\rceil-1:$\\
+					$\text{for } i=1 \text{ to } \lceil|M|/128\rceil:$\\
 					$\quad C_i \coloneq M_i \oplus \texttt{AES}(K, N\|i)$\\
 					$T \coloneq \texttt{GHASH}_H(A, C) \oplus$\\
 					$\quad\quad \texttt{AES}(K, N\|0)$\\

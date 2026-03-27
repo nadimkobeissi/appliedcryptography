@@ -222,7 +222,7 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
 				\item Assume that $G(S)$ is a secure PRG.
-				\item Is \func{h}{S} secure?
+				\item Is \func{H}{S} secure?
 			\end{itemize}
 			\sssubroutine{H}{S}{
 				$A \| B \coloneq G(S)$ \\
@@ -242,7 +242,7 @@
 				}{1}
 			}{\overset{?}{\approxeq}}{
 				\sslibrary{H}{prg-rand}{
-					\sslibrarysubroutine{ots.enc}{M}{
+					\sslibrarysubroutine{ots.enc}{}{
 						$Y \twoheadleftarrow \bits^{4\lambda}$ \\
 						return $Y$
 					}{1}
@@ -257,7 +257,7 @@
 		\begin{column}{0.45\textwidth}
 			\begin{itemize}
 				\item<1-2> Assume that $G(S)$ is a secure PRG.
-				\item<1-2> Is \func{h}{S} secure?
+				\item<1-2> Is \func{H}{S} secure?
 				\item<1-2> \textbf{No}:
 				\item<1-2> \prob{\prog{}\link\lib{H}{prg-real} \Rightarrow \texttt{true}} $ = 1$
 				\item<2-2> \prob{\prog{}\link\lib{H}{prg-rand} \Rightarrow \texttt{true}} $ = \frac{1}{2^{2\lambda}}$
@@ -273,7 +273,7 @@
 					}{0.9}
 				}{\link}{
 					\sslibrary{H}{prg-rand}{
-						\sslibrarysubroutine{ots.enc}{M}{
+						\sslibrarysubroutine{ots.enc}{}{
 							$Y \twoheadleftarrow \bits^{4\lambda}$ \\
 							return $Y$
 						}{1}
@@ -344,8 +344,8 @@
 				A function $F: \bits^\lambda \times \bits^n \rightarrow \bits^m$ is a secure pseudorandom function (PRF) if the following two libraries are indistinguishable:
 			}
 			\begin{itemize}
-				\item $n$ the input length of the PRF.
-				\item $m$ the output length of the PRF.
+				\item $n$ is the input length of the PRF.
+				\item $m$ is the output length of the PRF.
 				\item $\lambda$ is the key size and hence the security parameter.
 			\end{itemize}
 		\end{column}
@@ -686,7 +686,7 @@
 				      \end{itemize}
 				\item So $\prob{Y_1 \oplus Y_2 \stackrel{?}{=} Y_3 \oplus Y_4} = 1$
 				\item With a truly random function, $\prob{Y_1 \oplus Y_2 \stackrel{?}{=} Y_3 \oplus Y_4} = \frac{1}{2^m}$ (extremely unlikely!)
-				\item Also, Given $Y_{1\cdots3}$, we can predict $Y_4$!
+				\item Also, given $Y_{1\cdots3}$, we can predict $Y_4$!
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1025,8 +1025,8 @@
 				A function $F: \bits^\lambda \times \bits^n \rightarrow \bits^m$ is a secure pseudorandom function (PRF) if the following two libraries are indistinguishable:
 			}
 			\begin{itemize}
-				\item $n$ the input length of the PRF.
-				\item $m$ the output length of the PRF.
+				\item $n$ is the input length of the PRF.
+				\item $m$ is the output length of the PRF.
 				\item $\lambda$ is the key size and hence the security parameter.
 			\end{itemize}
 		\end{column}
@@ -1208,7 +1208,7 @@
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
 				\item Let's add a key in there. Wow, encryption!
-				\item $K_{1\cdots i}$ called is the \textbf{key schedule}.
+				\item $K_{1\cdots i}$ is called the \textbf{key schedule}.
 				\item If each round function $F_i$ uses a distinct key $K_i$, it increases the security of the Feistel network against certain attacks.
 				\item By using a PRF as round function $F_i$, the security of the Feistel cipher would be grounded on the PRF's security basis.
 			\end{itemize}
@@ -1230,7 +1230,7 @@
 		\begin{column}{0.65\textwidth}
 			\begin{itemize}
 				\item Using the \textbf{same key} for all rounds creates significant vulnerabilities.
-				\item A meet-in-the-middle attack can break an $r$-round Feistel cipher with complexity $> \frac{2^{|K|}}{2}$.
+				\item A meet-in-the-middle attack can break an $r$-round Feistel cipher with complexity $< 2^{|K|}$.
 				\item The attack works by computing partial encryptions from both ends:
 				      \begin{enumerate}
 					      \item Forward: Compute halfway through encryption.

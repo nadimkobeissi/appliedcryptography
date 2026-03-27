@@ -127,8 +127,8 @@
 	\begin{itemize}
 		\item \textbf{Grover's algorithm}: Quantum algorithm for searching unsorted databases
 		\item \textbf{Classical search}: $\mathcal{O}(2^n)$ time to search $2^n$ items
-		\item \textbf{Quantum search}: $O(2^{n/2})$ time with Grover's algorithm
-		\item \textbf{Formal claim}: Given $F: \{0,1\}^n \rightarrow \{0,1\}$, Grover's algorithm makes $O(2^{n/2})$ quantum evaluations of $F$ and outputs $X \in \{0,1\}^n$ such that $F(X) = 1$, if such $X$ exists
+		\item \textbf{Quantum search}: $\mathcal{O}(2^{n/2})$ time with Grover's algorithm
+		\item \textbf{Formal claim}: Given $F: \{0,1\}^n \rightarrow \{0,1\}$, Grover's algorithm makes $\mathcal{O}(2^{n/2})$ quantum evaluations of $F$ and outputs $X \in \{0,1\}^n$ such that $F(X) = 1$, if such $X$ exists
 		\item \textbf{Intuition}: Finding needles in haystacks
 		      \begin{itemize}
 			      \item Haystack: $\{0,1\}^n$ (all possible inputs)
@@ -152,7 +152,7 @@
 						             0 & \text{otherwise}
 					             \end{cases}
 				      \end{align*}
-				\item \textbf{Result}: Grover finds the correct key in $O(2^{\lambda/2})$ time\footnote{Note: Grover's algorithm is inherently sequential (cannot be parallelized efficiently)}
+				\item \textbf{Result}: Grover finds the correct key in $\mathcal{O}(2^{\lambda/2})$ time\footnote{Note: Grover's algorithm is inherently sequential (cannot be parallelized efficiently)}
 				\item \textbf{Defense}: Double the key size\footnote{Cryptographers argue about this recommendation in different points, some thinking it's too simplistic, others thinking that with hash functions, you may not need to go from SHA-256 to SHA-512 with SHA-384 being enough, etc.}
 				      \begin{itemize}
 					      \item AES-128 $\rightarrow$ AES-256 (to maintain 128-bit security)
@@ -368,7 +368,7 @@
 	\begin{itemize}
 		\item Started in 2016 to standardize post-quantum algorithms
 		\item 69 initial submissions $\rightarrow$ Multiple rounds of analysis
-		\item \textbf{2022}: First algorithms standardized
+		\item \textbf{2022}: First algorithms selected for standardization
 		      \begin{itemize}
 			      \item \textbf{CRYSTALS-Kyber}: Key encapsulation (KEM)
 			      \item \textbf{CRYSTALS-Dilithium}: Digital signatures
@@ -1022,7 +1022,7 @@
 				\item Alice: $g^a$, Bob: $g^b$
 				\item Shared secret: $g^{ab}$
 				\item \textbf{Interactive}: Both parties actively compute
-				\item Traditional approach (RSA, ECDH)
+				\item Traditional approach (DH, ECDH)
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1413,7 +1413,7 @@
 		\item \textbf{Encoding process}:
 		      \begin{enumerate}
 			      \item Start with $n$-bit message vector $\vec{v}$
-			      \item Multiply by generator matrix $G$ (size $m \times n$, where $m > n$)
+			      \item Multiply by generator matrix $G$ (size $n \times m$, where $m > n$)
 			      \item Get codeword: $\vec{w} = \vec{v} \cdot G$
 		      \end{enumerate}
 		\item \textbf{The magic}: Matrix $G$ is designed so that:
@@ -1609,7 +1609,7 @@
 		\item \textbf{Instead}: Based on security of cryptographic hash functions
 		\item \textbf{Key insight}: Quantum computers don't break hash functions
 		      \begin{itemize}
-			      \item No known quantum algorithm for finding collisions
+			      \item No known quantum algorithm that breaks collision resistance
 			      \item No quantum speedup for finding preimages (beyond Grover's)
 		      \end{itemize}
 		\item \textbf{Security foundation}: If you can't invert hashes, you can't forge signatures
@@ -1720,12 +1720,12 @@
 					      \item Need up to 255 hash operations
 					      \item Manageable
 				      \end{itemize}
-				\item 32-bit message: $M \in [, 2^{32}-1]$
+				\item 32-bit message: $M \in [0, 2^{32}-1]$
 				      \begin{itemize}
 					      \item Need up to 4 billion hashes!
 					      \item Impractical
 				      \end{itemize}
-				\item 128-bit message: $M \in [, 2^{128}-1]$
+				\item 128-bit message: $M \in [0, 2^{128}-1]$
 				      \begin{itemize}
 					      \item Need up to $2^{128}$ hashes
 					      \item Impossible
@@ -1915,7 +1915,7 @@
 				\item Alice: $g^a$, Bob: $g^b$
 				\item Shared secret: $g^{ab}$
 				\item \textbf{Interactive}: Both parties actively compute
-				\item Traditional approach (RSA, ECDH)
+				\item Traditional approach (DH, ECDH)
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -2165,7 +2165,7 @@
 			\textbf{Browsers have begun implementing PQ TLS:}
 			\begin{itemize}
 				\item Started with Chrome, now others following
-				\item In total, now 38\% of all TLS connection\footnote{\url{https://radar.cloudflare.com/adoption-and-usage\#post-quantum-encryption-adoption}}
+				\item In total, now 38\% of all TLS connections\footnote{\url{https://radar.cloudflare.com/adoption-and-usage\#post-quantum-encryption-adoption}}
 			\end{itemize}
 			\textbf{Other browsers:}
 			\begin{itemize}
@@ -3326,7 +3326,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{A cautionary tale: The semicolon bug}
+\begin{frame}[fragile]{A cautionary tale: The goto fail bug}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\textbf{Actual bug in Apple's SSL/TLS (2014):}

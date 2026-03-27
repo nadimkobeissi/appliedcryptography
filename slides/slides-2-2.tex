@@ -266,7 +266,7 @@
 	\end{itemize}
 \end{frame}
 
-\section{RSA in WEP}
+\section{RC4 in WEP}
 
 \begin{frame}{Early RC4 weaknesses (1995-2000)}
 	\begin{itemize}
@@ -519,7 +519,7 @@
 			\draw[thick, fill=red!20] (10,2) rectangle (12,3);
 			\node at (11,2.5) {\scriptsize $\ldots$};
 			\node[above] at (3,3.2) {\textbf{Known to Attacker}};
-			\node[above] at (9,3.2) {\textbf{Secret Key (Target)}};n
+			\node[above] at (9,3.2) {\textbf{Secret Key (Target)}};
 			\draw[->, thick, red] (1,1.5) -- (1,2);
 			\node[below, red, text width=5cm, align=center] at (1,1.2) {\textbf{IVs like $(3, 255, x)$}};
 			\draw[->, thick, red] (7,1.5) -- (7,0.5);
@@ -812,7 +812,7 @@
 		\item \textbf{Basic Authentication attack performance:}
 		      \begin{itemize}
 			      \item 6-character passwords: $2^{26}$ encryptions
-			      \item Time: \approx50-100 hours.
+			      \item Time: $\approx$50--100 hours.
 		      \end{itemize}
 		\item \textbf{IMAP attack results:}
 		      \begin{itemize}

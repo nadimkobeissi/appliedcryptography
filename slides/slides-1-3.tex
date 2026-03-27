@@ -269,7 +269,7 @@
 				      \begin{itemize}
 					      \item $\texttt{Po} \| \texttt{tato} = \texttt{Potato}$
 				      \end{itemize}
-				\item \textbf{Yes!} Outputting the concatentaion two randomly sampled uniform strings of lengths $n$ and $m$ is the same as outputting a single random string of length $n + m$.
+				\item \textbf{Yes!} Outputting the concatenation of two randomly sampled uniform strings of lengths $n$ and $m$ is the same as outputting a single random string of length $n + m$.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.05\textwidth}
@@ -952,7 +952,7 @@
 		\item Other extremely unlikely gambling events:
 		      \begin{itemize}
 			      \item In 1943, a roulette wheel reportedly landed on red 32 consecutive times.
-			      \item Probability: $(18/38)^{31} \approx 2^{-33.4}$
+			      \item Probability: $(18/38)^{32} \approx 2^{-34.5}$
 			      \item Winning the American Powerball lottery: $2^{-28.1}$
 			      \item Winning Powerball two consecutive weeks: $2^{-56.2}$
 		      \end{itemize}
@@ -1003,7 +1003,7 @@
 					      \item Hides tedious quantitative details
 				      \end{itemize}
 				\item Similar to asymptotic analysis using big-O notation.
-				\item Example: Instead of calculating that an operation takes exactly $16n^2 + 24n + 74$ steps, we can simply say it takes $\mathcal{O}(n^2)$ steps
+				\item Example: Instead of calculating that an operation takes exactly $16n^2 + 24n + 74$ steps, we can simply say it takes $\mathcal{O}(n^2)$ steps.
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1206,20 +1206,20 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
 				\item Are these libraries \textbf{computationally indistinguishable?}
-				\item Yes! Let's prove it use the bad event technique.
+				\item Yes! Let's prove it using the bad event technique.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\sslinked{
 				\sslibrary{}{1}{
-					\sslibrarysubroutine{predict}{x}{
+					\sslibrarysubroutine{predict}{X}{
 						$R \twoheadleftarrow \bits^\lambda$\\
 						return $R \stackrel{?}{=} X$
 					}{1}
 				}{1}
 			}{\overset{?}{\approxeq}}{
 				\sslibrary{}{2}{
-					\sslibrarysubroutine{predict}{x}{
+					\sslibrarysubroutine{predict}{X}{
 						return \texttt{false}
 					}{1}
 				}{1}
@@ -1233,14 +1233,14 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
 				\item Are these libraries \textbf{computationally indistinguishable?}
-				\item Yes! Let's prove it use the bad event technique.
+				\item Yes! Let's prove it using the bad event technique.
 				\item Note: these libraries are interchangeable with \lib{}{1} and \lib{}{2} (as seen on next slide).
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\sslinked{
 				\sslibrary{'}{1}{
-					\sslibrarysubroutine{predict}{x}{
+					\sslibrarysubroutine{predict}{X}{
 						$R \twoheadleftarrow \bits^\lambda$\\
 						if $R \stackrel{?}{=} X$:\\
 						\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
@@ -1250,7 +1250,7 @@
 				}{1}
 			}{\overset{?}{\approxeq}}{
 				\sslibrary{'}{2}{
-					\sslibrarysubroutine{predict}{x}{
+					\sslibrarysubroutine{predict}{X}{
 						$R \twoheadleftarrow \bits^\lambda$\\
 						if $R \stackrel{?}{=} X$:\\
 						\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
@@ -1267,14 +1267,14 @@
 	\sslinked{
 		\sslinked{
 			\sslibrary{}{1}{
-				\sslibrarysubroutine{predict}{x}{
+				\sslibrarysubroutine{predict}{X}{
 					$R \twoheadleftarrow \bits^\lambda$\\
 					return $R \stackrel{?}{=} X$
 				}{1}
 			}{1}
 		}{\interchangeable{}}{
 			\sslibrary{'}{1}{
-				\sslibrarysubroutine{predict}{x}{
+				\sslibrarysubroutine{predict}{X}{
 					$R \twoheadleftarrow \bits^\lambda$\\
 					if $R \stackrel{?}{=} X$:\\
 					\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
@@ -1286,7 +1286,7 @@
 	}{\overset{?}{\approxeq}}{
 		\sslinked{
 			\sslibrary{'}{2}{
-				\sslibrarysubroutine{predict}{x}{
+				\sslibrarysubroutine{predict}{X}{
 					$R \twoheadleftarrow \bits^\lambda$\\
 					if $R \stackrel{?}{=} X$:\\
 					\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
@@ -1296,7 +1296,7 @@
 			}{1}
 		}{\interchangeable{}}{
 			\sslibrary{}{2}{
-				\sslibrarysubroutine{predict}{x}{
+				\sslibrarysubroutine{predict}{X}{
 					return \texttt{false}
 				}{1}
 			}{1}
@@ -1322,7 +1322,7 @@
 		\begin{column}{0.2\textwidth}
 			\sslinked{
 				\sslibrary{'}{1}{
-					\sslibrarysubroutine{predict}{x}{
+					\sslibrarysubroutine{predict}{X}{
 						$R \twoheadleftarrow \bits^\lambda$\\
 						if $R \stackrel{?}{=} X$:\\
 						\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
@@ -1332,7 +1332,7 @@
 				}{0.4}
 			}{\overset{?}{\approxeq}}{
 				\sslibrary{'}{2}{
-					\sslibrarysubroutine{predict}{x}{
+					\sslibrarysubroutine{predict}{X}{
 						$R \twoheadleftarrow \bits^\lambda$\\
 						if $R \stackrel{?}{=} X$:\\
 						\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\

@@ -464,14 +464,14 @@
 			\textbf{Easy path: Reference implementation}
 			\begin{itemize}
 				\item \mycheckmark Straightforward correctness
-				\item \times Terrible performance
+				\item $\times$ Terrible performance
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Hard path: Optimize aggressively}
 			\begin{itemize}
 				\item \mycheckmark Blazing fast
-				\item \times Correctness nightmare
+				\item $\times$ Correctness nightmare
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1549,9 +1549,9 @@
 	\end{flushleft}
 	\vspace{0.5em}
 	\begin{itemize}
-		\item $1664 = 2^{11-1} = 2^{10}$, so this is only correct when $d = 11$
-		\item For $d \neq 11$, the rounding constant is \textbf{wrong}
-		\item ML-KEM uses $d \in \{1, 4, 5, 10, 11\}$: four out of five values produce wrong results
+		\item $1664 = (q-1)/2 = (3329-1)/2$, a fixed value unrelated to $d$
+		\item The correct rounding constant should be $2^{d-1}$, which varies with $d$
+		\item ML-KEM uses $d \in \{1, 4, 5, 10, 11\}$: all five values produce wrong results
 	\end{itemize}
 	\vspace{0.3em}
 	\begin{center}

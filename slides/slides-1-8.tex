@@ -130,7 +130,7 @@
 			\imagewithcaption{clock-13.jpg}{Finite-field Diffie-Hellman's structure allows for certain mathematically efficient attacks.}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\imagewithcaption{persistence-of-memory.jpg}{Let's make that structure ``weirder'' using elliptic curves and avoid these attacks. Source: Salvador Dali}
+			\imagewithcaption{persistence-of-memory.jpg}{Let's make that structure ``weirder'' using elliptic curves and avoid these attacks. Source: Salvador Dal\'i}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -296,7 +296,7 @@
 \end{frame}
 
 \begin{frame}{Group structure of elliptic curves}
-	We need to define all these operations so that our elliptic curve have a group structure, allowing us to then use them as a new basis for Diffie-Hellman, and then do DH using point addition instead of modular multiplication.
+	We need to define all these operations so that our elliptic curves have a group structure, allowing us to then use them as a new basis for Diffie-Hellman, and then do DH using point addition instead of modular multiplication.
 	\begin{itemize}
 		\item \textbf{Closure property:} If points $P$ and $Q$ belong to a curve, then $P + Q$ also belongs to the curve.
 		\item \textbf{Associativity:} $(P + Q) + R = P + (Q + R)$ for any points $P$, $Q$, and $R$.
@@ -614,11 +614,11 @@
 		      \end{itemize}
 		\item \textbf{Performance characteristics:}
 		      \begin{itemize}
-			      \item Signing: \approx40-90 microseconds (modern CPUs)
-			      \item Verification: \approx100-200 microseconds
+			      \item Signing: $\approx$40-90 microseconds (modern CPUs)
+			      \item Verification: $\approx$100-200 microseconds
 			      \item 64-byte signatures (512 bits)
 		      \end{itemize}
-		\item \textbf{Security level:} \approx128 bits (equivalent to 3072-bit RSA)
+		\item \textbf{Security level:} $\approx$128 bits (equivalent to 3072-bit RSA)
 		\item \textbf{Adoption milestones:}
 		      \begin{itemize}
 			      \item 2011: Initial specification
@@ -849,8 +849,8 @@
 		      \end{itemize}
 		\item \textbf{Modern alternatives:}
 		      \begin{itemize}
-			      \item \textbf{Curve41417:} Variant of Curve25519 with higher security (\approx200 bits).
-			      \item \textbf{Ed448-Goldilocks:} 448-bit curve (RFC 8032, 2014).
+			      \item \textbf{Curve41417:} Variant of Curve25519 with higher security ($\approx$200 bits).
+			      \item \textbf{Ed448-Goldilocks:} 448-bit curve (RFC 8032, 2017).
 			      \item \textbf{Aranha et al. curves:} Six high-security curves (rarely used).
 		      \end{itemize}
 		\item \textbf{Ristretto initiative:} Technique for safe point representation.

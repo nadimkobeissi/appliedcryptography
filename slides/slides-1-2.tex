@@ -4,7 +4,7 @@
 \title{Applied Cryptography - 1.2: The Provable Security Mindset}
 \author{Nadim Kobeissi}
 \subject{Introduction to the One-Time Pad cipher and the provable security mindset in cryptography, covering XOR operations, security proofs, adversary models, and limitations of formal security analysis.}
-\keywords{one-time pad, OTP, provable security, XOR, encryption, security proofs, Kerckhoff's principle, cryptographic oracles, adversary models}
+\keywords{one-time pad, OTP, provable security, XOR, encryption, security proofs, Kerckhoffs' principle, cryptographic oracles, adversary models}
 \institute{Symbolic Software}
 \instituteimage{images/symbolicsoft-white.png}
 \date{\today}
@@ -84,7 +84,7 @@
 					\draw[thick, ->, red] (0,0) -- (0:1.2cm);
 					\draw[thick, ->, blue] (0,0) -- (90:1.6cm);
 					\fill (0,0) circle (2pt);
-					\node[below] at (0,-2.5cm) {\small Example: 15:00 = 3:00pm};
+					\node[below] at (0,-2.5cm) {\small Example: 15:00 = 3:00 PM};
 				\end{tikzpicture}
 			\end{center}
 		}
@@ -142,7 +142,7 @@
 				\item Keep the whole design secret?
 				\item \textbf{``Advantages''}:
 				      \begin{itemize}[<+->]
-					      \item Attacker doesn't know how our cipher (or system, more generally,) works.
+					      \item Attacker doesn't know how our cipher (or system, more generally) works.
 				      \end{itemize}
 				\item \textbf{Disadvantages}:
 				      \begin{itemize}[<+->]
@@ -158,7 +158,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Kerckhoff's principle}
+\begin{frame}{Kerckhoffs' principle}
 	\begin{itemize}[<+->]
 		\item \textit{``A cryptosystem should be secure even if everything about the system, except the key, is public knowledge.''} — Auguste Kerckhoffs, 1883
 		\item \textbf{Why it matters}:
@@ -361,7 +361,7 @@
 
 \begin{frame}
 	\begin{center}
-		\Large\textit{``If I use OTP according to the attack scenario (I sample keys uniformly and use each key to encrypt just one ciphertext), then no matter how the plaintexts are chosen, and no matter how the ciphertext is subsequently used, I can enjoy a certain security guarantee.''}
+		\Large\textit{``If I use OTP according to the attack scenario (I sample keys uniformly and use each key to encrypt just one message), then no matter how the plaintexts are chosen, and no matter how the ciphertext is subsequently used, I can enjoy a certain security guarantee.''}
 	\end{center}
 \end{frame}
 

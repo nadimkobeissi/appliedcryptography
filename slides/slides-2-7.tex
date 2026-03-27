@@ -38,7 +38,7 @@
 		\item \textbf{High transaction costs}: Mediation costs make micropayments impractical.
 		\item \textbf{Reversibility spreads distrust}: Merchants need extensive customer information.
 		\item \textbf{Fraud is inevitable}: Some percentage of fraud accepted as cost of business.
-		\item \textbf{No digital cash equivalent}: Physical cash works person-to-person, but no digital. analog exists
+		\item \textbf{No digital cash equivalent}: Physical cash works person-to-person, but no digital analog exists
 	\end{itemize}
 \end{frame}
 
@@ -256,7 +256,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Current difficulty (2024):}
 			\begin{itemize}
-				\item Need \approx19-20 leading zeros
+				\item Need $\approx$19-20 leading zeros
 				\item That's finding a hash smaller than $2^{236}$ out of $2^{256}$ possible
 				\item Probability per attempt: $\frac{1}{2^{20}}$ = 1 in a million
 				\item Actually worse: 1 in quintillion!
@@ -265,7 +265,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{In practice:}
 			\begin{itemize}
-				\item Network tries \approx$600 \times 10^{18}$ hashes per second
+				\item Network tries $\approx 600 \times 10^{18}$ hashes per second
 				\item That's 600 exahashes/second!
 				\item All to find one valid block
 				\item Every 10 minutes on average
@@ -426,13 +426,13 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{The problem:}
 			\begin{itemize}
-				\item More miners join \rightarrow\ blocks too fast
-				\item Miners leave \rightarrow\ blocks too slow
+				\item More miners join $\rightarrow$ blocks too fast
+				\item Miners leave $\rightarrow$ blocks too slow
 				\item Want consistent 10-minute blocks
 			\end{itemize}
 			\textbf{The solution:}
 			\begin{itemize}
-				\item Every 2016 blocks (\approx2 weeks)
+				\item Every 2016 blocks ($\approx$2 weeks)
 				\item Measure actual time taken
 				\item Adjust difficulty up or down
 				\item Like a thermostat!
@@ -542,7 +542,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{The scale:}
 			\begin{itemize}
-				\item Peak (2021): \approx180 TWh/year
+				\item Peak (2021): $\approx$180 TWh/year
 				\item More than Argentina's total consumption
 				\item Individual facilities use 700 MW
 				      \begin{itemize}
@@ -806,7 +806,7 @@
 					      \item Input: 5 BTC (consumed)
 					      \item Output 1: 2 BTC to recipient
 					      \item Output 2: 2.9 BTC change to you
-					      \item Output 3: 0.1 BTC = miner fee
+					      \item Implicit fee: 0.1 BTC (input $-$ outputs)
 				      \end{itemize}
 			\end{itemize}
 			\begin{exampleblock}{Why this model?}
@@ -997,12 +997,12 @@
 				      \end{itemize}
 				\item 1 confirmation: Some risk
 				      \begin{itemize}
-					      \item \approx10 minutes wait
+					      \item $\approx$10 minutes wait
 					      \item Acceptable for small amounts
 				      \end{itemize}
 				\item 6 confirmations: Standard
 				      \begin{itemize}
-					      \item \approx1 hour wait
+					      \item $\approx$1 hour wait
 					      \item Used by exchanges
 				      \end{itemize}
 			\end{itemize}
@@ -1018,7 +1018,7 @@
 				      \end{itemize}
 				\item With 30\% hashpower:
 				      \begin{itemize}
-					      \item 6 blocks: \approx0.5\% success
+					      \item 6 blocks: $\approx$0.5\% success
 				      \end{itemize}
 			\end{itemize}
 			\begin{exampleblock}{Security grows}
@@ -1078,10 +1078,10 @@
 			\textbf{The challenge:}
 			\begin{itemize}
 				\item Block can have 2000+ transactions
-				\item Full block: \approx1-2 MB
+				\item Full block: $\approx$1-2 MB
 				\item New block every 10 minutes
 				\item 850,000+ blocks so far
-				\item Total: \approx500 GB!
+				\item Total: $\approx$500 GB!
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1117,9 +1117,9 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{The magic numbers:}
 			\begin{itemize}
-				\item Block with 2000 txs: \approx1 MB
+				\item Block with 2000 txs: $\approx$1 MB
 				\item Block header: 80 bytes
-				\item Merkle proof: \approx400 bytes
+				\item Merkle proof: $\approx$400 bytes
 				\item Reduction: 2500$\times$ smaller!
 			\end{itemize}
 			\begin{exampleblock}{Named after}
@@ -1318,11 +1318,11 @@
 			\end{itemize}
 			\textbf{What verifier does:}
 			\begin{enumerate}
-				\item Hash Tx2 \rightarrow\ H(Tx2)
+				\item Hash Tx2 $\rightarrow$ H(Tx2)
 				\item Combine with H(Tx3)
-				\item Hash \rightarrow\ H2-3
+				\item Hash $\rightarrow$ H2-3
 				\item Combine with H0-1
-				\item Hash \rightarrow\ H0-3
+				\item Hash $\rightarrow$ H0-3
 			\end{enumerate}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1336,7 +1336,7 @@
 				Tx2 is definitely in the block! Can't fake this without breaking SHA-256.
 			\end{alertblock}
 			\textbf{Data transferred:}\\
-			Tx2 + 3 hashes = \approx400 bytes\\
+			Tx2 + 3 hashes = $\approx$400 bytes\\
 			Instead of 1 MB!
 		\end{column}
 	\end{columns}
@@ -1422,7 +1422,7 @@
 				\item Downloads everything
 				\item Validates all transactions
 				\item Stores full blockchain
-				\item Requirement: \approx500 GB
+				\item Requirement: $\approx$500 GB
 				\item Time to sync: Days
 			\end{itemize}
 			\textbf{Not practical for most users!}
@@ -1432,7 +1432,7 @@
 			\begin{itemize}
 				\item Downloads only headers
 				\item 80 bytes $\times$ 850K blocks
-				\item Requirement: \approx60 MB
+				\item Requirement: $\approx$60 MB
 				\item Syncs in minutes
 				\item Requests Merkle proofs as needed
 			\end{itemize}
@@ -1518,7 +1518,7 @@
 			\textbf{Efficiency:}
 			\begin{itemize}
 				\item Logarithmic proof size
-				\item Constant verification time
+				\item Logarithmic verification time
 				\item Enables light clients
 				\item Mobile-friendly
 			\end{itemize}
@@ -2280,14 +2280,14 @@ contract SimpleToken {
 		\begin{column}{0.5\textwidth}
 			\textbf{Become a validator:}
 			\begin{itemize}
-				\item Stake 32 ETH (\approx\$100K)
+				\item Stake 32 ETH ($\approx$\$100K)
 				\item Run validator software
 				\item Stay online
 				\item Act honestly
 			\end{itemize}
 			\textbf{Rewards:}
 			\begin{itemize}
-				\item \approx4-5\% annual yield
+				\item $\approx$4-5\% annual yield
 				\item Block proposals
 				\item Attestations
 			\end{itemize}
@@ -2314,7 +2314,7 @@ contract SimpleToken {
 				\item Attestation rewards
 				      \begin{itemize}
 					      \item Vote on correct chain head
-					      \item \approx0.02 ETH per day
+					      \item $\approx$0.02 ETH per day
 				      \end{itemize}
 				\item Block proposal rewards
 				      \begin{itemize}
@@ -2352,7 +2352,7 @@ contract SimpleToken {
 		\end{column}
 	\end{columns}
 	\begin{center}
-		\textbf{Expected return: \approx4-5\% APR for honest validators}
+		\textbf{Expected return: $\approx$4-5\% APR for honest validators}
 	\end{center}
 \end{frame}
 

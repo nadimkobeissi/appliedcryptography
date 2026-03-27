@@ -523,7 +523,7 @@
 		      \end{itemize}
 		\item \textbf{Verification process}:
 		      \begin{enumerate}
-			      \item Check Google's signature on Certificate 0.
+			      \item Check Google Trust Services' signature on Certificate 0.
 			      \item Check GlobalSign's signature on Certificate 1.
 			      \item Trust GlobalSign's root certificate (pre-installed).
 		      \end{enumerate}
@@ -1127,7 +1127,7 @@
 				      \end{itemize}
 				\item \textbf{Key advantages}:
 				      \begin{itemize}
-					      \item 10x+ cheaper to operate (\approx\$10k/year vs traditional logs).
+					      \item 10x+ cheaper to operate ($\approx$\$10k/year vs traditional logs).
 					      \item More reliable (simpler architecture).
 					      \item Easier to download and share data.
 				      \end{itemize}
@@ -1349,7 +1349,7 @@
 					      \item Timing differences reveal padding validity
 					      \item Uses timing to guess plaintext byte-by-byte
 				      \end{enumerate}
-				\item \textbf{Why ``Lucky Thirteen''?} Attack requires exactly 13 bytes of padding
+				\item \textbf{Why ``Lucky Thirteen''?} The TLS MAC computation includes a 13-byte header
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1361,7 +1361,7 @@
 		      \begin{itemize}
 			      \item Messages padded to block boundary (16 bytes for AES)
 			      \item Padding bytes contain length of padding
-			      \item Example: \texttt{...data|05|05|05|05|05|05} (5 bytes padding)
+			      \item Example: \texttt{...data|05|05|05|05|05|05} (6 padding bytes, length = 5)
 		      \end{itemize}
 		\item \textbf{The timing leak}:
 		      \begin{itemize}
@@ -1599,7 +1599,7 @@
 		      \begin{itemize}
 			      \item TLS private keys used for authentication
 			      \item Allows impersonation of legitimate servers
-			      \item Forward secrecy completely broken
+			      \item Active session keys leaked (forward secrecy protects past sessions)
 		      \end{itemize}
 		\item \textbf{Session keys and user data}:
 		      \begin{itemize}
@@ -2199,7 +2199,7 @@
 		      \end{itemize}
 		\item \textbf{Mitigation strategies}:
 		      \begin{itemize}
-			      \item Use strong hash functions (SHA-256,SHA-384)
+			      \item Use strong hash functions (SHA-256, SHA-384)
 			      \item Protocol-specific message formats
 			      \item Separate hash contexts for different protocols
 		      \end{itemize}
@@ -2564,7 +2564,7 @@
 		      \end{enumerate}
 		\item \textbf{TLS 1.3 defense}: Magic values in server random
 		      \begin{itemize}
-			      \item Server encodes connection type in first 8 bytes of random value
+			      \item Server encodes connection type in last 8 bytes of random value
 			      \item TLS 1.2: \texttt{44 4F 57 4E 47 52 44 01}
 			      \item TLS 1.1: \texttt{44 4F 57 4E 47 52 44 00}
 			      \item TLS 1.3: Random bytes (no pattern)
