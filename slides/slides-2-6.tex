@@ -317,6 +317,59 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{But resource estimates are shrinking fast}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Google Quantum AI (2026)}\footnote{\url{https://appliedcryptography.page/paper/\#cryptocurrency-whitepaper}}: Compiled quantum circuits for Shor's algorithm targeting 256-bit ECDLP on secp256k1
+			\end{itemize}
+			\begin{center}
+				\begin{tabular}{|l|c|c|}
+					\hline
+					\textbf{Variant} & \textbf{Logical Qubits} & \textbf{Toffoli Gates} \\
+					\hline
+					\hline
+					Low-qubit        & $\leq$ 1,200            & $\leq$ 90 million      \\
+					Low-gate         & $\leq$ 1,450            & $\leq$ 70 million      \\
+					\hline
+				\end{tabular}
+			\end{center}
+			\begin{itemize}
+				\item \textbf{Physical cost}: $<$ 500,000 superconducting qubits (at $10^{-3}$ error rate)
+				\item \textbf{Nearly 20$\times$ reduction} over prior estimates for a single ECDLP instance
+				\item The gap between ``can't beat a dog'' and ``could break real crypto'' is closing
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Fast-clock vs slow-clock: Why architecture matters}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Fast-clock architectures:}
+			\begin{itemize}
+				\item Superconducting, photonic, silicon spin
+				\item Error correction cycle: $\sim$1 $\mu$s
+				\item ECDLP-256 in \textbf{$\sim$9 minutes}
+				\item Enables real-time \textit{on-spend} attacks
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Slow-clock architectures:}
+			\begin{itemize}
+				\item Neutral atom, trapped ion
+				\item 100--1000$\times$ slower gate times
+				\item ECDLP-256 in \textbf{hours to days}
+				\item Only enables \textit{at-rest} attacks on stored data
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{5mm}
+	\begin{center}
+		\textbf{Which architecture matures first determines the threat model}
+	\end{center}
+\end{frame}
+
 \begin{frame}{Store now, decrypt later}
 	\begin{itemize}
 		\item \textbf{The problem}: Adversaries can store encrypted data today
@@ -1720,12 +1773,12 @@
 					      \item Need up to 255 hash operations
 					      \item Manageable
 				      \end{itemize}
-				\item 32-bit message: $M \in [0, 2^{32}-1]$
+				\item 32-bit message: $M \in [, 2^{32}-1]$
 				      \begin{itemize}
 					      \item Need up to 4 billion hashes!
 					      \item Impractical
 				      \end{itemize}
-				\item 128-bit message: $M \in [0, 2^{128}-1]$
+				\item 128-bit message: $M \in [, 2^{128}-1]$
 				      \begin{itemize}
 					      \item Need up to $2^{128}$ hashes
 					      \item Impossible
@@ -2760,6 +2813,134 @@
 				\item Simpler than TLS
 				\item No certificate chains
 				\item Easier to upgrade
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{Post-Quantum Cryptocurrency}
+
+\begin{frame}{Cryptocurrency's unique quantum vulnerability}
+	\begin{itemize}
+		\item \textbf{Foundation}: Bitcoin, Ethereum, and most cryptocurrencies rely on ECDSA over secp256k1
+		\item \textbf{Shor's algorithm breaks this}: Recovers private keys from public keys in polynomial time
+		\item \textbf{Unlike TLS}: Blockchain keys are often exposed \textit{permanently} on-chain
+		      \begin{itemize}
+			      \item \textbf{P2PK scripts}: Public key stored directly ($\sim$1.7M BTC)
+			      \item \textbf{Address reuse}: Public key exposed after first spend
+			      \item \textbf{Taproot (P2TR)}: Stores tweaked public key in script --- a quantum security regression
+		      \end{itemize}
+		\item \textbf{Total}: $\sim$6.7 million BTC in quantum-vulnerable addresses\footnote{\url{https://quantumai.google/static/site-assets/downloads/cryptocurrency-whitepaper.pdf}}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Three types of quantum attacks on blockchains}
+	\begin{center}
+		\begin{tabular}{|l|c|c|c|}
+			\hline
+			\textbf{Attack} & \textbf{Window}    & \textbf{Architecture} & \textbf{Target}       \\
+			\hline
+			\hline
+			On-spend        & Seconds to minutes & Fast-clock only       & Mempool transactions  \\
+			\hline
+			At-rest         & Days or more       & Any CRQC              & Exposed on-chain keys \\
+			\hline
+			On-setup        & One-time (offline) & Any CRQC              & Protocol parameters   \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\begin{itemize}
+		\item \textbf{On-spend}: Derive private key while transaction sits in the mempool
+		      \begin{itemize}
+			      \item $\sim$9 min on fast-clock CRQC vs.\ Bitcoin's 10-min block time ($\sim$41\% success)
+		      \end{itemize}
+		\item \textbf{At-rest}: Target keys already visible on-chain (any CRQC suffices)
+		\item \textbf{On-setup}: Attack fixed protocol parameters to create a \textit{reusable classical backdoor}
+		      \begin{itemize}
+			      \item Example: Recovering KZG trusted setup ``toxic waste'' on Ethereum
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Beyond Bitcoin: Ethereum's expanded attack surface}
+	\begin{center}
+		\small
+		\begin{tabular}{|l|l|l|}
+			\hline
+			\textbf{Category} & \textbf{Mechanism}        & \textbf{At Risk}              \\
+			\hline
+			\hline
+			Account           & ECDSA (key exposed on tx) & $\sim$20.5M ETH (top 1,000)   \\
+			\hline
+			Admin             & Unrotated admin keys      & $\sim$\$200B stablecoins/RWAs \\
+			\hline
+			Code              & No PQC EVM precompiles    & All L2s, bridges              \\
+			\hline
+			Consensus         & BLS12-381 (PoS)           & $\sim$37M ETH staked          \\
+			\hline
+			Data Availability & KZG trusted setup         & Universal backdoor risk       \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\begin{itemize}
+		\item \textbf{On-setup attack on KZG}: One-time quantum computation recovers trusted setup ``toxic waste,'' creating a \textit{persistent classical backdoor} for forging data availability proofs
+		\item \textbf{Shorter block time} (12s) makes on-spend attacks harder than on Bitcoin
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Dormant assets and the migration race}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The dormant assets problem:}
+			\begin{itemize}
+				\item $\sim$2.3M BTC in dormant quantum-vulnerable addresses
+				\item Includes $\sim$1M BTC attributed to Satoshi Nakamoto
+				\item \textbf{Fixed target}: Tens to hundreds of billions of dollars
+			\end{itemize}
+			\textbf{Policy options:}
+			\begin{itemize}
+				\item Do nothing (allow quantum seizure)
+				\item Burn (render unspendable)
+				\item Hourglass (rate-limit spending)
+				\item Digital salvage sidechain
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{The migration race:}
+			\begin{itemize}
+				\item Bitcoin: Migration would take months at current transaction rate
+				\item Ethereum: EIP-7932 proposes PQ precompiles
+				\item Margin for error ``increasingly narrow''
+			\end{itemize}
+			\begin{quote}
+				\small ``It is conceivable that the existence of early CRQCs may first be detected on the blockchain rather than announced.''
+			\end{quote}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Responsible disclosure via zero-knowledge proofs}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\begin{itemize}
+				\item \textbf{The dilemma}: How to warn about quantum vulnerabilities without revealing attack circuits?
+				\item \textbf{Google's approach}\footnote{\url{https://research.google/blog/safeguarding-cryptocurrency-by-disclosing-quantum-vulnerabilities-responsibly/}}: Use a ZKP to prove the resource estimates
+				\item \textbf{What they prove}:
+				      \begin{enumerate}
+					      \item Possession of circuit that computes EC point addition on secp256k1
+					      \item Circuit satisfies the claimed resource bounds
+				      \end{enumerate}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\textbf{Security:}
+			\begin{itemize}
+				\item If the circuit fails on $>$1\% of inputs: $(0.99)^{9024} \approx 2^{-130}$ chance of passing
+				\item 128-bit cryptographic confidence
+			\end{itemize}
+			\begin{itemize}
+				\item \textbf{Irony:} The Groth16 SNARK itself relies on pairing-friendly elliptic curves
+				\item Its soundness is vulnerable to the very quantum attacks it validates!
 			\end{itemize}
 		\end{column}
 	\end{columns}
