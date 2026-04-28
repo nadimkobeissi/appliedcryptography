@@ -14,10 +14,12 @@
 \newcommand{\subject}[1]{\hypersetup{pdfsubject={#1}}}
 \newcommand{\keywords}[1]{\hypersetup{pdfkeywords={#1}}}
 \renewcommand{\familydefault}{\sfdefault}
-\definecolor{OliveGreen}{HTML}{3F7E31}
-\definecolor{EarthBrown}{HTML}{7D4C31}
-\definecolor{LightestGray}{HTML}{EEEEEE}
-\definecolor{DarkGray}{HTML}{5F6368}
+% Palette aligned with the course website / slide theme
+\definecolor{OliveGreen}{HTML}{2C5E2A}
+\definecolor{OliveGreenDark}{HTML}{1D3F1C}
+\definecolor{EarthBrown}{HTML}{D4A464}
+\definecolor{LightestGray}{HTML}{F0EEE2}
+\definecolor{DarkGray}{HTML}{485440}
 \titleformat{\section}
 {\normalfont\Large\bfseries\color{OliveGreen}}
 {\thesection}{1em}{}
@@ -29,7 +31,7 @@
 \footer{\raisebox{-0.05em}{\includegraphics[height=1.7ex]{../misc/images/cedar.png}}\ \textcolor{DarkGray}{Summer 2026}}{}{\textcolor{DarkGray}{Page \thepage\ of \ztotpages}}
 \headrule
 \footrule
-\tcbsetforeverylayer{colframe=OliveGreen!20!white,colback=LightestGray,boxrule=0.5pt,arc=2mm,boxsep=5pt,left=6pt,right=6pt,top=6pt,bottom=6pt}
+\tcbsetforeverylayer{colframe=OliveGreen!30!white,colback=LightestGray,boxrule=0.5pt,arc=2.5mm,boxsep=5pt,left=6pt,right=6pt,top=6pt,bottom=6pt}
 \setlist{itemsep=0em}
 
 \makeatletter
@@ -46,7 +48,7 @@
 	\noindent
 	\begin{minipage}[c]{0.35\textwidth}
 		\centering
-		\includegraphics[width=2.0in]{../misc/images/symbolicsoft-black.png}
+		\includegraphics[width=1.4in]{../misc/images/symbolicsoft-black.png}
 	\end{minipage}
 	\begin{minipage}[c]{0.65\textwidth}
 		\begin{flushright}
@@ -60,7 +62,7 @@
 	\end{minipage}
 
 	\vspace{0.8cm}
-	\begin{tcolorbox}[colframe=OliveGreen!70!white,colback=white,arc=1mm]
+	\begin{tcolorbox}[colframe=OliveGreen!70!white,colback=white,arc=2mm]
 		\begin{center}
 			\begin{tabular}{ll}
 				\textbf{Lecturer:} Nadim Kobeissi \quad\quad\quad\quad\quad \textbf{Website:} \url{https://appliedcryptography.page}
