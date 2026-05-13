@@ -185,6 +185,7 @@ export async function initViewer(pdfUrl, options = {}) {
 			</div>
 			<div id="toolbar-controls">
 				<span id="page-info">1 / ${numPages}</span>
+				<button id="mode-toggle" title="Switch to continuous scroll">\u25ad</button>
 				<button id="zoom-out" title="Zoom out">\u2212</button>
 				<span id="zoom-level">100%</span>
 				<button id="zoom-in" title="Zoom in">+</button>
@@ -197,10 +198,21 @@ export async function initViewer(pdfUrl, options = {}) {
 	const container = document.getElementById(`viewer-container`)
 	const pixelRatio = window.devicePixelRatio || 1
 	const firstPage = await pdf.getPage(1)
-	const intrinsicWidth = firstPage.getViewport({
-		scale: 1
-	}).width
-	let baseScale = (container.clientWidth - 24) / intrinsicWidth
+	const intrinsicVp = firstPage.getViewport({ scale: 1 })
+	const intrinsicWidth = intrinsicVp.width
+	const intrinsicHeight = intrinsicVp.height
+
+	let singlePageMode = true
+	let currentPage = 1
+
+	function computeBaseScale() {
+		const w = (container.clientWidth - 24) / intrinsicWidth
+		if (!singlePageMode) return w
+		const h = (container.clientHeight - 24) / intrinsicHeight
+		return Math.min(w, h)
+	}
+
+	let baseScale = computeBaseScale()
 	let scale = baseScale
 
 	let renderToken = 0
@@ -213,13 +225,19 @@ export async function initViewer(pdfUrl, options = {}) {
 		}
 	}
 
-	async function renderAllPages() {
+	async function renderAllPages(resetScroll = false) {
 		const myToken = ++renderToken
-		captureScrollFrac()
+		if (resetScroll) {
+			scrollFrac = 0
+		} else {
+			captureScrollFrac()
+		}
 		renderInProgress++
 		try {
 			container.innerHTML = ``
-			for (let i = 1; i <= numPages; i++) {
+			const start = singlePageMode ? currentPage : 1
+			const end = singlePageMode ? currentPage : numPages
+			for (let i = start; i <= end; i++) {
 				const page = await pdf.getPage(i)
 				if (myToken !== renderToken) return
 				const vp = page.getViewport({
@@ -253,27 +271,55 @@ export async function initViewer(pdfUrl, options = {}) {
 	}
 
 	function updatePageInfo() {
-		const canvases = container.querySelectorAll(`canvas`)
-		if (!canvases.length) return
-		const containerRect = container.getBoundingClientRect()
-		let current = 1
-		let bestVisible = -1
-		canvases.forEach((c) => {
-			const rect = c.getBoundingClientRect()
-			const visible = Math.max(0, Math.min(rect.bottom, containerRect.bottom) - Math.max(rect.top, containerRect.top))
-			if (visible > bestVisible) {
-				bestVisible = visible
-				current = +c.dataset.page
+		if (!singlePageMode) {
+			const canvases = container.querySelectorAll(`canvas`)
+			if (canvases.length) {
+				const containerRect = container.getBoundingClientRect()
+				let bestVisible = -1
+				canvases.forEach((c) => {
+					const rect = c.getBoundingClientRect()
+					const visible = Math.max(0, Math.min(rect.bottom, containerRect.bottom) - Math.max(rect.top, containerRect.top))
+					if (visible > bestVisible) {
+						bestVisible = visible
+						currentPage = +c.dataset.page
+					}
+				})
 			}
-		})
-		document.getElementById(`page-info`).textContent = `${current} / ${numPages}`
+		}
+		document.getElementById(`page-info`).textContent = `${currentPage} / ${numPages}`
 	}
 
 	await renderAllPages()
 
 	container.addEventListener(`scroll`, () => {
 		captureScrollFrac()
-		updatePageInfo()
+		if (!singlePageMode) updatePageInfo()
+	})
+
+	const modeToggle = document.getElementById(`mode-toggle`)
+	modeToggle.addEventListener(`click`, async () => {
+		if (!singlePageMode) {
+			updatePageInfo()
+		}
+		singlePageMode = !singlePageMode
+		modeToggle.textContent = singlePageMode ? `▭` : `☰`
+		modeToggle.title = singlePageMode ? `Switch to continuous scroll` : `Switch to single page mode`
+		baseScale = computeBaseScale()
+		scale = baseScale
+		await renderAllPages(true)
+	})
+
+	document.addEventListener(`keydown`, async (e) => {
+		if (!singlePageMode) return
+		if (e.key === `ArrowLeft` && currentPage > 1) {
+			e.preventDefault()
+			currentPage--
+			await renderAllPages(true)
+		} else if (e.key === `ArrowRight` && currentPage < numPages) {
+			e.preventDefault()
+			currentPage++
+			await renderAllPages(true)
+		}
 	})
 
 	document.getElementById(`zoom-in`).addEventListener(`click`, async () => {
@@ -293,7 +339,7 @@ export async function initViewer(pdfUrl, options = {}) {
 		clearTimeout(resizeTimer)
 		resizeTimer = setTimeout(() => {
 			const ratio = scale / baseScale
-			baseScale = (container.clientWidth - 24) / intrinsicWidth
+			baseScale = computeBaseScale()
 			scale = baseScale * ratio
 			renderAllPages()
 		}, 200)
