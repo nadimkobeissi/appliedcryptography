@@ -223,13 +223,17 @@ export async function initViewer(pdfUrl, options = {}) {
 	let baseScale = (container.clientWidth - 24) / intrinsicWidth
 	let scale = baseScale
 
+	let renderToken = 0
+
 	async function renderAllPages() {
+		const myToken = ++renderToken
 		const scrollFrac = container.scrollHeight > container.clientHeight ?
 			container.scrollTop / (container.scrollHeight - container.clientHeight) :
 			0
 		container.innerHTML = ``
 		for (let i = 1; i <= numPages; i++) {
 			const page = await pdf.getPage(i)
+			if (myToken !== renderToken) return
 			const vp = page.getViewport({
 				scale
 			})
@@ -246,7 +250,9 @@ export async function initViewer(pdfUrl, options = {}) {
 				canvasContext: ctx,
 				viewport: vp
 			}).promise
+			if (myToken !== renderToken) return
 		}
+		if (myToken !== renderToken) return
 		if (container.scrollHeight > container.clientHeight) {
 			container.scrollTop = scrollFrac * (container.scrollHeight - container.clientHeight)
 		}
@@ -259,14 +265,13 @@ export async function initViewer(pdfUrl, options = {}) {
 		const canvases = container.querySelectorAll(`canvas`)
 		if (!canvases.length) return
 		const containerRect = container.getBoundingClientRect()
-		const containerMid = containerRect.top + containerRect.height / 2
 		let current = 1
-		let best = Infinity
+		let bestVisible = -1
 		canvases.forEach((c) => {
 			const rect = c.getBoundingClientRect()
-			const d = Math.abs(rect.top + rect.height / 2 - containerMid)
-			if (d < best) {
-				best = d
+			const visible = Math.max(0, Math.min(rect.bottom, containerRect.bottom) - Math.max(rect.top, containerRect.top))
+			if (visible > bestVisible) {
+				bestVisible = visible
 				current = +c.dataset.page
 			}
 		})
