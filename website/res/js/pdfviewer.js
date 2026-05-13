@@ -202,7 +202,7 @@ export async function initViewer(pdfUrl, options = {}) {
 	const intrinsicWidth = intrinsicVp.width
 	const intrinsicHeight = intrinsicVp.height
 
-	let singlePageMode = true
+	let singlePageMode = false
 	let currentPage = 1
 
 	function computeBaseScale() {
@@ -289,24 +289,65 @@ export async function initViewer(pdfUrl, options = {}) {
 		document.getElementById(`page-info`).textContent = `${currentPage} / ${numPages}`
 	}
 
+	function parseHashPage() {
+		const m = location.hash.match(/page=(\d+)/)
+		if (!m) return null
+		const n = parseInt(m[1], 10)
+		return n >= 1 && n <= numPages ? n : null
+	}
+
+	function writeHash(push) {
+		const newHash = `#page=${currentPage}`
+		if (location.hash === newHash) return
+		if (push) {
+			history.pushState(null, ``, newHash)
+		} else {
+			history.replaceState(null, ``, newHash)
+		}
+	}
+
+	async function scrollToPageCanvas(page) {
+		const c = container.querySelector(`canvas[data-page="${page}"]`)
+		if (c) c.scrollIntoView({ block: `start` })
+	}
+
+	const initialPage = parseHashPage()
+	if (initialPage) currentPage = initialPage
+
 	await renderAllPages()
 
+	if (!singlePageMode && initialPage) {
+		await scrollToPageCanvas(initialPage)
+	}
+
+	let hashUpdateTimer
 	container.addEventListener(`scroll`, () => {
 		captureScrollFrac()
-		if (!singlePageMode) updatePageInfo()
+		if (!singlePageMode) {
+			updatePageInfo()
+			clearTimeout(hashUpdateTimer)
+			hashUpdateTimer = setTimeout(() => writeHash(false), 300)
+		}
 	})
 
 	const modeToggle = document.getElementById(`mode-toggle`)
+	modeToggle.textContent = singlePageMode ? `▭` : `☰`
+	modeToggle.title = singlePageMode ? `Switch to continuous scroll` : `Switch to single page mode`
 	modeToggle.addEventListener(`click`, async () => {
 		if (!singlePageMode) {
 			updatePageInfo()
 		}
+		const targetPage = currentPage
 		singlePageMode = !singlePageMode
 		modeToggle.textContent = singlePageMode ? `▭` : `☰`
 		modeToggle.title = singlePageMode ? `Switch to continuous scroll` : `Switch to single page mode`
 		baseScale = computeBaseScale()
 		scale = baseScale
 		await renderAllPages(true)
+		if (!singlePageMode) {
+			await scrollToPageCanvas(targetPage)
+		}
+		writeHash(false)
 	})
 
 	document.addEventListener(`keydown`, async (e) => {
@@ -315,10 +356,48 @@ export async function initViewer(pdfUrl, options = {}) {
 			e.preventDefault()
 			currentPage--
 			await renderAllPages(true)
+			writeHash(true)
 		} else if (e.key === `ArrowRight` && currentPage < numPages) {
 			e.preventDefault()
 			currentPage++
 			await renderAllPages(true)
+			writeHash(true)
+		}
+	})
+
+	let wheelNavLock = 0
+	container.addEventListener(`wheel`, (e) => {
+		if (!singlePageMode) return
+		const now = Date.now()
+		if (now - wheelNavLock < 400) return
+		const atTop = container.scrollTop <= 0
+		const atBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 1
+		if (e.deltaY > 0 && atBottom && currentPage < numPages) {
+			e.preventDefault()
+			wheelNavLock = now
+			currentPage++
+			renderAllPages(true).then(() => writeHash(true))
+		} else if (e.deltaY < 0 && atTop && currentPage > 1) {
+			e.preventDefault()
+			wheelNavLock = now
+			currentPage--
+			renderAllPages(true).then(() => {
+				if (container.scrollHeight > container.clientHeight) {
+					container.scrollTop = container.scrollHeight - container.clientHeight
+				}
+				writeHash(true)
+			})
+		}
+	}, { passive: false })
+
+	window.addEventListener(`hashchange`, async () => {
+		const p = parseHashPage()
+		if (!p || p === currentPage) return
+		currentPage = p
+		if (singlePageMode) {
+			await renderAllPages(true)
+		} else {
+			await scrollToPageCanvas(p)
 		}
 	})
 
