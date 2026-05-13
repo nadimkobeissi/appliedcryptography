@@ -1,4 +1,7 @@
-const PDFJS_CDN = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.4.149`
+import * as pdfjsLib from "https://cdn.jsdelivr.net/npm/pdfjs-dist@5.7.284/+esm"
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@5.7.284/build/pdf.worker.min.mjs`
+
 const SCALE_STEP = 0.25
 
 const VIEWER_CSS = `
@@ -130,14 +133,6 @@ const VIEWER_CSS = `
 	font-size: 15px;
 	text-align: center;
 }
-#status a {
-	color: #4a9c31;
-	text-decoration: none;
-	font-weight: 600;
-}
-#status a:hover {
-	color: #78d159;
-}
 @media (max-width: 640px) {
 	#toolbar {
 		flex-wrap: wrap;
@@ -180,22 +175,7 @@ export async function initViewer(pdfUrl, options = {}) {
 	document.head.appendChild(style)
 	document.body.innerHTML = `<div id="status" style="color:#6a8a5a">Loading\u2026</div>`
 
-	let pdfjsLib
-	try {
-		pdfjsLib = await import(`${PDFJS_CDN}/pdf.min.mjs`)
-	} catch {
-		document.body.innerHTML = `<div id="status" style="color:#e57373">Failed to load PDF viewer.<br><a href="${pdfUrl}">Download PDF</a></div>`
-		return
-	}
-	pdfjsLib.GlobalWorkerOptions.workerSrc = `${PDFJS_CDN}/pdf.worker.min.mjs`
-
-	let pdf
-	try {
-		pdf = await pdfjsLib.getDocument(pdfUrl).promise
-	} catch {
-		document.body.innerHTML = `<div id="status" style="color:#e57373">Failed to load PDF.<br><a href="${pdfUrl}">Download PDF</a></div>`
-		return
-	}
+	const pdf = await pdfjsLib.getDocument(pdfUrl).promise
 
 	const numPages = pdf.numPages
 	document.body.innerHTML = `
@@ -224,41 +204,52 @@ export async function initViewer(pdfUrl, options = {}) {
 	let scale = baseScale
 
 	let renderToken = 0
+	let renderInProgress = 0
+	let scrollFrac = 0
+
+	function captureScrollFrac() {
+		if (renderInProgress === 0 && container.scrollHeight > container.clientHeight) {
+			scrollFrac = container.scrollTop / (container.scrollHeight - container.clientHeight)
+		}
+	}
 
 	async function renderAllPages() {
 		const myToken = ++renderToken
-		const scrollFrac = container.scrollHeight > container.clientHeight ?
-			container.scrollTop / (container.scrollHeight - container.clientHeight) :
-			0
-		container.innerHTML = ``
-		for (let i = 1; i <= numPages; i++) {
-			const page = await pdf.getPage(i)
+		captureScrollFrac()
+		renderInProgress++
+		try {
+			container.innerHTML = ``
+			for (let i = 1; i <= numPages; i++) {
+				const page = await pdf.getPage(i)
+				if (myToken !== renderToken) return
+				const vp = page.getViewport({
+					scale
+				})
+				const canvas = document.createElement(`canvas`)
+				canvas.width = Math.floor(vp.width * pixelRatio)
+				canvas.height = Math.floor(vp.height * pixelRatio)
+				canvas.style.width = `${Math.floor(vp.width)}px`
+				canvas.style.height = `${Math.floor(vp.height)}px`
+				canvas.dataset.page = i
+				container.appendChild(canvas)
+				const ctx = canvas.getContext(`2d`)
+				ctx.scale(pixelRatio, pixelRatio)
+				await page.render({
+					canvasContext: ctx,
+					viewport: vp
+				}).promise
+				if (myToken !== renderToken) return
+			}
 			if (myToken !== renderToken) return
-			const vp = page.getViewport({
-				scale
-			})
-			const canvas = document.createElement(`canvas`)
-			canvas.width = Math.floor(vp.width * pixelRatio)
-			canvas.height = Math.floor(vp.height * pixelRatio)
-			canvas.style.width = `${Math.floor(vp.width)}px`
-			canvas.style.height = `${Math.floor(vp.height)}px`
-			canvas.dataset.page = i
-			container.appendChild(canvas)
-			const ctx = canvas.getContext(`2d`)
-			ctx.scale(pixelRatio, pixelRatio)
-			await page.render({
-				canvasContext: ctx,
-				viewport: vp
-			}).promise
-			if (myToken !== renderToken) return
+			if (container.scrollHeight > container.clientHeight) {
+				container.scrollTop = scrollFrac * (container.scrollHeight - container.clientHeight)
+			}
+			updatePageInfo()
+			document.getElementById(`zoom-level`).textContent =
+				`${Math.round((scale / baseScale) * 100)}%`
+		} finally {
+			renderInProgress--
 		}
-		if (myToken !== renderToken) return
-		if (container.scrollHeight > container.clientHeight) {
-			container.scrollTop = scrollFrac * (container.scrollHeight - container.clientHeight)
-		}
-		updatePageInfo()
-		document.getElementById(`zoom-level`).textContent =
-			`${Math.round((scale / baseScale) * 100)}%`
 	}
 
 	function updatePageInfo() {
@@ -280,7 +271,10 @@ export async function initViewer(pdfUrl, options = {}) {
 
 	await renderAllPages()
 
-	container.addEventListener(`scroll`, updatePageInfo)
+	container.addEventListener(`scroll`, () => {
+		captureScrollFrac()
+		updatePageInfo()
+	})
 
 	document.getElementById(`zoom-in`).addEventListener(`click`, async () => {
 		if (scale >= baseScale * 3) return
