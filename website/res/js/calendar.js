@@ -704,12 +704,30 @@ export const calendarInit = async () => {
 		if (window.matchMedia("(max-width: 576px)").matches) {
 			state.view = "agenda"
 		}
-		// In month view, auto-select today's day cell when in range so the
-		// side panel shows today's events instead of a generic prompt.
+		// In month view, default the selected day to the non-empty day
+		// closest to today (preferring the upcoming one on ties), so the
+		// side panel always has content to show.
 		if (state.view === "month" && !state.day) {
+			const eventDayInstant = (event) => {
+				const fmt = new Intl.DateTimeFormat("en-CA", {
+					timeZone: state.tz, year: "numeric", month: "2-digit", day: "2-digit",
+				})
+				const [y, m, d] = fmt.format(event.start.instant).split("-").map(Number)
+				return Date.UTC(y, m - 1, d)
+			}
 			const t = todayInstant()
-			if (events.some((ev) => isSameDayUTC(ev.start.instant, t))) {
-				state.day = t
+			const candidates = events
+				.filter((e) => state.filters.includes(e.kind))
+				.map((e) => {
+					const dayInst = eventDayInstant(e)
+					return { dayInst, diff: Math.abs(dayInst - t), future: dayInst >= t }
+				})
+			candidates.sort((a, b) => a.diff - b.diff || Number(b.future) - Number(a.future))
+			const best = candidates[0]
+			if (best) {
+				state.day = best.dayInst
+				const d = new Date(best.dayInst)
+				state.month = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`
 			}
 		}
 		const ribbonHost = section.querySelector("[data-cal-ribbon]")
