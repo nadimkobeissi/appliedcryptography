@@ -300,13 +300,13 @@ const renderCaption = (state) => {
 
 const renderToolbar = (state) => `
 	<div class="cal-tabs" role="tablist" aria-label="Calendar view">
-		<button class="cal-tab" role="tab" data-action="set-view" data-view="agenda"
-		        aria-selected="${state.view === "agenda"}">
-			<i class="icon ph-duotone ph-list-bullets"></i>Agenda
-		</button>
 		<button class="cal-tab" role="tab" data-action="set-view" data-view="month"
 		        aria-selected="${state.view === "month"}">
 			<i class="icon ph-duotone ph-calendar"></i>Month
+		</button>
+		<button class="cal-tab" role="tab" data-action="set-view" data-view="agenda"
+		        aria-selected="${state.view === "agenda"}">
+			<i class="icon ph-duotone ph-list-bullets"></i>Agenda
 		</button>
 	</div>
 	<div class="cal-filters" role="group" aria-label="Filter events">
@@ -430,15 +430,38 @@ const eventMonthKey = (event, tz) => {
 	return fmt.format(event.start.instant).slice(0, 7)
 }
 
+// Tiny HTML builder used by the month-grid / day-panel renderers so the
+// resulting markup is built from JS function calls instead of nested
+// template literals — js-beautify mangles closing tags inside templates
+// that sit adjacent to ${...} interpolations.
+const h = (tag, attrs, ...children) => {
+	const attrStr = attrs
+		? Object.entries(attrs)
+			.filter(([, v]) => v !== null && v !== undefined && v !== false)
+			.map(([k, v]) => ` ${k}="${String(v).replace(/"/g, "&quot;")}"`)
+			.join("")
+		: ""
+	const inner = children
+		.filter((c) => c !== null && c !== undefined && c !== false && c !== "")
+		.join("")
+	return `<${tag}${attrStr}>${inner}</${tag}>`
+}
+
 const renderMonthHeader = (state) => {
 	const idx = MONTH_KEYS.indexOf(state.month)
-	return `
-		<h3 class="cal-month-title">${monthLabel(state.month)}</h3>
-		<div class="cal-month-nav">
-			<button data-action="month-prev" aria-label="Previous month" ${idx <= 0 ? "disabled" : ""}>‹</button>
-			<button data-action="month-next" aria-label="Next month" ${idx >= MONTH_KEYS.length - 1 ? "disabled" : ""}>›</button>
-		</div>
-	`
+	return h("h3", { class: "cal-month-title" }, monthLabel(state.month)) +
+		h("div", { class: "cal-month-nav" },
+			h("button", {
+				"data-action": "month-prev",
+				"aria-label": "Previous month",
+				disabled: idx <= 0 ? "" : null,
+			}, "‹"),
+			h("button", {
+				"data-action": "month-next",
+				"aria-label": "Next month",
+				disabled: idx >= MONTH_KEYS.length - 1 ? "" : null,
+			}, "›"),
+		)
 }
 
 const buildMonthCells = (key) => {
@@ -480,23 +503,12 @@ const dayChipLabel = (event) => {
 }
 
 const renderMonthGrid = (events, state) => {
-const visible = events.filter((e) => state.filters.includes(e.kind))
-const cells = buildMonthCells(state.month)
-const today = todayInstant()
-const dayHeaders = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-const idx = MONTH_KEYS.indexOf(state.month)
+	const visible = events.filter((e) => state.filters.includes(e.kind))
+	const cells = buildMonthCells(state.month)
+	const today = todayInstant()
+	const dayHeaders = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
-return `
-		<div class="cal-month-grid" role="grid" aria-label="${monthLabel(state.month)}">
-			<div class="cal-month-header">
-				${renderMonthHeader(state)}
-			</div>
-			<table class="cal-month-table">
-				<thead>
-					<tr>${dayHeaders.map((h) => `<th scope="col">${h}</th>`).join("")}</tr>
-				</thead>
-				<tbody>
-					${[0, 1, 2, 3, 4, 5].map((row) => `<tr>${cells.slice(row * 7, row * 7 + 7).map((cell) => {
+	const renderCell = (cell) => {
 		const dayEvents = cell.outside ? [] : eventsOnDay(visible, cell.instant, state.tz)
 		const shown = dayEvents.slice(0, 3)
 		const overflow = dayEvents.length - shown.length
@@ -505,48 +517,63 @@ return `
 		const dateLabel = new Intl.DateTimeFormat("en-US", {
 			weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: state.tz,
 		}).format(cell.instant)
-		return `
-							<td role="gridcell"
-							    data-outside="${cell.outside}"
-							    data-today="${isToday}"
-							    data-selected="${isSelected}"
-							    data-action="select-day"
-							    data-instant="${cell.instant}"
-							    aria-selected="${isSelected}"
-							    aria-label="${dateLabel}, ${dayEvents.length} event${dayEvents.length === 1 ? "" : "s"}"
-							    tabindex="${isSelected ? "0" : "-1"}">
-								<span class="cal-day-num">${cell.day}</span>
-								<div class="cal-day-chips">
-									${shown.map((e) => `<span class="cal-day-chip" data-kind="${e.kind}">${dayChipLabel(e)}</span>`).join("")}
-									${overflow > 0 ? `<span class="cal-day-more">+${overflow} more</span>` : ""}
-								</div>
-							</td>
-						`
-}).join("")
-} < /tr>`).join("")} <
-/tbody> <
-/table> <
-/div>
-`
+		const chips = shown.map((e) =>
+			h("span", { class: "cal-day-chip", "data-kind": e.kind }, dayChipLabel(e))
+		)
+		const moreChip = overflow > 0
+			? h("span", { class: "cal-day-more" }, `+${overflow} more`)
+			: ""
+		return h("td", {
+			role: "gridcell",
+			"data-outside": String(cell.outside),
+			"data-today": String(isToday),
+			"data-selected": String(isSelected),
+			"data-action": "select-day",
+			"data-instant": cell.instant,
+			"aria-selected": String(isSelected),
+			"aria-label": `${dateLabel}, ${dayEvents.length} event${dayEvents.length === 1 ? "" : "s"}`,
+			tabindex: isSelected ? "0" : "-1",
+		},
+			h("span", { class: "cal-day-num" }, cell.day),
+			h("div", { class: "cal-day-chips" }, ...chips, moreChip),
+		)
+	}
+
+	const headerRow = h("tr", null,
+		...dayHeaders.map((label) => h("th", { scope: "col" }, label))
+	)
+
+	const bodyRows = [0, 1, 2, 3, 4, 5].map((rowIdx) =>
+		h("tr", null, ...cells.slice(rowIdx * 7, rowIdx * 7 + 7).map(renderCell))
+	)
+
+	return h("div", { class: "cal-month-grid", role: "grid", "aria-label": monthLabel(state.month) },
+		h("div", { class: "cal-month-header" }, renderMonthHeader(state)),
+		h("table", { class: "cal-month-table" },
+			h("thead", null, headerRow),
+			h("tbody", null, ...bodyRows),
+		),
+	)
 }
 
 const renderDayPanel = (events, state) => {
 	const visible = events.filter((e) => state.filters.includes(e.kind))
 	if (!state.day) {
-		return ` < aside class = "cal-day-panel" > < p class = "cal-day-panel-empty" > Select a day to see its events. < /p></aside > `
+		return h("aside", { class: "cal-day-panel" },
+			h("p", { class: "cal-day-panel-empty" }, "Select a day to see its events."),
+		)
 	}
 	const dayEvents = eventsOnDay(visible, state.day, state.tz)
 	const heading = new Intl.DateTimeFormat("en-US", {
 		weekday: "long", month: "long", day: "numeric", timeZone: state.tz,
 	}).format(state.day)
 	const body = dayEvents.length === 0
-		? ` < p class = "cal-day-panel-empty" > No events on this day. < /p>`: dayEvents.map((e) => renderEventCard(e, state)).join("")
-return `
-		<aside class="cal-day-panel">
-			<h3 class="cal-day-panel-title">${heading}</h3>
-			${body}
-		</aside>
-	`
+		? h("p", { class: "cal-day-panel-empty" }, "No events on this day.")
+		: dayEvents.map((e) => renderEventCard(e, state)).join("")
+	return h("aside", { class: "cal-day-panel" },
+		h("h3", { class: "cal-day-panel-title" }, heading),
+		body,
+	)
 }
 
 const renderMonth = (events, state) => `
@@ -689,10 +716,7 @@ export const calendarInit = async () => {
 		ribbonHost.innerHTML = renderRibbon(events)
 		ribbonHost.hidden = false
 		const toolbarHost = section.querySelector("[data-cal-toolbar]")
-		toolbarHost.innerHTML = renderToolbar(state)
-		viewHost.innerHTML = renderAgenda(events, state)
 		const captionHost = section.querySelector("[data-cal-caption]")
-		captionHost.innerHTML = renderCaption(state)
 
 		const rerender = () => {
 			toolbarHost.innerHTML = renderToolbar(state)
@@ -701,6 +725,8 @@ export const calendarInit = async () => {
 			const next = `#${serializeState(state)}`
 			if (window.location.hash !== next) history.replaceState(null, "", next)
 		}
+
+		rerender()
 
 		section.addEventListener("click", (e) => {
 			const target = e.target.closest("[data-action]")
