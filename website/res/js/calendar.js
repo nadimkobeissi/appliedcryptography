@@ -325,16 +325,19 @@ const renderToolbar = (state) => `
 	</div>
 	<div class="cal-subscribe">
 		<a class="cal-subscribe-primary" href="${webcalUrl()}"
-		   title="Subscribe in Apple Calendar / Outlook / Fantastical">
-			<i class="icon ph-duotone ph-rss"></i>Subscribe
+		   title="Subscribe in Apple Calendar / Outlook / Fantastical"
+		   aria-label="Subscribe in your calendar app">
+			<i class="icon ph-duotone ph-rss"></i><span class="cal-sub-label">Subscribe</span>
 		</a>
 		<a href="${ICS_URL}" download="AC-Summer-2026.ics"
-		   title="Download .ics file">
-			<i class="icon ph-duotone ph-download-simple"></i>.ics
+		   title="Download .ics file"
+		   aria-label="Download .ics file">
+			<i class="icon ph-duotone ph-download-simple"></i><span class="cal-sub-label">.ics</span>
 		</a>
 		<a href="${googleAddUrl()}" target="_blank" rel="noopener"
-		   title="Add to Google Calendar">
-			<i class="icon ph-duotone ph-google-logo"></i>Google
+		   title="Add to Google Calendar"
+		   aria-label="Add to Google Calendar">
+			<i class="icon ph-duotone ph-google-logo"></i><span class="cal-sub-label">Google</span>
 		</a>
 	</div>
 `
@@ -699,11 +702,6 @@ export const calendarInit = async () => {
 			tz: "Asia/Beirut",
 		}
 		const state = deserializeState(window.location.hash, defaults)
-		// On very narrow viewports, month view is hidden via CSS.
-		// Force agenda on first paint so something is always visible.
-		if (window.matchMedia("(max-width: 576px)").matches) {
-			state.view = "agenda"
-		}
 		// In month view, default the selected day to the non-empty day
 		// closest to today (preferring the upcoming one on ties), so the
 		// side panel always has content to show.
