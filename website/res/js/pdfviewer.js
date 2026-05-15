@@ -198,7 +198,9 @@ export async function initViewer(pdfUrl, options = {}) {
 	const container = document.getElementById(`viewer-container`)
 	const pixelRatio = window.devicePixelRatio || 1
 	const firstPage = await pdf.getPage(1)
-	const intrinsicVp = firstPage.getViewport({ scale: 1 })
+	const intrinsicVp = firstPage.getViewport({
+		scale: 1
+	})
 	const intrinsicWidth = intrinsicVp.width
 	const intrinsicHeight = intrinsicVp.height
 
@@ -308,7 +310,9 @@ export async function initViewer(pdfUrl, options = {}) {
 
 	async function scrollToPageCanvas(page) {
 		const c = container.querySelector(`canvas[data-page="${page}"]`)
-		if (c) c.scrollIntoView({ block: `start` })
+		if (c) c.scrollIntoView({
+			block: `start`
+		})
 	}
 
 	const initialPage = parseHashPage()
@@ -388,7 +392,9 @@ export async function initViewer(pdfUrl, options = {}) {
 				writeHash(true)
 			})
 		}
-	}, { passive: false })
+	}, {
+		passive: false
+	})
 
 	window.addEventListener(`hashchange`, async () => {
 		const p = parseHashPage()
