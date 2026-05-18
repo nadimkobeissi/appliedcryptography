@@ -3,6 +3,8 @@ import * as pdfjsLib from "https://cdn.jsdelivr.net/npm/pdfjs-dist@5.7.284/+esm"
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@5.7.284/build/pdf.worker.min.mjs`
 
 const SCALE_STEP = 0.25
+const MAX_PIXEL_RATIO = 2
+const RENDER_MARGIN_PX = 800
 
 const VIEWER_CSS = `
 #toolbar {
@@ -120,9 +122,14 @@ const VIEWER_CSS = `
 	gap: 8px;
 	background: #1a1a1a;
 }
-#viewer-container canvas {
-	display: block;
+#viewer-container .page-slot {
+	background: #ffffff;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+	position: relative;
+	flex-shrink: 0;
+}
+#viewer-container .page-slot canvas {
+	display: block;
 }
 #status {
 	position: fixed;
@@ -160,7 +167,7 @@ const VIEWER_CSS = `
 function buildNav(options) {
 	let html = `<a href="/" id="toolbar-home">Applied Cryptography</a>`
 	if (options.backLabel && options.backUrl) {
-		html += `<span id="toolbar-sep">\u203A</span>`
+		html += `<span id="toolbar-sep">\u203a</span>`
 		html += `<a href="${options.backUrl}" id="toolbar-back">${options.backLabel}</a>`
 	}
 	if (options.title) {
@@ -196,15 +203,30 @@ export async function initViewer(pdfUrl, options = {}) {
 	`
 
 	const container = document.getElementById(`viewer-container`)
-	const pixelRatio = window.devicePixelRatio || 1
-	const firstPage = await pdf.getPage(1)
-	const intrinsicVp = firstPage.getViewport({
-		scale: 1
-	})
-	const intrinsicWidth = intrinsicVp.width
-	const intrinsicHeight = intrinsicVp.height
+	const pixelRatio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO)
 
-	let singlePageMode = false
+	// Pre-fetch all page proxies so placeholder slots can have accurate
+	// per-page dimensions immediately (stable scrollHeight before any render).
+	// PDFPageProxy is lightweight — content streams aren't parsed until render().
+	const pageProxies = await Promise.all(
+		Array.from({
+			length: numPages
+		}, (_, i) => pdf.getPage(i + 1))
+	)
+	const pageSizes = pageProxies.map((p) => {
+		const vp = p.getViewport({
+			scale: 1
+		})
+		return {
+			width: vp.width,
+			height: vp.height
+		}
+	})
+
+	const intrinsicWidth = pageSizes[0].width
+	const intrinsicHeight = pageSizes[0].height
+
+	let singlePageMode = window.matchMedia(`(max-width: 640px)`).matches
 	let currentPage = 1
 
 	function computeBaseScale() {
@@ -217,9 +239,13 @@ export async function initViewer(pdfUrl, options = {}) {
 	let baseScale = computeBaseScale()
 	let scale = baseScale
 
-	let renderToken = 0
-	let renderInProgress = 0
+	let slots = []
+	let observer = null
+	const renderTasks = new Map()
+	const renderedPages = new Set()
+	let scaleStamp = 0
 	let scrollFrac = 0
+	let renderInProgress = 0
 
 	function captureScrollFrac() {
 		if (renderInProgress === 0 && container.scrollHeight > container.clientHeight) {
@@ -227,8 +253,144 @@ export async function initViewer(pdfUrl, options = {}) {
 		}
 	}
 
+	function cancelRender(pageNum) {
+		const task = renderTasks.get(pageNum)
+		if (!task) return
+		try {
+			task.cancel()
+		} catch {}
+		renderTasks.delete(pageNum)
+	}
+
+	function releasePage(pageNum) {
+		if (!renderedPages.has(pageNum)) return
+		const slot = slots[pageNum - 1]
+		if (slot) {
+			const canvas = slot.querySelector(`canvas`)
+			if (canvas) {
+				// Setting dimensions to 0 forces the browser to release the
+				// canvas backing store immediately rather than waiting for GC.
+				canvas.width = 0
+				canvas.height = 0
+				canvas.remove()
+			}
+		}
+		const page = pageProxies[pageNum - 1]
+		if (page && page.cleanup) {
+			try {
+				page.cleanup()
+			} catch {}
+		}
+		renderedPages.delete(pageNum)
+	}
+
+	async function renderPage(pageNum) {
+		if (renderedPages.has(pageNum) || renderTasks.has(pageNum)) return
+		const slot = slots[pageNum - 1]
+		if (!slot) return
+		const stamp = scaleStamp
+		const page = pageProxies[pageNum - 1]
+		const vp = page.getViewport({
+			scale
+		})
+		const canvas = document.createElement(`canvas`)
+		canvas.width = Math.floor(vp.width * pixelRatio)
+		canvas.height = Math.floor(vp.height * pixelRatio)
+		canvas.style.width = `${Math.floor(vp.width)}px`
+		canvas.style.height = `${Math.floor(vp.height)}px`
+		const ctx = canvas.getContext(`2d`)
+		ctx.scale(pixelRatio, pixelRatio)
+		const task = page.render({
+			canvasContext: ctx,
+			viewport: vp
+		})
+		renderTasks.set(pageNum, task)
+		try {
+			await task.promise
+			if (stamp !== scaleStamp) {
+				canvas.width = 0
+				canvas.height = 0
+				return
+			}
+			slot.appendChild(canvas)
+			renderedPages.add(pageNum)
+		} catch (e) {
+			if (e?.name !== `RenderingCancelledException`) {
+				console.error(`PDF render error`, e)
+			}
+		} finally {
+			if (renderTasks.get(pageNum) === task) {
+				renderTasks.delete(pageNum)
+			}
+		}
+	}
+
+	function teardownObserver() {
+		if (observer) {
+			observer.disconnect()
+			observer = null
+		}
+	}
+
+	function setupObserver() {
+		teardownObserver()
+		if (singlePageMode) return
+		observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					const pageNum = +entry.target.dataset.page
+					if (entry.isIntersecting) {
+						renderPage(pageNum)
+					} else {
+						cancelRender(pageNum)
+						releasePage(pageNum)
+					}
+				}
+			}, {
+				root: container,
+				rootMargin: `${RENDER_MARGIN_PX}px 0px`
+			}
+		)
+		for (const slot of slots) {
+			observer.observe(slot)
+		}
+	}
+
+	function makeSlot(pageNum) {
+		const size = pageSizes[pageNum - 1]
+		const slot = document.createElement(`div`)
+		slot.className = `page-slot`
+		slot.dataset.page = String(pageNum)
+		slot.style.width = `${Math.floor(size.width * scale)}px`
+		slot.style.height = `${Math.floor(size.height * scale)}px`
+		return slot
+	}
+
+	function buildSlots() {
+		teardownObserver()
+		// Cancel in-flight renders and free all canvases before tearing down.
+		for (const pageNum of Array.from(renderTasks.keys())) cancelRender(pageNum)
+		for (const pageNum of Array.from(renderedPages)) releasePage(pageNum)
+		container.innerHTML = ``
+		slots = []
+		scaleStamp++
+
+		if (singlePageMode) {
+			const slot = makeSlot(currentPage)
+			container.appendChild(slot)
+			slots[currentPage - 1] = slot
+			renderPage(currentPage)
+		} else {
+			for (let i = 1; i <= numPages; i++) {
+				const slot = makeSlot(i)
+				container.appendChild(slot)
+				slots.push(slot)
+			}
+			setupObserver()
+		}
+	}
+
 	async function renderAllPages(resetScroll = false) {
-		const myToken = ++renderToken
 		if (resetScroll) {
 			scrollFrac = 0
 		} else {
@@ -236,31 +398,7 @@ export async function initViewer(pdfUrl, options = {}) {
 		}
 		renderInProgress++
 		try {
-			container.innerHTML = ``
-			const start = singlePageMode ? currentPage : 1
-			const end = singlePageMode ? currentPage : numPages
-			for (let i = start; i <= end; i++) {
-				const page = await pdf.getPage(i)
-				if (myToken !== renderToken) return
-				const vp = page.getViewport({
-					scale
-				})
-				const canvas = document.createElement(`canvas`)
-				canvas.width = Math.floor(vp.width * pixelRatio)
-				canvas.height = Math.floor(vp.height * pixelRatio)
-				canvas.style.width = `${Math.floor(vp.width)}px`
-				canvas.style.height = `${Math.floor(vp.height)}px`
-				canvas.dataset.page = i
-				container.appendChild(canvas)
-				const ctx = canvas.getContext(`2d`)
-				ctx.scale(pixelRatio, pixelRatio)
-				await page.render({
-					canvasContext: ctx,
-					viewport: vp
-				}).promise
-				if (myToken !== renderToken) return
-			}
-			if (myToken !== renderToken) return
+			buildSlots()
 			if (container.scrollHeight > container.clientHeight) {
 				container.scrollTop = scrollFrac * (container.scrollHeight - container.clientHeight)
 			}
@@ -274,16 +412,16 @@ export async function initViewer(pdfUrl, options = {}) {
 
 	function updatePageInfo() {
 		if (!singlePageMode) {
-			const canvases = container.querySelectorAll(`canvas`)
-			if (canvases.length) {
+			const visibleSlots = container.querySelectorAll(`.page-slot`)
+			if (visibleSlots.length) {
 				const containerRect = container.getBoundingClientRect()
 				let bestVisible = -1
-				canvases.forEach((c) => {
-					const rect = c.getBoundingClientRect()
+				visibleSlots.forEach((s) => {
+					const rect = s.getBoundingClientRect()
 					const visible = Math.max(0, Math.min(rect.bottom, containerRect.bottom) - Math.max(rect.top, containerRect.top))
 					if (visible > bestVisible) {
 						bestVisible = visible
-						currentPage = +c.dataset.page
+						currentPage = +s.dataset.page
 					}
 				})
 			}
@@ -309,8 +447,8 @@ export async function initViewer(pdfUrl, options = {}) {
 	}
 
 	async function scrollToPageCanvas(page) {
-		const c = container.querySelector(`canvas[data-page="${page}"]`)
-		if (c) c.scrollIntoView({
+		const s = container.querySelector(`.page-slot[data-page="${page}"]`)
+		if (s) s.scrollIntoView({
 			block: `start`
 		})
 	}
