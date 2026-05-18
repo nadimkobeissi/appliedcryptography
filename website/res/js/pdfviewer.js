@@ -5,6 +5,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dis
 const SCALE_STEP = 0.25
 const MAX_PIXEL_RATIO = 2
 const RENDER_MARGIN_PX = 800
+const FIND_DEBOUNCE_MS = 200
+const PHOSPHOR_HREF = `/res/fonts/phosphor/phosphor.css`
 
 const VIEWER_CSS = `
 #toolbar {
@@ -36,14 +38,8 @@ const VIEWER_CSS = `
 	white-space: nowrap;
 	transition: color 0.2s ease;
 }
-#toolbar-nav a:hover {
-	color: #b8e19f;
-}
-#toolbar-sep {
-	color: #3a5a2a;
-	font-size: 13px;
-	flex-shrink: 0;
-}
+#toolbar-nav a:hover { color: #b8e19f; }
+#toolbar-sep { color: #3a5a2a; font-size: 13px; flex-shrink: 0; }
 #toolbar-badge {
 	font-family: "JetBrains Mono", monospace;
 	font-size: 0.75rem;
@@ -66,30 +62,57 @@ const VIEWER_CSS = `
 	font-size: 0.75rem;
 	white-space: nowrap;
 	color: #a8c29b;
-	min-width: 54px;
-	text-align: center;
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
 }
-#toolbar-controls button {
+#page-current {
+	cursor: pointer;
+	padding: 2px 5px;
+	border-radius: 3px;
+	color: #c8d9b7;
+	transition: background 0.15s ease;
+	outline: none;
+}
+#page-current:hover, #page-current:focus { background: #1e3e12; }
+input#page-current {
+	background: #1a2c0d;
+	border: 1px solid #4a9c31;
+	border-radius: 3px;
+	color: #c8d9b7;
+	font-family: "JetBrains Mono", monospace;
+	font-size: 0.75rem;
+	padding: 1px 4px;
+	text-align: center;
+	cursor: text;
+}
+#page-sep { padding: 0 2px; }
+#toolbar-controls .tb-btn {
 	background: none;
 	color: #c8d9b7;
 	border: 1px solid #2c5e1a;
 	border-radius: 4px;
 	width: 28px;
 	height: 28px;
-	font-size: 16px;
 	cursor: pointer;
-	display: flex;
+	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	padding: 0;
 	line-height: 1;
-	transition: all 0.2s ease;
+	transition: all 0.15s ease;
 }
-#toolbar-controls button:hover {
+#toolbar-controls .tb-btn:hover {
 	background: #1e3e12;
 	color: #78d159;
 	border-color: #4a9c31;
 }
+#toolbar-controls .tb-btn.active {
+	background: #1e3e12;
+	color: #78d159;
+	border-color: #4a9c31;
+}
+#toolbar-controls .tb-btn .icon { font-size: 16px; line-height: 1; }
 #zoom-level {
 	font-family: "JetBrains Mono", monospace;
 	font-size: 0.7rem;
@@ -103,14 +126,147 @@ const VIEWER_CSS = `
 	font-family: "Inria Sans", sans-serif;
 	font-size: 0.8rem;
 	font-weight: 700;
-	padding: 4px 12px;
+	padding: 4px 10px;
 	background: #4a9c31;
 	border-radius: 8px;
 	white-space: nowrap;
 	transition: all 0.2s ease;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
 }
-#download:hover {
-	background: #78d159;
+#download:hover { background: #78d159; }
+#download .icon { font-size: 14px; }
+#find-bar {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 12px;
+	background: #0f1a0a;
+	border-bottom: 1px solid #2c5e1a;
+	flex-shrink: 0;
+}
+#find-bar[hidden] { display: none; }
+#find-bar .find-icon { color: #8cb369; display: inline-flex; }
+#find-bar .find-icon .icon { font-size: 16px; }
+#find-input {
+	flex: 1;
+	min-width: 0;
+	max-width: 420px;
+	background: #1a2c0d;
+	border: 1px solid #2c5e1a;
+	border-radius: 4px;
+	color: #c8d9b7;
+	font-family: "Inria Sans", sans-serif;
+	font-size: 14px;
+	padding: 4px 10px;
+	outline: none;
+}
+#find-input:focus { border-color: #4a9c31; }
+#find-counter {
+	font-family: "JetBrains Mono", monospace;
+	font-size: 0.75rem;
+	color: #a8c29b;
+	white-space: nowrap;
+	min-width: 70px;
+	text-align: right;
+}
+#find-bar .tb-btn {
+	background: none;
+	color: #c8d9b7;
+	border: 1px solid #2c5e1a;
+	border-radius: 4px;
+	width: 28px;
+	height: 28px;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	transition: all 0.15s ease;
+}
+#find-bar .tb-btn:hover {
+	background: #1e3e12;
+	color: #78d159;
+	border-color: #4a9c31;
+}
+#find-bar .tb-btn .icon { font-size: 14px; }
+#help-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.7);
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+#help-overlay[hidden] { display: none; }
+#help-card {
+	background: #0f1a0a;
+	border: 2px solid #2c5e1a;
+	border-radius: 12px;
+	color: #c8d9b7;
+	font-family: "Inria Sans", sans-serif;
+	width: min(92vw, 580px);
+	max-height: 86vh;
+	overflow: auto;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+#help-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 14px 18px;
+	border-bottom: 1px solid #2c5e1a;
+	font-weight: 700;
+	font-size: 15px;
+	color: #78d159;
+}
+#help-header .tb-btn {
+	background: none;
+	color: #c8d9b7;
+	border: 1px solid #2c5e1a;
+	border-radius: 4px;
+	width: 28px;
+	height: 28px;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+}
+#help-header .tb-btn:hover {
+	background: #1e3e12;
+	color: #78d159;
+	border-color: #4a9c31;
+}
+#help-content { padding: 14px 18px 18px; font-size: 13.5px; line-height: 1.5; }
+#help-content h4 {
+	color: #78d159;
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	margin: 16px 0 6px;
+	font-weight: 700;
+}
+#help-content h4:first-child { margin-top: 0; }
+#help-content table { width: 100%; border-collapse: collapse; }
+#help-content td { padding: 4px 0; vertical-align: top; }
+#help-content td:first-child {
+	color: #a8c29b;
+	white-space: nowrap;
+	padding-right: 16px;
+	width: 46%;
+}
+#help-content kbd {
+	background: #1a2c0d;
+	border: 1px solid #2c5e1a;
+	border-radius: 3px;
+	padding: 1px 6px;
+	font-family: "JetBrains Mono", monospace;
+	font-size: 11px;
+	color: #c8d9b7;
+	margin: 0 1px;
 }
 #viewer-container {
 	flex: 1;
@@ -130,6 +286,39 @@ const VIEWER_CSS = `
 }
 #viewer-container .page-slot canvas {
 	display: block;
+	position: relative;
+	z-index: 1;
+}
+#viewer-container .page-slot .text-layer {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	overflow: hidden;
+	line-height: 1;
+	z-index: 2;
+	user-select: text;
+	forced-color-adjust: none;
+	transform-origin: 0 0;
+}
+#viewer-container .page-slot .text-layer > span,
+#viewer-container .page-slot .text-layer > br {
+	color: transparent !important;
+	position: absolute;
+	white-space: pre;
+	transform-origin: 0 0;
+	cursor: text;
+}
+#viewer-container .page-slot .text-layer mark.find-hit {
+	background: rgba(255, 230, 0, 0.45);
+	color: transparent;
+	padding: 0;
+	margin: 0;
+	border-radius: 1px;
+}
+#viewer-container .page-slot .text-layer mark.find-hit.current {
+	background: rgba(255, 140, 0, 0.75);
 }
 #status {
 	position: fixed;
@@ -147,27 +336,23 @@ const VIEWER_CSS = `
 		padding: 6px 10px;
 		gap: 4px;
 	}
-	#toolbar-nav {
-		width: 100%;
-	}
-	#toolbar-controls {
-		width: 100%;
-		justify-content: flex-end;
-	}
-	#toolbar-back,
-	#toolbar-sep {
-		display: none;
-	}
-	#zoom-level {
-		display: none;
-	}
+	#toolbar-nav { width: 100%; }
+	#toolbar-controls { width: 100%; justify-content: flex-end; flex-wrap: wrap; }
+	#toolbar-back, #toolbar-sep { display: none; }
+	#zoom-level { display: none; }
+	#fit-width, #fit-page, #help-toggle { display: none; }
+	#download-text { display: none; }
 }
 `
+
+function icon(name) {
+	return `<i class="icon ph-duotone ph-${name}"></i>`
+}
 
 function buildNav(options) {
 	let html = `<a href="/" id="toolbar-home">Applied Cryptography</a>`
 	if (options.backLabel && options.backUrl) {
-		html += `<span id="toolbar-sep">\u203a</span>`
+		html += `<span id="toolbar-sep">\u203A</span>`
 		html += `<a href="${options.backUrl}" id="toolbar-back">${options.backLabel}</a>`
 	}
 	if (options.title) {
@@ -176,38 +361,115 @@ function buildNav(options) {
 	return html
 }
 
+const HELP_HTML = `
+<h4>Navigation</h4>
+<table>
+<tr><td><kbd>←</kbd> <kbd>→</kbd></td><td>Previous / next page</td></tr>
+<tr><td><kbd>PgUp</kbd> <kbd>PgDn</kbd></td><td>Previous / next page</td></tr>
+<tr><td><kbd>Space</kbd> / <kbd>Shift</kbd>+<kbd>Space</kbd></td><td>Next / previous page</td></tr>
+<tr><td><kbd>Home</kbd> <kbd>End</kbd></td><td>First / last page</td></tr>
+<tr><td><kbd>G</kbd></td><td>Go to page\u2026</td></tr>
+</table>
+<h4>Zoom</h4>
+<table>
+<tr><td><kbd>+</kbd> <kbd>\u2212</kbd></td><td>Zoom in / out</td></tr>
+<tr><td><kbd>0</kbd></td><td>Reset zoom (fit width)</td></tr>
+<tr><td><kbd>W</kbd></td><td>Fit width</td></tr>
+<tr><td><kbd>P</kbd></td><td>Fit page</td></tr>
+</table>
+<h4>View</h4>
+<table>
+<tr><td><kbd>M</kbd></td><td>Toggle single page / continuous</td></tr>
+<tr><td><kbd>F</kbd></td><td>Toggle fullscreen</td></tr>
+</table>
+<h4>Find</h4>
+<table>
+<tr><td><kbd>Cmd/Ctrl</kbd>+<kbd>F</kbd> or <kbd>/</kbd></td><td>Open find</td></tr>
+<tr><td><kbd>Enter</kbd> or <kbd>N</kbd></td><td>Next match</td></tr>
+<tr><td><kbd>Shift</kbd>+<kbd>Enter</kbd> or <kbd>Shift</kbd>+<kbd>N</kbd></td><td>Previous match</td></tr>
+<tr><td><kbd>Esc</kbd></td><td>Close find</td></tr>
+</table>
+<h4>Help</h4>
+<table>
+<tr><td><kbd>?</kbd></td><td>Show this help</td></tr>
+<tr><td><kbd>Esc</kbd></td><td>Close help</td></tr>
+</table>
+`
+
 export async function initViewer(pdfUrl, options = {}) {
+	if (!document.querySelector(`link[data-pdfviewer-phosphor]`)) {
+		const link = document.createElement(`link`)
+		link.rel = `stylesheet`
+		link.href = PHOSPHOR_HREF
+		link.dataset.pdfviewerPhosphor = `1`
+		document.head.appendChild(link)
+	}
+
 	const style = document.createElement(`style`)
 	style.textContent = VIEWER_CSS
 	document.head.appendChild(style)
 	document.body.innerHTML = `<div id="status" style="color:#6a8a5a">Loading\u2026</div>`
 
 	const pdf = await pdfjsLib.getDocument(pdfUrl).promise
-
 	const numPages = pdf.numPages
+
 	document.body.innerHTML = `
 		<div id="toolbar">
-			<div id="toolbar-nav">
-				${buildNav(options)}
-			</div>
+			<div id="toolbar-nav">${buildNav(options)}</div>
 			<div id="toolbar-controls">
-				<span id="page-info">1 / ${numPages}</span>
-				<button id="mode-toggle" title="Switch to continuous scroll">\u25ad</button>
-				<button id="zoom-out" title="Zoom out">\u2212</button>
+				<span id="page-info">
+					<span id="page-current" tabindex="0" title="Click to edit (G)">1</span>
+					<span id="page-sep">/</span>
+					<span id="page-total">${numPages}</span>
+				</span>
+				<button id="fit-width" class="tb-btn fit-btn" title="Fit width (W)" aria-label="Fit width">${icon(`arrows-out-line-horizontal`)}</button>
+				<button id="fit-page" class="tb-btn fit-btn" title="Fit page (P)" aria-label="Fit page">${icon(`frame-corners`)}</button>
+				<button id="zoom-out" class="tb-btn" title="Zoom out (\u2212)" aria-label="Zoom out">${icon(`magnifying-glass-minus`)}</button>
 				<span id="zoom-level">100%</span>
-				<button id="zoom-in" title="Zoom in">+</button>
-				<a id="download" href="${pdfUrl}" download title="Download PDF">Download</a>
+				<button id="zoom-in" class="tb-btn" title="Zoom in (+)" aria-label="Zoom in">${icon(`magnifying-glass-plus`)}</button>
+				<button id="mode-toggle" class="tb-btn" title="Toggle mode (M)" aria-label="Toggle view mode">${icon(`rows`)}</button>
+				<button id="fullscreen-toggle" class="tb-btn" title="Fullscreen (F)" aria-label="Fullscreen">${icon(`corners-out`)}</button>
+				<button id="find-toggle" class="tb-btn" title="Find (Cmd/Ctrl+F)" aria-label="Find">${icon(`magnifying-glass`)}</button>
+				<button id="help-toggle" class="tb-btn" title="Keyboard shortcuts (?)" aria-label="Keyboard shortcuts">${icon(`keyboard`)}</button>
+				<a id="download" href="${pdfUrl}" download title="Download PDF">${icon(`download-simple`)}<span id="download-text">Download</span></a>
 			</div>
 		</div>
+		<div id="find-bar" hidden>
+			<span class="find-icon">${icon(`magnifying-glass`)}</span>
+			<input id="find-input" type="text" placeholder="Find in document" autocomplete="off" spellcheck="false" />
+			<span id="find-counter">0 / 0</span>
+			<button id="find-prev" class="tb-btn" title="Previous match (Shift+Enter)" aria-label="Previous match">${icon(`caret-up`)}</button>
+			<button id="find-next" class="tb-btn" title="Next match (Enter)" aria-label="Next match">${icon(`caret-down`)}</button>
+			<button id="find-close" class="tb-btn" title="Close (Esc)" aria-label="Close find">${icon(`x`)}</button>
+		</div>
 		<div id="viewer-container"></div>
+		<div id="help-overlay" hidden>
+			<div id="help-card">
+				<div id="help-header">
+					<span>Keyboard shortcuts</span>
+					<button id="help-close" class="tb-btn" aria-label="Close">${icon(`x`)}</button>
+				</div>
+				<div id="help-content">${HELP_HTML}</div>
+			</div>
+		</div>
 	`
 
 	const container = document.getElementById(`viewer-container`)
+	const findBar = document.getElementById(`find-bar`)
+	const findInput = document.getElementById(`find-input`)
+	const findCounter = document.getElementById(`find-counter`)
+	const helpOverlay = document.getElementById(`help-overlay`)
+	const fitWidthBtn = document.getElementById(`fit-width`)
+	const fitPageBtn = document.getElementById(`fit-page`)
+	const modeToggleBtn = document.getElementById(`mode-toggle`)
+	const fullscreenBtn = document.getElementById(`fullscreen-toggle`)
+
+	const fsRoot = document.documentElement
+	const fsAvailable = typeof fsRoot.requestFullscreen === `function` || typeof fsRoot.webkitRequestFullscreen === `function`
+	if (!fsAvailable) fullscreenBtn.style.display = `none`
+
 	const pixelRatio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO)
 
-	// Pre-fetch all page proxies so placeholder slots can have accurate
-	// per-page dimensions immediately (stable scrollHeight before any render).
-	// PDFPageProxy is lightweight — content streams aren't parsed until render().
 	const pageProxies = await Promise.all(
 		Array.from({
 			length: numPages
@@ -222,30 +484,73 @@ export async function initViewer(pdfUrl, options = {}) {
 			height: vp.height
 		}
 	})
-
 	const intrinsicWidth = pageSizes[0].width
 	const intrinsicHeight = pageSizes[0].height
 
 	let singlePageMode = window.matchMedia(`(max-width: 640px)`).matches
 	let currentPage = 1
+	let fitMode = singlePageMode ? `page` : `width`
 
-	function computeBaseScale() {
-		const w = (container.clientWidth - 24) / intrinsicWidth
-		if (!singlePageMode) return w
-		const h = (container.clientHeight - 24) / intrinsicHeight
-		return Math.min(w, h)
+	function computeFitWidthScale() {
+		return (container.clientWidth - 24) / intrinsicWidth
 	}
 
-	let baseScale = computeBaseScale()
-	let scale = baseScale
+	function computeFitPageScale() {
+		return Math.min(
+			(container.clientWidth - 24) / intrinsicWidth,
+			(container.clientHeight - 24) / intrinsicHeight
+		)
+	}
+
+	let baseScale = computeFitWidthScale()
+	let scale = fitMode === `page` ? computeFitPageScale() : computeFitWidthScale()
 
 	let slots = []
 	let observer = null
 	const renderTasks = new Map()
 	const renderedPages = new Set()
+	const textLayerData = new Map()
 	let scaleStamp = 0
 	let scrollFrac = 0
 	let renderInProgress = 0
+
+	const findState = {
+		active: false,
+		query: ``,
+		matches: [],
+		currentIdx: -1,
+		textCache: new Map(),
+		debounceTimer: null,
+		pendingScrollToIdx: -1,
+		searchToken: 0
+	}
+
+	function updateFitButtons() {
+		fitWidthBtn.classList.toggle(`active`, fitMode === `width`)
+		fitPageBtn.classList.toggle(`active`, fitMode === `page`)
+	}
+
+	function updateZoomLevel() {
+		document.getElementById(`zoom-level`).textContent =
+			`${Math.round((scale / baseScale) * 100)}%`
+	}
+
+	function updateModeIcon() {
+		modeToggleBtn.innerHTML = singlePageMode ? icon(`rows`) : icon(`square`)
+		modeToggleBtn.title = singlePageMode ?
+			`Switch to continuous scroll (M)` :
+			`Switch to single page (M)`
+	}
+
+	function isFullscreen() {
+		return !!(document.fullscreenElement || document.webkitFullscreenElement)
+	}
+
+	function updateFullscreenIcon() {
+		if (!fsAvailable) return
+		fullscreenBtn.innerHTML = isFullscreen() ? icon(`corners-in`) : icon(`corners-out`)
+		fullscreenBtn.title = isFullscreen() ? `Exit fullscreen (F)` : `Fullscreen (F)`
+	}
 
 	function captureScrollFrac() {
 		if (renderInProgress === 0 && container.scrollHeight > container.clientHeight) {
@@ -268,13 +573,14 @@ export async function initViewer(pdfUrl, options = {}) {
 		if (slot) {
 			const canvas = slot.querySelector(`canvas`)
 			if (canvas) {
-				// Setting dimensions to 0 forces the browser to release the
-				// canvas backing store immediately rather than waiting for GC.
 				canvas.width = 0
 				canvas.height = 0
 				canvas.remove()
 			}
+			const tl = slot.querySelector(`.text-layer`)
+			if (tl) tl.remove()
 		}
+		textLayerData.delete(pageNum)
 		const page = pageProxies[pageNum - 1]
 		if (page && page.cleanup) {
 			try {
@@ -282,6 +588,57 @@ export async function initViewer(pdfUrl, options = {}) {
 			} catch {}
 		}
 		renderedPages.delete(pageNum)
+	}
+
+	async function renderTextLayerForPage(pageNum, vp, slot) {
+		const page = pageProxies[pageNum - 1]
+		const textLayerDiv = document.createElement(`div`)
+		textLayerDiv.className = `text-layer`
+		textLayerDiv.style.width = `${Math.floor(vp.width)}px`
+		textLayerDiv.style.height = `${Math.floor(vp.height)}px`
+		textLayerDiv.style.setProperty(`--scale-factor`, String(vp.scale))
+		slot.appendChild(textLayerDiv)
+
+		try {
+			let source
+			if (typeof page.streamTextContent === `function`) {
+				source = page.streamTextContent({
+					includeMarkedContent: true,
+					disableNormalization: false
+				})
+			} else {
+				source = await page.getTextContent()
+			}
+
+			if (typeof pdfjsLib.TextLayer === `function`) {
+				const tl = new pdfjsLib.TextLayer({
+					textContentSource: source,
+					container: textLayerDiv,
+					viewport: vp
+				})
+				await tl.render()
+			} else if (typeof pdfjsLib.renderTextLayer === `function`) {
+				await pdfjsLib.renderTextLayer({
+					textContentSource: source,
+					container: textLayerDiv,
+					viewport: vp
+				}).promise
+			} else {
+				console.warn(`pdf.js text layer API not available; find disabled`)
+				return null
+			}
+		} catch (e) {
+			if (e?.name !== `AbortException` && e?.name !== `RenderingCancelledException`) {
+				console.error(`Text layer error`, e)
+			}
+			return null
+		}
+
+		const spans = Array.from(textLayerDiv.querySelectorAll(`:scope > span`))
+		return {
+			div: textLayerDiv,
+			spans
+		}
 	}
 
 	async function renderPage(pageNum) {
@@ -293,6 +650,7 @@ export async function initViewer(pdfUrl, options = {}) {
 		const vp = page.getViewport({
 			scale
 		})
+
 		const canvas = document.createElement(`canvas`)
 		canvas.width = Math.floor(vp.width * pixelRatio)
 		canvas.height = Math.floor(vp.height * pixelRatio)
@@ -300,6 +658,7 @@ export async function initViewer(pdfUrl, options = {}) {
 		canvas.style.height = `${Math.floor(vp.height)}px`
 		const ctx = canvas.getContext(`2d`)
 		ctx.scale(pixelRatio, pixelRatio)
+
 		const task = page.render({
 			canvasContext: ctx,
 			viewport: vp
@@ -318,16 +677,35 @@ export async function initViewer(pdfUrl, options = {}) {
 			if (e?.name !== `RenderingCancelledException`) {
 				console.error(`PDF render error`, e)
 			}
+			return
 		} finally {
 			if (renderTasks.get(pageNum) === task) {
 				renderTasks.delete(pageNum)
+			}
+		}
+
+		const tlResult = await renderTextLayerForPage(pageNum, vp, slot)
+		if (stamp !== scaleStamp) return
+		if (!tlResult) return
+		textLayerData.set(pageNum, tlResult)
+		if (findState.query) {
+			applyHighlights(pageNum)
+			if (findState.pendingScrollToIdx >= 0) {
+				const m = findState.matches[findState.pendingScrollToIdx]
+				if (m && m.pageNum === pageNum) {
+					const mark = slot.querySelector(`mark.find-hit[data-match-idx="${findState.pendingScrollToIdx}"]`)
+					if (mark) mark.scrollIntoView({
+						block: `center`
+					})
+					findState.pendingScrollToIdx = -1
+				}
 			}
 		}
 	}
 
 	function teardownObserver() {
 		if (observer) {
-			observer.disconnect()
+			observer.disconnect();
 			observer = null
 		}
 	}
@@ -335,25 +713,21 @@ export async function initViewer(pdfUrl, options = {}) {
 	function setupObserver() {
 		teardownObserver()
 		if (singlePageMode) return
-		observer = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					const pageNum = +entry.target.dataset.page
-					if (entry.isIntersecting) {
-						renderPage(pageNum)
-					} else {
-						cancelRender(pageNum)
-						releasePage(pageNum)
-					}
+		observer = new IntersectionObserver((entries) => {
+			for (const entry of entries) {
+				const pageNum = +entry.target.dataset.page
+				if (entry.isIntersecting) {
+					renderPage(pageNum)
+				} else {
+					cancelRender(pageNum)
+					releasePage(pageNum)
 				}
-			}, {
-				root: container,
-				rootMargin: `${RENDER_MARGIN_PX}px 0px`
 			}
-		)
-		for (const slot of slots) {
-			observer.observe(slot)
-		}
+		}, {
+			root: container,
+			rootMargin: `${RENDER_MARGIN_PX}px 0px`
+		})
+		for (const slot of slots) observer.observe(slot)
 	}
 
 	function makeSlot(pageNum) {
@@ -368,7 +742,6 @@ export async function initViewer(pdfUrl, options = {}) {
 
 	function buildSlots() {
 		teardownObserver()
-		// Cancel in-flight renders and free all canvases before tearing down.
 		for (const pageNum of Array.from(renderTasks.keys())) cancelRender(pageNum)
 		for (const pageNum of Array.from(renderedPages)) releasePage(pageNum)
 		container.innerHTML = ``
@@ -391,11 +764,8 @@ export async function initViewer(pdfUrl, options = {}) {
 	}
 
 	async function renderAllPages(resetScroll = false) {
-		if (resetScroll) {
-			scrollFrac = 0
-		} else {
-			captureScrollFrac()
-		}
+		if (resetScroll) scrollFrac = 0
+		else captureScrollFrac()
 		renderInProgress++
 		try {
 			buildSlots()
@@ -403,8 +773,7 @@ export async function initViewer(pdfUrl, options = {}) {
 				container.scrollTop = scrollFrac * (container.scrollHeight - container.clientHeight)
 			}
 			updatePageInfo()
-			document.getElementById(`zoom-level`).textContent =
-				`${Math.round((scale / baseScale) * 100)}%`
+			updateZoomLevel()
 		} finally {
 			renderInProgress--
 		}
@@ -426,8 +795,92 @@ export async function initViewer(pdfUrl, options = {}) {
 				})
 			}
 		}
-		document.getElementById(`page-info`).textContent = `${currentPage} / ${numPages}`
+		const el = document.getElementById(`page-current`)
+		if (el && el.tagName === `SPAN`) {
+			el.textContent = String(currentPage)
+		}
 	}
+
+	function navPage(delta) {
+		const target = Math.max(1, Math.min(numPages, currentPage + delta))
+		if (target === currentPage) return
+		goToPage(target)
+	}
+
+	function goToPage(n) {
+		n = Math.max(1, Math.min(numPages, n))
+		if (n === currentPage && !singlePageMode) {
+			const slot = slots[n - 1]
+			if (slot) slot.scrollIntoView({
+				block: `start`
+			})
+			return
+		}
+		currentPage = n
+		if (singlePageMode) {
+			renderAllPages(true).then(() => writeHash(true))
+		} else {
+			const slot = slots[n - 1]
+			if (slot) slot.scrollIntoView({
+				block: `start`
+			})
+			writeHash(true)
+		}
+	}
+
+	function focusPageInput() {
+		const el = document.getElementById(`page-current`)
+		if (!el) return
+		if (el.tagName === `INPUT`) {
+			el.focus();
+			el.select();
+			return
+		}
+		const totalDigits = Math.max(2, String(numPages).length)
+		const input = document.createElement(`input`)
+		input.id = `page-current`
+		input.type = `text`
+		input.inputMode = `numeric`
+		input.pattern = `[0-9]*`
+		input.value = String(currentPage)
+		input.style.width = `${totalDigits + 1}ch`
+		el.replaceWith(input)
+		input.focus()
+		input.select()
+
+		let committed = false
+
+		function revert() {
+			const span = document.createElement(`span`)
+			span.id = `page-current`
+			span.tabIndex = 0
+			span.title = `Click to edit (G)`
+			span.textContent = String(currentPage)
+			span.addEventListener(`click`, focusPageInput)
+			if (input.parentNode) input.replaceWith(span)
+		}
+
+		function commit() {
+			if (committed) return
+			committed = true
+			const n = parseInt(input.value, 10)
+			if (!isNaN(n) && n >= 1 && n <= numPages) goToPage(n)
+			revert()
+		}
+		input.addEventListener(`keydown`, (e) => {
+			if (e.key === `Enter`) {
+				e.preventDefault()
+				commit()
+			} else if (e.key === `Escape`) {
+				e.preventDefault()
+				committed = true
+				revert()
+			}
+		})
+		input.addEventListener(`blur`, commit)
+	}
+
+	document.getElementById(`page-current`).addEventListener(`click`, focusPageInput)
 
 	function parseHashPage() {
 		const m = location.hash.match(/page=(\d+)/)
@@ -439,11 +892,8 @@ export async function initViewer(pdfUrl, options = {}) {
 	function writeHash(push) {
 		const newHash = `#page=${currentPage}`
 		if (location.hash === newHash) return
-		if (push) {
-			history.pushState(null, ``, newHash)
-		} else {
-			history.replaceState(null, ``, newHash)
-		}
+		if (push) history.pushState(null, ``, newHash)
+		else history.replaceState(null, ``, newHash)
 	}
 
 	async function scrollToPageCanvas(page) {
@@ -452,6 +902,289 @@ export async function initViewer(pdfUrl, options = {}) {
 			block: `start`
 		})
 	}
+
+	async function toggleMode() {
+		if (!singlePageMode) updatePageInfo()
+		const targetPage = currentPage
+		singlePageMode = !singlePageMode
+		updateModeIcon()
+		baseScale = computeFitWidthScale()
+		if (fitMode === `width`) scale = computeFitWidthScale()
+		else if (fitMode === `page`) scale = computeFitPageScale()
+		await renderAllPages(true)
+		if (!singlePageMode) await scrollToPageCanvas(targetPage)
+		writeHash(false)
+	}
+
+	async function setFitMode(mode) {
+		fitMode = mode
+		if (mode === `width`) scale = computeFitWidthScale()
+		else if (mode === `page`) scale = computeFitPageScale()
+		updateFitButtons()
+		await renderAllPages()
+	}
+
+	async function zoomBy(delta) {
+		const newScale = scale + delta
+		if (newScale < baseScale * 0.5 || newScale > baseScale * 3) return
+		scale = newScale
+		fitMode = `custom`
+		updateFitButtons()
+		await renderAllPages()
+	}
+
+	function toggleFullscreen() {
+		if (!fsAvailable) return
+		if (isFullscreen()) {
+			const fn = document.exitFullscreen?.bind(document) || document.webkitExitFullscreen?.bind(document)
+			if (fn) fn()
+		} else {
+			const fn = fsRoot.requestFullscreen?.bind(fsRoot) || fsRoot.webkitRequestFullscreen?.bind(fsRoot)
+			if (fn) fn()
+		}
+	}
+
+	document.addEventListener(`fullscreenchange`, updateFullscreenIcon)
+	document.addEventListener(`webkitfullscreenchange`, updateFullscreenIcon)
+
+	function openHelp() {
+		helpOverlay.hidden = false
+		helpOverlay.dataset.open = `1`
+	}
+
+	function closeHelp() {
+		helpOverlay.hidden = true
+		delete helpOverlay.dataset.open
+	}
+	document.getElementById(`help-toggle`).addEventListener(`click`, openHelp)
+	document.getElementById(`help-close`).addEventListener(`click`, closeHelp)
+	helpOverlay.addEventListener(`click`, (e) => {
+		if (e.target === helpOverlay) closeHelp()
+	})
+
+	async function ensureTextContent(pageNum) {
+		let entry = findState.textCache.get(pageNum)
+		if (entry) return entry
+		const page = pageProxies[pageNum - 1]
+		const tc = await page.getTextContent()
+		let normalized = ``
+		for (const item of tc.items) {
+			if (typeof item.str === `string`) {
+				normalized += item.str.toLowerCase()
+				if (item.hasEOL) normalized += `\n`
+			}
+		}
+		entry = {
+			normalized
+		}
+		findState.textCache.set(pageNum, entry)
+		return entry
+	}
+
+	function updateFindCounter() {
+		if (!findState.query) {
+			findCounter.textContent = `0 / 0`
+		} else if (findState.matches.length === 0) {
+			findCounter.textContent = `No matches`
+		} else {
+			findCounter.textContent = `${findState.currentIdx + 1} / ${findState.matches.length}`
+		}
+	}
+
+	function clearAllHighlights() {
+		for (const pageNum of Array.from(textLayerData.keys())) {
+			applyHighlights(pageNum)
+		}
+	}
+
+	function applyHighlights(pageNum) {
+		const tld = textLayerData.get(pageNum)
+		if (!tld) return
+		const {
+			spans
+		} = tld
+		for (const span of spans) {
+			if (span.dataset.originalText !== undefined) {
+				span.textContent = span.dataset.originalText
+				delete span.dataset.originalText
+			}
+		}
+		const q = findState.query
+		if (!q) return
+
+		let localIdx = 0
+		for (const span of spans) {
+			const text = span.textContent
+			const lower = text.toLowerCase()
+			const occurrences = []
+			let pos = 0
+			while (true) {
+				const idx = lower.indexOf(q, pos)
+				if (idx === -1) break
+				occurrences.push({
+					start: idx,
+					end: idx + q.length,
+					localIdx: localIdx++
+				})
+				pos = idx + q.length
+			}
+			if (occurrences.length === 0) continue
+
+			span.dataset.originalText = text
+			span.innerHTML = ``
+			let cur = 0
+			for (const m of occurrences) {
+				if (m.start > cur) {
+					span.appendChild(document.createTextNode(text.slice(cur, m.start)))
+				}
+				const mark = document.createElement(`mark`)
+				mark.className = `find-hit`
+				const gm = findState.matches.find((x) => x.pageNum === pageNum && x.localIdx === m.localIdx)
+				if (gm) {
+					mark.dataset.matchIdx = String(gm.globalIdx)
+					if (gm.globalIdx === findState.currentIdx) mark.classList.add(`current`)
+				}
+				mark.textContent = text.slice(m.start, m.end)
+				span.appendChild(mark)
+				cur = m.end
+			}
+			if (cur < text.length) {
+				span.appendChild(document.createTextNode(text.slice(cur)))
+			}
+		}
+	}
+
+	function updateCurrentMark() {
+		document.querySelectorAll(`mark.find-hit.current`).forEach((m) => m.classList.remove(`current`))
+		document.querySelectorAll(`mark.find-hit[data-match-idx="${findState.currentIdx}"]`).forEach((m) => m.classList.add(`current`))
+	}
+
+	function goToMatch(globalIdx) {
+		if (findState.matches.length === 0) return
+		const N = findState.matches.length
+		findState.currentIdx = ((globalIdx % N) + N) % N
+		updateFindCounter()
+
+		const m = findState.matches[findState.currentIdx]
+		findState.pendingScrollToIdx = findState.currentIdx
+
+		if (singlePageMode && m.pageNum !== currentPage) {
+			currentPage = m.pageNum
+			renderAllPages(true).then(() => {
+				writeHash(true)
+			})
+			return
+		}
+
+		const slot = slots[m.pageNum - 1]
+		if (slot) slot.scrollIntoView({
+			block: `center`
+		})
+
+		if (textLayerData.has(m.pageNum)) {
+			updateCurrentMark()
+			const mark = slot?.querySelector(`mark.find-hit[data-match-idx="${findState.currentIdx}"]`)
+			if (mark) {
+				mark.scrollIntoView({
+					block: `center`
+				})
+				findState.pendingScrollToIdx = -1
+			}
+		}
+	}
+
+	async function runSearch(query) {
+		const q = query.toLowerCase()
+		const token = ++findState.searchToken
+		findState.query = q
+		findState.matches = []
+		findState.currentIdx = -1
+
+		if (!q) {
+			clearAllHighlights()
+			updateFindCounter()
+			return
+		}
+
+		findCounter.textContent = `Searching\u2026`
+
+		for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+			const entry = await ensureTextContent(pageNum)
+			if (token !== findState.searchToken) return
+			let pos = 0
+			let localIdx = 0
+			while (true) {
+				const idx = entry.normalized.indexOf(q, pos)
+				if (idx === -1) break
+				findState.matches.push({
+					pageNum,
+					localIdx,
+					globalIdx: findState.matches.length
+				})
+				pos = idx + q.length
+				localIdx++
+			}
+		}
+
+		findState.currentIdx = findState.matches.length > 0 ? 0 : -1
+		updateFindCounter()
+		for (const pageNum of Array.from(textLayerData.keys())) {
+			applyHighlights(pageNum)
+		}
+		if (findState.currentIdx >= 0) goToMatch(0)
+	}
+
+	function scheduleSearch(query) {
+		if (findState.debounceTimer) clearTimeout(findState.debounceTimer)
+		findState.debounceTimer = setTimeout(() => runSearch(query), FIND_DEBOUNCE_MS)
+	}
+
+	function openFindBar() {
+		findBar.hidden = false
+		findState.active = true
+		findInput.focus()
+		findInput.select()
+	}
+
+	function closeFindBar() {
+		findBar.hidden = true
+		findInput.value = ``
+		findState.active = false
+		findState.query = ``
+		findState.matches = []
+		findState.currentIdx = -1
+		findState.searchToken++
+		clearAllHighlights()
+		updateFindCounter()
+	}
+
+	findInput.addEventListener(`input`, () => scheduleSearch(findInput.value))
+	findInput.addEventListener(`keydown`, (e) => {
+		if (e.key === `Enter`) {
+			e.preventDefault()
+			if (findState.matches.length > 0) {
+				goToMatch(findState.currentIdx + (e.shiftKey ? -1 : 1))
+			}
+		} else if (e.key === `Escape`) {
+			e.preventDefault()
+			closeFindBar()
+		}
+	})
+	document.getElementById(`find-prev`).addEventListener(`click`, () => {
+		if (findState.matches.length > 0) goToMatch(findState.currentIdx - 1)
+	})
+	document.getElementById(`find-next`).addEventListener(`click`, () => {
+		if (findState.matches.length > 0) goToMatch(findState.currentIdx + 1)
+	})
+	document.getElementById(`find-close`).addEventListener(`click`, closeFindBar)
+	document.getElementById(`find-toggle`).addEventListener(`click`, () => {
+		if (findState.active) closeFindBar()
+		else openFindBar()
+	})
+
+	updateFitButtons()
+	updateModeIcon()
+	updateFullscreenIcon()
 
 	const initialPage = parseHashPage()
 	if (initialPage) currentPage = initialPage
@@ -472,40 +1205,12 @@ export async function initViewer(pdfUrl, options = {}) {
 		}
 	})
 
-	const modeToggle = document.getElementById(`mode-toggle`)
-	modeToggle.textContent = singlePageMode ? `▭` : `☰`
-	modeToggle.title = singlePageMode ? `Switch to continuous scroll` : `Switch to single page mode`
-	modeToggle.addEventListener(`click`, async () => {
-		if (!singlePageMode) {
-			updatePageInfo()
-		}
-		const targetPage = currentPage
-		singlePageMode = !singlePageMode
-		modeToggle.textContent = singlePageMode ? `▭` : `☰`
-		modeToggle.title = singlePageMode ? `Switch to continuous scroll` : `Switch to single page mode`
-		baseScale = computeBaseScale()
-		scale = baseScale
-		await renderAllPages(true)
-		if (!singlePageMode) {
-			await scrollToPageCanvas(targetPage)
-		}
-		writeHash(false)
-	})
-
-	document.addEventListener(`keydown`, async (e) => {
-		if (!singlePageMode) return
-		if (((e.key === `ArrowLeft`) || (e.key === `ArrowUp`)) && currentPage > 1) {
-			e.preventDefault()
-			currentPage--
-			await renderAllPages(true)
-			writeHash(true)
-		} else if (((e.key === `ArrowRight`) || (e.key === `ArrowDown`)) && currentPage < numPages) {
-			e.preventDefault()
-			currentPage++
-			await renderAllPages(true)
-			writeHash(true)
-		}
-	})
+	modeToggleBtn.addEventListener(`click`, toggleMode)
+	fullscreenBtn.addEventListener(`click`, toggleFullscreen)
+	fitWidthBtn.addEventListener(`click`, () => setFitMode(`width`))
+	fitPageBtn.addEventListener(`click`, () => setFitMode(`page`))
+	document.getElementById(`zoom-in`).addEventListener(`click`, () => zoomBy(+SCALE_STEP))
+	document.getElementById(`zoom-out`).addEventListener(`click`, () => zoomBy(-SCALE_STEP))
 
 	let wheelNavLock = 0
 	container.addEventListener(`wheel`, (e) => {
@@ -545,26 +1250,122 @@ export async function initViewer(pdfUrl, options = {}) {
 		}
 	})
 
-	document.getElementById(`zoom-in`).addEventListener(`click`, async () => {
-		if (scale >= baseScale * 3) return
-		scale += SCALE_STEP
-		await renderAllPages()
-	})
-
-	document.getElementById(`zoom-out`).addEventListener(`click`, async () => {
-		if (scale <= baseScale * 0.5) return
-		scale -= SCALE_STEP
-		await renderAllPages()
-	})
-
 	let resizeTimer
 	window.addEventListener(`resize`, () => {
 		clearTimeout(resizeTimer)
 		resizeTimer = setTimeout(() => {
-			const ratio = scale / baseScale
-			baseScale = computeBaseScale()
-			scale = baseScale * ratio
+			baseScale = computeFitWidthScale()
+			if (fitMode === `width`) scale = computeFitWidthScale()
+			else if (fitMode === `page`) scale = computeFitPageScale()
 			renderAllPages()
 		}, 200)
+	})
+
+	document.addEventListener(`keydown`, (e) => {
+		if (helpOverlay.dataset.open === `1`) {
+			if (e.key === `Escape`) {
+				e.preventDefault()
+				closeHelp()
+			}
+			return
+		}
+
+		const tgt = e.target
+		const isEditable = tgt && (tgt.tagName === `INPUT` || tgt.tagName === `TEXTAREA` || tgt.isContentEditable)
+		if (isEditable) return
+
+		const cmd = e.metaKey || e.ctrlKey
+		const alt = e.altKey
+
+		if (cmd && (e.key === `f` || e.key === `F`)) {
+			e.preventDefault()
+			openFindBar()
+			return
+		}
+		if (cmd || alt) return
+
+		switch (e.key) {
+			case `ArrowLeft`:
+			case `PageUp`:
+				e.preventDefault()
+				navPage(-1)
+				break
+			case `ArrowRight`:
+			case `PageDown`:
+				e.preventDefault()
+				navPage(+1)
+				break
+			case ` `:
+				e.preventDefault()
+				navPage(e.shiftKey ? -1 : +1)
+				break
+			case `Home`:
+				e.preventDefault()
+				goToPage(1)
+				break
+			case `End`:
+				e.preventDefault()
+				goToPage(numPages)
+				break
+			case `g`:
+			case `G`:
+				e.preventDefault()
+				focusPageInput()
+				break
+			case `+`:
+			case `=`:
+				e.preventDefault()
+				zoomBy(+SCALE_STEP)
+				break
+			case `-`:
+				e.preventDefault()
+				zoomBy(-SCALE_STEP)
+				break
+			case `0`:
+				e.preventDefault()
+				setFitMode(`width`)
+				break
+			case `w`:
+			case `W`:
+				e.preventDefault()
+				setFitMode(`width`)
+				break
+			case `p`:
+			case `P`:
+				e.preventDefault()
+				setFitMode(`page`)
+				break
+			case `m`:
+			case `M`:
+				e.preventDefault()
+				toggleMode()
+				break
+			case `f`:
+			case `F`:
+				e.preventDefault()
+				toggleFullscreen()
+				break
+			case `/`:
+				e.preventDefault()
+				openFindBar()
+				break
+			case `?`:
+				e.preventDefault()
+				openHelp()
+				break
+			case `n`:
+			case `N`:
+				if (findState.active && findState.matches.length > 0) {
+					e.preventDefault()
+					goToMatch(findState.currentIdx + (e.shiftKey ? -1 : 1))
+				}
+				break
+			case `Escape`:
+				if (findState.active) {
+					e.preventDefault()
+					closeFindBar()
+				}
+				break
+		}
 	})
 }
