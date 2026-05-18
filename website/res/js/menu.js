@@ -24,7 +24,9 @@ export const menuInit = () => {
 
 	// Close when viewport widens past the mobile breakpoint.
 	const mq = window.matchMedia("(min-width: 901px)")
-	mq.addEventListener("change", (e) => { if (e.matches) setOpen(false) })
+	mq.addEventListener("change", (e) => {
+		if (e.matches) setOpen(false)
+	})
 
 	// Close on Escape.
 	document.addEventListener("keydown", (e) => {

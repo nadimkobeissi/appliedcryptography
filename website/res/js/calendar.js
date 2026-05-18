@@ -438,12 +438,12 @@ const eventMonthKey = (event, tz) => {
 // template literals — js-beautify mangles closing tags inside templates
 // that sit adjacent to ${...} interpolations.
 const h = (tag, attrs, ...children) => {
-	const attrStr = attrs
-		? Object.entries(attrs)
-			.filter(([, v]) => v !== null && v !== undefined && v !== false)
-			.map(([k, v]) => ` ${k}="${String(v).replace(/"/g, "&quot;")}"`)
-			.join("")
-		: ""
+	const attrStr = attrs ?
+		Object.entries(attrs)
+		.filter(([, v]) => v !== null && v !== undefined && v !== false)
+		.map(([k, v]) => ` ${k}="${String(v).replace(/"/g, "&quot;")}"`)
+		.join("") :
+		""
 	const inner = children
 		.filter((c) => c !== null && c !== undefined && c !== false && c !== "")
 		.join("")
@@ -452,8 +452,12 @@ const h = (tag, attrs, ...children) => {
 
 const renderMonthHeader = (state) => {
 	const idx = MONTH_KEYS.indexOf(state.month)
-	return h("h3", { class: "cal-month-title" }, monthLabel(state.month)) +
-		h("div", { class: "cal-month-nav" },
+	return h("h3", {
+			class: "cal-month-title"
+		}, monthLabel(state.month)) +
+		h("div", {
+				class: "cal-month-nav"
+			},
 			h("button", {
 				"data-action": "month-prev",
 				"aria-label": "Previous month",
@@ -518,41 +522,64 @@ const renderMonthGrid = (events, state) => {
 		const isToday = isSameDayUTC(cell.instant, today)
 		const isSelected = state.day === cell.instant
 		const dateLabel = new Intl.DateTimeFormat("en-US", {
-			weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: state.tz,
+			weekday: "long",
+			year: "numeric",
+			month: "long",
+			day: "numeric",
+			timeZone: state.tz,
 		}).format(cell.instant)
 		const chips = shown.map((e) =>
-			h("span", { class: "cal-day-chip", "data-kind": e.kind }, dayChipLabel(e))
+			h("span", {
+				class: "cal-day-chip",
+				"data-kind": e.kind
+			}, dayChipLabel(e))
 		)
-		const moreChip = overflow > 0
-			? h("span", { class: "cal-day-more" }, `+${overflow} more`)
-			: ""
+		const moreChip = overflow > 0 ?
+			h("span", {
+				class: "cal-day-more"
+			}, `+${overflow} more`) :
+			""
 		return h("td", {
-			role: "gridcell",
-			"data-outside": String(cell.outside),
-			"data-today": String(isToday),
-			"data-selected": String(isSelected),
-			"data-action": "select-day",
-			"data-instant": cell.instant,
-			"aria-selected": String(isSelected),
-			"aria-label": `${dateLabel}, ${dayEvents.length} event${dayEvents.length === 1 ? "" : "s"}`,
-			tabindex: isSelected ? "0" : "-1",
-		},
-			h("span", { class: "cal-day-num" }, cell.day),
-			h("div", { class: "cal-day-chips" }, ...chips, moreChip),
+				role: "gridcell",
+				"data-outside": String(cell.outside),
+				"data-today": String(isToday),
+				"data-selected": String(isSelected),
+				"data-action": "select-day",
+				"data-instant": cell.instant,
+				"aria-selected": String(isSelected),
+				"aria-label": `${dateLabel}, ${dayEvents.length} event${dayEvents.length === 1 ? "" : "s"}`,
+				tabindex: isSelected ? "0" : "-1",
+			},
+			h("span", {
+				class: "cal-day-num"
+			}, cell.day),
+			h("div", {
+				class: "cal-day-chips"
+			}, ...chips, moreChip),
 		)
 	}
 
 	const headerRow = h("tr", null,
-		...dayHeaders.map((label) => h("th", { scope: "col" }, label))
+		...dayHeaders.map((label) => h("th", {
+			scope: "col"
+		}, label))
 	)
 
 	const bodyRows = [0, 1, 2, 3, 4, 5].map((rowIdx) =>
 		h("tr", null, ...cells.slice(rowIdx * 7, rowIdx * 7 + 7).map(renderCell))
 	)
 
-	return h("div", { class: "cal-month-grid", role: "grid", "aria-label": monthLabel(state.month) },
-		h("div", { class: "cal-month-header" }, renderMonthHeader(state)),
-		h("table", { class: "cal-month-table" },
+	return h("div", {
+			class: "cal-month-grid",
+			role: "grid",
+			"aria-label": monthLabel(state.month)
+		},
+		h("div", {
+			class: "cal-month-header"
+		}, renderMonthHeader(state)),
+		h("table", {
+				class: "cal-month-table"
+			},
 			h("thead", null, headerRow),
 			h("tbody", null, ...bodyRows),
 		),
@@ -562,19 +589,32 @@ const renderMonthGrid = (events, state) => {
 const renderDayPanel = (events, state) => {
 	const visible = events.filter((e) => state.filters.includes(e.kind))
 	if (!state.day) {
-		return h("aside", { class: "cal-day-panel" },
-			h("p", { class: "cal-day-panel-empty" }, "Select a day to see its events."),
+		return h("aside", {
+				class: "cal-day-panel"
+			},
+			h("p", {
+				class: "cal-day-panel-empty"
+			}, "Select a day to see its events."),
 		)
 	}
 	const dayEvents = eventsOnDay(visible, state.day, state.tz)
 	const heading = new Intl.DateTimeFormat("en-US", {
-		weekday: "long", month: "long", day: "numeric", timeZone: state.tz,
+		weekday: "long",
+		month: "long",
+		day: "numeric",
+		timeZone: state.tz,
 	}).format(state.day)
-	const body = dayEvents.length === 0
-		? h("p", { class: "cal-day-panel-empty" }, "No events on this day.")
-		: dayEvents.map((e) => renderEventCard(e, state)).join("")
-	return h("aside", { class: "cal-day-panel" },
-		h("h3", { class: "cal-day-panel-title" }, heading),
+	const body = dayEvents.length === 0 ?
+		h("p", {
+			class: "cal-day-panel-empty"
+		}, "No events on this day.") :
+		dayEvents.map((e) => renderEventCard(e, state)).join("")
+	return h("aside", {
+			class: "cal-day-panel"
+		},
+		h("h3", {
+			class: "cal-day-panel-title"
+		}, heading),
 		body,
 	)
 }
@@ -708,7 +748,10 @@ export const calendarInit = async () => {
 		if (state.view === "month" && !state.day) {
 			const eventDayInstant = (event) => {
 				const fmt = new Intl.DateTimeFormat("en-CA", {
-					timeZone: state.tz, year: "numeric", month: "2-digit", day: "2-digit",
+					timeZone: state.tz,
+					year: "numeric",
+					month: "2-digit",
+					day: "2-digit",
 				})
 				const [y, m, d] = fmt.format(event.start.instant).split("-").map(Number)
 				return Date.UTC(y, m - 1, d)
@@ -718,7 +761,11 @@ export const calendarInit = async () => {
 				.filter((e) => state.filters.includes(e.kind))
 				.map((e) => {
 					const dayInst = eventDayInstant(e)
-					return { dayInst, diff: Math.abs(dayInst - t), future: dayInst >= t }
+					return {
+						dayInst,
+						diff: Math.abs(dayInst - t),
+						future: dayInst >= t
+					}
 				})
 			candidates.sort((a, b) => a.diff - b.diff || Number(b.future) - Number(a.future))
 			const best = candidates[0]
@@ -751,8 +798,7 @@ export const calendarInit = async () => {
 			if (action === "toggle-filter") {
 				const kind = target.dataset.kind
 				state.filters = state.filters.includes(kind) ?
-					state.filters.filter((k) => k !== kind) :
-					[...state.filters, kind]
+					state.filters.filter((k) => k !== kind) : [...state.filters, kind]
 				rerender()
 			} else if (action === "set-view") {
 				state.view = target.dataset.view
