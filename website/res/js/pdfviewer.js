@@ -494,12 +494,12 @@ export async function initViewer(pdfUrl, options = {}) {
 
 	document.addEventListener(`keydown`, async (e) => {
 		if (!singlePageMode) return
-		if (e.key === `ArrowLeft` && currentPage > 1) {
+		if (((e.key === `ArrowLeft`) || (e.key === `ArrowUp`)) && currentPage > 1) {
 			e.preventDefault()
 			currentPage--
 			await renderAllPages(true)
 			writeHash(true)
-		} else if (e.key === `ArrowRight` && currentPage < numPages) {
+		} else if (((e.key === `ArrowRight`) || (e.key === `ArrowDown`)) && currentPage < numPages) {
 			e.preventDefault()
 			currentPage++
 			await renderAllPages(true)
