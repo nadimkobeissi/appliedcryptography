@@ -23,11 +23,22 @@
 	<link rel="apple-touch-icon" href="../res/images/favicon.png" sizes="180x180" />
 	<link rel="stylesheet" href="../res/fonts/google/google.css" />
 	<style>
-		html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #1a1a1a; display: flex; flex-direction: column; }
+		html,
+		body {
+			margin: 0;
+			padding: 0;
+			height: 100%;
+			overflow: hidden;
+			background: #1a1a1a;
+			display: flex;
+			flex-direction: column;
+		}
 	</style>
 	<script defer data-domain="appliedcryptography.page" data-api="https://restless-block-0a1e.symbolicsoft.workers.dev/oil-ocean/event" src="https://restless-block-0a1e.symbolicsoft.workers.dev/emerald-hill/script.js"></script>
 	<script type="module">
-		import { initViewer } from '../res/js/pdfviewer.js'
+		import {
+			initViewer
+		} from '../res/js/pdfviewer.js'
 		const anchor = window.location.hash.substring(1)
 		if (typeof anchor === `string` && /^\w{1,32}-\w{1,32}$/.test(anchor)) {
 			initViewer(`https://appliedcryptography.page/project/project-${anchor}.pdf`, {
