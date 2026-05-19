@@ -15,11 +15,11 @@ const VIEWER_CSS = `
 	justify-content: space-between;
 	padding: 0 16px;
 	height: 46px;
-	background: #0f1a0a;
+	background: #16201a;
 	font-family: "Inria Sans", sans-serif;
-	color: #c8d9b7;
+	color: #c2cfb6;
 	flex-shrink: 0;
-	border-bottom: 2px solid #2c5e1a;
+	border-bottom: 1px solid #29362a;
 	user-select: none;
 	-webkit-user-select: none;
 }
@@ -31,24 +31,24 @@ const VIEWER_CSS = `
 	overflow: hidden;
 }
 #toolbar-nav a {
-	color: #78d159;
+	color: #a4e486;
 	text-decoration: none;
 	font-weight: 700;
 	font-size: 14px;
 	white-space: nowrap;
 	transition: color 0.2s ease;
 }
-#toolbar-nav a:hover { color: #b8e19f; }
-#toolbar-sep { color: #3a5a2a; font-size: 13px; flex-shrink: 0; }
+#toolbar-nav a:hover { color: #e6b87a; }
+#toolbar-sep { color: #485440; font-size: 13px; flex-shrink: 0; }
 #toolbar-badge {
 	font-family: "JetBrains Mono", monospace;
 	font-size: 0.75rem;
-	color: #8cb369;
-	background: #1a2c0d;
+	color: #e6b87a;
+	background: #11180e;
 	padding: 3px 10px;
 	border-radius: 50px;
 	white-space: nowrap;
-	border: 1px solid #2c5e1a;
+	border: 1px solid rgba(212, 164, 100, 0.28);
 	flex-shrink: 0;
 }
 #toolbar-controls {
@@ -61,7 +61,7 @@ const VIEWER_CSS = `
 	font-family: "JetBrains Mono", monospace;
 	font-size: 0.75rem;
 	white-space: nowrap;
-	color: #a8c29b;
+	color: #8b9881;
 	display: inline-flex;
 	align-items: center;
 	gap: 2px;
@@ -70,16 +70,16 @@ const VIEWER_CSS = `
 	cursor: pointer;
 	padding: 2px 5px;
 	border-radius: 3px;
-	color: #c8d9b7;
+	color: #c2cfb6;
 	transition: background 0.15s ease;
 	outline: none;
 }
-#page-current:hover, #page-current:focus { background: #1e3e12; }
+#page-current:hover, #page-current:focus { background: #1c2820; }
 input#page-current {
-	background: #1a2c0d;
-	border: 1px solid #4a9c31;
+	background: #11180e;
+	border: 1px solid #e6b87a;
 	border-radius: 3px;
-	color: #c8d9b7;
+	color: #c2cfb6;
 	font-family: "JetBrains Mono", monospace;
 	font-size: 0.75rem;
 	padding: 1px 4px;
@@ -89,8 +89,8 @@ input#page-current {
 #page-sep { padding: 0 2px; }
 #toolbar-controls .tb-btn {
 	background: none;
-	color: #c8d9b7;
-	border: 1px solid #2c5e1a;
+	color: #c2cfb6;
+	border: 1px solid #29362a;
 	border-radius: 4px;
 	width: 28px;
 	height: 28px;
@@ -103,14 +103,14 @@ input#page-current {
 	transition: all 0.15s ease;
 }
 #toolbar-controls .tb-btn:hover {
-	background: #1e3e12;
-	color: #78d159;
-	border-color: #4a9c31;
+	background: #1c2820;
+	color: #e6b87a;
+	border-color: #e6b87a;
 }
 #toolbar-controls .tb-btn.active {
-	background: #1e3e12;
-	color: #78d159;
-	border-color: #4a9c31;
+	background: #1c2820;
+	color: #e6b87a;
+	border-color: #e6b87a;
 }
 #toolbar-controls .tb-btn .icon { font-size: 16px; line-height: 1; }
 #zoom-level {
@@ -118,16 +118,16 @@ input#page-current {
 	font-size: 0.7rem;
 	min-width: 36px;
 	text-align: center;
-	color: #a8c29b;
+	color: #8b9881;
 }
 #download {
-	color: #0f1a0a;
+	color: #16201a;
 	text-decoration: none;
 	font-family: "Inria Sans", sans-serif;
 	font-size: 0.8rem;
 	font-weight: 700;
 	padding: 4px 10px;
-	background: #4a9c31;
+	background: #4a8e3a;
 	border-radius: 8px;
 	white-space: nowrap;
 	transition: all 0.2s ease;
@@ -135,46 +135,46 @@ input#page-current {
 	align-items: center;
 	gap: 6px;
 }
-#download:hover { background: #78d159; }
+#download:hover { background: #a4e486; }
 #download .icon { font-size: 14px; }
 #find-bar {
 	display: flex;
 	align-items: center;
 	gap: 8px;
 	padding: 6px 12px;
-	background: #0f1a0a;
-	border-bottom: 1px solid #2c5e1a;
+	background: #16201a;
+	border-bottom: 1px solid #29362a;
 	flex-shrink: 0;
 }
 #find-bar[hidden] { display: none; }
-#find-bar .find-icon { color: #8cb369; display: inline-flex; }
+#find-bar .find-icon { color: #e6b87a; display: inline-flex; }
 #find-bar .find-icon .icon { font-size: 16px; }
 #find-input {
 	flex: 1;
 	min-width: 0;
 	max-width: 420px;
-	background: #1a2c0d;
-	border: 1px solid #2c5e1a;
+	background: #11180e;
+	border: 1px solid #29362a;
 	border-radius: 4px;
-	color: #c8d9b7;
+	color: #c2cfb6;
 	font-family: "Inria Sans", sans-serif;
 	font-size: 14px;
 	padding: 4px 10px;
 	outline: none;
 }
-#find-input:focus { border-color: #4a9c31; }
+#find-input:focus { border-color: #e6b87a; }
 #find-counter {
 	font-family: "JetBrains Mono", monospace;
 	font-size: 0.75rem;
-	color: #a8c29b;
+	color: #8b9881;
 	white-space: nowrap;
 	min-width: 70px;
 	text-align: right;
 }
 #find-bar .tb-btn {
 	background: none;
-	color: #c8d9b7;
-	border: 1px solid #2c5e1a;
+	color: #c2cfb6;
+	border: 1px solid #29362a;
 	border-radius: 4px;
 	width: 28px;
 	height: 28px;
@@ -186,15 +186,15 @@ input#page-current {
 	transition: all 0.15s ease;
 }
 #find-bar .tb-btn:hover {
-	background: #1e3e12;
-	color: #78d159;
-	border-color: #4a9c31;
+	background: #1c2820;
+	color: #e6b87a;
+	border-color: #e6b87a;
 }
 #find-bar .tb-btn .icon { font-size: 14px; }
 #help-overlay {
 	position: fixed;
 	inset: 0;
-	background: rgba(0, 0, 0, 0.7);
+	background: rgba(8, 18, 4, 0.75);
 	z-index: 1000;
 	display: flex;
 	align-items: center;
@@ -202,10 +202,10 @@ input#page-current {
 }
 #help-overlay[hidden] { display: none; }
 #help-card {
-	background: #0f1a0a;
-	border: 2px solid #2c5e1a;
+	background: #16201a;
+	border: 2px solid #29362a;
 	border-radius: 12px;
-	color: #c8d9b7;
+	color: #c2cfb6;
 	font-family: "Inria Sans", sans-serif;
 	width: min(92vw, 580px);
 	max-height: 86vh;
@@ -217,15 +217,15 @@ input#page-current {
 	align-items: center;
 	justify-content: space-between;
 	padding: 14px 18px;
-	border-bottom: 1px solid #2c5e1a;
+	border-bottom: 1px solid #29362a;
 	font-weight: 700;
 	font-size: 15px;
-	color: #78d159;
+	color: #e6b87a;
 }
 #help-header .tb-btn {
 	background: none;
-	color: #c8d9b7;
-	border: 1px solid #2c5e1a;
+	color: #c2cfb6;
+	border: 1px solid #29362a;
 	border-radius: 4px;
 	width: 28px;
 	height: 28px;
@@ -236,13 +236,13 @@ input#page-current {
 	padding: 0;
 }
 #help-header .tb-btn:hover {
-	background: #1e3e12;
-	color: #78d159;
-	border-color: #4a9c31;
+	background: #1c2820;
+	color: #e6b87a;
+	border-color: #e6b87a;
 }
 #help-content { padding: 14px 18px 18px; font-size: 13.5px; line-height: 1.5; }
 #help-content h4 {
-	color: #78d159;
+	color: #e6b87a;
 	font-size: 11px;
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
@@ -253,19 +253,19 @@ input#page-current {
 #help-content table { width: 100%; border-collapse: collapse; }
 #help-content td { padding: 4px 0; vertical-align: top; }
 #help-content td:first-child {
-	color: #a8c29b;
+	color: #8b9881;
 	white-space: nowrap;
 	padding-right: 16px;
 	width: 46%;
 }
 #help-content kbd {
-	background: #1a2c0d;
-	border: 1px solid #2c5e1a;
+	background: #11180e;
+	border: 1px solid #29362a;
 	border-radius: 3px;
 	padding: 1px 6px;
 	font-family: "JetBrains Mono", monospace;
 	font-size: 11px;
-	color: #c8d9b7;
+	color: #c2cfb6;
 	margin: 0 1px;
 }
 #viewer-container {
@@ -276,7 +276,7 @@ input#page-current {
 	align-items: center;
 	padding: 16px 0;
 	gap: 8px;
-	background: #1a1a1a;
+	background: #0c130a;
 }
 #viewer-container .page-slot {
 	background: #ffffff;
@@ -311,14 +311,14 @@ input#page-current {
 	cursor: text;
 }
 #viewer-container .page-slot .text-layer mark.find-hit {
-	background: rgba(255, 230, 0, 0.45);
+	background: rgba(255, 220, 120, 0.50);
 	color: transparent;
 	padding: 0;
 	margin: 0;
 	border-radius: 1px;
 }
 #viewer-container .page-slot .text-layer mark.find-hit.current {
-	background: rgba(255, 140, 0, 0.75);
+	background: rgba(212, 164, 100, 0.85);
 }
 #status {
 	position: fixed;
@@ -408,7 +408,7 @@ export async function initViewer(pdfUrl, options = {}) {
 	const style = document.createElement(`style`)
 	style.textContent = VIEWER_CSS
 	document.head.appendChild(style)
-	document.body.innerHTML = `<div id="status" style="color:#6a8a5a">Loading\u2026</div>`
+	document.body.innerHTML = `<div id="status" style="color:#8b9881">Loading\u2026</div>`
 
 	const pdf = await pdfjsLib.getDocument(pdfUrl).promise
 	const numPages = pdf.numPages
@@ -463,9 +463,17 @@ export async function initViewer(pdfUrl, options = {}) {
 	const fitPageBtn = document.getElementById(`fit-page`)
 	const modeToggleBtn = document.getElementById(`mode-toggle`)
 	const fullscreenBtn = document.getElementById(`fullscreen-toggle`)
+	const zoomLevelEl = document.getElementById(`zoom-level`)
+	const zoomInBtn = document.getElementById(`zoom-in`)
+	const zoomOutBtn = document.getElementById(`zoom-out`)
+	const findPrevBtn = document.getElementById(`find-prev`)
+	const findNextBtn = document.getElementById(`find-next`)
+	const findCloseBtn = document.getElementById(`find-close`)
+	const findToggleBtn = document.getElementById(`find-toggle`)
+	const helpToggleBtn = document.getElementById(`help-toggle`)
+	const helpCloseBtn = document.getElementById(`help-close`)
 
-	const fsRoot = document.documentElement
-	const fsAvailable = typeof fsRoot.requestFullscreen === `function` || typeof fsRoot.webkitRequestFullscreen === `function`
+	const fsAvailable = typeof document.documentElement.requestFullscreen === `function`
 	if (!fsAvailable) fullscreenBtn.style.display = `none`
 
 	const pixelRatio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO)
@@ -502,6 +510,11 @@ export async function initViewer(pdfUrl, options = {}) {
 		)
 	}
 
+	function recomputeScaleForFit() {
+		if (fitMode === `width`) scale = computeFitWidthScale()
+		else if (fitMode === `page`) scale = computeFitPageScale()
+	}
+
 	let baseScale = computeFitWidthScale()
 	let scale = fitMode === `page` ? computeFitPageScale() : computeFitWidthScale()
 
@@ -518,6 +531,7 @@ export async function initViewer(pdfUrl, options = {}) {
 		active: false,
 		query: ``,
 		matches: [],
+		matchesByPage: new Map(),
 		currentIdx: -1,
 		textCache: new Map(),
 		debounceTimer: null,
@@ -531,8 +545,7 @@ export async function initViewer(pdfUrl, options = {}) {
 	}
 
 	function updateZoomLevel() {
-		document.getElementById(`zoom-level`).textContent =
-			`${Math.round((scale / baseScale) * 100)}%`
+		zoomLevelEl.textContent = `${Math.round((scale / baseScale) * 100)}%`
 	}
 
 	function updateModeIcon() {
@@ -543,13 +556,14 @@ export async function initViewer(pdfUrl, options = {}) {
 	}
 
 	function isFullscreen() {
-		return !!(document.fullscreenElement || document.webkitFullscreenElement)
+		return !!document.fullscreenElement
 	}
 
 	function updateFullscreenIcon() {
 		if (!fsAvailable) return
-		fullscreenBtn.innerHTML = isFullscreen() ? icon(`corners-in`) : icon(`corners-out`)
-		fullscreenBtn.title = isFullscreen() ? `Exit fullscreen (F)` : `Fullscreen (F)`
+		const fs = isFullscreen()
+		fullscreenBtn.innerHTML = fs ? icon(`corners-in`) : icon(`corners-out`)
+		fullscreenBtn.title = fs ? `Exit fullscreen (F)` : `Fullscreen (F)`
 	}
 
 	function captureScrollFrac() {
@@ -590,55 +604,36 @@ export async function initViewer(pdfUrl, options = {}) {
 		renderedPages.delete(pageNum)
 	}
 
-	async function renderTextLayerForPage(pageNum, vp, slot) {
+	async function renderTextLayerForPage(pageNum, vp, slot, stamp) {
 		const page = pageProxies[pageNum - 1]
 		const textLayerDiv = document.createElement(`div`)
 		textLayerDiv.className = `text-layer`
 		textLayerDiv.style.width = `${Math.floor(vp.width)}px`
 		textLayerDiv.style.height = `${Math.floor(vp.height)}px`
-		textLayerDiv.style.setProperty(`--scale-factor`, String(vp.scale))
 		slot.appendChild(textLayerDiv)
 
 		try {
-			let source
-			if (typeof page.streamTextContent === `function`) {
-				source = page.streamTextContent({
-					includeMarkedContent: true,
-					disableNormalization: false
-				})
-			} else {
-				source = await page.getTextContent()
-			}
-
-			if (typeof pdfjsLib.TextLayer === `function`) {
-				const tl = new pdfjsLib.TextLayer({
-					textContentSource: source,
-					container: textLayerDiv,
-					viewport: vp
-				})
-				await tl.render()
-			} else if (typeof pdfjsLib.renderTextLayer === `function`) {
-				await pdfjsLib.renderTextLayer({
-					textContentSource: source,
-					container: textLayerDiv,
-					viewport: vp
-				}).promise
-			} else {
-				console.warn(`pdf.js text layer API not available; find disabled`)
-				return null
-			}
+			const tl = new pdfjsLib.TextLayer({
+				textContentSource: page.streamTextContent({ includeMarkedContent: true, disableNormalization: false }),
+				container: textLayerDiv,
+				viewport: vp
+			})
+			await tl.render()
 		} catch (e) {
 			if (e?.name !== `AbortException` && e?.name !== `RenderingCancelledException`) {
 				console.error(`Text layer error`, e)
 			}
+			textLayerDiv.remove()
+			return null
+		}
+
+		if (stamp !== scaleStamp) {
+			textLayerDiv.remove()
 			return null
 		}
 
 		const spans = Array.from(textLayerDiv.querySelectorAll(`:scope > span`))
-		return {
-			div: textLayerDiv,
-			spans
-		}
+		return { spans }
 	}
 
 	async function renderPage(pageNum) {
@@ -647,9 +642,9 @@ export async function initViewer(pdfUrl, options = {}) {
 		if (!slot) return
 		const stamp = scaleStamp
 		const page = pageProxies[pageNum - 1]
-		const vp = page.getViewport({
-			scale
-		})
+		const vp = page.getViewport({ scale })
+
+		if (stamp !== scaleStamp) return
 
 		const canvas = document.createElement(`canvas`)
 		canvas.width = Math.floor(vp.width * pixelRatio)
@@ -659,10 +654,7 @@ export async function initViewer(pdfUrl, options = {}) {
 		const ctx = canvas.getContext(`2d`)
 		ctx.scale(pixelRatio, pixelRatio)
 
-		const task = page.render({
-			canvasContext: ctx,
-			viewport: vp
-		})
+		const task = page.render({ canvasContext: ctx, viewport: vp })
 		renderTasks.set(pageNum, task)
 		try {
 			await task.promise
@@ -684,8 +676,7 @@ export async function initViewer(pdfUrl, options = {}) {
 			}
 		}
 
-		const tlResult = await renderTextLayerForPage(pageNum, vp, slot)
-		if (stamp !== scaleStamp) return
+		const tlResult = await renderTextLayerForPage(pageNum, vp, slot, stamp)
 		if (!tlResult) return
 		textLayerData.set(pageNum, tlResult)
 		if (findState.query) {
@@ -694,9 +685,7 @@ export async function initViewer(pdfUrl, options = {}) {
 				const m = findState.matches[findState.pendingScrollToIdx]
 				if (m && m.pageNum === pageNum) {
 					const mark = slot.querySelector(`mark.find-hit[data-match-idx="${findState.pendingScrollToIdx}"]`)
-					if (mark) mark.scrollIntoView({
-						block: `center`
-					})
+					if (mark) mark.scrollIntoView({ block: `center` })
 					findState.pendingScrollToIdx = -1
 				}
 			}
@@ -759,19 +748,21 @@ export async function initViewer(pdfUrl, options = {}) {
 				container.appendChild(slot)
 				slots.push(slot)
 			}
-			setupObserver()
 		}
 	}
 
-	async function renderAllPages(resetScroll = false) {
+	async function renderAllPages(resetScroll = false, scrollToPage = null) {
 		if (resetScroll) scrollFrac = 0
 		else captureScrollFrac()
 		renderInProgress++
 		try {
 			buildSlots()
-			if (container.scrollHeight > container.clientHeight) {
+			if (!singlePageMode && scrollToPage && scrollToPage > 1) {
+				scrollToPageCanvas(scrollToPage)
+			} else if (container.scrollHeight > container.clientHeight) {
 				container.scrollTop = scrollFrac * (container.scrollHeight - container.clientHeight)
 			}
+			if (!singlePageMode) setupObserver()
 			updatePageInfo()
 			updateZoomLevel()
 		} finally {
@@ -780,25 +771,23 @@ export async function initViewer(pdfUrl, options = {}) {
 	}
 
 	function updatePageInfo() {
-		if (!singlePageMode) {
-			const visibleSlots = container.querySelectorAll(`.page-slot`)
-			if (visibleSlots.length) {
-				const containerRect = container.getBoundingClientRect()
-				let bestVisible = -1
-				visibleSlots.forEach((s) => {
-					const rect = s.getBoundingClientRect()
-					const visible = Math.max(0, Math.min(rect.bottom, containerRect.bottom) - Math.max(rect.top, containerRect.top))
-					if (visible > bestVisible) {
-						bestVisible = visible
-						currentPage = +s.dataset.page
-					}
-				})
+		if (!singlePageMode && slots.length) {
+			const containerRect = container.getBoundingClientRect()
+			let bestVisible = -1
+			for (let i = 0; i < slots.length; i++) {
+				const s = slots[i]
+				if (!s) continue
+				const rect = s.getBoundingClientRect()
+				const visible = Math.max(0, Math.min(rect.bottom, containerRect.bottom) - Math.max(rect.top, containerRect.top))
+				if (visible > bestVisible) {
+					bestVisible = visible
+					currentPage = i + 1
+				}
+				if (visible === 0 && bestVisible > 0) break
 			}
 		}
 		const el = document.getElementById(`page-current`)
-		if (el && el.tagName === `SPAN`) {
-			el.textContent = String(currentPage)
-		}
+		if (el && el.tagName === `SPAN`) el.textContent = String(currentPage)
 	}
 
 	function navPage(delta) {
@@ -896,11 +885,9 @@ export async function initViewer(pdfUrl, options = {}) {
 		else history.replaceState(null, ``, newHash)
 	}
 
-	async function scrollToPageCanvas(page) {
-		const s = container.querySelector(`.page-slot[data-page="${page}"]`)
-		if (s) s.scrollIntoView({
-			block: `start`
-		})
+	function scrollToPageCanvas(page) {
+		const s = slots[page - 1]
+		if (s) s.scrollIntoView({ block: `start` })
 	}
 
 	async function toggleMode() {
@@ -909,17 +896,14 @@ export async function initViewer(pdfUrl, options = {}) {
 		singlePageMode = !singlePageMode
 		updateModeIcon()
 		baseScale = computeFitWidthScale()
-		if (fitMode === `width`) scale = computeFitWidthScale()
-		else if (fitMode === `page`) scale = computeFitPageScale()
-		await renderAllPages(true)
-		if (!singlePageMode) await scrollToPageCanvas(targetPage)
+		recomputeScaleForFit()
+		await renderAllPages(true, singlePageMode ? null : targetPage)
 		writeHash(false)
 	}
 
 	async function setFitMode(mode) {
 		fitMode = mode
-		if (mode === `width`) scale = computeFitWidthScale()
-		else if (mode === `page`) scale = computeFitPageScale()
+		recomputeScaleForFit()
 		updateFitButtons()
 		await renderAllPages()
 	}
@@ -935,17 +919,11 @@ export async function initViewer(pdfUrl, options = {}) {
 
 	function toggleFullscreen() {
 		if (!fsAvailable) return
-		if (isFullscreen()) {
-			const fn = document.exitFullscreen?.bind(document) || document.webkitExitFullscreen?.bind(document)
-			if (fn) fn()
-		} else {
-			const fn = fsRoot.requestFullscreen?.bind(fsRoot) || fsRoot.webkitRequestFullscreen?.bind(fsRoot)
-			if (fn) fn()
-		}
+		if (isFullscreen()) document.exitFullscreen()
+		else document.documentElement.requestFullscreen()
 	}
 
 	document.addEventListener(`fullscreenchange`, updateFullscreenIcon)
-	document.addEventListener(`webkitfullscreenchange`, updateFullscreenIcon)
 
 	function openHelp() {
 		helpOverlay.hidden = false
@@ -956,8 +934,8 @@ export async function initViewer(pdfUrl, options = {}) {
 		helpOverlay.hidden = true
 		delete helpOverlay.dataset.open
 	}
-	document.getElementById(`help-toggle`).addEventListener(`click`, openHelp)
-	document.getElementById(`help-close`).addEventListener(`click`, closeHelp)
+	helpToggleBtn.addEventListener(`click`, openHelp)
+	helpCloseBtn.addEventListener(`click`, closeHelp)
 	helpOverlay.addEventListener(`click`, (e) => {
 		if (e.target === helpOverlay) closeHelp()
 	})
@@ -965,18 +943,12 @@ export async function initViewer(pdfUrl, options = {}) {
 	async function ensureTextContent(pageNum) {
 		let entry = findState.textCache.get(pageNum)
 		if (entry) return entry
-		const page = pageProxies[pageNum - 1]
-		const tc = await page.getTextContent()
-		let normalized = ``
+		const tc = await pageProxies[pageNum - 1].getTextContent()
+		const items = []
 		for (const item of tc.items) {
-			if (typeof item.str === `string`) {
-				normalized += item.str.toLowerCase()
-				if (item.hasEOL) normalized += `\n`
-			}
+			if (typeof item.str === `string`) items.push(item.str.toLowerCase())
 		}
-		entry = {
-			normalized
-		}
+		entry = { items }
 		findState.textCache.set(pageNum, entry)
 		return entry
 	}
@@ -1000,9 +972,7 @@ export async function initViewer(pdfUrl, options = {}) {
 	function applyHighlights(pageNum) {
 		const tld = textLayerData.get(pageNum)
 		if (!tld) return
-		const {
-			spans
-		} = tld
+		const { spans } = tld
 		for (const span of spans) {
 			if (span.dataset.originalText !== undefined) {
 				span.textContent = span.dataset.originalText
@@ -1012,20 +982,19 @@ export async function initViewer(pdfUrl, options = {}) {
 		const q = findState.query
 		if (!q) return
 
+		const pageMap = findState.matchesByPage.get(pageNum)
+		if (!pageMap) return
+
 		let localIdx = 0
 		for (const span of spans) {
 			const text = span.textContent
 			const lower = text.toLowerCase()
-			const occurrences = []
 			let pos = 0
+			const occurrences = []
 			while (true) {
 				const idx = lower.indexOf(q, pos)
 				if (idx === -1) break
-				occurrences.push({
-					start: idx,
-					end: idx + q.length,
-					localIdx: localIdx++
-				})
+				occurrences.push({ start: idx, end: idx + q.length, localIdx: localIdx++ })
 				pos = idx + q.length
 			}
 			if (occurrences.length === 0) continue
@@ -1033,30 +1002,26 @@ export async function initViewer(pdfUrl, options = {}) {
 			span.dataset.originalText = text
 			span.innerHTML = ``
 			let cur = 0
-			for (const m of occurrences) {
-				if (m.start > cur) {
-					span.appendChild(document.createTextNode(text.slice(cur, m.start)))
-				}
+			for (const o of occurrences) {
+				if (o.start > cur) span.appendChild(document.createTextNode(text.slice(cur, o.start)))
 				const mark = document.createElement(`mark`)
 				mark.className = `find-hit`
-				const gm = findState.matches.find((x) => x.pageNum === pageNum && x.localIdx === m.localIdx)
-				if (gm) {
-					mark.dataset.matchIdx = String(gm.globalIdx)
-					if (gm.globalIdx === findState.currentIdx) mark.classList.add(`current`)
+				const gIdx = pageMap.get(o.localIdx)
+				if (gIdx !== undefined) {
+					mark.dataset.matchIdx = String(gIdx)
+					if (gIdx === findState.currentIdx) mark.classList.add(`current`)
 				}
-				mark.textContent = text.slice(m.start, m.end)
+				mark.textContent = text.slice(o.start, o.end)
 				span.appendChild(mark)
-				cur = m.end
+				cur = o.end
 			}
-			if (cur < text.length) {
-				span.appendChild(document.createTextNode(text.slice(cur)))
-			}
+			if (cur < text.length) span.appendChild(document.createTextNode(text.slice(cur)))
 		}
 	}
 
 	function updateCurrentMark() {
-		document.querySelectorAll(`mark.find-hit.current`).forEach((m) => m.classList.remove(`current`))
-		document.querySelectorAll(`mark.find-hit[data-match-idx="${findState.currentIdx}"]`).forEach((m) => m.classList.add(`current`))
+		container.querySelectorAll(`mark.find-hit.current`).forEach((m) => m.classList.remove(`current`))
+		container.querySelectorAll(`mark.find-hit[data-match-idx="${findState.currentIdx}"]`).forEach((m) => m.classList.add(`current`))
 	}
 
 	function goToMatch(globalIdx) {
@@ -1098,6 +1063,7 @@ export async function initViewer(pdfUrl, options = {}) {
 		const token = ++findState.searchToken
 		findState.query = q
 		findState.matches = []
+		findState.matchesByPage = new Map()
 		findState.currentIdx = -1
 
 		if (!q) {
@@ -1111,26 +1077,29 @@ export async function initViewer(pdfUrl, options = {}) {
 		for (let pageNum = 1; pageNum <= numPages; pageNum++) {
 			const entry = await ensureTextContent(pageNum)
 			if (token !== findState.searchToken) return
-			let pos = 0
 			let localIdx = 0
-			while (true) {
-				const idx = entry.normalized.indexOf(q, pos)
-				if (idx === -1) break
-				findState.matches.push({
-					pageNum,
-					localIdx,
-					globalIdx: findState.matches.length
-				})
-				pos = idx + q.length
-				localIdx++
+			let pageMap = null
+			for (const item of entry.items) {
+				let pos = 0
+				while (true) {
+					const idx = item.indexOf(q, pos)
+					if (idx === -1) break
+					const globalIdx = findState.matches.length
+					findState.matches.push({ pageNum, localIdx, globalIdx })
+					if (!pageMap) {
+						pageMap = new Map()
+						findState.matchesByPage.set(pageNum, pageMap)
+					}
+					pageMap.set(localIdx, globalIdx)
+					pos = idx + q.length
+					localIdx++
+				}
 			}
 		}
 
 		findState.currentIdx = findState.matches.length > 0 ? 0 : -1
 		updateFindCounter()
-		for (const pageNum of Array.from(textLayerData.keys())) {
-			applyHighlights(pageNum)
-		}
+		for (const pageNum of textLayerData.keys()) applyHighlights(pageNum)
 		if (findState.currentIdx >= 0) goToMatch(0)
 	}
 
@@ -1152,6 +1121,7 @@ export async function initViewer(pdfUrl, options = {}) {
 		findState.active = false
 		findState.query = ``
 		findState.matches = []
+		findState.matchesByPage = new Map()
 		findState.currentIdx = -1
 		findState.searchToken++
 		clearAllHighlights()
@@ -1170,14 +1140,14 @@ export async function initViewer(pdfUrl, options = {}) {
 			closeFindBar()
 		}
 	})
-	document.getElementById(`find-prev`).addEventListener(`click`, () => {
+	findPrevBtn.addEventListener(`click`, () => {
 		if (findState.matches.length > 0) goToMatch(findState.currentIdx - 1)
 	})
-	document.getElementById(`find-next`).addEventListener(`click`, () => {
+	findNextBtn.addEventListener(`click`, () => {
 		if (findState.matches.length > 0) goToMatch(findState.currentIdx + 1)
 	})
-	document.getElementById(`find-close`).addEventListener(`click`, closeFindBar)
-	document.getElementById(`find-toggle`).addEventListener(`click`, () => {
+	findCloseBtn.addEventListener(`click`, closeFindBar)
+	findToggleBtn.addEventListener(`click`, () => {
 		if (findState.active) closeFindBar()
 		else openFindBar()
 	})
@@ -1189,11 +1159,7 @@ export async function initViewer(pdfUrl, options = {}) {
 	const initialPage = parseHashPage()
 	if (initialPage) currentPage = initialPage
 
-	await renderAllPages()
-
-	if (!singlePageMode && initialPage) {
-		await scrollToPageCanvas(initialPage)
-	}
+	await renderAllPages(false, initialPage)
 
 	let hashUpdateTimer
 	container.addEventListener(`scroll`, () => {
@@ -1209,8 +1175,8 @@ export async function initViewer(pdfUrl, options = {}) {
 	fullscreenBtn.addEventListener(`click`, toggleFullscreen)
 	fitWidthBtn.addEventListener(`click`, () => setFitMode(`width`))
 	fitPageBtn.addEventListener(`click`, () => setFitMode(`page`))
-	document.getElementById(`zoom-in`).addEventListener(`click`, () => zoomBy(+SCALE_STEP))
-	document.getElementById(`zoom-out`).addEventListener(`click`, () => zoomBy(-SCALE_STEP))
+	zoomInBtn.addEventListener(`click`, () => zoomBy(+SCALE_STEP))
+	zoomOutBtn.addEventListener(`click`, () => zoomBy(-SCALE_STEP))
 
 	let wheelNavLock = 0
 	container.addEventListener(`wheel`, (e) => {
@@ -1239,15 +1205,12 @@ export async function initViewer(pdfUrl, options = {}) {
 		passive: false
 	})
 
-	window.addEventListener(`hashchange`, async () => {
+	window.addEventListener(`hashchange`, () => {
 		const p = parseHashPage()
 		if (!p || p === currentPage) return
 		currentPage = p
-		if (singlePageMode) {
-			await renderAllPages(true)
-		} else {
-			await scrollToPageCanvas(p)
-		}
+		if (singlePageMode) renderAllPages(true)
+		else scrollToPageCanvas(p)
 	})
 
 	let resizeTimer
@@ -1255,8 +1218,7 @@ export async function initViewer(pdfUrl, options = {}) {
 		clearTimeout(resizeTimer)
 		resizeTimer = setTimeout(() => {
 			baseScale = computeFitWidthScale()
-			if (fitMode === `width`) scale = computeFitWidthScale()
-			else if (fitMode === `page`) scale = computeFitPageScale()
+			recomputeScaleForFit()
 			renderAllPages()
 		}, 200)
 	})
