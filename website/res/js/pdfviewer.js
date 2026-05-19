@@ -614,7 +614,10 @@ export async function initViewer(pdfUrl, options = {}) {
 
 		try {
 			const tl = new pdfjsLib.TextLayer({
-				textContentSource: page.streamTextContent({ includeMarkedContent: true, disableNormalization: false }),
+				textContentSource: page.streamTextContent({
+					includeMarkedContent: true,
+					disableNormalization: false
+				}),
 				container: textLayerDiv,
 				viewport: vp
 			})
@@ -633,7 +636,9 @@ export async function initViewer(pdfUrl, options = {}) {
 		}
 
 		const spans = Array.from(textLayerDiv.querySelectorAll(`:scope > span`))
-		return { spans }
+		return {
+			spans
+		}
 	}
 
 	async function renderPage(pageNum) {
@@ -642,7 +647,9 @@ export async function initViewer(pdfUrl, options = {}) {
 		if (!slot) return
 		const stamp = scaleStamp
 		const page = pageProxies[pageNum - 1]
-		const vp = page.getViewport({ scale })
+		const vp = page.getViewport({
+			scale
+		})
 
 		if (stamp !== scaleStamp) return
 
@@ -654,7 +661,10 @@ export async function initViewer(pdfUrl, options = {}) {
 		const ctx = canvas.getContext(`2d`)
 		ctx.scale(pixelRatio, pixelRatio)
 
-		const task = page.render({ canvasContext: ctx, viewport: vp })
+		const task = page.render({
+			canvasContext: ctx,
+			viewport: vp
+		})
 		renderTasks.set(pageNum, task)
 		try {
 			await task.promise
@@ -685,7 +695,9 @@ export async function initViewer(pdfUrl, options = {}) {
 				const m = findState.matches[findState.pendingScrollToIdx]
 				if (m && m.pageNum === pageNum) {
 					const mark = slot.querySelector(`mark.find-hit[data-match-idx="${findState.pendingScrollToIdx}"]`)
-					if (mark) mark.scrollIntoView({ block: `center` })
+					if (mark) mark.scrollIntoView({
+						block: `center`
+					})
 					findState.pendingScrollToIdx = -1
 				}
 			}
@@ -872,14 +884,18 @@ export async function initViewer(pdfUrl, options = {}) {
 	document.getElementById(`page-current`).addEventListener(`click`, focusPageInput)
 
 	function parseHashPage() {
-		const m = location.hash.match(/page=(\d+)/)
-		if (!m) return null
-		const n = parseInt(m[1], 10)
-		return n >= 1 && n <= numPages ? n : null
+		for (const t of location.hash.slice(1).split(`&`)) {
+			const m = t.match(/^page=(\d+)$/)
+			if (!m) continue
+			const n = parseInt(m[1], 10)
+			return n >= 1 && n <= numPages ? n : null
+		}
+		return null
 	}
 
 	function writeHash(push) {
-		const newHash = `#page=${currentPage}`
+		const others = location.hash.slice(1).split(`&`).filter((t) => t && !/^page=\d+$/.test(t))
+		const newHash = `#${[...others, `page=${currentPage}`].join(`&`)}`
 		if (location.hash === newHash) return
 		if (push) history.pushState(null, ``, newHash)
 		else history.replaceState(null, ``, newHash)
@@ -887,7 +903,9 @@ export async function initViewer(pdfUrl, options = {}) {
 
 	function scrollToPageCanvas(page) {
 		const s = slots[page - 1]
-		if (s) s.scrollIntoView({ block: `start` })
+		if (s) s.scrollIntoView({
+			block: `start`
+		})
 	}
 
 	async function toggleMode() {
@@ -948,7 +966,9 @@ export async function initViewer(pdfUrl, options = {}) {
 		for (const item of tc.items) {
 			if (typeof item.str === `string`) items.push(item.str.toLowerCase())
 		}
-		entry = { items }
+		entry = {
+			items
+		}
 		findState.textCache.set(pageNum, entry)
 		return entry
 	}
@@ -972,7 +992,9 @@ export async function initViewer(pdfUrl, options = {}) {
 	function applyHighlights(pageNum) {
 		const tld = textLayerData.get(pageNum)
 		if (!tld) return
-		const { spans } = tld
+		const {
+			spans
+		} = tld
 		for (const span of spans) {
 			if (span.dataset.originalText !== undefined) {
 				span.textContent = span.dataset.originalText
@@ -994,7 +1016,11 @@ export async function initViewer(pdfUrl, options = {}) {
 			while (true) {
 				const idx = lower.indexOf(q, pos)
 				if (idx === -1) break
-				occurrences.push({ start: idx, end: idx + q.length, localIdx: localIdx++ })
+				occurrences.push({
+					start: idx,
+					end: idx + q.length,
+					localIdx: localIdx++
+				})
 				pos = idx + q.length
 			}
 			if (occurrences.length === 0) continue
@@ -1085,7 +1111,11 @@ export async function initViewer(pdfUrl, options = {}) {
 					const idx = item.indexOf(q, pos)
 					if (idx === -1) break
 					const globalIdx = findState.matches.length
-					findState.matches.push({ pageNum, localIdx, globalIdx })
+					findState.matches.push({
+						pageNum,
+						localIdx,
+						globalIdx
+					})
 					if (!pageMap) {
 						pageMap = new Map()
 						findState.matchesByPage.set(pageNum, pageMap)

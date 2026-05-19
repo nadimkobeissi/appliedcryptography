@@ -39,8 +39,9 @@
 		import {
 			initViewer
 		} from '../res/js/pdfviewer.js'
-		const anchor = window.location.hash.substring(1)
-		if (typeof anchor === `string` && /^\w{1,32}-\w{1,32}$/.test(anchor)) {
+		const m = window.location.hash.substring(1).match(/^(\w{1,32}-\w{1,32})(?:&|$)/)
+		if (m) {
+			const anchor = m[1]
 			initViewer(`https://appliedcryptography.page/project/project-${anchor}.pdf`, {
 				title: `Project Sheet`,
 				backLabel: `Assignments`,

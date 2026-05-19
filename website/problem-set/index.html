@@ -39,8 +39,9 @@
 		import {
 			initViewer
 		} from '../res/js/pdfviewer.js'
-		const anchor = window.location.hash.substring(1)
-		if (typeof anchor === `string` && /^\d{1,3}$/.test(anchor)) {
+		const m = window.location.hash.substring(1).match(/^(\d{1,3})(?:&|$)/)
+		if (m) {
+			const anchor = m[1]
 			initViewer(`https://appliedcryptography.page/problem-set/problem-set-${anchor}.pdf`, {
 				title: `Problem Set ${anchor}`,
 				backLabel: `Assignments`,
