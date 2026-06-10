@@ -78,7 +78,7 @@
 		\item Strictly speaking, usernames and passwords can be implemented
 		      without cryptography\ldots
 		\item Server checks if the password matches, or if the IP address matches,
-		      etc. before granting access.
+		      etc., before granting access.
 		\item What's so bad about that?
 	\end{itemize}
 	\definitionbox{The problem with traditional access control}{
@@ -287,7 +287,7 @@
 			\begin{itemize}[<+->]
 				\item Solvable in polynomial time.
 				\item \textbf{Examples}: Sorting, searching.
-				\item Running time: $\mathcal{O}(n^c)$ for some constant $c$
+				\item Running time: $\mathcal{O}(n^c)$ for some constant $c$.
 				\item Generally scales reasonably with input size.
 				\item Class P (Polynomial time).
 			\end{itemize}
@@ -297,7 +297,7 @@
 			\begin{itemize}[<+->]
 				\item No known polynomial-time solution.
 				\item \textbf{Example}: Factoring product of two large primes.
-				\item Running time: Often exponential, e.g., $\mathcal{O}(2^n)$
+				\item Running time: Often exponential, e.g., $\mathcal{O}(2^n)$.
 				\item Becomes impractical quickly as input grows.
 				\item Includes NP-hard, NP-complete classes.
 			\end{itemize}
@@ -395,7 +395,7 @@
 
 \begin{frame}{TIME complexity classes}
 	\begin{itemize}[<+->]
-		\item \textbf{TIME}$(f(n))$ = class of problems solvable in time $\mathcal{O}(f(n))$
+		\item \textbf{TIME}$(f(n))$ = class of problems solvable in time $\mathcal{O}(f(n))$.
 		\item Examples:
 		      \begin{itemize}
 			      \item \textbf{TIME}$(n^2)$ = problems solvable in $\mathcal{O}(n^2)$ time
@@ -427,13 +427,13 @@
 	\begin{itemize}[<+->]
 		\item Time isn't everything—memory usage matters too!
 		\item A single memory access can be orders of magnitude slower than CPU operations.
-		\item \textbf{SPACE}$(f(n))$ = class of problems solvable using $\mathcal{O}(f(n))$ bits of memory
+		\item \textbf{SPACE}$(f(n))$ = class of problems solvable using $\mathcal{O}(f(n))$ bits of memory.
 		\item Examples:
 		      \begin{itemize}
 			      \item \textbf{SPACE}$(n)$ = problems using $\mathcal{O}(n)$ memory
 			      \item \textbf{SPACE}$(n^2)$ = problems using $\mathcal{O}(n^2)$ memory
 		      \end{itemize}
-		\item \textbf{PSPACE} = union of all \textbf{SPACE}$(n^k)$ for constants $k$
+		\item \textbf{PSPACE} = union of all \textbf{SPACE}$(n^k)$ for constants $k$.
 	\end{itemize}
 \end{frame}
 
@@ -441,8 +441,8 @@
 	\begin{itemize}[<+->]
 		\item \textbf{Key insight}: Any algorithm running in time $f(n)$ uses at most $f(n)$ memory.
 		\item Why? You can write at most one bit per time unit.
-		\item Therefore: \textbf{TIME}$(f(n)) \subseteq$ \textbf{SPACE}$(f(n))$
-		\item This gives us: $P \subseteq PSPACE$
+		\item Therefore: \textbf{TIME}$(f(n)) \subseteq$ \textbf{SPACE}$(f(n))$.
+		\item This gives us: $P \subseteq PSPACE$.
 		\item \textbf{Important}: Low memory doesn't guarantee fast execution!
 		      \begin{itemize}
 			      \item Example: Brute-force key search uses little memory but takes forever.
@@ -458,14 +458,14 @@
 		\item \textbf{Key insight}: Easy to check, hard to find!
 		\item Given a potential solution, you can run a polynomial-time algorithm to verify if it's correct.
 		\item You don't need to find the solution efficiently—only verify it efficiently.
-		\item \textbf{Relationship}: $P \subseteq NP$ (if you can solve it quickly, you can certainly verify it quickly)
+		\item \textbf{Relationship}: $P \subseteq NP$ (if you can solve it quickly, you can certainly verify it quickly).
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{NP: A cryptographic example}
 	\textbf{Problem}: Given a hash value $H$, does there exist an input $M$ such that $\func{hash}{M} = H$?
 	\begin{itemize}[<+->]
-		\item \textbf{Finding the solution}: Could take exponential time (brute-force searching through possible inputs)
+		\item \textbf{Finding the solution}: Could take exponential time (brute-force searching through possible inputs).
 		\item \textbf{Verifying a candidate solution}: Given a potential input $M_0$:
 		      \begin{enumerate}
 			      \item Compute $\func{hash}{M_0}$
@@ -480,7 +480,7 @@
 \begin{frame}{NP: Another cryptographic example}
 	\textbf{Problem}: Given plaintext $P$ and ciphertext $C$, does there exist a key $K$ such that $C = E(K, P)$?
 	\begin{itemize}[<+->]
-		\item \textbf{Finding the solution}: Could take exponential time (brute-force key search)
+		\item \textbf{Finding the solution}: Could take exponential time (brute-force key search).
 		\item \textbf{Verifying a candidate solution}: Given a potential key $K_0$:
 		      \begin{enumerate}
 			      \item Compute $E(K_0, P)$
@@ -502,7 +502,7 @@
 		      \end{itemize}
 		\item \textbf{Proving absence of solutions}: ``Does there exist NO solution to this problem?''
 		      \begin{itemize}
-			      \item To verify ``no solution exists,'' you might need to check all possible inputs.
+			      \item To verify ``no solution exists'', you might need to check all possible inputs.
 			      \item If there are exponentially many inputs, this takes exponential time.
 			      \item Therefore, proving non-existence is generally not in NP.
 		      \end{itemize}
@@ -598,7 +598,7 @@
 		\item You can transform \textbf{any} traveling salesman instance into a graph coloring problem!
 		\item You can transform \textbf{any} Boolean formula into a subset sum problem!
 		\item These transformations preserve the ``yes/no'' answer and run in polynomial time.
-		\item \textbf{Mind-blowing consequence}: Solve Sudoku efficiently = solve all of theoretical computer science!
+		\item \textbf{Mind-blowing consequence}: Solve Sudoku efficiently = solve every problem in NP efficiently!
 	\end{itemize}
 \end{frame}
 
@@ -626,8 +626,8 @@
 			\begin{itemize}[<+->]
 				\item \textbf{Games proven NP-hard\footnote{\url{https://appliedcryptography.page/paper/\#nintendo-hard}}}:
 				      \begin{itemize}
-					      \item Super Mario Bros. 1-3, The Lost Levels, Super Mario World
-					      \item Donkey Kong Country 1-3
+					      \item Super Mario Bros. 1--3, The Lost Levels, Super Mario World
+					      \item Donkey Kong Country 1--3
 					      \item All classic Legend of Zelda games
 					      \item All classic Metroid games
 					      \item All classic Pokémon role-playing games
@@ -654,7 +654,7 @@
 	\begin{itemize}[<+->]
 		\item If you could solve \textbf{any} NP-complete problem in polynomial time, then you could solve \textbf{all} NP problems in polynomial time.
 		\item This would mean P = NP.
-		\item \textbf{Intuition says}: Surely some problems are easy to check but hard to find!
+		\item \textbf{Intuition says}: Surely some problems are easy to check but hard to solve!
 		\item \textbf{Example}: Brute-force key recovery seems inherently exponential-time\ldots
 		\item \textbf{Reality}: No one has proved this mathematically!
 	\end{itemize}
@@ -687,7 +687,7 @@
 			      \item Digital signatures, password storage, all broken.
 		      \end{itemize}
 		\item \textbf{All of modern cryptography} would collapse overnight!
-		\item \textbf{But also}: We could solve protein folding, optimize supply chains perfectly, solve climate modeling\ldots
+		\item \textbf{But also}: We could solve protein folding, optimize supply chains perfectly, revolutionize climate modeling\ldots
 	\end{itemize}
 \end{frame}
 
@@ -714,7 +714,7 @@
 		      \begin{itemize}
 			      \item Security would be guaranteed as long as $P \neq NP$.
 		      \end{itemize}
-		\item \textbf{Reality is disappointing}: NP-complete problems are hard in the \textbf{worst case}, not the \textbf{average case}
+		\item \textbf{Reality is disappointing}: NP-complete problems are hard in the \textbf{worst case}, not the \textbf{average case}.
 		      \begin{itemize}
 			      \item The structure that makes them hard can make specific instances easy.
 			      \item Cryptography needs problems that are hard for \textbf{random} instances.
@@ -766,7 +766,7 @@
 			\begin{itemize}[<+->]
 				\item Random instances are typically hard.
 				      \begin{itemize}
-					      \item \textbf{Example}: Getting $a$ or $b$ if I know $(g, g^a \bmod p, g^b \bmod p, g^{ab} \bmod p)$ (Diffie-Hellman).
+					      \item \textbf{Example}: Finding $a$ or $b$ given $(g, g^a \bmod p, g^b \bmod p, g^{ab} \bmod p)$ (Diffie-Hellman).
 					      \item \textbf{Example}: Factoring products of large primes (RSA).
 				      \end{itemize}
 				\item Perfect for cryptographic applications.
@@ -814,13 +814,13 @@
 \begin{frame}{What makes discrete logarithm hard?}
 	\begin{itemize}[<+->]
 		\item Remember: we need problems that are easy in one direction, hard in reverse.
-		\item \textbf{Easy direction}: Given $g$ and $x$, compute $g^x \bmod p$
+		\item \textbf{Easy direction}: Given $g$ and $x$, compute $g^x \bmod p$.
 		      \begin{itemize}
 			      \item Example: $2^{10} \bmod 17 = 1024 \bmod 17 = 4$
 		      \end{itemize}
-		\item \textbf{Hard direction}: Given $g$, $p$, and $g^x \bmod p$, find $x$
+		\item \textbf{Hard direction}: Given $g$, $p$, and $g^x \bmod p$, find $x$.
 		      \begin{itemize}
-			      \item Example: Given $g = 2$, $p = 17$, and result $= 4$, find $x = 10$
+			      \item Example: Given $g = 2$, $p = 17$, and a result of $4$, find $x = 10$
 		      \end{itemize}
 		\item For small numbers, this is easy. For huge numbers (thousands of bits), it's computationally infeasible!
 	\end{itemize}
@@ -859,8 +859,8 @@
 	\begin{itemize}[<+->]
 		\item \textbf{Example}: $\mathbb{Z}_5^* = \{1, 2, 3, 4\}$ with multiplication mod 5
 		      \begin{itemize}
-			      \item $3 \times 4 = 12 \bmod 5 = 2$
-			      \item $2 \times 3 = 6 \bmod 5 = 1$
+			      \item $3 \times 4 = 12 \equiv 2 \pmod{5}$
+			      \item $2 \times 3 = 6 \equiv 1 \pmod{5}$
 		      \end{itemize}
 		\item The ``rules'' ensure the math works consistently for cryptography.
 	\end{itemize}
@@ -887,7 +887,7 @@
 	\textbf{Why care?} These rules guarantee that our cryptographic operations will behave predictably!
 \end{frame}
 
-\begin{frame}{Generators: allow exponentiation to target every element in the group}
+\begin{frame}{Generators: reaching every element in the group}
 	\definitionbox{Generator}{
 		An element $g$ whose powers $g^1, g^2, g^3, \ldots$ produce \textbf{every element in the group}.
 	}
@@ -899,7 +899,7 @@
 			      \item $2^3 \bmod 5 = 3$
 			      \item $2^4 \bmod 5 = 1$
 		      \end{itemize}
-		\item We got $\{2, 4, 3, 1\}$ - that's all elements! So $g = 2$ is a generator.
+		\item We got $\{2, 4, 3, 1\}$ - that's all the elements! So $g = 2$ is a generator.
 		\item \textbf{Generators are crucial}: They let us express every group element as a power of $g$.
 	\end{itemize}
 \end{frame}
@@ -909,9 +909,9 @@
 		Given $g$, $p$, and $h = g^x \bmod p$, find the secret exponent $x$.
 	}
 	\begin{itemize}[<+->]
-		\item \textbf{``Discrete''} because we work with integers, not real numbers
-		\item \textbf{``Logarithm''} because we're finding the exponent (like $\log_2(8) = 3$)
-		\item \textbf{Example}: Given $g = 2$, $p = 17$, $h = 8$, find $x$ such that $2^x \equiv 8 \pmod{17}$
+		\item \textbf{``Discrete''} because we work with integers, not real numbers.
+		\item \textbf{``Logarithm''} because we're finding the exponent (like $\log_2(8) = 3$).
+		\item \textbf{Example}: Given $g = 2$, $p = 17$, $h = 8$, find $x$ such that $2^x \equiv 8 \pmod{17}$.
 		      \begin{itemize}
 			      \item Answer: $x = 3$ (since $2^3 = 8$)
 			      \item Easy with small numbers, hard with large ones!
@@ -984,22 +984,22 @@
 			\pause
 			\textbf{Shared Secret Computation}
 			\begin{itemize}[<+->]
-				\item Alice computes: $s = B^{\textcolor{red}{a}} \bmod p = 11^{\textcolor{red}{5}} \bmod 13$
+				\item Alice computes: $S = B^{\textcolor{red}{a}} \bmod p = 11^{\textcolor{red}{5}} \bmod 13$
 				      \begin{itemize}
 					      \item $= 161051 \bmod 13 = \textcolor{red}{7}$
 				      \end{itemize}
-				\item Bob computes: $s = A^{\textcolor{red}{b}} \bmod p = 6^{\textcolor{red}{7}} \bmod 13$
+				\item Bob computes: $S = A^{\textcolor{red}{b}} \bmod p = 6^{\textcolor{red}{7}} \bmod 13$
 				      \begin{itemize}
 					      \item $= 279936 \bmod 13 = \textcolor{red}{7}$
 				      \end{itemize}
-				\item \textcolor{red}{\textbf{Shared secret: $s = 7$}}
+				\item \textcolor{red}{\textbf{Shared secret: $S = 7$}}
 			\end{itemize}
 			\pause
 			\vspace{0.5cm}
 			\textbf{Eavesdropper sees only:}
 			\begin{itemize}[<+->]
 				\item $p = 13$, $g = 2$, $A = 6$, $B = 11$
-				\item (In the real world, $p$, \textcolor{red}{$a$} and \textcolor{red}{$b$} are much larger numbers)
+				\item (In the real world, $p$, \textcolor{red}{$a$}, and \textcolor{red}{$b$} are much larger numbers)
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1035,7 +1035,7 @@
 			      \item We don't know if solving CDH allows you to solve DLP!
 			      \item Maybe there's a clever way to compute $g^{ab}$ without finding $a$ and $b$
 		      \end{itemize}
-		\item \textbf{Security assumption}: We assume CDH is hard even if it's easier than DLP.
+		\item \textbf{Security assumption}: We assume CDH is hard even if it turns out to be easier than DLP.
 	\end{itemize}
 \end{frame}
 
@@ -1046,13 +1046,13 @@
 			\item $g^{ab} \bmod p$ (the real shared secret), or
 			\item $g^c \bmod p$ for some random $c$
 		\end{itemize}
-		\ldots determine which one $X$ is (each choice has probability 1/2).
+		\ldots determine which one $X$ is (each choice has probability $1/2$).
 	}
 	\begin{itemize}[<+->]
 		\item \textbf{Why do we need this?} Indistinguishability!
 		      \begin{itemize}
 			      \item What if an attacker can compute the first 32 bits of $g^{ab}$?
-			      \item CDH isn't completely broken, but the attacker learned something.
+			      \item CDH isn't completely broken, but the attacker learns something.
 			      \item This partial information might compromise application security.
 		      \end{itemize}
 		\item \textbf{DDH ensures}: The shared secret $g^{ab}$ is \textbf{indistinguishable} from a random group element.
@@ -1066,10 +1066,10 @@
 			      \item Given $(g^a, g^b, X)$, use CDH to compute $g^{ab}$
 			      \item Check if $X = g^{ab}$; if yes, then $X$ is the real shared secret
 		      \end{itemize}
-		\item \textbf{Hardness hierarchy}: DDH $\leq$ CDH $\leq$ DLP
+		\item \textbf{Hardness hierarchy}: DDH $\leq$ CDH $\leq$ DLP.
 		      \begin{itemize}
-			      \item DDH is fundamentally \textbf{easier} than CDH.
-			      \item CDH is (probably) easier than DLP.
+			      \item DDH is \textbf{no harder} than CDH.
+			      \item CDH is, in turn, no harder than DLP.
 		      \end{itemize}
 		\item \textbf{Surprising fact}: DDH is \textbf{not hard} in certain groups!
 		      \begin{itemize}
@@ -1093,7 +1093,7 @@
 			      \item Cramer-Shoup cryptosystem.
 			      \item Various authenticated key exchange protocols.
 		      \end{itemize}
-		\item \textbf{Real-world impact}: Even though DDH is ``weaker'' than CDH, it's one of the most studied and used assumptions.
+		\item \textbf{Real-world impact}: Even though DDH is a \textbf{stronger assumption} than CDH, it's one of the most studied and used assumptions.
 		      \begin{itemize}
 			      \item Provides stronger security guarantees for applications.
 			      \item Enables more sophisticated cryptographic constructions.
@@ -1174,7 +1174,7 @@
 				      \end{itemize}
 				\item \textbf{Ongoing communication}: Uses Double Ratchet
 				      \begin{itemize}
-					      \item New DH key exchange for every message!
+					      \item New DH key exchange with every reply!
 					      \item Provides ``forward secrecy'' and ``post-compromise security''.
 					      \item If your phone gets compromised today, yesterday's messages remain secure.
 					      \item If your phone recovers from compromise, tomorrow's messages are secure again.
@@ -1182,7 +1182,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.3\textwidth}
-			\imagewithcaption{signal.jpg}{Signal uses DH key exchange dozens, hundreds of times per conversation.}
+			\imagewithcaption{signal.jpg}{Signal performs dozens or even hundreds of DH key exchanges per conversation.}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1217,12 +1217,12 @@
 		\item \textbf{Why this is bad}:
 		      \begin{itemize}
 			      \item 512-bit discrete logarithm is solvable with modest resources
-			      \item Passive eavesdropper can decrypt connections after the fact
+			      \item A passive eavesdropper can decrypt connections after the fact
 			      \item No active attack needed—just record and decrypt later!
 		      \end{itemize}
 		\item \textbf{Real-world proof}: Researchers decrypted test connections to www.fbi.gov
 		      \begin{itemize}
-			      \item FBI website used OpenSSL's default 512-bit group until April 2015
+			      \item The FBI website used OpenSSL's default 512-bit group until April 2015
 			      \item Researchers had precomputed the discrete log table for this group
 			      \item Complete compromise of ``secure'' government communications!
 		      \end{itemize}
@@ -1238,13 +1238,13 @@
 	\begin{itemize}[<+->]
 		\item Not all servers use ``safe'' primes where $(p-1)/2$ is also prime
 		      \begin{itemize}
-			      \item 4,800 out of 70,000 primes were not safe
-			      \item If $p-1$ has small factors, the group has weak subgroups
-			      \item \textbf{Note}: Even with non-safe primes, proper generator choice can maintain security
+			      \item 4,800 out of 70,000 primes were not safe.
+			      \item If $p-1$ has small factors, the group has weak subgroups.
+			      \item \textbf{Note}: Even with non-safe primes, proper generator choice can maintain security.
 		      \end{itemize}
 		\item Non-safe primes used with incorrectly chosen $g$:
 		      \begin{itemize}
-			      \item Servers use short exponents (160-256 bits) for ``efficiency''
+			      \item Servers use short exponents (160--256 bits) for ``efficiency''
 			      \item \textbf{AND} generator $g$ generates a small subgroup
 			      \item If $g$ generates the full group (order $p-1$), you're still secure!
 			      \item But many implementations chose $g$ poorly
@@ -1321,13 +1321,13 @@
 		Key exchange that verifies the identity of the parties involved, preventing man-in-the-middle attacks.
 	}
 	\begin{itemize}[<+->]
-		\item \textbf{Core idea}: Combine DH with authentication mechanisms
+		\item \textbf{Core idea}: Combine DH with authentication mechanisms.
 		\item \textbf{Common approaches}:
 		      \begin{itemize}
 			      \item \textbf{Digital signatures}: Sign the DH public values (TLS).
 			      \item \textbf{Pre-shared keys}: Use existing shared secrets (IPsec).
 			      \item \textbf{Certificates}: Use a trusted third party (Certificate Authority in HTTPS).
-			      \item \textbf{Password-based}: Derive authentication from passwords (SRP protocols).
+			      \item \textbf{Password-based}: Derive authentication from passwords (PAKE protocols like SRP).
 		      \end{itemize}
 		\item \textbf{Goal}: Ensure that Alice and Bob can verify they're really talking to each other.
 	\end{itemize}
@@ -1363,7 +1363,7 @@
 					      \item No pre-existing certificates.
 					      \item No trusted third parties.
 				      \end{itemize}
-				\item \textbf{Signal's solution}: Security numbers (fingerprints)
+				\item \textbf{Signal's solution}: Security numbers (fingerprints).
 				      \begin{itemize}
 					      \item Each conversation gets a unique 60-digit number.
 					      \item Derived from both parties' long-term identity keys.
@@ -1385,7 +1385,7 @@
 \begin{frame}{SSH: authenticated DH with host keys}
 	\textbf{How SSH prevents server impersonation:}
 	\begin{itemize}[<+->]
-		\item \textbf{First connection}: Server presents its ``host key'' along with DH public value
+		\item \textbf{First connection}: Server presents its ``host key'' along with its DH public value
 		      \begin{itemize}
 			      \item SSH shows you a fingerprint: \texttt{SHA256:ABC123\ldots}
 			      \item You're supposed to verify this out-of-band (but nobody does!)
@@ -1394,9 +1394,9 @@
 		      \begin{itemize}
 			      \item Stored in \texttt{\~{}/.ssh/known\_hosts}
 		      \end{itemize}
-		\item \textbf{Subsequent connections}: Client checks if host key matches
+		\item \textbf{Subsequent connections}: Client checks if the host key matches
 		      \begin{itemize}
-			      \item If different, gives you a heart attack: \texttt{WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!}
+			      \item If different, SSH gives you a heart attack: \texttt{WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!}
 			      \item If same: Connection proceeds normally
 		      \end{itemize}
 		\item \textbf{User authentication}: Usually with passwords or public keys
@@ -1430,7 +1430,7 @@
 	\vspace{0.5cm}
 	\begin{itemize}[<+->]
 		\item \textbf{Popular curves}: P-256, P-384, X25519, X448
-		\item \textbf{Same security}: Based on elliptic curve discrete logarithm problem
+		\item \textbf{Same security}: Based on the elliptic curve discrete logarithm problem
 		\item \textbf{Real-world adoption}: ECDH is now standard in TLS, Signal, etc.
 		\item \textbf{Performance matters}: Especially important for mobile devices and IoT
 	\end{itemize}
@@ -1450,10 +1450,10 @@
 		\item \textbf{Timeline concerns}:
 		      \begin{itemize}
 			      \item Large quantum computers don't exist yet.
-			      \item But adversaries might store encrypted data now, decrypt later.
+			      \item But adversaries might store encrypted data now and decrypt it later.
 			      \item ``Harvest now, decrypt later'' attacks.
 		      \end{itemize}
-		\item \textbf{Post-quantum key exchange}: New algorithms under development.
+		\item \textbf{Post-quantum key exchange}: New algorithms are being standardized and deployed.
 		      \begin{itemize}
 			      \item ML-KEM (based on lattice problems)
 			      \item SIDH/SIKE (based on isogenies, but recently broken!)
@@ -1533,10 +1533,10 @@
 			            \end{itemize}
 		      \end{itemize}
 		\item \textbf{Encryption}: $c = m^e \bmod n$ (anyone can do this)
-		\item \textbf{Decryption}: $m = c^d \bmod n$ (only private key holder can do this)
+		\item \textbf{Decryption}: $m = c^d \bmod n$ (only the private key holder can do this)
 	\end{enumerate}
 	\vspace{0.5cm}
-	\textbf{Security assumption}: Factoring $n$ back into $p$ and $q$ is computationally infeasible
+	\textbf{Security assumption}: Factoring $n$ back into $p$ and $q$ is computationally infeasible.
 \end{frame}
 
 \begin{frame}{RSA's dual functionality}
