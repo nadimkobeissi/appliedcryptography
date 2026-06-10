@@ -1,7 +1,7 @@
 \documentclass[aspectratio=169, lualatex, handout]{beamer}
 \makeatletter\def\input@path{{theme/}}\makeatother\usetheme{cipher}
 
-\title{Applied Cryptography - 1.6: Collision Resistant Hash Functions}
+\title{Applied Cryptography - 1.6: Collision-Resistant Hash Functions}
 \author{Nadim Kobeissi}
 \subject{An exploration of collision-resistant hash functions, their properties, attacks, defenses, and applications in modern cryptography.}
 \keywords{hash functions, collision resistance, SHA-256, MD5, SHA-1, birthday paradox, rainbow tables, salt, HMAC, password hashing, PBKDF2, Scrypt, random oracle model, length extension attacks, sponge construction}
@@ -53,7 +53,7 @@
 				\item \textbf{Preimage resistance}: given the output of a hash function,
 				      it is computationally infeasible to reconstruct the original input.
 				\item \textbf{Second preimage resistance}: given an input and an output,
-				      it's computationally infeasible to find another different input
+				      it's computationally infeasible to find a different input
 				      producing the same output.
 			\end{itemize}
 		\end{column}
@@ -248,9 +248,9 @@
 					      \item 50\%?
 					      \item 97\%?
 				      \end{itemize}
-				\item Many people guess around 15-20\%, but the actual probability is about 97\%!
+				\item Many people guess around 15--20\%, but the actual probability is about 97\%!
 				\item This is counterintuitive because \textbf{we're not looking for a specific birthday - we're looking for \textit{any} match among all possible pairs}.
-				\item With 50 students, we have $\binom{50}{2} = 1,225$ possible pairs to check!\footnote{$\binom{50}{2}$ is a binomial coefficient. It means: \textit{``how many ways can I choose two different items from a set of 50?''}}
+				\item With 50 students, we have $\binom{50}{2} = 1{,}225$ possible pairs to check!\footnote{$\binom{50}{2}$ is a binomial coefficient. It means: \textit{``how many ways can I choose two different items from a set of 50?''}}
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -258,12 +258,12 @@
 
 \begin{frame}{Birthday paradox}
 	\begin{itemize}
-		\item With just 23 people, probability exceeds 50\%
+		\item With just 23 people, the probability exceeds 50\%
 		\item Formula for $n$ people:
 		      \begin{align*}
 			      P = 1 - \frac{365!}{(365-n)! \cdot 365^n}
 		      \end{align*}
-		\item Implication: Finding collisions in a space of size $N$ happens with roughly $\sqrt{N}$ samples.
+		\item Implication: Finding a collision in a space of size $N$ takes roughly $\sqrt{N}$ samples.
 		\item \textbf{This is why many cryptographic systems need large output spaces!}
 	\end{itemize}
 \end{frame}
@@ -273,8 +273,8 @@
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
 				\item Many cryptographic algorithms fail if two executions sample the same random value.
-				\item General question: If we take $q$ independent uniform samples from a set of $N$ items, what's the probability some value is chosen more than once?
-				\item This probability is called $\func{birthday}{q,N}$
+				\item General question: If we take $q$ independent uniform samples from a set of $N$ items, what's the probability that some value is chosen more than once?
+				\item This probability is called $\func{birthday}{q,N}$.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -283,8 +283,8 @@
 			\end{align*}
 			\begin{itemize}
 				\item Surprisingly high probability!
-				\item With $q \approx 1.2\sqrt{N}$, probability $\approx 0.5$
-				\item For birthdays: only need 23 people for $>50\%$ chance
+				\item With $q \approx 1.2\sqrt{N}$, the probability is $\approx 0.5$
+				\item For birthdays: we only need 23 people for a $>50\%$ chance
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -378,7 +378,7 @@
 			      \item Ways attackers try to find collisions.
 		      \end{itemize}
 		\item Then we'll discuss countermeasures like salting.
-		\item We'll then show additional attacks on hash functions, and discuss their practical evolution.
+		\item Finally, we'll show additional attacks on hash functions and discuss their practical evolution.
 	\end{itemize}
 \end{frame}
 
@@ -475,7 +475,7 @@
 
 \begin{frame}{Length extension attacks}{SHA-1 and SHA-2 vulnerability}
 	\definitionbox{Length Extension Attack}{
-		A \textbf{length extension attack} allows an attacker who knows $H(M)$ to calculate $H(M \| P)$ for some padding $P$ without knowing $M$ itself.
+		A \textbf{length extension attack} allows an attacker who knows $H(M)$ to calculate $H(M \| P \| X)$ for the padding $P$ and any attacker-chosen $X$, without knowing $M$ itself.
 	}
 	\begin{itemize}
 		\item Affects hash functions built using the Merkle-Damg\aa rd construction:
@@ -511,12 +511,12 @@
 			\begin{itemize}
 				\item Key components:
 				      \begin{itemize}
-					      \item Message is padded to a multiple of block size.
-					      \item Split into fixed-size blocks.
-					      \item Processes blocks sequentially through a compression function.
-					      \item Each step combines previous state with current block.\footnote{Interactive visualization: \url{https://sha256algorithm.com}}
+					      \item The message is padded to a multiple of the block size.
+					      \item It is then split into fixed-size blocks.
+					      \item Blocks are processed sequentially through a compression function.
+					      \item Each step combines the previous state with the current block.\footnote{Interactive visualization: \url{https://sha256algorithm.com}}
 				      \end{itemize}
-				\item If compression function is collision-resistant, so is the hash function.
+				\item If the compression function is collision-resistant, so is the hash function.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -525,7 +525,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The Sponge construction}{SHA-3}
+\begin{frame}{The sponge construction}{SHA-3}
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}
 			\begin{itemize}
@@ -574,7 +574,7 @@
 
 				\vspace{0.3cm}
 
-				\textcolor{cipherprimary}{\textbf{Key:} \small Without knowing the full state, attacker cannot continue hashing!}
+				\textcolor{cipherprimary}{\textbf{Key:} \small Without knowing the full state, an attacker cannot continue hashing!}
 			\end{tcolorbox}
 		\end{column}
 	\end{columns}
@@ -585,10 +585,10 @@
 		\textbf{HMAC} (Hash-based Message Authentication Code) is a specific construction for calculating a message authentication code (MAC) using a cryptographic hash function and a secret key.
 	}
 	\begin{align*}
-		\textsf{HMAC}(K, m) = H((K \oplus opad) \| H((K \oplus ipad) \| m))
+		\textsf{HMAC}(K, m) = H((K \oplus \mathsf{opad}) \| H((K \oplus \mathsf{ipad}) \| m))
 	\end{align*}
 	\begin{itemize}
-		\item $opad$ and $ipad$ are fixed padding values.
+		\item $\mathsf{opad}$ and $\mathsf{ipad}$ are fixed padding values.
 		\item This nested construction defeats length extension attacks.
 		\item Widely used in TLS, IPsec, and other security protocols.
 		\item Provides both integrity and authentication.
@@ -617,7 +617,7 @@
 			\begin{itemize}
 				\item In 2008, researchers created a rogue CA certificate using MD5 collisions.
 				\item Exploited weaknesses in how certificates were issued by a legitimate CA.
-				\item By predicting serial numbers and timestamps, they crafted a malicious certificate with the same MD5 hash.
+				\item By predicting serial numbers and timestamps, they crafted a malicious certificate with the same MD5 hash as a legitimate one.
 				\item Created a fake Certificate Authority that browsers would trust!
 				\item Demonstrated at the 25th Chaos Communication Congress.
 				\item Led to MD5 being rapidly phased out for digital signatures.
@@ -683,13 +683,13 @@
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}
 			\begin{itemize}
-				\item Server simply stores exact passwords
+				\item The server simply stores exact passwords.
 				\item Password verification is trivial:
 				      \begin{itemize}
 					      \item User enters password $P'$
 					      \item Server checks if $P' \stackrel{?}{=} P$
 				      \end{itemize}
-				\item If server is compromised, attacker immediately learns all passwords.
+				\item If the server is compromised, the attacker immediately learns all passwords.
 				\item Users often reuse passwords across sites, compounding the damage.
 			\end{itemize}
 		\end{column}
@@ -762,7 +762,7 @@
 				\item On login, server checks if $H(P') \stackrel{?}{=} h$.
 				\item Advantages over cleartext:
 				      \begin{itemize}
-					      \item Attacker doesn't immediately get passwords.
+					      \item The attacker doesn't immediately get passwords.
 					      \item Must spend effort guessing and hashing.
 				      \end{itemize}
 				\item Problems:
@@ -884,9 +884,9 @@
 		\item Simple approach: Iterate the hash function thousands of times.
 		      \begin{itemize}
 			      \item $H(S \| H(S \| \ldots H(S \| P)\ldots))$ with many iterations.
-			      \item \textbf{Obsolete examples}: PBKDF2.
-			      \item \textbf{Modern examples}: Argon2, Scrypt.
+			      \item \textbf{Example}: PBKDF2 (now considered obsolete).
 		      \end{itemize}
+		\item \textbf{Modern approach}: Memory-hard functions like Argon2 and Scrypt.
 	\end{itemize}
 \end{frame}
 
@@ -910,12 +910,12 @@
 			\begin{tcolorbox}[colback=black!5!white,colframe=ciphergray]
 				\small
 				\begin{align*}
-					U_1 & = PRF(Password, Salt \| Int(1))        \\
-					U_2 & = PRF(Password, U_1)                   \\
-					U_3 & = PRF(Password, U_2)                   \\
-					\vdots                                       \\
-					U_c & = PRF(Password, U_{c-1})               \\
-					T_1 & = U_1 \oplus U_2 \oplus \cdots \oplus U_c \\
+					U_1 & = \mathsf{PRF}(\mathsf{Password}, \mathsf{Salt} \| \mathsf{Int}(1)) \\
+					U_2 & = \mathsf{PRF}(\mathsf{Password}, U_1)                              \\
+					U_3 & = \mathsf{PRF}(\mathsf{Password}, U_2)                              \\
+					\vdots                                                                    \\
+					U_c & = \mathsf{PRF}(\mathsf{Password}, U_{c-1})                          \\
+					T_1 & = U_1 \oplus U_2 \oplus \cdots \oplus U_c
 				\end{align*}
 			\end{tcolorbox}
 		\end{column}
@@ -969,7 +969,7 @@
 		      \begin{itemize}
 			      \item \textbf{PBKDF2}: Initial and final mixing of password and salt.
 			      \item \textbf{ROMix}: Core memory-hard function.
-			      \item \textbf{BlockMix}: Based on Salsa20/8 core function.
+			      \item \textbf{BlockMix}: Based on the Salsa20/8 core function.
 		      \end{itemize}
 		\item \textbf{Parameters:}
 		      \begin{itemize}
@@ -995,7 +995,7 @@
 					      \item GPUs/ASICs have limited memory per processing unit.
 					      \item Memory is expensive and scales poorly on specialized hardware.
 					      \item Time-memory tradeoffs are possible but highly unfavorable.
-					      \item Using less memory makes computation exponentially slower.
+					      \item Using less memory makes computation drastically slower.
 				      \end{itemize}
 				\item Even with custom hardware, attackers face similar costs to defenders.
 				\item Proven to be maximally memory-hard!\footnote{\url{https://appliedcryptography.page/paper/\#scrypt-memory}}
@@ -1061,7 +1061,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}
 			\begin{itemize}
-				\item \textbf{Assimilation Bridge}: Integrate CPUs, FPGAs, and embedded devices.
+				\item \textbf{Assimilation Bridge}: Integrates CPUs, FPGAs, and embedded devices.
 				\item \textbf{Multiple backend support}:
 				      \begin{itemize}
 					      \item HIP (AMD GPUs)
@@ -1132,7 +1132,7 @@
 		\item Consider modern memory-hard functions like Argon2 or Scrypt.
 		      \begin{itemize}
 			      \item Tune parameters based on your server capabilities.
-			      \item Aim for 0.5-1 second processing time per hash.
+			      \item Aim for 0.5--1 second processing time per hash.
 		      \end{itemize}
 		\item Keep your hashing mechanism current:
 		      \begin{itemize}
@@ -1170,7 +1170,7 @@
 
 \begin{frame}{Hash functions can't be truly pseudorandom}
 	\begin{itemize}
-		\item Any deterministic algorithm cannot produce truly random output.
+		\item No deterministic algorithm can produce truly random output.
 		\item Hash functions only statistically approximate pseudorandomness:
 		      \begin{itemize}
 			      \item They attempt to distribute outputs uniformly across their range,
@@ -1218,8 +1218,8 @@
 			\begin{itemize}
 				\item \textbf{Proving in the ROM:}
 				      \begin{enumerate}
-					      \item Replace hash function with random oracle
-					      \item Show adversary has negligible advantage.
+					      \item Replace the hash function with a random oracle.
+					      \item Show that the adversary has negligible advantage.
 					      \item Conclude the scheme is secure (assuming the hash function behaves like a random oracle).
 				      \end{enumerate}
 			\end{itemize}
@@ -1239,7 +1239,7 @@
 				\item \textbf{Artificial counterexamples exist}:
 				      \begin{itemize}
 					      \item Researchers have constructed schemes that are:
-					      \item Provably secure in the RO model, but,
+					      \item Provably secure in the RO model, but
 					      \item Provably insecure with any real hash function.\footnote{\url{https://appliedcryptography.page/paper/\#rom-methodology}}
 				      \end{itemize}
 			\end{itemize}
