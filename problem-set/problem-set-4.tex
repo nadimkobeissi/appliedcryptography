@@ -20,14 +20,14 @@
 
 	\begin{parts}
 		\part[7] \textbf{The Legacy Downgrade Scenario:}
-		You are the security engineer for a major e-commerce platform. Your security scan reveals that 15\% of your customers are still using browsers that support SSL 3.0 and TLS 1.0.
+		You are the security engineer for a major e-commerce platform. Your security scan reveals that 15\% of your customers are still using browsers that only support SSL 3.0 and TLS 1.0.
 		\begin{subparts}
 			\subpart Design a migration strategy that balances security and business requirements. How would you phase out support for vulnerable protocols without losing customers?
-			\subpart An attacker attempts a POODLE attack by forcing downgrades to SSL 3.0. Explain step-by-step how this attack works and why modern TLS versions prevent it.
+			\subpart An attacker attempts a POODLE attack by forcing downgrades to SSL 3.0. Explain step by step how this attack works and why modern TLS versions prevent it.
 		\end{subparts}
 
 		\part[8] \textbf{Certificate Authority Compromise:}
-		A major Certificate Authority has been compromised, similar to the DigiNotar incident. The attacker has issued valid certificates for your company's domains.
+		A major certificate authority has been compromised, similar to the DigiNotar incident. The attacker has issued valid certificates for your company's domains.
 		\begin{subparts}
 			\subpart Describe the immediate steps you would take upon discovering this compromise. Consider both technical measures and communication strategies.
 			\subpart Design a defense-in-depth strategy using Certificate Transparency, HPKP (HTTP Public Key Pinning), and other mechanisms to prevent future CA-related attacks.
@@ -40,7 +40,7 @@
 		\part[5] \textbf{Forward Secrecy vs Performance:}
 		You're designing a high-traffic API service that needs to handle millions of TLS connections per day.
 		\begin{subparts}
-			\subpart Compare the performance implications of TLS 1.2's two-round-trip handshake versus TLS 1.3's single round-trip design. Quantify the latency savings for different geographic scenarios.
+			\subpart Compare the performance implications of TLS 1.2's two-round-trip handshake versus TLS 1.3's single-round-trip design. Quantify the latency savings for different geographic scenarios.
 			\subpart Your infrastructure team wants to use RSA key exchange for ``simplicity.'' Explain why ephemeral Diffie-Hellman is crucial for forward secrecy, using concrete attack scenarios.
 		\end{subparts}
 
@@ -48,7 +48,7 @@
 		Your organization's security team demands the ability to inspect TLS traffic for data loss prevention and malware detection.
 		\begin{subparts}
 			\subpart TLS 1.3's encrypted handshake prevents passive monitoring that was possible with TLS 1.2. Compare different approaches for enterprise TLS inspection (proxy with custom CA, TLS interception devices, endpoint agents). What are the security implications of each?
-			\subpart Design a solution that balances enterprise security requirements with user privacy. Consider split-tunneling, certificate pinning exceptions, and audit logging.
+			\subpart Design a solution that balances enterprise security requirements with user privacy. Consider split tunneling, certificate pinning exceptions, and audit logging.
 		\end{subparts}
 	\end{parts}
 \end{questions}
@@ -69,7 +69,7 @@
 		Despite RC4's prohibition in TLS, you discover a proprietary VPN protocol still using RC4 ``with modifications.''
 		\begin{subparts}
 			\subpart The developers claim they ``fixed'' RC4 by discarding the first 3072 bytes of keystream. Analyze whether this prevents the known biases and attacks.
-			\subpart Compare RC4's failure modes to modern stream ciphers like ChaCha20. What design principles make ChaCha20 resistant to the attacks that broke RC4?
+			\subpart Compare RC4's failure modes to those of modern stream ciphers like ChaCha20. What design principles make ChaCha20 resistant to the attacks that broke RC4?
 		\end{subparts}
 	\end{parts}
 \end{questions}
@@ -83,12 +83,12 @@
 		\part[5] \textbf{PGP vs Signal Design Philosophy:}
 		You're consulting for a government agency that needs end-to-end encrypted communications. They're debating between a PGP-based solution and a Signal-based approach.
 		\begin{subparts}
-			\subpart Compare the threat models of PGP and Signal. Which assumptions does each make about user behavior, key management, and trust establishment?
+			\subpart Compare the threat models of PGP and Signal. What assumptions does each make about user behavior, key management, and trust establishment?
 			\subpart Analyze the usability trade-offs: PGP's explicit key management versus Signal's automatic key exchange. Use specific scenarios to illustrate when each approach fails.
 		\end{subparts}
 
 		\part[5] \textbf{Signal Under Hostile Control:}
-		Signal has been taken over by a new President, Mischievous Whistletaker, whose intentions are unclear. You're advising journalists and activists who depend on Signal for their safety.
+		Signal has been taken over by a new president, Mischievous Whistletaker, whose intentions are unclear. You're advising journalists and activists who depend on Signal for their safety.
 		\begin{subparts}
 			\subpart Analyze which components of Signal could be compromised without breaking end-to-end encryption. Consider: metadata collection, client updates, key directory manipulation, and sealed sender weaknesses. How would users detect each type of compromise?
 			\subpart Evaluate the risk profile for different user groups (casual users, journalists, activists) if Whistletaker implements subtle backdoors. What alternative architectures or protocols would provide better resistance to operator compromise?
@@ -133,7 +133,7 @@
 		Both parties compute $K = g^{xy}$ as the shared key.
 
 		\part[7] \textbf{Identity Binding and Forward Secrecy:}
-		The following protocol attempts to provide authenticated key exchange. Identify whether it is vulnerable to identity misbinding, key compromise impersonation (KCI), replay attacks, or lack perfect forward secrecy.
+		The following protocol attempts to provide authenticated key exchange. Determine whether it is vulnerable to identity misbinding, key compromise impersonation (KCI), or replay attacks, and whether it lacks perfect forward secrecy.
 
 		\textbf{Protocol C:}
 		\begin{center}
@@ -145,7 +145,7 @@
 				\draw[->] (0.5,-2) -- (7.5,-2) node[midway,above] {$\func{enc}{g^{ya}, \func{sign}{A, (g^y, g^x)}}$};
 			\end{tikzpicture}
 		\end{center}
-		Where $a$ is $A$'s long-term private key, $b$ is $B$'s long-term private key, and the session key is $K = g^{xy}$.
+		Here, $a$ is $A$'s long-term private key, $b$ is $B$'s long-term private key, and the session key is $K = g^{xy}$.
 
 		\part[13] \textbf{Broken Ratcheting Protocols:}
 		The following two ratcheting protocols are used in messaging applications. Both contain subtle flaws that compromise their security properties. For each protocol, identify the vulnerabilities and explain their impact on forward secrecy, backward secrecy (post-compromise security), and message authentication.
@@ -173,7 +173,7 @@
 			\item DH ratchet on every message:
 			      \begin{itemize}
 				      \item Sender generates new ephemeral key $e_i$
-				      \item Shared secret: $ss = g^{e_i \cdot b_{current}}$
+				      \item Shared secret: $ss = g^{e_i \cdot b}$
 				      \item Updates: $CK^s_0 = \func{kdf}{ss, \text{``chain''}}$
 				      \item Message key: $MK = \func{kdf}{CK^s_i, \text{``message''}}$
 			      \end{itemize}
@@ -197,7 +197,7 @@
 		\begin{parts}
 			\part \textbf{Formal Verification Impact}: Analyze how ProVerif, \fstar, and other formal methods influenced TLS 1.3's design. Compare sections of the protocol that were formally verified versus those that weren't. What bugs were caught during design versus after deployment?
 			\part \textbf{The RC4 Retrospective}: Create a detailed timeline of RC4's cryptanalysis from 1994 to 2015. For each major attack, explain: the mathematical insight, the gap between theory and practice, and the community's response. What lessons does RC4 teach about cipher design and deprecation?
-			\part \textbf{Messaging Protocol Convergence}: Compare the security properties achieved by Signal, MLS, and the latest WhatsApp protocols. Are we converging on an ``optimal'' design for secure messaging? What fundamental trade-offs remain unsolved?
+			\part \textbf{Messaging Protocol Convergence}: Compare the security properties achieved by Signal, MLS, and the latest WhatsApp protocols. Are we converging on an ``optimal'' design for secure messaging? What fundamental trade-offs remain unresolved?
 		\end{parts}
 		Your analysis should include: references to primary sources, concrete attack scenarios or security proofs, performance measurements or estimates, and actionable recommendations for protocol designers.
 	\end{questions}

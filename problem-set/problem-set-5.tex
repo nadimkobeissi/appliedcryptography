@@ -24,7 +24,7 @@
 		\begin{subparts}
 			\subpart Explain the ``mud puddle test'' and why it's fundamental to true E2EE systems. What are the implications for password recovery mechanisms?
 			\subpart Your CEO insists on having a ``password recovery'' feature. Design two different approaches that balance security with usability, clearly stating the security trade-offs of each.
-			\subpart Compare Apple's Advanced Data Protection approach versus a mandatory E2EE approach. Which would you recommend for the healthcare provider and why?
+			\subpart Compare Apple's Advanced Data Protection approach with a mandatory E2EE approach. Which would you recommend for the healthcare provider and why?
 		\end{subparts}
 
 		\part[8] \textbf{Multi-Device Key Management:}
@@ -58,8 +58,8 @@
 		You're analyzing MEGA's cryptographic design for vulnerabilities.
 		\begin{subparts}
 			\subpart MEGA uses AES-ECB to encrypt RSA private keys without integrity protection. Explain how this enables the RSA key recovery attack that works in just 2 login attempts.
-			\subpart The attack exploits RSA-CRT implementation. Describe how modifying the parameter $u' \neq u = q^{-1} \bmod p$ creates an oracle that leaks information about the prime factor $q$.
-			\subpart MEGA attempted to patch these vulnerabilities but introduced new ones. Explain why ad-hoc fixes to broken cryptographic designs are dangerous.
+			\subpart The attack exploits MEGA's RSA-CRT implementation. Describe how modifying the parameter $u' \neq u = q^{-1} \bmod p$ creates an oracle that leaks information about the prime factor $q$.
+			\subpart MEGA attempted to patch these vulnerabilities but introduced new ones. Explain why ad hoc fixes to broken cryptographic designs are dangerous.
 		\end{subparts}
 
 		\part[8] \textbf{Plaintext Recovery:}
@@ -76,7 +76,7 @@
 		\part[6] \textbf{Authentication Failures:}
 		Nextcloud's E2EE implementation has critical authentication flaws.
 		\begin{subparts}
-			\subpart Explain the ``Key Insertion Attack'' where the server can substitute metadata keys. Why doesn't RSA-OAEP provide authentication?
+			\subpart Explain the ``Key Insertion Attack,'' where the server can substitute metadata keys. Why doesn't RSA-OAEP provide authentication?
 			\subpart Describe the ``Ghost Key Attack'' involving missing bounds checking and propose fixes for both attacks.
 		\end{subparts}
 
@@ -100,7 +100,7 @@
 		\begin{subparts}
 			\subpart Explain WhatsApp's two-option approach: password-based recovery via HSM versus 64-digit user-managed keys. What are the security and usability trade-offs?
 			\subpart WhatsApp's specification is ambiguous about whether they use OPAQUE's export key or shared session key for $\mathtt{OPAQUE}_K$. Explain why using the shared session key would completely break the security model.
-			\subpart Compare WhatsApp's centralized HSM approach with Signal's SVR3 system that distributes trust across multiple enclaves. What are the advantages of Signal's approach?
+			\subpart Compare WhatsApp's centralized HSM approach with Signal's SVR3 system, which distributes trust across multiple enclaves. What are the advantages of Signal's approach?
 			\subpart The HSM enforces attempt limits to prevent brute-force attacks. Calculate how many attempts an attacker would need on average to crack a 6-digit PIN versus a 15-character password.
 		\end{subparts}
 	\end{parts}
@@ -148,9 +148,9 @@
 		\begin{itemize}
 			\item Password recovery using ``Hardware-Secured Recovery Module'' (the hardware is a drawer locked with a key).
 			\item ``Post-quantum key agreement'' using RSA-4096 with $e = 3$ and PKCS\#1 v1.5 padding.
-			\item File sharing implements ``Zero-Knowledge URLs'' by XORing the file key with a timestamp before base64 encoding it in the URL.
-			\item Keys protected by ``Distributed Storage Architecture'' where each key is split using Shamir's Secret Sharing with threshold k=1, n=1.
-			\item Authentication uses ``OPAQUE-Compatible Protocol'' which is actually just PBKDF2 with 1 iteration where the derived key is sent directly to the server over HTTPS for comparison.
+			\item File sharing implements ``Zero-Knowledge URLs'' by XORing the file key with a timestamp before base64-encoding it in the URL.
+			\item Keys protected by ``Distributed Storage Architecture'' where each key is split using Shamir's Secret Sharing with threshold $k=1$, $n=1$.
+			\item Authentication uses ``OPAQUE-Compatible Protocol,'' which is actually just PBKDF2 with 1 iteration where the derived key is sent directly to the server over HTTPS for comparison.
 			\item ``Perfect Forward Secrecy'' achieved by generating new AES keys for each file block using \texttt{Math.random()} seeded with the file's creation timestamp.
 			\item ``Authenticated Encryption'' using AES-CBC where the MAC is computed as SHA-1(encrypt(plaintext)).
 		\end{itemize}

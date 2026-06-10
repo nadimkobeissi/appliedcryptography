@@ -40,7 +40,7 @@
 		\part[6] Explain why receipt-freeness is naturally formulated as an equivalence property rather than a trace property.\footnote{Hint: Consider what distinguishes trace properties (examining individual executions) from equivalence properties (comparing multiple scenarios).} Then formulate receipt-freeness as an equivalence property in the symbolic model.\footnote{Hint: Think about what two processes should be indistinguishable to model this property.}
 		\part[6] The slides describe three levels of leakage models for implementation security:\footnote{\url{https://appliedcryptography.page/slides/\#2-5}}
 		\begin{itemize}
-			\item \textbf{Program counter (PC) model}: Leaks only control flow (which branches taken, loop iterations).
+			\item \textbf{Program counter (PC) model}: Leaks only control flow (which branches are taken, loop iterations).
 			\item \textbf{Constant-time model}: Leaks PC plus memory addresses accessed (but not values).
 			\item \textbf{Size-respecting model}: Leaks PC, memory addresses, and operand sizes.
 		\end{itemize}
@@ -58,7 +58,7 @@
 	You're analyzing a protocol that combines TLS 1.3 with a custom post-quantum key exchange mechanism.
 	\begin{parts}
 		\part[5] ProVerif's analysis time explodes when modeling protocols that generate many ephemeral keys. Explain why certain cryptographic patterns (like generating fresh keys for each message) are harder to analyze symbolically than others (like reusing long-term keys).
-		\part[5] To make ProVerif analysis terminate in a shorter time period, you may need to simplify the protocol model. Describe two specific simplifications you would make (e.g., bounding the number of sessions, abstracting the post-quantum KEM as a perfect encryption scheme, or modeling only a subset of TLS 1.3 features). For each simplification, explain what attacks it might miss.
+		\part[5] To make ProVerif analysis terminate in a reasonable amount of time, you may need to simplify the protocol model. Describe two specific simplifications you would make (e.g., bounding the number of sessions, abstracting the post-quantum KEM as a perfect encryption scheme, or modeling only a subset of TLS 1.3 features). For each simplification, explain what attacks it might miss.
 	\end{parts}
 \end{questions}
 
@@ -140,9 +140,9 @@ return SUCCESS;
 \begin{tcolorbox}[colframe=EarthBrown!30!white,colback=EarthBrown!5!white]
 	\section*{Bonus Question}
 	\begin{questions}
-		\bonusquestion[10] Allen Gumm, a rather sticky fellow who gets trapped by his own bubble gum-based weapons and constantly has to unstick himself from walls, has usurped power at a cryptography company. The company's products use formally verified components: \haclstar for cryptographic primitives and hand-written ProVerif models for protocol verification. Despite these verification efforts, Allen wants to subvert their security without detection.
+		\bonusquestion[10] Allen Gumm, a rather sticky fellow who gets trapped by his own bubble-gum-based weapons and constantly has to unstick himself from walls, has usurped power at a cryptography company. The company's products use formally verified components: \haclstar for cryptographic primitives and hand-written ProVerif models for protocol verification. Despite these verification efforts, Allen wants to subvert their security without detection.
 
-		Analyze which elements of the cryptography stack Allen Gumm could compromise that would bypass the formal verification guarantees:
+		Analyze which elements of the cryptography stack Allen Gumm could compromise to bypass the formal verification guarantees:
 		\begin{parts}
 			\part \textbf{Beyond the Verification Boundary:} Identify at least three components or interfaces that typically fall outside the formal verification scope outlined above but are critical for security. For each, explain how Allen could introduce vulnerabilities and why the verification wouldn't catch them.
 

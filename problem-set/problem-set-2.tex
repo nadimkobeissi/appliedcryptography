@@ -11,7 +11,7 @@
 \section*{Problem Set 2: Symmetric Cryptography}
 
 \begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
-	\textbf{Instructions:} This problem set covers topics in provable security from topics 1.4\footnote{\url{https://appliedcryptography.page/slides/\#1-4}}, 1.5\footnote{\url{https://appliedcryptography.page/slides/\#1-5}} and 1.6\footnote{\url{https://appliedcryptography.page/slides/\#1-6}} of the course. Submit your solutions as a neatly formatted PDF. You are encouraged to collaborate with classmates in studying the material, but your submitted solutions must be your own work. For proofs, clearly state your assumptions, steps, and conclusions.
+	\textbf{Instructions:} This problem set covers topics in provable security from topics 1.4\footnote{\url{https://appliedcryptography.page/slides/\#1-4}}, 1.5\footnote{\url{https://appliedcryptography.page/slides/\#1-5}}, and 1.6\footnote{\url{https://appliedcryptography.page/slides/\#1-6}} of the course. Submit your solutions as a neatly formatted PDF. You are encouraged to collaborate with classmates in studying the material, but your submitted solutions must be your own work. For proofs, clearly state your assumptions, steps, and conclusions.
 \end{tcolorbox}
 
 \section{Pseudorandomness}
@@ -25,13 +25,13 @@
 		\begin{align*}
 			H(S) = A \| B \| C \| D \text{ where } A \| B = G(S) \text{ and } C \| D = G(B)
 		\end{align*}
-		Determine whether $H$ is a secure PRG. If not, provide a distinguisher that can tell apart $H(S)$ from a truly random string with non-negligible advantage.
+		Determine whether $H$ is a secure PRG. If not, provide a distinguisher that can tell $H(S)$ apart from a truly random string with non-negligible advantage.
 	\end{parts}
 
 	\question[10] \textbf{Pseudorandom Functions and Permutations}
 
 	\begin{parts}
-		\part[5] Consider the following PRF construction: $F(K, X) = G(K) \oplus X$, where $G$ is a secure PRG. Is $F$ a secure PRF? If not, describe a distinguisher that can effectively tell $F$ apart from a random function.
+		\part[5] Consider the following PRF construction: $F(K, X) = G(K) \oplus X$, where $G$ is a secure PRG. Is $F$ a secure PRF? If not, describe a distinguisher that can tell $F$ apart from a random function with non-negligible advantage.
 
 		\part[5] Compare and contrast PRFs and PRPs:
 		\begin{subparts}
@@ -74,8 +74,8 @@
 
 		\part[5] For each of the following encryption schemes, determine whether it achieves CPA security. If not, provide a specific attack:
 		\begin{subparts}
-			\subpart $\textsf{Enc}(K, M) = (R, F(K, R) \oplus M)$ where $R \twoheadleftarrow \{0,1\}^{\lambda}$ and $F$ is a secure PRF.
-			\subpart $\textsf{Enc}(K, M) = (R, F(K, M) \oplus R)$ where $R \twoheadleftarrow \{0,1\}^{\lambda}$ and $F$ is a secure PRF.
+			\subpart $\textsf{Enc}(K, M) = (R, F(K, R) \oplus M)$ where $R \twoheadleftarrow \bits^{\lambda}$ and $F$ is a secure PRF.
+			\subpart $\textsf{Enc}(K, M) = (R, F(K, M) \oplus R)$ where $R \twoheadleftarrow \bits^{\lambda}$ and $F$ is a secure PRF.
 			\subpart AES in Electronic Codebook (ECB) mode.
 			\subpart AES in Counter (CTR) mode with a randomly chosen IV.
 		\end{subparts}
@@ -88,7 +88,7 @@
 		\begin{subparts}
 			\subpart Explain how the null-oracle attack works against CTR mode encryption and why it's devastating despite CTR mode being CPA-secure.
 			\subpart Describe a real-world scenario where a format oracle might be inadvertently exposed in a cryptographic system.
-			\subpart Calculate the approximate number of oracle queries needed to recover a 1 KB file using the null-oracle attack, and explain why this is practical for an attacker.
+			\subpart Calculate the approximate number of oracle queries needed to recover a 1KB file using the null-oracle attack, and explain why this is practical for an attacker.
 		\end{subparts}
 
 		\part[4] For the following encryption scheme constructions, determine whether each provides CCA security and/or authenticated encryption (AE). Justify your answers with brief explanations:
@@ -103,7 +103,7 @@
 		\begin{subparts}
 			\subpart Explain how AES-GCM combines CTR mode encryption with Galois field multiplication for authentication. What security advantages does this provide over using separate encryption and MAC algorithms?
 			\subpart Describe the critical security implications of nonce reuse in AES-GCM. What specific vulnerabilities arise when the same nonce is used for multiple messages?
-			\subpart AES-GCM is sometimes implemented with different tag lengths. Analyze the security tradeoffs when using 128-bit tags versus 64-bit or 32-bit tags.
+			\subpart AES-GCM is sometimes implemented with different tag lengths. Analyze the security trade-offs when using 128-bit tags versus 64-bit or 32-bit tags.
 			\subpart Aside from nonce reuse, what is an unexpected vulnerability in AES-GCM that developers and engineers might not be aware of, but that might significantly impact the security of their software?
 		\end{subparts}
 	\end{parts}
@@ -117,14 +117,14 @@
 		\part[5] Collision resistance:
 		\begin{subparts}
 			\subpart Explain why collisions must exist in any hash function that maps arbitrary-length inputs to fixed-length outputs.
-			\subpart Using the birthday paradox, calculate approximately how many hashes must be computed to find a collision with 50\% probability in a 256-bit secure hash function.
+			\subpart Using the birthday paradox, calculate approximately how many hashes must be computed to find a collision with 50\% probability in a secure 256-bit hash function.
 			\subpart Describe a practical attack scenario where finding hash collisions would compromise a security system.
 		\end{subparts}
 
 		\part[5] Hash function construction:
 		\begin{subparts}
-			\subpart Compare and contrast the Merkle-Damg\aa rd construction (used in SHA-2) and the Sponge construction (used in SHA-3).
-			\subpart Explain how length extension attacks work against Merkle-Damg\aa rd hash functions and why the Sponge construction is resistant to these attacks.
+			\subpart Compare and contrast the Merkle-Damg\aa rd construction (used in SHA-2) and the sponge construction (used in SHA-3).
+			\subpart Explain how length extension attacks work against Merkle-Damg\aa rd hash functions and why the sponge construction is resistant to these attacks.
 			\subpart Describe the HMAC construction and explain how it protects against length extension attacks.
 		\end{subparts}
 
@@ -157,8 +157,8 @@
 
 		\part[5] Specialized password hashing functions:
 		\begin{subparts}
-			\subpart Explain why memory-hard functions like Scrypt provide better protection against specialized hardware attacks compared to PBKDF2.
-			\subpart Describe how each of Scrypt's parameters (N, r, p) affect its security and performance.
+			\subpart Explain why memory-hard functions like Scrypt provide better protection against specialized hardware attacks than PBKDF2.
+			\subpart Describe how each of Scrypt's parameters ($N$, $r$, $p$) affects its security and performance.
 			\subpart Compare the relative speeds of SHA-256, PBKDF2, and Scrypt for password hashing, and explain the security implications of these speed differences.
 		\end{subparts}
 	\end{parts}
@@ -187,7 +187,7 @@
 		\part For AES-GCM specifically:
 		\begin{itemize}
 			\item Explain the security impact of nonce reuse in AES-GCM compared to nonce reuse in CTR mode.
-			\item Discuss the performance tradeoffs of AES-GCM compared to using separate encryption (CTR mode) and authentication (HMAC).
+			\item Discuss the performance trade-offs of AES-GCM compared to using separate encryption (CTR mode) and authentication (HMAC).
 			\item Explain how AES-GCM's authenticated encryption properties protect against attacks that would succeed against CBC or CTR modes.
 		\end{itemize}
 	\end{parts}

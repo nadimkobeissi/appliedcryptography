@@ -27,7 +27,7 @@
 		\end{subparts}
 
 		\part[5] \textbf{The Weak DH Parameters Problem:}
-		A security researcher discovers that a popular cryptographic library has been generating Diffie-Hellman parameters where the prime $p$ satisfies $p-1$ having many small factors, making 75\% of generated groups vulnerable to Pohlig-Hellman attacks.
+		A security researcher discovers that a popular cryptographic library has been generating Diffie-Hellman parameters where the prime $p$ is such that $p-1$ has many small factors, making 75\% of generated groups vulnerable to Pohlig-Hellman attacks.
 		\begin{subparts}
 			\subpart Evaluate whether this discovery completely breaks Diffie-Hellman or only partially weakens it. Consider both the mathematical impact and practical deployment consequences.
 			\subpart Design a strategy for systems using this library: should they immediately regenerate all parameters, implement parameter validation, or pursue a different approach?
@@ -67,7 +67,7 @@
 		\end{subparts}
 
 		\part[5] \textbf{The Paranoid Whistleblower Scenario:}
-		A whistleblower needs to securely communicate with a journalist. They assume the government monitors all internet traffic, has compromised most Certificate Authorities, and can perform man-in-the-middle attacks on any connection.
+		A whistleblower needs to securely communicate with a journalist. They assume the government monitors all internet traffic, has compromised most certificate authorities, and can perform man-in-the-middle attacks on any connection.
 		\begin{subparts}
 			\subpart Design a key exchange protocol for this scenario using only methods available to ordinary civilians (no specialized hardware or pre-shared secrets).
 			\subpart Analyze what happens if the government can also compromise one of their devices after the key exchange. How can you provide forward secrecy?
@@ -116,7 +116,7 @@
 		\end{subparts}
 
 		\part[7] \textbf{The Ed25519 Validation Crisis:}
-		You discover that two widely-used Ed25519 libraries accept different signatures as valid for the same message and public key, breaking interoperability.
+		You discover that two widely used Ed25519 libraries accept different signatures as valid for the same message and public key, breaking interoperability.
 		\begin{subparts}
 			\subpart Investigate what causes this inconsistency: what validation steps do different implementations handle differently?
 			\subpart Analyze the security implications: could an attacker exploit these differences to create practical attacks?
@@ -137,7 +137,7 @@
 	Analyze this decision:
 	\begin{parts}
 		\part[5] Compare ECDSA and Ed25519 for each requirement above. Which algorithm better meets each criterion and why?
-		\part[5] Discuss the implications of signature malleability. How does this affect each algorithm and why might it matter for cryptocurrency applications?
+		\part[5] Discuss the implications of signature malleability. How does this affect each algorithm, and why might it matter for cryptocurrency applications?
 		\part[5] Make a final recommendation with justification, considering both technical and practical factors.
 	\end{parts}
 
@@ -172,7 +172,7 @@
 			\part \textbf{Hybrid Classical/Post-Quantum Systems:} Describe approaches for combining classical and post-quantum algorithms during the transition period. What are the benefits and challenges of hybrid systems?
 			\part \textbf{Migration Timeline and Challenges:} Analyze the practical challenges of migrating existing systems (browsers, mobile apps, IoT devices) from ECC to post-quantum cryptography. What factors determine the migration timeline?
 		\end{parts}
-		Your answer should include: current standardization status, performance comparisons with existing systems, deployment challenges, and recommendations for practitioners preparing for the post-quantum transition. Check the Optional Readings under the topic listing for the Post-Quantum Cryptography on the course website for helpful references!
+		Your answer should include: current standardization status, performance comparisons with existing systems, deployment challenges, and recommendations for practitioners preparing for the post-quantum transition. Check the Optional Readings under the topic listing for Post-Quantum Cryptography on the course website for helpful references!
 	\end{questions}
 \end{tcolorbox}
 

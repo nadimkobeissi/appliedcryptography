@@ -22,7 +22,7 @@
 		\part[10] \textbf{Protocol Analysis:}
 		You are implementing authentication for a secure messaging app using the Schnorr identification protocol. Alice has public key $A = g^a$ where $a$ is her secret.
 		\begin{subparts}
-			\subpart Walk through one complete execution of the Schnorr protocol. Show all computations when Alice uses $y = 42$, the verifier challenges with $c = 7$, and Alice's secret is $a = 13$ (use modulo 101 for simplicity). Verify that the protocol accepts.
+			\subpart Walk through one complete execution of the Schnorr protocol. Show all computations when Alice uses $y = 42$, the verifier challenges with $c = 7$, and Alice's secret is $a = 13$ (work modulo 101 for simplicity). Verify that the protocol accepts.
 			\subpart The protocol requires Alice to choose a fresh random $y$ for each execution. What attack becomes possible if Alice reuses the same $y$ for two different challenges $c_1$ and $c_2$? Show how to extract her secret.
 		\end{subparts}
 
@@ -37,10 +37,10 @@
 
 	\question[15] \textbf{Soundness via Extraction}
 
-	You intercept two accepting transcripts from the same prover with the same commitment but different challenges: $(Y = g^{100}, c = 15, r = 250)$ and $(Y = g^{100}, c' = 22, r' = 341)$. The public key is $A = g^{17}$.
+	You intercept two accepting transcripts from the same prover with the same commitment but different challenges: $(Y = g^{100}, c = 15, r = 355)$ and $(Y = g^{100}, c' = 22, r' = 474)$. The public key is $A = g^{17}$.
 	\begin{parts}
 		\part[10] Extract the secret $a$ from these two transcripts. Show your work.
-		\part[5] Explain why this extraction technique implies that a cheating prover has at most $\frac{1}{n}$ probability of fooling the verifier.
+		\part[5] Explain why this extraction technique implies that a cheating prover has at most $\frac{1}{n}$ probability of fooling the verifier, where $n$ is the number of possible challenges.
 	\end{parts}
 \end{questions}
 
@@ -87,7 +87,7 @@
 
 	\question[15] \textbf{Circuits and General-Purpose ZK}
 
-	You want to prove knowledge of a value $x$ such that SHA-256($x$) = $y$ for a given $y$.
+	You want to prove knowledge of a value $x$ such that $\textsf{SHA-256}(x) = y$ for a given $y$.
 	\begin{parts}
 		\part[7.5] Explain why creating a custom Sigma protocol for this statement would be extremely difficult. How does representing SHA-256 as a circuit make this proof feasible?
 		\part[7.5] Your application needs to prove ``I know $x$ such that $x^3 + x + 5 = 35$ in $\mathbb{Z}_{101}$.'' Would you use a custom protocol or circuits? Justify your choice.
@@ -101,7 +101,7 @@
 	\textbf{Zcash and Financial Privacy:}
 	Zcash uses zk-SNARKs to enable private transactions on a public blockchain.
 	\begin{parts}
-		\part[5] Explain what a shielded transaction proves without revealing. Be specific about what remains hidden and what becomes public.
+		\part[5] Explain what a shielded transaction proves without revealing its contents. Be specific about what remains hidden and what becomes public.
 		\part[5] Zcash evolved from Sprout to Sapling to Halo 2 (no trusted setup). Why does eliminating the trusted setup matter for adoption?
 	\end{parts}
 \end{questions}

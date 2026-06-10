@@ -22,8 +22,8 @@
 		\part[12] \textbf{Quantum Algorithms and Their Impact:}
 		You are advising a financial institution on their post-quantum migration strategy. They currently use Curve25519 for key exchange and AES-128 for symmetric encryption.
 		\begin{subparts}
-			\subpart Explain how Shor's algorithm would break their Curve25519 implementation. What is the fundamental mathematical operation that quantum computers can perform efficiently that classical computers cannot? Be specific about the polynomial vs. exponential time complexity difference.
-			\subpart Their security team argues that since Grover's algorithm only provides a quadratic speedup against AES-128, they don't need to upgrade their symmetric cryptography. Evaluate this claim. If a quantum computer capable of running Shor's algorithm existed, what would be the effective security level of AES-128 against Grover's algorithm? Should they upgrade to AES-256?
+			\subpart Explain how Shor's algorithm would break their Curve25519 implementation. What is the fundamental mathematical operation that quantum computers can perform efficiently but classical computers cannot? Be specific about the polynomial vs. exponential time complexity difference.
+			\subpart Their security team argues that since Grover's algorithm provides only a quadratic speedup against AES-128, they don't need to upgrade their symmetric cryptography. Evaluate this claim. If a quantum computer capable of running Shor's algorithm existed, what would be the effective security level of AES-128 against Grover's algorithm? Should they upgrade to AES-256?
 		\end{subparts}
 
 		\part[13] \textbf{Store-Now-Decrypt-Later Analysis:}
@@ -41,7 +41,7 @@
 		Recent news claims a breakthrough in quantum computing: ``Quantum computer factors RSA-2048!''
 		\begin{subparts}
 			\subpart Based on the course material\footnote{\url{https://appliedcryptography.page/paper/\#quantum-dog}} about current quantum factorization records and ``sleight-of-hand'' numbers, what questions would you ask to evaluate this claim? List at least three specific technical details you would investigate.
-			\subpart The paper reveals they factored a number where the two prime factors differ by 2. Explain why this is not a valid demonstration of breaking RSA-2048 and how it could be solved on classical hardware from the 1980s.
+			\subpart The paper reveals they factored a number where the two prime factors differ by 2. Explain why this is not a valid demonstration of breaking RSA-2048 and how such a number could be factored even on classical hardware from the 1980s.
 		\end{subparts}
 
 		\part[10] \textbf{Engineering Challenges:}
@@ -58,7 +58,7 @@
 		Current deployments of TLS 1.3 use X25519 + ML-KEM-768 hybrid key agreement.
 		\begin{subparts}
 			\subpart Explain why hybrid approaches are used rather than pure post-quantum. Consider both security and practical reasons. What specific attack scenarios does each component protect against?
-			\subpart Given that ML-KEM is faster than X25519 in operations per second, why do we still see the size difference (32 bytes vs 1KB+) as a significant deployment challenge?
+			\subpart Given that ML-KEM is faster than X25519 in operations per second, why do we still see the size difference (32 bytes vs. 1KB+) as a significant deployment challenge?
 		\end{subparts}
 
 		\part[10] \textbf{Deployment Challenges:}
@@ -73,10 +73,10 @@
 
 	\begin{parts}
 		\part[8] \textbf{Comparing PQ3 and Signal's Approach:}
-		Apple's PQ3 and Signal's PQXDH/Triple Ratchet take different approaches to post-quantum messaging. Compare how Apple's PQ3 and Signal's PQXDH handle the initial key agreement. While Signal's PQXDH is limited to adding post-quantum cryptography only to the setup phase, Apple's PQ3 integrates post-quantum cryptography into the ratcheting phase as well. What are the advantages of Apple's PQ3 integrating post-quantum cryptography into the ratcheting process? Why is sending new ML-KEM keys every ~50 messages problematic for unbalanced conversations?
+		Apple's PQ3 and Signal's PQXDH/Triple Ratchet take different approaches to post-quantum messaging. Compare how Apple's PQ3 and Signal's PQXDH handle the initial key agreement. While Signal's PQXDH adds post-quantum cryptography only to the setup phase, Apple's PQ3 integrates it into the ratcheting phase as well. What are the advantages of integrating post-quantum cryptography into the ratcheting process? Why is sending new ML-KEM keys approximately every 50 messages problematic for unbalanced conversations?
 
 		\part[7] \textbf{Engineering Post-Quantum Messaging:}
-		You're designing a post-quantum secure messaging app for a government agency. The agency requires post-compromise security against quantum adversaries. Compare the approaches of PQ3 (periodic KEM ratcheting) versus Triple Ratchet (parallel classical and PQ ratchets). Which provides better security properties and why? Consider the trade-off between security and bandwidth for bandwidth-constrained satellite links.
+		You're designing a post-quantum secure messaging app for a government agency. The agency requires post-compromise security against quantum adversaries. Compare the approaches of PQ3 (periodic KEM ratcheting) and Triple Ratchet (parallel classical and PQ ratchets). Which provides better security properties and why? Consider the trade-off between security and bandwidth for bandwidth-constrained satellite links.
 	\end{parts}
 \end{questions}
 
@@ -104,11 +104,11 @@
 \begin{tcolorbox}[colframe=EarthBrown!30!white,colback=EarthBrown!5!white]
 	\section*{Bonus Question}
 	\begin{questions}
-		\bonusquestion[10] Dr. Gaster, a rogue physicist who gained superintelligence after falling into his own creation, has decided to ``help'' the world transition to post-quantum cryptography by selectively breaking classical cryptosystems. However, their quantum computer is peculiar -- it only works on Tuesdays, can only run for 5 minutes before needing a 24-hour cooldown, and makes an extremely loud humming noise that can be heard from space. The International Space Station reports that Dr. Gaster's quantum computer produces a humming noise so loud it interferes with their meditation sessions and causes spontaneous dance parties among the astronauts. The frequency analysis reveals it's playing a continuous loop of Rick Astley's \textit{``Never Gonna Give You Up''} at 142 decibels, audible from low Earth orbit. NASA is concerned this constitutes the first documented case of quantum rickrolling and may violate several intergalactic noise ordinances.
+		\bonusquestion[10] Dr. Gaster, a rogue physicist who gained superintelligence after falling into his own creation, has decided to ``help'' the world transition to post-quantum cryptography by selectively breaking classical cryptosystems. However, his quantum computer is peculiar - it only works on Tuesdays, can only run for 5 minutes before needing a 24-hour cooldown, and makes an extremely loud humming noise that can be heard from space. The International Space Station reports that Dr. Gaster's quantum computer produces a humming noise so loud it interferes with their meditation sessions and causes spontaneous dance parties among the astronauts. The frequency analysis reveals it's playing a continuous loop of Rick Astley's \textit{``Never Gonna Give You Up''} at 142 decibels, audible from low Earth orbit. NASA is concerned this constitutes the first documented case of quantum rickrolling and may violate several intergalactic noise ordinances.
 
 		Analyze Dr. Gaster's impact on global cryptographic infrastructure:
 		\begin{parts}
-			\part[10] \textbf{Attack Strategy:} Given the constraints of Dr. Gaster's quantum computer, what would be the most effective targets? Consider the difference between attacking live TLS sessions versus stored encrypted data, and between breaking encryption versus signatures. How would the Tuesday-only operation affect which systems are vulnerable? Design a detection system that organizations could use to know when they're under quantum attack.
+			\part[10] \textbf{Attack Strategy:} Given the constraints of Dr. Gaster's quantum computer, what would be the most effective targets? Consider the difference between attacking live TLS sessions and stored encrypted data, and between breaking encryption and signatures. How would the Tuesday-only operation affect which systems are vulnerable? Design a detection system that organizations could use to know when they're under quantum attack.
 
 			\part[10] \textbf{Prioritizing Defense:} You're the CISO of a major tech company. Based on Google's threat model discussed in class, create a prioritized list of systems to migrate to post-quantum cryptography. For each system type (TLS, firmware signatures, authentication tokens, etc.), explain whether Dr. Gaster's attacks make it more or less urgent to migrate. How would you handle systems where post-quantum solutions have significant drawbacks?
 

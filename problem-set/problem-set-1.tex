@@ -11,7 +11,7 @@
 \section*{Problem Set 1: Provable Security Foundations}
 
 \begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
-	\textbf{Instructions:} This problem set covers the foundations of provable security from topics 1.1\footnote{\url{https://appliedcryptography.page/slides/\#1-1}}, 1.2\footnote{\url{https://appliedcryptography.page/slides/\#1-2}} and 1.3\footnote{\url{https://appliedcryptography.page/slides/\#1-3}} of the course. Submit your solutions as a neatly formatted PDF. You are encouraged to collaborate with classmates in studying the material, but your submitted solutions must be your own work. For proofs, clearly state your assumptions, steps, and conclusions.
+	\textbf{Instructions:} This problem set covers the foundations of provable security from topics 1.1\footnote{\url{https://appliedcryptography.page/slides/\#1-1}}, 1.2\footnote{\url{https://appliedcryptography.page/slides/\#1-2}}, and 1.3\footnote{\url{https://appliedcryptography.page/slides/\#1-3}} of the course. Submit your solutions as a neatly formatted PDF. You are encouraged to collaborate with classmates in studying the material, but your submitted solutions must be your own work. For proofs, clearly state your assumptions, steps, and conclusions.
 \end{tcolorbox}
 
 \section{Cryptographic Foundations}
@@ -25,7 +25,7 @@
 
 		\part[4] Compare and contrast symmetric and asymmetric cryptography:
 		\begin{subparts}
-			\subpart Explain the fundamental difference in their key management approach.
+			\subpart Explain the fundamental difference in their key management approaches.
 			\subpart For each type, identify which mathematical or computational assumptions their security typically relies on.
 			\subpart Describe a scenario where one would be clearly preferable to the other.
 		\end{subparts}
@@ -43,9 +43,9 @@
 			\subpart Does this scheme provide perfect secrecy? Justify your answer.
 		\end{subparts}
 
-		\part[4] Consider the following variant of a one-time pad operating on decimal digits (0-9):
+		\part[4] Consider the following variant of a one-time pad operating on decimal digits (0--9):
 
-		$\textsf{Enc}(K, M) = (K + M) \pmod{10}$ and $\textsf{Dec}(K, C) = (C - K) \pmod{10}$
+		$\textsf{Enc}(K, M) = (K + M) \bmod 10$ and $\textsf{Dec}(K, C) = (C - K) \bmod 10$
 
 		where $K, M, C \in \{0, 1, 2, \ldots, 9\}$.
 
@@ -251,7 +251,7 @@
 
 	\begin{itemize}
 		\item The system uses a hardware random number generator to produce one-time pads.
-		\item Each user receives a 1TB USB drive containing pre-generated pad data during account registration.
+		\item During account registration, each user receives a 1TB USB drive containing pre-generated pad data.
 		\item When sending a message, the app encrypts it with a portion of the pad, marks that portion as used, and sends the ciphertext.
 		\item When the user has used 80\% of their pad, the app automatically requests a new USB drive.
 	\end{itemize}
@@ -271,7 +271,7 @@
 		\item Each user generates a random 128-bit key $K$ during account creation.
 		\item To send a message $M$, the sender computes $C = K \oplus M$ and transmits $C$.
 		\item When two users want to communicate, they first exchange their keys through a ``top secret channel'' established by the company's server.
-		\item The company claims their protocol is ``as secure as one-time pad'' because they use the XOR operation.
+		\item The company claims their protocol is ``as secure as the one-time pad'' because they use the XOR operation.
 	\end{itemize}
 
 	Address the following aspects of this system:
