@@ -11,12 +11,12 @@
 \section*{Project B: Building a Secure Messenger}
 
 \subsection*{Overview}
-This project focuses on building a secure messaging application implementing end-to-end encryption. You'll work with cryptographic libraries to implement key exchange protocols, message encryption, and authentication mechanisms. The project covers essential features like perfect forward secrecy, deniability, and secure group messaging. You'll also explore practical challenges such as key verification, metadata protection, and secure key storage on devices. By the end of this project, you'll understand the cryptographic foundations behind modern secure messaging platforms like Signal.
+This project focuses on building a secure messaging application implementing end-to-end encryption. You'll work with cryptographic libraries to implement key exchange protocols, message encryption, and authentication mechanisms. The project covers essential features like forward secrecy, deniability, and authenticated key exchange. You'll also explore practical challenges such as key verification, metadata protection, and secure key storage on devices. By the end of this project, you'll understand the cryptographic foundations behind modern secure messaging platforms like Signal.
 
 \subsection*{Learning Objectives}
 After completing this project, you should be able to:
 \begin{itemize}
-	\item Apply cryptographic primitives such as public key cryptography and authenticated encryption.
+	\item Apply cryptographic primitives such as public-key cryptography and authenticated encryption.
 	\item Implement secure communication protocols with proper key exchange.
 	\item Design and build a security-critical networked application with proper threat modeling.
 	\item Evaluate the security properties of end-to-end encrypted communication systems.
@@ -61,10 +61,10 @@ Your secure messenger must implement the following core functionality:
 
 	\item \textbf{User Interface:}
 	      \begin{itemize}
-		      \item Create a simple CLI or GUI interface for interaction.
+		      \item Create a simple CLI or GUI for interaction.
 		      \item Implement basic operations: send messages, view conversations, and manage contacts.
 		      \item Include proper authentication and session management.
-		      \item Add timeout for automatic logout.
+		      \item Add a timeout for automatic logout.
 		      \item Include proper error handling without leaking sensitive information.
 	      \end{itemize}
 \end{enumerate}
@@ -154,16 +154,16 @@ Your project will be evaluated based on:
 \subsection*{Resources}
 \begin{itemize}
 	\item Course resources and materials on public-key cryptography and secure protocols.
-	\item Libraries: libsodium, OpenSSL, Signal Protocol libraries based on your language choice.
+	\item Libraries: libsodium, OpenSSL, or Signal Protocol libraries based on your language choice.
 	\item Research papers on secure messaging protocols (see course website).
-	\item Specifications for Signal Protocol, OTR, or Matrix.
+	\item Specifications for the Signal Protocol, OTR, or Matrix.
 \end{itemize}
 
 \subsection*{Submission Guidelines}
 \begin{itemize}
 	\item Submit your code as a ZIP archive or through a Git repository.
 	\item Include all documentation in PDF or Markdown format.
-	\item Presentations: Prepare a 10-minute presentation demonstrating your secure messenger.
+	\item Prepare a 10-minute presentation demonstrating your secure messenger.
 \end{itemize}
 
 \end{document}

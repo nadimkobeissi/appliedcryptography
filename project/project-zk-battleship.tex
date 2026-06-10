@@ -3,7 +3,7 @@
 
 \title{Applied Cryptography - Project D: Building a Zero-Knowledge Battleship Game}
 \author{Nadim Kobeissi}
-\subject{Design and implementation of a zero-knowledge proof-based battleship game using RISC Zero zkVM for verifiable gameplay without revealing sensitive game state.}
+\subject{Design and implementation of a zero-knowledge proof-based battleship game using the RISC Zero zkVM for verifiable gameplay without revealing sensitive game state.}
 \keywords{zero-knowledge proofs, zkVM, RISC Zero, cryptographic protocols, verifiable computation, battleship game, privacy-preserving gaming}
 
 \begin{document}
@@ -11,7 +11,7 @@
 \section*{Project D: Building a Zero-Knowledge Battleship Game}
 
 \subsection*{Overview}
-In this project, you will design and implement a zero-knowledge battleship game using RISC Zero, a zero-knowledge virtual machine (zkVM). This represents your first opportunity to apply zero-knowledge proofs to build a complete cryptographic protocol—one that allows players to validate their moves without revealing the entire game state. Zero-knowledge battleship demonstrates how players can validate that their guesses produced the correct result (hit vs. no hit) while learning nothing about the opponent's board except what is explicitly revealed through gameplay. By building this game, you'll gain practical experience with zero-knowledge proofs, zkVMs, and cryptographic protocol design.
+In this project, you will design and implement a zero-knowledge battleship game using RISC Zero, a zero-knowledge virtual machine (zkVM). This represents your first opportunity to apply zero-knowledge proofs to build a complete cryptographic protocol—one that allows players to prove the outcome of each move without revealing the underlying game state. Zero-knowledge battleship demonstrates how a player can verify that the opponent answered each guess truthfully (hit or miss) while learning nothing about the opponent's board except what is explicitly revealed through gameplay. By building this game, you'll gain practical experience with zero-knowledge proofs, zkVMs, and cryptographic protocol design.
 
 \subsection*{Learning Objectives}
 After completing this project, you should be able to:
@@ -58,7 +58,7 @@ Your zero-knowledge battleship game must implement the following core functional
 
 	\item \textbf{User Interface:}
 	      \begin{itemize}
-		      \item Create a simple CLI interface for gameplay.
+		      \item Create a simple CLI for gameplay.
 		      \item Display the game boards (with appropriate information hiding).
 		      \item Implement commands for making guesses and viewing game status.
 		      \item Include proper error handling without leaking sensitive information.
@@ -145,7 +145,6 @@ Your project will be evaluated based on:
 \begin{itemize}
 	\item Course resources and materials on zero-knowledge proofs.
 	\item RISC Zero documentation and examples.
-	\item Directory structure and README provided for the project.
 	\item Research papers on zero-knowledge applications (see course website).
 \end{itemize}
 
@@ -153,7 +152,7 @@ Your project will be evaluated based on:
 \begin{itemize}
 	\item Submit your code as a ZIP archive or through a Git repository.
 	\item Include all documentation in PDF or Markdown format.
-	\item Presentations: Prepare a 10-minute presentation demonstrating your zero-knowledge battleship game.
+	\item Prepare a 10-minute presentation demonstrating your zero-knowledge battleship game.
 \end{itemize}
 
 \end{document}

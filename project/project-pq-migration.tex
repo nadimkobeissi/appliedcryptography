@@ -3,7 +3,7 @@
 
 \title{Applied Cryptography - Project E: Post-Quantum Cryptography Migration}
 \author{Nadim Kobeissi}
-\subject{Project exploring practical migration strategies from classical to post-quantum cryptography using NIST standardized algorithms ML-KEM and ML-DSA.}
+\subject{Project exploring practical migration strategies from classical to post-quantum cryptography using NIST-standardized algorithms ML-KEM and ML-DSA.}
 \keywords{post-quantum cryptography, quantum-resistant algorithms, ML-KEM, Kyber, ML-DSA, Dilithium, hybrid cryptography, cryptographic migration, NIST PQC standards}
 
 \begin{document}
@@ -11,12 +11,12 @@
 \section*{Project E: Post-Quantum Cryptography Migration}
 
 \subsection*{Overview}
-In this project, you will explore the practical challenges of migrating existing systems to post-quantum cryptography. You'll work with NIST's standardized post-quantum algorithms, integrating ML-KEM (Kyber) for key encapsulation and ML-DSA (Dilithium) for digital signatures. This project guides you through hybrid approaches that combine classical and post-quantum algorithms, ensuring security against both current and future quantum threats. You will start by choosing a target protocol that you wish to devise a post-quantum migration strategy for. Then, you'll analyze performance impacts, message size increases, and integration challenges when replacing pre-quantum primitives (such as RSA or ECDH) with quantum-resistant alternatives. By completing this project, you'll gain practical experience in implementing post-quantum designs, developing migration strategies for existing systems, and evaluating the trade-offs between different post-quantum algorithm choices for various use cases.
+In this project, you will explore the practical challenges of migrating existing systems to post-quantum cryptography. You'll work with NIST's standardized post-quantum algorithms, integrating ML-KEM (Kyber) for key encapsulation and ML-DSA (Dilithium) for digital signatures. This project guides you through hybrid approaches that combine classical and post-quantum algorithms, ensuring security as long as either component remains unbroken. You will start by choosing a target protocol for which to devise a post-quantum migration strategy. Then, you'll analyze performance impacts, message size increases, and integration challenges when replacing pre-quantum primitives (such as RSA or ECDH) with quantum-resistant alternatives. By completing this project, you'll gain practical experience in implementing post-quantum designs, developing migration strategies for existing systems, and evaluating the trade-offs between different post-quantum algorithm choices for various use cases.
 
 \subsection*{Learning Objectives}
 After completing this project, you should be able to:
 \begin{itemize}
-	\item Integrate NIST standardized post-quantum algorithms (ML-KEM and ML-DSA) through the use of existing implementations and cryptographic libraries.
+	\item Integrate NIST-standardized post-quantum algorithms (ML-KEM and ML-DSA) using existing implementations and cryptographic libraries.
 	\item Design hybrid cryptographic schemes that provide security against both classical and quantum adversaries.
 	\item Analyze performance and compatibility trade-offs in post-quantum migration.
 	\item Develop practical migration strategies for transitioning existing systems to post-quantum security.
@@ -26,8 +26,8 @@ After completing this project, you should be able to:
 The advent of quantum computers poses a significant threat to current public-key cryptography. Post-quantum cryptography provides security against both classical and quantum adversaries:
 \begin{itemize}
 	\item ML-KEM (Kyber) provides quantum-resistant key encapsulation based on lattice problems.
-	\item ML-DSA (Dilithium) offers quantum-resistant digital signatures also based on lattice cryptography.
-	\item Hybrid approaches, such as X-Wing\footnote{Manuel Barbosa, Deirdre Connolly, Jo\~ao Diogo Duarte, Aaron Kaiser, Peter Schwabe, Karolin Varner and Baas Westerban, \href{https://appliedcryptography.page/paper/\#xwing-hybrid}{\textit{X-Wing: The Hybrid KEM You've Been Looking For}}, IACR Communications in Cryptology, 2024.} combine classical and post-quantum algorithms to hedge against implementation vulnerabilities.
+	\item ML-DSA (Dilithium) offers quantum-resistant digital signatures, also based on lattice cryptography.
+	\item Hybrid approaches, such as X-Wing\footnote{Manuel Barbosa, Deirdre Connolly, Jo\~ao Diogo Duarte, Aaron Kaiser, Peter Schwabe, Karolin Varner, and Bas Westerbaan, \href{https://appliedcryptography.page/paper/\#xwing-hybrid}{\textit{X-Wing: The Hybrid KEM You've Been Looking For}}, IACR Communications in Cryptology, 2024.} combine classical and post-quantum algorithms to hedge against implementation vulnerabilities.
 	\item Migration strategies must consider performance impacts, message size increases, and backward compatibility.
 \end{itemize}
 
@@ -37,7 +37,7 @@ Your post-quantum migration project must implement the following core functional
 \begin{enumerate}
 	\item \textbf{Protocol Selection and Analysis:}
 	      \begin{itemize}
-		      \item Choose a target protocol (e.g., TLS, SSH, VPN, or custom protocol) for migration.
+		      \item Choose a target protocol (e.g., TLS, SSH, VPN, or a custom protocol) for migration.
 		      \item Document the current cryptographic primitives used in the protocol.
 		      \item Analyze the protocol's security requirements and constraints.
 	      \end{itemize}
@@ -90,7 +90,7 @@ Implement the post-quantum algorithms:
 Develop a comprehensive migration strategy:
 \begin{itemize}
 	\item Protocol negotiation mechanisms for algorithm selection.
-	\item Backward compatibility with non-post-quantum implementations.
+	\item Backward compatibility with classical-only implementations.
 	\item Phased migration approach with risk mitigation.
 \end{itemize}
 
@@ -157,7 +157,7 @@ Your project will be evaluated based on:
 \begin{itemize}
 	\item Submit your code as a ZIP archive or through a Git repository.
 	\item Include all documentation in PDF or Markdown format.
-	\item Presentations: Prepare a 10-minute presentation demonstrating your post-quantum migration strategy and implementation.
+	\item Prepare a 10-minute presentation demonstrating your post-quantum migration strategy and implementation.
 \end{itemize}
 
 \end{document}

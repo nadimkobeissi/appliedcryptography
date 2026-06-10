@@ -11,14 +11,14 @@
 \section*{Project F: Private Set Intersection for Contact Discovery}
 
 \subsection*{Overview}
-In this project, you will tackle a fundamental privacy challenge in modern communication apps: how can users discover which of their contacts are using a service without revealing their entire address book? You'll build a privacy-preserving contact discovery system using Private Set Intersection (PSI), a cryptographic technique that allows two parties to find common elements in their sets without revealing non-matching items. Starting with the theoretical foundations of PSI protocols, you'll implement an Oblivious Pseudorandom Function (OPRF) based approach where the client can query whether specific contacts are registered while the server learns nothing about unsuccessful queries. The project guides you through designing secure wire protocols, implementing both server and client components, and addressing real-world security challenges such as preventing offline enumeration attacks through peppered hashing and implementing rate limiting to prevent abuse. You'll evaluate your system's performance with realistic address book sizes, exploring optimization techniques like batching and streaming to handle thousands of contacts efficiently. Advanced extensions include bandwidth optimization using probabilistic data structures like Bloom filters, adding authentication layers for enhanced security, and comparing your implementation against production systems used by Signal, WhatsApp, and other messaging platforms. By completing this project, you'll gain deep understanding of how cryptographic protocols can preserve privacy in everyday applications while maintaining usability and performance.
+In this project, you will tackle a fundamental privacy challenge in modern communication apps: how can users discover which of their contacts are using a service without revealing their entire address book? You'll build a privacy-preserving contact discovery system using Private Set Intersection (PSI), a cryptographic technique that allows two parties to find common elements in their sets without revealing non-matching items. Starting with the theoretical foundations of PSI protocols, you'll implement an approach based on an Oblivious Pseudorandom Function (OPRF), where the client can query whether specific contacts are registered while the server learns nothing about which contacts were queried. The project guides you through designing secure wire protocols, implementing both server and client components, and addressing real-world security challenges such as preventing offline enumeration attacks through peppered hashing and implementing rate limiting to deter abuse. You'll evaluate your system's performance with realistic address book sizes, exploring optimization techniques like batching and streaming to handle thousands of contacts efficiently. Advanced extensions include optimizing bandwidth using probabilistic data structures like Bloom filters, adding authentication layers for enhanced security, and comparing your implementation against production systems used by Signal, WhatsApp, and other messaging platforms. By completing this project, you'll gain a deep understanding of how cryptographic protocols can preserve privacy in everyday applications while maintaining usability and performance.
 
 \subsection*{Learning Objectives}
 After completing this project, you should be able to:
 \begin{itemize}
 	\item Implement Private Set Intersection protocols using Oblivious Pseudorandom Functions (OPRF).
 	\item Design and build secure wire protocols for privacy-preserving contact discovery.
-	\item Address real-world security challenges including enumeration attacks and rate limiting.
+	\item Address real-world threats such as enumeration attacks by applying peppered hashing and rate limiting.
 	\item Optimize PSI protocols for performance with large datasets using batching and streaming techniques.
 \end{itemize}
 
@@ -27,7 +27,7 @@ Private Set Intersection enables two parties to find common elements in their se
 \begin{itemize}
 	\item PSI allows users to discover which contacts use a service without revealing their entire address book.
 	\item OPRF-based PSI protocols provide efficient solutions where the client learns the intersection while the server learns nothing.
-	\item Peppered hashing prevents offline enumeration attacks by adding server-side secrets to contact hashes.
+	\item Peppered hashing prevents offline enumeration attacks by adding a server-side secret to contact hashes.
 	\item Production systems must balance privacy, performance, and practical constraints like bandwidth and latency.
 \end{itemize}
 
@@ -60,7 +60,7 @@ Your PSI contact discovery system must implement the following core functionalit
 	      \begin{itemize}
 		      \item Implement streaming protocols for large contact sets.
 		      \item Optimize bandwidth usage with compression or probabilistic data structures.
-		      \item Benchmark performance with realistic address book sizes (100-10,000 contacts).
+		      \item Benchmark performance with realistic address book sizes (100--10,000 contacts).
 		      \item Analyze trade-offs between privacy, performance, and bandwidth.
 	      \end{itemize}
 \end{enumerate}
@@ -91,7 +91,7 @@ Build the PSI protocol on top of your OPRF:
 Add crucial security features:
 \begin{itemize}
 	\item Implement peppered hashing with secure pepper management.
-	\item Design rate limiting mechanisms (per-user and global).
+	\item Design rate-limiting mechanisms (per-user and global).
 	\item Add authentication to prevent unauthorized queries.
 	\item Implement secure deletion for expired contact data.
 \end{itemize}
@@ -108,7 +108,7 @@ Optimize for real-world usage:
 \subsubsection*{Step 5: Evaluation and Comparison}
 Evaluate your implementation:
 \begin{itemize}
-	\item Benchmark with varying contact set sizes (100, 1000, 10000).
+	\item Benchmark with varying contact set sizes (100, 1,000, and 10,000).
 	\item Measure bandwidth consumption and round-trip times.
 	\item Compare against naive approaches and existing systems.
 	\item Analyze privacy guarantees under different threat models.
@@ -150,11 +150,18 @@ Your project will be evaluated based on:
 	\item Quality of code and documentation.
 \end{itemize}
 
+\subsection*{Resources}
+\begin{itemize}
+	\item Course resources and materials on oblivious pseudorandom functions and privacy-preserving protocols.
+	\item David Evans, Vladimir Kolesnikov, and Mike Rosulek, \href{https://appliedcryptography.page/paper/\#pragmatic-mpc}{\emph{A Pragmatic Introduction to Secure Multi-Party Computation}}, NOW Publishers, 2018.
+	\item Gabriel K. Gegenhuber, Philipp \'E. Frenzel, Maximilian G\"unther, Johanna Ullrich, and Aljosha Judmayer, \href{https://appliedcryptography.page/paper/\#whatsapp-enumeration}{\emph{Hey there! You are using WhatsApp: Enumerating Three Billion Accounts for Security and Privacy}}, University of Vienna, 2025.
+\end{itemize}
+
 \subsection*{Submission Guidelines}
 \begin{itemize}
 	\item Submit your code as a ZIP archive or through a Git repository.
 	\item Include all documentation in PDF or Markdown format.
-	\item Presentations: Prepare a 10-minute presentation demonstrating your PSI contact discovery system and its privacy properties.
+	\item Prepare a 10-minute presentation demonstrating your PSI contact discovery system and its privacy properties.
 \end{itemize}
 
 \end{document}
