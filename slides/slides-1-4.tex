@@ -42,7 +42,7 @@
 
 \begin{frame}{Idea: find a way to expand the key}
 	\begin{itemize}
-		\item Given a key $k_s$ of size $\left|k_s\right| < \left|m\right|$, find a way to obtain $\left|k_e\right| \geq \left|m\right|$
+		\item Given a key $k_s$ of size $\left|k_s\right| < \left|m\right|$, find a way to obtain a key $k_e$ where $\left|k_e\right| \geq \left|m\right|$.
 		\item In the real world, we have two kinds of symmetric encryption schemes:
 		      \begin{itemize}
 			      \item \textbf{Block ciphers}: AES, 3DES, etc.
@@ -52,7 +52,7 @@
 		      \begin{itemize}
 			      \item Start with a small key $k_s$ of a fixed size $\left|k_s\right| = \lambda$,
 			      \item Magically expand it to $k_e$ where $\left|k_e\right| \geq \left|m\right|$,
-			      \item $\func{enc}{K, M} = K \oplus M$
+			      \item $\func{enc}{k_e, M} = k_e \oplus M$
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -63,9 +63,9 @@
 		\item Its output distribution would need to be \textbf{uniform}, since that is a crucial property for the security of OTP.
 		\item Unfortunately, it's \textbf{not possible} to achieve both of these properties simultaneously.
 		      \begin{itemize}
-			      \item Suppose the expansion method is a deterministic function $G: \bits^n \rightarrow \bits^{n+\ell}$
+			      \item Suppose the expansion method is a deterministic function $G: \bits^n \rightarrow \bits^{n+\ell}$.
 			      \item Its outputs are $\ell$ bits longer than its inputs!
-			      \item There are $2^{n+\ell}$ strings of length $n+\ell$ but only (at most) $2^n$ possible outputs of $G$
+			      \item There are $2^{n+\ell}$ strings of length $n+\ell$ but only (at most) $2^n$ possible outputs of $G$.
 			      \item So the outputs of $G$ can never induce a uniform distribution.
 		      \end{itemize}
 	\end{itemize}
@@ -117,7 +117,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item We don't know how to make PRGs, or even if they exist.
+				\item We don't know how to make PRGs, or even whether they exist.
 				\item So we simply invent functions that we think act close enough to PRGs (when subjected to statistical and mathematical analysis).
 				\item The concept of \textbf{computational indistinguishability} with \textbf{negligible difference} is again useful here!
 			\end{itemize}
@@ -142,7 +142,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{One-time secrecy of a SKE}
+\begin{frame}{One-time secrecy of an SKE}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\definitionbox{One-time Secrecy for SKE}{
@@ -169,7 +169,7 @@
 			}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			An encryption scheme has one-time secrecy if its ciphertexts are uniformly distributed, when keys are sampled uniformly, kept secret, and used for only one encryption, and no matter how the plaintexts are chosen.
+			An encryption scheme has one-time secrecy if its ciphertexts are uniformly distributed when keys are sampled uniformly, kept secret, and used for only one encryption, no matter how the plaintexts are chosen.
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -221,7 +221,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item Assume that $G(S)$ is a secure PRG.
+				\item Assume that $G$ is a secure PRG.
 				\item Is \func{H}{S} secure?
 			\end{itemize}
 			\sssubroutine{H}{S}{
@@ -256,12 +256,12 @@
 	\begin{columns}[c]
 		\begin{column}{0.45\textwidth}
 			\begin{itemize}
-				\item<1-2> Assume that $G(S)$ is a secure PRG.
+				\item<1-2> Assume that $G$ is a secure PRG.
 				\item<1-2> Is \func{H}{S} secure?
 				\item<1-2> \textbf{No}:
 				\item<1-2> \prob{\prog{}\link\lib{H}{prg-real} \Rightarrow \texttt{true}} $ = 1$
 				\item<2-2> \prob{\prog{}\link\lib{H}{prg-rand} \Rightarrow \texttt{true}} $ = \frac{1}{2^{2\lambda}}$
-				\item<2-2> Difference certainly not negligible.
+				\item<2-2> This difference is certainly not negligible.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.55\textwidth}
@@ -292,8 +292,8 @@
 				\item Simple PRG that takes a seed and produces a keystream.
 				\item Basic operation:
 				      \begin{itemize}
-					      \item Initialize S-box with permutation of bytes 0-255.
-					      \item Use key to scramble the S-box.
+					      \item Initialize the S-box with a permutation of bytes 0--255.
+					      \item Use the key to scramble the S-box.
 					      \item Generate pseudorandom bytes iteratively.
 				      \end{itemize}
 				\item Several weaknesses found over time:
@@ -318,7 +318,7 @@
 		\begin{column}{0.55\textwidth}
 			\begin{itemize}
 				\item RC4 generates a pseudorandom stream of bytes used to encrypt data.
-				\item After key setup (which initializes array S), the algorithm produces keystream bytes:
+				\item After key setup (which initializes array S), the algorithm produces keystream bytes.
 				\item Each output byte requires simple operations:
 				      \begin{itemize}
 					      \item Array index calculations.
@@ -371,14 +371,14 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{PRG vs PRF: Key Differences}
+\begin{frame}{PRG versus PRF: Key Differences}
 	\begin{columns}[t]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
 				\item \textbf{PRG (Pseudorandom Generator)}:
 				      \begin{itemize}
-					      \item Takes short seed, produces longer output
-					      \item Generates entire output as a monolithic string
+					      \item Takes a short seed, produces a longer output.
+					      \item Generates the entire output as a monolithic string.
 					      \item $G: \bits^\lambda \rightarrow \bits^{\lambda+\ell}$
 				      \end{itemize}
 			\end{itemize}
@@ -387,23 +387,13 @@
 			\begin{itemize}
 				\item \textbf{PRF (Pseudorandom Function)}:
 				      \begin{itemize}
-					      \item Maps inputs to pseudorandom outputs
-					      \item Provides access to individual blocks of output
-					      \item Can generate output for any input on demand
+					      \item Maps inputs to pseudorandom outputs.
+					      \item Provides access to individual blocks of output.
+					      \item Can generate output for any input on demand.
 					      \item $F: \bits^\lambda \times \bits^n \rightarrow \bits^m$
 				      \end{itemize}
-				\item PRFs enable ``selective access'' to pseudorandom values without generating the entire sequence
+				\item PRFs enable ``selective access'' to pseudorandom values without generating the entire sequence.
 			\end{itemize}
-			\begin{center}
-				\sslibrary{F}{prf-rand}{
-					$L \coloneq$ [\ ]\\[1em]
-					\sslibrarysubroutine{prf.query}{X}{
-						if $L[X]$ undefined:\\
-						\quad $L[X] \twoheadleftarrow \bits^m$\\
-						return $L[X]$
-					}{1}
-				}{0.7}
-			\end{center}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -601,7 +591,7 @@
 					      Y_1 \oplus Y_2 & = G(K) \oplus X_1 \oplus G(K) \oplus X_2 \\
 					                     & = X_1 \oplus X_2
 				      \end{align*}
-				\item In a truly random function, $Y_1 \oplus Y_2 = X_1 \oplus X_2$ would be extremely unlikely!
+				\item With a truly random function, $Y_1 \oplus Y_2 = X_1 \oplus X_2$ would be extremely unlikely!
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -635,7 +625,7 @@
 				The function $H(K_1 \| K_2, X_1 \| X_2) = F(K_1, X_1) \oplus F(K_2, X_2)$ is not a secure PRF, even if $F$ is a secure PRF.
 			}
 			\begin{itemize}
-				\item An unsuccessful attempt to use a PRF with shorter input length to build one with a larger input length.
+				\item An unsuccessful attempt to use a PRF with a shorter input length to build one with a larger input length.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.55\textwidth}
@@ -666,7 +656,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item When inputs share the same first half, the corresponding outputs of $H$ have a common term $F(K_1, X_1)$
+				\item When inputs share the same first half, the corresponding outputs of $H$ have a common term $F(K_1, X_1)$.
 				\item Consider querying four inputs: $A\|B$, $A\|B'$, $A'\|B$, $A'\|B'$ (where $A \neq A'$ and $B \neq B'$)
 				      \begin{align*}
 					      Y_1 & = F(K_1, A) \oplus F(K_2, B)   \\
@@ -684,8 +674,8 @@
 					      \item $Y_1 \oplus Y_2 = F(K_2, B) \oplus F(K_2, B')$
 					      \item $Y_3 \oplus Y_4 = F(K_2, B) \oplus F(K_2, B')$
 				      \end{itemize}
-				\item So $\prob{Y_1 \oplus Y_2 \stackrel{?}{=} Y_3 \oplus Y_4} = 1$
-				\item With a truly random function, $\prob{Y_1 \oplus Y_2 \stackrel{?}{=} Y_3 \oplus Y_4} = \frac{1}{2^m}$ (extremely unlikely!)
+				\item So $\prob{Y_1 \oplus Y_2 = Y_3 \oplus Y_4} = 1$.
+				\item With a truly random function, $\prob{Y_1 \oplus Y_2 = Y_3 \oplus Y_4} = \frac{1}{2^m}$ (extremely unlikely!)
 				\item Also, given $Y_{1\cdots3}$, we can predict $Y_4$!
 			\end{itemize}
 		\end{column}
@@ -742,7 +732,7 @@
 \begin{frame}{PRF versus PRP}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Pseudo-Random Function (HMAC-SHA-2)}
+			\textbf{Pseudorandom Function (HMAC-SHA-2)}
 			\begin{itemize}
 				\item \textbf{Input} is arbitrary-length,
 				\item \textbf{Output} is fixed-length, looks random (as discussed
@@ -753,7 +743,7 @@
 		\end{column}
 
 		\begin{column}{0.5\textwidth}
-			\textbf{Pseudo-Random Permutation (AES)}
+			\textbf{Pseudorandom Permutation (AES)}
 			\begin{itemize}
 				\item \textbf{Input and output} are the same length, forming a permutation.
 				\item Each input maps uniquely to one output, allowing invertibility.
@@ -766,20 +756,20 @@
 
 \begin{frame}{PRPs compared to PRFs}
 	\begin{itemize}
-		\item \textbf{Invertibility}: PRPs can be efficiently inverted given the key
+		\item \textbf{Invertibility}: PRPs can be efficiently inverted given the key.
 		      \begin{itemize}
-			      \item Enable both encryption and decryption
-			      \item Can recover input from output (and vice versa)
+			      \item Enable both encryption and decryption.
+			      \item Can recover input from output (and vice versa).
 		      \end{itemize}
-		\item \textbf{No range collision}: Each input maps to a unique output
+		\item \textbf{No range collision}: Each input maps to a unique output.
 		      \begin{itemize}
-			      \item Provides perfect input recovery
-			      \item Reduces vulnerability to collision-based attacks, birthday attacks, and certain forms of differential cryptanalysis
+			      \item Provides perfect input recovery.
+			      \item Reduces vulnerability to collision-based attacks, birthday attacks, and certain forms of differential cryptanalysis.
 		      \end{itemize}
-		\item \textbf{Versatility}: A secure PRP can be used as a PRF
+		\item \textbf{Versatility}: A secure PRP can be used as a PRF.
 		      \begin{itemize}
-			      \item ``Downgrade'' trivially by ignoring inverse capability
-			      \item The reverse is not true (PRF → PRP conversion is complex)
+			      \item ``Downgrade'' trivially by ignoring inverse capability.
+			      \item The reverse is not true (PRF $\rightarrow$ PRP conversion is complex).
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -877,9 +867,9 @@
 			\begin{itemize}
 				\item \textbf{Bijective} (two-way)
 				      \begin{itemize}
-					      \item \textbf{Injective}: no two inputs map to same output (no
-					            collisions)
-					      \item \textbf{Surjective}: Every output has one corresponding input
+					      \item \textbf{Injective}: No two inputs map to the same output (no
+					            collisions).
+					      \item \textbf{Surjective}: Every output has one corresponding input.
 				      \end{itemize}
 				\item ``Randomized''
 				\item Relations between inputs not reflected in outputs
@@ -994,11 +984,11 @@
 				\item While the PRF (on the left) just picks random outputs for each input\ldots
 				\item The PRP (on the right) must ensure outputs are never repeated:
 				      \begin{itemize}
-					      \item $\mathcal{y}$ tracks all outputs used so far
+					      \item $\mathcal{y}$ tracks all outputs used so far.
 					      \item $\setminus$ means ``set difference'' - pick from values not in $\mathcal{y}$
 					      \item $\cup$ means ``set union'' - add the new value to $\mathcal{y}$
 				      \end{itemize}
-				\item This ensures each output appears exactly once - the definition of a permutation
+				\item This ensures each output appears exactly once - the definition of a permutation.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1095,7 +1085,7 @@
 			}
 			\begin{itemize}
 				\item We obviously can't use \lib{F}{prp-rand} in the real world.
-				\item It doesn't scale. So we need practical approximative alternatives.
+				\item It doesn't scale, so we need practical approximate alternatives.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1156,7 +1146,7 @@
 		      \begin{itemize}
 			      \item $X_{i-1} = X_{i+1} \oplus F_{i}(X_{i})$
 		      \end{itemize}
-		\item $F_i$ itself does not need to have an inverse - both the forward and inverse direction of the Feistel cipher evaluate $F_i$ in the forward direction! $\qed$
+		\item $F_i$ itself does not need to have an inverse - both the forward and inverse directions of the Feistel cipher evaluate $F_i$ in the forward direction! $\qed$
 	\end{itemize}
 \end{frame}
 
@@ -1208,9 +1198,9 @@
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
 				\item Let's add a key in there. Wow, encryption!
-				\item $K_{1\cdots i}$ is called the \textbf{key schedule}.
-				\item If each round function $F_i$ uses a distinct key $K_i$, it increases the security of the Feistel network against certain attacks.
-				\item By using a PRF as round function $F_i$, the security of the Feistel cipher would be grounded on the PRF's security basis.
+				\item $K_{1\cdots r}$ is called the \textbf{key schedule}.
+				\item If each round function $F_i$ uses a distinct key $K_i$, this increases the security of the Feistel network against certain attacks.
+				\item Using a PRF as each round function $F_i$ grounds the security of the Feistel cipher in the security of the PRF.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -1237,7 +1227,7 @@
 					      \item Backward: Compute halfway through decryption.
 					      \item Look for ``meeting points'' in the middle.
 				      \end{enumerate}
-				\item With identical round functions, effective security may be only \textbf{half} the number of rounds.
+				\item With identical round functions, the effective security may be only \textbf{half} the number of rounds.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.35\textwidth}
@@ -1311,7 +1301,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}
-				\item Let's query $(A \| B)$ and $(A' \| B)$ where $A \neq A'$
+				\item Let's query $(A \| B)$ and $(A' \| B)$ where $A \neq A'$:
 				      \begin{itemize}
 					      \item $Y_1 \| Y_2 = \func{prp.query}{A \| B}$
 					      \item $Y_1' \| Y_2' = \func{prp.query}{A' \| B}$
@@ -1322,7 +1312,7 @@
 					      \item $Y_1' = A' \oplus F(K_1, B)$
 					      \item $Y_1 \oplus Y_1' = A \oplus A'$
 				      \end{itemize}
-				\item In a true PRP, \prob{Y_1 \oplus Y_1' \stackrel{?}{=} A \oplus A'} is negligible
+				\item In a true PRP, \prob{Y_1 \oplus Y_1' = A \oplus A'} is negligible.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.6\textwidth}
@@ -1917,7 +1907,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item \textbf{Data Encryption Standard (DES)} is a classic real-world implementation of the Feistel structure
+				\item \textbf{Data Encryption Standard (DES)} is a classic real-world implementation of the Feistel structure.
 				\item Properties:
 				      \begin{itemize}
 					      \item 16 Feistel rounds.
@@ -1937,7 +1927,7 @@
 					      \item Effectively doubles the key length.
 					      \item Compatible with legacy DES when $K_1 = K_2 = K_3$
 				      \end{itemize}
-				\item 3DES still used in legacy systems, but largely replaced by AES for performance reasons.
+				\item 3DES is still used in legacy systems, but has largely been replaced by AES for performance reasons.
 				\item Lesson: Feistel structure made it possible to adapt DES rather than abandon it.
 			\end{itemize}
 		\end{column}
@@ -1975,7 +1965,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
-			\imagewithcaption{deep-crack-b.jpg}{Paul Kocher. He's still active in cryptography today, insanely productive research career, many crazy attacks}
+			\imagewithcaption{deep-crack-b.jpg}{Paul Kocher. He's still active in cryptography today, with an insanely productive research career and many crazy attacks.}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -2011,10 +2001,10 @@
 			\begin{itemize}
 				\item Internal structure: substitution-permutation network with multiple rounds.\footnote{Check out this amazing interactive animation of AES's internal structure: \url{https://formaestudio.com/rijndaelinspector/archivos/Rijndael_Animation_v4_eng-html5.html}}
 				      \begin{itemize}
-					      \item SubBytes: non-linear substitution
-					      \item ShiftRows: transposition
-					      \item MixColumns: mixing operation
-					      \item AddRoundKey: XOR with round key
+					      \item SubBytes: non-linear substitution.
+					      \item ShiftRows: transposition.
+					      \item MixColumns: mixing operation.
+					      \item AddRoundKey: XOR with round key.
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -2037,7 +2027,7 @@
 
 						% Main rounds box
 						\draw[rounded corners, dashed] (-2,-2.2) rectangle (2,-5.2);
-						\node[align=left, font=\scriptsize] at (-1.7,-2.5) {Rounds 1-9};
+						\node[align=left, font=\scriptsize] at (-1.7,-2.5) {Rounds 1--9};
 
 						% Main round operations
 						\node[block, below=0.8cm of addroundkey0] (subbytes) {SubBytes};
@@ -2051,7 +2041,7 @@
 
 						\node[block, below=of mixcolumns] (addroundkey) {AddRoundKey};
 						\draw[arrow] (mixcolumns) -- (addroundkey);
-						\node[right=0.3cm of addroundkey, align=left, font=\scriptsize] (roundkey) {Round Keys 1-9};
+						\node[right=0.3cm of addroundkey, align=left, font=\scriptsize] (roundkey) {Round Keys 1--9};
 						\draw[arrow] (roundkey) -- (addroundkey);
 
 						% Final round box
@@ -2105,7 +2095,7 @@
 					      \item At this complexity, attacks remain purely theoretical.
 					      \item Would require resources far exceeding global computing power.
 				      \end{itemize}
-				\item Even quantum computers offer only modest advantage (Grover's algorithm reduces security to $2^{64}$ operations).\footnote{More on quantum computers and how they affect cryptography later in the course.}
+				\item Even quantum computers offer only a modest advantage (Grover's algorithm reduces AES-128's security to $2^{64}$ operations).\footnote{More on quantum computers and how they affect cryptography later in the course.}
 			\end{itemize}
 		\end{column}
 	\end{columns}
