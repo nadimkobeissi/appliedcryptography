@@ -36,8 +36,8 @@
 	\begin{itemize}[<+->]
 		\item \textbf{Integers}: $\mathbb{Z} = \{\ldots, -2, -1, 0, 1, 2, \ldots\}$
 		\item \textbf{Natural numbers}: $\mathbb{N} = \{0, 1, 2, \ldots\}$
-		\item \textbf{Divides}: $n | x$ means $x = kn$ for some integer $k$
-		\item \textbf{Example}: $7 | 84$ because $84 = 12 \cdot 7$
+		\item \textbf{Divides}: $n \mid x$ means $x = kn$ for some integer $k$
+		\item \textbf{Example}: $7 \mid 84$ because $84 = 12 \cdot 7$
 	\end{itemize}
 \end{frame}
 
@@ -47,9 +47,9 @@
 		\item Result is always in $\{0, 1, \ldots, n-1\}$
 		\item \textbf{Even for negative numbers!}
 		      \begin{align*}
-			      21 \bmod 7  & = 0                        \\
-			      20 \bmod 7  & = 6                        \\
-			      -20 \bmod 7 & = 1 \quad \text{(not -6!)}
+			      21 \bmod 7  & = 0                          \\
+			      20 \bmod 7  & = 6                          \\
+			      -20 \bmod 7 & = 1 \quad \text{(not $-6$!)}
 		      \end{align*}
 		\item Think: ``$a$ is $(a \bmod n)$ more than a multiple of $n$''
 	\end{itemize}
@@ -101,13 +101,13 @@
 
 \begin{frame}{Probability basics}
 	\begin{itemize}[<+->]
-		\item \textbf{Distribution}: assigns probability to each outcome
+		\item \textbf{Distribution}: assigns a probability to each outcome
 		\item For each outcome $x$: $0 \leq \Pr[x] \leq 1$
 		\item Sum of all probabilities = 1
 		\item \textbf{Uniform distribution}: $\Pr[x] = \frac{1}{|\mathcal{X}|}$ for all $x \in \mathcal{X}$
 		      \begin{itemize}
 			      \item $\frac{1}{|\mathcal{X}|}$ means ``one divided by the size of set $\mathcal{X}$''
-			      \item Example: Rolling a fair die has uniform distribution with $\Pr[x] = \frac{1}{6}$ for each outcome
+			      \item Example: Rolling a fair die has a uniform distribution with $\Pr[x] = \frac{1}{6}$ for each outcome
 		      \end{itemize}
 		\item Basic fact: $\Pr[A] = 1 - \Pr[\neg A]$
 		      \begin{itemize}
@@ -146,9 +146,9 @@
 				      \end{itemize}
 				\item \textbf{Disadvantages}:
 				      \begin{itemize}[<+->]
-					      \item Figuring out how the thing works might mean a break.
+					      \item Figuring out how the system works might mean a break.
 					      \item Can't expose cipher to scrutiny.
-					      \item Everyone needs to invent a cipher.
+					      \item Everyone needs to invent their own cipher.
 				      \end{itemize}
 			\end{itemize}
 		}
@@ -179,8 +179,8 @@
 	\begin{columns}[c]
 		\column{0.5\textwidth}{
 			\begin{itemize}[<+->]
-				\item Cipher can be scrutinized, used by anyone.
-				\item Design can be shown to hold so long as the key is secret.
+				\item Cipher can be scrutinized and used by anyone.
+				\item Security can be shown to hold so long as the key is secret.
 				\item This is how virtually all cryptography is designed today.
 			\end{itemize}
 		}
@@ -266,10 +266,10 @@
 	\begin{itemize}[<+->]
 		\item How to derive $K$?
 		\item $K$ is ideally random.
-		\item True randomness isn't practical, so $K$ is in practice pseudo-random.
+		\item True randomness is hard to obtain, so in practice $K$ is pseudo-random.
 		\item We need a pseudo-random uniform distribution:
 		\item If $\mathcal{S}$ is a set of $m$ items, then the uniform distribution over $\mathcal{S}$ assigns probability $\frac{1}{m}$ to each item $x \in \mathcal{S}$
-		\item In practice, this just means we need the bits to be random, unpredictable, uniformly distributed in terms of probability
+		\item In practice, this just means we need the bits to be random, unpredictable, and uniformly distributed
 		\item Sampling a $K$ from a pseudo-random uniform distribution is written as $K \twoheadleftarrow \bits^n$
 	\end{itemize}
 \end{frame}
@@ -277,7 +277,7 @@
 \begin{frame}{One-time pad}{Correctness proof}
 	\begin{itemize}[<+->]
 		\item $\forall(n > 0,\; K \in \bits^{n},\; M \in \bits^{n}),\; \textsf{Dec}(K, \textsf{Enc}(K, M)) = M$
-		\item For all positive $n$, any key of $n$ bits and message of $n$ bits will decrypt back to the same plaintext if encrypted into a ciphertext.
+		\item For all positive $n$: encrypting any $n$-bit message under any $n$-bit key, then decrypting under the same key, returns the original message.
 		\item \textbf{Proof}:
 		      \begin{align*}
 			      \textsf{Dec}(K, \textsf{Enc}(K, M)) & = \textsf{Dec}(K, K \oplus M) \\
@@ -293,7 +293,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item When we prove security, we prove what is or isn't possible by the attacker calling \textsc{Attack}$(M)$.
+				\item When we prove security, we prove what is or isn't possible for an attacker who calls \textsc{Attack}$(M)$.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -309,7 +309,7 @@
 				\item ``Victim'' chooses their key.
 				      \begin{itemize}
 					      \item Fresh key for each message (each key used only once)
-					      \item This means output will differ even if same plaintext is input twice by adversary
+					      \item This means the output will differ even if the adversary inputs the same plaintext twice
 				      \end{itemize}
 				\item Adversary chooses the message and receives the ciphertext.
 				\item We say that \textbf{the adversary has access to an encryption oracle}.
@@ -328,7 +328,7 @@
 				dashed box/.style={rectangle, draw, dashed, minimum width=2.5cm, minimum height=2.5cm, align=center, fill=white},
 				>=Stealth,
 			]
-			\node[dashed box] (adversary) {$adversary$};
+			\node[dashed box] (adversary) {\textit{adversary}};
 			\node[box, right=2cm of adversary](attack){
 				$\underline{\func{attack}{M}}$: \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary chooses $M$}} \\
 				\quad $K \twoheadleftarrow \bits^{n}$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim samples $K$}} \\
@@ -346,8 +346,8 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
 				\item Adversary can query oracle an unbounded number of times.
-				\item Two queries with same $M$ return different $(C, C')$, since victim uses different $K$.
-				\item $K$ is always chosen correctly (pseudo-random uniform sampling)
+				\item Two queries with the same $M$ (almost always) return different $(C, C')$, since the victim samples a fresh $K$ each time.
+				\item $K$ is always chosen correctly (pseudo-random uniform sampling).
 				\item ``Randomized oracle''
 				\item Attacker cannot see $K$.
 			\end{itemize}
@@ -360,7 +360,8 @@
 
 \begin{frame}
 	\begin{center}
-		\Large\textit{``If I use OTP according to the attack scenario (I sample keys uniformly and use each key to encrypt just one message), then no matter how the plaintexts are chosen, and no matter how the ciphertext is subsequently used, I can enjoy a certain security guarantee.''}
+		\Large\textit{``If I use OTP according to the attack scenario (I sample keys uniformly and use each key to encrypt just one message), then no matter how the plaintexts are chosen, and no matter how the ciphertext is subsequently used, I can enjoy a certain security guarantee.''}\\[1em]
+		{\normalsize --- The Joy of Cryptography}
 	\end{center}
 \end{frame}
 
@@ -495,8 +496,8 @@
 				\item What if this is true only for $M = \bit{01}$?
 				\item Fine, let's pick any $M, C \in \bits^n$.
 				\item What is \prob{\textsc{Attack}(M) = C}?
-				\item Answer: Exactly when $C = \textsf{Enc}(K, M) = K \oplus M$.
-				\item \ldots which occurs for exactly one $K$.
+				\item \textsc{Attack}$(M)$ returns $C$ exactly when $C = \textsf{Enc}(K, M) = K \oplus M$\ldots
+				\item \ldots which occurs for exactly one key: $K = M \oplus C$.
 				\item Since $K$ is chosen uniformly from $\bits^n$, the probability of choosing that $K$ is $\frac{1}{2^n}. \quad \qed$
 			\end{itemize}
 		\end{column}
@@ -540,11 +541,11 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{One-time pad}{What about $\pmod{n}$?}
+\begin{frame}{One-time pad}{What about addition modulo $n$?}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item Let's replace $\oplus$ with $\pmod{n}$. What would happen?
+				\item Let's replace $\oplus$ with addition modulo $n$. What would happen?
 				\item Still good!
 				\item Can you prove correctness and security?
 			\end{itemize}
@@ -552,7 +553,7 @@
 		\begin{column}{0.5\textwidth}
 			\sssubroutine{Attack}{M}{
 				$K \twoheadleftarrow \mathbb{Z}_{n}$ \\
-				$C \coloneq (K + M)\ \pmod{n}$ \\
+				$C \coloneq (K + M) \bmod n$ \\
 				return $C$
 			}{1.5}
 		\end{column}
@@ -591,7 +592,7 @@
 		\item \textbf{Example}: If we guess ``the'' at position $i$ in $M_1$:
 		      \begin{itemize}[<+->]
 			      \item Extract: $(M_1 \oplus M_2)[i:i+3] \oplus \text{``the''}$
-			      \item If result looks like valid text, we may have found part of $M_2$!
+			      \item If the result looks like valid text, we may have found part of $M_2$!
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -617,9 +618,9 @@
 		\item \textbf{Scenario}: Bank transfer message
 		\item Original: ``Transfer \$0100.00 to Account 12345''
 		\item Attacker knows position of amount field
-		\item Flips bit to change `1' (ASCII 49 = \texttt{00110001}) to `9' (ASCII 57 = \texttt{00111001})
+		\item Flips a bit to change `1' (ASCII 49 = \texttt{00110001}) to `9' (ASCII 57 = \texttt{00111001})
 		\item XOR difference: \texttt{00110001} $\oplus$ \texttt{00111001} = \texttt{00001000}
-		\item Apply $\Delta$ = \texttt{00001000} at correct position in ciphertext
+		\item Apply $\Delta$ = \texttt{00001000} at the correct position in the ciphertext
 		\item Result: ``Transfer \$0900.00 to Account 12345''
 		\item \alert{No need to break encryption or know the key!}
 	\end{itemize}
@@ -630,9 +631,9 @@
 \begin{frame}{Limitations of security proofs}{Part 1}
 	\begin{itemize}[<+->]
 		\item Rigor and the real world famously don't mix.
-		\item Security proofs are good for rigor but address very little regarding real-world concerns:
+		\item Security proofs are good for rigor but say very little about real-world concerns:
 		      \begin{itemize}[<+->]
-			      \item How can Alice \& Bob obtain a secret key, which only they know?
+			      \item How can Alice and Bob obtain a secret key that only they know?
 			      \item How can they keep $K$ secret?
 			      \item How can a computer sample from the uniform distribution?
 			      \item How can Alice ensure that $C$ is sent reliably to Bob?
@@ -660,7 +661,7 @@
 		\item Despite limitations, security proofs provide important benefits:
 		      \begin{itemize}[<+->]
 			      \item \textbf{Precise guarantees}: Clearly define what security properties are achieved.
-			      \item \textbf{Confidence}: When properly structured, proofs ensure no obvious attacks exist.
+			      \item \textbf{Confidence}: A valid proof rules out all attacks within the model.
 			      \item \textbf{Foundation for composition}: Proven components can be securely combined.
 			      \item \textbf{Precise terminology}: Forces us to clearly define our terms and assumptions.
 		      \end{itemize}
@@ -695,7 +696,7 @@
 		\item Our security proofs rely on specific assumptions about the adversary:
 		      \begin{itemize}[<+->]
 			      \item \textbf{Key reuse}: Keys are never intentionally reused (though may repeat by chance).
-			      \item \textbf{Observation only}: Adversary passively observes ciphertext but doesn't tamper with it
+			      \item \textbf{Observation only}: Adversary passively observes the ciphertext but doesn't tamper with it.
 			      \item \textbf{Message independence}: Choice of message $M$ is independent of key $K$.
 			      \item \textbf{Key secrecy}: Adversary learns nothing about the key.
 			      \item \textbf{No sampling influence}: Adversary cannot influence how the key is sampled.
@@ -708,7 +709,7 @@
 	\begin{itemize}[<+->]
 		\item Side-channel attacks violate our model:
 		      \begin{itemize}[<+->]
-			      \item We assume adversary cannot coerce victim to run a different algorithm.
+			      \item We assume the adversary cannot coerce the victim into running a different algorithm.
 			      \item Cannot observe execution details:
 			            \begin{itemize}[<+->]
 				            \item CPU timing information (clock cycles).
@@ -724,9 +725,9 @@
 
 \begin{frame}{Key distribution problem}{The elephant in the room}
 	\begin{columns}[c]
-		\column{0.5\textwidth}{
+		\column{0.55\textwidth}{
 			\begin{itemize}[<+->]
-				\item OTP requires key as long as message
+				\item OTP requires a key as long as the message
 				\item How do Alice and Bob share this key?
 				\item \textbf{The paradox}:
 				      \begin{itemize}[<+->]
@@ -739,12 +740,12 @@
 					      \item Trusted couriers
 					      \item Pre-shared codebooks
 				      \end{itemize}
-				\item \textbf{Modern issue}: Impractical for internet scale
+				\item \textbf{Modern issue}: Impractical at internet scale
 			\end{itemize}
 		}
-		\column{0.5\textwidth}{
+		\column{0.45\textwidth}{
 			\begin{center}
-				\begin{tikzpicture}[scale=0.8]
+				\begin{tikzpicture}[scale=0.7]
 					\node[circle, draw, minimum size=1cm] (alice) at (0, 0) {Alice};
 					\node[circle, draw, minimum size=1cm] (bob) at (5, 0) {Bob};
 					\node[circle, draw, minimum size=1cm, fill=red!20] (eve) at (2.5, -2) {Eve};
@@ -752,9 +753,9 @@
 					\draw[<->, thick, dashed, red] (alice) -- node[above] {Key?} (bob);
 					\draw[->, thick, red] (eve) -- (2.5, -0.5);
 
-					\node[text width=4cm, align=center] at (2.5, 2) {\small \textbf{Problem}: How to share key securely?};
+					\node[text width=4cm, align=center] at (2.5, 2) {\small \textbf{Problem}: How to share the key securely?};
 
-					\node[text width=5cm, align=center] at (2.5, -3.5) {\small If channel is secure for key, why not use it for message?};
+					\node[text width=5cm, align=center] at (2.5, -3.5) {\small If the channel is secure for the key, why not use it for the message?};
 				\end{tikzpicture}
 			\end{center}
 		}

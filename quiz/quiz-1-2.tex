@@ -3,21 +3,21 @@
 
 \title{Applied Cryptography - Quiz 1.2: The Provable Security Mindset}
 \author{Nadim Kobeissi}
-\subject{Multiple choice quiz to help you see how much you remembered from the The Provable Security Mindset session of the Applied Cryptography course.}
-\keywords{one-time pad, OTP, provable security, XOR, encryption, security proofs, Kerckhoff's principle, cryptographic oracles, adversary models}
+\subject{Multiple choice quiz to help you see how much you remembered from the Provable Security Mindset session of the Applied Cryptography course.}
+\keywords{one-time pad, OTP, provable security, XOR, encryption, security proofs, Kerckhoffs' principle, cryptographic oracles, adversary models}
 
 \begin{document}
 \classhandoutheader
 \section*{Quiz 1.2: The Provable Security Mindset}
 
 \begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
-	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our The Provable Security Mindset session.\footnote{\url{https://appliedcryptography.page/slides/\#1-2}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the end. Good luck!
+	This completely optional quick quiz acts as a learning aid to help you find out how much you absorbed from our Provable Security Mindset session.\footnote{\url{https://appliedcryptography.page/slides/\#1-2}} Remember, this is just for fun and to help you identify areas you might want to review. Each question has three possible answers, but only one is correct. Take your time, and when you're done, check your answers against the answer key at the end. Good luck!
 \end{tcolorbox}
 
 \subsection*{Questions}
 
 \begin{questions}
-	\question What does Kerckhoff's principle state?
+	\question What does Kerckhoffs' principle state?
 	\begin{randomizechoices}
 		\choice The key should be as long as the message
 		\CorrectChoice A cryptosystem should be secure even if everything except the key is public
@@ -124,9 +124,9 @@
 
 	\question What is the correct relationship in OTP correctness?
 	\begin{randomizechoices}
-		\choice $\textsf{Enc}(K, \textsf{Dec}(K, C)) = C$
+		\choice $\textsf{Dec}(K, \textsf{Enc}(K, M)) = K$
 		\CorrectChoice $\textsf{Dec}(K, \textsf{Enc}(K, M)) = M$
-		\choice $\textsf{Enc}(M, K) = \textsf{Dec}(M, K)$
+		\choice $\textsf{Enc}(K, \textsf{Dec}(K, C)) = K$
 	\end{randomizechoices}
 
 	\question What assumption about the adversary is necessary for OTP security proofs?
