@@ -27,7 +27,7 @@
 				dashed box/.style={rectangle, draw, dashed, minimum width=2.5cm, minimum height=2.5cm, align=center, fill=white},
 				>=Stealth,
 			]
-			\node[dashed box] (adversary) {$adversary$};
+			\node[dashed box] (adversary) {\textit{adversary}};
 			\node[box, right=2cm of adversary](attack){
 				$\underline{\func{attack}{M}}$: \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// adversary chooses $M$}} \\
 				\quad $K \twoheadleftarrow \bits^{n}$ \hfill \quad \quad \textcolor{gray}{\scriptsize \textit{// victim samples $K$}} \\
@@ -121,7 +121,7 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
 				\item \prog{} is a \textbf{program} that calls \textbf{library} \lib{}{dice-guess}.
-				\item Programs can only see the output of function calls to libraries.
+				\item Programs can only see the output of subroutine calls to libraries.
 				      \begin{itemize}
 					      \item Programs can't read the values of library variables,
 					      \item Programs can't measure how long it took to run a subroutine,
@@ -161,7 +161,7 @@
 					      \item Have the same interface,
 					      \item \prob{\prog{}\link\lib{}{1} \Rightarrow \texttt{true}} $=$ \prob{\prog{}\link\lib{}{2} \Rightarrow \texttt{true}}
 				      \end{itemize}
-				\item i.e. when their usage and output is indistinguishable from the adversary's perspective when they are paired with \prog{}.
+				\item i.e., when their usage and output are indistinguishable from the adversary's perspective when they are paired with \prog{}.
 				\item A lot of the time, \prog{}'s mission is to try to \textit{distinguish} between \lib{}{1} and \lib{}{2}.
 			\end{itemize}
 		\end{column}
@@ -193,7 +193,7 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
 				\item Are these libraries interchangeable?
-				\item \textbf{Yes!} Their only difference happens in \textit{unreachable lines of code}.
+				\item \textbf{Yes!} Their only difference is in \textit{unreachable lines of code}.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.05\textwidth}
@@ -269,7 +269,7 @@
 				      \begin{itemize}
 					      \item $\texttt{Po} \| \texttt{tato} = \texttt{Potato}$
 				      \end{itemize}
-				\item \textbf{Yes!} Outputting the concatenation of two randomly sampled uniform strings of lengths $n$ and $m$ is the same as outputting a single random string of length $n + m$.
+				\item \textbf{Yes!} Outputting the concatenation of two uniformly sampled strings of lengths $n$ and $m$ is the same as outputting a single random string of length $n + m$.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.05\textwidth}
@@ -300,9 +300,9 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
 				\item Are these libraries interchangeable?
-				\item \textbf{No!} The first library uses the same $K$ for all subsequent encryptions, which breaks OTP security.
+				\item \textbf{No!} The first library uses the same $K$ for every encryption, which breaks OTP security.
 				      \begin{itemize}
-					      \item Recall that OTP requires keys to be only used once (hence the name).
+					      \item Recall that OTP requires keys to be used only once (hence the name).
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -333,9 +333,9 @@
 	\begin{columns}[c]
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}[<+->]
-				\item What happens if we call \prog{}\link\lib{}{a} multiple times?
+				\item What happens if we call $\func{otp.enc}{\bit{0}^n}$ multiple times?
 				      \begin{itemize}
-					      \item We'll get the same output $\equiv K$ each time!
+					      \item We'll get the same output, $K$, each time!
 				      \end{itemize}
 				\item \prob{\prog{}\link\lib{}{a} \Rightarrow \texttt{true}} $= 1$,
 			\end{itemize}
@@ -366,9 +366,9 @@
 	\begin{columns}[c]
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}
-				\item What happens if we call \prog{}\link\lib{}{a} multiple times?
+				\item What happens if we call $\func{otp.enc}{\bit{0}^n}$ multiple times?
 				      \begin{itemize}
-					      \item We'll get the same output $\equiv K$ each time!
+					      \item We'll get the same output, $K$, each time!
 				      \end{itemize}
 				\item \prob{\prog{}\link\lib{}{a} \Rightarrow \texttt{true}} $= 1$,
 				\item \prob{\prog{}\link\lib{}{b} \Rightarrow \texttt{true}} $= \frac{1}{2^n}$.
@@ -438,7 +438,7 @@
 			\begin{itemize}[<+->]
 				\item Are these libraries interchangeable?
 				\item Let's find out!
-				\item \textbf{Goal:} transform \lib{}{xor-samp-1} to \lib{}{xor-samp-2}, proving that each transformation step does not cause any change whatsoever to the library's functionality.
+				\item \textbf{Goal:} transform \lib{}{xor-samp-1} to \lib{}{xor-samp-2}, proving that each transformation step does not cause any change whatsoever to the library's behavior.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -516,7 +516,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item So, we can return $(X', Y)$ without any change on the library's effect.
+				\item So, we can return $(X', Y)$ without any change to the library's behavior.
 				      \begin{itemize}
 					      \item $X' = Y \oplus M = (X \oplus M) \oplus M = X$.
 				      \end{itemize}
@@ -687,7 +687,7 @@
 		\item In cryptography, useful abstractions like ``encryption scheme'' are called \textbf{primitives}.
 		\item Three things are important when defining a cryptographic primitive:
 		      \begin{enumerate}
-			      \item \textbf{Syntax}: The basic raw interface - algorithms, inputs/outputs and their types.
+			      \item \textbf{Syntax}: The basic raw interface - algorithms, inputs/outputs, and their types.
 			      \item \textbf{Correctness}: Basic functionality without adversaries - e.g., ``decryption should be the inverse of encryption''.
 			      \item \textbf{Security}: Guarantees that hold in specific attack scenarios with adversaries.
 		      \end{enumerate}
@@ -714,7 +714,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Correctness of a SKE}
+\begin{frame}{Correctness of an SKE}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\definitionbox{Correctness for SKE}{
@@ -729,13 +729,13 @@
 			\begin{itemize}
 				\item The definition involves a probability because $\Sigma.\textsf{Enc}$ may be a randomized algorithm.
 				\item This means that decryption should \textbf{always} recover the original message.
-				\item Even if encryption adds randomness, decryption must be deterministic for each key-ciphertext pair.
+				\item Even if encryption is randomized, decryption must always map each key-ciphertext pair back to the original message.
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{One-time secrecy of a SKE}
+\begin{frame}{One-time secrecy of an SKE}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\definitionbox{One-time Secrecy for SKE}{
@@ -762,7 +762,7 @@
 			}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			An encryption scheme has one-time secrecy if its ciphertexts are uniformly distributed, when keys are sampled uniformly, kept secret, and used for only one encryption, and no matter how the plaintexts are chosen.
+			An encryption scheme has one-time secrecy if its ciphertexts are uniformly distributed when keys are sampled uniformly, kept secret, and used for only one encryption, no matter how the plaintexts are chosen.
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -789,7 +789,7 @@
 					\bit{1}    & \bit{1}    & \bit{1}              \\
 					\hline
 				\end{tabular}
-				\caption{Truth table for AND operation}
+				\caption{Truth table for the AND operation}
 			\end{table}
 		\end{column}
 		\begin{column}{0.3\textwidth}
@@ -846,8 +846,8 @@
 	\begin{itemize}
 		\item Security definitions in theoretical cryptography can be too strict:
 		      \begin{itemize}
-			      \item Even attacks requiring a trillion years of computation.
-			      \item Even attacks with probability lower than winning the lottery 100 times.
+			      \item A scheme counts as ``broken'' even if the only attacks require a trillion years of computation.
+			      \item Or even if attacks succeed with probability lower than that of winning the lottery 100 times in a row.
 		      \end{itemize}
 		\item Modern provable security takes a more practical approach:
 		      \begin{itemize}
@@ -862,17 +862,15 @@
 \begin{frame}{The concrete approach to provable security}
 	\begin{itemize}
 		\item In the concrete approach to provable security, we aim to be as quantitative as possible about security claims.
-		\item We rarely say definitively that a cryptographic algorithm ``is secure'', as we did with OTP.
+		\item We rarely say definitively that a cryptographic algorithm ``is secure'' (though we did for OTP).
 		\item Instead, we use statements like:
 		      \begin{itemize}
 			      \item \textit{``Any attack that expends at most $2^{80}$ effort can succeed with probability no better than $2^{-64}$.''}
 		      \end{itemize}
-		\item It is up to the user to judge whether this quantitative level of security is acceptable based on their use-case.
+		\item It is up to the user to judge whether this quantitative level of security is acceptable based on their use case.
 		\item This gives users a concrete basis for security decisions.
 	\end{itemize}
 \end{frame}
-
-\subsection{Asymptotic approach to security}
 
 \begin{frame}{Monetary cost of huge computations}
 	\begin{itemize}
@@ -945,7 +943,7 @@
 	\begin{itemize}
 		\item Let's put extremely small probabilities in perspective:
 		      \begin{itemize}
-			      \item In 2009, Patricia Demauro rolled dice 154 consecutive times without getting a 7 in craps.
+			      \item In 2009, Patricia Demauro rolled dice 154 consecutive times in craps without getting a 7.
 			      \item Probability of this event: $(30/36)^{154} \approx 2^{-40.5}$
 			      \item Often cited as one of the most improbable documented events in gambling history.
 		      \end{itemize}
@@ -965,8 +963,8 @@
 		\item We've been using notation like $2^{-40}$, $2^{-64}$, $2^{-128}$ for probabilities. Why the negative exponent?
 		\item Recall that $2^{-x} = \frac{1}{2^x}$
 		      \begin{itemize}
-			      \item $2^{-40} = \frac{1}{2^{40}} = \frac{1}{1,099,511,627,776}$
-			      \item This is approximately 1 in a trillion
+			      \item $2^{-40} = \frac{1}{2^{40}} = \frac{1}{1{,}099{,}511{,}627{,}776}$
+			      \item This is approximately 1 in a trillion.
 		      \end{itemize}
 		\item Probabilities must be between 0 and 1:
 		      \begin{itemize}
@@ -990,6 +988,8 @@
 		\item This shows the enormous scale of computation that economic incentives can support.
 	\end{itemize}
 \end{frame}
+
+\subsection{Asymptotic approach to security}
 
 \begin{frame}{The asymptotic approach to provable security}
 	\begin{columns}
@@ -1032,7 +1032,7 @@
 				\item For AES-256:
 				      \begin{itemize}
 					      \item Best known attack: $\approx 2^{254.4}$ operations
-					      \item Far beyond capability of any conceivable computation
+					      \item Far beyond the capability of any conceivable computation
 				      \end{itemize}
 				\item Asymptotic approach: Both are ``computationally secure''
 			\end{itemize}
@@ -1066,13 +1066,13 @@
 				      \begin{itemize}
 					      \item Usually the length of secret keys in bits
 					      \item All algorithms have access to $\lambda$ as a global variable
-					      \item Example: AES-128 uses $\lambda = 128$, AES-256 uses $\lambda = 256$. (``256-bit security'')
+					      \item Example: AES-128 uses $\lambda = 128$, AES-256 uses $\lambda = 256$ (``256-bit security'').
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\definitionbox{Polynomial Running Time}{
-				An algorithm runs in polynomial time if there is a polynomial $p$ such that the algorithm takes at most $O(p(n))$ steps on inputs of length $n$.
+				An algorithm runs in polynomial time if there is a polynomial $p$ such that the algorithm takes at most $p(n)$ steps on inputs of length $n$.
 			}
 		\end{column}
 	\end{columns}
@@ -1085,14 +1085,14 @@
 				A function $f$ is negligible if it approaches zero faster than $1/p(\lambda)$, for every polynomial $p$. Formally:
 				\begin{itemize}
 					\item For every polynomial $p$, there exists $\lambda_0$ such that $f(\lambda) < 1/p(\lambda)$ for all $\lambda > \lambda_0$.
-					\item For every polynomial $p$, we have $p(\lambda) \in O(1/f(\lambda))$.
+					\item For every polynomial $p$, we have $p(\lambda) \in \mathcal{O}(1/f(\lambda))$.
 				\end{itemize}
 			}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
 				\item \textbf{You can probably ignore the definition and just think about this intuitively:}
-				\item In cryptography, we want attack probabilities to be negligible in the security parameter $\lambda$.
+				\item In cryptography, we want attack success probabilities to be negligible in the security parameter $\lambda$.
 				\item Negligible probability: essentially zero for practical purposes when $\lambda$ is large enough.
 			\end{itemize}
 		\end{column}
@@ -1107,14 +1107,14 @@
 				\begin{align*}
 					\left| \prob{\prog{} \link \lib{}{1} \Rightarrow \texttt{true}} - \prob{\prog{} \link \lib{}{2} \Rightarrow \texttt{true}} \right|
 				\end{align*}
-				\lib{}{1} $\approxeq$ \lib{}{2}, if every polynomial-time calling program has only negligible advantage in distinguishing them.
+				We write \lib{}{1} $\approxeq$ \lib{}{2} if every polynomial-time calling program has only negligible advantage in distinguishing them.
 			}
 		\end{column}
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}
 				\item Previously, libraries were interchangeable when probabilities were \textbf{identical}.
 				\item Now, libraries are indistinguishable when probabilities are \textbf{negligibly close}.
-				\item Again: this is intuitive, no need to stress about the formal definition.
+				\item Again: this is intuitive, so no need to stress about the formal definition.
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1133,9 +1133,9 @@
 					      \item 50\%?
 					      \item 97\%?
 				      \end{itemize}
-				\item Many people guess around 15-20\%, but the actual probability is about 97\%!
+				\item Many people guess around 15--20\%, but the actual probability is about 97\%!
 				\item This is counterintuitive because \textbf{we're not looking for a specific birthday - we're looking for \textit{any} match among all possible pairs}.
-				\item With 50 students, we have $\binom{50}{2} = 1,225$ possible pairs to check!\footnote{$\binom{50}{2}$ is a binomial coefficient. It means: \textit{``how many ways can I choose two different items from a set of 50?''}}
+				\item With 50 students, we have $\binom{50}{2} = 1{,}225$ possible pairs to check!\footnote{$\binom{50}{2}$ is a binomial coefficient. It means: \textit{``how many ways can I choose two different items from a set of 50?''}}
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1143,12 +1143,12 @@
 
 \begin{frame}{Birthday paradox}
 	\begin{itemize}
-		\item With just 23 people, probability exceeds 50\%
+		\item With just 23 people, the probability exceeds 50\%
 		\item Formula for $n$ people:
 		      \begin{align*}
 			      P = 1 - \frac{365!}{(365-n)! \cdot 365^n}
 		      \end{align*}
-		\item Implication: Finding collisions in a space of size $N$ happens with roughly $\sqrt{N}$ samples.
+		\item Implication: Finding a collision in a space of size $N$ takes roughly $\sqrt{N}$ samples.
 		\item \textbf{This is why many cryptographic systems need large output spaces!}
 	\end{itemize}
 \end{frame}
@@ -1158,8 +1158,8 @@
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
 				\item Many cryptographic algorithms fail if two executions sample the same random value.
-				\item General question: If we take $q$ independent uniform samples from a set of $N$ items, what's the probability some value is chosen more than once?
-				\item This probability is called $\func{birthday}{q,N}$
+				\item General question: If we take $q$ independent uniform samples from a set of $N$ items, what's the probability that some value is chosen more than once?
+				\item This probability is called $\func{birthday}{q,N}$.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -1168,8 +1168,8 @@
 			\end{align*}
 			\begin{itemize}
 				\item Surprisingly high probability!
-				\item With $q \approx 1.2\sqrt{N}$, probability $\approx 0.5$
-				\item For birthdays: only need 23 people for $>50\%$ chance
+				\item With $q \approx 1.2\sqrt{N}$, the probability is $\approx 0.5$
+				\item For birthdays: we only need 23 people for a $>50\%$ chance
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1181,7 +1181,7 @@
 	\definitionbox{Bad Event Technique}{
 		Let \lib{}{1} and \lib{}{2} be libraries that each include a boolean variable named \hl{\texttt{bad}}, and assume that after \texttt{bad} is set to \texttt{true} it remains \texttt{true} forever. We say that the bad event is triggered if the library ever sets \texttt{bad := true}.
 		\\[1em]
-		If \lib{}{1} and \lib{}{2} have identical source code, except for statements reachable only when \texttt{bad := true}, then:
+		If \lib{}{1} and \lib{}{2} have identical source code, except for statements reachable only after setting \texttt{bad := true}, then:
 		\begin{align*}
 			\left| \prob{\prog{} \link \lib{}{1} \Rightarrow \texttt{true}} - \prob{\prog{} \link \lib{}{2} \Rightarrow \texttt{true}} \right| \leq \prob{\prog{} \link \lib{}{1} \func{trigger}{\texttt{bad}}}
 		\end{align*}
@@ -1197,7 +1197,7 @@
 			      \item Identify ``bad events'' between consecutive hybrids.
 			      \item Show these events occur with negligible probability.
 		      \end{itemize}
-		\item Enables us to focus on analyzing specific failure cases rather than full behavior.
+		\item Enables us to focus on analyzing specific failure cases rather than the libraries' full behavior.
 	\end{itemize}
 \end{frame}
 
@@ -1234,7 +1234,7 @@
 			\begin{itemize}
 				\item Are these libraries \textbf{computationally indistinguishable?}
 				\item Yes! Let's prove it using the bad event technique.
-				\item Note: these libraries are interchangeable with \lib{}{1} and \lib{}{2} (as seen on next slide).
+				\item Note: these libraries are interchangeable with \lib{}{1} and \lib{}{2}, respectively (as seen on the next slide).
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1310,13 +1310,13 @@
 			\begin{itemize}
 				\item We need to analyze how likely it is that the bad event happens:
 				      \begin{itemize}
-					      \item The bad event occurs when $R \stackrel{?}{=} X$.
+					      \item The bad event occurs when $R = X$.
 					      \item Since $R$ is randomly chosen from a huge set, this match is extremely unlikely.
 					      \item Even if an adversary makes many attempts, the chance of seeing this bad event remains tiny.
 					      \item As we increase the security parameter $\lambda$, the chance becomes vanishingly small.
 				      \end{itemize}
 				\item Therefore, the libraries are computationally indistinguishable!
-				\item For any \prog{}, computationally speaking, we'd get the same distribution of outputs.
+				\item For any \prog{}, computationally speaking, we'd get essentially the same distribution of outputs.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.2\textwidth}
