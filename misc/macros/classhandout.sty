@@ -74,6 +74,59 @@
 	\renewcommand{\arraystretch}{1.5}
 }
 
+%% Pretty quiz answer key, presented by Professor Spamton.
+%% Reads the answer letters stored by exam-randomizechoices as
+%% \label{question@<n>@correctchoice} (\ref* = unlinked reference).
+%% Usage: \quizanswerkey{SPAMTON QUOTE FOR THIS QUIZ!!} on its own page.
+\makeatletter
+\newcommand{\quiz@answerletter}[1]{%
+	\@ifundefined{r@question@#1@correctchoice}{?}{\ref*{question@#1@correctchoice}}}
+
+\newcommand{\quiz@answerchip}[1]{%
+	\begin{tikzpicture}
+		\node[fill=LightestGray, rounded corners=7pt, inner sep=0pt,
+			minimum width=5.2em, minimum height=2.8em] (chip) {};
+		\node[anchor=east, font=\bfseries, text=DarkGray, inner sep=0pt]
+		at ($(chip.center)+(-0.4em,0)$) {#1};
+		\node[anchor=west, circle, fill=OliveGreen, text=white, font=\bfseries,
+			inner sep=0pt, minimum size=1.9em]
+		at ($(chip.center)+(0.05em,0)$) {\quiz@answerletter{#1}};
+	\end{tikzpicture}}
+
+\newcommand{\quiz@answergrid}{%
+	\begingroup
+	\lineskiplimit=0pt
+	\lineskip=0.7em
+	\centering
+	\foreach \quiz@n in {1,...,\thequestion}{\quiz@answerchip{\quiz@n}\hspace{0.35em plus 0.2em}\allowbreak}%
+	\par\endgroup}
+
+\newcommand{\quizanswerkey}[1]{%
+	\vspace*{\fill}
+	\pdfbookmark[2]{Answers}{quiz@answers}%
+	\begin{tcolorbox}[width=0.94\textwidth, center, colback=white,
+		colframe=OliveGreen, boxrule=0.75pt, arc=3.5mm,
+		title={\large\bfseries\CheckmarkBold\hspace{0.5em}Answer Key},
+		center title, bottomtitle=7pt, toptitle=7pt,
+		boxsep=8pt, left=8pt, right=8pt, top=12pt, bottom=12pt]
+		\begin{minipage}[c]{0.58\linewidth}
+			\quiz@answergrid
+		\end{minipage}\hfill
+		\begin{minipage}[c]{0.38\linewidth}
+			\centering
+			\begin{tikzpicture}
+				\node[rectangle callout, callout relative pointer={(-0.18,-0.55)},
+					draw=EarthBrown, thick, fill=white, font=\footnotesize\bfseries,
+					text=DarkGray, align=center, text width=0.82\linewidth, inner sep=7pt,
+					execute at begin node={\hyphenpenalty=10000\exhyphenpenalty=10000\relax}]
+				{#1};
+			\end{tikzpicture}\\[0.8em]
+			\includegraphics[width=0.92\linewidth]{images/prof-spamton.png}
+		\end{minipage}
+	\end{tcolorbox}
+	\vspace*{\fill}}
+\makeatother
+
 \newcommand\fstar{\textsf{F}\ensuremath{^\star}\xspace}
 \newcommand\haclstar{\textsf{HACL}\ensuremath{^\star}\xspace}
 \def\mycheckmark{\tikz\fill[scale=0.4](0,.4) -- (.35,0) -- (1.1,.65) -- (.35,.25) -- cycle;}
