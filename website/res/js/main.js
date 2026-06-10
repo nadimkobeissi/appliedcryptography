@@ -11,9 +11,6 @@ import {
 	calendarInit
 } from "./calendar.js";
 import {
-	revealInit
-} from "./reveal.js";
-import {
 	navspyInit
 } from "./navspy.js";
 document.addEventListener("DOMContentLoaded", () => {
@@ -21,6 +18,5 @@ document.addEventListener("DOMContentLoaded", () => {
 	collapsibleInit();
 	updatedInit();
 	calendarInit();
-	revealInit();
 	navspyInit();
 });
