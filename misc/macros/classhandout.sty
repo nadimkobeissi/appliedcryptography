@@ -77,7 +77,8 @@
 %% Pretty quiz answer key, presented by Professor Spamton.
 %% Reads the answer letters stored by exam-randomizechoices as
 %% \label{question@<n>@correctchoice} (\ref* = unlinked reference).
-%% Usage: \quizanswerkey{SPAMTON QUOTE FOR THIS QUIZ!!} on its own page.
+%% Usage, on its own page: \quizanswerkey{SPAMTON QUOTE FOR THIS QUIZ!!}
+%% or, in jevil mode:       \quizanswerkey[jevil]{A QUOTE, QUOTE!! UEE HEE HEE!!}
 \makeatletter
 \newcommand{\quiz@answerletter}[1]{%
 	\@ifundefined{r@question@#1@correctchoice}{?}{\ref*{question@#1@correctchoice}}}
@@ -101,7 +102,7 @@
 	\foreach \quiz@n in {1,...,\thequestion}{\quiz@answerchip{\quiz@n}\hspace{0.35em plus 0.2em}\allowbreak}%
 	\par\endgroup}
 
-\newcommand{\quizanswerkey}[1]{%
+\newcommand{\quizanswerkey}[2][spamton]{%
 	\vspace*{\fill}
 	\pdfbookmark[2]{Answers}{quiz@answers}%
 	\begin{tcolorbox}[width=0.94\textwidth, center, colback=white,
@@ -119,9 +120,9 @@
 					draw=EarthBrown, thick, fill=white, font=\footnotesize\bfseries,
 					text=DarkGray, align=center, text width=0.82\linewidth, inner sep=7pt,
 					execute at begin node={\hyphenpenalty=10000\exhyphenpenalty=10000\relax}]
-				{#1};
+				{#2};
 			\end{tikzpicture}\\[0.8em]
-			\includegraphics[width=0.92\linewidth]{images/prof-spamton.png}
+			\includegraphics[width=0.92\linewidth]{images/prof-#1.png}
 		\end{minipage}
 	\end{tcolorbox}
 	\vspace*{\fill}}
