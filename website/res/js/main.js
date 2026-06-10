@@ -1,7 +1,4 @@
 import {
-	mobileInit
-} from "./mobile.js";
-import {
 	menuInit
 } from "./menu.js";
 import {
@@ -13,10 +10,17 @@ import {
 import {
 	calendarInit
 } from "./calendar.js";
+import {
+	revealInit
+} from "./reveal.js";
+import {
+	navspyInit
+} from "./navspy.js";
 document.addEventListener("DOMContentLoaded", () => {
-	mobileInit();
 	menuInit();
 	collapsibleInit();
 	updatedInit();
 	calendarInit();
+	revealInit();
+	navspyInit();
 });

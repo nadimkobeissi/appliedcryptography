@@ -5,7 +5,7 @@
 	<meta charset="UTF-8" />
 	<title>Applied Cryptography — Symbolic Software</title>
 	<meta name="description" content="Learn modern cryptography principles and applications in this comprehensive course covering cryptographic theory, practical implementations, and real-world security systems." />
-	<meta name="keywords" content="applied cryptography, cryptography course, encryption, cryptographic protocols, cybersecurity education, CMPS 297AD, CMPS 396AI" />
+	<meta name="keywords" content="applied cryptography, cryptography course, encryption, cryptographic protocols, cybersecurity education" />
 	<meta name="author" content="Symbolic Software" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, height=device-height" />
 	<meta name="robots" content="index, follow" />
@@ -22,6 +22,8 @@
 	<link rel="icon" href="res/images/favicon.png" type="image/png" />
 	<link rel="apple-touch-icon" href="res/images/favicon.png" sizes="180x180" />
 	<link rel="preload" as="image" href="res/images/cedar.avif" type="image/avif" />
+	<link rel="preload" as="font" type="font/woff2" href="res/fonts/google/inriaserif/v18/fC14PYxPY3rXxEndZJAzN3wQUjjCjl2PaGxM.woff2" crossorigin />
+	<link rel="preload" as="font" type="font/woff2" href="res/fonts/google/inriaserif/v18/fC1nPYxPY3rXxEndZJAzN3SuRy_lq3KnYmQ.woff2" crossorigin />
 	<link rel="stylesheet" href="res/css/style.css" />
 	<link rel="stylesheet" href="res/fonts/phosphor/phosphor.css" />
 	<link rel="stylesheet" href="res/fonts/google/google.css" />
@@ -40,7 +42,6 @@
 			</button>
 			<div class="navbar-links">
 				<a href="#overview">Overview</a>
-				<!-- <a href="#registration">Register (Summer 2026)</a> -->
 				<a href="#calendar">Calendar</a>
 				<a href="#resources">Resources</a>
 				<a href="#syllabus">Syllabus</a>
@@ -51,12 +52,16 @@
 	</nav>
 
 	<div class="hero">
+		<div class="hero-frame" aria-hidden="true"></div>
 		<div class="hero-content">
 			<p class="hero-eyebrow"><img src="res/images/symbolicsoft-white.png" alt="Symbolic Software" /></p>
 			<h1>Applied Cryptography</h1>
 			<p class="hero-tagline">From provable security to real-world protocols.</p>
+			<div class="hero-chips">
+				<span class="hero-chip">Summer 2026</span>
+				<span class="hero-chip">CC BY-NC-SA</span>
+			</div>
 			<div class="hero-cta">
-				<!-- <a href="#registration" class="btn hero-btn-primary"><i class="icon ph-duotone ph-pencil-simple-line"></i>Register for Summer 2026</a> -->
 				<a href="#syllabus" class="btn hero-btn-secondary"><i class="icon ph-duotone ph-book-open-text"></i>Explore the Syllabus</a>
 			</div>
 		</div>
@@ -65,6 +70,7 @@
 	<div class="container">
 		<section id="overview" class="section">
 			<div class="section-header">
+				<p class="section-eyebrow">&sect; 01 &middot; Orientation</p>
 				<h2 class="section-title">Overview</h2>
 			</div>
 			<div class="subsection">
@@ -136,110 +142,10 @@
 			</div>
 		</section>
 
-		<!--
-		<section id="registration" class="section">
+		<section id="calendar" class="section">
 			<div class="section-header">
-				<h2 class="section-title">Register for Summer 2026</h2>
-			</div>
-			<div class="card card-highlight">
-				<p><strong>Applied Cryptography is returning as an online course in Summer 2026!</strong> We are offering <strong>50 students from Lebanese universities</strong> the chance to take the Applied Cryptography course entirely online and completely free of charge. This selective program provides full access to video lectures, course materials, problem sets, projects, and an active student community&mdash;bringing the AUB Applied Cryptography experience to motivated students across Lebanon.</p>
-				<ul>
-					<li>
-						<strong><i class="icon ph-duotone ph-calendar-check"></i>Application Deadline:</strong> 10 May, 2026
-					</li>
-					<li>
-						<strong><i class="icon ph-duotone ph-play-circle"></i>Program Starts:</strong> 9 June, 2026
-					</li>
-					<li>
-						<strong><i class="icon ph-duotone ph-clock"></i>Lectures:</strong> Tuesdays and Thursdays, 11:00am–12:30pm Beirut time
-					</li>
-					<li>
-						<strong><i class="icon ph-duotone ph-flag-checkered"></i>Program Ends:</strong> 10 October, 2026
-					</li>
-					<li>
-						<strong><i class="icon ph-duotone ph-users-three"></i>Spots Available:</strong> 50
-					</li>
-					<li>
-						<strong><i class="icon ph-duotone ph-money"></i>Cost:</strong> Free for Lebanese Students
-					</li>
-				</ul>
-				<p class="mb-0"><a href="https://register.appliedcryptography.page" class="btn"><i class="icon ph-duotone ph-pencil-simple-line"></i>Apply Now</a></p>
-			</div>
-
-
-		<div class="subsection">
-			<div class="collapsible-header">
-				<h3 class="subsection-title"><i class="icon ph-duotone ph-user-check"></i>Eligibility &amp; Selection</h3>
-				<i class="collapsible-icon ph-duotone ph-caret-circle-down"></i>
-			</div>
-			<div class="collapsible-content">
-				<p>The program is open to students currently enrolled at any Lebanese university. Applicants will be selected based on:</p>
-				<div class="card">
-					<ul>
-						<li><strong>Motivation:</strong> A clear interest in cryptography, security, or related fields.</li>
-						<li><strong>Background:</strong> Familiarity with at least one programming language and basic mathematical maturity (discrete math, probability, or proof-based coursework).</li>
-						<li><strong>Diversity:</strong> We aim to represent a broad range of Lebanese universities and academic backgrounds.</li>
-					</ul>
-					<p class="mb-0">No prior cryptography experience is required. The course starts from first principles and builds up to advanced topics.</p>
-				</div>
-			</div>
-		</div>
-
-		<div class="subsection">
-			<div class="collapsible-header">
-				<h3 class="subsection-title"><i class="icon ph-duotone ph-gear"></i>How It Works</h3>
-				<i class="collapsible-icon ph-duotone ph-caret-circle-down"></i>
-			</div>
-			<div class="collapsible-content">
-				<p>The program runs entirely online using the following platforms:</p>
-				<div class="card mb-3">
-					<h4 class="mb-2"><i class="icon ph-duotone ph-video"></i>Lectures</h4>
-					<p class="mb-0">All lectures are delivered live. Lecture slides and required readings are available on this website.</p>
-				</div>
-				<div class="card mb-3">
-					<h4 class="mb-2"><i class="icon ph-duotone ph-chats-circle"></i>Community &amp; Support</h4>
-					<p class="mb-0">A dedicated <strong>Discord server</strong> provides channels for announcements, topic discussions, project help, and general conversation with fellow students and the instructor.</p>
-				</div>
-				<div class="card mb-3">
-					<h4 class="mb-2"><i class="icon ph-duotone ph-exam"></i>Assignments &amp; Projects</h4>
-					<p class="mb-0">Problem sets and projects are managed through <strong>Google Classroom</strong>, which handles submission, deadlines, and grading.</p>
-				</div>
-			</div>
-		</div>
-
-		<div class="subsection">
-			<div class="collapsible-header">
-				<h3 class="subsection-title"><i class="icon ph-duotone ph-question"></i>Frequently Asked Questions</h3>
-				<i class="collapsible-icon ph-duotone ph-caret-circle-down"></i>
-			</div>
-			<div class="collapsible-content">
-				<div class="card">
-					<h4 class="mb-2">Is the program really free?</h4>
-					<p>Yes. There are no tuition fees, registration fees, or hidden costs. All course materials, lectures, and tools used are freely accessible.</p>
-
-					<h4 class="mb-2">What are the prerequisites?</h4>
-					<p><strong>You must be registered at a qualifying Lebanese university.</strong> You should be comfortable with at least one programming language (the course uses Go and Rust) and have basic mathematical maturity. No prior cryptography knowledge is needed.</p>
-
-					<h4 class="mb-2">How much time should I expect to commit?</h4>
-					<p>Plan for approximately 6&ndash;10 hours per week, including watching lectures, completing readings, and working on assignments and projects.</p>
-
-					<h4 class="mb-2">Will I receive a certificate?</h4>
-					<p><strong>Yes!</strong> You will receive a signed certificate of course completion, and high-achieving students may be eligible for personalized letters of recommendation for their applications towards graduate studies. <strong>Certificates will include a unique QR code which can be scanned to verify their authenticity against an online record.</strong></p>
-
-					<h4 class="mb-2">Can graduate students apply?</h4>
-					<p>Yes. The program is open to both undergraduate and graduate students at Lebanese universities.</p>
-
-					<h4 class="mb-2">What if I'm not enrolled at a Lebanese university?</h4>
-					<p class="mb-0">This program is specifically designed for students currently enrolled at Lebanese universities. However, all course materials on this website are publicly available under a Creative Commons license for anyone to use independently.</p>
-				</div>
-			</div>
-		</div>
-		</section>
-		-->
-
-		<section id="calendar" class="section cal-section">
-			<div class="section-header">
-				<h2 class="section-title"><i class="icon ph-duotone ph-calendar-blank"></i>Summer 2026 Course Calendar</h2>
+				<p class="section-eyebrow">&sect; 02 &middot; Session Schedule</p>
+				<h2 class="section-title">Summer 2026 Course Calendar</h2>
 			</div>
 			<div class="cal-ribbon" data-cal-ribbon hidden></div>
 			<div class="cal-toolbar" data-cal-toolbar></div>
@@ -254,6 +160,7 @@
 
 		<section id="resources" class="section">
 			<div class="section-header">
+				<p class="section-eyebrow">&sect; 03 &middot; Library &amp; Tooling</p>
 				<h2 class="section-title">Resources</h2>
 			</div>
 			<p>Every lecture will be accompanied by outside readings that expand on what is discussed in class or present the same material in a different way. The readings and lectures are not replacements for each other; deeply understanding the material will likely require attendance as well as reading. It is possible to read before or after class, depending on your learning style.</p>
@@ -721,6 +628,7 @@
 
 		<section id="syllabus" class="section">
 			<div class="section-header">
+				<p class="section-eyebrow">&sect; 04 &middot; Two Parts, Eighteen Topics</p>
 				<h2 class="section-title">Syllabus</h2>
 			</div>
 
@@ -1438,6 +1346,7 @@
 
 		<section id="assignments" class="section">
 			<div class="section-header">
+				<p class="section-eyebrow">&sect; 05 &middot; Practice &amp; Proof</p>
 				<h2 class="section-title">Assignments &amp; Projects</h2>
 			</div>
 
@@ -1556,6 +1465,7 @@
 
 		<section id="thekeyexchange" class="section">
 			<div class="section-header">
+				<p class="section-eyebrow">&sect; 06 &middot; Beyond the Classroom</p>
 				<h2 class="section-title">The Key Exchange</h2>
 			</div>
 
@@ -1567,32 +1477,34 @@
 					<i class="collapsible-icon ph-duotone ph-caret-circle-down"></i>
 				</div>
 				<div class="collapsible-content">
-					<div class="card mb-3">
-						<h4 class="mb-2"><i class="icon ph-duotone ph-scroll"></i>Week 1: Paper Deep Dive</h4>
-						<p class="mb-2"><strong>Theme:</strong> <em>Reading and Understanding Research</em></p>
-						<p class="mb-2">Join us for collaborative discussions of seminal and cutting-edge cryptography papers. Learn efficient paper reading strategies (abstract &rarr; contributions &rarr; methodology &rarr; conclusion), practice identifying key contributions and limitations, and engage in collaborative annotation. We'll sometimes explore classics but more often react to the most recent papers from CRYPTO/Eurocrypt/CCS, and accessible papers with clear practical applications.</p>
-						<p class="mb-0"><strong>Skills developed:</strong> Critical analysis, technical reading comprehension, identifying research gaps</p>
-					</div>
+					<div class="week-grid">
+						<div class="card" data-week="1">
+							<h4 class="mb-2"><i class="icon ph-duotone ph-scroll"></i>Week 1: Paper Deep Dive</h4>
+							<p class="mb-2"><strong>Theme:</strong> <em>Reading and Understanding Research</em></p>
+							<p class="mb-2">Join us for collaborative discussions of seminal and cutting-edge cryptography papers. Learn efficient paper reading strategies (abstract &rarr; contributions &rarr; methodology &rarr; conclusion), practice identifying key contributions and limitations, and engage in collaborative annotation. We'll sometimes explore classics but more often react to the most recent papers from CRYPTO/Eurocrypt/CCS, and accessible papers with clear practical applications.</p>
+							<p class="mb-0"><strong>Skills developed:</strong> Critical analysis, technical reading comprehension, identifying research gaps</p>
+						</div>
 
-					<div class="card mb-3">
-						<h4 class="mb-2"><i class="icon ph-duotone ph-presentation-chart"></i>Week 2: Student Presentations</h4>
-						<p class="mb-2"><strong>Theme:</strong> <em>Communicating Complex Ideas</em></p>
-						<p class="mb-2">Practice your presentation skills with 15-minute talks on cryptographic topics, followed by constructive peer feedback. Topics include explaining cryptographic constructions, analyzing recent attacks or vulnerabilities, presenting project progress, or proposing research ideas. We'll also have "lightning talks" for 3-minute research pitches and practice with visual aids and demos.</p>
-						<p class="mb-0"><strong>Skills developed:</strong> Public speaking, slide design, handling Q&A, time management</p>
-					</div>
+						<div class="card" data-week="2">
+							<h4 class="mb-2"><i class="icon ph-duotone ph-presentation-chart"></i>Week 2: Student Presentations</h4>
+							<p class="mb-2"><strong>Theme:</strong> <em>Communicating Complex Ideas</em></p>
+							<p class="mb-2">Practice your presentation skills with 15-minute talks on cryptographic topics, followed by constructive peer feedback. Topics include explaining cryptographic constructions, analyzing recent attacks or vulnerabilities, presenting project progress, or proposing research ideas. We'll also have "lightning talks" for 3-minute research pitches and practice with visual aids and demos.</p>
+							<p class="mb-0"><strong>Skills developed:</strong> Public speaking, slide design, handling Q&A, time management</p>
+						</div>
 
-					<div class="card mb-3">
-						<h4 class="mb-2"><i class="icon ph-duotone ph-pencil-simple"></i>Week 3: Writing Workshop</h4>
-						<p class="mb-2"><strong>Theme:</strong> <em>Scientific Writing and Documentation</em></p>
-						<p class="mb-2">Develop your technical writing through collaborative exercises and peer review sessions. Projects include abstract writing for imaginary papers, blog posts explaining crypto concepts, security audit reports, and research proposals. We'll also cover LaTeX tutorials for papers and security disclosure writing practices.</p>
-						<p class="mb-0"><strong>Skills developed:</strong> Technical writing clarity, academic writing style, documentation best practices, peer review skills</p>
-					</div>
+						<div class="card" data-week="3">
+							<h4 class="mb-2"><i class="icon ph-duotone ph-pencil-simple"></i>Week 3: Writing Workshop</h4>
+							<p class="mb-2"><strong>Theme:</strong> <em>Scientific Writing and Documentation</em></p>
+							<p class="mb-2">Develop your technical writing through collaborative exercises and peer review sessions. Projects include abstract writing for imaginary papers, blog posts explaining crypto concepts, security audit reports, and research proposals. We'll also cover LaTeX tutorials for papers and security disclosure writing practices.</p>
+							<p class="mb-0"><strong>Skills developed:</strong> Technical writing clarity, academic writing style, documentation best practices, peer review skills</p>
+						</div>
 
-					<div class="card mb-3">
-						<h4 class="mb-2"><i class="icon ph-duotone ph-coffee"></i>Week 4: Career Café</h4>
-						<p class="mb-2"><strong>Theme:</strong> <em>Professional Development and Pathways</em></p>
-						<p class="mb-2">Explore cryptography career paths with industry guest speakers (virtual or in-person), graduate school application workshops, interview preparation sessions, and portfolio/CV reviews. Topics include career paths in cryptography, industry vs. academia decisions, required skills for different roles, and networking strategies.</p>
-						<p class="mb-0"><strong>Skills developed:</strong> Professional networking, interview skills, career planning, industry awareness</p>
+						<div class="card" data-week="4">
+							<h4 class="mb-2"><i class="icon ph-duotone ph-coffee"></i>Week 4: Career Café</h4>
+							<p class="mb-2"><strong>Theme:</strong> <em>Professional Development and Pathways</em></p>
+							<p class="mb-2">Explore cryptography career paths with industry guest speakers (virtual or in-person), graduate school application workshops, interview preparation sessions, and portfolio/CV reviews. Topics include career paths in cryptography, industry vs. academia decisions, required skills for different roles, and networking strategies.</p>
+							<p class="mb-0"><strong>Skills developed:</strong> Professional networking, interview skills, career planning, industry awareness</p>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -1601,11 +1513,33 @@
 
 	<footer class="footer">
 		<div class="container">
-			<div class="footer-license">
-				<img src="res/images/by-nc-sa.svg" alt="Creative Commons BY-NC-SA badge" loading="lazy" />
-				<p><a property="dct:title" rel="cc:attributionURL" href="https://appliedcryptography.page">Applied Cryptography</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://symbolic.software">Symbolic Software</a> and <a href="https://git.cedarcrypt.org/nadim/appliedcryptography/src/branch/main/CONTRIBUTORS.md">contributors</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a></p>
+			<div class="footer-grid">
+				<div class="footer-brand">
+					<p class="footer-wordmark">Applied Cryptography</p>
+					<p class="footer-tagline">Raise up your bat!</p>
+				</div>
+				<nav class="footer-nav" aria-label="Course">
+					<p class="footer-heading">Course</p>
+					<a href="#overview">Overview</a>
+					<a href="#calendar">Calendar</a>
+					<a href="#syllabus">Syllabus</a>
+					<a href="#assignments">Assignments &amp; Projects</a>
+				</nav>
+				<nav class="footer-nav" aria-label="Materials">
+					<p class="footer-heading">Materials</p>
+					<a href="#resources">Resources</a>
+					<a href="paper/">Paper Library</a>
+					<a href="final-exam">Final Exam</a>
+					<a href="#thekeyexchange">The Key Exchange</a>
+				</nav>
 			</div>
-			<i class="icon ph-duotone ph-music-notes"></i><strong>Inspiration Aid:</strong> <a href="https://trevorgomes.bandcamp.com/album/deltarune-piano-collections-vol-1">A</a> &bull; <a href="https://ddduv.bandcamp.com/track/the-third-sanctuary-cover">B</a> &bull; <a href="https://www.youtube.com/watch?v=xmbordNFLyQ">C</a> &bull; <a href="https://www.youtube.com/watch?v=sytcLsMX3N8">D</a>
+			<div class="footer-bottom">
+				<div class="footer-license">
+					<img src="res/images/by-nc-sa.svg" alt="Creative Commons BY-NC-SA badge" loading="lazy" />
+					<p><a property="dct:title" rel="cc:attributionURL" href="https://appliedcryptography.page">Applied Cryptography</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://symbolic.software">Symbolic Software</a> and <a href="https://git.cedarcrypt.org/nadim/appliedcryptography/src/branch/main/CONTRIBUTORS.md">contributors</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a></p>
+				</div>
+				<p class="footer-extra"><i class="icon ph-duotone ph-music-notes"></i><strong>Inspiration Aid:</strong> <a href="https://trevorgomes.bandcamp.com/album/deltarune-piano-collections-vol-1">A</a> &bull; <a href="https://ddduv.bandcamp.com/track/the-third-sanctuary-cover">B</a> &bull; <a href="https://www.youtube.com/watch?v=xmbordNFLyQ">C</a> &bull; <a href="https://www.youtube.com/watch?v=sytcLsMX3N8">D</a></p>
+			</div>
 		</div>
 	</footer>
 </body>
