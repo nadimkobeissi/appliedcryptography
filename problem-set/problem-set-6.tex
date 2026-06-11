@@ -3,15 +3,15 @@
 
 \title{Applied Cryptography - Problem Set 6: High-Assurance Cryptography}
 \author{Nadim Kobeissi}
-\subject{Problem set covering high-assurance cryptography topics including formal verification methods, symbolic vs computational models, side-channel resistance, and practical deployment of verified cryptographic systems.}
-\keywords{formal verification, ProVerif, CryptoVerif, symbolic model, computational model, side channels, constant-time implementation, protocol verification, equivalence properties}
+\subject{Problem set covering high-assurance cryptography topics including formal verification methods, symbolic vs. computational models, side-channel resistance, verification boundaries, and the gap between verification claims and verification reality in deployed cryptographic systems.}
+\keywords{formal verification, ProVerif, CryptoVerif, symbolic model, computational model, side channels, constant-time implementation, protocol verification, equivalence properties, verification boundary, verification theatre}
 
 \begin{document}
 \classhandoutheader
 \section*{Problem Set 6: High-Assurance Cryptography}
 
 \begin{tcolorbox}[colframe=OliveGreen!30!white,colback=OliveGreen!5!white]
-	\textbf{Instructions:} This problem set covers topics in high-assurance cryptography and formal verification methods from topic 2.5\footnote{\url{https://appliedcryptography.page/slides/\#2-5}} of the course. Submit your solutions as a neatly formatted PDF. You are encouraged to collaborate with classmates in studying the material, but your submitted solutions must be your own work. For proofs, clearly state your assumptions, steps, and conclusions.
+	\textbf{Instructions:} This problem set covers topics in high-assurance cryptography, formal verification, and verification boundaries from topic 2.5\footnote{\url{https://appliedcryptography.page/slides/\#2-5}} of the course. Submit your solutions as a neatly formatted PDF. You are encouraged to collaborate with classmates in studying the material, but your submitted solutions must be your own work. For proofs, clearly state your assumptions, steps, and conclusions.
 \end{tcolorbox}
 
 \section{Design-Level Security and Formal Verification}
@@ -19,7 +19,7 @@
 	\subsection*{Symbolic vs. Computational Models}
 
 	\question[12] \textbf{Protocol Modeling Trade-offs:}
-	You are tasked with formally verifying a new secure messaging protocol for a government agency. The protocol involves complex key derivation, multiple handshake modes, and post-compromise security guarantees.
+	You are tasked with formally verifying a new secure messaging protocol for a government agency. The protocol involves complex key derivation, multiple handshake modes, and a large number of Diffie-Hellman operations.
 	\begin{parts}
 		\part Compare the advantages and limitations of using symbolic (ProVerif) versus computational (CryptoVerif) approaches for this protocol. Which properties would be easier to verify in each model?
 		\part The protocol uses a custom authenticated encryption scheme. Explain, at a high level, how such a construction would be modeled in the symbolic model. What assumptions would you need to make?
@@ -38,17 +38,15 @@
 
 	\begin{parts}
 		\part[6] Explain why receipt-freeness is naturally formulated as an equivalence property rather than a trace property.\footnote{Hint: Consider what distinguishes trace properties (examining individual executions) from equivalence properties (comparing multiple scenarios).} Then formulate receipt-freeness as an equivalence property in the symbolic model.\footnote{Hint: Think about what two processes should be indistinguishable to model this property.}
-		\part[6] The slides describe three levels of leakage models for implementation security:\footnote{\url{https://appliedcryptography.page/slides/\#2-5}}
+		\part[6] The slides contrast two ways of formulating secrecy in the symbolic model:\footnote{\url{https://appliedcryptography.page/slides/\#2-5}}
 		\begin{itemize}
-			\item \textbf{Program counter (PC) model}: Leaks only control flow (which branches are taken, loop iterations).
-			\item \textbf{Constant-time model}: Leaks PC plus memory addresses accessed (but not values).
-			\item \textbf{Size-respecting model}: Leaks PC, memory addresses, and operand sizes.
+			\item \textbf{As a trace property}: The secret value never appears in the adversary's knowledge.
+			\item \textbf{As an equivalence property}: The adversary cannot distinguish the real secret from a random value.
 		\end{itemize}
-		For a password verification function that compares user input against a stored password:
 		\begin{enumerate}
-			\item Give a concrete example of how this function could violate each of the three models.
-			\item For each violation, explain what information an attacker could learn.
-			\item Show how to rewrite the function to satisfy the constant-time model. What is the performance trade-off?
+			\item Explain why the equivalence formulation is strictly stronger than the trace formulation.
+			\item Describe a protocol that satisfies the trace property but violates the equivalence property.\footnote{Hint: The protocol does not need to reveal the secret itself - only something derived from it.}
+			\item Give a concrete scenario in which this gap enables a practical attack.
 		\end{enumerate}
 	\end{parts}
 
@@ -69,10 +67,14 @@
 	\question[8] \textbf{Compiler and Hardware Challenges:}
 	AES implementations commonly use lookup tables (S-boxes) for the SubBytes operation, where table indices depend on secret key material XORed with plaintext. This creates timing variations through cache hits/misses that can leak key bits.
 
-	You've written constant-time code for AES, carefully avoiding these vulnerabilities by eliminating table lookups (perhaps using bit-slicing), key-dependent branches, and variable-time operations.
+	You've written constant-time code for AES, carefully avoiding these vulnerabilities by eliminating table lookups, key-dependent branches, and variable-time operations.
 	\begin{parts}
 		\part[4] Give three specific examples of how a modern compiler might destroy your constant-time guarantees through ``optimization.'' For each, show the original code and the problematic transformation.
-		\part[4] Even with perfect constant-time assembly code, modern CPUs introduce timing variations. Explain how branch predictors can leak information even when your code has no explicit branches. Analyze the trade-offs between different constant-time implementation strategies (bit-slicing, masking, vectorization) in the presence of micro-architectural attacks.
+		\part[4] Even with perfect constant-time assembly code, modern CPUs introduce timing variations. The slides caution that constant-time proofs hold only \textit{relative to a leakage model}: hardware may leak more than the model captures, and physical attacks bypass software protections entirely.
+		\begin{enumerate}
+			\item Explain how branch prediction and speculative execution (as in Spectre-style attacks) can leak secrets even when code satisfies the constant-time model.
+			\item The TEE.fail attack (2025) physically interposes on the DDR5 memory bus to extract secrets from trusted execution environments. Explain why physical attacks of this kind fall outside all three leakage models covered in the course, and what this implies about the scope of formal side-channel guarantees.
+		\end{enumerate}
 	\end{parts}
 
 	\subsection*{Side-Channel Resistance}
@@ -84,9 +86,9 @@
 		\part[4] Consider this password checking code:
 		\begin{verbatim}
 for (i = 0; i < len; i++) {
-				if (password[i] != input[i]) {
-								return FAIL;
-				}
+    if (password[i] != input[i]) {
+        return FAIL;
+    }
 }
 return SUCCESS;
 \end{verbatim}
@@ -96,29 +98,25 @@ return SUCCESS;
 
 \section{Computer-Aided Cryptography in Practice}
 \begin{questions}
-	\subsection*{Verification Case Studies}
+	\subsection*{The Verification Boundary}
 
-	\question[20] \textbf{\haclstar Success Story:}
-	Mozilla integrated \haclstar into Firefox, replacing hand-written assembly with verified \fstar code.
+	\question[30] \textbf{Auditing a ``Formally Verified'' Library:}
+	A startup advertises its cryptographic library as ``formally verified,'' without qualification. An independent audit - much like the libcrux audit presented in the slides - uncovers the following findings:
+	\begin{enumerate}
+		\item The library's public decryption API unconditionally unwraps the result returned by the verified decryption core, so any tampered ciphertext crashes the calling application.
+		\item The verified field arithmetic depends on a platform multiplication intrinsic whose specification is axiomatized: the verifier accepts it without proof. On one supported platform, the intrinsic's software fallback computes incorrect results.
+		\item One module's formal specification transcribes a rounding constant incorrectly from the standard it claims to formalize. The conformance proof still ``passes,'' because the build system admits the module by default, so its proof obligations are never actually checked.
+		\item The key exchange wrapper feeds the raw Diffie-Hellman output directly into key derivation, omitting the all-zero output check that the relevant RFC mandates.
+		\item The signature implementation is provably correct with respect to its formal specification, but the specification omits a normalization requirement that major deployed systems enforce, so some of the library's signatures are rejected in practice.
+	\end{enumerate}
+
 	\begin{parts}
-		\part[10] Analyze why \haclstar succeeded where previous verification efforts failed. Consider performance, API compatibility, and development process.
-		\part[10] The \haclstar team claims ``verification for free'' - no performance penalty. Examine this claim critically. What optimizations might verified code miss compared to expert assembly? Design a gradual migration strategy for replacing OpenSSL with verified implementations.
+		\part[10] Classify each finding according to the slides' taxonomy of verification boundary failures: Type I (unverified platform abstractions), Type II (unverified protocol logic), Type III (specification incompleteness), Type IV (unverified wrapper logic), or Type V (specification errors and false proofs). Briefly justify each classification.
+		\part[10] The slides argue that admitted proofs are \textit{more dangerous} than code that was never claimed to be verified. Explain this argument with reference to finding 3. As part of your answer, explain what lax checking does and does not establish (syntax, types, proofs), and describe the mechanisms that allow a false proof to survive in a codebase advertised as formally verified.
+		\part[10] The startup hires you to repair its verification process. Drawing on the slides' five recommendations and the boundary-management practices of projects such as seL4, CompCert, and AWS's verified libcrypto, propose a concrete remediation plan. For each of the five findings, identify which element of your plan would have caught or prevented it.
 	\end{parts}
 
 	\subsection*{Building Verified Systems}
-
-	\question[10] \textbf{Multiple Cipher Suites Challenge:}
-	Consider a secure messaging protocol that supports three different cipher suites:
-	\begin{itemize}
-		\item Suite A: AES-128-GCM with RSA-2048
-		\item Suite B: AES-256-GCM with ECDH-P256
-		\item Suite C: ChaCha20-Poly1305 with Ed25519
-	\end{itemize}
-
-	\begin{parts}
-		\part[5] The protocol allows parties to negotiate which cipher suite to use during the handshake. What new attack vectors does this negotiation introduce? How would you model cipher suite negotiation in ProVerif to catch downgrade attacks?
-		\part[5] You need to formally verify the security of the protocol described above. Describe how you would structure the verification to avoid analyzing all possible combinations of sender/receiver cipher suite choices. What common security properties can you abstract across all cipher suites?
-	\end{parts}
 
 	\question[20] \textbf{End-to-End Verification Project:}
 	You're leading the verification of a new secure communication protocol that will be deployed at nation-state scale. The protocol combines classical and post-quantum cryptography, supports multiple authentication modes, and must resist both computational and side-channel attacks.
@@ -130,10 +128,10 @@ return SUCCESS;
 		Write formal security definitions for the protocol's goals. Specify side-channel resistance requirements formally.
 
 		\part[5] \textbf{Implementation Strategy:}
-		Choose implementation languages and verification tools. Design the development workflow to maintain verification.
+		Choose implementation languages and verification tools. Design the development workflow to maintain verification as the protocol evolves, ensuring that all proofs are actually re-checked on every change rather than silently admitted.
 
 		\part[5] \textbf{Assurance Arguments:}
-		Create a comprehensive assurance case for stakeholders. Address the ``fine print'' - what's not verified and why. Design a maintenance strategy for evolving threats.
+		Create a comprehensive assurance case for stakeholders. Document the verification boundary explicitly, addressing the ``fine print'' - what's not verified and why. Using the slides' spectrum of verification claims, state which claim your system could honestly make and how you would communicate its scope without engaging in verification theatre.
 	\end{parts}
 \end{questions}
 
@@ -144,11 +142,11 @@ return SUCCESS;
 
 		Analyze which elements of the cryptography stack Allen Gumm could compromise to bypass the formal verification guarantees:
 		\begin{parts}
-			\part \textbf{Beyond the Verification Boundary:} Identify at least three components or interfaces that typically fall outside the formal verification scope outlined above but are critical for security. For each, explain how Allen could introduce vulnerabilities and why the verification wouldn't catch them.
+			\part \textbf{Beyond the Verification Boundary:} Identify at least three components or interfaces that typically fall outside the formal verification scope outlined above but are critical for security. For each, explain how Allen could introduce vulnerabilities and why the verification wouldn't catch them, and classify the sabotage according to the slides' taxonomy of verification boundary failures (Types I--V).
 
 			\part \textbf{Trust Assumptions:} Formal verification relies on various trust assumptions. List specific assumptions made by \haclstar and ProVerif that Allen could violate in practice. How could he exploit the gap between the formal model and the deployed system?
 
-			\part \textbf{Deployment Sabotage:} Even with verified code and protocols, deployment introduces new attack surfaces. Propose three realistic ways Allen could compromise the system during build, deployment, or runtime without modifying the verified components themselves. What additional verification or monitoring would be needed to detect his sticky schemes?
+			\part \textbf{Deployment Sabotage:} Even with verified code and protocols, deployment introduces new attack surfaces. Propose three realistic ways Allen could compromise the system during build, deployment, or runtime without modifying the verified components themselves. (The slides' discussion of build systems that silently admit proofs by default may give Allen some ideas.) What additional verification or monitoring would be needed to detect his sticky schemes?
 		\end{parts}
 
 		Your analysis should be concrete and technically sound, focusing on practical vulnerabilities rather than theoretical limitations. Consider real-world deployment scenarios and the boundaries of current verification technology.
