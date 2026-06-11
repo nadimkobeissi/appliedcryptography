@@ -16,17 +16,17 @@
 
 \section{Transport Layer Security}
 \begin{questions}
-	\question[15] \textbf{TLS Attack Analysis}
+	\question[20] \textbf{TLS Attack Analysis}
 
 	\begin{parts}
-		\part[7] \textbf{The Legacy Downgrade Scenario:}
+		\part[10] \textbf{The Legacy Downgrade Scenario:}
 		You are the security engineer for a major e-commerce platform. Your security scan reveals that 15\% of your customers are still using browsers that only support SSL 3.0 and TLS 1.0.
 		\begin{subparts}
 			\subpart Design a migration strategy that balances security and business requirements. How would you phase out support for vulnerable protocols without losing customers?
 			\subpart An attacker attempts a POODLE attack by forcing downgrades to SSL 3.0. Explain step by step how this attack works and why modern TLS versions prevent it.
 		\end{subparts}
 
-		\part[8] \textbf{Certificate Authority Compromise:}
+		\part[10] \textbf{Certificate Authority Compromise:}
 		A major certificate authority has been compromised, similar to the DigiNotar incident. The attacker has issued valid certificates for your company's domains.
 		\begin{subparts}
 			\subpart Describe the immediate steps you would take upon discovering this compromise. Consider both technical measures and communication strategies.
@@ -34,17 +34,17 @@
 		\end{subparts}
 	\end{parts}
 
-	\question[10] \textbf{TLS 1.3 Design Decisions}
+	\question[15] \textbf{TLS 1.3 Design Decisions}
 
 	\begin{parts}
-		\part[5] \textbf{Forward Secrecy vs Performance:}
+		\part[7] \textbf{Forward Secrecy vs Performance:}
 		You're designing a high-traffic API service that needs to handle millions of TLS connections per day.
 		\begin{subparts}
 			\subpart Compare the performance implications of TLS 1.2's two-round-trip handshake versus TLS 1.3's single-round-trip design. Quantify the latency savings for different geographic scenarios.
 			\subpart Your infrastructure team wants to use RSA key exchange for ``simplicity.'' Explain why ephemeral Diffie-Hellman is crucial for forward secrecy, using concrete attack scenarios.
 		\end{subparts}
 
-		\part[5] \textbf{Enterprise Monitoring and Middleboxes:}
+		\part[8] \textbf{Enterprise Monitoring and Middleboxes:}
 		Your organization's security team demands the ability to inspect TLS traffic for data loss prevention and malware detection.
 		\begin{subparts}
 			\subpart TLS 1.3's encrypted handshake prevents passive monitoring that was possible with TLS 1.2. Compare different approaches for enterprise TLS inspection (proxy with custom CA, TLS interception devices, endpoint agents). What are the security implications of each?
@@ -55,17 +55,17 @@
 
 \section{The RC4 Cryptanalysis Story}
 \begin{questions}
-	\question[15] \textbf{Stream Cipher Vulnerabilities}
+	\question[20] \textbf{Stream Cipher Vulnerabilities}
 
 	\begin{parts}
-		\part[7.5] \textbf{WEP Forensics Challenge:}
+		\part[10] \textbf{WEP Forensics Challenge:}
 		You've been hired to audit a company that claims their ``modified WEP'' implementation fixes the original vulnerabilities by using 256-bit keys instead of 104-bit keys.
 		\begin{subparts}
 			\subpart Explain why simply increasing the key size doesn't fix WEP's fundamental problems. Focus on the IV structure and its interaction with RC4's weak keys.
 			\subpart Design an attack against this ``improved'' WEP that demonstrates key recovery is still feasible. How many packets would you need?
 		\end{subparts}
 
-		\part[7.5] \textbf{RC4 in Modern Protocols:}
+		\part[10] \textbf{RC4 in Modern Protocols:}
 		Despite RC4's prohibition in TLS, you discover a proprietary VPN protocol still using RC4 ``with modifications.''
 		\begin{subparts}
 			\subpart The developers claim they ``fixed'' RC4 by discarding the first 3072 bytes of keystream. Analyze whether this prevents the known biases and attacks.
@@ -102,10 +102,10 @@
 		\end{subparts}
 	\end{parts}
 
-	\question[25] \textbf{Authenticated Key Exchange and Ratcheting Analysis}
+	\question[30] \textbf{Authenticated Key Exchange and Ratcheting Analysis}
 
 	\begin{parts}
-		\part[5] \textbf{Basic Authentication Properties:}
+		\part[7] \textbf{Basic Authentication Properties:}
 		Analyze the following authenticated key exchange protocols. For each protocol, determine whether it provides mutual authentication, key confirmation, and protection against man-in-the-middle attacks.
 
 		\textbf{Protocol A:}
@@ -132,7 +132,7 @@
 		\end{center}
 		Both parties compute $K = g^{xy}$ as the shared key.
 
-		\part[7] \textbf{Identity Binding and Forward Secrecy:}
+		\part[8] \textbf{Identity Binding and Forward Secrecy:}
 		The following protocol attempts to provide authenticated key exchange. Determine whether it is vulnerable to identity misbinding, key compromise impersonation (KCI), or replay attacks, and whether it lacks perfect forward secrecy.
 
 		\textbf{Protocol C:}
@@ -147,7 +147,7 @@
 		\end{center}
 		Here, $a$ is $A$'s long-term private key, $b$ is $B$'s long-term private key, and the session key is $K = g^{xy}$.
 
-		\part[13] \textbf{Broken Ratcheting Protocols:}
+		\part[15] \textbf{Broken Ratcheting Protocols:}
 		The following two ratcheting protocols are used in messaging applications. Both contain subtle flaws that compromise their security properties. For each protocol, identify the vulnerabilities and explain their impact on forward secrecy, backward secrecy (post-compromise security), and message authentication.
 
 		\textbf{Ratchet Protocol 1: \textit{``SimpleSafe''}}
