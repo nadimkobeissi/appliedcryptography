@@ -52,18 +52,18 @@
 		\end{column}
 	\end{columns}
 	\begin{alertblock}{Hybrid Encryption}
-		Actually uses symmetric crypto for message, asymmetric for key exchange
+		Actually uses symmetric crypto for the message, asymmetric for key exchange
 	\end{alertblock}
 \end{frame}
 
 \begin{frame}{PGP in email clients}
 	\begin{itemize}
-		\item \textbf{Early days}: Command-line tools (1991-1995)
+		\item \textbf{Early days}: Command-line tools (1991--1995)
 		      \begin{itemize}
 			      \item Manual encryption/decryption
 			      \item Copy and paste ciphertext into email
 		      \end{itemize}
-		\item \textbf{Integration era}: Plugins and extensions (1995-2010s)
+		\item \textbf{Integration era}: Plugins and extensions (1995--2010s)
 		      \begin{itemize}
 			      \item Enigmail for Thunderbird
 			      \item GPGTools for Apple Mail
@@ -209,14 +209,14 @@
 			\textbf{Results: Still Catastrophic}
 			\begin{itemize}
 				\item \textbf{Only 1/10 pairs succeeded!}
-				\item That pair took full 45 minutes
+				\item That pair took the full 45 minutes
 				\item Success only because one knew PKI
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Common Failures}
 			\begin{itemize}
-				\item Encrypted with own public key (7/10)
+				\item Encrypted with their own public key (7/10)
 				\item Generated keys with friend's info
 				\item Recipients confused by PGP block
 				\item One sent private key + password!
@@ -381,7 +381,7 @@
 
 \begin{frame}{About this section}
 	\begin{itemize}
-		\item We're going to use OTR in order to start to understand how secure messaging protocols are designed.
+		\item We're going to use OTR in order to start understanding how secure messaging protocols are designed.
 		\item A core concept we're going to expand on in some detail: \textbf{authenticated key exchange}, especially how it applies to secure messaging protocols.
 	\end{itemize}
 \end{frame}
@@ -431,7 +431,7 @@
 	\begin{itemize}
 		\item Forward secrecy means that the protocol must:
 		      \begin{enumerate}
-			      \item Introduce a notion of \textit{ephemeral} public key pairs.
+			      \item Introduce a notion of \textit{ephemeral} key pairs.
 			      \item Use long-term key pairs (``identity keys'') \textit{only} in the AKE, and \textit{only} for authentication and identity binding, not in the ratcheting steps.
 		      \end{enumerate}
 	\end{itemize}
@@ -711,7 +711,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{The Problem}
 			\begin{itemize}
-				\item How do we cryptographically tie messages to identities?
+				\item How do we cryptographically tie key exchanges to identities?
 				\item Prevent substitution attacks
 				\item Ensure ``Bob's key'' really belongs to Bob
 			\end{itemize}
@@ -751,7 +751,7 @@
 			\textbf{Example scenarios:}
 			\begin{itemize}
 				\item Replay old ``I love you'' after breakup
-				\item Replay ``Yes, transfer \$1000'' multiple times
+				\item Replay ``Yes, transfer \$1{,}000'' multiple times
 				\item Replay old key exchange messages
 			\end{itemize}
 		\end{column}
@@ -896,7 +896,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item ECDH produces a point (or its x-coordinate) as the shared secret
+				\item ECDH produces a point (or its $x$-coordinate) as the shared secret
 				\item This value has mathematical structure:
 				      \begin{itemize}
 					      \item Limited to valid curve points
@@ -907,7 +907,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\imagewithcaption{elliptic-curve-integers.png}{Elliptic curve over the integers. Source: Serious Cryptography}
+			\imagewithcaption{elliptic-curve-integers.png}{Elliptic curve over the integers. Source: \textit{Serious Cryptography}}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -929,7 +929,7 @@
 			\end{center}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\imagewithcaption{elliptic-curve-integers.png}{Elliptic curve over the integers. Source: Serious Cryptography}
+			\imagewithcaption{elliptic-curve-integers.png}{Elliptic curve over the integers. Source: \textit{Serious Cryptography}}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -939,7 +939,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Example: Curve25519 point as AES key}
 			\begin{itemize}
-				\item Curve25519 produces 32-byte x-coordinates
+				\item Curve25519 produces 32-byte $x$-coordinates
 				\item But only $\approx 2^{252}$ valid points
 				\item AES-256 expects uniform 256-bit keys
 			\end{itemize}
@@ -954,9 +954,9 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Distribution problems:}
 			\begin{itemize}
-				\item \textbf{Bit bias}: Top 3 bits of x-coordinate never all 1
+				\item \textbf{Bit bias}: Top 3 bits of the $x$-coordinate are never all 1
 				\item \textbf{Modular reduction}: $x < 2^{255} - 19$
-				\item \textbf{Invalid points}: Half of x-values have no corresponding y
+				\item \textbf{Invalid points}: Half of $x$-values have no corresponding $y$
 			\end{itemize}
 			\begin{alertblock}{Real vulnerability}
 				In some protocols, attacker can force specific shared secrets by choosing malicious public keys from small subgroups
@@ -1034,7 +1034,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{HKDF in practice: OTR key derivation}{OTR does not do this, this is an example}
+\begin{frame}{HKDF in practice: OTR key derivation}{OTR does not do this - this is an example}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{From one secret to many keys:}
@@ -1060,7 +1060,7 @@
 				\item \textbf{No key reuse}: Different contexts = different keys
 				\item \textbf{Direction-specific}: Alice/Bob get different keys
 			\end{itemize}
-			\textbf{Compare to ad-hoc approach:}
+			\textbf{Compare to the ad-hoc approach:}
 			\begin{itemize}
 				\item No semantic meaning
 				\item Easy to mess up counters
@@ -1078,7 +1078,7 @@
 		      \begin{itemize}
 			      \item The encrypted message itself
 			      \item A new ephemeral DH public key share
-			      \item MAC authenticating the entire message
+			      \item A MAC authenticating the entire message
 		      \end{itemize}
 		\item \textbf{On sending/receiving a message:}
 		      \begin{enumerate}
@@ -1184,7 +1184,7 @@
 			\begin{itemize}
 				\item Messages authenticated to recipient
 				\item But no cryptographic proof for third parties
-				\item \textbf{After conversation:} anyone could have created the transcript
+				\item \textbf{After the conversation:} anyone could have created the transcript
 			\end{itemize}
 			\textbf{OTR's approach:}
 			\begin{itemize}
@@ -1227,7 +1227,7 @@
 			\begin{itemize}
 				\item Classified U.S. military footage from July 2007
 				\item Apache helicopter attack in Baghdad
-				\item Killed 11 people including 2 Reuters journalists
+				\item Killed 11 people, including two Reuters journalists
 				\item Allegedly leaked by Chelsea Manning to WikiLeaks
 				\item Published April 2010
 			\end{itemize}
@@ -1240,7 +1240,7 @@
 	\begin{itemize}
 		\item Chelsea Manning allegedly used OTR with Adrian Lamo
 		\item Allegedly discussed classified document leaks
-		\item Lamo saved chat logs, gave to FBI
+		\item Lamo saved chat logs and gave them to the FBI
 		\item \textbf{Used as evidence in court}
 	\end{itemize}
 	\textbf{Why deniability failed:}
@@ -1253,7 +1253,6 @@
 \end{frame}
 
 \begin{frame}{The deniability debate: Is deniability worth anything?}
-	\textbf{Is deniability worth anything?}
 	\begin{itemize}
 		\item \textbf{Arguments for:}
 		      \begin{itemize}
@@ -1283,7 +1282,7 @@
 				\item Attacker can force use of older, weaker version
 				\item \textbf{Attack scenario:}
 				      \begin{itemize}
-					      \item Attacker modifies messages to claim only OTRv1
+					      \item Attacker modifies messages to claim only OTRv1 is supported
 				      \end{itemize}
 				\item \textbf{The fix:}
 				      \begin{itemize}
@@ -1295,7 +1294,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Authentication Failure}
 			\begin{itemize}
-				\item Mallory can convince Alice she completed AKE with Bob
+				\item Mallory can convince Alice she completed an AKE with Bob
 				\item Bob has no knowledge of this exchange
 				\item Only affects AKE completion belief
 				\item \textbf{Important limitations:}
@@ -1356,7 +1355,7 @@
 					      \item Published MAC keys
 					      \item Malleable encryption
 				      \end{itemize}
-				\item Bob accepts as delayed message
+				\item Bob accepts it as a delayed message
 			\end{enumerate}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1372,7 +1371,7 @@
 				\item Insert forged messages
 				\item Modify past messages
 				\item Break conversation integrity
-				\item Deniability feature enables attack!
+				\item The deniability feature enables the attack!
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1429,7 +1428,7 @@
 					      \item Wait for Bob to come online
 					      \item Then initiate secure chat
 				      \end{itemize}
-				\item Works for MSN Messenger and the early 2000s
+				\item Worked for MSN Messenger and the early 2000s
 				\item Not suitable for mobile era
 			\end{itemize}
 		\end{column}
@@ -1451,7 +1450,8 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{OTR version 2: Authenticated Key Exchange}
+\begin{frame}{OTR version 2: Authenticated Key Exchange}{Reminder}
+	\vspace{-0.5cm}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{flushleft}
@@ -1515,7 +1515,7 @@
 					\node (Server) at (4,0) {\textbf{Server}};
 					\node (Bob) at (8,0) {\textbf{Bob}};
 					\draw[<-, thick] (4.5,-0.5) -- (7.5,-0.5) node[midway,above] {\small Upload};
-					\node[right, align=left] at (8,-1.5) {$g^B, g^{B}_{spk},$\\[0.25em]$\func{sign}{B, g^{B}_{spk}},$\\[0.25em]$g^{B}_{opk_0} \ldots g^{B}_{opk_{100}}$};
+					\node[right, align=left] at (8,-1.5) {$g^B, g^{B}_{spk},$\\[0.25em]$\func{sign}{B, g^{B}_{spk}},$\\[0.25em]$g^{B}_{opk_0} \ldots g^{B}_{opk_{99}}$};
 					\draw[->, thick] (0.5,-1) -- (3.5,-1) node[midway,above] {\small Fetch Bob};
 					\draw[<-, thick] (0.5,-1.5) -- (3.5,-1.5) node[midway,above] {\small Bundle};
 					\node[left, align=right] at (0,-1.5) {$g^B, g^{B}_{spk},$\\[0.25em]$\func{sign}{B, g^{B}_{spk}},$\\[0.25em]$g^{B}_{opk_i}$};
@@ -1535,13 +1535,13 @@
 
 \begin{frame}{X3DH: Signal's Asynchronous Key Exchange}
 	\begin{itemize}
-		\item $spk$: ``Signed pre-key'': a signed ephemeral key
+		\item $spk$: ``Signed pre-key'' - a signed ephemeral key
 		      \begin{itemize}
 			      \item Replaced every 2 days
 		      \end{itemize}
 		\item $opk$: ``One-time'' ephemeral pre-key
 		      \begin{itemize}
-			      \item Bob uploads 100 of them, used only once
+			      \item Bob uploads 100 of them, each used only once
 		      \end{itemize}
 		\item $eph$: Ephemeral keys, generated during the session
 		\item $c_0 \ldots c_n$: Various constants found in the protocol
@@ -1604,13 +1604,13 @@
 		      \end{itemize}
 		\item \textbf{Two types of ratcheting}
 		      \begin{itemize}
-			      \item \textbf{Symmetric ratchet}: HMAC chain for immediate messages
+			      \item \textbf{Symmetric ratchet}: HMAC chain for consecutive messages
 			      \item \textbf{DH ratchet}: New ephemeral keys when direction changes
-			      \item Root key combines both: $(rk_{new}, ck_{new}) = \func{hkdf}{\func{dh}{\text{new ephemerals}}, rk_{old}, c_2}$
+			      \item Root key combines both: $(rk_{\text{new}}, ck_{\text{new}}) = \func{hkdf}{\func{dh}{\text{new ephemerals}}, rk_{\text{old}}, c_2}$
 		      \end{itemize}
 		\item \textbf{Post-compromise security!}
 		      \begin{itemize}
-			      \item If attacker steals your state at time $t$\ldots
+			      \item If an attacker steals your state at time $t$\ldots
 			      \item After one DH ratchet step, they're locked out again
 			      \item Fresh randomness from new ephemeral keys
 			      \item OTR couldn't do this - required interactive AKE
@@ -1624,13 +1624,13 @@
 			\textbf{Forward Secrecy}
 			\begin{itemize}
 				\item \textbf{Past messages stay secret}
-				\item If keys compromised today, yesterday's messages remain encrypted
+				\item If keys are compromised today, yesterday's messages remain encrypted
 				\item ``Looking backward'' protection
 				\item \textbf{How it works:}
 				      \begin{itemize}
 					      \item Delete old keys after use
 					      \item Can't decrypt without keys
-					      \item Time travel won't help attacker
+					      \item Time travel won't help the attacker
 				      \end{itemize}
 				\item \textbf{Example:} Laptop stolen after conversation - past messages safe
 			\end{itemize}
@@ -1639,7 +1639,7 @@
 			\textbf{Post-Compromise Security}
 			\begin{itemize}
 				\item \textbf{Future messages become secret again}
-				\item If keys compromised today, tomorrow's messages will be secure
+				\item If keys are compromised today, tomorrow's messages will be secure
 				\item ``Healing'' or ``self-healing'' property
 				\item \textbf{How it works:}
 				      \begin{itemize}
@@ -1677,7 +1677,7 @@
 			\end{itemize}
 			\textbf{The challenge:}
 			\begin{itemize}
-				\item How to hide sender from service
+				\item How to hide the sender from the service
 				\item While preventing abuse?
 			\end{itemize}
 		\end{column}
@@ -1689,15 +1689,15 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Sender Certificates}
 			\begin{itemize}
-				\item Short-lived, signed by service
+				\item Short-lived, signed by the service
 				\item Contains:
 				      \begin{itemize}
 					      \item Phone number
 					      \item Identity key
 					      \item Expiry timestamp
 				      \end{itemize}
-				\item Included inside encrypted envelope from Alice to Bob
-				\item Service can see it at issuance, but not while it's inside encrypted envelope.
+				\item Included inside the encrypted envelope from Alice to Bob
+				\item Service can see it at issuance, but not while it's inside the encrypted envelope.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1726,14 +1726,14 @@
 	\end{enumerate}
 	\textbf{Envelope Encryption (simplified):}
 	\begin{itemize}
-		\item Generate ephemeral key pair: $(e_{pub}, e_{priv})$
+		\item Generate ephemeral key pair: $(e_{\text{pub}}, e_{\text{priv}})$
 		\item ECDH with recipient's identity key
 		\item Derive encryption keys via HKDF
 		\item Encrypt sender identity + certificate
 		\item Second layer using sender's identity key for authentication
 	\end{itemize}
 	\begin{alertblock}{Result}
-		Service can route messages without knowing sender identity
+		Service can route messages without knowing the sender's identity
 	\end{alertblock}
 \end{frame}
 
@@ -1771,7 +1771,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Can your message truly be secure after a hack?}
+\begin{frame}{Can your messages truly be secure after a hack?}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{center}
@@ -1804,7 +1804,7 @@
 			\begin{itemize}
 				\item Continuously inject fresh randomness
 				\item Update keys with every message
-				\item If attacker misses an update\ldots
+				\item If the attacker misses an update\ldots
 				\item They can't decrypt future messages!
 				\item Like changing locks after a break-in
 			\end{itemize}
@@ -1891,7 +1891,7 @@
 	\end{itemize}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{N = 1 (Ultra secure)}
+			\textbf{\boldmath$N = 1$ (Ultra secure)}
 			\begin{itemize}
 				\item Minimal attack surface
 				\item Constant ``can't decrypt'' errors
@@ -1899,11 +1899,11 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{N = 40 (Signal's choice)}
+			\textbf{\boldmath$N = 40$ (Signal's choice)}
 			\begin{itemize}
 				\item Handles many failure scenarios
 				\item Good user experience
-				\item 40 ways for attacker to get in!
+				\item 40 ways for an attacker to get in!
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1912,7 +1912,7 @@
 \begin{frame}{Using Tamarin to crush dreams}
 	\textbf{How they proved the impossibility:}
 	\begin{enumerate}
-		\item Model abstract communication system in Tamarin prover
+		\item Model an abstract communication system in the Tamarin prover
 		\item Add real-world requirements:
 		      \begin{itemize}
 			      \item Must handle dynamic state loss (crashes, backups)
@@ -1927,9 +1927,9 @@
 \begin{frame}{So what can we do?}
 	\textbf{If we can't have perfect PCS, can we do better?}
 	\begin{itemize}
-		\item \textbf{Reduce session count:} Maybe N = 2 instead of 40?
+		\item \textbf{Reduce session count:} Maybe $N = 2$ instead of 40?
 		\item \textbf{Sequential sessions:} Old sessions can only receive, not send
-		\item \textbf{Time limits:} Delete old sessions after time T
+		\item \textbf{Time limits:} Delete old sessions after time $T$
 		\item \textbf{UI warnings:} Highlight messages from old sessions
 	\end{itemize}
 	\textbf{But remember:}
@@ -1981,7 +1981,7 @@
 			\textbf{Telegram's Approach}
 			\begin{itemize}
 				\item Two modes: Cloud chats vs Secret chats
-				\item Cloud chats: Encrypted to server, not E2E
+				\item Cloud chats: Encrypted to the server, not E2E
 				\item Secret chats: Custom MTProto 2.0 protocol
 				\item Only available in 1-on-1 conversations
 				\item Must be explicitly enabled
@@ -2009,7 +2009,7 @@
 		\item Designed custom encryption protocol
 		\item Ignored existing academic work
 		\item No formal security analysis initially
-		\item Multiple versions after vulnerabilities found
+		\item Multiple versions after vulnerabilities were found
 	\end{itemize}
 	\textbf{The Cryptographic Community Response}
 	\begin{itemize}
@@ -2034,7 +2034,7 @@
 		      \begin{itemize}
 			      \item ``We don't trust governments, but we trust ourselves''
 			      \item Emphasis on government censorship resistance
-			      \item Less focus on protecting from service provider
+			      \item Less focus on protecting from the service provider
 		      \end{itemize}
 		\item \textbf{User experience priorities:}
 		      \begin{itemize}
@@ -2143,7 +2143,7 @@
 				\item Encrypt: $c = \func{enc}{mk, m}$
 				\item Sign: $\sigma = \func{sign}{ssk, c}$
 				\item Erase $mk$ immediately
-				\item Ratchet: $ck_{new} = H_2(ck)$
+				\item Ratchet: $ck_{\text{new}} = H_2(ck)$
 			\end{enumerate}
 			\textbf{Benefits:}
 			\begin{itemize}
@@ -2156,7 +2156,7 @@
 \end{frame}
 
 \begin{frame}{WhatsApp's approach: sender keys}
-	\bigimagewithcaption{sender-keys.png}{Source: David Balbás, Daniel Collins and Phillip Gajland, \textit{WhatsUpp with Sender Keys? Analysis, Improvements and Security Proofs}, IACR Asiacrypt, 2023.}
+	\bigimagewithcaption{sender-keys.png}{Source: David Balbás, Daniel Collins, and Phillip Gajland, \textit{WhatsUpp with Sender Keys? Analysis, Improvements and Security Proofs}, IACR Asiacrypt, 2023.}
 \end{frame}
 
 \begin{frame}{Sender keys: trade-offs}
@@ -2194,7 +2194,7 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item \textbf{Group key agreement}: All members share same key
+				\item \textbf{Group key agreement}: All members share the same key
 				\item \textbf{Ratcheting epochs}: Keys evolve over time
 				\item \textbf{Forward secrecy}: Past epochs stay secure
 				\item \textbf{Post-compromise security}: Healing after breach
@@ -2209,7 +2209,7 @@
 			\textbf{Hybrid Public Key Encryption (RFC 9180)\footnote{\url{https://www.rfc-editor.org/rfc/rfc9180.html}}}
 			\begin{itemize}
 				\item Combines asymmetric + symmetric crypto
-				\item Encrypts to public key, no interaction needed
+				\item Encrypts to a public key, no interaction needed
 				\item Used in MLS, TLS Encrypted Client Hello, and more
 			\end{itemize}
 			\textbf{Two-step process:}

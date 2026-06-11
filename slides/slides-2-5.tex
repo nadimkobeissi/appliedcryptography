@@ -28,7 +28,7 @@
 		\vspace{0.5em}
 
 		\normalsize
-		Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao and Bryan Parno
+		Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao, and Bryan Parno
 
 		\vspace{0.5em}
 
@@ -81,7 +81,7 @@
 	\begin{itemize}
 		\item \textbf{Pen-and-paper proofs}: Consider only ``cores,'' still error-prone
 		\item \textbf{Aggressive optimization}: Increases bug risk
-		\item \textbf{Current modus operandi}: Select few experts with rudimentary tools
+		\item \textbf{Current modus operandi}: A select few experts with rudimentary tools
 	\end{itemize}
 	\vspace{1em}
 	\begin{center}
@@ -92,7 +92,7 @@
 \begin{frame}{Enter: Computer-Aided Cryptography (CAC)}
 	\begin{itemize}
 		\item Active area of research: \textbf{formal, machine-checkable} approaches to designing, analyzing, and implementing cryptography
-		\item \textbf{Design level}: Tools manage complexity of security proofs, can reveal subtle flaws
+		\item \textbf{Design level}: Tools manage the complexity of security proofs, can reveal subtle flaws
 		\item \textbf{Implementation level}: Guarantee correct behavior, even for highly optimized code
 		\item \textbf{Deployment level}: Check side-channel protections
 	\end{itemize}
@@ -107,7 +107,7 @@
 		\item Computer-aided security analyses were influential in \textbf{TLS 1.3} standardization
 		\item \textbf{\haclstar library}: Integrated into Mozilla Firefox's NSS
 		\item \textbf{Fiat Cryptography}: Elliptic curve code in Google's BoringSSL
-		\item \textbf{EverCrypt}: Routines used in Linux kernel's Zinc crypto library
+		\item \textbf{EverCrypt}: Routines used in the Linux kernel's Zinc crypto library
 	\end{itemize}
 	\begin{center}
 		\textbf{Formally verified code at Internet scale!}
@@ -132,35 +132,18 @@
 \begin{frame}{Challenges ahead}
 	\begin{itemize}
 		\item CAC risks becoming a \textbf{victim of its own success}
-		\item Trust can be undermined by difficulty understanding guarantees and fine-print caveats
+		\item Trust can be undermined by the difficulty of understanding guarantees and fine-print caveats
 		\item Field is increasingly broad, complex, and rapidly evolving
 		\item \textbf{Post-quantum transition}: New algorithms need verification
 		\item \textbf{Scaling}: Moving from primitives to whole cryptographic systems
 	\end{itemize}
 	\vspace{1em}
 	\begin{center}
-		\textit{No one has complete understanding of every facet}
+		\textit{No one has a complete understanding of every facet}
 	\end{center}
 \end{frame}
 
 \section{Design-Level Security}
-
-\begin{frame}{Symbolic security: Example}
-	\textbf{Symmetric encryption modeled by:}
-	\begin{itemize}
-		\item Functions: \texttt{Enc} and \texttt{Dec}
-		\item Equational theory:
-	\end{itemize}
-	\begin{center}
-		\Large
-		\texttt{Dec(Enc(m,k),k) = m}
-	\end{center}
-	\begin{itemize}
-		\item Decrypting ciphertext \texttt{Enc(m,k)} with key \texttt{k} recovers plaintext \texttt{m}
-		\item Adversary can only use specified primitives and equations
-		\item Can decrypt only if it has the \textbf{entire} secret key
-	\end{itemize}
-\end{frame}
 
 \begin{frame}{Two flavors of design-level security}
 	\begin{itemize}
@@ -179,6 +162,23 @@
 			      \item Encryption is a \textbf{probabilistic algorithm}
 			      \item Adversaries have \textbf{bounded computational power}
 		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Symbolic security: Example}
+	\textbf{Symmetric encryption modeled by:}
+	\begin{itemize}
+		\item Functions: \texttt{Enc} and \texttt{Dec}
+		\item Equational theory:
+	\end{itemize}
+	\begin{center}
+		\Large
+		\texttt{Dec(Enc(m,k),k) = m}
+	\end{center}
+	\begin{itemize}
+		\item Decrypting ciphertext \texttt{Enc(m,k)} with key \texttt{k} recovers plaintext \texttt{m}
+		\item The adversary can only use specified primitives and equations
+		\item It can decrypt only if it has the \textbf{entire} secret key
 	\end{itemize}
 \end{frame}
 
@@ -221,7 +221,7 @@
 		\item \textbf{Equivalence properties}
 		      \begin{itemize}
 			      \item Adversary cannot distinguish between two protocols
-			      \item Example: Cannot differentiate real secret from random value
+			      \item Example: Cannot differentiate a real secret from a random value
 		      \end{itemize}
 	\end{enumerate}
 	\vspace{0.5em}
@@ -274,7 +274,7 @@
 
 \begin{frame}{Key features of symbolic analysis tools}
 	\begin{itemize}
-		\item \textbf{Unbounded sessions}: Can analyze arbitrary number of concurrent sessions, proving \textbf{absence of attacks} in the model
+		\item \textbf{Unbounded sessions}: Can analyze an arbitrary number of concurrent sessions, proving \textbf{absence of attacks} in the model
 		\item \textbf{Trace properties}: Bad events never occur on any execution trace
 		\item \textbf{Equivalence properties}: Adversary cannot distinguish between two protocols
 		\item \textbf{Equational theories}: Model algebraic properties of crypto operations (XOR, DH, etc.)
@@ -287,7 +287,7 @@
 \end{frame}
 
 \begin{frame}{Symbolic analysis tools overview}
-	\bigimagewithcaption{verif-symbolic.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
+	\bigimagewithcaption{verif-symbolic.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao, and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
 \end{frame}
 
 \begin{frame}{ProVerif: Real-world success stories}
@@ -330,7 +330,7 @@
 \end{frame}
 
 \begin{frame}{Computational analysis tools overview}
-	\bigimagewithcaption{verif-computational.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
+	\bigimagewithcaption{verif-computational.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao, and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
 \end{frame}
 
 \begin{frame}{Game-based security}
@@ -344,8 +344,8 @@
 		      \begin{enumerate}
 			      \item Start with original game
 			      \item Transform step-by-step
-			      \item Reach game where success probability is known
-			      \item Bound probability increases at each step
+			      \item Reach a game where the success probability is known
+			      \item Bound the probability increase at each step
 			      \item Similar to what we saw in Part 1 of this course!
 		      \end{enumerate}
 	\end{itemize}
@@ -415,8 +415,8 @@
 	\textbf{How \fstar handles computational proofs:}
 	\begin{enumerate}
 		\item Start with detailed protocol description
-		\item Transform into ideal program with ideal crypto functionalities
-		\item Validate transformation manually, verify final program automatically
+		\item Transform into an ideal program with ideal crypto functionalities
+		\item Validate the transformation manually, verify the final program automatically
 	\end{enumerate}
 	\vspace{0.5em}
 	\textbf{Success stories:}
@@ -513,7 +513,7 @@
 	\vspace{0.5em}
 	\textbf{The cost:}
 	\begin{itemize}
-		\item Memory safety becomes critical concern
+		\item Memory safety becomes a critical concern
 		\item Bugs can leak secrets (Heartbleed)
 		\item Verification becomes much harder
 	\end{itemize}
@@ -561,7 +561,7 @@
 	\vspace{0.5em}
 	\textbf{The compiler gap:}
 	\begin{itemize}
-		\item Most verification happens at source level, but we execute machine code
+		\item Most verification happens at the source level, but we execute machine code
 		\item Solution: Verified compilers (CompCert) or assembly-level verification
 	\end{itemize}
 \end{frame}
@@ -736,7 +736,7 @@
 			\begin{enumerate}
 				\item \texttt{if (secret\_bit) \{ ... \}}
 				\item \texttt{array[secret\_index]}
-				\item Return early \texttt{if secret $\stackrel{?}{=}$ 0}
+				\item Return early if \texttt{secret == 0}
 				\item Use division only when \texttt{secret != 0}\footnote{\url{https://kyberslash.cr.yp.to}}
 			\end{enumerate}
 		\end{column}
@@ -795,27 +795,6 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Example: Constant-time selection}
-	\textbf{Insecure (natural) code:}
-	\begin{flushleft}
-		\texttt{if (secret\_bit) \{}\\
-		\texttt{~~~~result = a;}\\
-		\texttt{\} else \{}\\
-		\texttt{~~~~result = b;}\\
-		\texttt{\}}
-	\end{flushleft}
-	\vspace{0.3em}
-	\textbf{Secure (constant-time) code:}
-	\begin{flushleft}
-		\texttt{mask = -secret\_bit;~~// 0x00...0 or 0xFF...F}\\
-		\texttt{result = (a \& mask) | (b \& \textasciitilde mask);}
-	\end{flushleft}
-	\vspace{0.3em}
-	\begin{center}
-		\textit{Same result, no branches, harder to understand!}
-	\end{center}
-\end{frame}
-
 \begin{frame}{CAC for implementation security}
 	\begin{center}
 		\Large
@@ -839,7 +818,7 @@
 \end{frame}
 
 \begin{frame}{Implementation verification tools overview}
-	\bigimagewithcaption{verif-implementations.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
+	\bigimagewithcaption{verif-implementations.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao, and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
 \end{frame}
 
 \begin{frame}{Hardware attacks: TEE.fail (2025)}
@@ -848,7 +827,7 @@
 			\textbf{Physical interposition on DDR5 bus:}
 			\begin{itemize}
 				\item Built with cheap, off-the-shelf electronics
-				\item Inspects all memory traffic in real-time
+				\item Inspects all memory traffic in real time
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -901,7 +880,7 @@
 	\end{center}
 	\vspace{0.5em}
 	\begin{itemize}
-		\item Academic community consulted \textbf{during} design: 28 drafts over 4+ years
+		\item The academic community was consulted \textbf{during} design: 28 drafts over 4+ years
 		\item Multiple CAC tools applied: ProVerif, Tamarin, CryptoVerif, \fstar
 		\item Real attacks found and fixed \textbf{before} standardization:
 		      \begin{itemize}
@@ -1039,7 +1018,7 @@
 	\begin{itemize}
 		\item ML-KEM implementation used internally at Google
 		\item hpke-rs is a dependency of Signal's \texttt{signal-crypto} crate
-		\item hpke-rs used by OpenMLS
+		\item hpke-rs is used by OpenMLS
 	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}
@@ -1085,7 +1064,7 @@
 			\hline
 			Generic          & const\_time, hash, \ldots & $\checkmark$ & $\checkmark$    & $\checkmark$      \\
 			                 & ntt/invert\_ntt           & $\checkmark$ & $\checkmark$    & --                \\
-			                 & matrix/serial./sampl      & $\checkmark$ & --              & --                \\
+			                 & matrix/serial./sampl.     & $\checkmark$ & --              & --                \\
 			\hline
 			Portable         & arith/ntt/serial.\ldots   & $\checkmark$ & $\checkmark$    & $\checkmark$      \\
 			                 & sampling                  & $\checkmark$ & $\checkmark$    & --                \\
@@ -1281,7 +1260,7 @@
 		\item \textbf{Specification}: Algorithm spec written in hacspec (Rust subset) or \fstar
 		\item \textbf{Implementation}: Optimized Rust with multiple backends (portable, AVX2, NEON)
 		\item \textbf{Extraction and Proof}: hax toolchain extracts Rust to \fstar; provers verify correctness, safety, and secret independence
-		\item \textbf{Compilation}: Verified source compiled by \textbf{unverified} compiler (LLVM/rustc)
+		\item \textbf{Compilation}: Verified source compiled by an \textbf{unverified} compiler (LLVM/rustc)
 	\end{enumerate}
 	\vspace{0.5em}
 	\begin{center}
@@ -1300,7 +1279,7 @@
 	\begin{itemize}
 		\item Formal proofs \textbf{assume} these operations implement their specified semantics
 		\item The actual implementations may contain bugs
-		\item Marked \texttt{\#[hax\_lib::opaque]}: verifier accepts specification without proof
+		\item Marked \texttt{\#[hax\_lib::opaque]}: the verifier accepts the specification without proof
 	\end{itemize}
 \end{frame}
 
@@ -1315,7 +1294,7 @@
 	\textbf{Why verification missed it:}
 	\begin{itemize}
 		\item Function marked as opaque to the verifier
-		\item Verifier accepted the \textit{specification} as an axiom
+		\item The verifier accepted the \textit{specification} as an axiom
 		\item The axiom was correct; the \textit{implementation} was wrong
 		\item Discovered independently by Filippo Valsorda
 	\end{itemize}
@@ -1324,7 +1303,7 @@
 \begin{frame}{V2: Cross-backend endianness bug}
 	\begin{itemize}
 		\item ML-KEM incremental API: \texttt{from\_bytes}/\texttt{to\_bytes} serialization
-		\item Portable backend used \textbf{different byte order} than SIMD backends
+		\item The portable backend used a \textbf{different byte order} than the SIMD backends
 		\item Serialize state on one platform, deserialize on another \rightarrow\ \textbf{failure}
 	\end{itemize}
 	\vspace{0.5em}
@@ -1367,15 +1346,15 @@
 	\vspace{1em}
 	\textbf{V3: Missing X25519 zero check}
 	\begin{itemize}
-		\item RFC 9180 \textbf{requires} checking if DH output is all-zero
+		\item RFC 9180 \textbf{requires} checking whether the DH output is all-zero
 		\item hpke-rs returns the raw result without validation
-		\item Small-subgroup attack: adversary can force shared secret to zero
+		\item Small-subgroup attack: an adversary can force the shared secret to zero
 	\end{itemize}
 	\vspace{0.5em}
 	\textbf{V4: Nonce reuse via integer overflow}
 	\begin{itemize}
-		\item HPKE sequence counter is \texttt{u32} (wraps at $2^{32}$)
-		\item In release builds, wrapping is \textbf{silent}: counter goes back to 0
+		\item The HPKE sequence counter is a \texttt{u32} (wraps at $2^{32}$)
+		\item In release builds, wrapping is \textbf{silent}: the counter goes back to 0
 		\item After $2^{32}$ messages: \textbf{nonce reuse!}
 	\end{itemize}
 \end{frame}
@@ -1431,22 +1410,22 @@
 	\vspace{1em}
 	\textbf{V6: Ed25519 double clamping}
 	\begin{itemize}
-		\item Key generation wrapper applies clamping \textbf{before} hashing
+		\item The key generation wrapper applies clamping \textbf{before} hashing
 		\item Should be: hash first, then clamp the result
 		\item Reduces entropy of generated keys
 	\end{itemize}
 	\vspace{0.5em}
 	\textbf{V7: AES-GCM decryption panic}
 	\begin{itemize}
-		\item Decryption wrapper calls \texttt{.unwrap()} on the result
-		\item If decryption fails (e.g., tampered ciphertext): \textbf{program panics}
-		\item Denial-of-service via any invalid ciphertext
+		\item The decryption wrapper calls \texttt{.unwrap()} on the result
+		\item If decryption fails (e.g., a tampered ciphertext): the \textbf{program panics}
+		\item Denial of service via any invalid ciphertext
 		\item The correct error handling was \textit{commented out} in the source
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{V8: ML-DSA norm check rendered dead code}
-	\textbf{FIPS 204 requirement:} Reject signature if signer response exceeds $\gamma_1 - \beta$
+	\textbf{FIPS 204 requirement:} Reject the signature if the signer response exceeds $\gamma_1 - \beta$
 	\vspace{0.5em}
 
 	\textbf{The bug:}
@@ -1467,7 +1446,7 @@
 \end{frame}
 
 \begin{frame}{V9: ML-DSA hint deserialization off-by-one}
-	\textbf{FIPS 204 requirement:} Check that hint count does not exceed maximum
+	\textbf{FIPS 204 requirement:} Check that the hint count does not exceed the maximum
 	\vspace{0.5em}
 
 	\textbf{The bug:} The overflow check compares against the \textbf{previous} iteration's count, not the current one
@@ -1527,7 +1506,7 @@
 	\end{center}
 	\vspace{0.5em}
 	\begin{enumerate}
-		\item \textbf{Wrong specifications}: The formal spec is a mathematical statement---if the statement is wrong, proving it correct doesn't help
+		\item \textbf{Wrong specifications}: The formal spec is a mathematical statement---if the statement is wrong, proving it doesn't help
 		\item \textbf{Admitted proofs}: The build system can skip proof checking entirely while reporting success
 		\item \textbf{False axioms}: Unproved assumptions can contradict reality; all downstream proofs become unsound
 	\end{enumerate}
@@ -1576,7 +1555,7 @@
 		\item But \texttt{error\_2} and \texttt{mu} are in the \textbf{coefficient domain}
 		\item Adding them together is mathematically \textbf{nonsensical}
 		\item The missing \texttt{poly\_inv\_ntt} call makes the spec wrong
-		\item Yet it \textbf{type-checks} because both are just polynomial types
+		\item Yet it \textbf{type-checks}, because both domains share the same polynomial type
 	\end{itemize}
 \end{frame}
 
@@ -1706,7 +1685,7 @@
 	\begin{itemize}
 		\item These modules are \textbf{admitted by default}: proofs are not checked
 		\item ``Lax checking'' means the \fstar type-checker accepts the code, but proofs are \textbf{not verified}
-		\item Like spell-checking a math proof: syntax is fine, content may be wrong
+		\item Like spell-checking a math proof: the syntax is fine, but the content may be wrong
 	\end{itemize}
 \end{frame}
 
@@ -1794,8 +1773,8 @@
 	\end{center}
 	\vspace{0.5em}
 	\begin{itemize}
-		\item AWS's soundness documents enumerate: verified properties, assumptions, residual risks, and open gaps
-		\item The gold standard remains \textbf{seL4}: dedicated page listing every trust assumption
+		\item AWS's soundness documents enumerate verified properties, assumptions, residual risks, and open gaps
+		\item The gold standard remains \textbf{seL4}: a dedicated page listing every trust assumption
 	\end{itemize}
 \end{frame}
 
@@ -1841,7 +1820,7 @@
 
 \begin{frame}{Five recommendations}
 	\begin{enumerate}
-		\item \textbf{Machine-readable verification manifests}: Every release should include a manifest of which code paths are verified, against which properties, for which platforms. Generated from build system, not manually maintained.
+		\item \textbf{Machine-readable verification manifests}: Every release should include a manifest of which code paths are verified, against which properties, for which platforms. Generated from the build system, not manually maintained.
 		\item \textbf{Proofs in CI on every commit}: All proof obligations discharged in CI. Too-slow proofs flagged as incomplete, not silently admitted.
 		\item \textbf{No lax-mode escape hatches}: Proof tactics should fail loudly in lax mode, not silently admit all goals.
 	\end{enumerate}
@@ -1850,7 +1829,7 @@
 \begin{frame}{Five recommendations (continued)}
 	\begin{enumerate}
 		\setcounter{enumi}{3}
-		\item \textbf{Clear scope communication}: Claims of ``formally verified'' should specify which properties, which code paths, which platforms. Unqualified claims should be reserved for systems with minimal TCB (CompCert, seL4 level).
+		\item \textbf{Clear scope communication}: Claims of ``formally verified'' should specify which properties, which code paths, which platforms. Unqualified claims should be reserved for systems with a minimal TCB (CompCert/seL4 level).
 		\item \textbf{Defense in depth}: Formal verification is one component of a defense-in-depth strategy. Code review, specification compliance auditing, cross-platform testing, and fuzzing catch categories of bugs that formal verification does not.
 	\end{enumerate}
 	\vspace{0.5em}
@@ -1864,7 +1843,7 @@
 		\item Feb 5, 2026: We submit PRs with tested fixes for V3--V6
 		\item Feb 5--6: Cryspen \textbf{blocks our GitHub account}, closes all PRs
 		\item Feb 9: Cryspen merges our fixes \textbf{without attribution}
-		\item Feb 12: Cryspen publishes response stating ``no bugs have been found in the verified code''
+		\item Feb 12: Cryspen publishes a response stating ``no bugs have been found in the verified code''
 		\item Feb 17: We disclose V8--V9 (FIPS 204 violations)
 		\item Mar 4: Cryspen merges fixes for V8--V9, crediting the discoverer
 	\end{itemize}
@@ -1921,8 +1900,8 @@
 	\end{center}
 	\vspace{0.5em}
 	\begin{enumerate}
-		\item \textbf{Map the verification boundary}: Find extraction annotations, build system admission flags, unverified wrappers, platform-specific code paths
-		\item \textbf{Audit specifications against standards}: Check constants, domain transformations, required validations against FIPS/RFC
+		\item \textbf{Map the verification boundary}: Find extraction annotations, build system admission flags, unverified wrappers, and platform-specific code paths
+		\item \textbf{Audit specifications against standards}: Check constants, domain transformations, and required validations against FIPS/RFC
 		\item \textbf{Verify proofs are actually checked}: Run the full verifier, not just lax checking; look for \texttt{tadmit} and \texttt{assume}
 		\item \textbf{Cross-reference documentation}: Compare claimed verification status against actual build system behavior
 	\end{enumerate}

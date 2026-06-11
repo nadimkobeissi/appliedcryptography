@@ -43,7 +43,7 @@
 			      \item Measuring one qubit instantly affects others
 			      \item Enables parallel computation across exponentially many states
 		      \end{itemize}
-		\item \textbf{Quantum parallelism}: Process all possibilities at once, extract answer through interference
+		\item \textbf{Quantum parallelism}: Process all possibilities at once, extract the answer through interference
 	\end{itemize}
 \end{frame}
 
@@ -75,7 +75,7 @@
 			      \item Impossible to manipulate with conventional tools
 			      \item Require laser beams or electromagnetic fields for control
 		      \end{itemize}
-		\item \textbf{Temperature requirements}: Near absolute zero (-273\degree\ C)
+		\item \textbf{Temperature requirements}: Near absolute zero ($-273$\degree\ C)
 		      \begin{itemize}
 			      \item For some quantum systems, tiny amounts of heat destroy quantum states
 			      \item Requires dilution refrigerators costing millions
@@ -107,7 +107,7 @@
 		\item \textbf{Quantum error correction}:
 		      \begin{itemize}
 			      \item Can't copy quantum states (no-cloning theorem)
-			      \item Need 100-1000 physical qubits to make 1 logical qubit
+			      \item Need 100--1000 physical qubits to make 1 logical qubit
 			      \item Turns ``millions of qubits'' into ``billions of physical qubits''
 		      \end{itemize}
 	\end{itemize}
@@ -153,7 +153,7 @@
 					             \end{cases}
 				      \end{align*}
 				\item \textbf{Result}: Grover finds the correct key in $\mathcal{O}(2^{\lambda/2})$ time\footnote{Note: Grover's algorithm is inherently sequential (cannot be parallelized efficiently)}
-				\item \textbf{Defense}: Double the key size\footnote{Cryptographers argue about this recommendation on various points, some thinking it's too simplistic, others thinking that with hash functions, you may not need to go from SHA-256 to SHA-512 with SHA-384 being enough, etc.}
+				\item \textbf{Defense}: Double the key size\footnote{Cryptographers argue about this recommendation on various points: some think it's too simplistic, others think that with hash functions you may not need to go all the way from SHA-256 to SHA-512, with SHA-384 being enough, etc.}
 				      \begin{itemize}
 					      \item AES-128 $\rightarrow$ AES-256 (to maintain 128-bit security)
 					      \item SHA-256 $\rightarrow$ SHA-512 (for collision resistance)
@@ -227,7 +227,7 @@
 				      \begin{itemize}
 					      \item AES, SHA-256 $\rightarrow$ Weakened but not broken
 					      \item Grover's algorithm: Provides quadratic speedup
-					      \item Solution: Double the key size (AES-128 $\rightarrow$ AES-256)\footnote{Cryptographers argue about this recommendation on various points, some thinking it's too simplistic, others thinking that with hash functions, you may not need to go from SHA-256 to SHA-512 with SHA-384 being enough, etc.}
+					      \item Solution: Double the key size (AES-128 $\rightarrow$ AES-256)\footnote{Cryptographers argue about this recommendation on various points: some think it's too simplistic, others think that with hash functions you may not need to go all the way from SHA-256 to SHA-512, with SHA-384 being enough, etc.}
 				      \end{itemize}
 				\item \textbf{Hash functions}: Similar to symmetric crypto
 				      \begin{itemize}
@@ -242,7 +242,7 @@
 	\begin{itemize}
 		\item \textbf{Current state}: Small quantum computers exist (100s of qubits)
 		\item \textbf{Required for cryptanalysis}: Millions of error-corrected qubits
-		\item \textbf{Expert predictions}: 10-30 years until cryptographically relevant quantum computers (depending on who you ask)
+		\item \textbf{Expert predictions}: 10--30 years until cryptographically relevant quantum computers (depending on who you ask)
 		\item \textbf{But consider}:
 		      \begin{itemize}
 			      \item Technological breakthroughs could accelerate timeline
@@ -265,7 +265,7 @@
 		\item \textbf{2001}: IBM factored $15 = 3 \times 5$ using Shor's algorithm
 		\item \textbf{2012}: Factored $21 = 3 \times 7$
 		\item \textbf{2019}: Attempted to factor $35 = 5 \times 7$
-		\item \textbf{In 24 years}: Progress from 15 to 21
+		\item \textbf{In 25 years}: Progress from 15 to 21
 		\item \textbf{For context}: A 1981 VIC-20 home computer can factor these numbers instantly
 		\item These aren't even true applications of Shor's algorithm - they use ``compiled'' versions with prior knowledge of the answer
 	\end{itemize}
@@ -311,7 +311,7 @@
 	\begin{itemize}
 		\item \textbf{Claimed}: ``RSA-2048 factored by quantum computer''
 		\item \textbf{Reality}: Used specially constructed weak keys, solvable on 1980s hardware
-		\item \textbf{Estimated timeline}: 10-30 years to cryptographically relevant quantum computers
+		\item \textbf{Estimated timeline}: 10--30 years to cryptographically relevant quantum computers
 		\item \textbf{Historical note}: Similar timeline estimates have been made for decades
 		\item \textbf{Critical question}: Should we redesign all cryptography based on devices that can't outperform a dog?
 	\end{itemize}
@@ -377,18 +377,18 @@
 		\item Decrypt all previously recorded communications
 		\item \textbf{Implications}:
 		      \begin{itemize}
-			      \item Data encrypted today may be decrypted in 10-20 years
+			      \item Data encrypted today may be decrypted in 10--20 years
 			      \item Long-term secrets are already at risk
 			      \item Medical records, government communications, trade secrets
 		      \end{itemize}
 		\item \textbf{This attack is happening NOW}
-		\item This is why some argue that we can't just not do anything because quantum computers seem impractical \textit{today}
+		\item This is why some argue that we can't just do nothing because quantum computers seem impractical \textit{today}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Why transition now?}
 	\begin{itemize}
-		\item \textbf{Migration takes time}: Historical crypto transitions took 10-20 years
+		\item \textbf{Migration takes time}: Historical crypto transitions took 10--20 years
 		      \begin{itemize}
 			      \item Recall the transition away from RC4, seen earlier in the course!
 		      \end{itemize}
@@ -409,7 +409,7 @@
 		      \begin{itemize}
 			      \item Lattice-based problems
 			      \item Code-based problems
-			      \item Hash-based signatures
+			      \item Hash function security (hash-based signatures)
 			      \item Multivariate polynomial equations
 			      \item Isogeny-based problems
 		      \end{itemize}
@@ -551,7 +551,7 @@
 			\end{align*}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			Create augmented matrix $[A|b]$:
+			Create augmented matrix $[A|\vec{b}]$:
 			\[
 				\left[\begin{array}{ccccc|c}
 						1  & 2  & -2 & 0  & 6  & 3 \\
@@ -664,7 +664,7 @@
 
 			Similarly:
 			\begin{itemize}
-				\item $R_3 \leftarrow R_3 + R_1$ (add Row 1 to Row 3 to eliminate the -1)
+				\item $R_3 \leftarrow R_3 + R_1$ (add Row 1 to Row 3 to eliminate the $-1$)
 				\item $R_4 \leftarrow R_4 - R_1$ (subtract Row 1 from Row 4 to eliminate the 1)
 				\item $R_5 \leftarrow R_5 - 4R_1$ (subtract 4 times Row 1 from Row 5)
 			\end{itemize}
@@ -719,9 +719,9 @@
 
 	Now eliminate the red entries:
 	\begin{itemize}
-		\item $R_3 \leftarrow R_3 + 5R_2$ (add 5 times Row 2 to eliminate -5)
-		\item $R_4 \leftarrow R_4 + 3R_2$ (add 3 times Row 2 to eliminate -3)
-		\item $R_5 \leftarrow R_5 + 3R_2$ (add 3 times Row 2 to eliminate -3)
+		\item $R_3 \leftarrow R_3 + 5R_2$ (add 5 times Row 2 to eliminate $-5$)
+		\item $R_4 \leftarrow R_4 + 3R_2$ (add 3 times Row 2 to eliminate $-3$)
+		\item $R_5 \leftarrow R_5 + 3R_2$ (add 3 times Row 2 to eliminate $-3$)
 	\end{itemize}
 \end{frame}
 
@@ -769,10 +769,10 @@
 	Gaussian elimination achieves polynomial-time complexity:
 	{\scriptsize
 		\begin{itemize}
-			\item \textbf{Theoretical complexity}: $O(n^3)$ for $n \times n$ system
+			\item \textbf{Theoretical complexity}: $\mathcal{O}(n^3)$ for $n \times n$ system
 			      \begin{itemize}
 				      {\scriptsize
-					      \item Compare to brute force: $O(q^n)$ where $q$ is field size
+					      \item Compare to brute force: $\mathcal{O}(q^n)$ where $q$ is field size
 					      \item For $n=1000$: $\sim 10^9$ operations vs $q^{1000}$ (astronomical!)}
 			      \end{itemize}
 
@@ -837,7 +837,7 @@
 			e_1 \\ e_2 \\ e_3 \\ e_4 \\ e_5 \\ e_6 \\ \vdots
 		\end{bmatrix}
 	\]
-	where error vector $\vec{e} = (e_1, e_2, e_3, \ldots)$ has small entries from $\{-1, 0, +1\}$
+	where the error vector $\vec{e} = (e_1, e_2, e_3, \ldots)$ has small entries from $\{-1, 0, +1\}$
 \end{frame}
 
 \begin{frame}{Why LWE is hard}
@@ -863,9 +863,9 @@
 
 \begin{frame}{LWE for cryptography}
 	\begin{itemize}
-		\item \textbf{Public key}: Matrix $A$ and noisy products $b = As + e$
-		\item \textbf{Secret key}: The secret vector $s$
-		\item \textbf{Security}: Based on hardness of recovering $s$ from $(A, b)$
+		\item \textbf{Public key}: Matrix $A$ and noisy products $\vec{b} = A\vec{s} + \vec{e}$
+		\item \textbf{Secret key}: The secret vector $\vec{s}$
+		\item \textbf{Security}: Based on hardness of recovering $\vec{s}$ from $(A, \vec{b})$
 		\item \textbf{Parameters}:
 		      \begin{itemize}
 			      \item Dimension $n$: Size of secret vector
@@ -1195,12 +1195,12 @@
 			\textbf{Public parameters:}
 			\begin{itemize}
 				\item Matrix $A \in \mathbb{Z}_q^{n \times n}$
-				\item Modulus $q$ (e.g., 3329)\footnote{3329 is congruent to 1 modulo 256, and therefore the polynomial $X^{256} + 1$ splits into a product of degree $2$ polynomials of the form $(X^2 - r_{i}).$}\footnote{\url{https://appliedcryptography.page/paper/\#basic-lattice}}
+				\item Modulus $q$ (e.g., 3329)\footnote{3329 is congruent to 1 modulo 256, and therefore the polynomial $X^{256} + 1$ splits into a product of degree $2$ polynomials of the form $(X^2 - r_{i})$.}\footnote{\url{https://appliedcryptography.page/paper/\#basic-lattice}}
 				\item Error distribution $\mathcal{E}$
 			\end{itemize}
 			\textbf{Bob's key generation:}
 			\begin{enumerate}
-				\item Sample $\vec{s}, (\vec{e}_1 \twoheadleftarrow [\mathcal{E}]^n)$
+				\item Sample $\vec{s}, \vec{e}_1 \twoheadleftarrow [\mathcal{E}]^n$
 				\item Private key: $\vec{s}$
 				\item Public key: $\vec{b} = A\vec{s} + \vec{e}_1$
 				\item Publish $(A, \vec{b})$
@@ -1209,7 +1209,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Alice's encapsulation:}
 			\begin{enumerate}
-				\item Sample $\vec{r}, (\vec{e}_2 \twoheadleftarrow [\mathcal{E}]^n)$
+				\item Sample $\vec{r}, \vec{e}_2 \twoheadleftarrow [\mathcal{E}]^n$
 				\item Sample $e_3 \twoheadleftarrow \mathcal{E}$
 				\item Message bit: $\mu \in \bits$
 				\item Compute:
@@ -1222,8 +1222,8 @@
 			\textbf{Bob's decapsulation:}
 			\begin{enumerate}
 				\item Compute: $w = v - \vec{u}^{T}\vec{s}$
-				\item If $w$ closer to 0: $\mu = 0$
-				\item If $w$ closer to $\lfloor q/2 \rfloor$: $\mu = 1$
+				\item If $w$ is closer to 0: $\mu = 0$
+				\item If $w$ is closer to $\lfloor q/2 \rfloor$: $\mu = 1$
 			\end{enumerate}
 		\end{column}
 	\end{columns}
@@ -1319,7 +1319,7 @@
 		      \begin{itemize}
 			      \item Instead of single bit $\mu$, encode multiple bits
 			      \item Use redundancy to correct small errors
-			      \item Kyber uses sophisticated reconciliation for reliability
+			      \item Kyber instead chooses parameters so that decryption failures are astronomically rare
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -1407,7 +1407,7 @@
 		\item \textbf{Long history}: Theory dates back to 1950s
 		\item \textbf{Battle-tested}: McEliece cryptosystem (1978) still unbroken after 45+ years!
 		\item \textbf{The trade-off}: Very secure, but public keys are large (100+ KB)
-		\item \textbf{Modern perspective}: Is 100 KB really too big when average webpage is 2 MB?
+		\item \textbf{Modern perspective}: Is 100 KB really too big when the average webpage is 2 MB?
 	\end{itemize}
 \end{frame}
 
@@ -1508,9 +1508,9 @@
 \begin{frame}{The McEliece cryptosystem (1978)}
 	\begin{itemize}
 		\item \textbf{Revolutionary idea}: Use error correction for encryption!
-		\item \textbf{Public key}: Generator matrix $G = ABC$ (looks random)
+		\item \textbf{Public key}: Generator matrix $G = S \cdot G' \cdot P$ (looks random)
 		      \begin{itemize}
-			      \item $A, B, C$ are special matrices (kept secret)
+			      \item $S, G', P$ are special matrices (kept secret)
 			      \item Product looks like random matrix
 		      \end{itemize}
 		\item \textbf{Encryption}:
@@ -1519,7 +1519,7 @@
 			      \item Add controlled errors: $\vec{c} = \vec{w} + \vec{e}$
 			      \item $\vec{e}$ has exactly $t$ bits set to 1
 		      \end{enumerate}
-		\item \textbf{Decryption}: Only possible if you know $A, B, C$
+		\item \textbf{Decryption}: Only possible if you know $S, G', P$
 		      \begin{itemize}
 			      \item Use secret structure to remove errors
 			      \item Recover original message
@@ -1644,7 +1644,7 @@
 			\textbf{Disadvantages:}
 			\begin{itemize}
 				\item[$\times$] Large public keys (100+ KB)
-				\item[$\times$] Not selected by NIST (yet?)
+				\item[$\times$] McEliece not selected by NIST (though HQC, also code-based, was in 2025)
 				\item[$\times$] Less deployment experience
 			\end{itemize}
 
@@ -1709,7 +1709,7 @@
 
 			\textbf{To sign message $M$ (where $0 \leq M \leq w-1$):}
 			\begin{itemize}
-				\item First hash the actual message to get a value in range $[0, w-1]$
+				\item First hash the actual message to get a value in the range $[0, w-1]$
 				\item Signature: $\text{Hash}^M(K)$
 				\item Apply hash $M$ times to $K$
 			\end{itemize}
@@ -1717,7 +1717,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Example with $w = 256$:}
 			\begin{itemize}
-				\item Can sign any byte (0-255)
+				\item Can sign any byte (0--255)
 				\item Hash message $\rightarrow$ byte value $M$
 				\item Sign by computing $\text{Hash}^M(K)$
 			\end{itemize}
@@ -1773,12 +1773,12 @@
 					      \item Need up to 255 hash operations
 					      \item Manageable
 				      \end{itemize}
-				\item 32-bit message: $M \in [, 2^{32}-1]$
+				\item 32-bit message: $M \in [0, 2^{32}-1]$
 				      \begin{itemize}
 					      \item Need up to 4 billion hashes!
 					      \item Impractical
 				      \end{itemize}
-				\item 128-bit message: $M \in [, 2^{128}-1]$
+				\item 128-bit message: $M \in [0, 2^{128}-1]$
 				      \begin{itemize}
 					      \item Need up to $2^{128}$ hashes
 					      \item Impossible
@@ -1915,7 +1915,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Disadvantages:}
 			\begin{itemize}
-				\item[$\times$] Large signatures (10-50 KB)
+				\item[$\times$] Large signatures (10--50 KB)
 				\item[$\times$] Signatures only (no encryption)
 				\item[$\times$] Complex/costly key generation
 				\item[$\times$] Stateful variants risky
@@ -1936,7 +1936,7 @@
 
 \begin{frame}{NIST PQ standardization: The winners}
 	\begin{itemize}
-		\item \textbf{August 2024}: NIST released final standards after 8-year process
+		\item \textbf{August 2024}: NIST released final standards after an 8-year process
 		\item \textbf{Three primary standards} (with new names):
 	\end{itemize}
 
@@ -2029,7 +2029,7 @@
 		      \begin{itemize}
 			      \item Lattice problems don't naturally support DH-style operations
 			      \item No efficient ``commutative'' group operation like $g^{ab} = g^{ba}$
-			      \item Isogenies do support DH-style, but have other issues
+			      \item Isogenies do support DH-style key agreement, but have other issues
 		      \end{itemize}
 		\item \textbf{NIST's choice (rumored)}:
 		      \begin{itemize}
@@ -2076,7 +2076,7 @@
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
-				\item \textbf{February 2024}: PQ TLS 1.3 adoption reaches critical mass\footnote{Much of the slides in this subsection are based on Bas Westerbaan's excellent blog post over at Cloudflare, but have been updated to account for developments in 2024 and 2025: \url{https://blog.cloudflare.com/pq-2024/}}
+				\item \textbf{February 2024}: PQ TLS 1.3 adoption reaches critical mass\footnote{Many of the slides in this subsection are based on Bas Westerbaan's excellent blog post over at Cloudflare, but have been updated to account for developments in 2024 and 2025: \url{https://blog.cloudflare.com/pq-2024/}}
 				\item \textbf{QUIC protocol}: Uses TLS 1.3 under the hood
 				      \begin{itemize}
 					      \item Modern transport protocol by Google
@@ -2226,7 +2226,7 @@
 			\textbf{Browsers have begun implementing PQ TLS:}
 			\begin{itemize}
 				\item Started with Chrome, now others following
-				\item In total, now 38\% of all TLS connections\footnote{\url{https://radar.cloudflare.com/adoption-and-usage\#post-quantum-encryption-adoption}}
+				\item In total, PQ is now used in 38\% of all TLS connections\footnote{\url{https://radar.cloudflare.com/adoption-and-usage\#post-quantum-encryption-adoption}}
 			\end{itemize}
 			\textbf{Other browsers:}
 			\begin{itemize}
@@ -2373,7 +2373,7 @@
 		      \end{itemize}
 		\item \textbf{Implementation considerations}:
 		      \begin{itemize}
-			      \item Kyber1024 chosen for conservative security
+			      \item Kyber-1024 chosen for conservative security
 			      \item Key format prevents confusion attacks
 			      \item Careful integration with existing code
 		      \end{itemize}
@@ -2589,7 +2589,7 @@
 			\textbf{PQ3's problem:}
 			\begin{itemize}
 				\item Sends full Kyber key every $\approx$50 messages
-				\item If recipient offline: resends 2272 bytes repeatedly!
+				\item If recipient offline: resends 2,272 bytes repeatedly!
 				\item Worst case: 50$\times$ overhead
 			\end{itemize}
 			\textbf{Triple Ratchet's solution:}
@@ -2678,7 +2678,7 @@
 
 			\textbf{Why PQ3 costs explode:}
 			\begin{itemize}
-				\item Sends full Kyber-768 (2,272B) repeatedly
+				\item Sends full Kyber-768 (2,272 B) repeatedly
 				\item Until acknowledgment received
 				\item High p = many retransmissions
 			\end{itemize}
@@ -2828,7 +2828,7 @@
 		      \begin{itemize}
 			      \item \textbf{P2PK scripts}: Public key stored directly ($\sim$1.7M BTC)
 			      \item \textbf{Address reuse}: Public key exposed after first spend
-			      \item \textbf{Taproot (P2TR)}: Stores tweaked public key in script --- a quantum security regression
+			      \item \textbf{Taproot (P2TR)}: Stores tweaked public key in script---a quantum security regression
 		      \end{itemize}
 		\item \textbf{Total}: $\sim$6.7 million BTC in quantum-vulnerable addresses\footnote{\url{https://quantumai.google/static/site-assets/downloads/cryptocurrency-whitepaper.pdf}}
 	\end{itemize}
@@ -2852,7 +2852,7 @@
 	\begin{itemize}
 		\item \textbf{On-spend}: Derive private key while transaction sits in the mempool
 		      \begin{itemize}
-			      \item $\sim$9 min on fast-clock CRQC vs.\ Bitcoin's 10-min block time ($\sim$41\% success)
+			      \item $\sim$9 min on a fast-clock CRQC vs.\ Bitcoin's 10-min block time ($\sim$41\% success)
 		      \end{itemize}
 		\item \textbf{At-rest}: Target keys already visible on-chain (any CRQC suffices)
 		\item \textbf{On-setup}: Attack fixed protocol parameters to create a \textit{reusable classical backdoor}
@@ -3043,7 +3043,7 @@
 			\hline
 			PKI/Certificates       & \textcolor{green!70!black}{Low} & \textcolor{orange}{Medium}      & Chain size explosion \\
 			\hline
-			Stateless Tokens (JWT) & \textcolor{green!70!black}{Low} & \textcolor{green!70!black}{Low} & 4KB cookie limit     \\
+			Stateless Tokens (JWT) & \textcolor{green!70!black}{Low} & \textcolor{green!70!black}{Low} & 4 KB cookie limit    \\
 			\hline
 		\end{tabular}
 	\end{center}
@@ -3085,15 +3085,15 @@
 			\vspace{5mm}
 			\textbf{With PQ signatures:}
 			\begin{itemize}
-				\item Each cert: >5KB
-				\item 3-cert chain: >15KB
+				\item Each cert: >5 KB
+				\item 3-cert chain: >15 KB
 				\item \textbf{5$\times$ increase!}
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Why this matters:}
 			\begin{itemize}
-				\item Some devices fail at 10-30KB packets
+				\item Some devices fail at 10--30 KB packets
 				\item TLS handshake performance hit
 				\item Mobile data costs
 			\end{itemize}
@@ -3149,7 +3149,7 @@
 		      \begin{itemize}
 			      \item Executive orders requiring PQ migration
 			      \item CNSA 2.0: Aggressive timelines for government systems
-			      \item FIPS standards coming soon
+			      \item FIPS 203--205 standards finalized in 2024
 		      \end{itemize}
 		\item \textbf{Europe}:
 		      \begin{itemize}
@@ -3199,7 +3199,7 @@
 		      \begin{itemize}
 			      \item RSA: 40+ years of cryptanalysis
 			      \item Elliptic curves: 30+ years
-			      \item Most PQ schemes: 10-20 years
+			      \item Most PQ schemes: 10--20 years
 		      \end{itemize}
 		\item \textbf{Limited understanding brings risks}:
 		      \begin{itemize}
@@ -3220,10 +3220,10 @@
 				\item \textbf{Some schemes look incredibly strong on paper\ldots}
 				\item \textbf{Example}: McEliece (hardness of decoding a linear code with insufficient information)
 				      \begin{itemize}
-					      \item In the worst case, some argue could be proven NP-hard
+					      \item In the worst case, some argue it could be proven NP-hard
 					      \item Sounds amazing: NP-hard = practically unbreakable!
-					      \item But cryptographic problems are based on the average case, not the worst case\ldots
-					      \item And the claim of NP-hardness even here is debated\ldots\footnote{Eurocrypt 2025 paper found a subexponential distinguisher for McEliece: \url{https://appliedcryptography.page/paper/\#syzygy-distinguisher}}
+					      \item But cryptographic security is based on the average case, not the worst case\ldots
+					      \item And even here, the claim of NP-hardness is debated\ldots\footnote{Eurocrypt 2025 paper found a subexponential distinguisher for McEliece: \url{https://appliedcryptography.page/paper/\#syzygy-distinguisher}}
 				      \end{itemize}
 				\item \textbf{Real-world complications}:
 				      \begin{itemize}
@@ -3248,7 +3248,7 @@
 			\textbf{Concrete security:}
 			\begin{itemize}
 				\item What we actually use: $n = 512$
-				\item May be far from asymptotic regime
+				\item May be far from the asymptotic regime
 				\item Security at practical parameters unclear
 			\end{itemize}
 		\end{column}
@@ -3365,16 +3365,16 @@
 		\begin{column}{0.55\textwidth}
 			\textbf{Consumer devices:}
 			\begin{itemize}
-				\item Phones: 2-3 year lifecycle
-				\item Laptops: 3-5 years
+				\item Phones: 2--3 year lifecycle
+				\item Laptops: 3--5 years
 				\item \textcolor{green!70!black}{Painful but manageable}
 			\end{itemize}
 			\textbf{Critical infrastructure:}
 			\begin{itemize}
-				\item Power plants: 30-50 years?
-				\item Aircraft: 20-30 years?
-				\item Satellites: 10-15 years?
-				\item Military systems: 20-40 years?
+				\item Power plants: 30--50 years?
+				\item Aircraft: 20--30 years?
+				\item Satellites: 10--15 years?
+				\item Military systems: 20--40 years?
 				\item \textcolor{red}{Replacement = \$billions}
 			\end{itemize}
 		\end{column}
@@ -3390,7 +3390,7 @@
 			\begin{itemize}
 				\item Cars may have multiple ECUs
 				\item Each has secure boot
-				\item Cars last 10-20 years
+				\item Cars last 10--20 years
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -3653,8 +3653,8 @@ if ((err = SSLHashSHA1.final(&hashCtx,
 		      \end{itemize}
 		\item \textbf{Timeline of maturity}:
 		      \begin{itemize}
-			      \item Years 1-5: Discovering vulnerabilities
-			      \item Years 5-10: Developing countermeasures
+			      \item Years 1--5: Discovering vulnerabilities
+			      \item Years 5--10: Developing countermeasures
 			      \item Years 10+: Mature, hardened implementations
 		      \end{itemize}
 	\end{itemize}

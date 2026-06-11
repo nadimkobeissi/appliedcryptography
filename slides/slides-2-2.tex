@@ -26,9 +26,9 @@
 		      \begin{itemize}
 			      \item \textbf{Birth (1987):} Proprietary stream cipher at RSA Security
 			      \item \textbf{Rise (1990s):} Became the world's most widely deployed stream cipher
-			      \item \textbf{Golden Era (1990s-2000s):} Powered WEP, SSL, and TLS protocols globally
-			      \item \textbf{Decline (2001-2015):} A series of devastating cryptanalytic breakthroughs
-			      \item \textbf{Demise (2015):} Formal prohibition by IETF, browser vendors
+			      \item \textbf{Golden Era (1990s--2000s):} Powered WEP, SSL, and TLS protocols globally
+			      \item \textbf{Decline (2001--2015):} A series of devastating cryptanalytic breakthroughs
+			      \item \textbf{Demise (2015):} Formal prohibition by the IETF and browser vendors
 		      \end{itemize}
 		\item This story teaches us about cryptographic lifecycle management, the importance of formal security analysis, and the challenges of maintaining backward compatibility
 	\end{itemize}
@@ -60,7 +60,7 @@
 			      \item ``RC'' stands for ``Ron's Code'' or ``Rivest Cipher''
 			      \item Designed for practical applications requiring fast encryption
 		      \end{itemize}
-		\item \textbf{1994:} Algorithm anonymously posted to Cypherpunks mailing list
+		\item \textbf{1994:} Algorithm anonymously posted to the Cypherpunks mailing list
 		      \begin{itemize}
 			      \item Source code leaked, breaking RSA's trade secret
 			      \item Called ``Alleged RC4'' or ``ARCFOUR'' due to legal concerns
@@ -70,7 +70,7 @@
 		      \begin{itemize}
 			      \item Made RC4 freely available to implementers worldwide
 			      \item Led to its widespread adoption in internet protocols
-			      \item Ironically helped RSA by making their cipher ubiquitous
+			      \item Ironically helped RSA by making its cipher ubiquitous
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -88,7 +88,7 @@
 			      \item \texttt{\quad j = (j + S[i] + key[i mod keylength]) mod 256}
 			      \item \texttt{\quad swap(S[i], S[j])}
 		      \end{itemize}
-		\item \textbf{Purpose:} Create a pseudo-random permutation of 0-255 based on the key
+		\item \textbf{Purpose:} Create a pseudo-random permutation of 0--255 based on the key
 		\item The quality of this initial scrambling is crucial for security
 	\end{itemize}
 \end{frame}
@@ -99,9 +99,9 @@
 			\begin{itemize}
 				\item \textbf{Bijective} (two-way)
 				      \begin{itemize}
-					      \item \textbf{Injective}: no two inputs map to same output (no
-					            collisions)
-					      \item \textbf{Surjective}: Every output has one corresponding input
+					      \item \textbf{Injective}: No two inputs map to the same output (no
+					            collisions).
+					      \item \textbf{Surjective}: Every output has one corresponding input.
 				      \end{itemize}
 				\item ``Randomized''
 				\item Relations between inputs not reflected in outputs
@@ -206,7 +206,7 @@
 
 \begin{frame}{Idea: find a way to expand the key}{Reminder}
 	\begin{itemize}
-		\item Given a key $k_s$ of size $\left|k_s\right| < \left|m\right|$, find a way to obtain $\left|k_e\right| \geq \left|m\right|$
+		\item Given a key $k_s$ of size $\left|k_s\right| < \left|m\right|$, find a way to obtain a key $k_e$ where $\left|k_e\right| \geq \left|m\right|$.
 		\item In the real world, we have two kinds of symmetric encryption schemes:
 		      \begin{itemize}
 			      \item \textbf{Block ciphers}: AES, 3DES, etc.
@@ -216,7 +216,7 @@
 		      \begin{itemize}
 			      \item Start with a small key $k_s$ of a fixed size $\left|k_s\right| = \lambda$,
 			      \item Magically expand it to $k_e$ where $\left|k_e\right| \geq \left|m\right|$,
-			      \item $\func{enc}{K, M} = K \oplus M$
+			      \item $\func{enc}{k_e, M} = k_e \oplus M$
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -241,7 +241,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{RC4's golden age (1990s-2000s)}
+\begin{frame}{RC4's golden age (1990s--2000s)}
 	\begin{itemize}
 		\item \textbf{The most widely deployed stream cipher in history}
 		      \begin{itemize}
@@ -251,14 +251,14 @@
 		\item \textbf{Ubiquitous protocol adoption:}
 		      \begin{itemize}
 			      \item \textbf{WEP (1997):} Wi-Fi security standard used RC4 exclusively
-			      \item \textbf{SSL 3.0/TLS 1.0 (1996-1999):} RC4 as preferred cipher suite
+			      \item \textbf{SSL 3.0/TLS 1.0 (1996--1999):} RC4 as preferred cipher suite
 			      \item \textbf{SSH-1 (1995):} Early secure shell implementations
 			      \item \textbf{Microsoft Office:} Document password protection
 			      \item \textbf{Adobe PDF:} File encryption standard
 		      \end{itemize}
 		\item \textbf{Why RC4 dominated:}
 		      \begin{itemize}
-			      \item 5-10x faster than DES in software implementations
+			      \item 5--10x faster than DES in software implementations
 			      \item Minimal memory requirements (perfect for embedded systems)
 			      \item Fewer export restrictions than strong block ciphers
 			      \item Simple to implement correctly
@@ -268,7 +268,7 @@
 
 \section{RC4 in WEP}
 
-\begin{frame}{Early RC4 weaknesses (1995-2000)}
+\begin{frame}{Early RC4 weaknesses (1995--2000)}
 	\begin{itemize}
 		\item \textbf{1995:} Roos discovered correlations between key bytes and initial permutation
 		      \begin{itemize}
@@ -297,7 +297,7 @@
 				\item \textbf{The Discovery:} Certain key patterns create predictable initial states\footnote{\url{https://appliedcryptography.page/paper/\#rc4-ksa}}
 				\item \textbf{Weak Key Pattern:} Keys of the form $(K_1, K_2, \ldots, K_n, 3, 255, \ldots)$
 				      \begin{itemize}
-					      \item When byte 3 of the key is 3, and byte 4 is 255
+					      \item When byte 3 of the key is 3 and byte 4 is 255
 					      \item The KSA creates a predictable correlation in the state array
 				      \end{itemize}
 				\item \textbf{The Mathematics:}
@@ -313,7 +313,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{One-time secrecy of a SKE}{Reminder}
+\begin{frame}{One-time secrecy of an SKE}{Reminder}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\definitionbox{One-time Secrecy for SKE}{
@@ -340,7 +340,7 @@
 			}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			An encryption scheme has one-time secrecy if its ciphertexts are uniformly distributed, when keys are sampled uniformly, kept secret, and used for only one encryption, and no matter how the plaintexts are chosen.
+			An encryption scheme has one-time secrecy if its ciphertexts are uniformly distributed when keys are sampled uniformly, kept secret, and used for only one encryption, no matter how the plaintexts are chosen.
 			\\
 			\textbf{Does this apply to RC4, especially after the attacks?}
 		\end{column}
@@ -492,7 +492,7 @@
 					      \item RC4 key becomes: $(IV_1, IV_2, IV_3, K_1, K_2, \ldots, K_n)$
 					      \item IV is sent \emph{in plaintext} with each packet!
 				      \end{itemize}
-				\item \textbf{Break:} This creates exactly the conditions the FMS (Fluhrer, Mantin, Shamir) attack exploited
+				\item \textbf{The break:} This creates exactly the conditions the FMS (Fluhrer, Mantin, Shamir) attack exploited
 				      \begin{itemize}
 					      \item Many related keys (same secret key, different IVs)
 					      \item Attacker knows the first 3 bytes of each key (the IV)
@@ -527,10 +527,10 @@
 		\end{tikzpicture}
 	\end{center}
 	\begin{itemize}
-		\item \textbf{The FMS Attack:} Exploits weak IV patterns of form $(A+3, 255, x)$
+		\item \textbf{The FMS Attack:} Exploits weak IV patterns of the form $(A+3, 255, x)$
 		\item \textbf{Pattern:} To attack key byte $K_A$, wait for IVs $(A+3, 255, x)$
 		\item \textbf{Frequency:} About 1 in 65,536 packets match the vulnerable pattern
-		\item \textbf{Collection:} Need multiple matching IVs per key byte for statistical attack
+		\item \textbf{Collection:} Need multiple matching IVs per key byte for a statistical attack
 		\item \textbf{Result:} With enough packets, incrementally recover the entire key
 	\end{itemize}
 \end{frame}
@@ -540,7 +540,7 @@
 		\item \textbf{AirSnort (2001):} First practical WEP cracking tool
 		      \begin{itemize}
 			      \item Implemented the FMS attack
-			      \item Could crack WEP keys with 1-5 million packets
+			      \item Could crack WEP keys with 1--5 million packets
 			      \item Made WEP cracking accessible to non-experts
 		      \end{itemize}
 		\item \textbf{WEPCrack (2001):} Another early implementation
@@ -659,7 +659,7 @@
 		      \end{itemize}
 		\item \textbf{The irony:} Avoiding one attack led directly into another
 		      \begin{itemize}
-			      \item RC4's biases were known but considered impractical
+			      \item RC4's biases were known but considered impractical to exploit
 			      \item This assumption would prove catastrophically wrong
 		      \end{itemize}
 	\end{itemize}
@@ -677,9 +677,9 @@
 				      \end{itemize}
 				\item \textbf{Key finding:} Single-byte biases
 				      \begin{itemize}
-					      \item Position 1: $\Pr[Z_1 = 0] \approx 2^{-7}$ (double expected)
-					      \item Position 2: $\Pr[Z_2 = 0] \approx 2^{-7}$ (double expected)
-					      \item Positions 3-255: Various smaller biases
+					      \item Position 1: $\Pr[Z_1 = 0] \approx 2^{-7}$ (double the expected probability)
+					      \item Position 2: $\Pr[Z_2 = 0] \approx 2^{-7}$ (double the expected probability)
+					      \item Positions 3--255: Various smaller biases
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -709,7 +709,7 @@
 			      \item Collect ciphertexts: $C_1, C_2, \ldots, C_n$
 			      \item For position $i$: count occurrences of each byte value
 			      \item Most frequent ciphertext byte reveals plaintext byte
-			      \item Required samples: $\mathcal{O}(N \cdot B^{-2})$ where $B$ is bias
+			      \item Required samples: $\mathcal{O}(N \cdot B^{-2})$ where $B$ is the bias
 		      \end{itemize}
 		\item \textbf{Practical requirements:}
 		      \begin{itemize}
@@ -743,9 +743,9 @@
 				\item \textbf{The improvements:} Orders of magnitude faster
 				      \begin{itemize}
 					      \item Exploit password character distributions
-					      \item Use Mantin's ABSAB bias (positions 1-4)
+					      \item Use Mantin's ABSAB bias (positions 1--4)
 					      \item Combine with dictionary attacks
-					      \item Other attack papers use similar techniques, including to break WPA-TKIP, a successor to WEP!\footnote{\url{https://appliedcryptography.page/paper/\#rc4-biases}}
+					      \item Other attack papers use similar techniques; some even break WPA-TKIP, a successor to WEP!\footnote{\url{https://appliedcryptography.page/paper/\#rc4-biases}}
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -764,7 +764,7 @@
 				      \end{itemize}
 				\item \textbf{The mathematics:} For pattern AB\ldots AB with gap $G$
 				      \begin{itemize}
-					      \item Expected probability in random: $1/N^2$
+					      \item Expected probability in a random keystream: $1/N^2$
 					      \item Actual probability in RC4: $(1 + e^{(-4-8G)/N}/N) \cdot 1/N^2$
 					      \item Relative bias: $\approx 1/N$ for zero gap, decreases with gap size
 				      \end{itemize}
@@ -783,7 +783,7 @@
 	\begin{itemize}
 		\item \textbf{Target:} Password ``hello123'' in HTTP Basic Authentication
 		\item \textbf{Step 1:} Password encoded as base64: ``aGVsbG8xMjM=''
-		\item \textbf{Step 2:} Look for ABSAB patterns in collected ciphertexts:
+		\item \textbf{Step 2:} Look for ABSAB patterns in the collected ciphertexts:
 		      \begin{center}
 			      \begin{tikzpicture}[scale=0.8]
 				      \foreach \i/\char in {0/h,1/e,2/l,3/l,4/o,5/1,6/2,7/3} {
@@ -798,10 +798,10 @@
 		      \end{center}
 		\item \textbf{Step 3:} After $2^{26}$ samples, frequency analysis reveals:
 		      \begin{itemize}
-			      \item Positions 2-3: ``ll'' pattern confirmed via ABSAB
+			      \item Positions 2--3: ``ll'' pattern confirmed via ABSAB
 			      \item Position 0: ``h'' (68/256 occurrences)
 			      \item Position 1: ``e'' (65/256 occurrences)
-			      \item Password structure revealed: ``h\_ll\_\_\_\_''
+			      \item Password structure revealed: ``hell\_\_\_\_''
 		      \end{itemize}
 		\item \textbf{Result:} Search space reduced from $62^8$ to $62^4$ possibilities!
 	\end{itemize}
@@ -812,11 +812,11 @@
 		\item \textbf{Basic Authentication attack performance:}
 		      \begin{itemize}
 			      \item 6-character passwords: $2^{26}$ encryptions
-			      \item Time: $\approx$50--100 hours.
+			      \item Time: $\approx$50--100 hours
 		      \end{itemize}
 		\item \textbf{IMAP attack results:}
 		      \begin{itemize}
-			      \item Real passwords recovered in laboratory setting
+			      \item Real passwords recovered in a laboratory setting
 			      \item Character-by-character recovery possible
 		      \end{itemize}
 	\end{itemize}
@@ -839,7 +839,7 @@
 		\item \textbf{Why this matters for RC4:}
 		      \begin{itemize}
 			      \item SSL 3.0 heavily used RC4
-			      \item POODLE + RC4 biases = from compromise to compromise
+			      \item POODLE + RC4 biases = no safe ciphers left in SSL 3.0
 			      \item Final push to deprecate both SSL 3.0 and RC4
 		      \end{itemize}
 	\end{itemize}
@@ -872,7 +872,7 @@
 		\item \textbf{Lesson 1:} Statistical biases matter at scale
 		      \begin{itemize}
 			      \item ``Small'' biases become exploitable with enough data
-			      \item Modern internet generates massive data volumes
+			      \item The modern internet generates massive data volumes
 			      \item Never dismiss statistical irregularities
 		      \end{itemize}
 		\item \textbf{Lesson 2:} Attacks combine in unexpected ways
@@ -892,8 +892,8 @@
 \begin{frame}{RC4: a complete timeline}
 	\begin{itemize}
 		\item \textbf{1987:} Ron Rivest designs RC4
-		\item \textbf{1994:} Algorithm leaked to cypherpunks
-		\item \textbf{1995-2000:} Early bias discoveries
+		\item \textbf{1994:} Algorithm leaked to the Cypherpunks mailing list
+		\item \textbf{1995--2000:} Early bias discoveries
 		\item \textbf{2001:} FMS attack breaks WEP
 		\item \textbf{2011:} BEAST attack increases RC4 usage
 		\item \textbf{2013:} AlFardan et al. show TLS attacks are almost practical
@@ -945,7 +945,7 @@
 		\item \textbf{Key differences from RC4:}
 		      \begin{itemize}
 			      \item Authenticated encryption prevents tampering
-			      \item No statistical biases in keystream
+			      \item No statistical biases in the keystream
 			      \item Designed with modern cryptanalysis in mind
 		      \end{itemize}
 	\end{itemize}

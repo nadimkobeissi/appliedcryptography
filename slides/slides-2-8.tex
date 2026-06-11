@@ -114,7 +114,7 @@
 				\item \textbf{Essential when:}
 				      \begin{itemize}
 					      \item Building signature schemes
-					      \item Proving knowledge credentials
+					      \item Proving knowledge of credentials
 					      \item Composition with other protocols
 				      \end{itemize}
 			\end{itemize}
@@ -122,16 +122,16 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Example: Proving Knowledge of a Private Key}
+\begin{frame}{Example: proving knowledge of a private key}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{The Setup:}
+			\textbf{The setup:}
 			\begin{itemize}
 				\item Public key: $A = g^{a}$
 				\item I claim to know $a$
 				\item But revealing $a$ would compromise security
 			\end{itemize}
-			\textbf{Zero-Knowledge Solution:}
+			\textbf{Zero-knowledge solution:}
 			\begin{enumerate}
 				\item Interactive protocol
 				\item Multiple rounds of challenges
@@ -493,7 +493,7 @@
 	\begin{center}
 		\vfill
 		\large
-		\textit{\rmfamily ``Later that day, the Sheriff of Nottingham arrives at the King's castle. The King describes Robin Hood's exceptional performance, pointing to the arrows still in the targets. The Sheriff is not impressed. “Robin Hood is a fraud and a liar. Those arrows prove nothing,” he says. He takes his own bow and fires a series of arrows into blank parts of the wall. He finds a bucket of paint and paints a target around each of his arrows. ``See,'' he says again, ``arrows in targets prove nothing!''''}
+		\textit{\rmfamily ``Later that day, the Sheriff of Nottingham arrives at the King's castle. The King describes Robin Hood's exceptional performance, pointing to the arrows still in the targets. The Sheriff is not impressed. ``Robin Hood is a fraud and a liar. Those arrows prove nothing,'' he says. He takes his own bow and fires a series of arrows into blank parts of the wall. He finds a bucket of paint and paints a target around each of his arrows. ``See,'' he says again, ``arrows in targets prove nothing!''''}
 		\vfill
 	\end{center}
 \end{frame}
@@ -523,11 +523,11 @@
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}[<+->]
 				\item As seen previously, you can build entire \textbf{zero-knowledge protocols}, not just primitives that prove knowledge of certain numbers.
-				\item ``Zero-knowledge virtual machines'' where you can execute
+				\item Researchers have built ``zero-knowledge virtual machines'' where you can execute
 				      an entire program that runs as a zero-knowledge proof.
-				\item ZKP battleship game: server proves to the players that its
-				      output to their battleship guesses is correct, without revealing any
-				      additional information (e.g. ship location).
+				\item ZKP battleship game: the server proves to the players that its
+				      responses to their battleship guesses are correct, without revealing any
+				      additional information (e.g., ship locations).
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -688,7 +688,7 @@
 
 \begin{frame}{Formal definition of Sigma protocols}
 	\begin{block}{Definition: Sigma Protocol}
-		A sigma protocol consists of the following parameters:
+		A Sigma protocol consists of the following components:
 		\begin{itemize}
 			\item \textbf{Commit}: A randomized algorithm that takes instance $X$ and witness $W$ as input, outputs commitment $Y$ and state $\sigma$
 			\item $\mathcal{C}$: A set of verifier challenges
@@ -701,13 +701,13 @@
 \begin{frame}{Example: Schnorr as a Sigma protocol}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Instance and Witness:}
+			\textbf{Instance and witness:}
 			\begin{itemize}
 				\item Instance: $X = A = g^a$
 				\item Witness: $W = a$
 				\item Relation: $g^W = X$
 			\end{itemize}
-			\textbf{The Algorithms:}
+			\textbf{The algorithms:}
 			\begin{itemize}
 				\item \textbf{Commit}$(A, a)$:
 				      \begin{itemize}
@@ -790,7 +790,7 @@
 			\end{itemize}
 			\textbf{Number Theory:}
 			\begin{itemize}
-				\item ``I know the square root of $X$ mod $N$''
+				\item ``I know the square root of $X \bmod N$''
 				\item ``I know the factorization of $N$''
 			\end{itemize}
 		\end{column}
@@ -819,7 +819,7 @@
 			\textbf{Mathematical guarantees:}
 			\begin{enumerate}
 				\item \textbf{Completeness:} Honest provers always succeed
-				\item \textbf{Soundness:} Dishonest provers always fail
+				\item \textbf{Soundness:} Dishonest provers almost always fail
 				\item \textbf{Zero-Knowledge:} Nothing leaks about the witness
 			\end{enumerate}
 		\end{column}
@@ -917,7 +917,7 @@
 		A Sigma protocol has \textbf{special soundness} if there exists an efficient algorithm \textbf{Extract} such that:
 		\begin{itemize}
 			\item Given two accepting transcripts: $(X, Y, c, r)$ and $(X, Y, c', r')$
-			\item With same instance $X$ and commitment $Y$
+			\item With the same instance $X$ and commitment $Y$
 			\item But different challenges $c \neq c'$
 			\item \textbf{Extract}$(X, Y, c, r, c', r')$ outputs witness $W$
 			\item Such that $R(X, W) = \text{true}$
@@ -928,7 +928,7 @@
 
 \begin{frame}{Example: extracting from Schnorr}
 	\begin{center}
-		\textbf{Given two accepting transcripts with same $Y$ but different challenges:}
+		\textbf{Given two accepting transcripts with the same $Y$ but different challenges:}
 	\end{center}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -1272,7 +1272,7 @@
 			      \item Send $(C_0, R_0, C_1, R_1)$
 		      \end{itemize}
 	\end{enumerate}
-	\textbf{Verification:} Check $C_0 + C_1 = C$ and both Schnorr transcripts valid
+	\textbf{Verification:} Check $C_0 + C_1 = C$ and that both Schnorr transcripts are valid
 \end{frame}
 
 \subsection{AND Proofs}
@@ -1288,9 +1288,9 @@
 			\end{itemize}
 			\textbf{Naive approach:}
 			\begin{itemize}
-				\item Run protocols separately?
-				\item Problem: different challenges
-				\item Loses zero-knowledge!
+				\item Run the protocols separately?
+				\item Problem: each run has its own challenge
+				\item The result is no longer a single Sigma protocol!
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1436,7 +1436,7 @@
 			\begin{itemize}
 				\item \textbf{Properties needed:}
 				      \begin{itemize}
-					      \item $H$ modeled as random oracle
+					      \item Hash function modeled as a random oracle
 					      \item Output unpredictable before input
 					      \item Uniformly distributed output
 				      \end{itemize}
@@ -1551,7 +1551,7 @@
 						      \item Can't choose $C$ arbitrarily
 						      \item Must be $C = \func{hash}{X, Y}$
 						      \item Can't work backwards!
-						      \item \textbf{Loses deniability property}
+						      \item \textbf{Loses the deniability property}
 					      \end{itemize}
 				\end{itemize}
 			\end{alertblock}
@@ -1602,7 +1602,7 @@
 				\begin{itemize}
 					\item Not how real hashes work!
 					\item Extractor is a \textit{thought experiment}
-					\item Shows: if you can forge proofs, you must know the witness
+					\item Shows: if you can produce valid proofs, you must know the witness
 					\item Real hash functions are deterministic
 				\end{itemize}
 			\end{alertblock}
@@ -1652,7 +1652,7 @@
 			\begin{itemize}
 				\item Schnorr signatures
 				\item EdDSA (used in many systems)
-				\item ECDSA (related derivation from ElGamal)
+				\item ECDSA (related, but not a direct Fiat-Shamir construction)
 			\end{itemize}
 			\textbf{Blockchain applications:}
 			\begin{itemize}
@@ -1931,7 +1931,7 @@ template IsZero() {
 		\begin{column}{0.5\textwidth}
 			\textbf{Why this matters:}
 			\begin{itemize}
-				\item Widely studied in literature
+				\item Widely studied in the literature
 				\item Used in practice (e.g., Expander)
 				\item Considered secure with Fiat-Shamir
 				\item Foundation of many SNARKs
@@ -1967,7 +1967,7 @@ template IsZero() {
 				\item No circular dependency
 			\end{itemize}
 			\begin{alertblock}{The trick}
-				Circuit outputs $(\gamma, \gamma-1)$ where $\gamma = \func{hash}{\langle C^* \rangle, y^*, \text{comm}(w)}$. Claim output is $(0,0)$ --- always false!
+				Circuit outputs $(\gamma, \gamma-1)$ where $\gamma = \func{hash}{\langle C^* \rangle, y^*, \text{comm}(w)}$. The claimed output $(0,0)$ is always false!
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -2033,7 +2033,7 @@ template IsZero() {
 				\item Set $w = \langle C^* \rangle$
 				\item Verifier computes: $r = \func{hash}{\langle C^* \rangle, y^*, \alpha}$
 				\item But this equals $\gamma$ by construction!
-				\item MLE of real output at $r$: $\hat{y}(r) = \gamma - r = 0$
+				\item Multilinear extension (MLE) of real output at $r$: $\hat{y}(r) = \gamma - r = 0$
 				\item MLE of claimed $(0,0)$ at $r$: also $0$
 				\item They match! GKR proceeds honestly from here
 			\end{itemize}
@@ -2115,7 +2115,7 @@ template IsZero() {
 			\end{itemize}
 			\textbf{The depth requirement:}
 			\begin{itemize}
-				\item Attack needs: $d \geq d_{\text{comm}} + d_h + O(1)$
+				\item Attack needs: $d \geq d_{\text{comm}} + d_h + \mathcal{O}(1)$
 				\item Circuit must be deep enough to compute hash + commitment
 				\item Many practical circuits satisfy this!
 			\end{itemize}
@@ -2307,7 +2307,7 @@ template IsZero() {
 				      \end{itemize}
 			\end{itemize}
 			\begin{alertblock}{The trade-off}
-				Proving is 1000-1,000,000$\times$ slower than native execution
+				Proving is 1,000--1,000,000$\times$ slower than native execution
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -2321,11 +2321,11 @@ template IsZero() {
 			\begin{itemize}[<+->]
 				\item \textbf{Zero-knowledge proofs} allow you to prove that you know
 				      a secret without revealing any information about it.
-				\item They built ``zero-knowledge virtual machines'' where you can execute
+				\item Researchers have built ``zero-knowledge virtual machines'' where you can execute
 				      an entire program that runs as a zero-knowledge proof.
-				\item ZKP battleship game: server proves to the players that its
-				      output to their battleship guesses is correct, without revealing any
-				      additional information (e.g. ship location).
+				\item ZKP battleship game: the server proves to the players that its
+				      responses to their battleship guesses are correct, without revealing any
+				      additional information (e.g., ship locations).
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -2361,8 +2361,8 @@ template IsZero() {
 					      \item \textbf{Zeth:} Prove correct Ethereum blocks
 					      \item \textbf{Bonsai Pay:} Send ETH to email addresses
 					      \item \textbf{JSON:} Selective disclosure of data
-					      \item \textbf{Where's Waldo:} Prove without revealing
-					      \item \textbf{ZK Checkmate:} Prove mate-in-one without revealing
+					      \item \textbf{Where's Waldo:} Prove you found Waldo without revealing where
+					      \item \textbf{ZK Checkmate:} Prove mate-in-one without revealing the move
 					      \item \textbf{Proof of Exploit:} Responsible disclosure
 				      \end{itemize}
 			\end{itemize}
@@ -2380,7 +2380,7 @@ template IsZero() {
 					      \item Compile to ELF binary
 					      \item Execute and record session
 					      \item Generate proof (receipt)
-					      \item Anyone can verify with ImageID
+					      \item Anyone can verify with the ImageID
 				      \end{enumerate}
 				\item \textbf{The guest program:}
 				      \begin{itemize}
@@ -2565,7 +2565,7 @@ fn main() {
 						\mess{Shot $(x, y)$}{player}{server}
 						\nextlevel[1]
 						\action*{$\begin{array}{l}
-									\text{result} := \text{apply}(\mathcal{B}, x, y) \\
+									(\mathcal{B}', \text{result}) := \text{apply}(\mathcal{B}, x, y) \\
 									C_1 := \func{hash}{\mathcal{B}'}
 								\end{array}$}{server}
 						\nextlevel[5]
@@ -2632,7 +2632,7 @@ fn main() {
 			\begin{itemize}
 				\item \textbf{Stage 1: Correct protocols}
 				      \begin{itemize}
-					      \item \textbf{1a:} Formally verify PIOP soundness
+					      \item \textbf{1a:} Formally verify PIOP soundness\footnote{PIOP: polynomial interactive oracle proof; PCS: polynomial commitment scheme.}
 					      \item \textbf{1b:} Verify PCS is binding
 					      \item \textbf{1c:} Verify Fiat-Shamir security
 					      \item \textbf{1d:} Verify constraint $\leftrightarrow$ VM semantics
@@ -2671,7 +2671,7 @@ fn main() {
 					      \item Open research questions remain
 					      \item Random oracle $\neq$ real hash functions
 					      \item Known attacks involve recursive circuits
-					      \item Stage 2 system could be found insecure!
+					      \item A Stage 2 system could be found insecure!
 				      \end{itemize}
 				\item \textbf{The bytecode problem:}
 				      \begin{itemize}
@@ -2694,7 +2694,7 @@ fn main() {
 			\begin{itemize}
 				\item Current deployments skimp on security for performance:
 				      \begin{itemize}
-					      \item Some use $<$100 bits security
+					      \item Some use $<$100 bits of security
 					      \item Should use 128+ bits minimum
 					      \item If performance were good, we wouldn't compromise
 				      \end{itemize}
@@ -2734,7 +2734,7 @@ fn main() {
 				      \end{itemize}
 			\end{itemize}
 			\begin{exampleblock}{Reality check}
-				Even with all optimizations, expect 1000$\times$ overhead for years to come
+				Even with all optimizations, expect 1,000$\times$ overhead for years to come
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
@@ -2870,17 +2870,17 @@ fn main() {
 			\begin{itemize}
 				\item \textbf{Sprout (2016):}
 				      \begin{itemize}
-					      \item Proof generation: ~40 seconds
-					      \item Memory: ~3 GB
+					      \item Proof generation: $\approx$40 seconds
+					      \item Memory: $\approx$3 GB
 					      \item Mobile impossible
 				      \end{itemize}
 				\item \textbf{Sapling (2018):}
 				      \begin{itemize}
-					      \item Proof generation: ~2.5 seconds
-					      \item Memory: ~40 MB
+					      \item Proof generation: $\approx$2.5 seconds
+					      \item Memory: $\approx$40 MB
 					      \item Mobile feasible
 				      \end{itemize}
-				\item \textbf{Halo 2 (Today):}
+				\item \textbf{Halo 2 (today):}
 				      \begin{itemize}
 					      \item No trusted setup!
 					      \item Recursive proofs
@@ -2909,7 +2909,7 @@ fn main() {
 			\textbf{Technical achievements:}
 			\begin{itemize}
 				\item First production ZK system at scale
-				\item Proved ZK can work in adversarial environment
+				\item Proved ZK can work in an adversarial environment
 				\item Inspired countless other projects
 				\item Advanced the field significantly
 			\end{itemize}
@@ -3087,7 +3087,7 @@ fn main() {
 		\begin{column}{0.5\textwidth}
 			\textbf{Social platforms:}
 			\begin{itemize}
-				\item Prove you're human (not bot)
+				\item Prove you're human (not a bot)
 				\item Community membership
 				\item Reputation without identity
 			\end{itemize}

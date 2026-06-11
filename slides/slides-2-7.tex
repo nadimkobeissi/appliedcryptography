@@ -23,12 +23,12 @@
 \begin{frame}{The problem: trust in digital commerce}
 	\begin{itemize}
 		\item Online commerce relies entirely on financial institutions as trusted third parties.
-		\item Banks, payment processors, credit card companies mediate every transaction.
+		\item Banks, payment processors, and credit card companies mediate every transaction.
 		\item This trust-based model has fundamental limitations:
 		      \begin{itemize}
 			      \item Intrinsic dependence on centralized parties.
 			      \item Financial institutions must mediate disputes.
-			      \item Increases transaction costs significantly.
+			      \item Transaction costs increase significantly.
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -37,7 +37,7 @@
 	\begin{itemize}
 		\item \textbf{High transaction costs}: Mediation costs make micropayments impractical.
 		\item \textbf{Reversibility spreads distrust}: Merchants need extensive customer information.
-		\item \textbf{Fraud is inevitable}: Some percentage of fraud accepted as cost of business.
+		\item \textbf{Fraud is inevitable}: Some percentage of fraud is accepted as a cost of doing business.
 		\item \textbf{No digital cash equivalent}: Physical cash works person-to-person, but no digital analog exists.
 	\end{itemize}
 \end{frame}
@@ -68,7 +68,7 @@
 	\begin{itemize}
 		\item Peer-to-peer distributed timestamp server.
 		\item Generates computational proof of transaction order.
-		\item Security assumption: Honest nodes control majority of CPU power.
+		\item Security assumption: Honest nodes control a majority of CPU power.
 		\item Key innovations:
 		      \begin{itemize}
 			      \item Proof-of-work consensus mechanism.
@@ -88,18 +88,18 @@
 			      \item Cryptographic timestamps (Haber \& Stornetta, 1991)
 			      \item B-money and bit gold proposals (Wei Dai, Nick Szabo)
 		      \end{itemize}
-		\item First practical solution to Byzantine Generals Problem for money.
+		\item First practical solution to the Byzantine Generals Problem for money.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{The Byzantine Generals Problem}
 	\begin{itemize}
 		\item Classical problem in distributed computing (Lamport, Shostak, Pease, 1982).
-		\item Scenario: Byzantine generals must coordinate attack on a city.
+		\item Scenario: Byzantine generals must coordinate an attack on a city.
 		      \begin{itemize}
 			      \item Generals can only communicate via messengers.
 			      \item Some generals may be traitors sending false messages.
-			      \item Need consensus: all loyal generals execute same plan.
+			      \item Need consensus: all loyal generals execute the same plan.
 		      \end{itemize}
 		\item Core challenge: How to achieve reliable consensus when:
 		      \begin{itemize}
@@ -178,7 +178,7 @@
 				\item Can't fake the work
 			\end{itemize}
 			\begin{exampleblock}{This is Proof-of-Work}
-				Replace ``one identity = one vote'' with ``one CPU cycle = one vote''
+				Replace ``one identity = one vote'' with ``one CPU = one vote''
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
@@ -196,7 +196,7 @@
 				\item But easy to verify solution
 				\item Like Sudoku:
 				      \begin{itemize}
-					      \item Hard to find solution
+					      \item Hard to find a solution
 					      \item Easy to check if correct
 				      \end{itemize}
 			\end{itemize}
@@ -212,7 +212,7 @@
 		\end{column}
 	\end{columns}
 	\begin{alertblock}{Key property}
-		You prove you spent resources without revealing anything sensitive
+		You prove you spent real resources, and anyone can verify your proof cheaply
 	\end{alertblock}
 \end{frame}
 
@@ -223,7 +223,7 @@
 			\begin{itemize}
 				\item Take your block data
 				\item Add a random number (nonce)
-				\item Hash everything: $H =$ SHA256(SHA256(block + nonce))
+				\item Hash everything: $H =$ SHA-256(SHA-256(block $\|$ nonce))
 				\item Check if $H$ starts with many zeros
 				\item If not, try different nonce
 				\item Repeat until you find one!
@@ -232,7 +232,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Example hashes:}
 			\begin{itemize}
-				\item \texttt{0000000000000000007b...}
+				\item \texttt{00000000000000000007b...}
 				      \begin{itemize}
 					      \item Winner! (19 leading zeros)
 				      \end{itemize}
@@ -242,7 +242,7 @@
 				      \end{itemize}
 			\end{itemize}
 			\begin{exampleblock}{Why hashing?}
-				Each attempt is independent - can't get ``closer'' to solution, only keep trying
+				Each attempt is independent - can't get ``closer'' to a solution, only keep trying
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
@@ -256,8 +256,8 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Current difficulty (2024):}
 			\begin{itemize}
-				\item Need $\approx$19-20 leading hex zeros
-				\item That's $\approx$76-80 leading zero bits
+				\item Need $\approx$19--20 leading hex zeros
+				\item That's $\approx$76--80 leading zero bits
 				\item Finding a hash smaller than $\approx 2^{180}$ out of $2^{256}$ possible
 				\item Probability per attempt: $\approx \frac{1}{2^{76}}$, astronomically small!
 			\end{itemize}
@@ -272,6 +272,44 @@
 			\end{itemize}
 			\begin{alertblock}{Mind-boggling scale}
 				More computations than there are grains of sand on Earth, every 10 minutes!
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The difficulty adjustment: Bitcoin's thermostat}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The problem:}
+			\begin{itemize}
+				\item More miners join $\rightarrow$ blocks too fast
+				\item Miners leave $\rightarrow$ blocks too slow
+				\item Want consistent 10-minute blocks
+			\end{itemize}
+			\textbf{The solution:}
+			\begin{itemize}
+				\item Every 2016 blocks ($\approx$2 weeks)
+				\item Measure actual time taken
+				\item Adjust difficulty up or down
+				\item Like a thermostat!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{How adjustment works:}
+			\begin{itemize}
+				\item Blocks coming too fast?
+				      \begin{itemize}
+					      \item Require more leading zeros
+					      \item Makes puzzle harder
+				      \end{itemize}
+				\item Blocks coming too slow?
+				      \begin{itemize}
+					      \item Require fewer leading zeros
+					      \item Makes puzzle easier
+				      \end{itemize}
+			\end{itemize}
+			\begin{alertblock}{Result}
+				Stable 10-minute block time for 15+ years, despite massive hashpower growth!
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -311,7 +349,7 @@
 				      \end{itemize}
 			\end{itemize}
 			\begin{alertblock}{Safety limit}
-				Maximum adjustment: 4x up or down per period (prevents manipulation)
+				Maximum adjustment: 4$\times$ up or down per period (prevents manipulation)
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -361,7 +399,7 @@
 			\textbf{Problem 1: Sybil attacks}
 			\begin{itemize}
 				\item Can't fake computational work
-				\item 1000 fake identities with 1 hash/sec each = same as 1 identity with 1000 hash/sec
+				\item 1000 fake identities with 1 hash/sec each are no better than 1 identity with 1000 hash/sec
 				\item No advantage to splitting!
 			\end{itemize}
 			\textbf{Problem 2: Who decides ordering?}
@@ -380,7 +418,7 @@
 					      \item For that block + all after
 					      \item Faster than honest miners
 				      \end{itemize}
-				\item Cost grows exponentially!
+				\item Success probability shrinks exponentially!
 			\end{itemize}
 			\begin{alertblock}{Security guarantee}
 				As long as honest miners have >50\% of computing power, the system is secure
@@ -394,7 +432,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Each hash is a lottery ticket:}
 			\begin{itemize}
-				\item Every attempt has same probability
+				\item Every attempt has the same probability
 				\item Can't get ``closer'' to winning
 				\item No way to predict winner
 				\item Can't save progress
@@ -421,44 +459,6 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The difficulty adjustment: Bitcoin's thermostat}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{The problem:}
-			\begin{itemize}
-				\item More miners join $\rightarrow$ blocks too fast
-				\item Miners leave $\rightarrow$ blocks too slow
-				\item Want consistent 10-minute blocks
-			\end{itemize}
-			\textbf{The solution:}
-			\begin{itemize}
-				\item Every 2016 blocks ($\approx$2 weeks)
-				\item Measure actual time taken
-				\item Adjust difficulty up or down
-				\item Like a thermostat!
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{How adjustment works:}
-			\begin{itemize}
-				\item Blocks coming too fast?
-				      \begin{itemize}
-					      \item Require more leading zeros
-					      \item Makes puzzle harder
-				      \end{itemize}
-				\item Blocks coming too slow?
-				      \begin{itemize}
-					      \item Require fewer leading zeros
-					      \item Makes puzzle easier
-				      \end{itemize}
-			\end{itemize}
-			\begin{alertblock}{Result}
-				Stable 10-minute block time for 15+ years, despite massive hashpower growth!
-			\end{alertblock}
-		\end{column}
-	\end{columns}
-\end{frame}
-
 \begin{frame}{The economics: Why miners keep mining}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -466,11 +466,11 @@
 			\begin{itemize}
 				\item Specialized hardware (ASICs)
 				      \begin{itemize}
-					      \item \$2,000-10,000 per machine
+					      \item \$2,000--10,000 per machine
 				      \end{itemize}
 				\item Electricity (biggest cost!)
 				      \begin{itemize}
-					      \item \$30,000-100,000 per machine/year
+					      \item Often exceeds the hardware's cost over its lifetime
 				      \end{itemize}
 				\item Cooling, facilities, maintenance
 			\end{itemize}
@@ -595,7 +595,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Example: Ethereum's old PoW}
 			\begin{itemize}
-				\item Required 4 GB dataset in RAM
+				\item Required a 4 GB dataset in RAM
 				\item Random memory access
 				\item ASICs less advantageous
 				\item GPUs competitive
@@ -621,8 +621,8 @@
 			\end{itemize}
 			\textbf{This creates a chain:}
 			\begin{itemize}
-				\item Block N points to Block N-1
-				\item Which points to Block N-2
+				\item Block $N$ points to Block $N-1$
+				\item Which points to Block $N-2$
 				\item All the way to Block 0 (genesis)
 			\end{itemize}
 		\end{column}
@@ -647,8 +647,8 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{What happens:}
 			\begin{itemize}
-				\item Miner A finds block at height 100
-				\item Miner B finds different block at height 100
+				\item Miner A finds a block at height 100
+				\item Miner B finds a different block at height 100
 				\item Both valid!
 				\item Half the network sees A first
 				\item Half sees B first
@@ -661,8 +661,8 @@
 				\item Both branches grow
 				\item Next block extends one branch
 				\item That branch becomes longer
-				\item Everyone switches to longer chain
-				\item Losing block becomes ``orphaned''
+				\item Everyone switches to the longer chain
+				\item The losing block becomes ``orphaned''
 			\end{itemize}
 			\begin{alertblock}{Self-healing}
 				The system automatically converges without any coordination!
@@ -704,7 +704,7 @@
 \begin{frame}{The 51\% attack: The one big vulnerability}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{What if attacker gets >50\% hashpower?}
+			\textbf{What if an attacker gets >50\% hashpower?}
 			\begin{itemize}
 				\item Can build longer chain privately
 				\item Eventually overtakes honest chain
@@ -721,7 +721,7 @@
 			\textbf{Why this is unlikely:}
 			\begin{itemize}
 				\item Requires enormous investment
-				\item Would crash Bitcoin price
+				\item Would crash Bitcoin's price
 				\item Attack destroys attacker's investment
 				\item More profitable to mine honestly!
 			\end{itemize}
@@ -846,7 +846,7 @@
 			\textbf{But one problem\ldots}
 			\begin{itemize}
 				\item What prevents signing twice?
-				\item Could send same coin to two people!
+				\item Could send one coin to two people!
 				\item This is the double-spend problem
 			\end{itemize}
 		\end{column}
@@ -858,8 +858,8 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Where do bitcoins come from?}
 			\begin{itemize}
-				\item Every block has first transaction
-				\item Called ``coinbase transaction''
+				\item The first transaction in every block is special
+				\item Called the ``coinbase transaction''
 				      \begin{itemize}
 					      \item Not the exchange company!
 					      \item Bitcoin protocol term
@@ -925,7 +925,7 @@
 			\begin{itemize}
 				\item Bundle transactions into blocks
 				\item Each block has timestamp
-				\item Each block hashes previous block
+				\item Each block hashes the previous block
 				\item Chain of timestamps!
 			\end{itemize}
 			\textbf{Why this works:}
@@ -944,7 +944,7 @@
 				\item This is where PoW comes in!
 				\item Mining creates the timestamp
 				\item Difficulty prevents spam
-				\item Proof-of-work proves timestamp
+				\item Proof-of-work proves the timestamp
 			\end{itemize}
 			\begin{exampleblock}{Beautiful circularity}
 				PoW enables timestamping\\
@@ -1008,17 +1008,17 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{The math behind it:}
+			\textbf{The math behind it:}\footnote{\url{https://bitcoin.org/bitcoin.pdf}, section 11}
 			\begin{itemize}
 				\item Attacker with 10\% hashpower:
 				      \begin{itemize}
-					      \item 1 block: 10\% success
-					      \item 2 blocks: 1\% success
-					      \item 6 blocks: 0.0001\% success
+					      \item 1 block: $\approx$20\% success
+					      \item 2 blocks: $\approx$5\% success
+					      \item 6 blocks: $\approx$0.02\% success
 				      \end{itemize}
 				\item With 30\% hashpower:
 				      \begin{itemize}
-					      \item 6 blocks: $\approx$0.5\% success
+					      \item 6 blocks: $\approx$13\% success
 				      \end{itemize}
 			\end{itemize}
 			\begin{exampleblock}{Security grows}
@@ -1077,11 +1077,11 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{The challenge:}
 			\begin{itemize}
-				\item Block can have 2000+ transactions
-				\item Full block: $\approx$1-2 MB
+				\item A block can have 2000+ transactions
+				\item Full block: $\approx$1--2 MB
 				\item New block every 10 minutes
 				\item 850,000+ blocks so far
-				\item Total: $\approx$500 GB!
+				\item Total: over 500 GB!
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1109,8 +1109,8 @@
 			\end{itemize}
 			\textbf{What Bitcoin does:}
 			\begin{itemize}
-				\item Build \textbf{tree of hashes}
-				\item Put single root in block header
+				\item Build a \textbf{tree of hashes}
+				\item Put a single root in the block header
 				\item Can prove any transaction with small proof
 			\end{itemize}
 		\end{column}
@@ -1226,12 +1226,12 @@
 				      \end{itemize}
 				\item Level 1:
 				      \begin{itemize}
-					      \item H01 = hash(H(Tx0) $\|$ H(Tx1))
-					      \item H23 = hash(H(Tx2) $\|$ H(Tx3))
+					      \item H0-1 = hash(H(Tx0) $\|$ H(Tx1))
+					      \item H2-3 = hash(H(Tx2) $\|$ H(Tx3))
 				      \end{itemize}
 				\item Level 2 (root):
 				      \begin{itemize}
-					      \item Root = hash(H01 $\|$ H23)
+					      \item Root = hash(H0-1 $\|$ H2-3)
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -1422,7 +1422,7 @@
 				\item Downloads everything
 				\item Validates all transactions
 				\item Stores full blockchain
-				\item Requirement: $\approx$500 GB
+				\item Requirement: 500+ GB
 				\item Time to sync: Days
 			\end{itemize}
 			\textbf{Not practical for most users!}
@@ -1527,7 +1527,7 @@
 				\item Tamper-evident
 				\item Change any tx $\rightarrow$ root changes
 				\item Based on collision resistance
-				\item Strong as SHA-256
+				\item As strong as SHA-256
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1565,7 +1565,7 @@
 			\textbf{Collision resistance:}
 			\begin{itemize}
 				\item From SHA-256
-				\item Can't find two transactions with same hash
+				\item Can't find two transactions with the same hash
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1581,7 +1581,7 @@
 			\end{itemize}
 			\textbf{Second preimage resistance:}
 			\begin{itemize}
-				\item Can't find different tx with same proof path
+				\item Can't find a different tx with the same proof path
 				\item Would need to break hash function
 			\end{itemize}
 		\end{column}
@@ -1615,7 +1615,7 @@
 				\item For large amounts: run full node
 			\end{itemize}
 			\begin{alertblock}{Security model}
-				SPV trusts that majority hashpower is honest - same as full nodes!
+				SPV additionally trusts majority hashpower for transaction validity - full nodes verify validity themselves!
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -1670,7 +1670,7 @@
 					      \item Content (like transactions)
 					      \item Timestamp
 					      \item Hash of parent commit
-					      \item Author signature
+					      \item Optional author signature
 				      \end{itemize}
 				\item Forms a chain back to initial commit
 				\item Change any commit $\rightarrow$ all subsequent hashes change
@@ -1679,7 +1679,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Key differences:}
 			\begin{itemize}
-				\item Git: Centralized (GitHub)
+				\item Git: Usually centralized (GitHub)
 				\item Bitcoin: Decentralized (P2P)
 				\item Git: No proof-of-work
 				\item Bitcoin: Mining required
@@ -1908,7 +1908,7 @@ contract SimpleStorage {
 				\item Out of gas? Reverts!
 			\end{itemize}
 			\begin{exampleblock}{Brilliance}
-				Solves halting problem with economics!
+				Solves the halting problem with economics!
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
@@ -1940,7 +1940,7 @@ contract SimpleStorage {
 				\item Users bid for block space
 			\end{itemize}
 			\begin{alertblock}{Auto-suggestion algorithm}
-				Wallet automatically suggests gas price based on current market!
+				Wallets automatically suggest a gas price based on the current market!
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -2026,7 +2026,7 @@ contract SimpleToken {
 			\begin{itemize}
 				\item MakerDAO: Manages DAI stablecoin
 				\item Uniswap DAO: Protocol governance
-				\item ConstitutionDAO: Attempted to buy US Constitution (\$47M raised!)
+				\item ConstitutionDAO: Attempted to buy a copy of the US Constitution (\$47M raised!)
 			\end{itemize}
 			\textbf{Use cases:}
 			\begin{itemize}
@@ -2045,7 +2045,7 @@ contract SimpleToken {
 			\textbf{June 2016:}
 			\begin{itemize}
 				\item The DAO raises \$150M
-				\item Largest crowdfund ever
+				\item Largest crowdfund ever at the time
 				\item Decentralized VC fund
 				\item All controlled by code
 			\end{itemize}
@@ -2068,7 +2068,7 @@ contract SimpleToken {
 		\end{column}
 	\end{columns}
 	\begin{alertblock}{Lesson}
-		Code is law... but bugs are expensive! Led to Ethereum hard fork.
+		Code is law... but bugs are expensive! Led to the Ethereum hard fork.
 	\end{alertblock}
 \end{frame}
 
@@ -2108,7 +2108,7 @@ contract SimpleToken {
 				      \end{itemize}
 			\end{itemize}
 			\begin{alertblock}{The debate continues}
-				Was the fork the right choice? Still controversial in crypto community!
+				Was the fork the right choice? Still controversial in the crypto community!
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -2129,7 +2129,7 @@ contract SimpleToken {
 			\textbf{Best practices:}
 			\begin{itemize}
 				\item Use OpenZeppelin libraries
-				\item Check-Effects-Interactions pattern
+				\item Checks-Effects-Interactions pattern
 				\item Comprehensive testing
 				\item Professional audits
 				\item Bug bounties
@@ -2224,7 +2224,7 @@ contract SimpleToken {
 			\end{itemize}
 			\textbf{The question:}
 			\begin{itemize}
-				\item Can we secure network...
+				\item Can we secure the network...
 				\item Without burning energy?
 				\item Still stay decentralized?
 			\end{itemize}
@@ -2271,7 +2271,7 @@ contract SimpleToken {
 		\end{column}
 	\end{columns}
 	\begin{center}
-		\textbf{From 13,000 households worth of energy to just 10}
+		\textbf{From millions of households' worth of energy to just a few thousand}
 	\end{center}
 \end{frame}
 
@@ -2287,7 +2287,7 @@ contract SimpleToken {
 			\end{itemize}
 			\textbf{Rewards:}
 			\begin{itemize}
-				\item $\approx$4-5\% annual yield
+				\item $\approx$4--5\% annual yield
 				\item Block proposals
 				\item Attestations
 			\end{itemize}
@@ -2314,7 +2314,7 @@ contract SimpleToken {
 				\item Attestation rewards
 				      \begin{itemize}
 					      \item Vote on correct chain head
-					      \item $\approx$0.02 ETH per day
+					      \item $\approx$0.003 ETH per day
 				      \end{itemize}
 				\item Block proposal rewards
 				      \begin{itemize}
@@ -2352,7 +2352,7 @@ contract SimpleToken {
 		\end{column}
 	\end{columns}
 	\begin{center}
-		\textbf{Expected return: $\approx$4-5\% APR for honest validators}
+		\textbf{Expected return: $\approx$4--5\% APR for honest validators}
 	\end{center}
 \end{frame}
 
@@ -2414,7 +2414,7 @@ contract SimpleToken {
 				\item Rich get richer (staking rewards)
 				\item High barrier to entry (32 ETH)
 				\item Centralization concern
-				\item Counter: Staking pools, but adds trust
+				\item Counter: Staking pools, but they add trust
 			\end{itemize}
 			\begin{alertblock}{The debate}
 				Is economic security as strong as energy security?
@@ -2465,7 +2465,7 @@ contract SimpleToken {
 			\begin{itemize}
 				\item Not every node needs to execute every transaction
 				\item Execute elsewhere
-				\item Post results to Ethereum smart contract
+				\item Post results to an Ethereum smart contract
 				\item Prove correctness
 			\end{itemize}
 			\textbf{L1 (Ethereum):}
@@ -2484,7 +2484,7 @@ contract SimpleToken {
 				\item Inherit L1 security
 			\end{itemize}
 			\begin{exampleblock}{The result}
-				100x cheaper fees, 100x higher throughput, same security!
+				100$\times$ cheaper fees, 100$\times$ higher throughput, same security!
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
@@ -2570,7 +2570,7 @@ contract SimpleToken {
 		\end{column}
 	\end{columns}
 	\begin{center}
-		\textbf{Both inherit Ethereum's security. Different trade-offs on speed vs complexity.}
+		\textbf{Both inherit Ethereum's security. Different trade-offs on speed vs. complexity.}
 	\end{center}
 \end{frame}
 
@@ -2579,10 +2579,10 @@ contract SimpleToken {
 		\begin{column}{0.5\textwidth}
 			\textbf{The numbers:}
 			\begin{itemize}
-				\item L2s process 5-10$\times$ more than Ethereum
-				\item Fees 10-100$\times$ cheaper
+				\item L2s process 5--10$\times$ more than Ethereum
+				\item Fees 10--100$\times$ cheaper
 				\item 50+ L2s live or in development
-				\item Transaction: \$0.10 vs \$10
+				\item Transaction: \$0.10 vs. \$10
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -2608,7 +2608,7 @@ contract SimpleToken {
 			\textbf{Current issues:}
 			\begin{itemize}
 				\item Fragmentation (many L2s)
-				\item Moving between L2s hard
+				\item Moving between L2s is hard
 				\item Centralized sequencers
 				\item Complex for users
 			\end{itemize}

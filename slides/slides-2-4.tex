@@ -158,7 +158,7 @@
 				      \end{itemize}
 				\item Trade-offs:
 				      \begin{itemize}
-					      \item Dual-password: Poor usability, users often reuse
+					      \item Dual-password: Poor usability, users often reuse passwords
 					      \item SRP: Complex implementation
 					      \item Hardware-backed: Requires specific devices/platforms
 				      \end{itemize}
@@ -201,7 +201,7 @@
 		      \end{itemize}
 		\item \textbf{Common mitigation strategies:}
 		      \begin{itemize}
-			      \item \textbf{Recovery keys:} Long random string users must store
+			      \item \textbf{Recovery keys:} A long random string users must store
 			      \item \textbf{Social recovery:} Threshold sharing among contacts
 			      \item \textbf{Security questions:} Weaker but familiar to users
 		      \end{itemize}
@@ -229,10 +229,10 @@
 				      \begin{itemize}
 					      \item \textbf{Option 1:} User-managed recovery key
 					      \item \textbf{Option 2:} Apple escrow (default)
-					      \item Users must explicitly opt-in to ADP
+					      \item Users must explicitly opt in to ADP
 				      \end{itemize}
 				\item Fundamental tension: Security vs recoverability
-				\item Apple chose user choice over mandatory E2EE
+				\item Apple prioritized user choice over mandatory E2EE
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -301,7 +301,7 @@
 
 \begin{frame}{WebAuthn PRF: symmetric keys from passkeys}{Quick aside}
 	\begin{itemize}
-		\item WebAuthn's \textbf{PRF (Pseudo-Random Function)} extension enables key derivation
+		\item WebAuthn's \textbf{PRF (Pseudorandom Function)} extension enables key derivation
 		\item Key derivation process:
 		      \begin{itemize}
 			      \item PRF can be evaluated during credential creation/assertion
@@ -331,7 +331,7 @@
 			      \item PRF extension not universally supported
 			      \item Security keys may not support PRF evaluation at creation
 		      \end{itemize}
-		\item Represents potential future direction for usable E2EE key management and authentication more generally
+		\item Represents a potential future direction for usable E2EE key management and authentication more generally
 	\end{itemize}
 \end{frame}
 
@@ -339,7 +339,7 @@
 	\begin{itemize}
 		\item Primary feature: Sharing files with selected users
 		\item Recipients need decryption keys
-		\item Keys cannot be sent unprotected via untrusted provider
+		\item Keys cannot be sent unprotected via an untrusted provider
 		\item Common solutions:
 		      \begin{itemize}
 			      \item Encrypt file key under recipient's public key
@@ -352,7 +352,7 @@
 	\begin{itemize}
 		\item Major providers:
 		      \begin{itemize}
-			      \item MEGA: 300M users, 150B files, 1000 PB data
+			      \item MEGA: 300M users, 150B files, 1,000 PB of data
 			      \item Nextcloud
 			      \item Apple iCloud (optional E2EE since 2023)
 		      \end{itemize}
@@ -384,7 +384,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Current state of E2EE Cloud Storage}
+\begin{frame}{Current state of E2EE cloud storage}
 	\begin{itemize}
 		\item Most providers rely on proprietary, unanalyzed designs
 		\item Highlights need for formally analyzed cryptographic designs
@@ -395,7 +395,7 @@
 			      \item What went wrong with MEGA
 			      \item What went wrong with Nextcloud
 			      \item A quick look at WhatsApp encrypted cloud backups
-			      \item An attempt by cryptographers to design a provably secure E2EE Cloud Storage protocol
+			      \item An attempt by cryptographers to design a provably secure E2EE cloud storage protocol
 		      \end{enumerate}
 	\end{itemize}
 \end{frame}
@@ -420,7 +420,7 @@
 					      \item Client-side encryption before upload
 					      \item Secure file sharing via encrypted links
 					      \item Cross-platform support (web, desktop, mobile)
-					      \item Free tier with 20 GB storage
+					      \item Free tier with 20 GB of storage
 				      \end{itemize}
 				\item All encryption performed in JavaScript (web client)
 			\end{itemize}
@@ -435,7 +435,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
-				\item Password serves as root of trust for entire key hierarchy
+				\item Password serves as root of trust for the entire key hierarchy
 				\item Key derivation from password:
 				      \begin{itemize}
 					      \item \textbf{Authentication key:} Identifies user to MEGA
@@ -445,7 +445,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
-			\imagewithcaption{mega-keys.png}{MEGA's key hierarchy. The master key encrypts the share, chat, sign
+			\imagewithcaption{mega-keys.png}{MEGA's key hierarchy. The master key encrypts the share, chat, sign,
 				and node keys using AES-ECB. Source: \url{https://appliedcryptography.page/paper/\#mega-awry}}
 		\end{column}
 	\end{columns}
@@ -468,14 +468,14 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
-			\imagewithcaption{mega-keys.png}{MEGA's key hierarchy. The master key encrypts the share, chat, sign
+			\imagewithcaption{mega-keys.png}{MEGA's key hierarchy. The master key encrypts the share, chat, sign,
 				and node keys using AES-ECB. Source: \url{https://appliedcryptography.page/paper/\#mega-awry}}
 		\end{column}
 	\end{columns}
 \end{frame}
 
 \begin{frame}{MEGA: Where's the attack?}
-	\bigimagewithcaption{mega-keys.png}{MEGA's key hierarchy. The master key encrypts the share, chat, sign
+	\bigimagewithcaption{mega-keys.png}{MEGA's key hierarchy. The master key encrypts the share, chat, sign,
 		and node keys using AES-ECB. Source: \url{https://appliedcryptography.page/paper/\#mega-awry}}
 \end{frame}
 
@@ -666,7 +666,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item \textbf{Goal:} Decrypt any AES-ECB ciphertext under master key
+				\item \textbf{Goal:} Decrypt any AES-ECB ciphertext under the master key
 				\item \textbf{Impact:}
 				      \begin{itemize}
 					      \item All node keys (file/folder encryption)
@@ -832,7 +832,7 @@
 				\item \textbf{Key rotation support:}
 				      \begin{itemize}
 					      \item Array of metadata keys per folder
-					      \item Uses highest-indexed key for encryption
+					      \item Uses the highest-indexed key for encryption
 					      \item Re-encrypts on each sync
 				      \end{itemize}
 			\end{itemize}
@@ -916,7 +916,7 @@
 				      \end{itemize}
 				\item \textbf{Ghost Key Attack}
 				      \begin{itemize}
-					      \item Forces client to use all-zero encryption key
+					      \item Forces the client to use an all-zero encryption key
 					      \item Exploits missing bounds checking
 				      \end{itemize}
 				\item \textbf{IV Reuse in AES-GCM}
@@ -986,7 +986,7 @@
 				\item \textbf{What RSA-OAEP does NOT provide:}
 				      \begin{itemize}
 					      \item Authentication: No proof of who created the ciphertext
-					      \item Anyone with public key can encrypt
+					      \item Anyone with the public key can encrypt
 				      \end{itemize}
 				\item \textbf{Nextcloud's assumption:}
 				      \begin{itemize}
@@ -1062,7 +1062,7 @@
 				      \end{itemize}
 				\item \textbf{Attack scenarios:}
 				      \begin{itemize}
-					      \item \textbf{Plaintext recovery:} If attacker knows one version
+					      \item \textbf{Plaintext recovery:} If the attacker knows one version
 					      \item \textbf{Forgery:} Create valid ciphertexts
 				      \end{itemize}
 			\end{itemize}
@@ -1097,7 +1097,7 @@
 				      \begin{itemize}
 					      \item Added bounds checking (Ghost Key)
 					      \item Generate new IV on file modification
-					      \item But Key Insertion attack remained\ldots
+					      \item But the Key Insertion attack remained\ldots
 				      \end{itemize}
 				\item \textbf{Drastic measure (2023):}
 				      \begin{itemize}
@@ -1156,7 +1156,7 @@
 			\begin{itemize}
 				\item Recent comprehensive analysis of 5 major E2EE providers\footnote{\url{https://appliedcryptography.page/paper/\#cloud-broken}}
 				\item Collectively serving 22+ million users
-				\item \textbf{Key finding:} Widespread cryptographic failures across ecosystem
+				\item \textbf{Key finding:} Widespread cryptographic failures across the ecosystem
 				\item \textbf{Common patterns:}
 				      \begin{itemize}
 					      \item Unauthenticated key material (Sync, pCloud)
@@ -1176,7 +1176,7 @@
 			\begin{itemize}
 				\item \textbf{Key replacement attacks}
 				      \begin{itemize}
-					      \item Sync/pCloud: No authentication of public key encrypted material
+					      \item Sync/pCloud: No authentication of material encrypted under public keys
 					      \item Server replaces user keys with attacker-controlled keys
 					      \item All future uploads compromised
 				      \end{itemize}
@@ -1186,7 +1186,7 @@
 				\item \textbf{Protocol downgrade (Seafile)}
 				      \begin{itemize}
 					      \item Forces client to use weak KDF
-					      \item 3 iterations of SHA1 instead of PBKDF2
+					      \item 3 iterations of SHA-1 instead of PBKDF2
 					      \item Enables offline password cracking
 				      \end{itemize}
 			\end{itemize}
@@ -1243,13 +1243,13 @@
 	\begin{itemize}
 		\item Password hashing has fundamental limitations:
 		      \begin{itemize}
-			      \item Server must receive password (or hash) to verify
+			      \item Server must receive the password (or its hash) to verify
 			      \item Vulnerable to offline dictionary attacks
 			      \item Trade-off between security and performance
 		      \end{itemize}
 		\item \textbf{Zero-knowledge password protocols} offer better security:
 		      \begin{itemize}
-			      \item Server never sees password or password-equivalent
+			      \item Server never sees the password or a password equivalent
 			      \item No offline dictionary attacks possible
 			      \item Cryptographic proof of password knowledge
 		      \end{itemize}
@@ -1272,7 +1272,7 @@
 			      \item Authentication: Zero-knowledge proof using verifier
 			      \item Based on discrete logarithm problem
 		      \end{itemize}
-		\item \textbf{Adoption:} Used by Apple iCloud, 1Password, ProtonMail
+		\item \textbf{Adoption:} Used by Apple iCloud, 1Password, and ProtonMail
 	\end{itemize}
 \end{frame}
 
@@ -1289,7 +1289,7 @@
 			      \item Server helps compute PRF without learning input
 			      \item Prevents server from testing password guesses
 		      \end{itemize}
-		\item Being standardized by IETF (OPRF component: RFC 9497)
+		\item Being standardized by the IETF (OPRF component: RFC 9497)
 		\item Early adoption by WhatsApp for backup encryption
 	\end{itemize}
 \end{frame}
@@ -1331,7 +1331,7 @@
 			\textbf{SRP}
 			\vspace{0.3cm}
 			\begin{itemize}
-				\item[\textcolor{green}{\mycheckmark}] No eavesdropper offline attacks
+				\item[\textcolor{green}{\mycheckmark}] No offline attacks by eavesdroppers
 				\item[\textcolor{green}{\mycheckmark}] Proven secure
 				\item[\textcolor{orange}{$\sim$}] Complex protocol
 				\item[\textcolor{red}{$\times$}] Pre-computation attacks
@@ -1370,7 +1370,7 @@
 					      \item Server can't test password guesses offline
 					      \item Client proves password knowledge without revealing it
 					            \begin{itemize}
-						            \item You could even say they perform a \textit{zero knowledge proof}!
+						            \item You could even say they perform a \textit{zero-knowledge proof}!
 					            \end{itemize}
 				      \end{itemize}
 			\end{itemize}
@@ -1396,7 +1396,7 @@
 				      \begin{itemize}
 					      \item \textbf{Oblivious:} Server doesn't learn client's input
 					      \item \textbf{Verifiable (VOPRF variant):} Client can verify correct computation
-					      \item \textbf{Deterministic:} Same input always gives same output
+					      \item \textbf{Deterministic:} Same input always gives the same output
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -1427,7 +1427,7 @@
 				\item Respond to OPRF:
 				      \begin{itemize}
 					      \item Receive blinded value
-					      \item Return $(blinded)^k$
+					      \item Return $(\text{blinded})^k$
 				      \end{itemize}
 				\item Generate key pair $(sk_s, pk_s)$
 				\item Store password file:
@@ -1492,7 +1492,7 @@
 				      \begin{itemize}
 					      \item Blinds password: $\alpha = H(pw)^r$
 					      \item Sends $\alpha$ to server
-					      \item Note: This $r$ is freshly randomized - different from registration and each login
+					      \item Note: This $r$ is freshly sampled - different from the one used at registration and at each previous login
 				      \end{itemize}
 				\item[2.]\textbf{Server responds:}
 				      \begin{itemize}
@@ -1507,7 +1507,7 @@
 				      \begin{itemize}
 					      \item Unblinds: $rwd = \beta^{1/r} = H(pw)^k$
 					      \item Decrypts: $sk_c = \text{Dec}(rwd, env)$
-					      \item If wrong password, decryption fails!
+					      \item If the password is wrong, decryption fails!
 				      \end{itemize}
 				\item[4.]\textbf{Authenticated key exchange:}
 				      \begin{itemize}
@@ -1956,7 +1956,7 @@
 				\item \textbf{Why this matters:}
 				      \begin{itemize}
 					      \item If Option 2: Server learns $\mathtt{OPAQUE}_K$
-					      \item Server could decrypt backup key directly!
+					      \item Server could decrypt the backup key directly!
 					      \item Completely breaks the security model
 				      \end{itemize}
 				\item \textbf{This type of ambiguity is dangerous:}
@@ -1977,7 +1977,7 @@
 			\begin{itemize}
 				\item \textbf{The fundamental trust problem:}
 				      \begin{itemize}
-					      \item WhatsApp claims to use HSMs, but users cannot verify
+					      \item WhatsApp claims to use HSMs, but users cannot verify this
 					      \item HSMs are owned and operated by WhatsApp
 					      \item No independent audit or verification possible
 					      \item Could be software emulation instead
@@ -2095,7 +2095,7 @@
 				\item \textbf{Why 64 digits?}
 				      \begin{itemize}
 					      \item 64 digits = ${\sim}$212 bits of entropy
-					      \item Much more than needed for 128-bit AES key
+					      \item Much more than needed for a 128-bit AES key
 					      \item Difficult for humans to manage
 					      \item Error-prone to transcribe
 				      \end{itemize}
@@ -2229,7 +2229,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item \textbf{What is formal analysis?}\footnote{Coming soon in our upcoming topic sessions on High-Assurance Cryptography!}
+				\item \textbf{What is formal analysis?}\footnote{Coming soon in our topic sessions on High-Assurance Cryptography!}
 				      \begin{itemize}
 					      \item Automated using software
 					      \item Mathematical proofs of security
@@ -2442,7 +2442,7 @@
 		\begin{column}{1\textwidth}
 			\textbf{Core cryptographic primitives:}
 			\begin{itemize}
-				\item \textbf{PRF (Pseudorandom Function):} $F: \{0,1\}^{\kappa} \times \{0,1\}^* \to \{0,1\}^{\kappa}$
+				\item \textbf{PRF (Pseudorandom Function):} $F: \bits^{\kappa} \times \bits^{*} \to \bits^{\kappa}$
 				\item \textbf{MAC (Message Authentication Code):} For integrity verification
 				\item \textbf{AEAD (Authenticated Encryption):} AES-GCM or ChaCha20-Poly1305
 				\item \textbf{2HashDH OPRF:} Password hardening against offline attacks
@@ -2459,7 +2459,7 @@
 			\begin{itemize}
 				\item \textbf{Problem:} How to derive keys from passwords without server learning them?
 				\item \textbf{Challenge:} Server needs to help with computation, but shouldn't learn password
-				\item \textbf{Solution:} Oblivious Pseudorandom Function (OPRF) (also used by OPAQUE)
+				\item \textbf{Solution:} Oblivious Pseudorandom Function (OPRF), also used by OPAQUE
 				      \begin{itemize}
 					      \item Client has secret input (account ID + password)
 					      \item Server has key $k$
@@ -2577,14 +2577,14 @@
 				\item Derives $k_{kek}$, $k_{mac}$ from $rw$
 				\item Generates random master key
 				\item Encrypts master key with $k_{kek}$
-				\item Sends to server: aid, $k$, $k_{mac}$, encrypted master key
+				\item Sends to server: $aid$, $k$, $k_{mac}$, and the encrypted master key
 			\end{enumerate}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Authentication:}
 			\begin{enumerate}
 				\item Client initiates OPRF with server
-				\item Server sends session ID (sid)
+				\item Server sends session ID ($sid$)
 				\item Client recovers $rw$, derives keys
 				\item Client MACs transcript with $k_{mac}$
 				\item Server verifies MAC
@@ -2633,7 +2633,7 @@
 					      \item Owner fetches file key
 					      \item Shares key out-of-band
 					      \item Server adds new owner
-					      \item Recipient wraps key under their master key
+					      \item Recipient wraps the key under their master key
 				      \end{enumerate}
 				\item \textbf{Benefits:}
 				      \begin{itemize}
