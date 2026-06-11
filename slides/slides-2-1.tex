@@ -20,7 +20,7 @@
 
 \begin{frame}{Why we're interested in TLS}
 	\begin{itemize}
-		\item Encrypts all your web traffic (the \textbf{S} in HTTP\textbf{S}!)
+		\item Encrypts all your web traffic (the \textbf{S} in HTTP\textbf{S}!).
 		\item Great way to introduce \textbf{authenticated key exchange}.
 		\item Great way to make you hate certificates and certificate authorities.
 		\item How TLS handles \textbf{authentication} and key exchange.
@@ -28,7 +28,7 @@
 		      \begin{itemize}
 			      \item POODLE (Padding Oracle On Downgraded Legacy Encryption)
 			      \item Lucky Thirteen timing attack
-			      \item SMACK (State Machine AttaCK)
+			      \item SMACK (State Machine AttaCKs)
 			      \item FREAK (Factoring RSA Export Keys)
 			      \item Logjam attack on Diffie-Hellman
 			      \item And many more\ldots
@@ -48,7 +48,7 @@
 			\begin{itemize}
 				\item Web browsing (HTTPS)
 				\item Email (IMAPS, POP3S, SMTPS)
-				\item Instant messaging (WhatsApp, Telegram)
+				\item Instant messaging (Signal, Slack)
 				\item Video conferencing (Zoom, Teams)
 				\item Online banking
 				\item Social media (Facebook, Twitter)
@@ -100,7 +100,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Passive vs Active Attackers}
+\begin{frame}{Passive vs. Active Attackers}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\textbf{Passive Attacker}
@@ -113,7 +113,7 @@
 				      \begin{itemize}
 					      \item ISP logging traffic
 					      \item Government surveillance
-					      \item WiFi sniffing
+					      \item Wi-Fi sniffing
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -127,14 +127,14 @@
 				\item Examples:
 				      \begin{itemize}
 					      \item Man-in-the-middle attacks
-					      \item Malicious WiFi hotspots
+					      \item Malicious Wi-Fi hotspots
 					      \item Compromised routers
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
 	\end{columns}
 	\begin{alertblock}{Protocol Design Impact}
-		Identity protection works against passive attackers, but active attackers can force identity revelation through protocol manipulation
+		Identity protection works against passive attackers, but active attackers can force identity revelation through protocol manipulation.
 	\end{alertblock}
 \end{frame}
 
@@ -250,9 +250,9 @@
 		\item \textbf{Confusing terminology}: People still call TLS ``SSL''.
 		      \begin{itemize}
 			      \item Even security experts do this!
-			      \item ``SSL certificate'' really means ``TLS certificate''
+			      \item ``SSL certificate'' really means ``TLS certificate''.
 		      \end{itemize}
-		\item TLS = Transport Layer Security (SSL's successor)
+		\item TLS = Transport Layer Security (SSL's successor).
 	\end{itemize}
 \end{frame}
 
@@ -408,7 +408,7 @@
 
 \begin{frame}{Critical step: Certificate validation}
 	\begin{itemize}
-		\item \textbf{The crux of TLS security}: Server authenticates itself to client
+		\item \textbf{The crux of TLS security}: Server authenticates itself to the client
 		\item \textbf{What is a certificate?}
 		      \begin{itemize}
 			      \item A public key + signature of that key
@@ -452,7 +452,7 @@
 		\item \textbf{Getting a certificate before 2015}:
 		      \begin{itemize}
 			      \item Contact a Certificate Authority (Verisign, Thawte, etc.).
-			      \item Pay \$50-300+ per certificate per year.
+			      \item Pay \$50--300+ per certificate per year.
 			            \begin{itemize}
 				            \item Completely arbitrary extortionate amounts.
 			            \end{itemize}
@@ -468,7 +468,7 @@
 		      \end{enumerate}
 		\item \textbf{Extended Validation (EV) certificates}:
 		      \begin{itemize}
-			      \item Even more expensive (\$150-1000+/year).
+			      \item Even more expensive (\$150--1000+/year).
 			      \item Weeks of back-and-forth communication.
 		      \end{itemize}
 	\end{itemize}
@@ -660,7 +660,7 @@
 		\item \textbf{Problem}: Each record needs a unique nonce for encryption.
 		\item \textbf{TLS solution}: Derive nonces from sequence numbers.
 		      \begin{itemize}
-			      \item Each party maintains 64-bit sequence number.
+			      \item Each party maintains a 64-bit sequence number.
 			      \item Incremented for each new record.
 			      \item Starts at 0, goes 1, 2, 3, \ldots
 		      \end{itemize}
@@ -797,7 +797,7 @@
 			      \item Optional extensions and parameters
 		      \end{itemize}
 		\item \textbf{Critical security detail}: DH private key stays with client.
-		\item \textbf{Format requirement}: Must follow exact byte format from TLS 1.3 spec.
+		\item \textbf{Format requirement}: Must follow the exact byte format from the TLS 1.3 spec.
 		      \begin{itemize}
 			      \item Ensures any server can parse any client's message.
 		      \end{itemize}
@@ -819,7 +819,7 @@
 			      \item Signature of ClientHello + ServerHello contents
 			      \item MAC of all the above information
 		      \end{itemize}
-		\item \textbf{Crypto magic}: MAC uses key derived from DH shared secret!
+		\item \textbf{Crypto magic}: MAC uses a key derived from the DH shared secret!
 	\end{itemize}
 \end{frame}
 
@@ -891,7 +891,7 @@
 	\end{center}
 	\begin{itemize}
 		\item Certificate validated using browser's built-in CA certificates
-		\item Must be signed by trusted certificate authority
+		\item Must be signed by a trusted certificate authority
 		\item Certificate must match domain name: ``\texttt{aub.edu.lb}''
 		\item All cryptographic checks must pass
 	\end{itemize}
@@ -917,7 +917,7 @@
 			      \item Modify messages without detection
 			      \item Impersonate either party
 		      \end{itemize}
-		\item \textbf{Authentication guarantee}: If messages are tampered with, receiving party will detect it!
+		\item \textbf{Authentication guarantee}: If messages are tampered with, the receiving party will detect it!
 		\item \textbf{Bottom line}: Enough security for most applications.
 	\end{itemize}
 \end{frame}
@@ -940,7 +940,7 @@
 			      \item Session keys are deleted after use.
 		      \end{itemize}
 		\item \textbf{Security guarantee}: ``Even if you compromise me today, you can't read yesterday's traffic.''
-		\item \textbf{Critical for}: Journalists, activists, whistleblowers, ordinary citizens
+		\item \textbf{Critical for}: Journalists, activists, whistleblowers, and ordinary citizens.
 	\end{itemize}
 \end{frame}
 
@@ -1068,7 +1068,7 @@
 
 \begin{frame}{Kazakhstan case: Lessons for TLS security}
 	\begin{itemize}
-		\item \textbf{Government-level MITM attempts are real}
+		\item \textbf{Government-level MITM attempts are real.}
 		      \begin{itemize}
 			      \item Nation-states can create sophisticated infrastructure.
 			      \item Legal pressure on ISPs and users.
@@ -1086,7 +1086,7 @@
 			      \item Community monitoring of CA behavior.
 			      \item Enables coordinated responses to threats.
 		      \end{itemize}
-		\item \textbf{Bottom line}: Even governments can't easily break modern TLS
+		\item \textbf{Bottom line}: Even governments can't easily break modern TLS.
 	\end{itemize}
 \end{frame}
 
@@ -1127,7 +1127,7 @@
 				      \end{itemize}
 				\item \textbf{Key advantages}:
 				      \begin{itemize}
-					      \item 10x+ cheaper to operate ($\approx$\$10k/year vs traditional logs).
+					      \item 10x+ cheaper to operate ($\approx$\$10k/year vs. traditional logs).
 					      \item More reliable (simpler architecture).
 					      \item Easier to download and share data.
 				      \end{itemize}
@@ -1179,16 +1179,16 @@
 		      \begin{itemize}
 			      \item Certificates recorded on public blockchain.
 			      \item Cryptographic proof of certificate history.
-			      \item Examples: Namecoin, Ethereum Name Service (ENS)
+			      \item Examples: Namecoin, Ethereum Name Service (ENS).
 			      \item \textbf{Trade-offs}: Scalability, energy consumption, governance.
 		      \end{itemize}
 		\item \textbf{Web of Trust models}:
 		      \begin{itemize}
 			      \item Users vouch for each other's identities (like PGP).
 			      \item Decentralized reputation systems.
-			      \item \textbf{Trade-offs}: User complexity, bootstrap problem
+			      \item \textbf{Trade-offs}: User complexity, bootstrap problem.
 		      \end{itemize}
-		\item \textbf{DNS-based alternatives}: DANE (DNS-based Authentication of Named Entities)
+		\item \textbf{DNS-based alternatives}: DANE (DNS-based Authentication of Named Entities).
 		\item \textbf{Your turn}: What other models could work? What are the trade-offs?
 	\end{itemize}
 \end{frame}
@@ -1338,7 +1338,7 @@
 				\item \textbf{Target}: TLS's CBC (Cipher Block Chaining) mode with HMAC
 				\item \textbf{The vulnerability}: Timing differences in MAC verification\footnote{\url{https://appliedcryptography.page/paper/\#lucky-thirteen}}
 				      \begin{itemize}
-					      \item TLS 1.0-1.2 used MAC-then-encrypt with CBC mode
+					      \item TLS 1.0--1.2 used MAC-then-encrypt with CBC mode
 					      \item Padding oracle attacks exploit timing differences
 					      \item Different MAC verification procedures for valid vs. invalid padding
 				      \end{itemize}
@@ -1366,8 +1366,8 @@
 		\item \textbf{The timing leak}:
 		      \begin{itemize}
 			      \item \textbf{Valid padding}: MAC checked on message after padding removal
-			      \item \textbf{Invalid padding}: TLS spec says to check MAC as if padding had zero-length
-			      \item Different amounts of data processed creates timing difference
+			      \item \textbf{Invalid padding}: TLS spec says to check MAC as if the padding had zero length
+			      \item Different amounts of data processed create a timing difference
 		      \end{itemize}
 		\item \textbf{Statistical attack}:
 		      \begin{itemize}
@@ -1381,14 +1381,14 @@
 
 \begin{frame}{Lucky Thirteen: Real-world impact}
 	\begin{itemize}
-		\item \textbf{Affected systems}: All TLS 1.0-1.2 implementations using CBC
+		\item \textbf{Affected systems}: All TLS 1.0--1.2 implementations using CBC
 		      \begin{itemize}
 			      \item OpenSSL, NSS, GnuTLS, SChannel
 			      \item Millions of web servers worldwide
 		      \end{itemize}
 		\item \textbf{Practical exploitation}:
 		      \begin{itemize}
-			      \item Requires man-in-the-middle position
+			      \item Requires a man-in-the-middle position
 			      \item Can extract secrets from encrypted sessions
 			      \item Especially dangerous on shared networks (Wi-Fi)
 		      \end{itemize}
@@ -1509,13 +1509,13 @@
 		      \end{itemize}
 		\item \textbf{``Triple handshake'' attack}:
 		      \begin{enumerate}
-			      \item Handshake 1: Client \leftarrow\ Attacker (using evil certificate)
-			      \item Handshake 2: Attacker \leftarrow\ Server (using good certificate)
-			      \item Handshake 3: Client \leftarrow\ Server (resumed session, confused identity)
+			      \item Handshake 1: Client \leftrightarrow\ Attacker (using evil certificate)
+			      \item Handshake 2: Attacker \leftrightarrow\ Server (using good certificate)
+			      \item Handshake 3: Client \leftrightarrow\ Server (resumed session, confused identity)
 		      \end{enumerate}
-		\item \textbf{Result}: Client sends sensitive data to attacker
+		\item \textbf{Result}: Client sends sensitive data to the attacker
 		\item \textbf{Renegotiation attacks}: Similar issues with TLS renegotiation
-		\item \textbf{Cookie cutter}: Attacker can splice different handshakes together
+		\item \textbf{Cookie cutter}: Attacker truncates TLS records to strip security attributes from cookies
 	\end{itemize}
 \end{frame}
 
@@ -1637,7 +1637,7 @@
 			      \item Core Infrastructure Initiative (CII) formed
 			      \item Better security auditing of critical libraries
 		      \end{itemize}
-		\item \textbf{Branding success}: First security vulnerability with logo and website
+		\item \textbf{Branding success}: First security vulnerability with its own logo and website
 	\end{itemize}
 \end{frame}
 
@@ -1703,8 +1703,8 @@
 		      \begin{enumerate}
 			      \item Send duplicate or out-of-order handshake messages
 			      \item Library A and Library B enter different states
-			      \item Library A thinks handshake is complete
-			      \item Library B thinks handshake is still in progress
+			      \item Library A thinks the handshake is complete
+			      \item Library B thinks the handshake is still in progress
 		      \end{enumerate}
 		\item \textbf{Result}:
 		      \begin{itemize}
@@ -1755,7 +1755,7 @@
 			      \item Client requests strong RSA key exchange
 			      \item Attacker modifies ClientHello to request export-grade RSA
 			      \item Server responds with 512-bit RSA parameters
-			      \item Attacker factors 512-bit RSA key (8-10 hours)
+			      \item Attacker factors 512-bit RSA key (8--10 hours)
 			      \item Attacker can decrypt entire TLS session
 		      \end{enumerate}
 		\item \textbf{Vulnerable systems}: 36.7\% of all browser-trusted sites
@@ -1769,11 +1769,11 @@
 
 \begin{frame}{When math was classified as weapons}
 	\begin{itemize}
-		\item \textbf{US Export Administration Regulations (1970s-1990s)}:
+		\item \textbf{US export regulations (1970s--1990s)}:
 		      \begin{itemize}
 			      \item Cryptographic software classified as ``munitions''
 			      \item Same category as tanks, missiles, and fighter jets
-			      \item Export required State Department license (like arms dealing!)
+			      \item Export required a State Department license (like arms dealing!)
 		      \end{itemize}
 		\item \textbf{The absurd reality}:
 		      \begin{itemize}
@@ -1810,7 +1810,7 @@
 					      \item Wanted to publish academic paper and source code
 					      \item Government: ``That's illegal arms export!''
 				      \end{itemize}
-				\item \textbf{The lawsuit}: Bernstein v. United States (1995-2003)
+				\item \textbf{The lawsuit}: Bernstein v. United States (1995--2003)
 				      \begin{itemize}
 					      \item Argued cryptographic code is protected speech
 					      \item First Amendment covers mathematical expressions
@@ -1863,7 +1863,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The Cypherpunk Manifesto (1993)}
+\begin{frame}{A Cypherpunk's Manifesto (1993)}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
@@ -1971,7 +1971,7 @@
 			      \item NSA-level resources: near real-time
 		      \end{itemize}
 		\item \textbf{Vulnerable servers}: 8.4\% of top 1 million HTTPS sites
-		\item \textbf{The irony}: Export restrictions from 1990s still creating vulnerabilities in 2015
+		\item \textbf{The irony}: Export restrictions from the 1990s still creating vulnerabilities in 2015
 	\end{itemize}
 \end{frame}
 
@@ -2140,7 +2140,7 @@
 				\item \textbf{Core idea}:
 				      \begin{itemize}
 					      \item Protocols hash their message transcripts for integrity
-					      \item Find two different transcripts with same hash
+					      \item Find two different transcripts with the same hash
 					      \item Substitute one transcript for another
 				      \end{itemize}
 				\item \textbf{Targets}: TLS, IKE (IPsec), SSH
@@ -2168,7 +2168,7 @@
 		      \end{itemize}
 		\item \textbf{Attack scenario}:
 		      \begin{enumerate}
-			      \item Attacker finds two handshake transcripts with same hash
+			      \item Attacker finds two handshake transcripts with the same hash
 			      \item First transcript: legitimate client-server handshake
 			      \item Second transcript: attacker's malicious handshake
 			      \item Attacker substitutes malicious transcript
@@ -2193,7 +2193,7 @@
 		\item \textbf{Attack example}:
 		      \begin{itemize}
 			      \item Client connects to TLS server
-			      \item Attacker substitutes IKE handshake with same hash
+			      \item Attacker substitutes IKE handshake with the same hash
 			      \item Client's TLS stack processes IKE messages
 			      \item Potential for memory corruption or bypass
 		      \end{itemize}
@@ -2443,7 +2443,7 @@
 		      \end{itemize}
 		\item \textbf{How ProVerif works}:
 		      \begin{itemize}
-			      \item Protocol modeled in applied pi-calculus.
+			      \item Protocol modeled in the applied pi-calculus.
 			      \item Automated search for attacks and proofs.
 			      \item Handles unbounded number of protocol sessions.
 		      \end{itemize}
@@ -2467,9 +2467,9 @@
 		      \end{itemize}
 		\item \textbf{\fstar key features}:
 		      \begin{itemize}
-			      \item Static type system catches bugs at compile-time.
+			      \item Static type system catches bugs at compile time.
 			      \item Can express and verify complex security properties.
-			      \item Compiles to efficient C code via KreMLin compiler.
+			      \item Compiles to efficient C code via the KreMLin compiler.
 		      \end{itemize}
 		\item \textbf{TLS 1.3 implementation in \fstar}:
 		      \begin{itemize}
@@ -2479,7 +2479,7 @@
 		      \end{itemize}
 		\item \textbf{Real-world impact}:
 		      \begin{itemize}
-			      \item \haclstar integrated into Firefox, Python, Linux kernel.
+			      \item \haclstar integrated into Firefox, Python, and the Linux kernel.
 			      \item Proves that verified code can be practical and fast.
 		      \end{itemize}
 	\end{itemize}
@@ -2507,7 +2507,7 @@
 		      \end{itemize}
 		\item \textbf{Industry adoption}:
 		      \begin{itemize}
-			      \item \haclstar used in Firefox, Linux kernel.
+			      \item \haclstar used in Firefox and the Linux kernel.
 			      \item Proves formal methods can produce practical code.
 		      \end{itemize}
 	\end{itemize}
@@ -2518,7 +2518,7 @@
 		\item \textbf{TLS 1.2 feature}: Optional data compression
 		      \begin{itemize}
 			      \item Reduces bandwidth usage
-			      \item Seemed like a good idea...
+			      \item Seemed like a good idea\ldots
 		      \end{itemize}
 		\item \textbf{The CRIME attack}: Compression leaks information
 		      \begin{itemize}
@@ -2585,7 +2585,7 @@
 	\pause
 	\begin{itemize}
 		\item \textbf{Clever engineering}: Human-readable sentinel values
-		\item \textbf{Easy debugging}: Hex dumps show ``DOWNGRD'' string
+		\item \textbf{Easy debugging}: Hex dumps show the ``DOWNGRD'' string
 		\item \textbf{Security through visibility}: Makes downgrade attempts obvious
 		\item \textbf{Cryptographic protection}: Random value is signed by server
 		      \begin{itemize}
@@ -2647,7 +2647,7 @@
 	\begin{itemize}
 		\item \textbf{The idea}: Reuse keys from previous connections
 		      \begin{itemize}
-			      \item Client and server remember shared \textbf{preshared key (PSK)}
+			      \item Client and server remember a \textbf{preshared key (PSK)}
 			      \item Skip certificate validation in subsequent connections
 			      \item Combine PSK with fresh Diffie-Hellman exchange
 		      \end{itemize}
@@ -2676,10 +2676,10 @@
 		      \begin{enumerate}
 			      \item Client: ClientHello + PSK + DH key + \textbf{encrypted data}
 			      \item Server: Processes everything, responds with MAC
-			      \item Client: Verifies MAC, knows it's talking to right server
+			      \item Client: Verifies MAC, knows it's talking to the right server
 		      \end{enumerate}
 		\item \textbf{Performance impact}: Eliminates connection setup delay entirely
-		\item \textbf{Use case}: Perfect for frequently-visited websites
+		\item \textbf{Use case}: Perfect for frequently visited websites
 	\end{itemize}
 \end{frame}
 
@@ -2689,9 +2689,9 @@
 		      \begin{itemize}
 			      \item Attacker records 0-RTT data packet
 			      \item Replays it to server later
-			      \item Server can't distinguish replay from legitimate connection
+			      \item Server can't distinguish a replay from a legitimate connection
 			            \begin{itemize}
-				            \item You can probably formally prove that this problem can't be completely solved without a round trip
+				            \item You can probably formally prove that this problem can't be completely solved without a round trip.
 			            \end{itemize}
 		      \end{itemize}
 		\item \textbf{Mitigation strategies}:
