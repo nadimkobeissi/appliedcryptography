@@ -16,7 +16,7 @@
 
 \section{Pseudorandomness}
 \begin{questions}
-	\question[10] \textbf{Pseudorandom Generators}
+	\question[10] \textbf{Pseudorandom Generators}\topicbadge{1.4}
 
 	\begin{parts}
 		\part[5] Explain the limitations of the one-time pad for practical encryption and why pseudorandom generators (PRGs) are needed in modern cryptographic systems.
@@ -28,7 +28,7 @@
 		Determine whether $H$ is a secure PRG. If not, provide a distinguisher that can tell $H(S)$ apart from a truly random string with non-negligible advantage.
 	\end{parts}
 
-	\question[10] \textbf{Pseudorandom Functions and Permutations}
+	\question[10] \textbf{Pseudorandom Functions and Permutations}\topicbadge{1.4}
 
 	\begin{parts}
 		\part[5] Consider the following PRF construction: $F(K, X) = G(K) \oplus X$, where $G$ is a secure PRG. Is $F$ a secure PRF? If not, describe a distinguisher that can tell $F$ apart from a random function with non-negligible advantage.
@@ -44,7 +44,7 @@
 
 \section{Chosen-Plaintext and Chosen-Ciphertext Attacks}
 \begin{questions}
-	\question[10] \textbf{CPA Security}
+	\question[10] \textbf{CPA Security}\topicbadge{1.5}
 
 	\begin{parts}
 		\part[5] Consider the CPA security definition:
@@ -81,7 +81,7 @@
 		\end{subparts}
 	\end{parts}
 
-	\question[10] \textbf{CCA Security and Authenticated Encryption}
+	\question[10] \textbf{CCA Security and Authenticated Encryption}\topicbadge{1.5}
 
 	\begin{parts}
 		\part[3] Format oracle attacks:
@@ -111,7 +111,7 @@
 
 \section{Collision-Resistant Hash Functions}
 \begin{questions}
-	\question[15] \textbf{Hash Function Properties}
+	\question[15] \textbf{Hash Function Properties}\topicbadge{1.6}
 
 	\begin{parts}
 		\part[5] Collision resistance:
@@ -136,7 +136,7 @@
 		\end{subparts}
 	\end{parts}
 
-	\question[15] \textbf{Password Hashing}
+	\question[15] \textbf{Password Hashing}\topicbadge{1.6}
 
 	\begin{parts}
 		\part[5] For each of the following password storage approaches, analyze the security implications if a server database is compromised:
@@ -166,7 +166,7 @@
 
 \section{Applied Cryptography Case Studies}
 \begin{questions}
-	\question[10] \textbf{Block Cipher Modes Analysis}
+	\question[10] \textbf{Block Cipher Modes Analysis}\topicbadge{1.5}
 
 	With reference to the block cipher modes covered in our lectures, analyze the following scenarios:
 	\begin{parts}
@@ -192,7 +192,7 @@
 		\end{itemize}
 	\end{parts}
 
-	\question[10] \textbf{Hash Function Security Analysis}
+	\question[10] \textbf{Hash Function Security Analysis}\topicbadge{1.6}
 
 	A software update system uses hash functions to verify the integrity of downloads. The system works as follows:
 	\begin{itemize}
@@ -210,7 +210,7 @@
 		\part Design a more secure alternative system using modern cryptographic primitives discussed in class.
 	\end{parts}
 
-	\question[10] \textbf{Password Management System Design}
+	\question[10] \textbf{Password Management System Design}\topicbadge{1.6}
 
 	You are designing a password management system for a new web application with the following requirements:
 	\begin{itemize}
@@ -230,7 +230,7 @@
 \end{questions}
 
 \begin{tcolorbox}[colframe=EarthBrown!30!white,colback=EarthBrown!5!white]
-	\section*{Bonus Question}
+	\section*{Bonus Question\hfill\topicpill{1.4}}
 	\begin{questions}
 		\bonusquestion[10] The security of AES and other block ciphers depends on their resistance to various forms of cryptanalysis. Research and analyze one of the following advanced attacks:
 

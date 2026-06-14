@@ -16,7 +16,7 @@
 
 \section{Cryptographic Foundations}
 \begin{questions}
-	\question[10] \textbf{Basic Concepts}
+	\question[10] \textbf{Basic Concepts}\topicbadge{1.1}
 
 	\begin{parts}
 		\part[3] Define the three primary security goals of cryptography in your own words and provide a real-world example for each that wasn't explicitly mentioned in the lectures.
@@ -31,7 +31,7 @@
 		\end{subparts}
 	\end{parts}
 
-	\question[10] \textbf{Perfect Secrecy}
+	\question[10] \textbf{Perfect Secrecy}\topicbadge{1.2}
 
 	\begin{parts}
 		\part[3] Consider a modified one-time pad where we use the bitwise AND ($\land$) operation instead of XOR ($\oplus$):
@@ -64,7 +64,7 @@
 
 \section{Provable Security}
 \begin{questions}
-	\question[10] \textbf{Libraries and Indistinguishability}
+	\question[10] \textbf{Libraries and Indistinguishability}\topicbadge{1.2}
 
 	\begin{parts}
 		\part[5] Consider the following libraries:
@@ -145,7 +145,7 @@
 		\end{subparts}
 	\end{parts}
 
-	\question[10] \textbf{Security Proofs}
+	\question[10] \textbf{Security Proofs}\topicbadge{1.2}
 
 	\begin{parts}
 		\part[5] Let $\Sigma = (\textsf{KeyGen}, \textsf{Enc}, \textsf{Dec})$ be a secure one-time pad encryption scheme for messages in $\bits^n$. Consider the following modified scheme $\Sigma' = (\textsf{KeyGen}', \textsf{Enc}', \textsf{Dec}')$:
@@ -171,7 +171,7 @@
 
 \section{Computational Cryptography}
 \begin{questions}
-	\question[15] \textbf{Computational Security Concepts}
+	\question[15] \textbf{Computational Security Concepts}\topicbadge{1.3}
 
 	\begin{parts}
 		\part[5] Explain why computational security is important in practice despite the existence of information-theoretic security. Discuss the limitations of both approaches.
@@ -189,7 +189,7 @@
 		\end{subparts}
 	\end{parts}
 
-	\question[15] \textbf{Distinguishability}
+	\question[15] \textbf{Distinguishability}\topicbadge{1.3}
 
 	\begin{parts}
 		\part[7] Consider the following two libraries:
@@ -245,7 +245,7 @@
 
 \section{Application of Cryptographic Principles}
 \begin{questions}
-	\question[15] \textbf{One-Time Pad in the Real World}
+	\question[15] \textbf{One-Time Pad in the Real World}\topicbadge{1.2}
 
 	A startup claims to have developed a ``quantum-resistant ultra-secure messaging system'' based on the one-time pad. They provide the following details:
 
@@ -263,7 +263,7 @@
 		\part Suggest improvements to address each issue while maintaining the theoretical security of OTP.
 	\end{parts}
 
-	\question[15] \textbf{Symmetric Encryption Protocol Analysis}
+	\question[15] \textbf{Symmetric Encryption Protocol Analysis}\topicbadge{1.2}
 
 	A software company is implementing a secure communication protocol for their instant messaging application. They propose the following scheme:
 
@@ -284,7 +284,7 @@
 \end{questions}
 
 \begin{tcolorbox}[colframe=EarthBrown!30!white,colback=EarthBrown!5!white]
-	\section*{Bonus Question}
+	\section*{Bonus Question\hfill\topicpill{1.7}}
 	\begin{questions}
 		\bonusquestion[10] The discrete logarithm problem is fundamental to many cryptographic systems. Consider a cyclic group $G$ of prime order $p$ with generator $g$. The discrete logarithm problem is: given $h \in G$, find $x$ such that $g^x = h$.
 

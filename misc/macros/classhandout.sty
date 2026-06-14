@@ -106,10 +106,10 @@
 	\vspace*{\fill}
 	\pdfbookmark[2]{Answers}{quiz@answers}%
 	\begin{tcolorbox}[width=0.94\textwidth, center, colback=white,
-		colframe=OliveGreen, boxrule=0.75pt, arc=3.5mm,
-		title={\large\bfseries\CheckmarkBold\hspace{0.5em}Answer Key},
-		center title, bottomtitle=7pt, toptitle=7pt,
-		boxsep=8pt, left=8pt, right=8pt, top=12pt, bottom=12pt]
+			colframe=OliveGreen, boxrule=0.75pt, arc=3.5mm,
+			title={\large\bfseries\CheckmarkBold\hspace{0.5em}Answer Key},
+			center title, bottomtitle=7pt, toptitle=7pt,
+			boxsep=8pt, left=8pt, right=8pt, top=12pt, bottom=12pt]
 		\begin{minipage}[c]{0.58\linewidth}
 			\quiz@answergrid
 		\end{minipage}\hfill
@@ -131,3 +131,52 @@
 \newcommand\fstar{\textsf{F}\ensuremath{^\star}\xspace}
 \newcommand\haclstar{\textsf{HACL}\ensuremath{^\star}\xspace}
 \def\mycheckmark{\tikz\fill[scale=0.4](0,.4) -- (.35,0) -- (1.1,.65) -- (.35,.25) -- cycle;}
+
+%% --- Topic badges ------------------------------------------------------------
+%% A small linked pill, right-flushed on a question's title line, marking which
+%% course topic (slide deck) a question is drawn from. Central table maps each
+%% topic number to its slide anchor and a short title.
+%%   On a question:      \question[10] \textbf{Title}\topicbadge{1.1}
+%%   On the bonus header: \section*{Bonus Question\hfill\topicpill{1.7}}
+\makeatletter
+\newcommand{\@deftopic}[3]{% #1 = number (1.1), #2 = slide anchor (1-1), #3 = short title
+	\expandafter\def\csname topic@anchor@#1\endcsname{#2}%
+	\expandafter\def\csname topic@title@#1\endcsname{#3}%
+}
+\@deftopic{1.1}{1-1}{Introduction}
+\@deftopic{1.2}{1-2}{Provable Security}
+\@deftopic{1.3}{1-3}{Computational Security}
+\@deftopic{1.4}{1-4}{Pseudorandomness}
+\@deftopic{1.5}{1-5}{CPA \& CCA Security}
+\@deftopic{1.6}{1-6}{Hash Functions}
+\@deftopic{1.7}{1-7}{Diffie-Hellman}
+\@deftopic{1.8}{1-8}{Curves \& Signatures}
+\@deftopic{2.1}{2-1}{TLS}
+\@deftopic{2.2}{2-2}{RC4}
+\@deftopic{2.3}{2-3}{Secure Messaging}
+\@deftopic{2.4}{2-4}{E2EE Cloud Storage}
+\@deftopic{2.5}{2-5}{High-Assurance Crypto}
+\@deftopic{2.6}{2-6}{Post-Quantum Crypto}
+\@deftopic{2.7}{2-7}{Cryptocurrency}
+\@deftopic{2.8}{2-8}{Zero-Knowledge Proofs}
+\@deftopic{2.9}{2-9}{Secure MPC}
+\@deftopic{2.10}{2-10}{Fully Homomorphic Encryption}
+
+% The linked pill itself: \topicpill{1.1}
+\newcommand{\topicpill}[1]{%
+	\href{https://appliedcryptography.page/slides/\#\csname topic@anchor@#1\endcsname}{%
+		\tikz[baseline=(tb.base)]{%
+			\node[draw=OliveGreen!55!white, fill=OliveGreen!8!white,
+				rounded corners=3pt, inner xsep=5pt, inner ysep=1.5pt,
+				text=OliveGreen!75!black, font=\footnotesize\bfseries] (tb)
+			{Topic~#1\,\textperiodcentered\,\csname topic@title@#1\endcsname};%
+		}%
+	}%
+}
+
+% Right-flushed badge for a question's title line: \topicbadge{1.1}
+\newcommand{\topicbadge}[1]{%
+	{\parfillskip=0pt\relax\nobreak\hfill\nobreak\topicpill{#1}\par}%
+}
+\makeatother
+%% ----------------------------------------------------------------------------
