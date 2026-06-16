@@ -884,7 +884,7 @@
 			\hline
 			$2^{50}$              & \$3.50                     & cup of coffee                                    \\
 			$2^{55}$              & \$100                      & dinner at a high-end restaurant                  \\
-			$2^{65}$              & \$130,000                  & apartment in Achrafieh                           \\
+			$2^{65}$              & \$130,000                  & down payment on apartment                        \\
 			$2^{75}$              & \$130 million              & budget of one of the Harry Potter movies         \\
 			$2^{85}$              & \$140 billion              & GDP of Hungary                                   \\
 			$2^{92}$              & \$20 trillion              & GDP of the United States                         \\
@@ -1177,36 +1177,67 @@
 
 \subsection{``Bad event'' proof technique}
 
-\begin{frame}{The ``bad event'' proof technique}{Definition}
-	\definitionbox{Bad Event Technique}{
-		Let \lib{}{1} and \lib{}{2} be libraries that each include a boolean variable named \hl{\texttt{bad}}, and assume that after \texttt{bad} is set to \texttt{true} it remains \texttt{true} forever. We say that the bad event is triggered if the library ever sets \texttt{bad := true}.
-		\\[1em]
-		If \lib{}{1} and \lib{}{2} have identical source code, except for statements reachable only after setting \texttt{bad := true}, then:
-		\begin{align*}
-			\left| \prob{\prog{} \link \lib{}{1} \Rightarrow \texttt{true}} - \prob{\prog{} \link \lib{}{2} \Rightarrow \texttt{true}} \right| \leq \prob{\prog{} \link \lib{}{1} \func{trigger}{\texttt{bad}}}
-		\end{align*}
-	}
-\end{frame}
-
-\begin{frame}{The ``bad event'' proof technique}{Key insights}
-	\begin{itemize}
-		\item \prog{}'s advantage is bounded by \prob{\prog{} \link \lib{}{1} \func{trigger}{\texttt{bad}}}.
-		\item Practical application:
+\begin{frame}{The ``bad event'' proof technique}{Why we need a new tool}
+	\begin{itemize}[<+->]
+		\item So far, two libraries counted as \textbf{interchangeable} only when they behaved \textit{identically} -- differing at most in \textit{unreachable code} or an \textit{unused variable}.
+		\item But very often two libraries are \textbf{almost} identical: they behave the same way \textit{except} in one rare situation, such as\ldots
 		      \begin{itemize}
-			      \item Define a sequence of hybrid libraries.
-			      \item Identify ``bad events'' between consecutive hybrids.
-			      \item Show these events occur with negligible probability.
+			      \item a collision between two random values,
+			      \item correctly guessing a secret,
+			      \item or sampling the same key twice.
 		      \end{itemize}
-		\item Enables us to focus on analyzing specific failure cases rather than the libraries' full behavior.
+		\item Intuitively they should \textit{still} be indistinguishable -- the ``bad'' situation almost never happens.
+		\item The \textbf{bad event technique} is how we turn that intuition into an actual proof.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{The ``bad event'' proof technique}{Example}
+\begin{frame}{The ``bad event'' proof technique}{The big idea}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\definitionbox{The intuition}{
+				Picture two libraries running the \textbf{same code}, side by side, in lockstep.
+				\\[0.6em]
+				They are wired so they can only ever \textbf{diverge} after crossing a single \hl{tripwire}.
+				\\[0.6em]
+				As long as nobody trips it, the two are \textbf{perfectly identical} -- no program can tell them apart.
+				\\[0.6em]
+				So the \textit{only} way to distinguish them is to \textbf{trip the wire}.
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item In code, we mark the tripwire by setting \hl{$\texttt{bad} \coloneq \texttt{true}$}.
+				\item Once set, it stays \texttt{true} forever -- it's a tripwire, not a toggle.
+				\item ``Triggering the bad event'' simply means \textbf{the code trips this wire}.
+				\item Key consequence: a program's \textbf{advantage} can be no bigger than the \textbf{chance of tripping the wire}.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The ``bad event'' proof technique}{The principle}
+	\definitionbox{Bad Event Technique}{
+		Suppose \lib{}{1} and \lib{}{2} run \textbf{identical code}, except for lines that can only be reached \textit{after} the flag has been set with \hl{$\texttt{bad} \coloneq \texttt{true}$}. Then for every calling program \prog{}:
+		\begin{align*}
+			\left| \prob{\prog{} \link \lib{}{1} \Rightarrow \texttt{true}} - \prob{\prog{} \link \lib{}{2} \Rightarrow \texttt{true}} \right| \;\leq\; \prob{\prog{} \link \lib{}{1} \text{ triggers } \texttt{bad}}
+		\end{align*}
+	}
+	\begin{itemize}[<+->]
+		\item The left side is exactly the \textbf{advantage} from our indistinguishability definition: how well \prog{} tells the two libraries apart.
+		\item The right side is the probability of \textbf{ever tripping the wire}.
+		\item You can't distinguish the libraries any better than you can trigger the bad event.
+		\item So the whole proof reduces to one task: \textbf{show the bad event happens with negligible probability.}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The ``bad event'' proof technique}{Example: a warm-up claim}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item Are these libraries \textbf{computationally indistinguishable?}
-				\item Yes! Let's prove it using the bad event technique.
+				\item \textbf{Claim:} these two libraries are \textbf{computationally indistinguishable}.
+				\item \lib{}{1} returns \texttt{true} only when the caller's guess $X$ matches a fresh random string $R$.
+				\item \lib{}{2} never returns \texttt{true} at all.
+				\item Intuitively, guessing a uniformly random $\lambda$-bit string is \textbf{almost impossible} -- so \lib{}{1} practically never returns \texttt{true} either.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1228,13 +1259,13 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The ``bad event'' proof technique}{Example}
+\begin{frame}{The ``bad event'' proof technique}{Example: plant the tripwire}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item Are these libraries \textbf{computationally indistinguishable?}
-				\item Yes! Let's prove it using the bad event technique.
-				\item Note: these libraries are interchangeable with \lib{}{1} and \lib{}{2}, respectively (as seen on the next slide).
+			\begin{itemize}[<+->]
+				\item The two libraries can only ever disagree in \textbf{one rare moment}: when $R = X$.
+				\item So we plant the tripwire \hl{$\texttt{bad} \coloneq \texttt{true}$} at exactly that moment in both.
+				\item Now \lib{'}{1} and \lib{'}{2} are \textbf{line-for-line identical}, except for the single highlighted line that runs \textit{after} the tripwire.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1263,60 +1294,61 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The ``bad event'' proof technique}{Just to be clear}
-	\sslinked{
+\begin{frame}{The ``bad event'' proof technique}{Example: how the pieces connect}
+	\begin{itemize}
+		\item \lib{}{1} \interchangeable{} \lib{'}{1}: the flag is just an unused variable, and on the line where $R = X$, returning \texttt{true} is the same as returning $R \stackrel{?}{=} X$.
+		\item \lib{'}{2} \interchangeable{} \lib{}{2}: \lib{'}{2} returns \texttt{false} on every path, so it behaves exactly like \lib{}{2}.
+	\end{itemize}
+	\begin{center}
 		\sslinked{
-			\sslibrary{}{1}{
-				\sslibrarysubroutine{predict}{X}{
-					$R \twoheadleftarrow \bits^\lambda$\\
-					return $R \stackrel{?}{=} X$
-				}{1}
-			}{1}
-		}{\interchangeable{}}{
-			\sslibrary{'}{1}{
-				\sslibrarysubroutine{predict}{X}{
-					$R \twoheadleftarrow \bits^\lambda$\\
-					if $R \stackrel{?}{=} X$:\\
-					\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
-					\quad return \hl{\texttt{true}}\\
-					return \texttt{false}
-				}{1}
-			}{1}
+			\sslinked{
+				\sslibrary{}{1}{
+					\sslibrarysubroutine{predict}{X}{
+						$R \twoheadleftarrow \bits^\lambda$\\
+						return $R \stackrel{?}{=} X$
+					}{1}
+				}{0.78}
+			}{\interchangeable{}}{
+				\sslibrary{'}{1}{
+					\sslibrarysubroutine{predict}{X}{
+						$R \twoheadleftarrow \bits^\lambda$\\
+						if $R \stackrel{?}{=} X$:\\
+						\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
+						\quad return \hl{\texttt{true}}\\
+						return \texttt{false}
+					}{1}
+				}{0.78}
+			}
+		}{\overset{?}{\approxeq}}{
+			\sslinked{
+				\sslibrary{'}{2}{
+					\sslibrarysubroutine{predict}{X}{
+						$R \twoheadleftarrow \bits^\lambda$\\
+						if $R \stackrel{?}{=} X$:\\
+						\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
+						\quad return \hl{\texttt{false}}\\
+						return \texttt{false}
+					}{1}
+				}{0.78}
+			}{\interchangeable{}}{
+				\sslibrary{}{2}{
+					\sslibrarysubroutine{predict}{X}{
+						return \texttt{false}
+					}{1}
+				}{0.78}
+			}
 		}
-	}{\overset{?}{\approxeq}}{
-		\sslinked{
-			\sslibrary{'}{2}{
-				\sslibrarysubroutine{predict}{X}{
-					$R \twoheadleftarrow \bits^\lambda$\\
-					if $R \stackrel{?}{=} X$:\\
-					\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
-					\quad return \hl{\texttt{false}}\\
-					return \texttt{false}
-				}{1}
-			}{1}
-		}{\interchangeable{}}{
-			\sslibrary{}{2}{
-				\sslibrarysubroutine{predict}{X}{
-					return \texttt{false}
-				}{1}
-			}{1}
-		}
-	}
+	\end{center}
 \end{frame}
 
-\begin{frame}{The ``bad event'' proof technique}{Example}
+\begin{frame}{The ``bad event'' proof technique}{Example: bound the bad event}
 	\begin{columns}[c]
 		\begin{column}{0.8\textwidth}
-			\begin{itemize}
-				\item We need to analyze how likely it is that the bad event happens:
-				      \begin{itemize}
-					      \item The bad event occurs when $R = X$.
-					      \item Since $R$ is randomly chosen from a huge set, this match is extremely unlikely.
-					      \item Even if an adversary makes many attempts, the chance of seeing this bad event remains tiny.
-					      \item As we increase the security parameter $\lambda$, the chance becomes vanishingly small.
-				      \end{itemize}
-				\item Therefore, the libraries are computationally indistinguishable!
-				\item For any \prog{}, computationally speaking, we'd get essentially the same distribution of outputs.
+			\begin{itemize}[<+->]
+				\item All that's left is to bound how likely the tripwire is tripped.
+				\item The bad event is exactly $R = X$, with $R \twoheadleftarrow \bits^\lambda$ fresh and uniform. For a single call, $\prob{\texttt{bad}} = \prob{R = X} = 1/2^\lambda$.
+				\item Across $q$ calls, a union bound gives $\prob{\texttt{bad}} \leq q/2^\lambda$ -- still \textbf{negligible} for any polynomial $q$ (the same ``rare collision'' flavor as the birthday bound).
+				\item Since advantage $\leq \prob{\texttt{bad}} \to 0$, we conclude \lib{}{1} $\approxeq$ \lib{}{2}. \textbf{Done!}
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.2\textwidth}
@@ -1346,21 +1378,19 @@
 \end{frame}
 
 \begin{frame}{The ``end-of-time'' strategy for bad events}
-	\begin{itemize}
-		\item Sometimes analyzing bad events can be complex, especially when values are chosen by the adversary.
-		\item The end-of-time strategy:
+	\begin{itemize}[<+->]
+		\item Sometimes the bad event is awkward to reason about \textit{mid-execution} -- especially when the adversary gets to choose values as it goes.
+		\item \textbf{The trick:} don't check the tripwire along the way. Instead:
 		      \begin{enumerate}
-			      \item Postpone all bad-event logic to the end of the library execution.
-			      \item Collect information during normal execution.
-			      \item Check for bad events only at the very end.
+			      \item Run the library normally, just \textbf{recording} the values it samples and sees.
+			      \item At the \textbf{very end}, look back over that record and check whether the bad event ever happened.
 		      \end{enumerate}
-		\item Advantages:
+		\item Why this helps:
 		      \begin{itemize}
-			      \item Simplifies analysis by separating normal behavior from bad-event checking.
-			      \item Makes it easier to bound the probability of bad events.
-			      \item Particularly useful for complex cryptographic proofs.
+			      \item It \textbf{separates} the library's normal behavior from the bad-event bookkeeping.
+			      \item With every value in hand at once, \prob{\texttt{bad}} is far easier to bound -- often with a single union or birthday bound.
 		      \end{itemize}
-		\item We'll use this in the next topic!
+		\item We'll lean on this trick in the next topic!
 	\end{itemize}
 \end{frame}
 
