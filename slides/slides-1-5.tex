@@ -51,7 +51,7 @@
 \end{frame}
 
 \begin{frame}{Why CPA security matters}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item CPA security means: \textit{``Even if I let you encrypt any message you want, you can't obtain any distinguisher regarding my scheme.''}
 		\item \textbf{Why this matters in real life:}
 		      \begin{itemize}
@@ -65,7 +65,7 @@
 \end{frame}
 
 \begin{frame}{Message length: not important, not unimportant}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item Even with CPA security, the \textbf{length} of messages is still leaked.
 		\item This seemingly minor leak can reveal surprising information:
 		      \begin{itemize}
@@ -134,7 +134,7 @@
 \begin{frame}{AES by itself is deterministic}
 	\begin{columns}[c]
 		\begin{column}{0.7\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item AES as a block cipher is inherently \textbf{deterministic}:
 				      \begin{itemize}
 					      \item $\texttt{AES}(K, M)$ will always produce the same $C$.
@@ -266,7 +266,7 @@
 \begin{frame}{CBC mode: a closer look}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item CBC (Cipher Block Chaining) uses the previous ciphertext block to randomize the current block.
 				\item Requires a random initialization vector (IV).
 				\item Each block's encryption depends on all previous blocks.
@@ -293,7 +293,7 @@
 \begin{frame}{CTR mode: a closer look}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item CTR (Counter) mode turns a block cipher into a stream cipher.
 				\item Uses a nonce ($C_0$) plus a counter to create unique inputs to $F$.
 				\item Each block's encryption is independent of other blocks.
@@ -380,7 +380,7 @@
 \begin{frame}{Format-oracle attacks \& malleability}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item Scenario: a victim decrypting CTR-mode ciphertexts reveals whether the result contains a null character.
 				\item Information can leak through crashes, error messages, or behavior differences.
 				\item A single yes/no bit of information can be enough to break encryption!
@@ -643,7 +643,7 @@
 \end{frame}
 
 \begin{frame}{Is fixing the null-byte bug enough?}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item The null-character bug is just one example of a broader class of attacks.
 		\item Format-oracle attacks can exist without implementation bugs!
 		\item They only need:
@@ -665,7 +665,7 @@
 \begin{frame}{Real-world format-oracle attacks}{Padding oracle}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item CBC mode requires padding to handle plaintexts that aren't block-aligned.
 				\item Many implementations crash when encountering invalid padding.
 				\item This exposes an oracle that tells attackers: ``Does $\texttt{Dec}(K, C)$ have valid padding?''
@@ -680,7 +680,7 @@
 \begin{frame}{Real-world format-oracle attacks}{Timing side-channel}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item The victim interprets the plaintext as a number $n$ and performs $n$ operations.
 				\item Attackers can measure how long the system takes to respond.
 				\item The response time reveals approximate numerical values inside $\texttt{Dec}(K, C)$.
@@ -695,7 +695,7 @@
 \begin{frame}{Real-world format-oracle attacks}{Apple iMessage}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item Older Apple iMessage versions used gzip compression.
 				\item The system responded differently when a ciphertext decrypted to:
 				      \begin{itemize}
@@ -714,7 +714,7 @@
 \end{frame}
 
 \begin{frame}{Real-world format-oracle attacks}{XML format oracles}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item Many systems decrypt data expecting valid XML format.
 		\item If decrypted data isn't valid XML, the system returns an error.
 		\item This exposes an oracle: ``Is $\texttt{Dec}(K, C)$ valid XML?''
@@ -725,7 +725,7 @@
 \end{frame}
 
 \begin{frame}{I thought CTR mode was secure?}{CPA vs. CCA security}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item CTR mode \textit{is} secure against chosen-plaintext attacks (CPA-secure).
 		      \begin{itemize}
 			      \item It uses randomness to ensure identical messages encrypt differently each time.
@@ -784,7 +784,7 @@
 \end{frame}
 
 \begin{frame}{Understanding the CCA-rand library}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item The \lib{\Sigma}{cca-rand} library represents the \textbf{ideal} CCA-secure encryption:
 		      \begin{itemize}
 			      \item \func{cca.enc}{} returns completely random ciphertexts.
@@ -1162,7 +1162,7 @@
 \begin{frame}{Why does the Frankenstein attack matter?}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item This can have practical implications:
 				\item \textbf{Message integrity violation}:
 				      \begin{itemize}
@@ -1532,7 +1532,7 @@
 \subsection{Authenticated Encryption}
 
 \begin{frame}{Authenticated Encryption: beyond CCA security}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item CCA security is stronger than CPA security, but still not the gold standard.
 		\item CCA security says: adversary-generated ciphertexts won't reveal useful information.
 		\item But CCA security doesn't require that they decrypt to \texttt{err}.
@@ -1586,7 +1586,7 @@
 \begin{frame}{AE vs. CCA security}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item Key difference: \textbf{how we handle adversary-created ciphertexts}.
 				\item In \lib{\Sigma}{ae-rand}, any ciphertext not created by the library always decrypts to \texttt{err}.
 				\item In \lib{\Sigma}{cca-rand}, such ciphertexts could decrypt to anything (not necessarily \texttt{err}).
@@ -1598,7 +1598,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item AE is \textbf{strictly stronger} than CCA security.
 				\item Every AE scheme is CCA-secure, but not every CCA-secure scheme is an AE scheme.
 				\item Making the distinction explicit helps us design better protocols.
@@ -1611,7 +1611,7 @@
 \begin{frame}{How Encrypt-then-MAC achieves AE}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item Remember our Encrypt-then-MAC construction:
 				      \begin{itemize}
 					      \item Encrypt the plaintext: $C \coloneq \Sigma.\texttt{Enc}(K_e, M)$
@@ -1640,7 +1640,7 @@
 \end{frame}
 
 \begin{frame}{Authenticated Encryption: in practice}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item Modern cryptographic protocols almost always use authenticated encryption.
 		\item Common AE implementations:
 		      \begin{itemize}
@@ -1660,7 +1660,7 @@
 \begin{frame}{AES-GCM: Galois/Counter Mode}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item AES-GCM (Galois/Counter Mode) is the most widely used AEAD scheme.
 				\item Combines AES in CTR mode (for encryption) with GMAC (for authentication).
 				\item Extremely efficient:
