@@ -20,7 +20,8 @@ Before compiling any of the LaTeX materials, download and install [Tectonic](htt
 Then:
 
 - `make all`: Compiles all the slides, project sheets, problem sets and the syllabus.
-- `make slides`: Compiles all the slides.
+- `make slides`: Compiles all the slides (in handout mode, with overlays flattened).
+- `make slides-present`: Compiles all the slides in presentation mode (with overlays/animations).
 - `make project`: Compiles all the project sheets.
 - `make problem-set`: Compiles all the problem sets.
 - `make quiz`: Compiles all the self-assessment quizzes.
@@ -29,7 +30,8 @@ Then:
 
 You can also do stuff like this:
 
-- `make slides-2-4`: Compiles only Slides 2.4.
+- `make slides-2-4`: Compiles only Slides 2.4 (handout mode).
+- `make slides-2-4-present`: Compiles only Slides 2.4 in presentation mode.
 - `make project-proverif-model`: Compiles only the ProVerif modeling project sheet.
 - `make problem-set-4`: Compiles only Problem Set 4.
 - `make quiz-1-8`: Compiles only the self-assessment quiz for topic 1.8.

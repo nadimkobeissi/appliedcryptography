@@ -4,8 +4,11 @@ TARGETS_PROBLEM_SET = problem-set-1 problem-set-2 problem-set-3 problem-set-4 pr
 TARGETS_QUIZ = quiz-1-2 quiz-1-3 quiz-1-4 quiz-1-5 quiz-1-6 quiz-1-7 quiz-1-8 quiz-2-1 quiz-2-2 quiz-2-3 quiz-2-4 quiz-2-5 quiz-2-6 quiz-2-7 quiz-2-8
 TARGETS_SYLLABUS = syllabus
 
+TARGETS_SLIDES_PRESENT = $(addsuffix -present,$(TARGETS_SLIDES))
+
 all: slides project problem-set quiz syllabus
 slides: $(TARGETS_SLIDES)
+slides-present: $(TARGETS_SLIDES_PRESENT)
 project: $(TARGETS_PROJECT)
 problem-set: $(TARGETS_PROBLEM_SET)
 quiz: $(TARGETS_QUIZ)
@@ -14,6 +17,10 @@ clean:
 
 $(TARGETS_SLIDES):
 	@tectonic -o objects/slides "slides/$@.tex"
+
+$(TARGETS_SLIDES_PRESENT):
+	@cd slides && printf '\\def\\PRESENTATION{}\\input{$(@:-present=).tex}' | tectonic - -o ../objects/slides
+	@mv objects/slides/texput.pdf "objects/slides/$(@:-present=).pdf"
 
 $(TARGETS_PROJECT):
 	@tectonic -o objects/project "project/$@.tex"
@@ -27,4 +34,4 @@ $(TARGETS_QUIZ):
 $(TARGETS_SYLLABUS):
 	@tectonic -o objects/syllabus "syllabus/$@.tex"
 
-.PHONY: all slides project problem-set quiz clean $(TARGETS_SLIDES) $(PROJECT) $(TARGETS_PROBLEM_SET) $(TARGETS_QUIZ) $(TARGETS_SYLLABUS)
+.PHONY: all slides slides-present project problem-set quiz clean $(TARGETS_SLIDES) $(TARGETS_SLIDES_PRESENT) $(PROJECT) $(TARGETS_PROBLEM_SET) $(TARGETS_QUIZ) $(TARGETS_SYLLABUS)
