@@ -74,6 +74,41 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Data integrity: verifying a Linux ISO download}
+	\begin{columns}[c]
+		\begin{column}{0.60\textwidth}
+			\begin{itemize}
+				\item Linux distributions publish a hash (usually SHA-256) for each ISO image they release.
+				\item After downloading, you hash your own copy and compare it to the published value:
+				      \begin{center}
+					      {\small $\mathsf{SHA256}(\texttt{your.iso}) \stackrel{?}{=} \texttt{1620295f\ldots}$}
+				      \end{center}
+				\item A match means the file arrived \textbf{intact}: no corruption from a flaky network or a failing disk.
+				\item This only catches \emph{accidental} corruption: a malicious mirror could swap both the ISO \emph{and} the hash, which is why real verification also uses a signature (OpenPGP).
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.40\textwidth}
+			\imagewithcaption{fedora-iso-hash.png}{Fedora's download page showing the expected SHA-256 checksum.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of work: Anubis}
+	\begin{columns}[c]
+		\begin{column}{0.60\textwidth}
+			\begin{itemize}
+				\item Anubis shields web servers from aggressive bots (e.g.\ AI scrapers) by making each visitor's browser solve a hash puzzle.
+				\item \textbf{The challenge}: given a value $C$, find a nonce $N$ such that $\mathsf{SHA256}(C \| N)$ begins with a set number of leading zero bits (the \emph{difficulty}).
+				\item Finding $N$ takes brute force over many guesses, but checking a submitted $N$ is one hash: \textbf{hard to solve, easy to verify}.
+				\item A human barely notices the delay; a bot making millions of requests pays the cost every time.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.40\textwidth}
+			\imagewithcaption{anubis.png}{Anubis running a proof-of-work challenge in the browser before granting access.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Hash function collisions}
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}

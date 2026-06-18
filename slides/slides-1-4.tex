@@ -194,6 +194,7 @@
 				}{1}
 			}
 		\end{column}
+		\pause
 		\begin{column}{0.5\textwidth}
 			Then:
 			\sslinked{
@@ -383,6 +384,7 @@
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
+		\pause
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
 				\item \textbf{PRF (Pseudorandom Function)}:
@@ -538,13 +540,48 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Data integrity: verifying a Linux ISO download}
+	\begin{columns}[c]
+		\begin{column}{0.60\textwidth}
+			\begin{itemize}
+				\item Linux distributions publish a hash (usually SHA-256) for each ISO image they release.
+				\item After downloading, you hash your own copy and compare it to the published value:
+				      \begin{center}
+					      {\small $\mathsf{SHA256}(\texttt{your.iso}) \stackrel{?}{=} \texttt{1620295f\ldots}$}
+				      \end{center}
+				\item A match means the file arrived \textbf{intact}: no corruption from a flaky network or a failing disk.
+				\item This only catches \emph{accidental} corruption: a malicious mirror could swap both the ISO \emph{and} the hash, which is why real verification also uses a signature (OpenPGP).
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.40\textwidth}
+			\imagewithcaption{fedora-iso-hash.png}{Fedora's download page showing the expected SHA-256 checksum.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Proof of work: Anubis}
+	\begin{columns}[c]
+		\begin{column}{0.60\textwidth}
+			\begin{itemize}
+				\item Anubis shields web servers from aggressive bots (e.g.\ AI scrapers) by making each visitor's browser solve a hash puzzle.
+				\item \textbf{The challenge}: given a value $C$, find a nonce $N$ such that $\mathsf{SHA256}(C \| N)$ begins with a set number of leading zero bits (the \emph{difficulty}).
+				\item Finding $N$ takes brute force over many guesses, but checking a submitted $N$ is one hash: \textbf{hard to solve, easy to verify}.
+				\item A human barely notices the delay; a bot making millions of requests pays the cost every time.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.40\textwidth}
+			\imagewithcaption{anubis.png}{Anubis running a proof-of-work challenge in the browser before granting access.}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{An insecure PRF construction}
 	\begin{columns}[c]
 		\begin{column}{0.45\textwidth}
 			\definitionbox{Claim: An Insecure PRF}{
 				The function $F(K, X) = G(K) \oplus X$ is not a secure PRF, even if $G$ is a secure PRG.
 			}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item This construction fails because:
 				      \begin{itemize}
 					      \item The key $K$ is only fed through the PRG once.
@@ -655,7 +692,7 @@
 \begin{frame}{Why the previous PRF is broken}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item When inputs share the same first half, the corresponding outputs of $H$ have a common term $F(K_1, X_1)$.
 				\item Consider querying four inputs: $A\|B$, $A\|B'$, $A'\|B$, $A'\|B'$ (where $A \neq A'$ and $B \neq B'$)
 				      \begin{align*}
@@ -667,7 +704,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item If we XOR $Y_1 \oplus Y_2$, the $F(K_1, A)$ terms cancel out.
 				\item Similarly, $Y_3 \oplus Y_4$ causes $F(K_1, A')$ to cancel:
 				      \begin{itemize}
@@ -686,7 +723,7 @@
 	\definitionbox{The Golden Rule of PRFs}{
 		If a PRF $F$ is being used as a component in a larger construction $H$, then security usually rests on how well $H$ can ensure distinct inputs to $F$.
 	}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item When analyzing PRF security, focus on input uniqueness.
 		\item Repeated inputs to a PRF create exploitable patterns.
 		\item Even if $F$ is secure, $H$ can be broken if it causes $F$ to receive duplicate inputs.
@@ -704,14 +741,14 @@
 			\definitionbox{Permutation}{
 				A permutation is a rearrangement where each input value maps to exactly one output value, and each possible output appears exactly once.
 			}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item Permutations rearrange elements rather than transforming them.
 				\item Every element in the domain appears exactly once in the range.
 				\item The function is invertible.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item \textbf{Example}: simple substitution cipher. Each letter maps to another letter:
 				      \begin{align*}
 					      a & \mapsto g,\quad b \mapsto a,\quad c \mapsto r \\
@@ -741,7 +778,7 @@
 				      limited computational power.
 			\end{itemize}
 		\end{column}
-
+		\pause
 		\begin{column}{0.5\textwidth}
 			\textbf{Pseudorandom Permutation (AES)}
 			\begin{itemize}
@@ -755,7 +792,7 @@
 \end{frame}
 
 \begin{frame}{PRPs compared to PRFs}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item \textbf{Invertibility}: PRPs can be efficiently inverted given the key.
 		      \begin{itemize}
 			      \item Enable both encryption and decryption.
