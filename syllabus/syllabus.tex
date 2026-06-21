@@ -115,6 +115,19 @@ The final course grade will be computed using the following breakdown:
 	\end{tabular}
 \end{center}
 
+\section{Certificate of Completion}
+Students who complete the course with a final grade of 80 out of 100 or higher receive a verifiable digital \textbf{Certificate of Completion}. Each certificate carries a QR code linking to the course's verification page, where anyone---an employer or a university registrar---can confirm its authenticity directly in their browser:
+\begin{center}
+	\url{https://appliedcryptography.page/certificate}
+\end{center}
+
+Verification is cryptographic and runs entirely in the visitor's browser. Every certificate is signed with the course's Ed25519 private key; the page holds only the corresponding public key and checks the signature locally. No personal data is uploaded, and the site never holds a list of students.
+
+A genuine certificate verifies against the issuer key whose SHA-256 fingerprint is printed below. It is published here, in the syllabus, so that it can be cross-checked against the fingerprint shown on the verification page---confirming that the page is using the authentic course key:
+\begin{center}
+	\texttt{209ae7e9ebbb6e3b0b45a8b1d58b5067d2fbf8918e19d74f154aaf5865f03b73}
+\end{center}
+
 \section{The Key Exchange}
 \textit{The Key Exchange} is an optional weekly gathering designed to provide additional career training for students intending to become researchers or professionals in cryptography. Once a week, we will come together to discuss cutting-edge research papers, practice presenting complex ideas, develop scientific writing skills, and explore career paths in cryptography. Whether you're debugging your first encryption algorithm or designing novel protocols, \textit{The Key Exchange} provides a supportive environment where questions are encouraged, mistakes become learning opportunities, and everyone has something valuable to contribute. The only prerequisite is your curiosity!
 
