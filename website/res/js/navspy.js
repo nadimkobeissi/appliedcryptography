@@ -20,7 +20,9 @@ export const navspyInit = () => {
 	toTop.setAttribute("aria-label", "Back to top")
 	toTop.innerHTML = `<i class="icon ph-duotone ph-arrow-up" aria-hidden="true"></i>`
 	toTop.addEventListener("click", () => {
-		window.scrollTo({ top: 0 })
+		window.scrollTo({
+			top: 0
+		})
 	})
 	document.body.appendChild(toTop)
 
@@ -51,7 +53,9 @@ export const navspyInit = () => {
 			ticking = true
 			requestAnimationFrame(update)
 		}
-	}, { passive: true })
+	}, {
+		passive: true
+	})
 
 	update()
 }

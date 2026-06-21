@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Verify a Credential — Applied Cryptography</title>
+	<meta name="description" content="Official verification portal for Applied Cryptography certificates issued by Symbolic Software. Confirm a graduate's completion cryptographically, right in your browser." />
+	<meta name="viewport" content="width=device-width, initial-scale=1, height=device-height" />
+	<meta name="robots" content="index, follow" />
+	<link rel="canonical" href="https://appliedcryptography.page/certificate/" />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="Verify a Credential — Applied Cryptography" />
+	<meta property="og:description" content="Official verification portal for Applied Cryptography certificates issued by Symbolic Software." />
+	<meta property="og:url" content="https://appliedcryptography.page/certificate/" />
+	<meta property="og:image" content="https://appliedcryptography.page/res/images/og.png" />
+	<meta property="og:image:type" content="image/png" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:locale" content="en_US" />
+	<link rel="icon" href="../res/images/favicon.png" type="image/png" />
+	<link rel="apple-touch-icon" href="../res/images/favicon.png" sizes="180x180" />
+	<link rel="preload" as="image" href="../res/images/cedar.avif" type="image/avif" />
+	<link rel="stylesheet" href="../res/css/style.css" />
+	<link rel="stylesheet" href="../res/fonts/phosphor/phosphor.css" />
+	<link rel="stylesheet" href="../res/fonts/google/google.css" />
+	<script type="module" src="../res/js/certificate-page.js"></script>
+	<script defer data-domain="appliedcryptography.page" data-api="https://restless-block-0a1e.symbolicsoft.workers.dev/oil-ocean/event" src="https://restless-block-0a1e.symbolicsoft.workers.dev/emerald-hill/script.js"></script>
+	<style>
+		/* ──────────  Verification panel (raised over the hero)  ────────── */
+		.verify-panel {
+			max-width: 760px;
+			margin: -4rem auto 0;
+			position: relative;
+			z-index: 3;
+			background-color: var(--surface);
+			border: 1px solid var(--border-soft);
+			border-top: 3px solid var(--primary);
+			border-radius: var(--radius);
+			box-shadow: var(--shadow-md);
+			padding: clamp(1.5rem, 1rem + 3vw, 2.7rem);
+		}
+
+		.verify-head {
+			text-align: center;
+			margin-bottom: 1.6rem;
+		}
+
+		.verify-title {
+			font-family: var(--font-display);
+			font-size: clamp(1.6rem, 1.1rem + 2vw, 2.2rem);
+			line-height: 1.1;
+			color: var(--primary);
+			margin: 0.3rem 0 0.55rem;
+		}
+
+		.verify-lead {
+			color: var(--ink-soft);
+			max-width: 50ch;
+			margin: 0 auto;
+		}
+
+		.cert-label {
+			display: block;
+			font-family: var(--font-mono);
+			font-size: 0.66rem;
+			font-weight: 700;
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+			color: var(--muted);
+			margin-bottom: 0.5rem;
+		}
+
+		.cert-form {
+			display: flex;
+			flex-direction: column;
+			gap: 0.85rem;
+		}
+
+		#cert-input {
+			width: 100%;
+			min-height: 104px;
+			resize: vertical;
+			font-family: var(--font-mono);
+			font-size: 0.84rem;
+			line-height: 1.55;
+			color: var(--ink);
+			background-color: var(--surface-alt);
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			padding: var(--space-4);
+			transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+		}
+
+		#cert-input::placeholder {
+			color: var(--muted);
+		}
+
+		#cert-input:focus-visible {
+			outline: none;
+			border-color: var(--secondary);
+			box-shadow: 0 0 0 3px var(--ring);
+		}
+
+		.cert-form .btn {
+			align-self: center;
+			border: none;
+			padding-inline: 1.6rem;
+		}
+
+		/* ──────────  Result: the official seal  ────────── */
+		.cert-result {
+			margin-top: var(--space-5);
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			padding: var(--space-6) var(--space-5);
+		}
+
+		.cert-result[hidden] {
+			display: none;
+		}
+
+		.cert-result.ok {
+			text-align: center;
+			border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+			border-top: 3px solid var(--accent);
+			background-color: color-mix(in srgb, var(--secondary) 6%, var(--surface));
+		}
+
+		.cert-result.ok h3 {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 0.6rem;
+			margin-bottom: 0.4rem;
+			font-family: var(--font-mono);
+			font-size: 0.78rem;
+			font-weight: 700;
+			letter-spacing: 0.22em;
+			text-transform: uppercase;
+			color: var(--primary);
+		}
+
+		.cert-result.ok h3 .icon {
+			width: 3.5rem;
+			height: 3.5rem;
+			margin: 0;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.9rem;
+			color: var(--primary);
+			background-color: var(--surface);
+			border: 2px solid var(--accent);
+			border-radius: 50%;
+			box-shadow: 0 3px 12px rgba(44, 94, 42, 0.14);
+		}
+
+		.cert-result.ok p {
+			margin: 0 auto;
+			max-width: 48ch;
+			color: var(--ink-soft);
+		}
+
+		.cert-result.ok .cert-name {
+			display: block;
+			font-family: var(--font-display);
+			font-size: clamp(1.5rem, 1rem + 2vw, 1.95rem);
+			line-height: 1.15;
+			color: var(--primary-dark);
+			margin: 0.25rem 0 0.5rem;
+		}
+
+		.cert-result.ok .cert-meta {
+			font-family: var(--font-mono);
+			font-size: 0.72rem;
+			letter-spacing: 0.04em;
+			color: var(--muted);
+			margin-top: 0.75rem;
+		}
+
+		.cert-result.err {
+			border-left: 3px solid #b04a2f;
+			background-color: color-mix(in srgb, #b04a2f 6%, var(--surface));
+		}
+
+		.cert-result.err h3 {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			margin-bottom: 0.4rem;
+			color: #b04a2f;
+		}
+
+		.cert-result.err p {
+			margin: 0;
+			color: var(--ink-soft);
+		}
+
+		/* ──────────  Credential: two-part structure  ────────── */
+		.cred-parts {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: var(--space-5);
+			margin-top: var(--space-5);
+		}
+
+		.cred-part {
+			background-color: var(--surface);
+			border: 1px solid var(--border-soft);
+			border-radius: var(--radius);
+			padding: var(--space-5);
+		}
+
+		.cred-part-eyebrow {
+			font-family: var(--font-mono);
+			font-size: 0.64rem;
+			font-weight: 700;
+			letter-spacing: 0.14em;
+			text-transform: uppercase;
+			color: var(--accent);
+		}
+
+		.cred-part h3 {
+			font-family: var(--font-display);
+			font-size: 1.25rem;
+			color: var(--primary);
+			margin: 0.3rem 0 0.55rem;
+		}
+
+		.cred-part p {
+			margin: 0;
+			font-size: 0.95rem;
+			color: var(--ink-soft);
+		}
+
+		.cred-cta {
+			margin-top: var(--space-5);
+		}
+
+		/* ──────────  Issuer  ────────── */
+		.inst {
+			display: flex;
+			gap: var(--space-5);
+			align-items: flex-start;
+		}
+
+		.inst-photo {
+			width: 116px;
+			height: 116px;
+			flex-shrink: 0;
+			object-fit: cover;
+			border-radius: var(--radius);
+			border: 1px solid var(--border);
+		}
+
+		.inst-body p {
+			margin: 0 0 0.8rem;
+		}
+
+		.inst-body p:last-child {
+			margin-bottom: 0;
+		}
+
+		/* ──────────  Assurance badges  ────────── */
+		.trust-row {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.7rem;
+			margin-top: var(--space-5);
+		}
+
+		.trust-badge {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.45rem;
+			font-family: var(--font-mono);
+			font-size: 0.72rem;
+			font-weight: 600;
+			letter-spacing: 0.03em;
+			color: var(--ink-soft);
+			background-color: var(--surface-alt);
+			border: 1px solid var(--border);
+			border-radius: var(--radius-pill);
+			padding: 0.45rem 0.9rem;
+		}
+
+		.trust-badge .icon {
+			margin: 0;
+			color: var(--secondary);
+		}
+
+		.cert-fp {
+			font-family: var(--font-mono);
+			font-size: 0.72rem;
+			word-break: break-all;
+			color: var(--ink-soft);
+		}
+
+		@media (max-width: 680px) {
+			.cred-parts {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		@media (max-width: 560px) {
+			.inst {
+				flex-direction: column;
+				align-items: center;
+				text-align: center;
+			}
+		}
+
+		@media (max-width: 640px) {
+			.verify-panel {
+				margin-top: -2rem;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<nav class="navbar">
+		<div class="container navbar-container">
+			<a href="/" class="navbar-logo">Applied Cryptography</a>
+			<button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
+				<span class="bar"></span>
+				<span class="bar"></span>
+				<span class="bar"></span>
+			</button>
+			<div class="navbar-links">
+				<a href="/#overview">Overview</a>
+				<a href="/#syllabus">Syllabus</a>
+				<a href="/#assignments">Assignments</a>
+				<a href="https://symbolic.software">Symbolic Software</a>
+			</div>
+		</div>
+	</nav>
+
+	<div class="hero">
+		<div class="hero-frame" aria-hidden="true"></div>
+		<div class="hero-content">
+			<p class="hero-eyebrow"><img src="../res/images/symbolicsoft-white.png" alt="Symbolic Software" /></p>
+			<h1>Credential Verification</h1>
+			<p class="hero-tagline">Confirm a graduate's completion of Applied Cryptography — cryptographically, and entirely in your browser.</p>
+			<div class="hero-chips">
+				<span class="hero-chip">Ed25519-signed</span>
+				<span class="hero-chip">Verified in-browser</span>
+				<span class="hero-chip">No data collected</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<section class="verify-panel" aria-labelledby="verify-title">
+			<div class="verify-head">
+				<p class="section-eyebrow">Verification</p>
+				<h2 id="verify-title" class="verify-title">Verify a certificate</h2>
+				<p class="verify-lead">Paste the certificate token below, or open the link inside its QR code. We'll confirm it against the issuing key — no account, no upload.</p>
+			</div>
+
+			<label for="cert-input" class="cert-label">Certificate token</label>
+			<div class="cert-form">
+				<textarea id="cert-input" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="ACC1.…"></textarea>
+				<button id="cert-verify" class="btn"><i class="icon ph-duotone ph-seal-check"></i>Verify certificate</button>
+			</div>
+
+			<div id="cert-result" class="cert-result" hidden></div>
+		</section>
+	</div>
+
+	<div class="container">
+		<section class="section" id="credential">
+			<div class="section-header">
+				<p class="section-eyebrow">&sect; The Credential</p>
+				<h2 class="section-title">What this certifies</h2>
+			</div>
+
+			<div class="card card-highlight">
+				<p>Applied Cryptography is a rigorous, graduate-level course in modern cryptography. Across two parts and eighteen topics, it builds from the foundations of provable security to the cryptography that secures the real world — TLS, the Signal protocol, post-quantum key exchange, high-assurance verified implementations, and zero-knowledge proofs.</p>
+				<p class="mb-0">A certificate is awarded only to students who complete the course with a final grade of <strong>80 out of 100 or higher</strong>.</p>
+			</div>
+
+			<div class="cred-parts">
+				<div class="cred-part">
+					<p class="cred-part-eyebrow">Part I</p>
+					<h3>Provable Security</h3>
+					<p>Perfect secrecy and Kerckhoffs' principle, pseudorandomness, chosen-plaintext and chosen-ciphertext security, collision-resistant hashing, Diffie–Hellman, and elliptic curves with digital signatures.</p>
+				</div>
+				<div class="cred-part">
+					<p class="cred-part-eyebrow">Part II</p>
+					<h3>Real-World Cryptography</h3>
+					<p>Transport Layer Security, secure messaging and the Signal protocol, end-to-end encrypted cloud storage, high-assurance verified cryptography, post-quantum cryptography, and zero-knowledge proofs.</p>
+				</div>
+			</div>
+
+			<p class="cred-cta">
+				<a class="btn" href="/"><i class="icon ph-duotone ph-book-open-text"></i>Explore the course</a>
+			</p>
+		</section>
+
+		<section class="section" id="issuer">
+			<div class="section-header">
+				<p class="section-eyebrow">&sect; The Issuer</p>
+				<h2 class="section-title">Issued by Symbolic Software</h2>
+			</div>
+
+			<div class="card inst">
+				<img class="inst-photo" src="../res/images/nadim.jpg" alt="Dr. Nadim Kobeissi" loading="lazy" />
+				<div class="inst-body">
+					<p>Applied Cryptography is taught by <strong>Dr. Nadim Kobeissi</strong> and published by <a href="https://symbolic.software">Symbolic Software</a>, a cryptography research and software house specializing in the formal verification of cryptographic protocols and high-assurance implementations.</p>
+					<p>A cryptography researcher and Symbolic Software's founder, Dr. Kobeissi is a senior cryptography auditor at <a href="https://cure53.de">Cure53</a>, where he has helped audit over 300 real-world cryptographic systems. He holds a Ph.D. in applied cryptography from Université PSL in Paris, and has taught at the American University of Beirut and New York University.</p>
+				</div>
+			</div>
+		</section>
+
+		<section class="section" id="method">
+			<div class="section-header">
+				<p class="section-eyebrow">&sect; Assurance</p>
+				<h2 class="section-title">How verification works</h2>
+			</div>
+
+			<div class="card">
+				<p>Every certificate carries a digital signature created with the course's <strong>Ed25519</strong> private key. This page holds only the matching public key and checks the signature entirely in your browser. Nothing is uploaded, no record of your lookup is kept, and this site never holds a list of students.</p>
+				<p class="mb-0"><strong><i class="icon ph-duotone ph-fingerprint"></i>Issuer key fingerprint:</strong> <span class="cert-fp" id="cert-fp"></span><br />A genuine certificate verifies against this key. You can cross-check the fingerprint against the one published in the course syllabus.</p>
+			</div>
+
+			<div class="trust-row">
+				<span class="trust-badge"><i class="icon ph-duotone ph-certificate"></i>Ed25519 digital signature</span>
+				<span class="trust-badge"><i class="icon ph-duotone ph-browser"></i>Verified in your browser</span>
+				<span class="trust-badge"><i class="icon ph-duotone ph-shield-check"></i>No data collected</span>
+			</div>
+		</section>
+	</div>
+
+	<footer class="footer">
+		<div class="container">
+			<div class="footer-grid">
+				<div class="footer-brand">
+					<p class="footer-wordmark">Applied Cryptography</p>
+					<p class="footer-tagline">A graduate course in modern cryptography, from provable security to real-world protocols — by Symbolic Software.</p>
+				</div>
+				<nav class="footer-nav" aria-label="Course">
+					<p class="footer-heading">Course</p>
+					<a href="/#overview">Overview</a>
+					<a href="/#syllabus">Syllabus</a>
+					<a href="/#assignments">Assignments &amp; Projects</a>
+				</nav>
+				<nav class="footer-nav" aria-label="Symbolic Software">
+					<p class="footer-heading">Symbolic Software</p>
+					<a href="https://symbolic.software">symbolic.software</a>
+					<a href="https://appliedcryptography.page">appliedcryptography.page</a>
+				</nav>
+			</div>
+			<div class="footer-bottom">
+				<div class="footer-license">
+					<img src="../res/images/by-nc-sa.svg" alt="Creative Commons BY-NC-SA badge" loading="lazy" />
+					<p><a href="https://appliedcryptography.page">Applied Cryptography</a> by <a href="https://symbolic.software">Symbolic Software</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener noreferrer">CC BY-NC-SA 4.0</a></p>
+				</div>
+			</div>
+		</div>
+	</footer>
+</body>
+
+</html>
