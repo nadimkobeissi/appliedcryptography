@@ -839,6 +839,122 @@ h4 .icon {
 	margin-right: 0.15rem;
 }
 
+/* ──────────────  Adopters strip  ──────────────
+   Institutional adopters rendered as uniform monochrome wordmarks:
+   each logo's alpha channel masks a cedar-ink fill, so five clashing
+   brand palettes read as one engraved set and the white AUB mark and
+   the dark European marks all behave identically in light and dark. */
+
+.adopters {
+	background-color: var(--surface-alt);
+	border-top: 1px solid var(--border);
+	border-bottom: 1px solid var(--border);
+	padding: var(--space-5) 0;
+}
+
+.adopters-label {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	margin-bottom: var(--space-5);
+	font-family: var(--font-mono);
+	font-size: 0.7rem;
+	font-weight: 600;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	text-align: center;
+	color: color-mix(in srgb, var(--accent) 65%, var(--ink-soft));
+}
+
+@media (prefers-color-scheme: dark) {
+	.adopters-label {
+		color: var(--accent);
+	}
+}
+
+/* Hairline rules flanking the label, echoing the subsection-title motif */
+.adopters-label::before,
+.adopters-label::after {
+	content: "";
+	height: 1px;
+	width: clamp(1.25rem, 9vw, 5rem);
+	background: linear-gradient(90deg, transparent, var(--border));
+}
+
+.adopters-label::after {
+	background: linear-gradient(90deg, var(--border), transparent);
+}
+
+.adopters-label span {
+	flex-shrink: 0;
+}
+
+.adopters-row {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-4) var(--space-7);
+}
+
+.adopter-mark {
+	--mark-h: 30px;
+	display: block;
+	height: var(--mark-h);
+	width: calc(var(--mark-h) * var(--ar));
+	background-color: var(--muted);
+	opacity: 0.72;
+	-webkit-mask-image: var(--logo);
+	mask-image: var(--logo);
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	mask-position: center;
+	-webkit-mask-size: contain;
+	mask-size: contain;
+	transition: background-color var(--duration) var(--ease), opacity var(--duration) var(--ease);
+}
+
+.adopter-mark:hover {
+	background-color: var(--primary);
+	opacity: 1;
+}
+
+@media (max-width: 576px) {
+	.adopter-mark {
+		--mark-h: 22px;
+	}
+
+	.adopters-row {
+		gap: var(--space-4) var(--space-5);
+	}
+
+	/* Drop the flanking rules and let the label wrap on narrow screens */
+	.adopters-label {
+		display: block;
+		max-width: 24ch;
+		margin-inline: auto;
+		font-size: 0.63rem;
+		letter-spacing: 0.12em;
+		text-wrap: balance;
+	}
+
+	.adopters-label::before,
+	.adopters-label::after {
+		display: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.adopter-mark {
+		transition: none;
+	}
+}
+
 /* ──────────────  Footer  ────────────── */
 
 .footer {
