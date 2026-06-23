@@ -165,100 +165,6 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Non-deterministic encryption isn't hard\ldots}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item AES-CTR turns AES into non-deterministic encryption\ldots
-				\item AES-GCM even turns it into a non-deterministic authenticated cipher\ldots\footnote{More on these later. An authenticated cipher is one where the ciphertext can't be modified by the adversary without detection.}
-				\item We can just as easily build non-deterministic encryption from any PRF:
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\sssubroutine{enc}{K, M}{
-				$R \twoheadleftarrow \bits^\lambda$\\
-				$S \coloneq F(K, R) \oplus M$\\
-				return $R\|S$
-			}{1}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{\ldots but it can be fragile}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item<1-2> We swap the positions of $M$ and $R$ in \lib{}{cpa-real}'s encryption function.
-				\item<1-2> Is the scheme still secure?
-				\item<2-2> \textbf{No!}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\sslinked{
-				\sslibrary{}{cpa-real}{
-					$K \twoheadleftarrow \bits^\lambda$\\[1em]
-					\sslibrarysubroutine{cpa.enc}{M}{
-						$R \twoheadleftarrow \bits^\lambda$\\
-						$S \coloneq F(K, \hl{M}) \oplus \hl{R}$\\
-						return $R\|S$
-					}{1}
-				}{1}
-			}{\overset{?}{\approxeq}}{
-				\sslibrary{}{cpa-rand}{
-					\sslibrarysubroutine{cpa.enc}{M}{
-						$R\|S \twoheadleftarrow \bits^{2\lambda}$\\
-						return $R\|S$
-					}{1}
-				}{1}
-			}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{\ldots but it can be fragile}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item $F(K, M)$ is now constant.
-				\item \prob{\prog{}\link\lib{}{cpa-real} \Rightarrow \texttt{true}} $ = 1$
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\sslinked{
-				\ssprogram{}{
-					$M \twoheadleftarrow \mathcal{M}$\\
-					$R_1\|S_1 \coloneq \func{cpa.enc}{M}$\\
-					$R_2\|S_2 \coloneq \func{cpa.enc}{M}$\\
-					return $S_1 \oplus S_2 \stackrel{?}{=} R_1 \oplus R_2$
-				}{0.8}
-			}{\link}{
-				\sslibrary{}{cpa-real}{
-					$K \twoheadleftarrow \bits^\lambda$\\[1em]
-					\sslibrarysubroutine{cpa.enc}{M}{
-						$R \twoheadleftarrow \bits^\lambda$\\
-						$S \coloneq F(K, \hl{M}) \oplus \hl{R}$\\
-						return $R\|S$
-					}{1}
-				}{0.8}
-			}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{The Golden Rule of PRFs}
-	\definitionbox{The Golden Rule of PRFs}{
-		If a PRF $F$ is being used as a component in a larger construction $H$, then security usually rests on how well $H$ can ensure distinct inputs to $F$.
-	}
-	\begin{itemize}
-		\item When analyzing PRF security, focus on input uniqueness.
-		\item Repeated inputs to a PRF create exploitable patterns.
-		\item Even if $F$ is secure, $H$ can be broken if it causes $F$ to receive duplicate inputs.
-		\item Don't try to directly distinguish $F$'s outputs from uniform.
-		\item Instead, exploit how $H$ uses $F$ incorrectly.
-		\item Find input patterns that force collisions within $F$.
-	\end{itemize}
-\end{frame}
-
 \begin{frame}{Block cipher modes of operation}
 	\bigimagewithcaption{block-cipher-modes.png}{Source: Wikipedia}
 \end{frame}
@@ -746,12 +652,16 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{CCA Security}
+\begin{frame}{CCA security: now you also get a decryption oracle}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\definitionbox{Security Against Chosen-Ciphertext Attacks (CCA Security)}{
-				An encryption scheme $\Sigma$ has security against \textbf{chosen-ciphertext attacks} if the following two libraries are indistinguishable:
+			\definitionbox{CCA Security}{
+				$\Sigma$ is \textbf{CCA-secure} if these two libraries are indistinguishable:
 			}
+			\begin{itemize}
+				\item The adversary now gets a \emph{decryption} oracle too --- not just encryption.
+				\item The ideal \lib{\Sigma}{cca-rand} decrypts only what it created (via dictionary $\mathcal{D}$); tampered ciphertexts fall through to the real \texttt{Dec}, so any information the scheme leaks on them becomes visible to the adversary.
+			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\sslinked{
@@ -764,7 +674,7 @@
 					\sslibrarysubroutine{cca.dec}{C}{
 						return $\Sigma.\texttt{Dec}(K, C)$
 					}{1}
-				}{0.7}
+				}{0.64}
 			}{\approxeq}{
 				\sslibrary{\Sigma}{cca-rand}{
 					$K \twoheadleftarrow \Sigma.\mathcal{K}$\\[1em]
@@ -777,199 +687,70 @@
 						if $\mathcal{D}[C]$ defined: return $\mathcal{D}[C]$\\
 						return $\Sigma.\texttt{Dec}(K, C)$
 					}{1}
-				}{0.7}
+				}{0.64}
 			}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Understanding the CCA-rand library}
-	\begin{itemize}[<+->]
-		\item The \lib{\Sigma}{cca-rand} library represents the \textbf{ideal} CCA-secure encryption:
-		      \begin{itemize}
-			      \item \func{cca.enc}{} returns completely random ciphertexts.
-			      \item The library secretly remembers what plaintext belongs to each ciphertext it created (stored in $\mathcal{D}$).
-			      \item \func{cca.dec}{} only returns the correct plaintext for ciphertexts it created itself.
-		      \end{itemize}
-		\item Why is this the ideal?
-		      \begin{itemize}
-			      \item Random ciphertexts reveal \textbf{nothing} about the plaintext (perfect confidentiality).
-			      \item The adversary learns nothing from decrypting their own modified ciphertexts.
-			      \item The adversary can only decrypt ciphertexts that the library explicitly created.
-		      \end{itemize}
-		\item If a real encryption scheme is indistinguishable from this ideal, then:
-		      \begin{itemize}
-			      \item Even with decryption access, adversaries can't learn anything useful.
-			      \item This captures exactly what we want from CCA security!
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Remember our CPA-secure encryption scheme?}
+\begin{frame}{Malleability breaks CCA --- the one you've already met}
 	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.55\textwidth}
 			\begin{itemize}
-				\item Not CCA-secure!
+				\item Take our CPA-secure PRF scheme. It is \textbf{not} CCA-secure.
+				\item Recall CTR's malleability: flipping a bit in the ciphertext flips the \emph{same} bit in the plaintext. This scheme has it too --- $S$ is just $M$ XOR'd with a keystream.
+				\item \textbf{The recipe} (any malleable scheme): find a ciphertext tweak that makes a \emph{predictable} change to the plaintext, then let the decryption oracle confirm it.
+				\item Here: XOR any $\Delta$ into $S$, and the decryption comes back as $M \oplus \Delta$.
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.45\textwidth}
 			\sssubroutine{enc}{K, M}{
 				$R \twoheadleftarrow \bits^\lambda$\\
 				$S \coloneq F(K, R) \oplus M$\\
 				return $R\|S$
-			}{2}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Remember our CPA-secure encryption scheme?}
-	\begin{columns}[c]
-		\begin{column}{0.3\textwidth}
-			\begin{itemize}
-				\item Not CCA-secure!
-				\item In other words, we can trivially distinguish between these libraries:
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.7\textwidth}
-			\sslinked{
-				\sslibrary{}{cca-real}{
-					$K \twoheadleftarrow \bits^\lambda$\\[1em]
-					\sslibrarysubroutine{cca.enc}{M}{
-						$R \twoheadleftarrow \bits^\lambda$\\
-						$S \coloneq F(K, R) \oplus M$\\
-						return $R\|S$
-					}{1}\\[1em]
-					\sslibrarysubroutine{cca.dec}{R\|S}{
-						$M \coloneq F(K, R) \oplus S$\\
-						return $M$
-					}{1}
-				}{0.9}
-			}{\cancel{\approxeq}}{
-				\sslibrary{}{cca-rand}{
-					$K \twoheadleftarrow \bits^\lambda$\\[1em]
-					\sslibrarysubroutine{cca.enc}{M}{
-						$R\|S \twoheadleftarrow \bits^{2\lambda}$\\
-						$\mathcal{D}[R\|S] \coloneq M$\\
-						return $R\|S$
-					}{1}\\[1em]
-					\sslibrarysubroutine{cca.dec}{R\|S}{
-						if $\mathcal{D}[R\|S]$ defined: return $\mathcal{D}[R\|S]$\\
-						$M \coloneq F(K, R) \oplus S$\\
-						return $M$
-					}{1}
-				}{0.9}
-			}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Malleability strategy}
-	To break the CCA security of a scheme:
-	\begin{enumerate}
-		\item Study the decryption algorithm of the scheme. It often helps to draw a schematic diagram.
-		\item See whether any changes to a ciphertext make a \textit{predictable} change to the plaintext.
-		\item Formalize an attack in which the adversary:
-		      \begin{enumerate}
-			      \item Requests the encryption of a chosen plaintext,
-			      \item Modifies the ciphertext as above,
-			      \item Asks for the modified ciphertext to be decrypted.
-		      \end{enumerate}
-	\end{enumerate}
-\end{frame}
-
-\begin{frame}{Malleability once again}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item Not CCA-secure!
-				\item Here's a distinguisher:
-			\end{itemize}
-			\imagewithcaption{prf-enc-malleable}{Source: The Joy of Cryptography}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\ssprogram{}{
-				$M \twoheadleftarrow \bits^\lambda$\\
-				$\Delta \coloneq \text{arbitrary nonzero $\lambda$-bit string}$\\
-				$R\|S \coloneq \func{cca.enc}{M}$\\
-				$M' \coloneq \func{cca.dec}{R\|(S \oplus \Delta)}$\\
-				return $M' \stackrel{?}{=} M \oplus \Delta$
+			}{1}
+			\sssubroutine{dec}{K, R\|S}{
+				$M \coloneq F(K, R) \oplus S$\\
+				return $M$
 			}{1}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Evaluating our distinguisher}
+\begin{frame}{One bit of malleability already breaks CCA}
 	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{center}
-				\sslinked{
-					\ssprogram{}{
-						$M \twoheadleftarrow \bits^\lambda$\\
-						$\Delta \coloneq \text{arbitrary nonzero $\lambda$-bit string}$\\
-						$R\|S \coloneq \func{cca.enc}{M}$\\
-						$M' \coloneq \func{cca.dec}{R\|(S \oplus \Delta)}$\\
-						return $M' \stackrel{?}{=} M \oplus \Delta$
-					}{1}
-				}{\diamond}{
-					\sslibrary{}{cca-real}{
-						$K \twoheadleftarrow \bits^\lambda$\\[1em]
-						\sslibrarysubroutine{cca.enc}{M}{
-							$R \twoheadleftarrow \bits^\lambda$\\
-							$S \coloneq F(K, R) \oplus M$\\
-							return $R\|S$
-						}{1}\\[1em]
-						\sslibrarysubroutine{cca.dec}{R\|S}{
-							$M \coloneq F(K, R) \oplus S$\\
-							return $M$
-						}{1}
-					}{0.9}
-				}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Evaluating our distinguisher}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{center}
-				\sslinked{
-					\ssprogram{}{
-						$M \twoheadleftarrow \bits^\lambda$\\
-						$\Delta \coloneq \text{arbitrary nonzero $\lambda$-bit string}$\\
-						$R\|S \coloneq \func{cca.enc}{M}$\\
-						$M' \coloneq \func{cca.dec}{R\|(S \oplus \Delta)}$\\
-						return $M' \stackrel{?}{=} M \oplus \Delta$
-					}{1}
-				}{\diamond}{
-					\sslibrary{}{cca-rand}{
-						$K \twoheadleftarrow \bits^\lambda$\\[1em]
-						\sslibrarysubroutine{cca.enc}{M}{
-							$R\|S \twoheadleftarrow \bits^{2\lambda}$\\
-							$\mathcal{D}[R\|S] \coloneq M$\\
-							return $R\|S$
-						}{1}\\[1em]
-						\sslibrarysubroutine{cca.dec}{R\|S}{
-							if $\mathcal{D}[R\|S]$ defined: return $\mathcal{D}[R\|S]$\\
-							$M \coloneq F(K, R) \oplus S$\\
-							return $M$
-						}{1}
-					}{0.9}
-				}
-			\end{center}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Another example}
-	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
+		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item Let's try a harder challenge.
+				\item Encrypt $M$, maul the ciphertext by XORing $\Delta$ into $S$, then ask for a decryption:
 			\end{itemize}
-			\imagewithcaption{prf-enc-2}{Source: The Joy of Cryptography}
+			\ssprogram{}{
+				$M \twoheadleftarrow \bits^\lambda$\\
+				$\Delta \coloneq \text{arbitrary nonzero string}$\\
+				$R\|S \coloneq \func{cca.enc}{M}$\\
+				$M' \coloneq \func{cca.dec}{R\|(S \oplus \Delta)}$\\
+				return $M' \stackrel{?}{=} M \oplus \Delta$
+			}{0.9}
 		\end{column}
-		\begin{column}{0.4\textwidth}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Real library:} $M' = M \oplus \Delta$ every time, so it returns \texttt{true} with probability $1$.
+				\item \textbf{Ideal (\lib{}{cca-rand}):} the mauled ciphertext isn't in $\mathcal{D}$, so $M'$ is unrelated to $M$ --- \texttt{true} with probability $\approx \frac{1}{2^\lambda}$.
+				\item One predictable relationship is all it takes. \textbf{Not CCA-secure.}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Forging ciphertexts you never sent}{The Frankenstein trick, part 1}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item A tougher scheme: $S = F(K, R) \oplus F(K, M)$, and decryption \emph{inverts} the PRF --- so $F$ must be a PRP like AES.
+				\item No single-bit maul works here --- so we get sneakier.
+				\item \textbf{The recipe}: request two encryptions (use the \emph{same} $M$), then mix and match their halves into ``Frankenstein'' ciphertexts.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
 			\sslibrary{}{cca-real}{
 				$K \twoheadleftarrow \bits^\lambda$\\[1em]
 				\sslibrarysubroutine{cca.enc}{M}{
@@ -986,103 +767,17 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Wait, what's $F^{-1}$?}{Reminder: PRFs vs. PRPs}
+\begin{frame}{Forging ciphertexts you never sent}{The Frankenstein trick, part 2}
 	\begin{columns}[c]
-		\begin{column}{0.65\textwidth}
+		\begin{column}{0.55\textwidth}
 			\begin{itemize}
-				\item PRFs are \textbf{not} normally invertible.
-				\item But if $F$ is a \textbf{PRP} (like AES, a block cipher), then:
-				      \begin{itemize}
-					      \item $F(K, \cdot)$ is a permutation for each key $K$.
-					      \item Every permutation has an inverse.
-					      \item So $F^{-1}(K, Y)$ finds the unique $X$ where $F(K, X) = Y$.
-				      \end{itemize}
-				\item For AES specifically:
-				      \begin{itemize}
-					      \item $\texttt{AES}(K, M) = C$ (encryption)
-					      \item $\texttt{AES}^{-1}(K, C) = M$ (decryption)
-					      \item Both directions use the same key $K$
-				      \end{itemize}
-				\item This only works for PRPs like block ciphers, not general PRFs!
+				\item Encrypt the same $M$ twice: $R_1\|S_1$ and $R_2\|S_2$.
+				\item Swap the halves and decrypt $R_1\|S_2$ and $R_2\|S_1$. Both unwrap to the \emph{same} value:
+				      \[ F^{-1}\big(K,\; F(K, R_1) \oplus F(K, R_2) \oplus F(K, M)\big). \]
+				\item Equal outputs can't happen in the ideal world (only w.p.\ $\approx \frac{1}{2^\lambda}$). Distinguished --- and forged.
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.35\textwidth}
-			\definitionbox{PRF vs. PRP}{
-				\textbf{PRF}: $F: \mathcal{K} \times \mathcal{X} \to \mathcal{Y}$
-				\begin{itemize}
-					\item Many inputs can map to the same output
-					\item Not invertible in general
-				\end{itemize}
-				\vspace{0.5em}
-				\textbf{PRP}: $F: \mathcal{K} \times \mathcal{X} \to \mathcal{X}$
-				\begin{itemize}
-					\item For each key, $F(K, \cdot)$ is a permutation
-					\item Invertible: $F^{-1}$ exists
-				\end{itemize}
-			}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Another example}
-	\begin{columns}[c]
-		\begin{column}{0.3\textwidth}
-			\begin{itemize}
-				\item Let's try a harder challenge.
-			\end{itemize}
-			\imagewithcaption{prf-enc-2}{Source: The Joy of Cryptography}
-		\end{column}
-		\begin{column}{0.7\textwidth}
-			\sslinked{
-				\sslibrary{}{cca-real}{
-					$K \twoheadleftarrow \bits^\lambda$\\[1em]
-					\sslibrarysubroutine{cca.enc}{M}{
-						$R \twoheadleftarrow \bits^\lambda$\\
-						$S \coloneq F(K, R) \oplus F(K, M)$\\
-						return $R\|S$
-					}{1}\\[1em]
-					\sslibrarysubroutine{cca.dec}{R\|S}{
-						$M \coloneq F^{-1}(K, F(K, R) \oplus S)$\\
-						return $M$
-					}{1}
-				}{0.85}
-			}{\cancel{\approxeq}}{
-				\sslibrary{}{cca-rand}{
-					$K \twoheadleftarrow \bits^\lambda$\\[1em]
-					\sslibrarysubroutine{cca.enc}{M}{
-						$R\|S \twoheadleftarrow \bits^{2\lambda}$\\
-						$\mathcal{D}[R\|S] \coloneq M$\\
-						return $R\|S$
-					}{1}\\[1em]
-					\sslibrarysubroutine{cca.dec}{R\|S}{
-						if $\mathcal{D}[R\|S]$ defined: return $\mathcal{D}[R\|S]$\\
-						$M \coloneq F^{-1}(K, F(K, R) \oplus S)$\\
-						return $M$
-					}{1}
-				}{0.85}
-			}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Frankenstein strategy}
-	Try the following approach in a chosen-ciphertext attack:
-	\begin{enumerate}
-		\item Request two separate encryptions of chosen plaintexts; it often helps to use the same plaintext.
-		\item Mix and match parts of the resulting ciphertexts to obtain two Frankenstein ciphertexts.
-		\item Ask for the Frankenstein ciphertexts to be decrypted, and see whether anything interesting happens.
-	\end{enumerate}
-\end{frame}
-
-\begin{frame}{Another example}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item Not CCA-secure!
-				\item Here's a distinguisher:
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.45\textwidth}
 			\ssprogram{}{
 				$M \twoheadleftarrow \bits^\lambda$\\
 				$R_1\|S_1 \coloneq \func{cca.enc}{M}$\\
@@ -1090,94 +785,30 @@
 				$M_1^* \coloneq \func{cca.dec}{R_1\|S_2}$\\
 				$M_2^* \coloneq \func{cca.dec}{R_2\|S_1}$\\
 				return $M_1^* \stackrel{?}{=} M_2^*$
-			}{1}
+			}{0.95}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Another example}
+\begin{frame}{Why this matters}
 	\begin{columns}[c]
-		\begin{column}{0.35\textwidth}
+		\begin{column}{0.55\textwidth}
 			\begin{itemize}
-				\item When linked to \lib{}{cca-real}:
-				\item \prob{\prog{} \Rightarrow \texttt{true}} $ = 1$
-				\item When linked to \lib{}{cca-rand}:
-				\item \prob{\prog{} \Rightarrow \texttt{true}} $\approx \frac{1}{2^\lambda}$
+				\item Reading plaintext is bad. \textbf{Minting valid ciphertexts is worse.}
+				\item Suppose a bank encrypts transactions with the Frankenstein scheme:
+				      \begin{itemize}
+					      \item The attacker intercepts a few encrypted transactions.
+					      \item Mixing their halves forges \emph{valid} ciphertexts for transactions that never happened.
+					      \item The system decrypts them without error and accepts them.
+				      \end{itemize}
+				\item Both attacks ride on the same flaw: \textbf{malleability}.
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.65\textwidth}
-			\sslinked{
-				\ssprogram{}{
-					$M \twoheadleftarrow \bits^\lambda$\\
-					$R_1\|S_1 \coloneq \func{cca.enc}{M}$\\
-					$R_2\|S_2 \coloneq \func{cca.enc}{M}$\\
-					$M_1^* \coloneq \func{cca.dec}{R_1\|S_2}$\\
-					$M_2^* \coloneq \func{cca.dec}{R_2\|S_1}$\\
-					return $M_1^* \stackrel{?}{=} M_2^*$
-				}{1}
-			}{\diamond}{
-				\sslibrary{}{cca-real}{
-					$K \twoheadleftarrow \bits^\lambda$\\[1em]
-					\sslibrarysubroutine{cca.enc}{M}{
-						$R \twoheadleftarrow \bits^\lambda$\\
-						$S \coloneq F(K, R) \oplus F(K, M)$\\
-						return $R\|S$
-					}{1}\\[1em]
-					\sslibrarysubroutine{cca.dec}{R\|S}{
-						$M \coloneq F^{-1}(K, F(K, R) \oplus S)$\\
-						return $M$
-					}{1}
-				}{0.85}
+		\begin{column}{0.45\textwidth}
+			\definitionbox{The fix}{
+				Reject any ciphertext we didn't create ourselves.\\[0.5em]
+				That is exactly what \textbf{authenticated encryption} gives us, and it's where we're headed next.
 			}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Why does the Frankenstein attack work?}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item When linked to \lib{}{cca-real}:
-				\item Both $R_1\|S_1$ and $R_2\|S_2$ encrypt the same $M$:
-				      \begin{itemize}
-					      \item $S_1 = F(K, R_1) \oplus F(K, M)$
-					      \item $S_2 = F(K, R_2) \oplus F(K, M)$
-				      \end{itemize}
-				\item Decrypting $R_1\|S_2$:
-				      \begin{itemize}
-					      \item $M_1^* = F^{-1}(K, F(K, R_1) \oplus S_2)$
-					      \item $= F^{-1}(K, F(K, R_1) \oplus F(K, R_2) \oplus F(K, M))$
-				      \end{itemize}
-				\item Decrypting $R_2\|S_1$:
-				      \begin{itemize}
-					      \item $M_2^* = F^{-1}(K, F(K, R_2) \oplus S_1)$
-					      \item $= F^{-1}(K, F(K, R_2) \oplus F(K, R_1) \oplus F(K, M))$
-				      \end{itemize}
-				\item Both equal the same value!
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Why does the Frankenstein attack matter?}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
-				\item This can have practical implications:
-				\item \textbf{Message integrity violation}:
-				      \begin{itemize}
-					      \item Adversary can create new valid ciphertexts without knowing the key.
-					      \item These ``Frankenstein'' ciphertexts decrypt to valid (but unintended) plaintexts.
-				      \end{itemize}
-				\item \textbf{Real-world scenario}:
-				      \begin{itemize}
-					      \item A bank encrypts transaction records with this scheme.
-					      \item An attacker intercepts multiple encrypted transactions.
-					      \item By mixing parts, the attacker creates valid ciphertexts for transactions that never happened.
-					      \item The system accepts these as legitimate because they decrypt successfully!
-				      \end{itemize}
-				\item \textbf{The fix}: we need schemes where only ciphertexts created by legitimate parties will decrypt successfully - as we'll see, this is exactly what authenticated encryption provides.
-			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1207,6 +838,7 @@
 		\end{column}
 	\end{columns}
 \end{frame}
+
 \begin{frame}{Expected properties of a hash function}{Reminder}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
@@ -1286,6 +918,35 @@
 				\item MACs address the malleability problem we saw with encryption schemes. Without a MAC, attackers could modify ciphertexts.
 				\item A secure MAC should be unforgeable, even after seeing tags for chosen messages.
 			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{A super basic practical example: AES-CTR + HMAC}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Recall: AES-CTR alone is CPA-secure but \textbf{malleable}, so it's not CCA-secure.
+				\item Fix with \textbf{Encrypt-then-MAC} using HMAC-SHA256:
+				      \begin{itemize}
+					      \item Pick two independent keys: $K_e$ for AES-CTR, $K_m$ for HMAC.
+					      \item Encrypt with AES-CTR, then HMAC the \textit{ciphertext}.
+					      \item On decryption, verify the tag \textbf{before} decrypting.
+				      \end{itemize}
+				\item Now any tampered ciphertext fails tag verification and is rejected.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\sssubroutine{Enc}{(K_e, K_m), M}{
+				$C \coloneq \texttt{AES-CTR.Enc}(K_e, M)$\\
+				$T \coloneq \texttt{HMAC-SHA256}(K_m, C)$\\
+				return $C\|T$
+			}{1}
+			\sssubroutine{Dec}{(K_e, K_m), C\|T}{
+				if $\texttt{HMAC-SHA256}(K_m, C) \neq T$:\\
+				$\quad$ return $\texttt{err}$\\
+				return $\texttt{AES-CTR.Dec}(K_e, C)$
+			}{1}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1675,7 +1336,7 @@
 		\begin{column}{0.4\textwidth}
 			\begin{center}
 				\sssubroutine{AES-GCM.Enc}{K, N, A, M}{
-					$H \coloneq \texttt{AES}(K, 0^{128})$\\
+					$H \coloneq \texttt{AES}(K, \bit{0}^{128})$\\
 					$\text{for } i=1 \text{ to } \lceil|M|/128\rceil:$\\
 					$\quad C_i \coloneq M_i \oplus \texttt{AES}(K, N\|i)$\\
 					$T \coloneq \texttt{GHASH}_H(A, C) \oplus$\\
@@ -1726,7 +1387,7 @@
 				\item How it works:
 				      \begin{itemize}
 					      \item Treats input blocks as coefficients of a polynomial.
-					      \item Evaluates the polynomial at a secret point $H = \texttt{AES}(K, 0^{128})$.
+					      \item Evaluates the polynomial at a secret point $H = \texttt{AES}(K, \bit{0}^{128})$.
 					      \item Result: $\text{GHASH}_H(X) = X_1 \cdot H^n + X_2 \cdot H^{n-1} + \ldots + X_n \cdot H$.
 				      \end{itemize}
 			\end{itemize}
@@ -1789,7 +1450,7 @@
 			\begin{itemize}
 				\item \textbf{GHASH limitations:}
 				      \begin{itemize}
-					      \item \textbf{Requires a secret key} - GHASH is a keyed function, not suitable for public verification.
+					      \item \textbf{Requires a secret key} - GHASH is a keyed function.
 					      \item \textbf{Not collision-resistant} without the key - anyone can find collisions trivially.\footnote{\url{https://appliedcryptography.page/paper/\#universal-hash}}
 					      \item \textbf{Linear structure} - $\text{GHASH}_H(A \oplus B) = \text{GHASH}_H(A) \oplus \text{GHASH}_H(B)$.
 					      \item \textbf{Forgeable if key is known} - completely breaks down with key exposure.
@@ -1797,7 +1458,6 @@
 				\item \textbf{When we need SHA-2/SHA-3:}
 				      \begin{itemize}
 					      \item \textbf{Public verification}: digital signatures, certificates, Git commits
-					      \item \textbf{Password hashing}: no secret key available
 					      \item \textbf{Proof of work}: Bitcoin mining, anti-spam
 					      \item \textbf{Key derivation}: generating keys from passwords (PBKDF2)
 				      \end{itemize}
