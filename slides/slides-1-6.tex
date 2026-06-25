@@ -272,6 +272,20 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Pseudorandomness}{Reminder}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item In cryptography, something is \textbf{pseudorandom} if it is indistinguishable from a uniform distribution.\footnote{The Oxford English Dictionary defines the prefix pseudo- as ``apparently but not really.''}
+				\item We need to invent some \textbf{``secure pseudorandom generator'' (PRG)} $G$ that takes a \textbf{seed} $S$ and ends up being indistinguishable from a true uniform distribution when thrown into a library:
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\imagewithcaption{prg-distributions.pdf}{Source: The Joy of Cryptography}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Birthday paradox}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
@@ -331,7 +345,7 @@
 	\vspace{-0.4cm}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item \textbf{Historical/broken hash functions:}
 				      \begin{itemize}
 					      \item \textbf{MD4} (1990): 128-bit, completely broken, collisions found instantly
@@ -360,7 +374,7 @@
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
 				\item \textbf{At a high level}:
-				      \begin{itemize}
+				      \begin{itemize}[<+->]
 					      \item \textbf{Asymmetric primitives} are based on mathematical
 					            problems, can be mathematically proven secure (given assumptions!)
 					      \item \textbf{Symmetric primitives} (encryption, hashing\ldots)
@@ -381,7 +395,7 @@
 \begin{frame}{A more nuanced view on provable security}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item Reality is more nuanced:
 				      \begin{itemize}
 					      \item \textbf{Asymmetric primitives}: While based on mathematical problems, these are \textbf{conjectures}, not proofs.
@@ -908,7 +922,7 @@
 \end{frame}
 
 \begin{frame}{Specialized password hashing functions}{Beyond regular hash functions}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item Regular cryptographic hash functions (SHA-2, SHA-3) are designed to be \textbf{fast}.
 		\item But for password hashing, slower is better!
 		      \begin{itemize}
@@ -968,7 +982,7 @@
 				      \end{itemize}
 				\item \textbf{Solution}: Memory-hard functions
 				      \begin{itemize}
-					      \item Require significant amount of memory.
+					      \item Requires significant memory speed.
 					      \item Hardware specialization offers less advantage.
 					      \item Both attackers and defenders use similar memory tech.
 				      \end{itemize}
@@ -996,7 +1010,7 @@
 
 \begin{frame}{Scrypt: A memory-hard password hashing function}
 	\definitionbox{Scrypt}{
-		\textbf{Scrypt} is a password-based key derivation function designed to be computationally and memory-intensive, making it resistant to hardware acceleration attacks.
+		\textbf{Scrypt} is a password-based key derivation function designed to be computationally and memory--speed-intensive, making it resistant to hardware acceleration attacks.
 	}
 	\begin{itemize}
 		\item Created by Colin Percival in 2009 specifically to make attacks costly.
@@ -1028,7 +1042,7 @@
 				\item Memory hardness creates multiple benefits:
 				      \begin{itemize}
 					      \item GPUs/ASICs have limited memory per processing unit.
-					      \item Memory is expensive and scales poorly on specialized hardware.
+					      \item Memory is expensive and its speed scales poorly on specialized hardware.
 					      \item Time-memory tradeoffs are possible but highly unfavorable.
 					      \item Using less memory makes computation drastically slower.
 				      \end{itemize}
@@ -1160,21 +1174,25 @@
 \end{frame}
 
 \begin{frame}{Best practices for password hashing}
-	\begin{itemize}
-		\item Use a dedicated password hashing function (not raw SHA-256).
-		\item Always use random, unique salts (at least 16 bytes).
-		\item Store salts alongside hashes - they don't need to be secret.
-		\item Consider modern memory-hard functions like Argon2 or Scrypt.
-		      \begin{itemize}
-			      \item Tune parameters based on your server capabilities.
-			      \item Aim for 0.5--1 second processing time per hash.
-		      \end{itemize}
-		\item Keep your hashing mechanism current:
-		      \begin{itemize}
-			      \item Cryptographic advice changes as attacks improve.
-			      \item Be prepared to migrate to stronger algorithms.
-		      \end{itemize}
-	\end{itemize}
+	\begin{columns}
+		\begin{column}{\textwidth}
+			\begin{itemize}
+				\item Use a dedicated password hashing function (not raw SHA-256).
+				\item Always use random, unique salts (at least 16 bytes).
+				\item Store salts alongside hashes - they don't need to be secret.
+				\item Consider modern memory-hard functions like Argon2 or Scrypt.
+				      \begin{itemize}
+					      \item Tune parameters based on your server capabilities.
+					      \item Aim for 0.5--1 second processing time per hash.
+				      \end{itemize}
+				\item Keep your hashing mechanism current:\footnote{\url{https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html}}
+				      \begin{itemize}
+					      \item Cryptographic advice changes as attacks improve.
+					      \item Be prepared to migrate to stronger algorithms.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{``Migrate to stronger algorithms?''}
