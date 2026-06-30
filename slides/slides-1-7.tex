@@ -524,6 +524,97 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Traveling salesman: an easy instance ($n = 12$)}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\begin{tikzpicture}
+					% twelve cities placed evenly around a circle
+					\foreach \i in {1,...,12}{
+							\coordinate (c\i) at ({\i*30}:2);
+						}
+					% a road between every pair of cities (a complete graph)
+					\foreach \i in {1,...,12}{
+							\foreach \j in {\i,...,12}{
+									\draw[cipherprimary!25, line width=0.3pt] (c\i) -- (c\j);
+								}
+						}
+					% the twelve cities
+					\foreach \i in {1,...,12}{
+							\fill[cipherprimary] (c\i) circle (2.4pt);
+						}
+					% the shortest tour: just follow the ring
+					\draw<3->[cipheraccent, line width=3pt, line cap=round, line join=round]
+					(c1) -- (c2) -- (c3) -- (c4) -- (c5) -- (c6) -- (c7)
+					-- (c8) -- (c9) -- (c10) -- (c11) -- (c12) -- cycle;
+				\end{tikzpicture}
+			\end{center}
+			\begin{center}
+				\small 12 cities $\cdot$ $19{,}958{,}400$ possible routes
+			\end{center}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\begin{itemize}[<+->]
+				\item Twelve cities sitting neatly on a circle.
+				\item Possible tours: $\dfrac{(12-1)!}{2} = 19{,}958{,}400$.
+				\item Yet the answer is obvious: \textbf{just follow the ring}.
+				      \begin{itemize}
+					      \item Any shortcut across the middle only makes the trip longer.
+				      \end{itemize}
+				\item Structure gives it away --- you solve it at a glance.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Traveling salesman: a hard instance ($n = 12$)}
+	\begin{columns}[c]
+		\begin{column}{0.46\textwidth}
+			\begin{center}
+				\begin{tikzpicture}
+					% the same number of cities, now scattered with no pattern
+					\coordinate (p1) at (0.2,1.0);
+					\coordinate (p2) at (0.6,2.9);
+					\coordinate (p3) at (1.3,0.4);
+					\coordinate (p4) at (1.1,3.6);
+					\coordinate (p5) at (1.9,2.1);
+					\coordinate (p6) at (1.6,1.4);
+					\coordinate (p7) at (2.5,3.3);
+					\coordinate (p8) at (2.8,0.7);
+					\coordinate (p9) at (3.1,2.4);
+					\coordinate (p10) at (3.9,3.5);
+					\coordinate (p11) at (4.1,1.3);
+					\coordinate (p12) at (3.4,0.3);
+					% a road between every pair of cities (a complete graph)
+					\foreach \i in {1,...,12}{
+							\foreach \j in {\i,...,12}{
+									\draw[cipherprimary!25, line width=0.3pt] (p\i) -- (p\j);
+								}
+						}
+					% the twelve cities
+					\foreach \i in {1,...,12}{
+							\fill[cipherprimary] (p\i) circle (2.4pt);
+						}
+				\end{tikzpicture}
+			\end{center}
+			\begin{center}
+				\small 12 cities $\cdot$ $19{,}958{,}400$ possible routes
+			\end{center}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item The \textbf{same} twelve cities --- now scattered with no pattern.
+				\item Same count, the \textbf{same} $19{,}958{,}400$ possible tours.
+				\item Nothing to read off: to be sure of the best route, you must search.
+			\end{itemize}
+			\vspace{0.1em}
+			\alertbox{The real lesson}{
+				Same problem, same \textbf{size}, yet wildly different difficulty. The hardness lives in the \emph{instance}, not just in $n$.
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Why are NP-complete problems equally hard?}
 	\begin{itemize}[<+->]
 		\item \textbf{Key insight}: You can \textit{reduce} any NP-complete problem to any other NP-complete problem.
