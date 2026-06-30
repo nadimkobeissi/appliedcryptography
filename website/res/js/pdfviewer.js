@@ -410,7 +410,9 @@ export async function initViewer(pdfUrl, options = {}) {
 	document.head.appendChild(style)
 	document.body.innerHTML = `<div id="status" style="color:#8b9881">Loading\u2026</div>`
 
-	const pdf = await pdfjsLib.getDocument(pdfUrl).promise
+	const pdf = await pdfjsLib.getDocument({
+		url: pdfUrl
+	}).promise
 	const numPages = pdf.numPages
 
 	document.body.innerHTML = `
