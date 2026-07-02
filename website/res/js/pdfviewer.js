@@ -1,6 +1,6 @@
-import * as pdfjsLib from "https://cdn.jsdelivr.net/npm/pdfjs-dist@5.7.284/+esm"
+import * as pdfjsLib from "https://cdn.jsdelivr.net/npm/pdfjs-dist@6.1.200/build/pdf.min.mjs"
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@5.7.284/build/pdf.worker.min.mjs`
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@6.1.200/build/pdf.worker.min.mjs`
 
 const SCALE_STEP = 0.25
 const MAX_PIXEL_RATIO = 2
@@ -410,7 +410,9 @@ export async function initViewer(pdfUrl, options = {}) {
 	document.head.appendChild(style)
 	document.body.innerHTML = `<div id="status" style="color:#8b9881">Loading\u2026</div>`
 
-	const pdf = await pdfjsLib.getDocument(pdfUrl).promise
+	const pdf = await pdfjsLib.getDocument({
+		url: pdfUrl
+	}).promise
 	const numPages = pdf.numPages
 
 	document.body.innerHTML = `
