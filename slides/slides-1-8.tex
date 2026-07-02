@@ -35,10 +35,10 @@
 		\item \textbf{Adoption timeline:}
 		      \begin{itemize}
 			      \item Early 2000s: Standardization bodies.
-			      \item 2005: OpenSSL support.
-			      \item 2011: OpenSSH support.
+			      \item 2005--2011: OpenSSL, then OpenSSH support.
+			      \item 2018: TLS 1.3, with elliptic-curve key exchange as the de-facto default.
 		      \end{itemize}
-		\item \textbf{Current applications:} HTTPS, mobile phones, blockchain (Bitcoin, Ethereum).
+		\item \textbf{Current applications:} HTTPS, SSH, secure messaging (Signal, WhatsApp), blockchain (Bitcoin, Ethereum).
 		\item \textbf{Based on ECDLP:} the Elliptic Curve Discrete Logarithm Problem.
 	\end{itemize}
 \end{frame}
@@ -64,6 +64,43 @@
 			      \item Constrained processing power.
 			      \item Minimal storage capacity.
 		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The key-size gap, visualized}
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[
+					ybar,
+					bar width=13pt,
+					width=0.88\textwidth,
+					height=4.8cm,
+					ymin=0,
+					ymax=17500,
+					enlarge x limits=0.15,
+					symbolic x coords={80, 112, 128, 192, 256},
+					xtick=data,
+					xlabel={Security level (bits)},
+					ylabel={Key size (bits)},
+					ytick={0, 4000, 8000, 12000, 16000},
+					scaled y ticks=false,
+					yticklabel style={/pgf/number format/fixed},
+					legend style={at={(0.03,0.95)}, anchor=north west, draw=none, fill=none, font=\footnotesize},
+					legend cell align=left,
+					nodes near coords,
+					every node near coord/.append style={font=\tiny, color=cipherdark},
+					tick label style={font=\footnotesize},
+					label style={font=\footnotesize},
+				]
+				\addplot[fill=cipheraccent, draw=cipherdark] coordinates {(80,1024) (112,2048) (128,3072) (192,7680) (256,15360)};
+				\addplot[fill=cipherprimary, draw=cipherdark] coordinates {(80,160) (112,224) (128,256) (192,384) (256,512)};
+				\legend{RSA / finite-field DH, Elliptic curves}
+			\end{axis}
+		\end{tikzpicture}
+	\end{center}
+	\begin{itemize}
+		\item An elliptic-curve key is only ever \textbf{twice as long} as its security level.
+		\item RSA keys balloon: 128-bit $\rightarrow$ 256-bit security means $3{,}072 \rightarrow 15{,}360$-bit RSA keys ($5\times$), but just $256 \rightarrow 512$-bit ECC keys ($2\times$).
 	\end{itemize}
 \end{frame}
 
@@ -162,13 +199,9 @@
 			\begin{itemize}
 				\item \textbf{Weierstrass form:} In cryptography, elliptic curves typically have equation:
 				      $$y^2 = x^3 + ax + b$$
-				\item \textbf{Shape parameters:} Constants $a$ and $b$ define the shape of the curve.
-				\item \textbf{Example:} The elliptic curve $y^2 = x^3 - 4x$
-				      \begin{itemize}
-					      \item Here: $a = -4$ and $b = 0$
-					      \item Creates a characteristic symmetric curve
-				      \end{itemize}
-				\item \textbf{Geometric properties:} Elliptic curves have special addition properties that make them useful for cryptography.
+				\item \textbf{Shape parameters:} constants $a$ and $b$ set the curve's shape.
+				\item \textbf{Example:} $y^2 = x^3 - 4x$, i.e. $a = -4$ and $b = 0$.
+				\item \textbf{Geometric properties:} Elliptic curves have special addition properties that make them useful for cryptography.\footnote{The name is historical: these curves arose from computing arc lengths of ellipses. They are not ellipses.}
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -194,11 +227,11 @@
 			\begin{itemize}
 				\item Point addition follows a simple geometric process:
 				      \begin{itemize}
-					      \item Draw the line that connects points $P$ and $Q$.
-					      \item Find the other point where this line intersects the curve.
-					      \item The result $R = P + Q$ is the reflection of this intersection point with respect to the $x$-axis.
+					      \item Draw the line through $P$ and $Q$.
+					      \item Find the third point where this line meets the curve.
+					      \item Reflect it across the $x$-axis: that's $P + Q$.
 				      \end{itemize}
-				\item \textbf{Result:} Point $P + Q$ has the same $x$-coordinate as the intersection but the opposite $y$-coordinate.
+				\item \textbf{Why the reflection?} It makes a beautiful rule hold: \emph{any three curve points on one line sum to zero}—the property that will make the curve a group (coming up).
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -225,6 +258,33 @@
 			\imagewithcaption{elliptic-curve-double.png}{Doubling a point on an elliptic curve.\\Source: Serious Cryptography}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{From addition to scalar multiplication}
+	\begin{itemize}
+		\item \textbf{Scalar multiplication:} $k \cdot P$ just means ``add $P$ to itself $k$ times.''
+		\item \textbf{The naive way is hopeless:} for a 256-bit $k$, that's $\approx 2^{256}$ additions.
+		\item \textbf{Double-and-add:} write $k$ in binary and build $k \cdot G$ out of doublings. Example, $k = 13 = 1101_2$:
+	\end{itemize}
+	\begin{center}
+		\begin{tikzpicture}[every node/.style={align=center}]
+			\node[draw, thick, cipherprimary, rounded corners, fill=cipherprimary!8, minimum width=1.2cm, minimum height=0.75cm] (s0) at (0,0) {$G$};
+			\node[draw, thick, cipherprimary, rounded corners, fill=cipherprimary!8, minimum width=1.2cm, minimum height=0.75cm] (s1) at (2.5,0) {$2G$};
+			\node[draw, thick, cipherprimary, rounded corners, fill=cipherprimary!8, minimum width=1.2cm, minimum height=0.75cm] (s2) at (5,0) {$3G$};
+			\node[draw, thick, cipherprimary, rounded corners, fill=cipherprimary!8, minimum width=1.2cm, minimum height=0.75cm] (s3) at (7.5,0) {$6G$};
+			\node[draw, thick, cipherprimary, rounded corners, fill=cipherprimary!8, minimum width=1.2cm, minimum height=0.75cm] (s4) at (10,0) {$12G$};
+			\node[draw, thick, cipheraccent, rounded corners, fill=cipheraccent!15, minimum width=1.2cm, minimum height=0.75cm] (s5) at (12.5,0) {$13G$};
+			\draw[->, thick, cipherdark] (s0) -- (s1) node[midway, above] {\footnotesize double};
+			\draw[->, thick, cipheraccent] (s1) -- (s2) node[midway, above] {\footnotesize $+\,G$};
+			\draw[->, thick, cipherdark] (s2) -- (s3) node[midway, above] {\footnotesize double};
+			\draw[->, thick, cipherdark] (s3) -- (s4) node[midway, above] {\footnotesize double};
+			\draw[->, thick, cipheraccent] (s4) -- (s5) node[midway, above] {\footnotesize $+\,G$};
+		\end{tikzpicture}
+	\end{center}
+	\begin{itemize}
+		\item \textbf{Cost:} at most 255 doublings and 255 additions for a 256-bit $k$—microseconds on a laptop.
+		\item \textbf{The asymmetry that powers everything:} computing $k \cdot G$ from $k$ takes a few hundred point operations. Recovering $k$ from $k \cdot G$? No known shortcut.
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{Remember this?}{We need an equivalent for elliptic curves}
@@ -288,9 +348,13 @@
 		      \end{itemize}
 		\item \textbf{Why is this hard?}
 		      \begin{itemize}
-			      \item Easy direction: Given $k$ and $G$, computing $k \cdot G$ is efficient.
+			      \item Easy direction: Given $k$ and $G$, computing $k \cdot G$ is efficient (double-and-add).
 			      \item Hard direction: Given $G$ and $H = k \cdot G$, finding $k$ is very difficult.
 			      \item No known efficient algorithms (except with quantum computers).
+		      \end{itemize}
+		\item \textbf{How hard, concretely?} Best known attacks (e.g. Pollard's rho) cost $\approx \sqrt{n}$ steps: $2^{128}$ for a 256-bit curve.
+		      \begin{itemize}
+			      \item Going forward: a few hundred point operations. Going backward: $2^{128}$.
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -301,6 +365,9 @@
 		\item \textbf{Closure property:} If points $P$ and $Q$ belong to a curve, then $P + Q$ also belongs to the curve.
 		\item \textbf{Associativity:} $(P + Q) + R = P + (Q + R)$ for any points $P$, $Q$, and $R$.
 		\item \textbf{Identity element:} The \emph{point at infinity} $\mathcal{O}$ such that $P + \mathcal{O} = P$ for any $P$.
+		      \begin{itemize}
+			      \item Where does $\mathcal{O}$ come from? The line through $P$ and $-P$ is vertical: it never meets the curve a third time, so we say it meets it ``at infinity.''
+		      \end{itemize}
 		\item \textbf{Inverse elements:} Every point $P = (x_P, y_P)$ has an inverse $-P = (x_P, -y_P)$ such that $P + (-P) = \mathcal{O}$.
 		\item Great! We have a group structure!
 	\end{itemize}
@@ -313,21 +380,14 @@
 			      \item Coordinates are numbers in the finite field $\mathbb{Z}_p$.
 			      \item Same geometric operations, but computed modulo $p$.
 		      \end{itemize}
-		\item \textbf{Security foundation:} Security depends on the \emph{cardinality} (number of points) of the curve.
+		\item \textbf{Why finite fields?} Infinitely precise real numbers are impractical for computers: finite-field arithmetic is exact, efficient, and discrete.
+		\item \textbf{Security foundation:} Security depends on the curve's \emph{cardinality} (its number of points), which is determined by $a$, $b$, and $p$.
 		      \begin{itemize}
-			      \item Analogous to how RSA security depends on the size of numbers used.
-			      \item More points $\rightarrow$ harder discrete logarithm problem.
+			      \item More points $\rightarrow$ harder discrete logarithm problem (like larger moduli in RSA).
 		      \end{itemize}
-		\item \textbf{Curve cardinality:} The number of points depends on:
+		\item \textbf{Order of a point:} The smallest $n > 0$ with $n \cdot P = \mathcal{O}$: keep adding $P$ to itself, and after $n$ steps you cycle back to where you started.
 		      \begin{itemize}
-			      \item The specific curve equation (parameters $a$ and $b$).
-			      \item The prime modulus $p$.
-			      \item Can be computed using specialized algorithms.
-		      \end{itemize}
-		\item \textbf{Why finite fields?} Infinitely precise real numbers are impractical for computers.
-		      \begin{itemize}
-			      \item Finite field arithmetic is exact and efficient.
-			      \item Discrete structure enables cryptographic security.
+			      \item The base point $G$ generates a cyclic subgroup $\{G, 2G, \ldots, n \cdot G = \mathcal{O}\}$—the ``playground'' where our cryptography happens.
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -352,6 +412,28 @@
 			      \item Modular arithmetic $\rightarrow$ Elliptic curve point operations
 			      \item Generator $g$ $\rightarrow$ Base point $G$
 		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{ECDH in one picture}
+	\begin{center}
+		\begin{tikzpicture}[every node/.style={align=center}]
+			\node[draw, thick, cipherprimary, rounded corners, fill=cipherprimary!8, minimum width=3.4cm] (alice) at (0,3.7) {\textbf{Alice}\\ \small secret $a$};
+			\node[draw, thick, cipherprimary, rounded corners, fill=cipherprimary!8, minimum width=3.4cm] (bob) at (10,3.7) {\textbf{Bob}\\ \small secret $b$};
+			\draw[thick, cipherprimary!40] (0,3.15) -- (0,1.55);
+			\draw[thick, cipherprimary!40] (10,3.15) -- (10,1.55);
+			\draw[->, thick, cipherdark] (0,2.85) -- (10,2.85) node[midway, above] {\small $A = a \cdot G$};
+			\draw[->, thick, cipherdark] (10,2.05) -- (0,2.05) node[midway, above] {\small $B = b \cdot G$};
+			\node[draw, thick, cipheraccent, rounded corners, fill=cipheraccent!15, minimum width=3.4cm] (ka) at (0,0.85) {\small computes\\ $a \cdot B = ab \cdot G$};
+			\node[draw, thick, cipheraccent, rounded corners, fill=cipheraccent!15, minimum width=3.4cm] (kb) at (10,0.85) {\small computes\\ $b \cdot A = ab \cdot G$};
+			\node[draw, thick, cipherprimarydark, rounded corners, fill=cipherprimarylight!30, minimum width=3.6cm] (k) at (5,0.85) {\small shared secret\\ $K = ab \cdot G$};
+			\draw[->, thick, cipherdark] (ka) -- (k);
+			\draw[->, thick, cipherdark] (kb) -- (k);
+		\end{tikzpicture}
+	\end{center}
+	\begin{itemize}
+		\item Eve sees $G$, $A$ and $B$. Recovering $a$ from $A = a \cdot G$ is exactly the ECDLP.
+		\item $K$ is a curve point, not a key: as with classical DH, hash it (e.g. with HKDF) to derive symmetric keys.
 	\end{itemize}
 \end{frame}
 
@@ -506,7 +588,7 @@
 					      \item $v = r \cdot w \bmod n$
 				      \end{itemize}
 				\item \textbf{Compute verification point:} $Q = u \cdot G + v \cdot P$
-				\item \textbf{Check signature:} Accept if $Q_x = r$
+				\item \textbf{Check signature:} Accept if $Q_x \bmod n = r$
 			\end{enumerate}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -520,7 +602,7 @@
 				      \end{align*}
 				\item When signature is valid:
 				      $$u + vd = k \bmod n$$
-				\item So $Q = k \cdot G$, giving $Q_x = r$
+				\item So $Q = k \cdot G$, giving $Q_x \bmod n = r$
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -530,8 +612,9 @@
 	\begin{itemize}
 		\item \textbf{Background:} Built on Schnorr signatures (1989).
 		      \begin{itemize}
-			      \item Schnorr's patent prevented adoption until 2008.
+			      \item Schnorr's patent prevented adoption until it expired in 2008.
 			      \item Edwards-curve DSA developed by Bernstein et al. (2011).
+			      \item (Bitcoin came full circle: it adopted Schnorr signatures with Taproot, 2021.)
 		      \end{itemize}
 		\item \textbf{Key advantages over ECDSA:}
 		      \begin{itemize}
@@ -548,7 +631,7 @@
 \begin{frame}{EdDSA signature generation}
 	\begin{columns}
 		\begin{column}{0.7\textwidth}
-			\textbf{Input:} Message $M$, private key $k$ (byte string)
+			\textbf{Input:} Message $M$, private key $k$ (byte string). $B$ is the base point (EdDSA's name for $G$).
 			\begin{enumerate}
 				\item \textbf{Expand private key:} $a \parallel h = \func{hash}{k}$
 				      \begin{itemize}
@@ -610,7 +693,7 @@
 		      \begin{itemize}
 			      \item Twisted Edwards curve based on Curve25519
 			      \item SHA-512 as hash function
-			      \item Optimized base point for efficiency
+			      \item A fixed, transparently chosen base point
 		      \end{itemize}
 		\item \textbf{Performance characteristics:}
 		      \begin{itemize}
@@ -622,6 +705,7 @@
 		\item \textbf{Adoption milestones:}
 		      \begin{itemize}
 			      \item 2011: Initial specification
+			      \item 2014: OpenSSH support
 			      \item 2017: RFC 8032 standardization
 			      \item 2023: Added to NIST FIPS 186-5
 		      \end{itemize}
@@ -645,6 +729,7 @@
 					      \item Slower verification
 					      \item Complex implementation
 					      \item Vulnerable to bad RNG
+					      \item Malleable: $(r, n - s)$ also verifies
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -662,7 +747,7 @@
 				      \begin{itemize}
 					      \item Newer standard
 					      \item Some validation inconsistencies
-					      \item Less blockchain adoption
+					      \item Bitcoin and Ethereum remain on ECDSA (secp256k1)
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -840,23 +925,48 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Curve25519, X25519, Ed25519: what's in a name?}
+	\begin{center}
+		\begin{tikzpicture}[every node/.style={align=center}]
+			\node[draw, thick, cipherprimary, rounded corners, fill=cipherprimary!8, text width=4.9cm] (mont) at (0,1.9) {\textbf{Curve25519}\\ \small the curve,\\ \small in Montgomery form\\ \footnotesize $y^2 = x^3 + 486662x^2 + x$};
+			\node[draw, thick, cipherprimary, rounded corners, fill=cipherprimary!8, text width=4.9cm] (ed) at (8.6,1.9) {\textbf{edwards25519}\\ \small the same curve,\\ \small in Edwards form\\ \footnotesize $-x^2 + y^2 = 1 + dx^2y^2$};
+			\draw[<->, thick, cipherdark] (mont) -- (ed) node[midway, above] {\footnotesize birationally equivalent} node[midway, below] {\footnotesize (a change of variables)};
+			\node[draw, thick, cipheraccent, rounded corners, fill=cipheraccent!15, text width=4.9cm] (x) at (0,0) {\textbf{X25519}\\ \small key exchange (ECDH)};
+			\node[draw, thick, cipheraccent, rounded corners, fill=cipheraccent!15, text width=4.9cm] (edd) at (8.6,0) {\textbf{Ed25519}\\ \small signatures (EdDSA)};
+			\draw[->, thick, cipherdark] (mont) -- (x);
+			\draw[->, thick, cipherdark] (ed) -- (edd);
+		\end{tikzpicture}
+	\end{center}
+	\begin{itemize}
+		\item \textbf{Same curve, two forms. Each form is ideal for a different job:}
+		      \begin{itemize}
+			      \item Montgomery form: $x$-coordinate-only ``ladder''—simple, fast, constant-time ECDH.
+			      \item Edwards form: complete addition formulas, no special cases—safe signatures.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{Other curves in the ecosystem}
 	\begin{itemize}
+		\item \textbf{secp256k1: the blockchain workhorse.}
+		      \begin{itemize}
+			      \item $y^2 = x^3 + 7$: standardized by SECG (2000), chosen for Bitcoin by Satoshi Nakamoto, inherited by Ethereum.
+			      \item Almost no arbitrary constants—``rigid'' by construction, unlike the NIST curves.
+			      \item (This is the curve behind the \texttt{k256} library naming.)
+		      \end{itemize}
 		\item \textbf{Legacy national standards:}
 		      \begin{itemize}
-			      \item \textbf{ANSSI curves (France):} Constants of unknown origin, no unified addition.
-			      \item \textbf{Brainpool curves (Germany):} Similar issues to ANSSI curves.
+			      \item \textbf{ANSSI curves (France):} Constants of unexplained origin, no unified addition law.
+			      \item \textbf{Brainpool curves (Germany):} Transparent seeds (digits of $e$ and $\pi$), but slow arithmetic and no unified addition law.
 		      \end{itemize}
-		\item \textbf{Modern alternatives:}
+		\item \textbf{Higher-security alternatives:}
 		      \begin{itemize}
-			      \item \textbf{Curve41417:} 414-bit curve by Bernstein et al. with higher security ($\approx$200 bits).
-			      \item \textbf{Ed448-Goldilocks:} 448-bit curve (RFC 8032, 2017).
-			      \item \textbf{Aranha et al. curves:} Six high-security curves (rarely used).
+			      \item \textbf{Ed448-Goldilocks:} 448-bit curve (RFC 8032, 2017), $\approx$224-bit security margin.
+			      \item \textbf{Curve41417:} 414-bit curve by Bernstein et al. ($\approx$200-bit security).
 		      \end{itemize}
 		\item \textbf{Ristretto initiative:} Technique for safe point representation.
 		      \begin{itemize}
-			      \item Constructs prime-order groups from non-prime-order curves.
-			      \item Eliminates certain structural risks.
+			      \item Constructs prime-order groups from non-prime-order curves (more on this soon).
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -872,7 +982,7 @@
 		      \end{itemize}
 		\item \textbf{For government/compliance:} NIST P-256 is still widely accepted.
 		      \begin{itemize}
-			      \item Required by some standards and regulations (pre-2023).
+			      \item Required by some standards and regulations.
 			      \item Well-audited implementations available.
 			      \item Despite parameter concerns, no known weaknesses.
 		      \end{itemize}
@@ -906,10 +1016,8 @@
 
 \begin{frame}{ECDSA with bad randomness}
 	\begin{itemize}
-		\item \textbf{ECDSA signing requires randomness:} Each signature uses a secret random number $k$.
-		      $$s = \frac{h + rd}{k} \bmod n$$
-		\item \textbf{The catastrophic mistake:} Reusing the same $k$ for two different messages.
-		\item \textbf{Attack scenario:} If $k$ is reused:
+		\item \textbf{ECDSA signing requires randomness:} Each signature uses a secret random $k$ in $s = (h + rd)/k \bmod n$.
+		\item \textbf{The catastrophic mistake—reusing $k$ for two different messages:}
 		      \begin{itemize}
 			      \item Attacker gets: $s_1 = \frac{h_1 + rd}{k}$ and $s_2 = \frac{h_2 + rd}{k}$
 			      \item Compute: $s_1 - s_2 = \frac{h_1 - h_2}{k}$
@@ -917,7 +1025,10 @@
 			      \item Recover private key: $d = \frac{sk - h}{r}$
 		      \end{itemize}
 		\item \textbf{Why this is devastating:} Complete private key recovery from just two signatures.
-		\item \textbf{Prevention:} Always use cryptographically secure random number generation.
+		      \begin{itemize}
+			      \item Even \emph{bias} is fatal: a few leaky bits of $k$ across many signatures let lattice attacks recover $d$ (Minerva, 2019; LadderLeak, 2020).
+		      \end{itemize}
+		\item \textbf{Prevention:} A strong RNG—or no RNG at all: derive $k$ deterministically from the private key and message (RFC 6979, now in FIPS 186-5).
 	\end{itemize}
 \end{frame}
 
@@ -1048,23 +1159,43 @@
 \end{frame}
 
 \begin{frame}{Small subgroup attacks}
-	\begin{itemize}
-		\item \textbf{The vulnerability:} Confining the shared secret to a small set of possibilities.
-		      \begin{itemize}
-			      \item Attacker sends a point $P$ of small order (e.g., order 8).
-			      \item Victim computes shared secret: $s \cdot P$.
-			      \item Result $s \cdot P$ belongs to a small subgroup (at most 8 elements).
-			      \item Attacker can brute-force the entire shared secret space.
-		      \end{itemize}
-		\item \textbf{Why this is catastrophic:}
-		      \begin{itemize}
-			      \item With an order-8 point: Only 8 possible shared secrets.
-			      \item Attacker tries all 8 possibilities offline.
-			      \item Breaks encryption, authentication, or any derived keys.
-			      \item Complete compromise, not just partial information leakage.
-		      \end{itemize}
-		\item \textbf{Defense:} Validate points belong to correct subgroup or use protocols that eliminate the threat.
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{0.58\textwidth}
+			\begin{itemize}
+				\item \textbf{The attack:} Send a point $P$ of small order (say, 8) instead of an honest public key.
+				      \begin{itemize}
+					      \item Victim computes the ``shared secret'' $s \cdot P$.
+					      \item Whatever the 256-bit secret $s$ is, $s \cdot P$ is one of only 8 points.
+					      \item Attacker brute-forces all 8 candidates offline: every derived key falls.
+					      \item Bonus: \emph{which} of the 8 it was leaks $s \bmod 8$.
+				      \end{itemize}
+				\item \textbf{Defense:} Check the order of received points, or use designs that make the issue vanish.
+				      \begin{itemize}
+					      \item X25519 ``clamps'' secret scalars to multiples of 8 partly for this reason.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{center}
+				\begin{tikzpicture}
+					\foreach \i in {0,...,7}{
+							\fill[cipherprimary] ({90 - \i*45}:1.3) circle (2.8pt);
+						}
+					\foreach \i in {0,...,7}{
+							\draw[->, cipherprimary!45, thick] ({90 - \i*45 - 9}:1.3) arc ({90 - \i*45 - 9}:{90 - \i*45 - 36}:1.3);
+						}
+					\node[above] at (90:1.4) {\footnotesize $P$};
+					\node[above right] at (45:1.35) {\footnotesize $2P$};
+					\node[above left] at (135:1.35) {\footnotesize $8P = \mathcal{O}$};
+					\node[draw, thick, cipheraccent, rounded corners, fill=cipheraccent!15, align=center] at (0,-2.55) {\small $s \cdot P$ lands here,\\ \small for \emph{any} 256-bit $s$};
+					\draw[->, thick, cipheraccent] (0,-2.1) -- (0,-1.6);
+				\end{tikzpicture}
+			\end{center}
+			\begin{center}
+				\small 256-bit secret, but only 8 possibilities!
+			\end{center}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Invalid curve attacks vs. small subgroup attacks}
@@ -1072,7 +1203,6 @@
 		\item \textbf{Two distinct but related vulnerabilities:}
 		      \begin{itemize}
 			      \item Both exploit weak point validation.
-			      \item Different mathematical foundations.
 			      \item Different defense strategies.
 		      \end{itemize}
 		\item \textbf{Invalid curve attacks:}
@@ -1089,7 +1219,7 @@
 			      \item Example: Point $P$ where $8P = \mathcal{O}$ instead of the expected large order.
 			      \item Defense: Verify the point has the correct order or use prime-order curves.
 		      \end{itemize}
-		\item \textbf{Key insight:} Invalid curve = wrong equation; Small subgroup = wrong order.
+		\item Invalid curve = wrong equation; Small subgroup = wrong order.
 	\end{itemize}
 \end{frame}
 
@@ -1185,20 +1315,19 @@
 		\item \textbf{Don't implement ECC from scratch:} Cryptographic implementations require years of hardening.
 		\item \textbf{Rust ecosystem:}
 		      \begin{itemize}
-			      \item \texttt{ring}: Fast, audited, used by major companies.
-			      \item \texttt{p256}, \texttt{k256}: RustCrypto pure-Rust implementations.
-			      \item \texttt{curve25519-dalek}: Ed25519/X25519 with extensive validation.
+			      \item \texttt{curve25519-dalek}, \texttt{ed25519-dalek}: the standard X25519/Ed25519 stack.
+			      \item \texttt{p256}, \texttt{k256}: RustCrypto pure-Rust NIST P-256 and secp256k1.
+			      \item \texttt{aws-lc-rs}: audited, actively maintained; \texttt{rustls}'s default provider (replacing \texttt{ring}).
 		      \end{itemize}
 		\item \textbf{Go ecosystem:}
 		      \begin{itemize}
-			      \item \texttt{crypto/elliptic}: Standard library (NIST curves).
-			      \item \texttt{golang.org/x/crypto/curve25519}: Official X25519 implementation.
-			      \item \texttt{filippo.io/edwards25519}: Modern Ed25519 with clear APIs.
+			      \item \texttt{crypto/ecdh}, \texttt{crypto/ed25519}: standard library, misuse-resistant APIs.
+			      \item \texttt{filippo.io/edwards25519}: lower-level Edwards arithmetic when you need it.
+			      \item (\texttt{crypto/elliptic} point arithmetic is deprecated—use \texttt{crypto/ecdh}.)
 		      \end{itemize}
 		\item \textbf{Selection criteria:}
 		      \begin{itemize}
-			      \item Active maintenance and security updates.
-			      \item Independent security audits.
+			      \item Independent security audits; active maintenance.
 			      \item Constant-time guarantees.
 			      \item Clear documentation and examples.
 		      \end{itemize}
@@ -1300,7 +1429,7 @@
 
 \begin{frame}{Real-world case study: WhatsApp's implementation}
 	\begin{itemize}
-		\item \textbf{Challenge:} Secure messaging for 2+ billion users across diverse devices.
+		\item \textbf{Challenge:} Secure messaging for 3+ billion users across diverse devices.
 		\item \textbf{Solution:} Signal Protocol with Curve25519 and Ed25519.
 		\item \textbf{Implementation details:}
 		      \begin{itemize}
@@ -1399,8 +1528,8 @@
 		      \begin{itemize}
 			      \item Supported in OpenSSH since 2014, the default since 2023.
 			      \item Signal Protocol messaging.
-			      \item Modern certificate authorities.
-			      \item New blockchain projects (Solana, etc.).
+			      \item Software signing (OpenBSD \texttt{signify}, \texttt{minisign}, OpenWrt).
+			      \item Newer blockchain projects (Solana, Cardano, etc.).
 		      \end{itemize}
 		\item \textbf{Migration considerations:}
 		      \begin{itemize}
@@ -1438,11 +1567,11 @@
 
 \begin{frame}{Looking forward: Implementation challenges}
 	\begin{itemize}
-		\item \textbf{Post-quantum transition:} ECC implementations need migration paths.
+		\item \textbf{Post-quantum transition:} A large quantum computer running Shor's algorithm would break ECDLP outright.
 		      \begin{itemize}
-			      \item Hybrid classical/post-quantum systems.
-			      \item Algorithm negotiation mechanisms.
-			      \item Backward compatibility requirements.
+			      \item NIST finalized its first post-quantum standards in August 2024: ML-KEM, ML-DSA, and SLH-DSA (FIPS 203--205).
+			      \item Already deployed: major browsers now run \emph{hybrid} X25519 + ML-KEM key exchange in TLS, hedging against ``harvest now, decrypt later.''
+			      \item Elliptic curves aren't going anywhere soon: hybrids keep them in the loop, and signatures are less urgent to migrate than key exchange.
 			      \item Discussed in a future class topic!
 		      \end{itemize}
 		\item \textbf{Formal verification:} Mathematical proofs of implementation correctness.
