@@ -361,7 +361,7 @@
 
 \begin{frame}{Group structure of elliptic curves}
 	We need to define all these operations so that our elliptic curves have a group structure, allowing us to use them as a new basis for Diffie-Hellman - doing DH with point addition instead of modular multiplication.
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item \textbf{Closure property:} If points $P$ and $Q$ belong to a curve, then $P + Q$ also belongs to the curve.
 		\item \textbf{Associativity:} $(P + Q) + R = P + (Q + R)$ for any points $P$, $Q$, and $R$.
 		\item \textbf{Identity element:} The \emph{point at infinity} $\mathcal{O}$ such that $P + \mathcal{O} = P$ for any $P$.
@@ -370,25 +370,6 @@
 		      \end{itemize}
 		\item \textbf{Inverse elements:} Every point $P = (x_P, y_P)$ has an inverse $-P = (x_P, -y_P)$ such that $P + (-P) = \mathcal{O}$.
 		\item Great! We have a group structure!
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Elliptic curves over finite fields}
-	\begin{itemize}[<+->]
-		\item \textbf{Practical implementation:} Most elliptic curve cryptosystems work with coordinates modulo a prime $p$.
-		      \begin{itemize}
-			      \item Coordinates are numbers in the finite field $\mathbb{Z}_p$.
-			      \item Same geometric operations, but computed modulo $p$.
-		      \end{itemize}
-		\item \textbf{Why finite fields?} Infinitely precise real numbers are impractical for computers: finite-field arithmetic is exact, efficient, and discrete.
-		\item \textbf{Security foundation:} Security depends on the curve's \emph{cardinality} (its number of points), which is determined by $a$, $b$, and $p$.
-		      \begin{itemize}
-			      \item More points $\rightarrow$ harder discrete logarithm problem (like larger moduli in RSA).
-		      \end{itemize}
-		\item \textbf{Order of a point:} The smallest $n > 0$ with $n \cdot P = \mathcal{O}$: keep adding $P$ to itself, and after $n$ steps you cycle back to where you started.
-		      \begin{itemize}
-			      \item The base point $G$ generates a cyclic subgroup $\{G, 2G, \ldots, n \cdot G = \mathcal{O}\}$—the ``playground'' where our cryptography happens.
-		      \end{itemize}
 	\end{itemize}
 \end{frame}
 
