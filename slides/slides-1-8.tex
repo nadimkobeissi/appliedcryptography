@@ -423,13 +423,13 @@
 \begin{frame}{What are digital signatures?}
 	\begin{itemize}
 		\item \textbf{Digital signatures:} Cryptographic equivalent of handwritten signatures.
-		      \begin{itemize}
+		      \begin{itemize}[<+->]
 			      \item Prove authenticity: Message came from the claimed sender.
 			      \item Ensure integrity: Message wasn't modified in transit.
 			      \item Provide non-repudiation: Sender can't deny signing.
 		      \end{itemize}
 		\item \textbf{Key difference from physical signatures:}
-		      \begin{itemize}
+		      \begin{itemize}[<+->]
 			      \item Each signature is unique to the message content.
 			      \item Can't copy a signature from one document to another.
 			      \item Mathematically verifiable by anyone.
@@ -440,12 +440,12 @@
 \begin{frame}{What are digital signatures?}
 	\begin{itemize}
 		\item \textbf{Based on asymmetric cryptography:}
-		      \begin{itemize}
+		      \begin{itemize}[<+->]
 			      \item Private key: Used to create signatures (kept secret).
 			      \item Public key: Used to verify signatures (shared openly).
 		      \end{itemize}
 		\item \textbf{Real-world applications:}
-		      \begin{itemize}
+		      \begin{itemize}[<+->]
 			      \item Software distribution and updates.
 			      \item Email authentication (PGP, S/MIME).
 			      \item Financial transactions.
@@ -481,7 +481,7 @@
 \end{frame}
 
 \begin{frame}{Digital signatures with elliptic curves}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item \textbf{Why elliptic curve signatures?} Same advantages as ECDH:
 		      \begin{itemize}
 			      \item Smaller signatures for equivalent security.
@@ -666,31 +666,6 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
-\end{frame}
-
-\begin{frame}{Ed25519: The practical implementation}
-	\begin{itemize}
-		\item \textbf{Ed25519 = EdDSA + specific parameters:}
-		      \begin{itemize}
-			      \item Twisted Edwards curve based on Curve25519
-			      \item SHA-512 as hash function
-			      \item A fixed, transparently chosen base point
-		      \end{itemize}
-		\item \textbf{Performance characteristics:}
-		      \begin{itemize}
-			      \item Signing: $\approx$40--90 microseconds (modern CPUs)
-			      \item Verification: $\approx$100--200 microseconds
-			      \item 64-byte signatures (512 bits)
-		      \end{itemize}
-		\item \textbf{Security level:} $\approx$128 bits (equivalent to 3,072-bit RSA)
-		\item \textbf{Adoption milestones:}
-		      \begin{itemize}
-			      \item 2011: Initial specification
-			      \item 2014: OpenSSH support
-			      \item 2017: RFC 8032 standardization
-			      \item 2023: Added to NIST FIPS 186-5
-		      \end{itemize}
-	\end{itemize}
 \end{frame}
 
 \begin{frame}{ECDSA vs. Ed25519: The comparison}
