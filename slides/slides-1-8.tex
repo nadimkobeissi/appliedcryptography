@@ -21,7 +21,7 @@
 \section{Elliptic Curves: Theory}
 
 \begin{frame}{Elliptic-curve cryptography}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item \textbf{Revolutionary introduction (1985):} Elliptic Curve Cryptography (ECC) transformed public-key cryptography.
 		\item \textbf{Superior efficiency:} More efficient than RSA and classical Diffie-Hellman.
 		      \begin{itemize}
@@ -44,7 +44,7 @@
 \end{frame}
 
 \begin{frame}{Why elliptic curve cryptography matters}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item \textbf{Key size efficiency:} ECC provides equivalent security with much smaller keys.
 		      \begin{itemize}
 			      \item 256-bit ECC key $\approx$ 3,072-bit RSA key $\approx$ 3,072-bit finite field DH.
@@ -108,7 +108,7 @@
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\textbf{Traditional Finite Field DH:}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item Works in multiplicative group $\mathbb{Z}_p^*$
 				\item Security based on discrete log in $\mathbb{Z}_p^*$
 				\item Requires large primes (2,048+ bits)
@@ -117,7 +117,7 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Elliptic Curve DH (ECDH):}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item Works on elliptic curve group
 				\item Security based on ECDLP\footnote{Elliptic-curve discrete logarithm problem}
 				\item Requires smaller keys (256 bits)
@@ -127,7 +127,7 @@
 	\end{columns}
 	\vspace{0.5cm}
 	\textbf{ECDH advantages:}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item \textbf{Efficiency:} 10--40x faster than finite field DH for equivalent security.
 		\item \textbf{Scalability:} Performance gap widens with higher security levels.
 		\item \textbf{Standards compliance:} Widely adopted (TLS 1.3, Signal Protocol, etc.).
@@ -135,7 +135,7 @@
 \end{frame}
 
 \begin{frame}{Why finite field DH attacks don't work on ECDH}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item \textbf{Different mathematical structures:}
 		      \begin{itemize}
 			      \item Finite field DH: multiplicative group $\mathbb{Z}_p^*$ with multiplication.
@@ -318,7 +318,7 @@
 
 \begin{frame}{Remember this?}{We need an equivalent for elliptic curves}
 	For our cryptographic group $\mathbb{Z}_p^*$, these rules always hold:
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item \textbf{Closure}: Multiplying any two elements gives another element in the group
 		      \begin{itemize}
 			      \item In $\mathbb{Z}_5^*$: $2 \times 3 = 1$ (still in the group!)
@@ -338,7 +338,7 @@
 \end{frame}
 
 \begin{frame}{The elliptic curve discrete logarithm problem (ECDLP)}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item \textbf{Remember the original DLP:} Given $g$, $h$, and prime $p$, find $x$ such that $g^x \equiv h \pmod{p}$.
 		\item \textbf{ECDLP is the elliptic curve version:}
 		      \begin{itemize}
@@ -374,7 +374,7 @@
 \end{frame}
 
 \begin{frame}{Elliptic curves over finite fields}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item \textbf{Practical implementation:} Most elliptic curve cryptosystems work with coordinates modulo a prime $p$.
 		      \begin{itemize}
 			      \item Coordinates are numbers in the finite field $\mathbb{Z}_p$.
@@ -474,7 +474,7 @@
 \end{frame}
 
 \begin{frame}{Digital signature API: The three operations}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item \textbf{1. Key Generation:} Create a key pair
 		      \begin{itemize}
 			      \item \texttt{(private\_key, public\_key) = KeyGen()}
@@ -818,7 +818,7 @@
 \end{frame}
 
 \begin{frame}{The NIST controversy: Suspicious constants}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item \textbf{The problem:} Only the NSA knows the true origin of the $b$ coefficient in NIST curves.
 		\item \textbf{NSA's explanation:} $b$ results from hashing a ``random-looking'' constant with SHA-1.
 		      \begin{itemize}
@@ -836,7 +836,7 @@
 \end{frame}
 
 \begin{frame}{Dual\_EC\_DRBG: The NSA backdoor scandal}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item \textbf{What is Dual\_EC\_DRBG?} Dual Elliptic Curve Deterministic Random Bit Generator.
 		      \begin{itemize}
 			      \item NIST standard for generating random numbers (2006).
@@ -862,7 +862,7 @@
 \begin{frame}{How the Dual\_EC\_DRBG backdoor works}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item \textbf{The algorithm:} Uses two elliptic curve points $P$ and $Q = d \cdot P$.
 				      \begin{itemize}
 					      \item Internal state: $s_i = x(s_{i-1} \cdot P)$ where $x()$ extracts the $x$-coordinate.
