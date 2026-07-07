@@ -32,6 +32,9 @@ objects/*/*.pdf
 # Exams
 exams/*.tex
 
+# Rubrics
+problem-set/*rubric*
+
 # Go
 starter-kit/go/bin
 starter-kit/go/pkg
