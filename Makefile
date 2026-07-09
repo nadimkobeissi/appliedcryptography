@@ -13,7 +13,7 @@ project: $(TARGETS_PROJECT)
 problem-set: $(TARGETS_PROBLEM_SET)
 quiz: $(TARGETS_QUIZ)
 clean:
-	@$(RM) -r objects/slides/*.pdf objects/project/*.pdf objects/problem-set/*.pdf objects/syllabus/*.pdf objects/quiz/*.pdf starter-kit/target
+	@$(RM) -r objects/slides/*.pdf objects/project/*.pdf objects/problem-set/*.pdf objects/syllabus/*.pdf objects/quiz/*.pdf objects/exams/*.pdf starter-kit/target
 
 $(TARGETS_SLIDES):
 	@tectonic -o objects/slides "slides/$@.tex"
