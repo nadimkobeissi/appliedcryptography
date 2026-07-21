@@ -48,10 +48,10 @@
 			\begin{itemize}[<+->]
 				\item Web browsing (HTTPS)
 				\item Email (IMAPS, POP3S, SMTPS)
-				\item Instant messaging (Signal, Slack)
+				\item Instant messaging (Discord, Slack)
 				\item Video conferencing (Zoom, Teams)
 				\item Online banking
-				\item Social media (Facebook, Twitter)
+				\item Social media (Facebook, X)
 				\item Cloud storage (Dropbox, Google Drive)
 				\item VPN connections
 				\item Mobile app communication
@@ -378,9 +378,9 @@
 \end{frame}
 
 \begin{frame}{The TLS handshake: Basic flow}
-	\begin{columns}[c][<+->]
+	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}
+			\begin{itemize}[<+->]
 				\item \textbf{Step 1}: Client initiates secure connection.
 				      \begin{itemize}
 					      \item Sends \texttt{ClientHello} message.
@@ -404,356 +404,6 @@
 			\imagewithcaption{tls-handshake.png}{TLS handshake overview.}
 		\end{column}
 	\end{columns}
-\end{frame}
-
-\begin{frame}{Critical step: Certificate validation}
-	\begin{itemize}[<+->]
-		\item \textbf{The crux of TLS security}: Server authenticates itself to the client
-		\item \textbf{What is a certificate?}
-		      \begin{itemize}
-			      \item A public key + signature of that key
-			            \begin{itemize}
-				            \item Encoded in an insanely asinine byte format
-			            \end{itemize}
-			      \item Associated information (domain name, organization, etc.)
-			      \item Essentially says: ``I am google.com, and my public key is [key]''
-		      \end{itemize}
-		\item \textbf{Certificate validation process}:
-		      \begin{enumerate}
-			      \item Browser receives certificate from server
-			      \item Verifies the certificate's signature
-			      \item If signature is valid $\rightarrow$ certificate and public key are trusted
-			      \item Browser proceeds with connection
-		      \end{enumerate}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Certificate Authorities: The trust foundation}
-	\begin{itemize}[<+->]
-		\item \textbf{Problem}: How does the browser know which public key to use for verification?
-		\item \textbf{Solution}: Certificate Authorities (CAs)
-		      \begin{itemize}
-			      \item Public keys hardcoded in your browser/OS.
-			      \item Trusted organizations that issue certificates.
-			      \item Act as trusted third parties.
-		      \end{itemize}
-		\item \textbf{CA's role}:
-		      \begin{itemize}
-			      \item Verify that public keys belong to claimed entities.
-			      \item Sign certificates with their private keys.
-			      \item Protect their private keys from compromise.
-		      \end{itemize}
-		\item \textbf{Without CAs}: No way to distinguish legitimate servers from MITM attackers!
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Traditional CA validation nightmare}
-	\begin{itemize}[<+->]
-		\item \textbf{Getting a certificate before 2015}:
-		      \begin{itemize}
-			      \item Contact a Certificate Authority (Verisign, Thawte, etc.).
-			      \item Pay \$50--300+ per certificate per year.
-			            \begin{itemize}
-				            \item Completely arbitrary extortionate amounts.
-			            \end{itemize}
-			      \item Manual validation process takes days/weeks.
-		      \end{itemize}
-		\item \textbf{Domain Validation (DV) process}:
-		      \begin{enumerate}
-			      \item Submit CSR (Certificate Signing Request).
-			      \item CA sends email to \texttt{admin@domain.com}.
-			      \item Click verification link in email.
-			      \item Wait for manual review and approval.
-			      \item Download and install certificate.
-		      \end{enumerate}
-		\item \textbf{Extended Validation (EV) certificates}:
-		      \begin{itemize}
-			      \item Even more expensive (\$150--1000+/year).
-			      \item Weeks of back-and-forth communication.
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Let's Encrypt: revolution in TLS certificates (2015)}
-	\begin{itemize}[<+->]
-		\item \textbf{Game-changing}:
-		      \begin{itemize}
-			      \item \textbf{Free} certificates for everyone.
-			      \item \textbf{Automated} issuance and renewal.
-			      \item \textbf{90-day} certificate lifetime (encourages automation).
-			      \item Open source, non-profit initiative.
-		      \end{itemize}
-		\item \textbf{ACME protocol} (Automated Certificate Management Environment):
-		      \begin{itemize}
-			      \item Domain validation via HTTP or DNS challenges.
-			      \item Prove control of domain programmatically.
-			      \item Certificate issued in seconds, not days.
-			      \item Automatic renewal before expiration.
-		      \end{itemize}
-		\item \textbf{Impact on the web}:
-		      \begin{itemize}
-			      \item HTTPS adoption jumped from 40\% to 90\%+ of web traffic.
-			      \item Eliminated cost barrier for small websites.
-			      \item Made ``HTTPS everywhere'' a reality.
-		      \end{itemize}
-		\item \textbf{Philosophy}: Encryption should be the default, not a luxury.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Let's Encrypt: active certificates}
-	\bigimagewithcaption{letsencrypt-certs.png}{Source: Let's Encrypt}
-\end{frame}
-
-\begin{frame}{Let's Encrypt: certificates issued}
-	\bigimagewithcaption{letsencrypt-issuance.png}{Source: Let's Encrypt}
-\end{frame}
-
-\begin{frame}{Percentage of HTTPS traffic in Firefox}
-	\bigimagewithcaption{letsencrypt-https.png}{Source: Let's Encrypt}
-\end{frame}
-
-\begin{frame}{Certificate chains in practice}
-	\begin{itemize}[<+->]
-		\item \textbf{Real-world example}: Connecting to \texttt{www.google.com}
-		\item \textbf{Certificate chain structure}:
-		      \begin{itemize}
-			      \item \textbf{Certificate 0}: \texttt{www.google.com}'s certificate.
-			      \item \textbf{Certificate 1}: Intermediate CA (Google Trust Services).
-			      \item \textbf{Certificate 2}: Root CA (GlobalSign).
-		      \end{itemize}
-		\item \textbf{Verification process}:
-		      \begin{enumerate}
-			      \item Check Google Trust Services' signature on Certificate 0.
-			      \item Check GlobalSign's signature on Certificate 1.
-			      \item Trust GlobalSign's root certificate (pre-installed).
-		      \end{enumerate}
-		\item \textbf{Chain of trust}: Each certificate vouches for the next.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Exploring certificates with OpenSSL}
-	\begin{itemize}[<+->]
-		\item \textbf{Connect and view certificate}:
-		      \begin{itemize}
-			      \item \texttt{openssl s\_client -connect www.google.com:443}
-			      \item Shows certificate chain and raw certificate data
-		      \end{itemize}
-		\item \textbf{Parse certificate details}:
-		      \begin{itemize}
-			      \item \texttt{openssl x509 -text -noout}
-			      \item Reveals subject, issuer, validity dates, algorithms
-		      \end{itemize}
-		\item \textbf{Certificate markers}:
-		      \begin{itemize}
-			      \item \texttt{s:} = subject (who the certificate is for)
-			      \item \texttt{i:} = issuer (who signed the certificate)
-		      \end{itemize}
-		\item Try this at home! Great way to understand the certificate ecosystem.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{TLS Record Protocol: The data transport layer}
-	\begin{itemize}
-		\item \textbf{What is the Record Protocol?}
-		      \begin{itemize}
-			      \item Transport protocol for all TLS data.
-			      \item Agnostic to the meaning of transported data.
-			      \item Makes TLS suitable for any application.
-		      \end{itemize}
-		\item \textbf{Two main phases}:
-		      \begin{enumerate}
-			      \item \textbf{During handshake}: Carries handshake messages.
-			      \item \textbf{After handshake}: Carries encrypted application data.
-		      \end{enumerate}
-		\item \textbf{Key insight}: Like TCP, doesn't care about upper layers!
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{TLS Record: Basic structure}
-	\begin{itemize}
-		\item \textbf{TLS Record = chunk of data ≤ 16KB}
-		\item \textbf{Simple header structure}:
-		      \begin{itemize}
-			      \item Only 3 fields (vs. 14 in IPv4, 13 in TCP)
-			      \item 5-byte header + payload
-		      \end{itemize}
-		\item \textbf{Visual representation}:
-	\end{itemize}
-	\pause
-	\begin{center}
-		\begin{tabular}{|c|c|c|c|}
-			\hline
-			\textbf{ContentType} & \textbf{ProtocolVersion} & \textbf{Length} & \textbf{Payload} \\
-			\hline
-			1 byte               & 2 bytes                  & 2 bytes         & ≤ 16KB           \\
-			\hline
-		\end{tabular}
-	\end{center}
-\end{frame}
-
-\begin{frame}{TLS Record fields breakdown}
-	\begin{itemize}
-		\item \textbf{Byte 1 - ContentType}:
-		      \begin{itemize}
-			      \item \texttt{22} = Handshake data
-			      \item \texttt{23} = Encrypted application data
-			      \item \texttt{21} = Alerts (error messages)
-		      \end{itemize}
-		\item \textbf{Bytes 2-3 - ProtocolVersion}:
-		      \begin{itemize}
-			      \item \texttt{03 03} in TLS 1.2 and 1.3 (historical reasons)
-			      \item TLS 1.3 reuses TLS 1.2's value for compatibility
-		      \end{itemize}
-		\item \textbf{Bytes 4-5 - Length}:
-		      \begin{itemize}
-			      \item 16-bit integer encoding payload length
-			      \item Maximum: $2^{14}$ bytes = 16KB
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{ContentType: What's in this record?}
-	\begin{center}
-		\begin{tabular}{|c|c|l|}
-			\hline
-			\textbf{Value} & \textbf{Name}    & \textbf{Contains}                                                \\
-			\hline
-			21             & Alert            & Error messages, warnings                                         \\
-			\hline
-			22             & Handshake        & \parbox[t]{3cm}{ClientHello, ServerHello, \\Certificate, etc.}   \\
-			\hline
-			23             & Application Data & \parbox[t]{3cm}{Encrypted user data       \\(HTTP, email, etc.)} \\
-			\hline
-		\end{tabular}
-	\end{center}
-	\pause
-	\begin{itemize}
-		\item \textbf{Key point}: ContentType tells receiver how to process the payload.
-		\item \textbf{During handshake}: Mostly type 22 records.
-		\item \textbf{After handshake}: Mostly type 23 records.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Encrypted records (ContentType = 23)}
-	\begin{itemize}
-		\item \textbf{When ContentType = 23}:
-		      \begin{itemize}
-			      \item Payload is encrypted and authenticated.
-			      \item Contains: ciphertext + authentication tag.
-		      \end{itemize}
-		\item \textbf{How does receiver know how to decrypt?}
-		      \begin{itemize}
-			      \item Cipher and key established during handshake.
-			      \item ``Magic of TLS'': if you receive encrypted data, you already have the key!
-		      \end{itemize}
-		\item \textbf{Decryption process}:
-		      \begin{enumerate}
-			      \item Verify authentication tag.
-			      \item Decrypt ciphertext.
-			      \item Process decrypted application data.
-		      \end{enumerate}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Nonces: Ensuring unique encryption}
-	\begin{itemize}
-		\item \textbf{Problem}: Each record needs a unique nonce for encryption.
-		\item \textbf{TLS solution}: Derive nonces from sequence numbers.
-		      \begin{itemize}
-			      \item Each party maintains a 64-bit sequence number.
-			      \item Incremented for each new record.
-			      \item Starts at 0, goes 1, 2, 3, \ldots
-		      \end{itemize}
-		\item \textbf{Nonce derivation}:
-		      \begin{itemize}
-			      \item Client: \texttt{sequence\_number $\oplus$ client\_write\_iv}
-			      \item Server: \texttt{sequence\_number $\oplus$ server\_write\_iv}
-		      \end{itemize}
-		\item \textbf{No nonce reuse}: Different IVs and keys per direction.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Example: Sequence numbers in action}
-	\begin{center}
-		\textbf{Client sending records:}
-		\begin{tabular}{|c|c|}
-			\hline
-			\textbf{Record \#} & \textbf{Sequence Number} \\
-			\hline
-			1st record         & 0                        \\
-			\hline
-			2nd record         & 1                        \\
-			\hline
-			3rd record         & 2                        \\
-			\hline
-		\end{tabular}
-	\end{center}
-	\pause
-	\begin{center}
-		\textbf{Client receiving records:}
-		\begin{tabular}{|c|c|}
-			\hline
-			\textbf{Record \#} & \textbf{Sequence Number} \\
-			\hline
-			1st record         & 0                        \\
-			\hline
-			2nd record         & 1                        \\
-			\hline
-			3rd record         & 2                        \\
-			\hline
-		\end{tabular}
-	\end{center}
-	\pause
-	\begin{itemize}
-		\item \textbf{Safe to reuse numbers}: Different keys and IVs per direction!
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Zero padding example}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{Without padding:}
-			\begin{itemize}
-				\item Short message \rightarrow\ small ciphertext
-				\item Long message \rightarrow\ large ciphertext
-				\item Attacker learns message sizes
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{With padding:}
-			\begin{itemize}
-				\item Short message + padding \rightarrow\ large ciphertext
-				\item Long message + padding \rightarrow\ large ciphertext
-				\item All messages look the same size!
-			\end{itemize}
-		\end{column}
-	\end{columns}
-	\pause
-	\begin{center}
-		\textbf{Trade-off}: Security vs. bandwidth efficiency
-	\end{center}
-\end{frame}
-
-\begin{frame}{TLS: the handshake protocol}
-	\begin{itemize}
-		\item \textbf{The crux of TLS}: Process to establish shared secret keys.
-		\item \textbf{Goal}: Initiate secure communications between client and server.
-		\item \textbf{Key outcome}: Both parties agree on:
-		      \begin{itemize}
-			      \item TLS version to use
-			      \item Cipher suite for encryption
-			      \item Shared secret keys for protection
-		      \end{itemize}
-		\item \textbf{Interoperability requirement}: Any TLS 1.3 client must work with any TLS 1.3 server.
-		      \begin{itemize}
-			      \item Achieved through standardized message formats.
-			      \item Works regardless of implementation or programming language.
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{TLS: the handshake protocol}
-	\bigimagewithcaption{tls-13-handshake}{TLS 1.3 handshake protocol. Source: Serious Cryptography}
 \end{frame}
 
 \begin{frame}{Client vs. Server: Different roles in the handshake}
@@ -902,6 +552,174 @@
 	\end{center}
 \end{frame}
 
+\begin{frame}{Critical step: Certificate validation}
+	\begin{itemize}[<+->]
+		\item \textbf{The crux of TLS security}: Server authenticates itself to the client
+		\item \textbf{What is a certificate?}
+		      \begin{itemize}
+			      \item A public key + signature of that key
+			            \begin{itemize}
+				            \item Encoded in an insanely asinine byte format
+			            \end{itemize}
+			      \item Associated information (domain name, organization, etc.)
+			      \item Essentially says: ``I am google.com, and my public key is [key]''
+		      \end{itemize}
+		\item \textbf{Certificate validation process}:
+		      \begin{enumerate}
+			      \item Browser receives certificate from server
+			      \item Verifies the certificate's signature
+			      \item If signature is valid $\rightarrow$ certificate and public key are trusted
+			      \item Browser proceeds with connection
+		      \end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Certificate Authorities: The trust foundation}
+	\begin{itemize}[<+->]
+		\item \textbf{Problem}: How does the browser know which public key to use for verification?
+		\item \textbf{Solution}: Certificate Authorities (CAs)
+		      \begin{itemize}
+			      \item Public keys hardcoded in your browser/OS.
+			      \item Trusted organizations that issue certificates.
+			      \item Act as trusted third parties.
+		      \end{itemize}
+		\item \textbf{CA's role}:
+		      \begin{itemize}
+			      \item Verify that public keys belong to claimed entities.
+			      \item Sign certificates with their private keys.
+			      \item Protect their private keys from compromise.
+		      \end{itemize}
+		\item \textbf{Without CAs}: No way to distinguish legitimate servers from MITM attackers!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Traditional CA validation nightmare}
+	\begin{itemize}[<+->]
+		\item \textbf{Getting a certificate before 2015}:
+		      \begin{itemize}
+			      \item Contact a Certificate Authority (Verisign, Thawte, etc.).
+			      \item Pay \$50--300+ per certificate per year.
+			            \begin{itemize}
+				            \item Completely arbitrary extortionate amounts.
+			            \end{itemize}
+			      \item Manual validation process takes days/weeks.
+		      \end{itemize}
+		\item \textbf{Domain Validation (DV) process}:
+		      \begin{enumerate}
+			      \item Submit CSR (Certificate Signing Request).
+			      \item CA sends email to \texttt{admin@domain.com}.
+			      \item Click verification link in email.
+			      \item Wait for manual review and approval.
+			      \item Download and install certificate.
+		      \end{enumerate}
+		\item \textbf{Extended Validation (EV) certificates}:
+		      \begin{itemize}
+			      \item Even more expensive (\$150--1000+/year).
+			      \item Weeks of back-and-forth communication.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Let's Encrypt: revolution in TLS certificates (2015)}
+	\begin{itemize}[<+->]
+		\item \textbf{Game-changing}:
+		      \begin{itemize}
+			      \item \textbf{Free} certificates for everyone.
+			      \item \textbf{Automated} issuance and renewal.
+			      \item \textbf{90-day} certificate lifetime (encourages automation).
+			      \item Open source, non-profit initiative.
+		      \end{itemize}
+		\item \textbf{ACME protocol} (Automated Certificate Management Environment):
+		      \begin{itemize}
+			      \item Domain validation via HTTP or DNS challenges.
+			      \item Prove control of domain programmatically.
+			      \item Certificate issued in seconds, not days.
+			      \item Automatic renewal before expiration.
+		      \end{itemize}
+		\item \textbf{Impact on the web}:
+		      \begin{itemize}
+			      \item HTTPS adoption jumped from 40\% to 90\%+ of web traffic.
+			      \item Eliminated cost barrier for small websites.
+			      \item Made ``HTTPS everywhere'' a reality.
+		      \end{itemize}
+		\item \textbf{Philosophy}: Encryption should be the default, not a luxury.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Let's Encrypt: active certificates}
+	\bigimagewithcaption{letsencrypt-certs.png}{Source: Let's Encrypt}
+\end{frame}
+
+\begin{frame}{Let's Encrypt: certificates issued}
+	\bigimagewithcaption{letsencrypt-issuance.png}{Source: Let's Encrypt}
+\end{frame}
+
+\begin{frame}{Percentage of HTTPS traffic in Firefox}
+	\bigimagewithcaption{letsencrypt-https.png}{Source: Let's Encrypt}
+\end{frame}
+
+\begin{frame}{Certificate chains in practice}
+	\begin{itemize}[<+->]
+		\item \textbf{Real-world example}: Connecting to \texttt{www.google.com}
+		\item \textbf{Certificate chain structure}:
+		      \begin{itemize}
+			      \item \textbf{Certificate 0}: \texttt{www.google.com}'s certificate.
+			      \item \textbf{Certificate 1}: Intermediate CA (Google Trust Services).
+			      \item \textbf{Certificate 2}: Root CA (GlobalSign).
+		      \end{itemize}
+		\item \textbf{Verification process}:
+		      \begin{enumerate}
+			      \item Check Google Trust Services' signature on Certificate 0.
+			      \item Check GlobalSign's signature on Certificate 1.
+			      \item Trust GlobalSign's root certificate (pre-installed).
+		      \end{enumerate}
+		\item \textbf{Chain of trust}: Each certificate vouches for the next.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Exploring certificates with OpenSSL}
+	\begin{itemize}[<+->]
+		\item \textbf{Connect and view certificate}:
+		      \begin{itemize}
+			      \item \texttt{openssl s\_client -connect www.google.com:443}
+			      \item Shows certificate chain and raw certificate data
+		      \end{itemize}
+		\item \textbf{Parse certificate details}:
+		      \begin{itemize}
+			      \item \texttt{openssl x509 -text -noout}
+			      \item Reveals subject, issuer, validity dates, algorithms
+		      \end{itemize}
+		\item \textbf{Certificate markers}:
+		      \begin{itemize}
+			      \item \texttt{s:} = subject (who the certificate is for)
+			      \item \texttt{i:} = issuer (who signed the certificate)
+		      \end{itemize}
+		\item Try this at home! Great way to understand the certificate ecosystem.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS: the handshake protocol}
+	\begin{itemize}
+		\item \textbf{The crux of TLS}: Process to establish shared secret keys.
+		\item \textbf{Goal}: Initiate secure communications between client and server.
+		\item \textbf{Key outcome}: Both parties agree on:
+		      \begin{itemize}
+			      \item TLS version to use
+			      \item Cipher suite for encryption
+			      \item Shared secret keys for protection
+		      \end{itemize}
+		\item \textbf{Interoperability requirement}: Any TLS 1.3 client must work with any TLS 1.3 server.
+		      \begin{itemize}
+			      \item Achieved through standardized message formats.
+			      \item Works regardless of implementation or programming language.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS: the handshake protocol}
+	\bigimagewithcaption{tls-13-handshake}{TLS 1.3 handshake protocol. Source: Serious Cryptography}
+\end{frame}
+
 \begin{frame}{Security guarantees after successful TLS handshake}
 	\begin{itemize}
 		\item \textbf{All communications are encrypted and authenticated}
@@ -924,7 +742,7 @@
 \end{frame}
 
 \begin{frame}{Forward Secrecy: Protecting past communications}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item \textbf{The problem}: What if a server's private key is compromised?
 		      \begin{itemize}
 			      \item Attacker could decrypt \textbf{all past} TLS sessions.
@@ -946,7 +764,7 @@
 \end{frame}
 
 \begin{frame}{How TLS achieves forward secrecy}
-	\begin{itemize}
+	\begin{itemize}[<+->]
 		\item \textbf{Ephemeral Diffie-Hellman key exchange}:
 		      \begin{itemize}
 			      \item Server generates fresh DH key pair for each session.
@@ -967,6 +785,23 @@
 			      \item Compromising it doesn't reveal past session keys.
 		      \end{itemize}
 		\item \textbf{Result}: Each TLS session is cryptographically independent.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{TLS Record Protocol: The data transport layer}
+	\begin{itemize}[<+->]
+		\item \textbf{What is the Record Protocol?}
+		      \begin{itemize}
+			      \item Transport protocol for all TLS data.
+			      \item Agnostic to the meaning of transported data.
+			      \item Makes TLS suitable for any application.
+		      \end{itemize}
+		\item \textbf{Two main phases}:
+		      \begin{enumerate}
+			      \item \textbf{During handshake}: Carries handshake messages.
+			      \item \textbf{After handshake}: Carries encrypted application data.
+		      \end{enumerate}
+		\item \textbf{Key insight}: Like TCP, doesn't care about upper layers!
 	\end{itemize}
 \end{frame}
 
@@ -1050,7 +885,7 @@
 				      \begin{itemize}
 					      \item ISPs instructed users to install ``Qaznet Trust Certificate''.
 					      \item Issued by state CA: Qaznet Trust Network.
-					      \item Initial targets: Google, Facebook, Twitter.
+					      \item Initial targets: Google, Facebook, X.
 				      \end{itemize}
 				\item \textbf{August 2019}: Browser vendors fight back
 				      \begin{itemize}
