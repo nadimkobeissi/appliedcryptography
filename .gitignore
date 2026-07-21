@@ -31,6 +31,7 @@ objects/*/*.pdf
 
 # Exams
 exams/*.tex
+exams/*.pdf
 
 # Rubrics
 problem-set/*rubric*
