@@ -3,6 +3,7 @@ CALSCALE:GREGORIAN
 PRODID:-//Apple Inc.//macOS 26.5.2//EN
 VERSION:2.0
 X-APPLE-CALENDAR-COLOR:#388E3C
+X-CALENDARSERVER-ACCESS:PUBLIC
 X-WR-CALNAME:AC Summer 2026
 BEGIN:VTIMEZONE
 TZID:Asia/Beirut
@@ -39,101 +40,6 @@ TZOFFSETTO:+0100
 END:STANDARD
 END:VTIMEZONE
 BEGIN:VEVENT
-CREATED:20260324T155212Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/jdd-gapy-qxa\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260625T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260625T080000Z
-LAST-MODIFIED:20260324T155213Z
-SEQUENCE:0
-STATUS:CONFIRMED
-SUMMARY:Topic 1.6: Collision-Resistant Hash Functions
-TRANSP:OPAQUE
-UID:6ml6s4gvhvrb9j3pohhpjtokfl@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/jdd-gapy-qxa
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T160600Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/qij-uyia-opw\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20261008T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20261008T080000Z
-LAST-MODIFIED:20260610T123841Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.10: Fully Homomorphic Encryption
-TRANSP:OPAQUE
-UID:1n5j6t8llf0b86bldtop51h6d9@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/qij-uyia-opw
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155314Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/vgd-fyfq-djb\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260702T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260702T080000Z
-LAST-MODIFIED:20260324T155315Z
-SEQUENCE:0
-STATUS:CONFIRMED
-SUMMARY:Topic 1.7: Hard Problems & Diffie-Hellman
-TRANSP:OPAQUE
-UID:75v4pk7pa7ns78hvvtuc0s8771@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/vgd-fyfq-djb
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155051Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/wkh-jrkw-vbu\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260616T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260616T080000Z
-LAST-MODIFIED:20260324T155051Z
-SEQUENCE:0
-STATUS:CONFIRMED
-SUMMARY:Topic 1.3: Provable Security & Computational Cryptography
-TRANSP:OPAQUE
-UID:149lnro8gqbt9bf6h2shbkaho2@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/wkh-jrkw-vbu
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155416Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/eha-ngfn-pih\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260709T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260709T080000Z
-LAST-MODIFIED:20260324T155417Z
-SEQUENCE:0
-STATUS:CONFIRMED
-SUMMARY:Topic 1.8: Elliptic Curves & Digital Signatures
-TRANSP:OPAQUE
-UID:4uat2scm2rq33k2973rguvi0cm@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/eha-ngfn-pih
-END:VEVENT
-BEGIN:VEVENT
 CREATED:20260324T160523Z
 DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
  ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
@@ -142,7 +48,7 @@ DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
  :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
  ~::-
 DTEND:20261001T093000Z
-DTSTAMP:20260707T163127Z
+DTSTAMP:20260721T101930Z
 DTSTART:20261001T080000Z
 LAST-MODIFIED:20260610T123844Z
 SEQUENCE:1
@@ -153,500 +59,6 @@ UID:4f4g907alc359j93gren32l88s@google.com
 X-GOOGLE-CONFERENCE:https://meet.google.com/ppj-voxg-hwg
 END:VEVENT
 BEGIN:VEVENT
-CREATED:20260324T160036Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/vvf-dxny-ayx\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260917T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260917T080000Z
-LAST-MODIFIED:20260610T123854Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.7: Cryptocurrency Cryptography
-TRANSP:OPAQUE
-UID:7i2124avbmidljm0t828k7ttsh@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/vvf-dxny-ayx
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155303Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/mrb-wxcz-zrd\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260630T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260630T080000Z
-LAST-MODIFIED:20260324T155306Z
-SEQUENCE:0
-STATUS:CONFIRMED
-SUMMARY:Topic 1.7: Hard Problems & Diffie-Hellman
-TRANSP:OPAQUE
-UID:4hai48jqbntbdg2c7v24jo6sft@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/mrb-wxcz-zrd
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155601Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/umx-vkvj-bzx\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260804T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260804T080000Z
-LAST-MODIFIED:20260610T123933Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.3: Secure Messaging
-TRANSP:OPAQUE
-UID:37cv3t4cmjb3e0kprk4tja5858@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/umx-vkvj-bzx
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155829Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/ksf-irqn-wtm\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260820T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260820T080000Z
-LAST-MODIFIED:20260610T123923Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.5: High-Assurance Cryptography
-TRANSP:OPAQUE
-UID:6u7ead7nh4q9pg1abv3k3cvnrj@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/ksf-irqn-wtm
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155931Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/pyz-ectm-uda\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260901T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260901T080000Z
-LAST-MODIFIED:20260610T123859Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.6: Post-Quantum Cryptography
-TRANSP:OPAQUE
-UID:14ffkop4mlaske9tma4cl4k77e@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/pyz-ectm-uda
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155446Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/toa-ktrf-rao\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260721T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260721T080000Z
-LAST-MODIFIED:20260610T123940Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.1: Transport Layer Security
-TRANSP:OPAQUE
-UID:30djt0qa20jhtnq01pgijr88j7@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/toa-ktrf-rao
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155944Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/tzb-mjvi-iir\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260903T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260903T080000Z
-LAST-MODIFIED:20260610T123900Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.6: Post-Quantum Cryptography
-TRANSP:OPAQUE
-UID:54hpnn4nnnfiuek9slgo6kv999@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/tzb-mjvi-iir
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155859Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/gmr-dhzy-taq\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260827T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260827T080000Z
-LAST-MODIFIED:20260610T123919Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.5: High-Assurance Cryptography
-TRANSP:OPAQUE
-UID:2pqvapf3gd05katdkavqjp8f2r@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/gmr-dhzy-taq
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155813Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/qrw-qvje-osn\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260818T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260818T080000Z
-LAST-MODIFIED:20260610T123924Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.4: End-to-End Encrypted Cloud Storage
-TRANSP:OPAQUE
-UID:7mt1u4mkf58tcoqd3q4vfg2are@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/qrw-qvje-osn
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155844Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/gou-xzaj-fyx\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260825T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260825T080000Z
-LAST-MODIFIED:20260610T123918Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.5: High-Assurance Cryptography
-TRANSP:OPAQUE
-UID:6ed7h0erv43vbhj41ksve03lfp@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/gou-xzaj-fyx
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155148Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/xkv-hfkt-fve\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260623T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260623T080000Z
-LAST-MODIFIED:20260324T155150Z
-SEQUENCE:0
-STATUS:CONFIRMED
-SUMMARY:Topic 1.5: Chosen-Plaintext & Chosen-Ciphertext Attacks
-TRANSP:OPAQUE
-UID:010oeb745jpp48s0iosthf2vqn@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/xkv-hfkt-fve
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T160000Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/xbh-weve-gzm\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260908T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260908T080000Z
-LAST-MODIFIED:20260610T123855Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.6: Post-Quantum Cryptography
-TRANSP:OPAQUE
-UID:63b09kf29bo7r4k3q07m5p3pa1@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/xbh-weve-gzm
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T160513Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/zsi-kjid-und\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260929T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260929T080000Z
-LAST-MODIFIED:20260610T123842Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.9: Secure Multiparty Computation
-TRANSP:OPAQUE
-UID:0slr51krr6kqill1aohfc3up5f@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/zsi-kjid-und
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T160027Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/mhq-gbhr-zkw\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260915T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260915T080000Z
-LAST-MODIFIED:20260610T123853Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.7: Cryptocurrency Cryptography
-TRANSP:OPAQUE
-UID:29lrg1tm4vueif8cg862v38422@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/mhq-gbhr-zkw
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T160104Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/ihi-kido-ske\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260924T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260924T080000Z
-LAST-MODIFIED:20260610T123851Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.8: Zero-Knowledge Proofs
-TRANSP:OPAQUE
-UID:29fpp0eenameu0fr10f8oln115@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/ihi-kido-ske
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155744Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/ijn-ogdq-aki\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260813T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260813T080000Z
-LAST-MODIFIED:20260610T123929Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.4: End-to-End Encrypted Cloud Storage
-TRANSP:OPAQUE
-UID:5v7nn71tjil550brefgqk8oelu@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/ijn-ogdq-aki
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155612Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/bfy-fhvp-kdq\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260806T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260806T080000Z
-LAST-MODIFIED:20260610T123931Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.3: Secure Messaging
-TRANSP:OPAQUE
-UID:1vpdvelrkgkot095lk77ijpv9u@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/bfy-fhvp-kdq
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155512Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/udg-svdq-hjq\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260728T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260728T080000Z
-LAST-MODIFIED:20260610T123935Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.1: Transport Layer Security
-TRANSP:OPAQUE
-UID:39lqlr5l2bbfkcvn0ui90b8bb4@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/udg-svdq-hjq
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T154913Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/bwf-mcha-woc\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260609T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260609T080000Z
-LAST-MODIFIED:20260324T154914Z
-SEQUENCE:0
-STATUS:CONFIRMED
-SUMMARY:Topic 1.1: Introduction
-TRANSP:OPAQUE
-UID:20goqs39ktmtbtehv4nge5lb86@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/bwf-mcha-woc
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155350Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/tdb-hhbe-gfg\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260707T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260707T080000Z
-LAST-MODIFIED:20260324T155401Z
-SEQUENCE:0
-STATUS:CONFIRMED
-SUMMARY:Topic 1.8: Elliptic Curves & Digital Signatures
-TRANSP:OPAQUE
-UID:2aioja6jpje5tgsnhi238b1ptg@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/tdb-hhbe-gfg
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T160054Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/esw-pfmv-rrp\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260922T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260922T080000Z
-LAST-MODIFIED:20260610T123849Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.8: Zero-Knowledge Proofs
-TRANSP:OPAQUE
-UID:0kfoqresbg74kopumebkdvvhol@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/esw-pfmv-rrp
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155115Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/tqs-ptuj-xgc\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260618T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260618T080000Z
-LAST-MODIFIED:20260324T155116Z
-SEQUENCE:0
-STATUS:CONFIRMED
-SUMMARY:Topic 1.4: Pseudorandomness
-TRANSP:OPAQUE
-UID:4bugn20ua7on1647ou6u0sh050@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/tqs-ptuj-xgc
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T160015Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/qdf-oprr-ajg\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260910T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260910T080000Z
-LAST-MODIFIED:20260610T123856Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.7: Cryptocurrency Cryptography
-TRANSP:OPAQUE
-UID:777ivluqpc011r4q2emf2ddpk8@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/qdf-oprr-ajg
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T154950Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/hdg-mpdv-rig\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260611T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260611T080000Z
-LAST-MODIFIED:20260324T154953Z
-SEQUENCE:0
-STATUS:CONFIRMED
-SUMMARY:Topic 1.2: The Provable Security Mindset
-TRANSP:OPAQUE
-UID:3aqbio1m02i5m3t00btpa4odm6@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/hdg-mpdv-rig
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T155501Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/rhx-yxzx-qxj\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20260723T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260723T080000Z
-LAST-MODIFIED:20260610T123941Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.1: Transport Layer Security
-TRANSP:OPAQUE
-UID:6p82bqrrhugioa0t376caiko9h@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/rhx-yxzx-qxj
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260324T160542Z
-DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
- ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
- com/wxf-zpix-bsh\n\nLearn more about Meet at: https://support.google.com
- /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
- :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
- ~::-
-DTEND:20261006T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20261006T080000Z
-LAST-MODIFIED:20260610T123840Z
-SEQUENCE:1
-STATUS:CONFIRMED
-SUMMARY:Topic 2.10: Fully Homomorphic Encryption
-TRANSP:OPAQUE
-UID:282apqr7ckncstc7mgphggrolh@google.com
-X-GOOGLE-CONFERENCE:https://meet.google.com/wxf-zpix-bsh
-END:VEVENT
-BEGIN:VEVENT
 CREATED:20260324T155530Z
 DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
  ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
@@ -654,11 +66,11 @@ DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
  /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
  :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
  ~::-
-DTEND:20260730T093000Z
-DTSTAMP:20260707T163127Z
-DTSTART:20260730T080000Z
-LAST-MODIFIED:20260610T123936Z
-SEQUENCE:1
+DTEND:20260729T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260729T080000Z
+LAST-MODIFIED:20260721T101917Z
+SEQUENCE:2
 STATUS:CONFIRMED
 SUMMARY:Topic 2.2: The Story of RC4
 TRANSP:OPAQUE
@@ -674,7 +86,7 @@ DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
  :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
  ~::-
 DTEND:20260811T093000Z
-DTSTAMP:20260707T163127Z
+DTSTAMP:20260721T101930Z
 DTSTART:20260811T080000Z
 LAST-MODIFIED:20260610T123930Z
 SEQUENCE:1
@@ -685,22 +97,104 @@ UID:76aj4n75kqf4cfispsa945drp6@google.com
 X-GOOGLE-CONFERENCE:https://meet.google.com/mwy-aamf-oaj
 END:VEVENT
 BEGIN:VEVENT
-CREATED:20260512T131822Z
-DTEND;VALUE=DATE:20260620
-DTSTAMP:20260707T163127Z
-DTSTART;VALUE=DATE:20260619
-LAST-MODIFIED:20260512T131902Z
+CREATED:20260324T160104Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/ihi-kido-ske\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260924T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260924T080000Z
+LAST-MODIFIED:20260610T123851Z
 SEQUENCE:1
-SUMMARY:Problem Set 1 Due
-TRANSP:TRANSPARENT
-UID:49CBCCCF-B94A-4268-9A62-4B94F491B9EE
-X-APPLE-CREATOR-IDENTITY:com.apple.calendar
-X-APPLE-CREATOR-TEAM-IDENTITY:0000000000
+STATUS:CONFIRMED
+SUMMARY:Topic 2.8: Zero-Knowledge Proofs
+TRANSP:OPAQUE
+UID:29fpp0eenameu0fr10f8oln115@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/ihi-kido-ske
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T160015Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/qdf-oprr-ajg\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260910T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260910T080000Z
+LAST-MODIFIED:20260610T123856Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.7: Cryptocurrency Cryptography
+TRANSP:OPAQUE
+UID:777ivluqpc011r4q2emf2ddpk8@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/qdf-oprr-ajg
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T160054Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/esw-pfmv-rrp\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260922T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260922T080000Z
+LAST-MODIFIED:20260610T123849Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.8: Zero-Knowledge Proofs
+TRANSP:OPAQUE
+UID:0kfoqresbg74kopumebkdvvhol@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/esw-pfmv-rrp
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T160036Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/vvf-dxny-ayx\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260917T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260917T080000Z
+LAST-MODIFIED:20260610T123854Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.7: Cryptocurrency Cryptography
+TRANSP:OPAQUE
+UID:7i2124avbmidljm0t828k7ttsh@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/vvf-dxny-ayx
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T155148Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/xkv-hfkt-fve\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260623T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260623T080000Z
+LAST-MODIFIED:20260324T155150Z
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Topic 1.5: Chosen-Plaintext & Chosen-Ciphertext Attacks
+TRANSP:OPAQUE
+UID:010oeb745jpp48s0iosthf2vqn@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/xkv-hfkt-fve
 END:VEVENT
 BEGIN:VEVENT
 CREATED:20260512T131908Z
 DTEND;VALUE=DATE:20260704
-DTSTAMP:20260707T163127Z
+DTSTAMP:20260721T101930Z
 DTSTART;VALUE=DATE:20260703
 LAST-MODIFIED:20260512T131917Z
 SEQUENCE:2
@@ -711,61 +205,28 @@ X-APPLE-CREATOR-IDENTITY:com.apple.calendar
 X-APPLE-CREATOR-TEAM-IDENTITY:0000000000
 END:VEVENT
 BEGIN:VEVENT
-CREATED:20260512T131921Z
-DTEND;VALUE=DATE:20260725
-DTSTAMP:20260707T163127Z
-DTSTART;VALUE=DATE:20260724
-LAST-MODIFIED:20260610T123942Z
-SEQUENCE:3
-SUMMARY:Problem Set 3 Due
-TRANSP:TRANSPARENT
-UID:4E323240-BAEB-4CCA-BCE5-60EB71ADC570
-X-APPLE-CREATOR-IDENTITY:com.apple.calendar
-X-APPLE-CREATOR-TEAM-IDENTITY:0000000000
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260512T131933Z
-DTEND;VALUE=DATE:20260815
-DTSTAMP:20260707T163127Z
-DTSTART;VALUE=DATE:20260814
-LAST-MODIFIED:20260610T123927Z
-SEQUENCE:3
-SUMMARY:Problem Set 4 Due
-TRANSP:TRANSPARENT
-UID:9B930A5B-9A05-40A1-98CC-04A3BD41E6F1
-X-APPLE-CREATOR-IDENTITY:com.apple.calendar
-X-APPLE-CREATOR-TEAM-IDENTITY:0000000000
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260512T131948Z
-DTEND;VALUE=DATE:20260822
-DTSTAMP:20260707T163127Z
-DTSTART;VALUE=DATE:20260821
-LAST-MODIFIED:20260610T123921Z
-SEQUENCE:4
-SUMMARY:Problem Set 5 Due
-TRANSP:TRANSPARENT
-UID:62FB602B-1071-40B5-B84A-5F6D809036A1
-X-APPLE-CREATOR-IDENTITY:com.apple.calendar
-X-APPLE-CREATOR-TEAM-IDENTITY:0000000000
-END:VEVENT
-BEGIN:VEVENT
-CREATED:20260512T131956Z
-DTEND;VALUE=DATE:20260905
-DTSTAMP:20260707T163127Z
-DTSTART;VALUE=DATE:20260904
-LAST-MODIFIED:20260610T123902Z
-SEQUENCE:4
-SUMMARY:Problem Set 6 Due
-TRANSP:TRANSPARENT
-UID:B668A5A2-A5E6-4E53-B69A-9E1EFF632736
-X-APPLE-CREATOR-IDENTITY:com.apple.calendar
-X-APPLE-CREATOR-TEAM-IDENTITY:0000000000
+CREATED:20260324T155744Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/ijn-ogdq-aki\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260813T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260813T080000Z
+LAST-MODIFIED:20260610T123929Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.4: End-to-End Encrypted Cloud Storage
+TRANSP:OPAQUE
+UID:5v7nn71tjil550brefgqk8oelu@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/ijn-ogdq-aki
 END:VEVENT
 BEGIN:VEVENT
 CREATED:20260512T132010Z
 DTEND;VALUE=DATE:20260919
-DTSTAMP:20260707T163127Z
+DTSTAMP:20260721T101930Z
 DTSTART;VALUE=DATE:20260918
 LAST-MODIFIED:20260610T123904Z
 SEQUENCE:4
@@ -776,9 +237,117 @@ X-APPLE-CREATOR-IDENTITY:com.apple.calendar
 X-APPLE-CREATOR-TEAM-IDENTITY:0000000000
 END:VEVENT
 BEGIN:VEVENT
+CREATED:20260324T155813Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/qrw-qvje-osn\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260818T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260818T080000Z
+LAST-MODIFIED:20260610T123924Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.4: End-to-End Encrypted Cloud Storage
+TRANSP:OPAQUE
+UID:7mt1u4mkf58tcoqd3q4vfg2are@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/qrw-qvje-osn
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260512T131933Z
+DTEND;VALUE=DATE:20260815
+DTSTAMP:20260721T101930Z
+DTSTART;VALUE=DATE:20260814
+LAST-MODIFIED:20260610T123927Z
+SEQUENCE:3
+SUMMARY:Problem Set 4 Due
+TRANSP:TRANSPARENT
+UID:9B930A5B-9A05-40A1-98CC-04A3BD41E6F1
+X-APPLE-CREATOR-IDENTITY:com.apple.calendar
+X-APPLE-CREATOR-TEAM-IDENTITY:0000000000
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T155829Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/ksf-irqn-wtm\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260820T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260820T080000Z
+LAST-MODIFIED:20260610T123923Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.5: High-Assurance Cryptography
+TRANSP:OPAQUE
+UID:6u7ead7nh4q9pg1abv3k3cvnrj@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/ksf-irqn-wtm
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T155350Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/tdb-hhbe-gfg\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260707T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260707T080000Z
+LAST-MODIFIED:20260324T155401Z
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Topic 1.8: Elliptic Curves & Digital Signatures
+TRANSP:OPAQUE
+UID:2aioja6jpje5tgsnhi238b1ptg@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/tdb-hhbe-gfg
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T155859Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/gmr-dhzy-taq\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260827T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260827T080000Z
+LAST-MODIFIED:20260610T123919Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.5: High-Assurance Cryptography
+TRANSP:OPAQUE
+UID:2pqvapf3gd05katdkavqjp8f2r@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/gmr-dhzy-taq
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T155051Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/wkh-jrkw-vbu\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260616T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260616T080000Z
+LAST-MODIFIED:20260324T155051Z
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Topic 1.3: Provable Security & Computational Cryptography
+TRANSP:OPAQUE
+UID:149lnro8gqbt9bf6h2shbkaho2@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/wkh-jrkw-vbu
+END:VEVENT
+BEGIN:VEVENT
 CREATED:20260512T132032Z
 DTEND;VALUE=DATE:20260926
-DTSTAMP:20260707T163127Z
+DTSTAMP:20260721T101930Z
 DTSTART;VALUE=DATE:20260925
 LAST-MODIFIED:20260610T123903Z
 SEQUENCE:4
@@ -789,9 +358,233 @@ X-APPLE-CREATOR-IDENTITY:com.apple.calendar
 X-APPLE-CREATOR-TEAM-IDENTITY:0000000000
 END:VEVENT
 BEGIN:VEVENT
+CREATED:20260324T155512Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/udg-svdq-hjq\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260728T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260728T080000Z
+LAST-MODIFIED:20260610T123935Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.1: Transport Layer Security
+TRANSP:OPAQUE
+UID:39lqlr5l2bbfkcvn0ui90b8bb4@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/udg-svdq-hjq
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T155501Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/rhx-yxzx-qxj\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260723T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260723T080000Z
+LAST-MODIFIED:20260610T123941Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.1: Transport Layer Security
+TRANSP:OPAQUE
+UID:6p82bqrrhugioa0t376caiko9h@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/rhx-yxzx-qxj
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T160027Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/mhq-gbhr-zkw\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260915T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260915T080000Z
+LAST-MODIFIED:20260610T123853Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.7: Cryptocurrency Cryptography
+TRANSP:OPAQUE
+UID:29lrg1tm4vueif8cg862v38422@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/mhq-gbhr-zkw
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260512T131956Z
+DTEND;VALUE=DATE:20260905
+DTSTAMP:20260721T101930Z
+DTSTART;VALUE=DATE:20260904
+LAST-MODIFIED:20260610T123902Z
+SEQUENCE:4
+SUMMARY:Problem Set 6 Due
+TRANSP:TRANSPARENT
+UID:B668A5A2-A5E6-4E53-B69A-9E1EFF632736
+X-APPLE-CREATOR-IDENTITY:com.apple.calendar
+X-APPLE-CREATOR-TEAM-IDENTITY:0000000000
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260512T131921Z
+DTEND;VALUE=DATE:20260725
+DTSTAMP:20260721T101930Z
+DTSTART;VALUE=DATE:20260724
+LAST-MODIFIED:20260610T123942Z
+SEQUENCE:3
+SUMMARY:Problem Set 3 Due
+TRANSP:TRANSPARENT
+UID:4E323240-BAEB-4CCA-BCE5-60EB71ADC570
+X-APPLE-CREATOR-IDENTITY:com.apple.calendar
+X-APPLE-CREATOR-TEAM-IDENTITY:0000000000
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T155446Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/toa-ktrf-rao\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260721T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260721T080000Z
+LAST-MODIFIED:20260610T123940Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.1: Transport Layer Security
+TRANSP:OPAQUE
+UID:30djt0qa20jhtnq01pgijr88j7@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/toa-ktrf-rao
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T154950Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/hdg-mpdv-rig\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260611T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260611T080000Z
+LAST-MODIFIED:20260324T154953Z
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Topic 1.2: The Provable Security Mindset
+TRANSP:OPAQUE
+UID:3aqbio1m02i5m3t00btpa4odm6@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/hdg-mpdv-rig
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T155303Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/mrb-wxcz-zrd\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260630T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260630T080000Z
+LAST-MODIFIED:20260324T155306Z
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Topic 1.7: Hard Problems & Diffie-Hellman
+TRANSP:OPAQUE
+UID:4hai48jqbntbdg2c7v24jo6sft@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/mrb-wxcz-zrd
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260512T131948Z
+DTEND;VALUE=DATE:20260822
+DTSTAMP:20260721T101930Z
+DTSTART;VALUE=DATE:20260821
+LAST-MODIFIED:20260610T123921Z
+SEQUENCE:4
+SUMMARY:Problem Set 5 Due
+TRANSP:TRANSPARENT
+UID:62FB602B-1071-40B5-B84A-5F6D809036A1
+X-APPLE-CREATOR-IDENTITY:com.apple.calendar
+X-APPLE-CREATOR-TEAM-IDENTITY:0000000000
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T160513Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/zsi-kjid-und\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260929T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260929T080000Z
+LAST-MODIFIED:20260610T123842Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.9: Secure Multiparty Computation
+TRANSP:OPAQUE
+UID:0slr51krr6kqill1aohfc3up5f@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/zsi-kjid-und
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T155931Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/pyz-ectm-uda\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260901T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260901T080000Z
+LAST-MODIFIED:20260610T123859Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.6: Post-Quantum Cryptography
+TRANSP:OPAQUE
+UID:14ffkop4mlaske9tma4cl4k77e@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/pyz-ectm-uda
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260512T132514Z
+DTEND;TZID=Asia/Beirut:20261005T120000
+DTSTAMP:20260721T101930Z
+DTSTART;TZID=Asia/Beirut:20261005T100000
+LAST-MODIFIED:20260707T163121Z
+LOCATION:Lebanese University Hadath Campus
+SEQUENCE:5
+SUMMARY:Final Exam
+TRANSP:OPAQUE
+UID:0E8769D0-F93C-4FA6-8314-51DCF59AFB8D
+X-APPLE-CREATOR-IDENTITY:com.apple.calendar
+X-APPLE-CREATOR-TEAM-IDENTITY:0000000000
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T160542Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/wxf-zpix-bsh\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20261006T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20261006T080000Z
+LAST-MODIFIED:20260610T123840Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.10: Fully Homomorphic Encryption
+TRANSP:OPAQUE
+UID:282apqr7ckncstc7mgphggrolh@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/wxf-zpix-bsh
+END:VEVENT
+BEGIN:VEVENT
 CREATED:20260512T132415Z
 DTEND;TZID=Asia/Beirut:20260720T120000
-DTSTAMP:20260707T163127Z
+DTSTAMP:20260721T101930Z
 DTSTART;TZID=Asia/Beirut:20260720T100000
 LAST-MODIFIED:20260707T163058Z
 LOCATION:The Smallville Hotel\nDamascus Road\, Beirut\, Lebanon
@@ -811,23 +604,231 @@ X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-APPLE-MAPKIT-HANDLE=CAEShwIIrk0Q
  otel\nDamascus Road, Beirut, Lebanon":geo:33.877283,35.517061
 END:VEVENT
 BEGIN:VEVENT
-CREATED:20260512T132514Z
-DTEND;TZID=Asia/Beirut:20261005T120000
-DTSTAMP:20260707T163127Z
-DTSTART;TZID=Asia/Beirut:20261005T100000
-LAST-MODIFIED:20260707T163121Z
-LOCATION:Lebanese University Hadath Campus
-SEQUENCE:5
-SUMMARY:Final Exam
+CREATED:20260324T160600Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/qij-uyia-opw\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20261008T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20261008T080000Z
+LAST-MODIFIED:20260610T123841Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.10: Fully Homomorphic Encryption
 TRANSP:OPAQUE
-UID:0E8769D0-F93C-4FA6-8314-51DCF59AFB8D
+UID:1n5j6t8llf0b86bldtop51h6d9@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/qij-uyia-opw
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T155601Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/umx-vkvj-bzx\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260804T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260804T080000Z
+LAST-MODIFIED:20260610T123933Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.3: Secure Messaging
+TRANSP:OPAQUE
+UID:37cv3t4cmjb3e0kprk4tja5858@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/umx-vkvj-bzx
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260512T131822Z
+DTEND;VALUE=DATE:20260620
+DTSTAMP:20260721T101930Z
+DTSTART;VALUE=DATE:20260619
+LAST-MODIFIED:20260512T131902Z
+SEQUENCE:1
+SUMMARY:Problem Set 1 Due
+TRANSP:TRANSPARENT
+UID:49CBCCCF-B94A-4268-9A62-4B94F491B9EE
 X-APPLE-CREATOR-IDENTITY:com.apple.calendar
 X-APPLE-CREATOR-TEAM-IDENTITY:0000000000
 END:VEVENT
 BEGIN:VEVENT
+CREATED:20260324T155612Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/bfy-fhvp-kdq\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260806T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260806T080000Z
+LAST-MODIFIED:20260610T123931Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.3: Secure Messaging
+TRANSP:OPAQUE
+UID:1vpdvelrkgkot095lk77ijpv9u@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/bfy-fhvp-kdq
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T160000Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/xbh-weve-gzm\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260908T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260908T080000Z
+LAST-MODIFIED:20260610T123855Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.6: Post-Quantum Cryptography
+TRANSP:OPAQUE
+UID:63b09kf29bo7r4k3q07m5p3pa1@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/xbh-weve-gzm
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T155115Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/tqs-ptuj-xgc\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260618T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260618T080000Z
+LAST-MODIFIED:20260324T155116Z
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Topic 1.4: Pseudorandomness
+TRANSP:OPAQUE
+UID:4bugn20ua7on1647ou6u0sh050@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/tqs-ptuj-xgc
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T155212Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/jdd-gapy-qxa\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260625T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260625T080000Z
+LAST-MODIFIED:20260324T155213Z
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Topic 1.6: Collision-Resistant Hash Functions
+TRANSP:OPAQUE
+UID:6ml6s4gvhvrb9j3pohhpjtokfl@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/jdd-gapy-qxa
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T155416Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/eha-ngfn-pih\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260709T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260709T080000Z
+LAST-MODIFIED:20260324T155417Z
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Topic 1.8: Elliptic Curves & Digital Signatures
+TRANSP:OPAQUE
+UID:4uat2scm2rq33k2973rguvi0cm@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/eha-ngfn-pih
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T155314Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/vgd-fyfq-djb\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260702T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260702T080000Z
+LAST-MODIFIED:20260324T155315Z
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Topic 1.7: Hard Problems & Diffie-Hellman
+TRANSP:OPAQUE
+UID:75v4pk7pa7ns78hvvtuc0s8771@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/vgd-fyfq-djb
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T155944Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/tzb-mjvi-iir\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260903T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260903T080000Z
+LAST-MODIFIED:20260610T123900Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.6: Post-Quantum Cryptography
+TRANSP:OPAQUE
+UID:54hpnn4nnnfiuek9slgo6kv999@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/tzb-mjvi-iir
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T155844Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/gou-xzaj-fyx\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260825T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260825T080000Z
+LAST-MODIFIED:20260610T123918Z
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Topic 2.5: High-Assurance Cryptography
+TRANSP:OPAQUE
+UID:6ed7h0erv43vbhj41ksve03lfp@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/gou-xzaj-fyx
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20260324T154913Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~::~:~::-\nJoin with Google Meet: https://meet.google.
+ com/bwf-mcha-woc\n\nLearn more about Meet at: https://support.google.com
+ /a/users/answer/9282720\n\nPlease do not edit this section.\n-::~:~::~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:
+ ~::-
+DTEND:20260609T093000Z
+DTSTAMP:20260721T101930Z
+DTSTART:20260609T080000Z
+LAST-MODIFIED:20260324T154914Z
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Topic 1.1: Introduction
+TRANSP:OPAQUE
+UID:20goqs39ktmtbtehv4nge5lb86@google.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/bwf-mcha-woc
+END:VEVENT
+BEGIN:VEVENT
 CREATED:20260528T111159Z
 DTEND;TZID=Europe/Paris:20260530T100000
-DTSTAMP:20260707T163127Z
+DTSTAMP:20260721T101930Z
 DTSTART;TZID=Europe/Paris:20260530T090000
 LAST-MODIFIED:20260530T065623Z
 LOCATION:Discord
@@ -838,12 +839,12 @@ UID:7E15B8F1-D302-4A43-A331-CD1A3DDA563F
 X-APPLE-CREATOR-IDENTITY:com.apple.calendar
 X-APPLE-CREATOR-TEAM-IDENTITY:0000000000
 BEGIN:VALARM
-ACKNOWLEDGED:20260529T085148Z
+ACKNOWLEDGED:20260530T065623Z
 ACTION:DISPLAY
 DESCRIPTION:Reminder
-TRIGGER:-P1D
-UID:7DC34202-3789-46BE-A1A8-6756816D0925
-X-WR-ALARMUID:7DC34202-3789-46BE-A1A8-6756816D0925
+TRIGGER:-PT5M
+UID:04BB4C78-4C80-469F-ACD8-FE2C0B1E1F5B
+X-WR-ALARMUID:04BB4C78-4C80-469F-ACD8-FE2C0B1E1F5B
 END:VALARM
 BEGIN:VALARM
 ACKNOWLEDGED:20260529T190824Z
@@ -852,14 +853,6 @@ DESCRIPTION:Reminder
 TRIGGER:-PT12H
 UID:DAAC28FA-95DB-488E-9747-6A2BA08E4D5B
 X-WR-ALARMUID:DAAC28FA-95DB-488E-9747-6A2BA08E4D5B
-END:VALARM
-BEGIN:VALARM
-ACKNOWLEDGED:20260530T065623Z
-ACTION:DISPLAY
-DESCRIPTION:Reminder
-TRIGGER:-PT5M
-UID:04BB4C78-4C80-469F-ACD8-FE2C0B1E1F5B
-X-WR-ALARMUID:04BB4C78-4C80-469F-ACD8-FE2C0B1E1F5B
 END:VALARM
 BEGIN:VALARM
 ACKNOWLEDGED:20260530T060341Z
@@ -878,6 +871,14 @@ UID:9468374A-9F90-4086-8A99-55AEB40E13B3
 X-WR-ALARMUID:9468374A-9F90-4086-8A99-55AEB40E13B3
 END:VALARM
 BEGIN:VALARM
+ACKNOWLEDGED:20260529T085148Z
+ACTION:DISPLAY
+DESCRIPTION:Reminder
+TRIGGER:-P1D
+UID:7DC34202-3789-46BE-A1A8-6756816D0925
+X-WR-ALARMUID:7DC34202-3789-46BE-A1A8-6756816D0925
+END:VALARM
+BEGIN:VALARM
 ACTION:NONE
 TRIGGER;VALUE=DATE-TIME:19760401T005545Z
 END:VALARM
@@ -885,7 +886,7 @@ END:VEVENT
 BEGIN:VEVENT
 CREATED:20260528T111204Z
 DTEND;TZID=Europe/Paris:20260531T100000
-DTSTAMP:20260707T163127Z
+DTSTAMP:20260721T101930Z
 DTSTART;TZID=Europe/Paris:20260531T090000
 LAST-MODIFIED:20260531T070717Z
 LOCATION:Discord
@@ -903,6 +904,14 @@ UID:D96D85AD-CDAA-49D4-84DA-3E4A05B3E73C
 X-WR-ALARMUID:D96D85AD-CDAA-49D4-84DA-3E4A05B3E73C
 END:VALARM
 BEGIN:VALARM
+ACKNOWLEDGED:20260531T070717Z
+ACTION:DISPLAY
+DESCRIPTION:Reminder
+TRIGGER:-PT5M
+UID:0482F88A-1D19-4363-A5E3-5F2421654109
+X-WR-ALARMUID:0482F88A-1D19-4363-A5E3-5F2421654109
+END:VALARM
+BEGIN:VALARM
 ACKNOWLEDGED:20260530T190853Z
 ACTION:DISPLAY
 DESCRIPTION:Reminder
@@ -917,14 +926,6 @@ DESCRIPTION:Reminder
 TRIGGER:-P1D
 UID:035E9893-EB9D-463A-B09E-3B7DEF8FB7B1
 X-WR-ALARMUID:035E9893-EB9D-463A-B09E-3B7DEF8FB7B1
-END:VALARM
-BEGIN:VALARM
-ACKNOWLEDGED:20260531T070717Z
-ACTION:DISPLAY
-DESCRIPTION:Reminder
-TRIGGER:-PT5M
-UID:0482F88A-1D19-4363-A5E3-5F2421654109
-X-WR-ALARMUID:0482F88A-1D19-4363-A5E3-5F2421654109
 END:VALARM
 BEGIN:VALARM
 ACTION:DISPLAY
