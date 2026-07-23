@@ -849,7 +849,7 @@
 
 \begin{frame}{Real-world example: DigiNotar}
 	\begin{itemize}[<+->]
-		\item \textbf{What happened}:
+		\item \textbf{What happened (2011)}:
 		      \begin{itemize}
 			      \item Dutch certificate authority DigiNotar was hacked.
 			      \item Attackers gained access to CA's private keys.
@@ -1045,6 +1045,11 @@
 			      \item Impersonate the legitimate server
 			      \item Use private key to create malicious servers
 		      \end{itemize}
+		\item \textbf{Silver lining}: Forward secrecy still protects \textbf{past} sessions!
+		      \begin{itemize}
+			      \item Ephemeral keys already deleted from memory
+			      \item Attacker cannot decrypt previously recorded traffic
+		      \end{itemize}
 		\item \textbf{Bottom line}: TLS won't save you if the server is compromised!
 	\end{itemize}
 \end{frame}
@@ -1118,7 +1123,7 @@
 		\item \textbf{Protection strategies}:
 		      \begin{itemize}
 			      \item Keep browsers and OS updated
-			      \item Use reputable antivirus software
+			      \item Don't install malicious browser plugins
 			      \item Certificate pinning (for developers)
 			      \item Monitor certificate store changes
 		      \end{itemize}
@@ -1171,7 +1176,7 @@
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
-				\item \textbf{Target}: TLS's CBC (Cipher Block Chaining) mode with HMAC
+				\item \textbf{Target}: TLS's AES-CBC (Cipher Block Chaining) mode with HMAC
 				\item \textbf{The vulnerability}: Timing differences in MAC verification\footnote{\url{https://appliedcryptography.page/paper/\#lucky-thirteen}}
 				      \begin{itemize}
 					      \item TLS 1.0--1.2 used MAC-then-encrypt with CBC mode
