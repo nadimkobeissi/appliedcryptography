@@ -3,8 +3,8 @@
 
 \title{Applied Cryptography - 2.3: Secure Messaging}
 \author{Nadim Kobeissi}
-\subject{An introduction to secure messaging protocols, covering the evolution from PGP through OTR to modern Signal, with focus on cryptographic properties, usability challenges, and implementation details.}
-\keywords{secure messaging, cryptography, PGP, OTR, Signal, forward secrecy, deniability, authenticated key exchange, SIGMA, HKDF, usable security}
+\subject{An introduction to secure messaging protocols, covering the evolution from PGP through OTR to the modern Signal Protocol and group messaging with MLS, with focus on cryptographic properties, usability challenges, and implementation details.}
+\keywords{secure messaging, cryptography, PGP, OTR, Signal, forward secrecy, post-compromise security, deniability, authenticated key exchange, SIGMA, X3DH, double ratchet, HKDF, sealed sender, Telegram, MTProto, group messaging, sender keys, MLS, TreeKEM, HPKE, usable security}
 \institute{Symbolic Software}
 \instituteimage{images/symbolicsoft-white.png}
 \date{\today}
@@ -22,7 +22,7 @@
 
 \begin{frame}{The Dark Ages}
 	\begin{itemize}
-		\item \textbf{Pretty Good Privacy} (PGP) - Created by Phil Zimmermann in 1991
+		\item \textbf{Pretty Good Privacy} (PGP)---created by Phil Zimmermann in 1991
 		\item First widely available strong encryption for everyday people
 		\item Uses public key cryptography for email encryption and digital signatures
 		\item Revolutionary: Previously, strong crypto was government/military only
@@ -36,7 +36,7 @@
 			\textbf{Encryption}
 			\begin{enumerate}
 				\item Alice writes email to Bob
-				\item Gets Bob's public key
+				\item Obtains Bob's public key (how? hold that thought)
 				\item PGP encrypts message with Bob's public key
 				\item Only Bob's private key can decrypt
 			\end{enumerate}
@@ -52,7 +52,7 @@
 		\end{column}
 	\end{columns}
 	\begin{alertblock}{Hybrid Encryption}
-		Actually uses symmetric crypto for the message, asymmetric for key exchange
+		PGP actually encrypts the message with a fresh symmetric key, and encrypts only that key to Bob's public key
 	\end{alertblock}
 \end{frame}
 
@@ -79,7 +79,7 @@
 \end{frame}
 
 \begin{frame}{Look at this mess}
-	\bigimagewithcaption{pgp-keyserver.png}{A PGP ``key server''}
+	\bigimagewithcaption{pgp-keyserver.png}{A PGP ``key server''. The SKS keyserver network shut down in 2021 after ``certificate flooding'' attacks made it unusable.}
 \end{frame}
 
 \begin{frame}{Look at this mess}
@@ -128,7 +128,7 @@
 			\begin{itemize}
 				\item \textbf{Usability nightmare}
 				      \begin{itemize}
-					      \item ``Why Johnny Can't Encrypt'' (1999) - landmark usability study\footnote{\url{https://appliedcryptography.page/paper/\#johnny-cant}}
+					      \item ``Why Johnny Can't Encrypt'' (1999)---landmark usability study\footnote{\url{https://appliedcryptography.page/paper/\#johnny-cant}}
 					      \item Key management too complex for average users
 					      \item Easy to make catastrophic mistakes
 				      \end{itemize}
@@ -159,7 +159,7 @@
 				\item Whitten \& Tygar tested PGP 5.0
 				\item 12 educated email users
 				\item 90 minutes to encrypt/sign email
-				\item Had manual + GUI interface
+				\item Given the manual and a GUI client
 			\end{itemize}
 			\textbf{Results: Catastrophic Failure}
 			\begin{itemize}
@@ -198,11 +198,10 @@
 \begin{frame}{Why Johnny Still, Still Can't Encrypt (2015)}
 	\begin{columns}[T]
 		\begin{column}{0.5\textwidth}
-			\textbf{The Study - 16 Years Later}
+			\textbf{The Study---16 Years Later}
 			\begin{itemize}
-				\item Ruoti et al. tested Mailvelope
-				\item Modern PGP browser extension
-				\item Integrates with webmail (Gmail)
+				\item Ruoti et al.\ tested Mailvelope\footnote{\url{https://appliedcryptography.page/paper/\#johnny-still}}
+				\item Modern PGP extension for webmail (Gmail)
 				\item 20 participants (10 pairs)
 				\item Exchange encrypted email
 			\end{itemize}
@@ -235,7 +234,10 @@
 
 \begin{frame}{Enter OTR: Off-the-Record Messaging}
 	\begin{itemize}
-		\item \textbf{Created in 2004} by Nikita Borisov, Ian Goldberg, and Eric Brewer
+		\item \textbf{Created in 2004} by Nikita Borisov, Ian Goldberg, and Eric Brewer\footnote{\url{https://appliedcryptography.page/paper/\#otr-messaging}}
+		      \begin{itemize}
+			      \item Their paper's title says it all: ``Off-the-Record Communication, or, \textit{Why Not To Use PGP}''
+		      \end{itemize}
 		\item Designed specifically for instant messaging, not email
 		\item Key insight: Chat is synchronous, both parties online!
 		\item \textbf{Revolutionary features}:
@@ -282,9 +284,9 @@
 		      \begin{itemize}
 			      \item Messages authenticated to recipient
 			      \item But no cryptographic proof for third parties
-			      \item Like a real conversation - no permanent record
+			      \item Like a real conversation---no permanent record
 		      \end{itemize}
-		\item \textbf{Socialist Millionaire Protocol}
+		\item \textbf{Socialist Millionaire Protocol}\footnote{\url{https://appliedcryptography.page/paper/\#otr-auth}}
 		      \begin{itemize}
 			      \item Verify identity without trusted third party
 			      \item Share a secret question/answer
@@ -371,8 +373,8 @@
 		      \end{itemize}
 		\item \textbf{Influenced modern messaging}
 		      \begin{itemize}
-			      \item Signal Protocol builds on OTR ideas
-			      \item WhatsApp, Signal, Wire all use similar concepts
+			      \item The Signal Protocol builds directly on OTR's ideas
+			      \item Its descendants now run on billions of devices: Signal, WhatsApp, Google Messages, Facebook Messenger
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -382,7 +384,8 @@
 \begin{frame}{About this section}
 	\begin{itemize}
 		\item We're going to use OTR in order to start understanding how secure messaging protocols are designed.
-		\item A core concept we're going to expand on in some detail: \textbf{authenticated key exchange}, especially how it applies to secure messaging protocols.
+		\item A core concept we're going to expand on in some detail: \textbf{authenticated key exchange} (AKE), especially how it applies to secure messaging protocols.
+		\item Along the way: identity binding, replay protection, key compromise impersonation, and how to properly derive keys.
 	\end{itemize}
 \end{frame}
 
@@ -398,7 +401,7 @@
 		      \begin{itemize}
 			      \item Messages authenticated to recipient
 			      \item But no cryptographic proof for third parties
-			      \item Like a real conversation - no permanent record
+			      \item Like a real conversation---no permanent record
 		      \end{itemize}
 		\item \textbf{Socialist Millionaire Protocol}
 		      \begin{itemize}
@@ -427,7 +430,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Regarding forward secrecy}
+\begin{frame}{Regarding forward secrecy}{What it demands of protocol design}
 	\begin{itemize}
 		\item Forward secrecy means that the protocol must:
 		      \begin{enumerate}
@@ -461,7 +464,7 @@
 		\end{column}
 	\end{columns}
 	\begin{alertblock}{Key Principle}
-		Identity keys authenticate the key exchange, but ephemeral keys encrypt the messages
+		Identity keys authenticate the key exchange; message keys are derived only from ephemeral secrets
 	\end{alertblock}
 \end{frame}
 
@@ -488,15 +491,13 @@
 	\begin{columns}
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}
-				\item \textbf{AKE}
+				\item \textbf{AKE}\footnote{\url{https://appliedcryptography.page/paper/\#sigma-ake}}
 				      \begin{itemize}
-					      \item Both parties verify each other's identity
-					      \item Establish shared secret securely
+					      \item Verify identities, share a secret
 				      \end{itemize}
 				\item \textbf{Signatures for Authentication}
 				      \begin{itemize}
-					      \item Each party signs the DH ephemeral public keys
-					      \item Prevents man-in-the-middle attacks
+					      \item Signing the ephemerals prevents MITM
 				      \end{itemize}
 				\item $K_m \twoheadleftarrow \func{hash}{g^{xy}}$
 			\end{itemize}
@@ -546,7 +547,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Because\ldots}{Identity substitution attack: Eve can replace Alice's identity}
+\begin{frame}{Because\ldots}{Identity misbinding: Eve substitutes her identity for Alice's}
 	\vspace{-1cm}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -565,7 +566,7 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{center}
-				\begin{tikzpicture}[>=Stealth, scale=0.9, transform shape]
+				\begin{tikzpicture}[>=Stealth, scale=0.8, transform shape]
 					\node (A) at (0,0) {$A$};
 					\node (B) at (8,0) {$B$};
 					\draw[->] (0.5,0) -- (7.5,0) node[midway,above] {$g^x$};
@@ -573,13 +574,12 @@
 					\draw[->, red] (0.5,-2) -- (7.5,-2) node[midway,above] (crossed) {\textcolor{red}{$g^A, \func{sign}{A, (g^y, g^x)}$}};
 					\draw[red, thick] (crossed.south west) -- (crossed.north east);
 					\draw[->] (0.5,-2.7) -- (7.5,-2.7) node[midway,above] {$g^E, \func{sign}{E, (g^y, g^x)}$};
-					\node[right, text width=2cm, align=left] at (8.5,-2.35) {\scriptsize\textcolor{red}{Eve intercepts}};
 				\end{tikzpicture}
 			\end{center}
 			\textbf{Result:}
 			\begin{itemize}
-				\item Bob records $g^E$ as peer
-				\item No cryptographic link between identity and key exchange
+				\item Bob attributes Alice's messages to Eve
+				\item Eve never learns the session key!
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -603,7 +603,7 @@
 			\begin{itemize}
 				\item Works, but\ldots
 				      \begin{itemize}
-					      \item Need to know both identities before I can produce a signature,
+					      \item Each party must know the peer's identity before it can sign,
 					      \item Harder to implement ``identity protection''
 					            \begin{itemize}
 						            \item Identity protection?
@@ -690,6 +690,7 @@
 					      \item Uses ephemeral DH keys
 					      \item Past sessions safe if long-term keys compromised
 				      \end{itemize}
+				\item \textbf{Real world}: IKEv2, OTR, TLS 1.3
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.6\textwidth}
@@ -761,13 +762,13 @@
 				\item \textbf{Nonces}: Fresh randomness each time
 				\item \textbf{Timestamps}: Messages expire
 				\item \textbf{Sequence numbers}: Detect duplicates
-				\item \textbf{HKDF}: Context binding
-				\item \textbf{AEAD}: Also a form of context binding
+				\item \textbf{KDF context}: Transcript binding
+				\item \textbf{AEAD}: Bind context to messages
 			\end{itemize}
 			\textbf{In secure messaging:}
 			\begin{itemize}
 				\item OTR: Fresh ephemerals prevent replay
-				\item Signal: Include context in authentication
+				\item Signal: message keys used once, then deleted
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -800,6 +801,7 @@
 			\begin{itemize}
 				\item Don't use static-static DH alone
 				\item Include ephemeral keys
+				\item Signatures resist KCI (as in SIGMA)
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -886,7 +888,7 @@
 		      \begin{itemize}
 			      \item Extract entropy and produce uniform output
 			      \item Can generate multiple keys from one shared secret
-			      \item Examples: HKDF, NIST SP 800-56C, TLS-PRF
+			      \item Examples: HKDF (used in TLS 1.3, Signal, MLS), NIST SP 800-56C
 		      \end{itemize}
 		\item \textbf{Proper approach}: $\func{kdf}{g^{xy}, \texttt{context}} \rightarrow (K_{\texttt{enc}}, K_{\texttt{mac}}, K_{\texttt{auth}}, \ldots)$
 	\end{itemize}
@@ -924,7 +926,7 @@
 						}
 					\draw[->] (0,0) -- (2.2,0) node[right] {$x$};
 					\draw[->] (0,0) -- (0,2.2) node[above] {$y$};
-					\node[below] at (1,-0.1) {Uniform Complete Distribution};
+					\node[below] at (1,-0.1) {Uniform distribution (ideal key material)};
 				\end{tikzpicture}
 			\end{center}
 		\end{column}
@@ -940,26 +942,25 @@
 			\textbf{Example: Curve25519 point as AES key}
 			\begin{itemize}
 				\item Curve25519 produces 32-byte $x$-coordinates
-				\item But only $\approx 2^{252}$ valid points
+				\item But only $\approx 2^{252}$ possible outputs
 				\item AES-256 expects uniform 256-bit keys
 			\end{itemize}
-			\textbf{Concrete attack scenario:}
+			\textbf{Why this matters:}
 			\begin{itemize}
-				\item Attacker knows top bits are biased
-				\item Can distinguish real keys from random
-				\item Reduces effective key space
-				\item Makes brute force easier
+				\item Raw output is distinguishable from random
+				\item AES's security proofs assume uniform keys
+				\item The fix costs one hash call!
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Distribution problems:}
 			\begin{itemize}
-				\item \textbf{Bit bias}: Top 3 bits of the $x$-coordinate are never all 1
-				\item \textbf{Modular reduction}: $x < 2^{255} - 19$
+				\item \textbf{Bit bias}: High bit always $0$ ($x < 2^{255} - 19$)
+				\item \textbf{Small subgroups}: a few low-order points exist
 				\item \textbf{Invalid points}: Half of $x$-values have no corresponding $y$
 			\end{itemize}
 			\begin{alertblock}{Real vulnerability}
-				In some protocols, attacker can force specific shared secrets by choosing malicious public keys from small subgroups
+				Attackers can force predictable shared secrets by sending low-order public keys
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -974,17 +975,16 @@
 		      \end{itemize}
 		\item \textbf{Their solution (simplified):}
 		      \begin{itemize}
-			      \item $h_0 = \func{sha256}{s \mathbin{\|} \texttt{0x00}}$
-			      \item $h_1 = \func{sha256}{s \mathbin{\|} \texttt{0x01}}$
-			      \item $h_2 = \func{sha256}{s \mathbin{\|} \texttt{0x02}}$
+			      \item $h_0 = \func{sha256}{\texttt{0x00} \mathbin{\|} s}$
+			      \item $h_1 = \func{sha256}{\texttt{0x01} \mathbin{\|} s}$
+			      \item $h_2 = \func{sha256}{\texttt{0x02} \mathbin{\|} s}$
 			      \item Extract different keys from different hash outputs
 		      \end{itemize}
 		\item \textbf{Problems with this approach:}
 		      \begin{itemize}
 			      \item No formal security analysis
-			      \item Related-key concerns
+			      \item One-byte counters instead of meaningful context labels
 			      \item Every protocol invented its own variant
-			      \item No standard way to include context/domain separation
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -1028,13 +1028,13 @@
 					      \item Generate any length needed
 					      \item Multiple keys from one PRK
 				      \end{itemize}
-				\item \textbf{Now standard}: RFC 5869
+				\item \textbf{Now standard}: RFC 5869---the KDF of the modern protocol stack
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{HKDF in practice: OTR key derivation}{OTR does not do this - this is an example}
+\begin{frame}{HKDF in practice: reimagining OTR's key derivation}{OTR (2004) predates HKDF (2010)---here is how it could look today}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{From one secret to many keys:}
@@ -1269,7 +1269,7 @@
 		      \end{itemize}
 	\end{itemize}
 	\begin{alertblock}{Open question}
-		Does cryptographic deniability provide meaningful real-world protection?
+		Does cryptographic deniability provide meaningful real-world protection?\footnote{\url{https://appliedcryptography.page/paper/\#credibility-deniability}}
 	\end{alertblock}
 \end{frame}
 
@@ -1535,7 +1535,7 @@
 
 \begin{frame}{X3DH: Signal's Asynchronous Key Exchange}
 	\begin{itemize}
-		\item $spk$: ``Signed pre-key'' - a signed ephemeral key
+		\item $spk$: ``Signed pre-key''---a signed ephemeral key
 		      \begin{itemize}
 			      \item Replaced every 2 days
 		      \end{itemize}
@@ -1547,6 +1547,7 @@
 		\item $c_0 \ldots c_n$: Various constants found in the protocol
 		\item Alice can obtain $S$ even if Bob is offline!
 		\item Now, using $S$, Alice can derive a bunch of keys to get the session going
+		\item \textbf{2023 update}: Signal extended X3DH into \textbf{PQXDH}, mixing a post-quantum KEM (ML-KEM) into $S$ against ``harvest now, decrypt later''---more in topic 2.6
 	\end{itemize}
 \end{frame}
 
@@ -1595,7 +1596,7 @@
 
 \begin{frame}{Why the Double Ratchet is nice}
 	\begin{itemize}
-		\item \textbf{Every message gets fresh keys}
+		\item \textbf{Every message gets fresh keys}\footnote{\url{https://appliedcryptography.page/paper/\#signal-analysis}}
 		      \begin{itemize}
 			      \item Chain key advances: $ck_{i+1} = \func{hmac}{ck_i, c_5}$
 			      \item Message key derived: $e_i = \func{hkdf}{\func{hmac}{ck_i, c_3}, c_1, c_4}$
@@ -1613,7 +1614,7 @@
 			      \item If an attacker steals your state at time $t$\ldots
 			      \item After one DH ratchet step, they're locked out again
 			      \item Fresh randomness from new ephemeral keys
-			      \item OTR couldn't do this - required interactive AKE
+			      \item OTR couldn't do this---required interactive AKE
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -1632,7 +1633,7 @@
 					      \item Can't decrypt without keys
 					      \item Time travel won't help the attacker
 				      \end{itemize}
-				\item \textbf{Example:} Laptop stolen after conversation - past messages safe
+				\item \textbf{Example:} Laptop stolen after conversation---past messages safe
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1647,7 +1648,7 @@
 					      \item New ephemeral keys
 					      \item Attacker locked out again
 				      \end{itemize}
-				\item \textbf{Example:} Laptop stolen but recovered - future messages re-secure
+				\item \textbf{Example:} Laptop stolen but recovered---future messages re-secure
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1746,7 +1747,7 @@
 					      \item Sealed sender hides who sent the message
 					      \item But delivery receipts create a timing pattern
 					      \item When Bob receives a message, he often replies quickly
-					      \item This creates a ``reply epoch'' - a time window
+					      \item This creates a ``reply epoch''---a time window
 				      \end{itemize}
 				\item \textbf{The Clever Observation:}
 				      \begin{itemize}
@@ -1867,7 +1868,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{What's really happening:}
 			\begin{itemize}
-				\item Multiple concurrent ``sessions''
+				\item Multiple concurrent ``sessions''\footnote{\url{https://appliedcryptography.page/paper/\#session-handling}}
 				\item Signal allows up to \textbf{40 sessions!}
 				      \begin{itemize}
 					      \item WhatsApp even more, I believe
@@ -1885,7 +1886,7 @@
 \begin{frame}{Why 40 sessions?}
 	\textbf{Signal's Magic Number: 40}
 	\begin{itemize}
-		\item Not arbitrary - represents a design choice
+		\item Not arbitrary---it represents a design choice
 		\item Each session = tolerance for one ``desync event''
 		\item More sessions = Better usability, Worse security
 	\end{itemize}
@@ -2015,7 +2016,7 @@
 	\begin{itemize}
 		\item ``Don't roll your own crypto!''
 		\item Multiple published attacks
-		\item Academic papers showing weaknesses
+		\item Academic papers showing weaknesses\footnote{\url{https://appliedcryptography.page/paper/\#telegram-exchange}}
 		\item Telegram's defensive responses
 	\end{itemize}
 \end{frame}
@@ -2063,6 +2064,7 @@
 				\item Subject to legal requests and seizure
 				\item Only secret chats are E2E encrypted
 				\item Most users never enable secret chats
+				\item Since late 2024: IP addresses and phone numbers handed to authorities upon valid legal requests
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -2102,13 +2104,14 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{How Signal/WhatsApp handle groups today}
+\begin{frame}{How Signal handles groups today}
 	\textbf{The Pairwise Channel Approach}
 	\begin{itemize}
 		\item No true group protocol
 		\item Sender encrypts to each member
 		\item For $n$ members: $n-1$ encryptions
 		\item Each member has separate ratchet
+		\item Upside: pairwise guarantees (FS, PCS, deniability) carry over
 	\end{itemize}
 	\textbf{Problems with this approach:}
 	\begin{itemize}
@@ -2165,7 +2168,7 @@
 			\textbf{What we gain:}
 			\begin{itemize}
 				\item \textbf{Efficiency}: Single encryption
-				\item \textbf{Scalability}: Works for 256+ members\footnote{Recently increased to 1,024.}
+				\item \textbf{Scalability}: Works for 256+ members\footnote{Increased to 1,024 in 2022.}
 				\item \textbf{Battery life}: Less crypto work
 				\item \textbf{Bandwidth}: Constant message size
 			\end{itemize}
@@ -2175,7 +2178,7 @@
 			\begin{itemize}
 				\item Weaker forward secrecy
 				\item Weaker post-compromise security
-				\item Malicious server can add/remove parties
+				\item Malicious server can add/remove parties\footnote{\url{https://appliedcryptography.page/paper/\#group-chats}}
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -2201,6 +2204,9 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
+	\begin{exampleblock}{Adoption (2026)}
+		RCS Universal Profile 3.0 (Android $\leftrightarrow$ iPhone messaging), Discord calls, Wire, Cisco Webex
+	\end{exampleblock}
 \end{frame}
 
 \begin{frame}{Quick note: HPKE}
@@ -2242,7 +2248,7 @@
 \begin{frame}{TreeKEM: use a tree to manage group AKE}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Tree of Subgroups:}
+			\textbf{Tree of Subgroups:}\footnote{\url{https://appliedcryptography.page/paper/\#wallez-thesis}}
 			\begin{itemize}
 				\item Each node = subgroup with secret (e.g., $s_{abc}$)
 				\item Corresponding public key (e.g., $\texttt{pk}_{abc}$)
@@ -2266,6 +2272,7 @@
 				      \end{itemize}
 				\item Encrypt to siblings:
 				      \begin{itemize}
+					      \item $\func{hpke}{\texttt{pk}_a, s'_{ab}}$
 					      \item $\func{hpke}{\texttt{pk}_c, s'_{abc}}$
 					      \item $\func{hpke}{\texttt{pk}_{de}, s'_{abcde}}$
 				      \end{itemize}
@@ -2324,6 +2331,28 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{Secure messaging: what we've learned}
+	\begin{itemize}
+		\item \textbf{Usability is a security property}
+		      \begin{itemize}
+			      \item PGP had strong cryptography and still failed: users couldn't operate it
+			      \item OTR and Signal won by making the cryptography invisible
+		      \end{itemize}
+		\item \textbf{The modern messaging toolkit}
+		      \begin{itemize}
+			      \item Authenticated key exchange with identity binding (SIGMA)
+			      \item Sound key derivation (HKDF) and ratcheting for forward secrecy
+			      \item Post-compromise security---real, but with real-world limits
+		      \end{itemize}
+		\item \textbf{Where things stand in 2026}
+		      \begin{itemize}
+			      \item The Signal Protocol protects billions of users by default
+			      \item Group messaging is converging on MLS (RFC 9420)
+			      \item The post-quantum transition is underway: PQXDH (2023), iMessage PQ3 (2024), Signal's Triple Ratchet (2025)---all in topic 2.6
+		      \end{itemize}
+	\end{itemize}
 \end{frame}
 
 \begin{frame}[plain]
