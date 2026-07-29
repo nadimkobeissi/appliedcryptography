@@ -4,7 +4,7 @@
 \title{Applied Cryptography - 2.4: End-to-End Encrypted Cloud Storage}
 \author{Nadim Kobeissi}
 \subject{An exploration of end-to-end encrypted cloud storage systems, their security challenges, and cryptographic attacks on real-world implementations.}
-\keywords{end-to-end encryption, cloud storage, MEGA, Nextcloud, cryptographic attacks, key management, authentication, OPAQUE, SRP, password security}
+\keywords{end-to-end encryption, cloud storage, MEGA, Nextcloud, cryptographic attacks, key management, authentication, OPAQUE, SRP, password security, WhatsApp, passkeys}
 \institute{Symbolic Software}
 \instituteimage{images/symbolicsoft-white.png}
 \date{\today}
@@ -88,7 +88,7 @@
 			\vspace{0.5cm}
 			\textbf{Guarantees:}
 			\begin{itemize}
-				\item Provider breach reveals nothing
+				\item Provider breach reveals only ciphertext
 				\item Government gets encrypted data
 				\item No insider access to content
 				\item Provider can only analyze metadata
@@ -130,7 +130,7 @@
 			\begin{itemize}
 				\item Users typically access E2EE storage via passwords
 				\item Passwords must be converted to cryptographic keys
-				\item Common approach: password hashing\footnote{This was previously covered in our \textit{Collision-Resistant Hash Functions} topic.}
+				\item Common approach: password hashing\footnote{This was previously covered in topic 1.6: \textit{Collision-Resistant Hash Functions}.}
 				\item Popular password hashing functions:
 				      \begin{itemize}
 					      \item \textbf{PBKDF2}: Widely deployed but aging
@@ -169,26 +169,30 @@
 \end{frame}
 
 \begin{frame}{The mud puddle test}
-	\begin{itemize}
-		\item \textbf{What is the mud puddle test?}
-		      \begin{itemize}
-			      \item Thought experiment for E2EE systems
-			      \item ``If you drop your device in a mud puddle and it's destroyed\ldots''
-			      \item ``And then slip in that mud puddle and suffer from password amnesia\ldots''
-			      \item ``\ldots can you recover your data on a new device?''
-		      \end{itemize}
-		\item \textbf{In true E2EE:}
-		      \begin{itemize}
-			      \item Lost password = lost data forever
-			      \item No backdoor for the provider
-			      \item No ``forgot password'' that maintains E2EE
-		      \end{itemize}
-		\item \textbf{The fundamental trade-off:}
-		      \begin{itemize}
-			      \item Security vs recoverability
-			      \item Provider can't help without breaking E2EE
-		      \end{itemize}
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{What is the mud puddle test?}\footnote{Coined by cryptographer Matthew Green in 2012: \url{https://blog.cryptographyengineering.com/2012/04/05/icloud-who-holds-key/}}
+				      \begin{itemize}
+					      \item Thought experiment for E2EE systems
+					      \item ``If you drop your device in a mud puddle and it's destroyed\ldots''
+					      \item ``And then slip in that mud puddle and suffer from password amnesia\ldots''
+					      \item ``\ldots can you recover your data on a new device?''
+				      \end{itemize}
+				\item \textbf{In true E2EE:}
+				      \begin{itemize}
+					      \item Lost password = lost data forever
+					      \item No backdoor for the provider
+					      \item No ``forgot password'' that maintains E2EE
+				      \end{itemize}
+				\item \textbf{The fundamental trade-off:}
+				      \begin{itemize}
+					      \item Security vs recoverability
+					      \item Provider can't help without breaking E2EE
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Password recovery expectations vs reality}
@@ -218,21 +222,14 @@
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
-				\item Apple introduced optional E2EE for iCloud in 2023\footnote{\url{https://support.apple.com/en-us/102651}}
-				\item Called ``Advanced Data Protection'' (ADP)
+				\item Apple introduced optional E2EE for iCloud in late 2022, called ``Advanced Data Protection'' (ADP)\footnote{\url{https://support.apple.com/en-us/102651}}
 				\item Covers most iCloud data categories:
 				      \begin{itemize}
-					      \item Photos, Notes, iCloud Backup, Messages backup
-					      \item iCloud Drive, Reminders, Safari bookmarks
+					      \item Photos, Notes, iCloud Drive, Reminders, Safari bookmarks, iCloud and Messages backups
 				      \end{itemize}
-				\item Apple's approach to recovery:
-				      \begin{itemize}
-					      \item \textbf{Option 1:} User-managed recovery key
-					      \item \textbf{Option 2:} Apple escrow (default)
-					      \item Users must explicitly opt in to ADP
-				      \end{itemize}
-				\item Fundamental tension: Security vs recoverability
-				\item Apple prioritized user choice over mandatory E2EE
+				\item \textbf{Recovery:} user-managed recovery key, or Apple escrow (the default)
+				\item Fundamental tension: security vs.\ recoverability --- Apple chose opt-in over mandatory E2EE
+				\item 2025: withdrawn for new UK users under government pressure (more later)\footnote{\url{https://support.apple.com/en-us/122234}}
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -290,7 +287,7 @@
 					      \item No shared secrets with server
 					      \item Automatic strong credentials
 				      \end{itemize}
-				\item Apple: iCloud Keychain, Microsoft: Windows Hello\ldots
+				\item Passkey managers: Apple, Google, Microsoft\ldots
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -309,6 +306,7 @@
 			      \item Supports two inputs per operation (for key rotation)
 		      \end{itemize}
 		\item Implementation typically uses HMAC-SHA256 internally
+		\item Support has broadened since 2024 (Chrome, Safari 18+, platform authenticators), but remains uneven across hardware security keys
 	\end{itemize}
 \end{frame}
 
@@ -328,10 +326,10 @@
 		      \end{itemize}
 		\item Current limitations:
 		      \begin{itemize}
-			      \item PRF extension not universally supported
+			      \item PRF support is now broad, but not yet universal
 			      \item Security keys may not support PRF evaluation at creation
 		      \end{itemize}
-		\item Represents a potential future direction for usable E2EE key management and authentication more generally
+		\item No longer hypothetical: WhatsApp shipped passkey-encrypted backups in late 2025 (more on this later in this lecture)
 	\end{itemize}
 \end{frame}
 
@@ -354,11 +352,11 @@
 		      \begin{itemize}
 			      \item MEGA: 300M users, 150B files, 1,000 PB of data
 			      \item Nextcloud
-			      \item Apple iCloud (optional E2EE since 2023)
+			      \item Apple iCloud (optional E2EE since late 2022)
 		      \end{itemize}
 		\item Smaller providers:
 		      \begin{itemize}
-			      \item Icedrive, pCloud, Seafile, Tresorit
+			      \item Sync, Icedrive, pCloud, Seafile, Tresorit
 			      \item Tens of millions of users collectively
 		      \end{itemize}
 	\end{itemize}
@@ -371,7 +369,7 @@
 		\item Lack formal security guarantees
 		\item MEGA's challenges:
 		      \begin{itemize}
-			      \item Migration infeasible - requires user participation
+			      \item Migration infeasible --- requires user participation
 			      \item Initial minimal patches proved insufficient
 			      \item Required second round of complex patching
 		      \end{itemize}
@@ -479,25 +477,21 @@
 		and node keys using AES-ECB. Source: \url{https://appliedcryptography.page/paper/\#mega-awry}}
 \end{frame}
 
-\begin{frame}{MEGA: Key hierarchy}
+\begin{frame}{MEGA: Password-to-key derivation}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
-				\item Password-to-key derivation
-				\item MEGA uses HKDF for deriving keys from password
-				\item \textbf{Problem:} HKDF is not a password hash!
+				\item The password is the root of trust for \textit{everything}: it derives both the authentication key and the key that encrypts the master key
+				\item MEGA stretches the password with PBKDF2-HMAC-SHA512 at 100,000 iterations\footnote{Legacy accounts used an even weaker homebrew AES-based scheme.}
+				\item \textbf{Problem 1:} PBKDF2 is compute-bound, not memory-hard
 				      \begin{itemize}
-					      \item HKDF designed for key derivation from high-entropy inputs
-					      \item No computational hardness against brute-force
-					      \item Passwords have low entropy
+					      \item GPU/ASIC-friendly; memory-hard Argon2 or scrypt would cost attackers far more per guess
 				      \end{itemize}
-				\item \textbf{Should use:} Argon2, scrypt, or PBKDF2
+				\item \textbf{Problem 2:} The server stores the password-encrypted master key and an authentication hash
 				      \begin{itemize}
-					      \item Memory-hard (Argon2, scrypt) or iterative (PBKDF2) functions
-					      \item Configurable iteration counts
-					      \item Resistance to GPU/ASIC attacks (especially memory-hard functions)
+					      \item Anyone who breaches (or runs!) the server can mount offline dictionary attacks
+					      \item A slow KDF only buys time --- weak passwords still fall
 				      \end{itemize}
-				\item Enables offline dictionary attacks on user passwords
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -578,6 +572,39 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Quick reminder: What does $x^{-1}$ mean?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{In modular arithmetic:}
+			\begin{itemize}
+				\item $x^{-1}$ is the \textbf{modular inverse} of $x$
+				\item It's the number that, when multiplied by $x$, gives 1
+				\item $x \cdot x^{-1} \equiv 1 \pmod{n}$
+			\end{itemize}
+			\vspace{0.5em}
+			\textbf{Example:}
+			\begin{itemize}
+				\item If $x = 3$ and $n = 7$
+				\item Then $x^{-1} = 5$ because $3 \cdot 5 = 15 \equiv 1 \pmod{7}$
+				\item MEGA's RSA keys store exactly such a value: $u = q^{-1} \bmod p$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{In exponents:}
+			\begin{itemize}
+				\item Writing $A^{1/r}$ means raising $A$ to $r^{-1}$, computed modulo the group order
+				\item $(A^{r})^{1/r} = A^{r \cdot r^{-1}} = A^{1} = A$
+				\item Raising to $r$, then to $r^{-1}$, cancels out
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{alertblock}{Key property}
+				$((H(x)^{r})^{k})^{1/r} = H(x)^{k}$ \\
+				Blind, evaluate, unblind: the heart of the OPRF protocols later in this lecture!
+			\end{alertblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Attack 1: The decryption oracle}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -595,8 +622,8 @@
 				      \end{itemize}
 				\item \textbf{Observable behavior:}
 				      \begin{itemize}
-					      \item If $m < q$: Returns $\text{sid}' = 0$
-					      \item If $m \geq q$: Returns $\text{sid}' \neq 0$
+					      \item If $m < q$: correct SID (the one the attacker embedded)
+					      \item If $m \geq q$: garbled SID
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -626,38 +653,6 @@
 				% Iteration count
 				\node[draw, rectangle, fill=red!20] at (4.5,0) {512 iterations};
 			\end{tikzpicture}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Quick reminder: What does $x^{-1}$ mean?}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{In modular arithmetic:}
-			\begin{itemize}
-				\item $x^{-1}$ is the \textbf{modular inverse} of $x$
-				\item It's the number that, when multiplied by $x$, gives 1
-				\item $x \cdot x^{-1} \equiv 1 \pmod{n}$
-			\end{itemize}
-			\vspace{0.5em}
-			\textbf{Example:}
-			\begin{itemize}
-				\item If $x = 3$ and $n = 7$
-				\item Then $x^{-1} = 5$ because $3 \cdot 5 = 15 \equiv 1 \pmod{7}$
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{In group elements:}
-			\begin{itemize}
-				\item If $A = g^a$, then $A^{-1} = g^{-a}$
-				\item $A \cdot A^{-1} = g^a \cdot g^{-a} = g^{a-a} = g^0 = 1$
-				\item It's the element that ``cancels out'' $A$
-			\end{itemize}
-			\vspace{0.5em}
-			\begin{alertblock}{Key property}
-				$(A^c)^{-1} = A^{-c}$ \\
-				This is why we can rewrite expressions!
-			\end{alertblock}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -747,15 +742,15 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item \textbf{Attack 3a (File Integrity - Oracle):} Forge files using decryption oracle to frame users with malicious content
-				\item \textbf{Attack 3b (File Integrity - Key Reuse):} Forge files without oracle by exploiting MEGA's key obfuscation scheme
+				\item \textbf{Attack 3a (File Integrity -- Oracle):} Forge files using decryption oracle to frame users with malicious content
+				\item \textbf{Attack 3b (File Integrity -- Key Reuse):} Forge files without oracle by exploiting MEGA's key obfuscation scheme
 				\item \textbf{Attack 4 (RSA Decryption):} Bleichenbacher's attack on PKCS\#1 v1.5 to decrypt RSA-encrypted keys
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{MEGA attacks: Summary}
+\begin{frame}{MEGA attacks: At a glance}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{table}
@@ -763,17 +758,17 @@
 				\small
 				\begin{tabular}{|l|c|c|l|}
 					\hline
-					\textbf{Attack}    & \textbf{Attempts} & \textbf{Prerequisites} & \textbf{Impact}        \\
+					\textbf{Attack}    & \textbf{Attempts}  & \textbf{Prerequisites} & \textbf{Impact}        \\
 					\hline
-					RSA Key Recovery   & 2 logins          & None                   & Share keys compromised \\
+					RSA Key Recovery   & 2 logins (was 512) & None                   & Share keys compromised \\
 					\hline
-					Plaintext Recovery & Varies            & Attack 1               & All keys compromised   \\
+					Plaintext Recovery & Varies             & Attack 1               & All keys compromised   \\
 					\hline
-					Integrity Attack A & 1                 & Attack 2               & File forgery           \\
+					Integrity Attack A & 1                  & Attack 2               & File forgery           \\
 					\hline
-					Integrity Attack B & 1                 & One AES block          & File forgery           \\
+					Integrity Attack B & 1                  & One AES block          & File forgery           \\
 					\hline
-					RSA Decryption     & $2^{17}$          & Weaker model           & Chat/node keys         \\
+					RSA Decryption     & $2^{17}$           & Weaker model           & Chat/node keys         \\
 					\hline
 				\end{tabular}
 			\end{table}
@@ -1127,7 +1122,7 @@
 				\item Complex key hierarchy
 				\item ECB mode usage
 				\item Legacy crypto (PKCS\#1 v1.5)
-				\item Patches partially successful
+				\item Patches introduced new flaws
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1289,8 +1284,8 @@
 			      \item Server helps compute PRF without learning input
 			      \item Prevents server from testing password guesses
 		      \end{itemize}
-		\item Being standardized by the IETF (OPRF component: RFC 9497)
-		\item Early adoption by WhatsApp for backup encryption
+		\item Standardized in 2025 as RFC 9807 (OPRF component: RFC 9497)
+		\item Early adoption by WhatsApp for backup encryption (2021)
 	\end{itemize}
 \end{frame}
 
@@ -1332,8 +1327,8 @@
 			\vspace{0.3cm}
 			\begin{itemize}
 				\item[\textcolor{green}{\mycheckmark}] No offline attacks by eavesdroppers
-				\item[\textcolor{green}{\mycheckmark}] Proven secure
-				\item[\textcolor{orange}{$\sim$}] Complex protocol
+				\item[\textcolor{green}{\mycheckmark}] Decades of deployment
+				\item[\textcolor{red}{$\times$}] No formal security proof
 				\item[\textcolor{red}{$\times$}] Pre-computation attacks
 			\end{itemize}
 		\end{column}
@@ -1343,8 +1338,8 @@
 			\begin{itemize}
 				\item[\textcolor{green}{\mycheckmark}] Strongest security
 				\item[\textcolor{green}{\mycheckmark}] Forward secrecy
-				\item[\textcolor{red}{$\times$}] New protocol
-				\item[\textcolor{red}{$\times$}] Limited deployment
+				\item[\textcolor{red}{$\times$}] Standardized only in 2025
+				\item[\textcolor{red}{$\times$}] Adoption still ramping up
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1409,7 +1404,7 @@
 			\textbf{Client actions:}
 			\begin{enumerate}
 				\item Choose password $pw$
-				\item Run OPRF with server:\footnote{Here, our chosen OPRF operates in a cyclic group $\mathbb{G}$ of prime order $q$. The blinding factor $r$ is sampled uniformly at random from $\mathbb{Z}_q$, and $k$ is the server's OPRF key. I just made this OPRF up for the purposes of this slide and I don't know if it's secure (it probably is?)}
+				\item Run OPRF with server:\footnote{The OPRF runs in a cyclic group $\mathbb{G}$ of prime order $q$, with blinding factor $r \twoheadleftarrow \mathbb{Z}_q$ and server OPRF key $k$. This is (lightly simplified) 2HashDH, covered in detail at the end of this lecture; full OPAQUE also hardens $rwd$ with a slow, memory-hard hash.}
 				      \begin{itemize}
 					      \item Send blinded $H(pw)^r$
 					      \item Get back $(H(pw)^r)^k$
@@ -1492,7 +1487,7 @@
 				      \begin{itemize}
 					      \item Blinds password: $\alpha = H(pw)^r$
 					      \item Sends $\alpha$ to server
-					      \item Note: This $r$ is freshly sampled - different from the one used at registration and at each previous login
+					      \item Note: This $r$ is freshly sampled --- different from the one used at registration and at each previous login
 				      \end{itemize}
 				\item[2.]\textbf{Server responds:}
 				      \begin{itemize}
@@ -1568,7 +1563,7 @@
 	\end{columns}
 	\vspace{0.5cm}
 	\begin{center}
-		\textbf{Bonus:} Provides both authentication \textit{and} key derivation - perfect for E2EE storage!
+		\textbf{Bonus:} Provides both authentication \textit{and} key derivation --- perfect for E2EE storage!
 	\end{center}
 \end{frame}
 
@@ -1593,6 +1588,7 @@
 				      \begin{itemize}
 					      \item Password-based recovery (via HSM)
 					      \item 64-digit key (user manages)
+					      \item Passkey-encrypted (since late 2025)
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -1635,7 +1631,7 @@
 					      \item Hardware-based key storage and generation
 					      \item Tamper-resistant physical security
 					      \item Cryptographic operations in secure boundary
-					      \item FIPS 140-2 Level 3/4 certified
+					      \item FIPS 140-2/140-3 Level 3/4 certified
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -1877,7 +1873,7 @@
 				      \end{itemize}
 				\item \textbf{Trade-offs:}
 				      \begin{itemize}
-					      \item[\textcolor{green}{\mycheckmark}] Maximum security - no trust required
+					      \item[\textcolor{green}{\mycheckmark}] Maximum security --- no trust required
 					      \item[\textcolor{green}{\mycheckmark}] No brute-force risk
 					      \item[\textcolor{red}{$\times$}] User responsibility for key management
 					      \item[\textcolor{red}{$\times$}] Lost key = lost backups forever
@@ -2059,7 +2055,7 @@
 				      \begin{itemize}
 					      \item HSMs can provide attestation
 					      \item Intel SGX, AMD SEV offer remote attestation
-					      \item Blockchain for public audit logs
+					      \item Transparency logs (\`a la Certificate Transparency)
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -2072,6 +2068,7 @@
 					      \item Legal requirements?
 					      \item Law enforcement pressure?
 				      \end{itemize}
+				\item \textbf{The irony:} Meta already runs key transparency for WhatsApp identity keys (2023) --- just not for the Backup Key Vault
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -2092,19 +2089,16 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item \textbf{Why 64 digits?}
+				\item \textbf{What is the 64-digit key, really?}
 				      \begin{itemize}
-					      \item 64 digits = ${\sim}$212 bits of entropy
-					      \item Much more than needed for a 128-bit AES key
-					      \item Difficult for humans to manage
-					      \item Error-prone to transcribe
+					      \item The raw 256-bit backup key $K$, printed as 64 hexadecimal characters
+					      \item No checksum, no error detection
+					      \item Hard to transcribe and store correctly
 				      \end{itemize}
-				\item \textbf{We already have better solutions:}
+				\item \textbf{We already have friendlier encodings:}
 				      \begin{itemize}
-					      \item BIP39 mnemonic phrases (12-24 words)\footnote{Argument against: hard to localize into many languages}
-					      \item Used successfully by cryptocurrency wallets
-					      \item Easier to write down and verify
-					      \item Built-in error detection
+					      \item BIP39 mnemonic phrases (12--24 words) with a built-in checksum
+					      \item Proven by a decade of cryptocurrency wallets
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -2112,9 +2106,13 @@
 			\begin{itemize}
 				\item \textbf{Possible explanations:}
 				      \begin{itemize}
-					      \item Deliberate friction to push HSM option?
-					      \item Making self-custody intentionally hard?
-					      \item Or maybe using passphrases is just hard to localize into many languages
+					      \item Deliberate friction to push the HSM option?
+					      \item Word lists are hard to localize across languages?
+				      \end{itemize}
+				\item \textbf{The industry hasn't settled this:}
+				      \begin{itemize}
+					      \item Signal's Secure Backups (2025) also use a 64-character recovery key
+					      \item WhatsApp added passkey-encrypted backups (2025),\footnote{\url{https://about.fb.com/news/2025/10/making-it-easier-to-encrypt-whatsapp-chat-backups/}} hiding the key behind device biometrics
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -2229,7 +2227,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item \textbf{What is formal analysis?}\footnote{Coming soon in our topic sessions on High-Assurance Cryptography!}
+				\item \textbf{What is formal analysis?}\footnote{Coming up next, in topic 2.5: High-Assurance Cryptography!}
 				      \begin{itemize}
 					      \item Automated using software
 					      \item Mathematical proofs of security
@@ -2411,7 +2409,7 @@
 		\textit{``A Formal Treatment of End-to-End Encrypted Cloud Storage''}\\
 		{\tiny\url{https://appliedcryptography.page/paper/\#cloud-storage}}\\
 		\vspace{0.2cm}
-		{\small by Matilda Backendal, Hannah Davis, Felix Günther, Miro Haller, and Kenneth G. Paterson}
+		{\footnotesize by Matilda Backendal, Hannah Davis, Felix Günther, Miro Haller, and Kenneth G. Paterson --- CRYPTO 2024}
 	\end{center}
 	\begin{columns}[t]
 		\begin{column}{0.5\textwidth}
@@ -2448,7 +2446,7 @@
 				\item \textbf{2HashDH OPRF:} Password hardening against offline attacks
 			\end{itemize}
 			\vspace{0.3cm}
-			\textbf{Key insight:} Use standard, proven primitives - don't invent new ones!
+			\textbf{Key insight:} Use standard, proven primitives --- don't invent new ones!
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -2479,7 +2477,7 @@
 \begin{frame}{The 2HashDH OPRF: How it works}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\textbf{Setup:} Group $\mathbb{G}$ of prime order $q$, hash functions $H_1$ and $H_2$\footnote{Ideally memory-hard and slow}
+			\textbf{Setup:} Group $\mathbb{G}$ of prime order $q$, hash functions $H_1$ and $H_2$\footnote{$H_1$ hashes onto the group (``hash-to-curve''); $H_2$ should be slow and memory-hard, so that learning $k$ doesn't make password guessing cheap.}
 			\begin{itemize}
 				\item \textbf{Goal:} Client computes $H_2(x, H_1(x)^k)$ without revealing $x$ to server
 				\item \textbf{Protocol steps:}
@@ -2487,7 +2485,7 @@
 					      \item Client picks random blinding factor $r \twoheadleftarrow \mathbb{Z}_q$
 					      \item Client sends blinded value: $\alpha = H_1(x)^r$ to server
 						            {\footnotesize\begin{itemize}
-								            \item Client hashes their secret input $x$ to get $H_1(x)$, raises it to the power of $r$, and sends this ``blinded'' result to the server - the server cannot determine $x$ from this
+								            \item Client hashes their secret input $x$ to get $H_1(x)$, raises it to the power of $r$, and sends this ``blinded'' result to the server --- the server cannot determine $x$ from this
 							            \end{itemize}}
 					      \item Server computes: $\beta = \alpha^k = H_1(x)^{rk}$ and returns it
 					      \item Client unblinds: $\beta^{1/r} = H_1(x)^k$
