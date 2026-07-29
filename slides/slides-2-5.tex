@@ -48,9 +48,46 @@
 	\end{center}
 \end{frame}
 
+\begin{frame}{Today: The promise and the pitfalls}
+	\textbf{Part 1 --- The promise: computer-aided cryptography}
+	\begin{itemize}
+		\item Why cryptography fails at three levels: design, implementation, deployment
+		\item Tools that prove designs secure: ProVerif, Tamarin, CryptoVerif, \fstar
+		\item Verified implementations that match hand-optimized speed: \haclstar, Fiat
+		\item Side channels, constant-time code, and how compilers betray it
+		\item How TLS 1.3 was designed hand-in-hand with formal analysis
+	\end{itemize}
+	\vspace{0.5em}
+	\textbf{Part 2 --- The pitfalls: verification theatre}
+	\begin{itemize}
+		\item Thirteen vulnerabilities I found in ``the formally verified crypto library''
+		\item A taxonomy of five ways verification claims fail in practice
+		\item What separates real assurance from the \textit{appearance} of assurance
+	\end{itemize}
+\end{frame}
+
 %% ====================================================================
 %%  PART 1: COMPUTER-AIDED CRYPTOGRAPHY
 %% ====================================================================
+
+\begin{frame}[plain]
+	\begin{tikzpicture}[remember picture, overlay]
+		\fill[cipherdarkbg] (current page.north west) rectangle (current page.south east);
+		\draw[cipheraccent, line width=3pt] (current page.north west) rectangle (current page.south east);
+	\end{tikzpicture}
+	\vspace{1cm}
+	\begin{center}
+		{\usebeamercolor[fg]{section header}\usebeamerfont{subtitle}\Large Part 1}
+
+		\vspace{0.5cm}
+
+		{\color{cipheraccent}\usebeamerfont{title}\fontsize{20}{24}\selectfont Computer-Aided Cryptography\par}
+
+		\vspace{0.8cm}
+
+		{\usebeamercolor[fg]{section header}\large The promise: machine-checked security, from designs to deployments}
+	\end{center}
+\end{frame}
 
 \section{Introduction}
 
@@ -60,15 +97,19 @@
 		\item Regular discoveries of high-profile design flaws, devastating implementation bugs, and side-channel vulnerabilities
 		\item Even in \textbf{widely deployed} mechanisms!
 	\end{itemize}
-	\vspace{1em}
+	\vspace{0.5em}
 	\begin{center}
 		\Large
-		Three levels of complexity:
-		\begin{enumerate}
-			\item \textbf{Design Level}: Security proofs, adversarial models
-			\item \textbf{Implementation Level}: Correctness, performance, memory safety
-			\item \textbf{Deployment Level}: Side-channel resistance
-		\end{enumerate}
+		Three levels of complexity, three chances to fail:
+	\end{center}
+	\begin{enumerate}
+		\item \textbf{Design level}: Is the scheme itself secure? (proofs, adversarial models)
+		\item \textbf{Implementation level}: Does the code compute it correctly? (memory safety, speed)
+		\item \textbf{Deployment level}: Does the running code keep its secrets? (side channels)
+	\end{enumerate}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Part 1 of this lecture takes each level in turn}
 	\end{center}
 \end{frame}
 
@@ -105,16 +146,18 @@
 \begin{frame}{Success stories}
 	\begin{itemize}
 		\item Computer-aided security analyses were influential in \textbf{TLS 1.3} standardization
-		\item \textbf{\haclstar library}: Integrated into Mozilla Firefox's NSS
-		\item \textbf{Fiat Cryptography}: Elliptic curve code in Google's BoringSSL
-		\item \textbf{EverCrypt}: Routines used in the Linux kernel's Zinc crypto library
+		\item \textbf{\haclstar}: Verified crypto integrated into Mozilla Firefox's NSS
+		\item \textbf{Fiat Cryptography}: Verified elliptic curve code in Google's BoringSSL, used by Chrome and Android
+		\item \textbf{Linux kernel}: WireGuard's Curve25519 is built from verified \haclstar and Fiat code
+		\item \textbf{Python}: CPython's bundled hash implementations (SHA-2, SHA-3, Blake2, HMAC) come from \haclstar
 	\end{itemize}
+	\vspace{0.5em}
 	\begin{center}
 		\textbf{Formally verified code at Internet scale!}
 	\end{center}
 \end{frame}
 
-\begin{frame}{Missing: Real-world software complexity}
+\begin{frame}{Proofs cover algorithms; attackers target systems}
 	\begin{itemize}
 		\item Pen-and-paper proofs consider \textbf{isolated algorithms}
 		\item Real deployments involve massive software stacks:
@@ -153,7 +196,7 @@
 		      \begin{itemize}
 			      \item Messages are abstract \textbf{symbols}, not bits
 			      \item Cryptographic primitives are \textbf{perfect black boxes}
-			      \item Can only decrypt with the \textbf{exact} key
+			      \item Adversary has \textbf{full network control}: the \textbf{Dolev-Yao model}
 		      \end{itemize}
 		      \vspace{0.5em}
 		\item \textbf{Computational Security} (Cryptography community)
@@ -165,7 +208,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Symbolic security: Example}
+\begin{frame}{Symbolic security: The Dolev-Yao model}
 	\textbf{Symmetric encryption modeled by:}
 	\begin{itemize}
 		\item Functions: \texttt{Enc} and \texttt{Dec}
@@ -176,9 +219,9 @@
 		\texttt{Dec(Enc(m,k),k) = m}
 	\end{center}
 	\begin{itemize}
-		\item Decrypting ciphertext \texttt{Enc(m,k)} with key \texttt{k} recovers plaintext \texttt{m}
-		\item The adversary can only use specified primitives and equations
-		\item It can decrypt only if it has the \textbf{entire} secret key
+		\item The \textbf{Dolev-Yao adversary} \textit{is} the network: it intercepts, modifies, injects, and replays any message it likes
+		\item But it can only use the specified primitives and equations: no brute force, no partial guessing
+		\item It can decrypt \texttt{Enc(m,k)} only if it knows the \textbf{entire} key \texttt{k}: all-or-nothing
 	\end{itemize}
 \end{frame}
 
@@ -186,17 +229,19 @@
 	\begin{center}
 		\begin{tabular}{|l|l|l|}
 			\hline
-			\textbf{Aspect} & \textbf{Symbolic} & \textbf{Computational}  \\
+			\textbf{Aspect} & \textbf{Symbolic} & \textbf{Computational}         \\
 			\hline
-			Messages        & Abstract terms    & Bitstrings              \\
+			Messages        & Abstract terms    & Bitstrings                     \\
 			\hline
-			Adversary       & Rule-based        & Probabilistic algorithm \\
+			Adversary       & Rule-based        & Probabilistic algorithm        \\
 			\hline
-			Security        & All-or-nothing    & Probabilistic bounds    \\
+			Security        & All-or-nothing    & Probabilistic bounds           \\
 			\hline
-			Analysis        & Often decidable   & Generally undecidable   \\
+			Analysis        & Often decidable   & Generally undecidable          \\
 			\hline
-			Guarantees      & ``Cannot break''  & ``Hard to break''       \\
+			Guarantees      & ``Cannot break''  & ``Hard to break''              \\
+			\hline
+			Tools           & ProVerif, Tamarin & CryptoVerif, EasyCrypt, \fstar \\
 			\hline
 		\end{tabular}
 	\end{center}
@@ -221,7 +266,7 @@
 		\item \textbf{Equivalence properties}
 		      \begin{itemize}
 			      \item Adversary cannot distinguish between two protocols
-			      \item Example: Cannot differentiate a real secret from a random value
+			      \item Examples: Real secret vs.\ random value, vote privacy, unlinkability
 		      \end{itemize}
 	\end{enumerate}
 	\vspace{0.5em}
@@ -231,28 +276,29 @@
 \end{frame}
 
 \begin{frame}{Computational security properties}
-	Characterized along two axes:
+	Characterized along two \textbf{independent} axes:
+	\vspace{0.5em}
+	\begin{enumerate}
+		\item \textbf{How is security stated?}
+		      \begin{itemize}
+			      \item \textbf{Game-based}: No adversary can win a specific game (e.g.\ IND-CPA)
+			      \item \textbf{Simulation-based}: The real protocol is indistinguishable from an ideal one; supports \textbf{composition}, but proofs are more complex
+		      \end{itemize}
+		      \vspace{0.5em}
+		\item \textbf{How is adversarial power quantified?}
+		      \begin{itemize}
+			      \item \textbf{Concrete}: ``Any adversary running in time $t$ succeeds with probability at most $\epsilon$''
+			      \item \textbf{Asymptotic}: ``Any polynomial-time adversary succeeds with negligible probability''
+		      \end{itemize}
+	\end{enumerate}
 	\vspace{0.5em}
 	\begin{center}
-		\begin{tabular}{|c|c|}
-			\hline
-			\textbf{Type}    & \textbf{Quantification} \\
-			\hline
-			Game-based       & Concrete                \\
-			Simulation-based & Asymptotic              \\
-			\hline
-		\end{tabular}
+		CAC tools primarily target \textbf{game-based, concrete} security---exactly the style of reasoning we practiced in Part 1 of this course
 	\end{center}
-	\vspace{0.5em}
-	\begin{itemize}
-		\item CAC tools primarily focus on \textbf{game-based, concrete security}
-		\item Simulation-based proofs: More complex, support composition
-		\item Concrete security implies asymptotic security
-	\end{itemize}
 \end{frame}
 
 \begin{frame}{How protocol models end up, intuitively}
-	\bigimagewithcaption{cas-comparison.png}{Source: Cas Cremers}
+	\bigimagewithcaption{cas-comparison.png}{Computational models capture a small slice of reality in fine detail; symbolic models capture much more of it, but coarsely. Source: Cas Cremers}
 \end{frame}
 
 \begin{frame}{Why design-level security matters}
@@ -287,20 +333,20 @@
 \end{frame}
 
 \begin{frame}{Symbolic analysis tools overview}
-	\bigimagewithcaption{verif-symbolic.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao, and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
+	\bigimagewithcaption{verif-symbolic.png}{The previous slide's features, tool by tool. Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao, and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
 \end{frame}
 
 \begin{frame}{ProVerif: Real-world success stories}
 	\textbf{TLS 1.0}: Verification in seconds to hours
 	\vspace{0.3em}
 
-	\textbf{TLS 1.3} (part of my Ph.D. thesis!): $\sim$1 hour
+	\textbf{TLS 1.3}: $\sim$1 hour
 	\vspace{0.3em}
 
-	\textbf{Signal Protocol} (part of my Ph.D. thesis!): Minutes to days
+	\textbf{Signal Protocol}: Minutes to days
 	\vspace{0.3em}
 
-	\textbf{Noise Protocol Framework} (also part of my Ph.D. thesis!): Seconds to days
+	\textbf{Noise Protocol Framework}: Seconds to days
 	\begin{itemize}
 		\item Demo: \url{https://noiseexplorer.com}
 	\end{itemize}
@@ -308,6 +354,11 @@
 	\begin{center}
 		\Large
 		Key insight: More Diffie-Hellman operations = longer analysis
+
+		\vspace{0.3em}
+
+		\normalsize
+		(TLS 1.3, Signal, and Noise: all part of my Ph.D. thesis!)
 	\end{center}
 \end{frame}
 
@@ -327,10 +378,6 @@
 		\item Library of case studies
 		\item Practical features: Tamarin has a GUI, ProVerif reconstructs attacks in HTML
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Computational analysis tools overview}
-	\bigimagewithcaption{verif-computational.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao, and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
 \end{frame}
 
 \begin{frame}{Game-based security}
@@ -371,6 +418,10 @@
 	\end{center}
 \end{frame}
 
+\begin{frame}{Computational analysis tools overview}
+	\bigimagewithcaption{verif-computational.png}{The previous slide's dimensions, tool by tool. Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao, and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
+\end{frame}
+
 \begin{frame}{CryptoVerif: Automated protocol analysis}
 	\begin{center}
 		\Large
@@ -385,8 +436,7 @@
 	\vspace{0.5em}
 	\textbf{Success stories:}
 	\begin{itemize}
-		\item TLS 1.3 (part of my Ph.D. thesis!)
-		\item Signal Protocol (part of my Ph.D. thesis!)
+		\item TLS 1.3 and the Signal Protocol (same Ph.D. thesis!)
 		\item WireGuard VPN
 	\end{itemize}
 \end{frame}
@@ -426,7 +476,9 @@
 		\item Implemented and verified TLS 1.3 record layer
 	\end{itemize}
 	\vspace{0.5em}
-	\textbf{EasyCrypt successes:} AWS Key Management System, SHA-3 standard
+	\begin{center}
+		Meanwhile, \textbf{EasyCrypt} verified the AWS Key Management System and the SHA-3 standard
+	\end{center}
 \end{frame}
 
 \begin{frame}{The fine print}
@@ -531,8 +583,8 @@
 	\vspace{0.5em}
 	\textbf{But even they get it wrong:}
 	\begin{itemize}
-		\item OpenSSL AES-GCM optimization \rightarrow\ message forgeries
-		\item OpenSSL arithmetic bug \rightarrow\ full key recovery
+		\item OpenSSL AES-GCM optimization $\rightarrow$ message forgeries
+		\item OpenSSL arithmetic bug $\rightarrow$ full key recovery
 		\item 24 vulnerabilities in libcrypto (2016--2019)
 		\item Heartbleed: Memory safety bug leaked secrets
 	\end{itemize}
@@ -571,7 +623,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{\haclstar in Firefox's NSS:}
 			\begin{itemize}
-				\item Replaced entire ciphersuite
+				\item Replaced Curve25519, ChaCha20-Poly1305, and more
 				\item Performance within 5\% of OpenSSL
 				\item Professional packaging
 				\item Perfect timing: post-Heartbleed trust crisis
@@ -601,14 +653,17 @@
 		\item \textbf{\fstar}: Functional with effects
 		\item \textbf{Gallina} (Rocq): Pure functional
 	\end{itemize}
-	\vspace{0.5em}
 	\textbf{Assembly-like languages:}
 	\begin{itemize}
 		\item \textbf{CryptoLine}: Low-level verification
 		\item \textbf{Jasmin}: Assembly with high-level features
 		\item \textbf{Vale}: Structured assembly
 	\end{itemize}
-	\vspace{0.5em}
+	\textbf{And, increasingly, Rust:}
+	\begin{itemize}
+		\item \textbf{hax}, \textbf{Verus}, \textbf{Aeneas}: Verify Rust via extraction to provers (hax returns in Part 2\ldots)
+	\end{itemize}
+	\vspace{0.3em}
 	\begin{center}
 		Source-level verification needs a verified compiler for guarantees;\\
 		assembly-level verification gives direct machine-code guarantees
@@ -618,14 +673,14 @@
 \begin{frame}{Curve25519: Verified implementations win}
 	\textbf{C implementations:}
 	\begin{itemize}
-		\item \textbf{hacl} (verified) \rightarrow\ Beats donna64 (fast unverified C)
-		\item \textbf{fiat} (verified) \rightarrow\ Beats donna64
+		\item \textbf{hacl} (verified) $\rightarrow$ Beats donna64 (fast unverified C)
+		\item \textbf{fiat} (verified) $\rightarrow$ Beats donna64
 		\item Multiple verified implementations faster than best unverified C
 	\end{itemize}
 	\vspace{0.5em}
 	\textbf{Assembly implementations:}
 	\begin{itemize}
-		\item \textbf{evercrypt} (verified) \rightarrow\ Matches fastest unverified
+		\item \textbf{evercrypt} (verified) $\rightarrow$ Matches fastest unverified
 	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}
@@ -642,17 +697,17 @@
 
 \begin{frame}{The verification effort spectrum}
 	\begin{center}
-		\begin{tikzpicture}[scale=0.8]
-			\draw[->] (0,0) -- (10,0) node[right] {Performance};
-			\draw[->] (0,0) -- (0,4) node[above] {Verification Effort};
+		\begin{tikzpicture}[scale=0.8, font=\sffamily\small]
+			\draw[->, thick, cipherdark] (0,0) -- (10.4,0) node[right] {Performance};
+			\draw[->, thick, cipherdark] (0,0) -- (0,4.4) node[above] {Verification effort};
 
-			\node[circle,fill=blue!30] at (2,1) {High-level};
-			\node[circle,fill=orange!30] at (5,2) {C code};
-			\node[circle,fill=red!30] at (8,3.5) {Assembly};
+			\draw[dashed, black!30] (2,0) -- (2,1);
+			\draw[dashed, black!30] (5,0) -- (5,2);
+			\draw[dashed, black!30] (8,0) -- (8,3.5);
 
-			\draw[dashed,gray] (2,0) -- (2,1);
-			\draw[dashed,gray] (5,0) -- (5,2);
-			\draw[dashed,gray] (8,0) -- (8,3.5);
+			\node[rounded corners=2pt, draw=ciphersecondary, fill=ciphersecondary!20, thick, inner sep=2mm] at (2,1) {High-level};
+			\node[rounded corners=2pt, draw=cipheraccent!80!black, fill=cipheraccent!25, thick, inner sep=2mm] at (5,2) {C code};
+			\node[rounded corners=2pt, draw=red!70!black, fill=red!15, thick, inner sep=2mm] at (8,3.5) {Assembly};
 		\end{tikzpicture}
 	\end{center}
 	\vspace{0.5em}
@@ -663,7 +718,7 @@
 	\end{center}
 \end{frame}
 
-\section{Implementation-Level Security}
+\section{Deployment-Level Security: Side Channels}
 
 \begin{frame}{Side channels: The hidden attack surface}
 	\begin{center}
@@ -759,15 +814,15 @@
 	\vspace{0.5em}
 	\textbf{The vicious cycle:}
 	\begin{enumerate}
-		\item Original TLS timing vulnerability discovered
-		\item Developers patch it
-		\item The patch itself creates Lucky 13
-		\item Lucky 13 gets patched
-		\item The Lucky 13 patch introduces a \textit{new} timing vulnerability!
+		\item 2002: Vaudenay's padding oracle attack against CBC mode in TLS
+		\item Countermeasure: Decrypt anyway, compute the MAC over dummy data
+		\item 2013: Lucky 13 exploits the tiny timing skew that countermeasure left behind (remember topic 2.1?)
+		\item OpenSSL patches Lucky 13
+		\item 2016: The patch introduces a \textit{new} padding oracle (CVE-2016-2107)!
 	\end{enumerate}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{Each ``fix'' introduced new vulnerabilities!}
+		\textit{Each ``fix'' introduced a new vulnerability---for over a decade}
 	\end{center}
 \end{frame}
 
@@ -795,7 +850,7 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{CAC for implementation security}
+\begin{frame}{CAC for side-channel security}
 	\begin{center}
 		\Large
 		What if we could \textbf{prove} constant-time?
@@ -817,7 +872,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Implementation verification tools overview}
+\begin{frame}{Verified implementations: The state of the art}
 	\bigimagewithcaption{verif-implementations.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao, and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
 \end{frame}
 
@@ -863,7 +918,7 @@
 	\vspace{0.5em}
 	\textbf{The endless loop (pre-1.3):}
 	\begin{enumerate}
-		\item Attack found \rightarrow\ Quick patch \rightarrow\ Long-term fix \rightarrow\ New attack
+		\item Attack found $\rightarrow$ Quick patch $\rightarrow$ Long-term fix $\rightarrow$ New attack
 	\end{enumerate}
 	\vspace{0.3em}
 	\textbf{When academics looked at real TLS:} BEAST, CRIME, Lucky 13, POODLE, Logjam\ldots
@@ -935,44 +990,65 @@
 	\end{center}
 \end{frame}
 
+\begin{frame}{Part 1 recap: The promise}
+	\begin{itemize}
+		\item \textbf{Design level}: Symbolic (ProVerif, Tamarin) and computational (CryptoVerif, \fstar, EasyCrypt) tools find real flaws and prove real theorems
+		\item \textbf{Implementation level}: Verified code now matches or beats hand-optimized code (\haclstar, Fiat, EverCrypt)
+		\item \textbf{Deployment level}: Constant-time discipline can be checked against explicit leakage models
+		\item \textbf{TLS 1.3}: Verification during design became the new playbook
+	\end{itemize}
+	\vspace{1em}
+	\begin{center}
+		\Large
+		So: Is cryptographic software a solved problem?
+
+		\vspace{0.3em}
+
+		\normalsize
+		\textit{Not quite\ldots}
+	\end{center}
+\end{frame}
+
 %% ====================================================================
 %%  PART 2: VERIFICATION THEATRE
 %% ====================================================================
 
 \begin{frame}[plain]
+	\begin{tikzpicture}[remember picture, overlay]
+		\fill[cipherdarkbg] (current page.north west) rectangle (current page.south east);
+		\draw[cipheraccent, line width=3pt] (current page.north west) rectangle (current page.south east);
+	\end{tikzpicture}
+	\vspace{1cm}
 	\begin{center}
-		\vspace{4em}
-		{\Huge Part 2}
+		{\usebeamercolor[fg]{section header}\usebeamerfont{subtitle}\Large Part 2}
 
-		\vspace{1em}
+		\vspace{0.5cm}
 
-		{\Large Verification Theatre:}
+		{\color{cipheraccent}\usebeamerfont{title}\fontsize{20}{24}\selectfont Verification Theatre\par}
 
-		{\Large Critically Examining High-Assurance Cryptography}
+		\vspace{0.8cm}
 
-		\vspace{2em}
+		{\usebeamercolor[fg]{section header}\large The pitfalls: critically examining high-assurance cryptography}
 
-		\normalsize
-		Based on: Nadim Kobeissi, \textit{Verification Theatre: False Assurance in Formally Verified Cryptographic Libraries}, 2026.
+		\vspace{1.2cm}
+
+		{\usebeamercolor[fg]{section header}\normalsize Based on: Nadim Kobeissi, \textit{Verification Theatre: False Assurance in Formally Verified Cryptographic Libraries}, 2026.\par}
 	\end{center}
 \end{frame}
 
 \section{The Verification Boundary}
 
 \begin{frame}{What is a verification boundary?}
-	\begin{center}
-		\Large
-		Every formally verified system embeds a \textbf{verification boundary}
-	\end{center}
-	\vspace{1em}
+	\definitionbox{Verification Boundary}{The interface separating code whose properties carry \textbf{machine-checked proofs} from code that is \textbf{trusted without proof}.}
+	\vspace{0.5em}
 	\begin{itemize}
-		\item The interface between code with \textbf{machine-checked proofs} and code that is \textbf{trusted without them}
-		\item Outside the boundary: compilers, OS, hardware, platform intrinsics, ``glue code''
-		\item The existence of this boundary is well understood\ldots
+		\item Every formally verified system embeds one: it can be drawn tightly or loosely, but it always exists
+		\item Outside the boundary: compilers, operating system, hardware, platform intrinsics, ``glue code''
+		\item The existence of this boundary is well understood by experts\ldots
 	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{But it is not always communicated clearly}
+		\textit{But it is not always communicated clearly to users}
 	\end{center}
 \end{frame}
 
@@ -1049,6 +1125,24 @@
 			V13         & Wrong multiplication spec       & ML-DSA spec        \\
 			\hline
 		\end{tabular}
+	\end{center}
+\end{frame}
+
+\begin{frame}{The formal verification pipeline}
+	\begin{center}
+		\Large
+		How does Cryspen's verification work?
+	\end{center}
+	\vspace{0.5em}
+	\begin{enumerate}
+		\item \textbf{Specification}: Algorithm spec written in hacspec (a Rust subset) or \fstar
+		\item \textbf{Implementation}: Optimized Rust with multiple backends (portable, AVX2, NEON)
+		\item \textbf{Extraction and proof}: The hax toolchain extracts Rust to \fstar; provers verify correctness, safety, and secret independence
+		\item \textbf{Compilation}: Verified source compiled by an \textbf{unverified} compiler (rustc/LLVM)
+	\end{enumerate}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Each stage introduces a trust boundary}
 	\end{center}
 \end{frame}
 
@@ -1250,25 +1344,7 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{The formal verification pipeline}
-	\begin{center}
-		\Large
-		How does Cryspen's verification work?
-	\end{center}
-	\vspace{0.5em}
-	\begin{enumerate}
-		\item \textbf{Specification}: Algorithm spec written in hacspec (Rust subset) or \fstar
-		\item \textbf{Implementation}: Optimized Rust with multiple backends (portable, AVX2, NEON)
-		\item \textbf{Extraction and Proof}: hax toolchain extracts Rust to \fstar; provers verify correctness, safety, and secret independence
-		\item \textbf{Compilation}: Verified source compiled by an \textbf{unverified} compiler (LLVM/rustc)
-	\end{enumerate}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Each stage introduces a trust boundary}
-	\end{center}
-\end{frame}
-
-\section{Type I: Unverified Platform Abstractions}
+\subsection{Type I: Unverified Platform Abstractions}
 
 \begin{frame}{Type I: Unverified Platform Abstractions}
 	\begin{center}
@@ -1304,7 +1380,7 @@
 	\begin{itemize}
 		\item ML-KEM incremental API: \texttt{from\_bytes}/\texttt{to\_bytes} serialization
 		\item The portable backend used a \textbf{different byte order} than the SIMD backends
-		\item Serialize state on one platform, deserialize on another \rightarrow\ \textbf{failure}
+		\item Serialize state on one platform, deserialize on another $\rightarrow$ \textbf{failure}
 	\end{itemize}
 	\vspace{0.5em}
 	\textbf{Real-world impact:}
@@ -1334,7 +1410,7 @@
 	\end{itemize}
 \end{frame}
 
-\section{Type II: Unverified Protocol Logic}
+\subsection{Type II: Unverified Protocol Logic}
 
 \begin{frame}{Type II: Unverified Protocol Logic}
 	\begin{center}
@@ -1377,7 +1453,7 @@
 	\end{center}
 \end{frame}
 
-\section{Type III: Specification Incompleteness}
+\subsection{Type III: Specification Incompleteness}
 
 \begin{frame}{Type III: Specification Incompleteness}
 	\begin{center}
@@ -1400,7 +1476,7 @@
 	\end{center}
 \end{frame}
 
-\section{Type IV: Unverified Wrapper Logic}
+\subsection{Type IV: Unverified Wrapper Logic}
 
 \begin{frame}{Type IV: Unverified Wrapper Logic}
 	\begin{center}
@@ -1479,7 +1555,7 @@
 	\end{center}
 \end{frame}
 
-\section{Type V: Specification Errors and False Proofs}
+\subsection{Type V: Specification Errors and False Proofs}
 
 \begin{frame}{Type V: The most insidious failures}
 	\begin{center}
@@ -1840,11 +1916,11 @@
 
 \begin{frame}{Disclosure: A cautionary tale}
 	\begin{itemize}
-		\item Feb 5, 2026: We submit PRs with tested fixes for V3--V6
-		\item Feb 5--6: Cryspen \textbf{blocks our GitHub account}, closes all PRs
-		\item Feb 9: Cryspen merges our fixes \textbf{without attribution}
+		\item Feb 5, 2026: I submit PRs with tested fixes for V3--V6
+		\item Feb 5--6: Cryspen \textbf{blocks my GitHub account}, closes all PRs
+		\item Feb 9: Cryspen merges my fixes \textbf{without attribution}
 		\item Feb 12: Cryspen publishes a response stating ``no bugs have been found in the verified code''
-		\item Feb 17: We disclose V8--V9 (FIPS 204 violations)
+		\item Feb 17: I disclose V8--V9 (FIPS 204 violations)
 		\item Mar 4: Cryspen merges fixes for V8--V9, crediting the discoverer
 	\end{itemize}
 	\vspace{0.5em}
@@ -1856,7 +1932,7 @@
 \begin{frame}{Why this matters: The trust chain}
 	\begin{center}
 		\Large
-		Users trust the library \rightarrow\ Library trusts the proofs \rightarrow\ Proofs trust the spec
+		Users trust the library $\rightarrow$ Library trusts the proofs $\rightarrow$ Proofs trust the spec
 	\end{center}
 	\vspace{1em}
 	\begin{itemize}
@@ -1926,16 +2002,12 @@
 \end{frame}
 
 \begin{frame}{Verification theatre, defined}
-	\begin{center}
-		\Large
-		\textbf{Verification theatre} is the practice of deploying formal methods in a manner that:
-	\end{center}
-	\vspace{0.5em}
-	\begin{enumerate}
-		\item Establishes machine-checked proofs for a \textbf{subset} of code and properties, where some proofs may themselves be \textbf{unchecked, vacuous, or built on false axioms}
-		\item Communicates these proofs using language that implies \textbf{comprehensive coverage}
-		\item Fails to adequately disclose the verification boundary, unverified components, unchecked proofs, or properties not covered
-	\end{enumerate}
+	\definitionbox{Verification Theatre}{The practice of deploying formal methods in a manner that:
+		\begin{enumerate}
+			\item Establishes machine-checked proofs for a \textbf{subset} of code and properties, where some proofs may themselves be \textbf{unchecked, vacuous, or built on false axioms},
+			\item Communicates these proofs using language that implies \textbf{comprehensive coverage},
+			\item Fails to adequately disclose the verification boundary, unverified components, unchecked proofs, or properties not covered.
+		\end{enumerate}}
 	\vspace{0.5em}
 	\begin{center}
 		\textit{Echoes Schneier's ``security theater'': an appearance of security that doesn't match reality}
