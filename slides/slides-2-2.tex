@@ -3,8 +3,8 @@
 
 \title{Applied Cryptography - 2.2: The Story of RC4}
 \author{Nadim Kobeissi}
-\subject{An exploration of RC4's history, from its creation in 1987 to its eventual deprecation in 2015, covering its vulnerabilities in WEP and TLS protocols.}
-\keywords{RC4, stream cipher, cryptanalysis, WEP, TLS, FMS attack, statistical biases, ABSAB bias, cryptographic lifecycle}
+\subject{The complete life cycle of a cipher: RC4's design in 1987, its leak in 1994, its rise to dominance in WEP and TLS, the twenty years of cryptanalysis that dismantled it, and its formal prohibition in 2015.}
+\keywords{RC4, stream cipher, cryptanalysis, WEP, TLS, FMS attack, statistical biases, ABSAB bias, broadcast attack, RC4 NOMORE, nonce misuse, cryptographic agility}
 \institute{Symbolic Software}
 \instituteimage{images/symbolicsoft-white.png}
 \date{\today}
@@ -18,191 +18,91 @@
 	\titlepage
 \end{frame}
 
-\section{About RC4}
+\section{A Cipher Worth Studying}
 
-\begin{frame}{The Rise and Fall of RC4}
-	\begin{itemize}
-		\item A cryptographic tale of triumph and tragedy
+\begin{frame}{Why spend a lecture on a dead cipher?}
+	\begin{itemize}[<+->]
+		\item RC4 is the best-documented \textbf{complete life cycle} we have in cryptography: we get to watch a cipher be born, conquer the internet, and die.
+		\item Almost nothing else offers this. Most broken ciphers die young and obscure; most surviving ciphers have not finished their story.
+		\item \textbf{What we are actually here to learn:}
 		      \begin{itemize}
-			      \item \textbf{Birth (1987):} Proprietary stream cipher at RSA Security
-			      \item \textbf{Rise (1990s):} Became the world's most widely deployed stream cipher
-			      \item \textbf{Golden Era (1990s--2000s):} Powered WEP, SSL, and TLS protocols globally
-			      \item \textbf{Decline (2001--2015):} A series of devastating cryptanalytic breakthroughs
-			      \item \textbf{Demise (2015):} Formal prohibition by the IETF and browser vendors
+			      \item How a tiny statistical flaw becomes a total break, given enough traffic.
+			      \item How a \emph{primitive} can be sound while every \emph{protocol} using it fails.
+			      \item How long it takes to remove a broken algorithm from the internet, and why.
 		      \end{itemize}
-		\item This story teaches us about cryptographic lifecycle management, the importance of formal security analysis, and the challenges of maintaining backward compatibility
+		\item RC4 itself is dead. Every one of its failure modes is alive.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{What is RC4?}
-	\begin{itemize}
-		\item \textbf{RC4} (Rivest Cipher 4) is a stream cipher designed for speed and simplicity
-		      \begin{itemize}
-			      \item \textbf{Stream cipher:} Encrypts data one byte at a time
-			      \item \textbf{Variable key length:} Supports keys from 1 to 256 bytes
-			      \item \textbf{Symmetric encryption:} Same key used for encryption and decryption
-		      \end{itemize}
-		\item Key characteristics that made it popular:
-		      \begin{itemize}
-			      \item Extremely fast in software (no complex operations)
-			      \item Small memory footprint (only 256 bytes of state)
-			      \item Simple implementation (just a few lines of code)
-		      \end{itemize}
-		\item Used extensively in protocols like WEP (Wi-Fi), SSL/TLS, and SSH
+\begin{frame}{The arc of RC4}
+	\begin{itemize}[<+->]
+		\item \textbf{1987 --- Birth.} Ron Rivest designs RC4 as a trade secret at RSA Security.
+		\item \textbf{1994 --- Escape.} The algorithm is leaked anonymously to the Cypherpunks mailing list.
+		\item \textbf{1990s--2000s --- Empire.} The most widely deployed stream cipher in history: WEP, SSL/TLS, SSH-1, Office, PDF.
+		\item \textbf{1995--2001 --- Hairline cracks.} Academics find statistical oddities. Nobody panics.
+		\item \textbf{2001 --- WEP falls.} Fluhrer--Mantin--Shamir turn an oddity into total Wi-Fi key recovery.
+		\item \textbf{2013--2015 --- TLS falls.} Bias attacks recover cookies and passwords from HTTPS.
+		\item \textbf{2015 --- Prohibition.} RFC 7465 bans RC4 in TLS; browsers finish the job by 2016.
 	\end{itemize}
+	\onslide<+->{\centering\textbf{Twenty-eight years from design to formal ban.}}
 \end{frame}
 
-\begin{frame}{Origins of RC4}
-	\begin{itemize}
-		\item \textbf{1987:} Ron Rivest designs RC4 at RSA Security
-		      \begin{itemize}
-			      \item Originally a trade secret, not published
-			      \item ``RC'' stands for ``Ron's Code'' or ``Rivest Cipher''
-			      \item Designed for practical applications requiring fast encryption
-		      \end{itemize}
-		\item \textbf{1994:} Algorithm anonymously posted to the Cypherpunks mailing list
-		      \begin{itemize}
-			      \item Source code leaked, breaking RSA's trade secret
-			      \item Called ``Alleged RC4'' or ``ARCFOUR'' due to legal concerns
-			      \item Quickly reverse-engineered and verified as authentic
-		      \end{itemize}
-		\item \textbf{Impact of the leak:}
-		      \begin{itemize}
-			      \item Made RC4 freely available to implementers worldwide
-			      \item Led to its widespread adoption in internet protocols
-			      \item Ironically helped RSA by making its cipher ubiquitous
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{RC4's Key Scheduling Algorithm (KSA)}
-	\begin{itemize}
-		\item \textbf{Step 1:} Initialize the state array S with values 0 through 255
-		      \begin{itemize}
-			      \item \texttt{for i = 0 to 255: S[i] = i}
-		      \end{itemize}
-		\item \textbf{Step 2:} Scramble the state array using the key
-		      \begin{itemize}
-			      \item \texttt{j = 0}
-			      \item \texttt{for i = 0 to 255:}
-			      \item \texttt{\quad j = (j + S[i] + key[i mod keylength]) mod 256}
-			      \item \texttt{\quad swap(S[i], S[j])}
-		      \end{itemize}
-		\item \textbf{Purpose:} Create a pseudo-random permutation of 0--255 based on the key
-		\item The quality of this initial scrambling is crucial for security
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{$\mathsf{PRP}: F_{k}\colon X \rightarrow X$}{Reminder}
+\begin{frame}{Where RC4 came from}
 	\begin{columns}[c]
-		\begin{column}{0.4\textwidth}
-			\begin{itemize}
-				\item \textbf{Bijective} (two-way)
+		\begin{column}{0.56\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{1987:} Designed by Ron Rivest at RSA Security. ``RC'' for ``Rivest Cipher'' (or ``Ron's Code'').
 				      \begin{itemize}
-					      \item \textbf{Injective}: No two inputs map to the same output (no
-					            collisions).
-					      \item \textbf{Surjective}: Every output has one corresponding input.
+					      \item Kept as a \textbf{trade secret}, never published, licensed only under NDA.
 				      \end{itemize}
-				\item ``Randomized''
-				\item Relations between inputs not reflected in outputs
+				\item \textbf{September 1994:} the algorithm is posted anonymously to the Cypherpunks mailing list.
+				      \begin{itemize}
+					      \item Verified against licensed implementations within days.
+					      \item RSA never confirmed it, so the public version was politely called \textbf{``Alleged RC4''} or \textbf{ARCFOUR} --- a name still in OpenSSH and GnuTLS today.
+				      \end{itemize}
 			\end{itemize}
 		\end{column}
-
-		\begin{column}{0.8\textwidth}
-			\begin{tikzpicture}[scale=0.38]
-				% Define colors
-				\definecolor{domaingreen}{RGB}{102, 170, 68}
-				\definecolor{rangegreen}{RGB}{102, 170, 68}
-				\definecolor{circlecolor}{RGB}{235, 137, 85}
-				\definecolor{purplearrow}{RGB}{160, 78, 160}
-
-				% Input space (domain) X - made square
-				\draw[dashed, thick, domaingreen, fill=domaingreen]
-				(0,0) rectangle (8,8);
-				\node[text width=6.5cm, align=center, font=\normalsize]
-				at
-				(4,-0.8)
-				{Size: fixed};
-				\node[font=\normalsize] at (4,9) {Input space (domain) $X$};
-
-				% Output (range) Y - made square, same size as domain, moved left
-				\draw[thick, rangegreen, fill=rangegreen] (12,0) rectangle (20,8);
-				\node[text width=6.5cm, align=center, font=\normalsize]
-				at
-				(16,-0.8)
-				{Size: fixed};
-				\node[font=\normalsize] at (16,9) {Output (range) $X$};
-				% Input dots - adjusted positions for square domain
-				\filldraw[circlecolor] (2,7) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(2,7) -- (14.2,7.4);
-				\pause
-				\filldraw[circlecolor] (14.2,7.4) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (3,6) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(3,6) -- (18.6,5.3);
-				\pause
-				\filldraw[circlecolor] (18.6,5.3) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (2,5) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(2,5) -- (13.8,4.2);
-				\pause
-				\filldraw[circlecolor] (13.8,4.2) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (4,3.5) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(4,3.5) -- (17.4,2.2);
-				\pause
-				\filldraw[circlecolor] (17.4,2.2) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (2,2) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(2,2) -- (16.1,6.7);
-				\pause
-				\filldraw[circlecolor] (16.1,6.7) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (3,1) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(3,1) -- (19.0,1.4);
-				\pause
-				\filldraw[circlecolor] (19.0,1.4) circle (0.3);
-			\end{tikzpicture}
+		\begin{column}{0.44\textwidth}
+			\onslide<+->{
+				\definitionbox{Security by obscurity}{
+					Seven years of secrecy bought RSA nothing. The design leaked in a single message, and the weaknesses were found \emph{after} publication, by the open research community RSA had excluded.
+					\vspace{0.5em}
+					\\
+					Note the irony: the leak is what made RC4 ubiquitous. Free availability, not licensing, built the empire.
+				}
+			}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Limitations of One-Time Pad}{Reminder}
-	\definitionbox{The Key Length Problem}{
-		One-time pad is not a particularly useful encryption scheme in practice.
-	}
-	\begin{itemize}
-		\item The key must be as long as the plaintext!
-		\item This creates a chicken-and-egg situation:
-		      \begin{itemize}
-			      \item To privately send $n$ bits of information,
-			      \item We must already privately share $n$ bits of information.
-		      \end{itemize}
-		\item Impractical for most real-world applications.
-		      \begin{itemize}
-			      \item Clearly this is not what we're doing when we use HTTPS,
-			      \item or WhatsApp, or pay for something via a debit card\ldots
-		      \end{itemize}
-		\item We need encryption schemes where the key can be smaller than the message.
-	\end{itemize}
+\begin{frame}{Why everyone chose RC4}
+	\begin{columns}[c]
+		\begin{column}{0.54\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Fast in software.} Around an order of magnitude quicker than DES.
+				\item \textbf{Tiny.} 256 bytes of state and two indices. It fits on a microcontroller.
+				\item \textbf{Trivial to implement.} Roughly ten lines of code. Compare with a correct AES.
+				\item \textbf{No blocks, no padding.} $n$ bytes in, $n$ bytes out.
+				\item \textbf{Export-friendly.} At 40 bits it cleared US export controls, so one codebase shipped worldwide.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\onslide<+->{
+				\textbf{Where it ended up:}
+				\begin{itemize}
+					\item \textbf{WEP} (1997): Wi-Fi, RC4 exclusively.
+					\item \textbf{SSL 3.0 / TLS 1.0}: preferred suite for years.
+					\item \textbf{SSH-1} (1995): \texttt{arcfour}.
+					\item \textbf{Office} and \textbf{PDF}: document encryption.
+					\item \textbf{Kerberos}: \texttt{RC4-HMAC}, still limping along.
+				\end{itemize}
+			}
+			\onslide<+->{\centering At its peak, RC4 protected roughly \textbf{half of all TLS traffic}.}
+		\end{column}
+	\end{columns}
 \end{frame}
+
+\section{How RC4 Works}
 
 \begin{frame}{Idea: find a way to expand the key}{Reminder}
 	\begin{itemize}
@@ -218,97 +118,167 @@
 			      \item Magically expand it to $k_e$ where $\left|k_e\right| \geq \left|m\right|$,
 			      \item $\func{enc}{k_e, M} = k_e \oplus M$
 		      \end{itemize}
+		\item \textbf{RC4 is one answer to ``how do we do the magic?''}
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{RC4's Pseudo-Random Generation Algorithm (PRGA)}
-	\begin{itemize}
-		\item \textbf{Initialization:} Set counters \texttt{i = 0, j = 0}
-		\item \textbf{For each byte to encrypt:}
-		      \begin{itemize}
-			      \item \texttt{i = (i + 1) mod 256}
-			      \item \texttt{j = (j + S[i]) mod 256}
-			      \item \texttt{swap(S[i], S[j])}
-			      \item \texttt{K = S[(S[i] + S[j]) mod 256]} \quad ← keystream byte
-			      \item \texttt{ciphertext = plaintext XOR K}
-		      \end{itemize}
-		\item \textbf{Key insight:} The state array S is continuously modified
-		      \begin{itemize}
-			      \item Each keystream byte depends on the entire previous history
-			      \item Creates a very long period before repetition
-		      \end{itemize}
-		\item \textbf{Decryption:} Identical process (XOR is self-inverse)
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{RC4's golden age (1990s--2000s)}
-	\begin{itemize}
-		\item \textbf{The most widely deployed stream cipher in history}
-		      \begin{itemize}
-			      \item Estimated to secure over 50\% of all SSL/TLS connections at its peak
-			      \item Billions of devices worldwide relied on RC4 for encryption
-		      \end{itemize}
-		\item \textbf{Ubiquitous protocol adoption:}
-		      \begin{itemize}
-			      \item \textbf{WEP (1997):} Wi-Fi security standard used RC4 exclusively
-			      \item \textbf{SSL 3.0/TLS 1.0 (1996--1999):} RC4 as preferred cipher suite
-			      \item \textbf{SSH-1 (1995):} Early secure shell implementations
-			      \item \textbf{Microsoft Office:} Document password protection
-			      \item \textbf{Adobe PDF:} File encryption standard
-		      \end{itemize}
-		\item \textbf{Why RC4 dominated:}
-		      \begin{itemize}
-			      \item 5--10x faster than DES in software implementations
-			      \item Minimal memory requirements (perfect for embedded systems)
-			      \item Fewer export restrictions than strong block ciphers
-			      \item Simple to implement correctly
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\section{RC4 in WEP}
-
-\begin{frame}{Early RC4 weaknesses (1995--2000)}
-	\begin{itemize}
-		\item \textbf{1995:} Roos discovered correlations between key bytes and initial permutation
-		      \begin{itemize}
-			      \item Found that RC4's key scheduling leaks information about the key
-			      \item Wagner and Goldberg identified flaws in SSL 3.0's use of RC4
-			      \item Seemed like minor curiosities at the time\ldots
-		      \end{itemize}
-		\item \textbf{1997:} Goli\'{c} discovered more biases in the keystream
-		      \begin{itemize}
-			      \item Certain byte positions showed statistical irregularities
-			      \item Still considered mostly theoretical concerns
-		      \end{itemize}
-		\item \textbf{2000:} Jenkins found patterns in RC4's internal state
-		      \begin{itemize}
-			      \item Identified correlations between consecutive keystream bytes
-			      \item Cryptographic community began to worry about RC4's security
-		      \end{itemize}
-		\item \textbf{The stage was set} for a more devastating attack\ldots
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Weak keys in KSA}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
+\begin{frame}{RC4 is two algorithms}
+	\begin{columns}[t]
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sssubroutine{RC4.KSA}{k}{
+					for $i \coloneq 0$ to $255$: \\
+					\quad $S[i] \coloneq i$ \\
+					$j \coloneq 0$ \\
+					for $i \coloneq 0$ to $255$: \\
+					\quad $j \coloneq (j + S[i] + k[i \bmod |k|]) \bmod 256$ \\
+					\quad swap $S[i]$, $S[j]$ \\
+					return $S$
+				}{0.74}
+			\end{center}
 			\begin{itemize}
-				\item \textbf{The Discovery:} Certain key patterns create predictable initial states\footnote{\url{https://appliedcryptography.page/paper/\#rc4-ksa}}
-				\item \textbf{Weak Key Pattern:} Keys of the form $(K_1, K_2, \ldots, K_n, 3, 255, \ldots)$
-				      \begin{itemize}
-					      \item When byte 3 of the key is 3 and byte 4 is 255
-					      \item The KSA creates a predictable correlation in the state array
-				      \end{itemize}
-				\item \textbf{The Mathematics:}
-				      \begin{itemize}
-					      \item After KSA completes, $S[1] = 3$ with high probability
-					      \item In the first step of PRGA: $i = 1, j = S[1] = 3$
-					      \item First keystream byte: $S[S[1] + S[3]] = S[3 + S[3]]$
-					      \item This reveals information about the key!
-				      \end{itemize}
-				\item \textbf{Frequency:} About 1 in 256 keys exhibit this weakness
+				\item \textbf{Key Scheduling:} stir the key into a permutation of $0..255$.
 			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\sssubroutine{RC4.PRGA}{S}{
+					$i \coloneq 0$, \quad $j \coloneq 0$ \\
+					loop: \\
+					\quad $i \coloneq (i + 1) \bmod 256$ \\
+					\quad $j \coloneq (j + S[i]) \bmod 256$ \\
+					\quad swap $S[i]$, $S[j]$ \\
+					\quad yield $S[(S[i] + S[j]) \bmod 256]$
+				}{0.74}
+			\end{center}
+			\begin{itemize}
+				\item \textbf{Generation:} one keystream byte per iteration.
+				\item $\func{Enc}{k, M} = M \oplus \texttt{RC4}(k)$, and decryption is the same function.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The state is always a permutation}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}[<+->]
+				\item $S$ starts as the identity permutation and \textbf{every operation is a swap}, so $S$ stays a permutation forever: no value is lost or duplicated.
+				\item The KSA's whole job is to make it look uniformly drawn from all $256!$ of them. \textbf{Every attack in this lecture says the same thing:} it does not quite manage it.
+				\item \textbf{Careful:} $S$ is a permutation, but RC4 is \emph{not} a PRP. It is a PRG --- seed in, keystream out.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.33]
+					\definecolor{domaingreen}{RGB}{102, 170, 68}
+					\definecolor{circlecolor}{RGB}{235, 137, 85}
+					\definecolor{purplearrow}{RGB}{160, 78, 160}
+
+					\draw[dashed, thick, domaingreen, fill=domaingreen] (0,0) rectangle (8,8);
+					\node[font=\small] at (4,9.2) {Indices $0..255$};
+
+					\draw[thick, domaingreen, fill=domaingreen] (12,0) rectangle (20,8);
+					\node[font=\small] at (16,9.2) {Values $0..255$};
+
+					\filldraw[circlecolor] (2,7) circle (0.3);
+					\draw[-{Stealth[length=3mm, width=2mm]}, thick, purplearrow] (2,7) -- (14.2,7.4);
+					\filldraw[circlecolor] (14.2,7.4) circle (0.3);
+
+					\filldraw[circlecolor] (3,6) circle (0.3);
+					\draw[-{Stealth[length=3mm, width=2mm]}, thick, purplearrow] (3,6) -- (18.6,5.3);
+					\filldraw[circlecolor] (18.6,5.3) circle (0.3);
+					\pause
+
+					\filldraw[circlecolor] (2,5) circle (0.3);
+					\draw[-{Stealth[length=3mm, width=2mm]}, thick, purplearrow] (2,5) -- (13.8,4.2);
+					\filldraw[circlecolor] (13.8,4.2) circle (0.3);
+
+					\filldraw[circlecolor] (4,3.5) circle (0.3);
+					\draw[-{Stealth[length=3mm, width=2mm]}, thick, purplearrow] (4,3.5) -- (17.4,2.2);
+					\filldraw[circlecolor] (17.4,2.2) circle (0.3);
+					\pause
+
+					\filldraw[circlecolor] (2,2) circle (0.3);
+					\draw[-{Stealth[length=3mm, width=2mm]}, thick, purplearrow] (2,2) -- (16.1,6.7);
+					\filldraw[circlecolor] (16.1,6.7) circle (0.3);
+
+					\filldraw[circlecolor] (3,1) circle (0.3);
+					\draw[-{Stealth[length=3mm, width=2mm]}, thick, purplearrow] (3,1) -- (19.0,1.4);
+					\filldraw[circlecolor] (19.0,1.4) circle (0.3);
+				\end{tikzpicture}
+				\\[0.6em]
+				\small Bijective: no collisions, nothing unmapped.
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The flaw that explains this entire lecture}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{center}
+				\large
+				$\texttt{ChaCha20}(\underbrace{K}_{\text{secret}}, \underbrace{N}_{\text{per message}}, \text{ctr})$
+				\\[1.2em]
+				$\texttt{RC4}(\underbrace{k}_{\text{secret}})$
+			\end{center}
+			\vspace{0.5em}
+			\onslide<2->{
+				\alertbox{RC4 has no nonce}{
+					There is nowhere to put a per-message value. The keystream is a function of the key and \emph{nothing else}.
+				}
+			}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{itemize}[<3->]
+				\item One key must never produce the same keystream twice. Modern ciphers use a \textbf{nonce}: same $K$, different $N$, unrelated keystream.
+				\item RC4 offers no such input, so every protocol had to \textbf{invent one} by manufacturing a fresh $k$ per message.
+				\item \textbf{WEP's answer:} $k \coloneq IV \,\|\, K$. Cheap, and catastrophic.
+				\item \textbf{TLS's answer:} a fresh $k$ per connection, from the handshake. Sound! But then the \emph{same} plaintext is encrypted under many keys.
+			\end{itemize}
+			\onslide<7->{\centering\textbf{One missing input, two different catastrophes.}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\section{The Cracks Appear}
+
+\begin{frame}{Early warnings (1995--2001)}
+	\begin{itemize}[<+->]
+		\item \textbf{1995 --- Roos.} The first bytes of $S$ after the KSA are correlated with the first bytes of the key, and a class of \textbf{weak keys} leaves structure that survives into the keystream.
+		      \begin{itemize}
+			      \item Published to \texttt{sci.crypt}, not to a conference. Treated as a curiosity.
+		      \end{itemize}
+		\item \textbf{1996 --- Jenkins' ``Glimpse'' theorem.} Each keystream byte leaks the internal state: $\Pr[S[j] = i - Z] \approx 2/256$, twice what it should be.
+		\item \textbf{1997 --- Goli\'{c} (Eurocrypt).} A linear statistical weakness in the output, giving a distinguisher from random.
+		\item \textbf{2001 --- Mantin \& Shamir (FSE).} The cleanest result of the era, and the one that should have ended RC4 on the spot.
+	\end{itemize}
+	\onslide<+->{\centering\textit{Every one of these was published, peer-reviewed, and deployed straight past.}}
+\end{frame}
+
+\begin{frame}{Mantin \& Shamir (2001): the second byte betrays you}
+	\begin{columns}[c]
+		\begin{column}{0.52\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{The theorem:} if after the KSA we have $S[2] = 0$ and $S[1] \neq 2$, then the second keystream byte is \textbf{always} $Z_2 = 0$.
+				\item That precondition holds for about $1$ key in $256$. When it fails, $Z_2 = 0$ still happens by chance $1$ time in $256$.
+				\item So $\Pr[Z_2 = 0] \approx \frac{2}{256}$: \textbf{double} the correct probability, for a perfectly random key.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\onslide<+->{
+				\definitionbox{Why this is devastating}{
+					Take one plaintext byte encrypted under many independent keys --- say, byte 2 of a cookie sent on every request.
+					\vspace{0.5em}
+					\\
+					The most common ciphertext byte at position 2 is $M_2 \oplus 0 = M_2$.
+					\vspace{0.5em}
+					\\
+					\textbf{You do not need the key. You only need to count.}
+				}
+			}
+			\onslide<+->{\centering This is the \textbf{broadcast attack}. It sat in the literature for twelve years before anyone aimed it at TLS.}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -341,8 +311,8 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			An encryption scheme has one-time secrecy if its ciphertexts are uniformly distributed when keys are sampled uniformly, kept secret, and used for only one encryption, no matter how the plaintexts are chosen.
-			\\
-			\textbf{Does this apply to RC4, especially after the attacks?}
+			\\[1em]
+			\textbf{Mantin and Shamir just handed us a distinguisher between these two libraries:} call \textsf{ots.enc} on a fixed $M$ a few million times, and count how often byte 2 of $C$ equals $M_2$.
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -355,119 +325,95 @@
 				$K \coloneq \texttt{RC4}(k, |M|)$ \\
 				$C \coloneq K \oplus M$ \\
 				return $C$
-			}{1.5}
+			}{1.2}
 		\end{column}
 		\begin{column}{0.3\textwidth}
 			\begin{center}
-				{\huge{$\cancel{\approxeq}$}} \\[1em]
+				{\huge{$\cancel{\approxeq}$}}
 			\end{center}
 		\end{column}
 		\begin{column}{0.35\textwidth}
 			\sssubroutine{Random}{M}{
 				$C \twoheadleftarrow \bits^{|M|}$ \\
 				return $C$
-			}{1.5}
+			}{1.2}
 		\end{column}
 	\end{columns}
-\end{frame}
-
-\begin{frame}{In fact\ldots}
-	\bigimagewithcaption{rc4-bias.png}{Source: Kenny Paterson}
-\end{frame}
-
-\begin{frame}{Attacks: from theory to practice}
 	\begin{itemize}
-		\item \textbf{Step 1:} Collect many ciphertexts encrypted with related keys
-		      \begin{itemize}
-			      \item Keys that differ only in the first few bytes
-			      \item Wait for keys with the vulnerable pattern to appear
-		      \end{itemize}
-		\item \textbf{Step 2:} Identify weak keys from keystream patterns
-		      \begin{itemize}
-			      \item Look for the telltale signatures in the first keystream byte
-			      \item Discard non-vulnerable encryptions
-		      \end{itemize}
-		\item \textbf{Step 3:} Recover key bytes incrementally
-		      \begin{itemize}
-			      \item Use the correlation to determine likely values for key bytes
-			      \item Build up the key one byte at a time
-		      \end{itemize}
-		\item \textbf{Success rate:} With enough samples, key recovery becomes highly reliable
+		\item A ``bias'' is not a soft, qualitative complaint. It is a \textbf{concrete distinguisher}, and therefore a proof that the scheme fails our definition.
+		\item The only question left is how many samples that distinguisher needs.
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{In fact\ldots}
+	\begin{center}
+		\vspace{-0.3em}
+		\begin{tikzpicture}
+			\node[fill=white, anchor=center, inner sep=1mm]{
+				\includegraphics[height=0.68\textheight, keepaspectratio]{images/rc4-bias.png}
+			};
+			\node[fit=(current bounding box), inner sep=0.5mm, draw=white, line width=0.5mm] {};
+		\end{tikzpicture}
+		\\[0.2em]
+		{\usebeamerfont{caption} Position across, byte value up, colour showing deviation from uniform. A good stream cipher would be a flat, featureless field. Source: Kenny Paterson.}
+	\end{center}
+\end{frame}
+
+\section{RC4 in WEP}
+
 \begin{frame}{How WEP encryption works}
 	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.44\textwidth}
 			\begin{itemize}
-				\item \textbf{Components:}
+				\item \textbf{A 104-bit key $K$}, shared by every device on the network.
 				      \begin{itemize}
-					      \item 24-bit IV (Initialization Vector)
-					      \item 104-bit PSK (pre-shared key)
-					            \begin{itemize}
-						            \item Derived from Wi-Fi password
-						            \item Was limited to 40 bits at first due to US export controls!
-					            \end{itemize}
+					      \item Typed in as hex or ASCII, \emph{not} run through a KDF. Originally 40 bits, for US export controls.
 				      \end{itemize}
-				\item \textbf{Process:}
-				      \begin{itemize}
-					      \item Choose random IV for each packet
-					      \item Concatenate: IV $\|$ Secret Key
-					      \item Feed to RC4 to generate keystream
-					      \item XOR plaintext with keystream
-				      \end{itemize}
+				\item \textbf{A 24-bit IV}, chosen per packet.
+				\item \textbf{Per packet:} form the RC4 key $IV \,\|\, K$, XOR the keystream with the plaintext, and send the IV \textbf{in the clear}.
 			\end{itemize}
 			\begin{center}
-				\begin{tikzpicture}[scale=0.7]
-					% Transmitted packet
-					\draw[thick, dashed] (-0.5,-5) rectangle (7,-6);
-					\draw[thick, fill=blue!20] (0,-5.2) rectangle (2,-5.8);
-					\node at (1,-5.5) {IV};
-					\draw[thick, fill=gray!20] (2.5,-5.2) rectangle (6.5,-5.8);
-					\node at (4.5,-5.5) {Ciphertext};
-					\node[below] at (3.25,-6) {\small Transmitted Packet};
+				\begin{tikzpicture}[scale=0.5]
+					\draw[thick, dashed] (-0.5,-0.5) rectangle (7,-1.5);
+					\draw[thick, fill=blue!20] (0,-0.7) rectangle (2,-1.3);
+					\node at (1,-1) {\small IV};
+					\draw[thick, fill=gray!20] (2.5,-0.7) rectangle (6.5,-1.3);
+					\node at (4.5,-1) {\small Ciphertext};
+					\node[below] at (3.25,-1.55) {\scriptsize Transmitted packet};
 				\end{tikzpicture}
 			\end{center}
 		\end{column}
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.56\textwidth}
 			\begin{center}
-				\begin{tikzpicture}[scale=0.7]
-					% IV Box
+				\begin{tikzpicture}[scale=0.55]
 					\draw[thick, fill=blue!20] (0,4) rectangle (2,5);
 					\node at (1,4.5) {IV};
-					\node[below] at (1.7,3.8) {\tiny 24 bits};
+					\node[below] at (1.7,3.8) {\tiny 24 bits, public};
 
-					% Secret Key Box
 					\draw[thick, fill=red!20] (2.5,4) rectangle (5.5,5);
 					\node at (4,4.5) {Secret Key};
 					\node[below] at (5,3.8) {\tiny 104 bits};
 
-					% Concatenation
 					\draw[->, thick] (1,4) -- (1,3);
 					\draw[->, thick] (4,4) -- (4,3);
 					\draw[thick] (0.5,2.25) rectangle (4.5,3);
 					\node at (2.5,2.6) {IV $\|$ Key};
 
-					% RC4 Box
 					\draw[->, thick] (2.5,2.25) -- (2.5,1.5);
 					\draw[thick, fill=green!20] (1,0.5) rectangle (4,1.5);
 					\node at (2.5,1) {RC4};
 
-					% Keystream
 					\draw[->, thick] (2.5,0.5) -- (2.5,-0.5);
 					\node at (2.5,-0.8) {Keystream};
 
-					% Plaintext
 					\draw[thick, fill=yellow!20] (6,0.5) rectangle (8.5,1.5);
 					\node at (7.25,1) {Plaintext};
 
-					% XOR
 					\draw[->, thick] (2.5,-1) -- (5,-1);
 					\draw[->, thick] (7.25,0.5) -- (7.25,-0.5) -- (5.5,-0.5) -- (5.5,-1);
 					\draw[thick] (5,-1.5) circle (0.5);
 					\node at (5,-1.5) {$\oplus$};
 
-					% Ciphertext
 					\draw[->, thick] (5,-2) -- (5,-3);
 					\draw[thick, fill=gray!20] (3.5,-3) rectangle (6.5,-4);
 					\node at (5,-3.5) {Ciphertext};
@@ -478,500 +424,375 @@
 \end{frame}
 
 \begin{frame}{WEP: the perfect storm}
+	\begin{itemize}[<+->]
+		\item WEP needed a per-packet keystream and RC4 has no nonce, so WEP concatenated: the RC4 key is $(IV_1, IV_2, IV_3, K_1, K_2, \ldots, K_{13})$.
+		\item Look at what that hands an attacker, for free:
+		      \begin{itemize}
+			      \item \textbf{Millions of related keys}, all sharing one secret suffix.
+			      \item \textbf{The first three bytes of every key}, in plaintext, in the packet header.
+			      \item \textbf{The first keystream byte} of each, because 802.11 payloads open with a fixed SNAP header.
+		      \end{itemize}
+		\item A 24-bit IV is also simply too small: on a busy link IVs repeat within hours, giving plain two-time-pad collisions.
+		\item \textbf{This is exactly the setting FMS was built for.} Earlier work studied RC4 under one random key; WEP volunteered the related-key case nobody had deployed before.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{FMS (2001): the key schedule leaks the key}
 	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item \textbf{WEP (Wired Equivalent Privacy):} Wi-Fi security protocol from 1997
-				      \begin{itemize}
-					      \item Used RC4 for encryption
-					      \item 104-bit secret key shared among all devices
-				      \end{itemize}
-				\item \textbf{Vulnerable design choice:} Initialization Vectors (IVs)
-				      \begin{itemize}
-					      \item To avoid key reuse, WEP prepends a 24-bit IV to each packet
-					      \item RC4 key becomes: $(IV_1, IV_2, IV_3, K_1, K_2, \ldots, K_n)$
-					      \item IV is sent \emph{in plaintext} with each packet!
-				      \end{itemize}
-				\item \textbf{The break:} This creates exactly the conditions the FMS (Fluhrer, Mantin, Shamir) attack exploited
-				      \begin{itemize}
-					      \item Many related keys (same secret key, different IVs)
-					      \item Attacker knows the first 3 bytes of each key (the IV)
-					      \item Perfect setup for the FMS attack!
-				      \end{itemize}
+		\begin{column}{0.54\textwidth}
+			\begin{itemize}[<+->]
+				\item Fluhrer, Mantin and Shamir showed that for certain IVs the KSA's early steps ``resolve'' into a state that leaks a key byte into the \emph{first keystream byte}.\footnote{\url{https://appliedcryptography.page/paper/\#rc4-ksa}}
+				\item To attack key byte $K_A$, wait for an IV of the form $(A+3,\ 255,\ X)$, where $X$ is anything.
+				\item Roughly $1$ packet in $2^{16}$ matches, and about \textbf{60 of them} pin down one key byte. Then move to $A+1$ and repeat.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\begin{center}
+				\begin{tikzpicture}[scale=0.5]
+					\draw[thick, fill=blue!20] (0,2) rectangle (2,3);
+					\node at (1,2.5) {\scriptsize $A{+}3$};
+					\draw[thick, fill=blue!20] (2,2) rectangle (4,3);
+					\node at (3,2.5) {\scriptsize $255$};
+					\draw[thick, fill=blue!20] (4,2) rectangle (6,3);
+					\node at (5,2.5) {\scriptsize $X$};
+					\draw[thick, fill=red!20] (6,2) rectangle (8,3);
+					\node at (7,2.5) {\scriptsize $K_1$};
+					\draw[thick, fill=red!20] (8,2) rectangle (10,3);
+					\node at (9,2.5) {\scriptsize $K_2$};
+					\draw[thick, fill=red!20] (10,2) rectangle (12,3);
+					\node at (11,2.5) {\scriptsize $\ldots$};
+					\node[above] at (3,3.1) {\textbf{\scriptsize Sent in the clear}};
+					\node[above] at (9,3.1) {\textbf{\scriptsize The target}};
+					\draw[->, thick, red] (7,1.9) -- (7,1.0);
+					\node[below, red] at (7,1.1) {\textbf{\scriptsize recovered first}};
+				\end{tikzpicture}
+			\end{center}
+			\onslide<+->{
+				\alertbox{Note what is \emph{not} needed}{
+					No brute force. No cryptographic assumption. No interaction with the network. Just listening, and arithmetic.
+				}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Why $(A+3, 255, X)$? Let us trace it}
+	\begin{columns}[c]
+		\begin{column}{0.52\textwidth}
+			Take $A = 0$, so $IV = (3, 255, X)$. Every step below depends only on the \emph{public} IV, so the attacker can replay it.
+			\begin{center}
+				\footnotesize
+				\renewcommand{\arraystretch}{0.9}
+				\begin{tabular}{|c|l|l|}
+					\hline
+					$i$ & $j$ becomes         & effect                                          \\
+					\hline
+					0   & $0 + 0 + 3 = 3$     & $S[0]=3,\ S[3]=0$                               \\
+					1   & $3 + 1 + 255 = 3$   & $S[1]=0,\ S[3]=1$                               \\
+					2   & $3 + 2 + X = X{+}5$ & touches $S[2], S[X{+}5]$                        \\
+					3   & $X{+}6+K_1 $        & \textcolor{red}{$S[3] \coloneq S[X{+}6{+}K_1]$} \\
+					\hline
+				\end{tabular}
+			\end{center}
+			First PRGA step: $i = 1$, $j = S[1] = 0$, so swap $S[1]$ with $S[0]$ and emit $Z_1 = S[S[1] {+} S[0]] = S[3]$.
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\begin{itemize}[<+->]
+				\item The first keystream byte \textbf{is} whatever step $i=3$ deposited at $S[3]$, and it came from index $X + 6 + K_1$. The attacker replayed the permutation, so they invert it: $K_1 = S_3^{-1}[Z_1] - X - 6$.
+				\item This holds only if the remaining $252$ KSA steps never touch indices $0, 1, 3$: probability $\approx e^{-3} \approx \textbf{5\%}$.
+				\item The other $95\%$ is evenly spread noise. \textbf{So take a vote:} the true $K_1$ polls $\approx 5\%$, each wrong value $\approx 0.4\%$.
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{WEP's IV structure}
-	\begin{center}
-		\begin{tikzpicture}[scale=0.6]
-			\draw[thick] (0,2) rectangle (2,3);
-			\node at (1,2.5) {\scriptsize IV Byte 1};
-			\draw[thick] (2,2) rectangle (4,3);
-			\node at (3,2.5) {\scriptsize IV Byte 2};
-			\draw[thick] (4,2) rectangle (6,3);
-			\node at (5,2.5) {\scriptsize IV Byte 3};
-			\draw[thick, fill=red!20] (6,2) rectangle (8,3);
-			\node at (7,2.5) {\scriptsize $K_1$};
-			\draw[thick, fill=red!20] (8,2) rectangle (10,3);
-			\node at (9,2.5) {\scriptsize $K_2$};
-			\draw[thick, fill=red!20] (10,2) rectangle (12,3);
-			\node at (11,2.5) {\scriptsize $\ldots$};
-			\node[above] at (3,3.2) {\textbf{Known to Attacker}};
-			\node[above] at (9,3.2) {\textbf{Secret Key (Target)}};
-			\draw[->, thick, red] (1,1.5) -- (1,2);
-			\node[below, red, text width=5cm, align=center] at (1,1.2) {\textbf{IVs like $(3, 255, x)$}};
-			\draw[->, thick, red] (7,1.5) -- (7,0.5);
-			\node[below, red] at (7,0.3) {\textbf{Reveal $K_1$}};
-		\end{tikzpicture}
-	\end{center}
-	\begin{itemize}
-		\item \textbf{The FMS Attack:} Exploits weak IV patterns of the form $(A+3, 255, x)$
-		\item \textbf{Pattern:} To attack key byte $K_A$, wait for IVs $(A+3, 255, x)$
-		\item \textbf{Frequency:} About 1 in 65,536 packets match the vulnerable pattern
-		\item \textbf{Collection:} Need multiple matching IVs per key byte for a statistical attack
-		\item \textbf{Result:} With enough packets, incrementally recover the entire key
+\begin{frame}{From paper to practice, in months}
+	\begin{itemize}[<+->]
+		\item \textbf{August 2001:} the FMS paper appears at Selected Areas in Cryptography.
+		\item \textbf{August 2001:} Stubblefield, Ioannidis and Rubin implement it and pull a real key off a real access point, in a paper titled \textit{Using the Fluhrer, Mantin, and Shamir Attack to Break WEP}.
+		\item \textbf{Weeks later:} \textbf{AirSnort} and \textbf{WEPCrack} ship as free public tools. Point, click, wait for a few million packets, get the key.
+		\item \textbf{2004--2006:} \textbf{aircrack-ng} adds \textbf{packet injection} --- replay an ARP request and the access point generates traffic on demand. The attacker stops waiting for a busy network and manufactures the traffic instead.
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Practical tools}
-	\begin{itemize}
-		\item \textbf{AirSnort (2001):} First practical WEP cracking tool
-		      \begin{itemize}
-			      \item Implemented the FMS attack
-			      \item Could crack WEP keys with 1--5 million packets
-			      \item Made WEP cracking accessible to non-experts
-		      \end{itemize}
-		\item \textbf{WEPCrack (2001):} Another early implementation
-		      \begin{itemize}
-			      \item Demonstrated the attack's effectiveness
-			      \item Confirmed that WEP was fundamentally broken
-		      \end{itemize}
-		\item \textbf{Aircrack-ng (2006):} Improved and optimized tools
-		      \begin{itemize}
-			      \item Reduced required packets to hundreds of thousands
-			      \item Added packet injection to speed up attacks
-			      \item Still widely used today for security testing
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Attack: step by step}
-	\begin{itemize}
-		\item \textbf{Step 1:} Attacker sets Wi-Fi card to monitor mode
-		      \begin{itemize}
-			      \item Passively collects all WEP-encrypted packets
-			      \item No need to associate with the target network
-		      \end{itemize}
-		\item \textbf{Step 2:} Filter for packets with vulnerable IVs
-		      \begin{itemize}
-			      \item Look for ``weak IVs''
-			      \item Collect the corresponding keystream bytes
-		      \end{itemize}
-		\item \textbf{Step 3:} Apply statistical analysis
-		      \begin{itemize}
-			      \item Use FMS attack to determine most likely key byte values
-			      \item Incrementally build up the secret key
-		      \end{itemize}
-		\item \textbf{Step 4:} Verify the recovered key
-		      \begin{itemize}
-			      \item Test against captured packets
-			      \item Success: Complete compromise of the Wi-Fi network!
-		      \end{itemize}
-	\end{itemize}
+	\onslide<+->{\centering\textbf{From ``interesting theoretical result'' to script-kiddie tool: about three months.}}
 \end{frame}
 
 \begin{frame}{Attacks only get better}
-	\begin{itemize}
-		\item \textbf{Klein's Attack (2005):} Extended the vulnerable IV patterns
-		      \begin{itemize}
-			      \item Found additional weak key structures
-			      \item Reduced the number of packets needed for key recovery
-		      \end{itemize}
-		\item \textbf{PTW Attack (2007):} Pyshkin, Tews, and Weinmann
-		      \begin{itemize}
-			      \item Revolutionary approach using Bayes' theorem
-			      \item Could crack WEP with as few as 40,000 packets
-			      \item Made attacks feasible on even low-traffic networks
-		      \end{itemize}
-		\item \textbf{Key Recovery Speedup:} From hours to minutes
-		      \begin{itemize}
-			      \item Modern attacks can crack WEP in under 10 minutes
-			      \item Some demonstrations crack it in under 60 seconds
-		      \end{itemize}
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{0.54\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{Klein:} a stronger key--keystream correlation that does \emph{not} need the special FMS IV shape. Suddenly \emph{every} packet is useful, not one in $2^{16}$.
+				\item \textbf{PTW --- Tews, Weinmann and Pyshkin (2007):} combine Klein's correlation with Bayesian ranking of candidate key bytes, attacking all bytes at once instead of left to right.
+				      \begin{itemize}
+					      \item \textbf{40{,}000} packets for $50\%$ success, \textbf{85{,}000} for $95\%$.
+					      \item Paper title: \textit{Breaking 104 bit WEP in less than 60 seconds}.
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\onslide<+->{
+				\definitionbox{The trend line is the lesson}{
+					\textbf{2001:} millions of packets, hours of collection.
+					\\[0.2em]
+					\textbf{2005:} hundreds of thousands.
+					\\[0.2em]
+					\textbf{2007:} tens of thousands, under a minute.
+					\\[0.5em]
+					Nobody found a \emph{new} weakness in RC4 between 2001 and 2007. They just got better at using the one they had.
+				}
+			}
+			\onslide<+->{\centering\textit{``Attacks always get better; they never get worse.''}}
+		\end{column}
+	\end{columns}
 \end{frame}
 
-\begin{frame}{Lessons learned from WEP}
-	\begin{itemize}
-		\item \textbf{Lesson 1:} Never use a stream cipher with related keys
-		      \begin{itemize}
-			      \item WEP's IV structure created exactly this scenario
-			      \item Modern protocols use proper key derivation functions
-		      \end{itemize}
-		\item \textbf{Lesson 2:} Academic attacks become practical faster than expected
-		      \begin{itemize}
-			      \item FMS attack went from paper to tool in months
-			      \item ``Theoretical'' often means ``practical soon''
-		      \end{itemize}
-		\item \textbf{Lesson 3:} Security protocols need formal analysis
-		      \begin{itemize}
-			      \item WEP was designed by committee without cryptographic rigor
-			      \item Modern protocols undergo extensive peer review
-		      \end{itemize}
-		\item \textbf{Lesson 4:} Backward compatibility can be a security nightmare
-		      \begin{itemize}
-			      \item WEP remained deployed long after being broken
-			      \item Organizations were slow to migrate due to cost/complexity
-		      \end{itemize}
+\begin{frame}{What WEP got wrong}
+	\begin{itemize}[<+->]
+		\item \textbf{It fed attacker-visible data straight into the key.} Concatenating a public IV with a secret key is not key derivation. WPA2 and everything since run a \textbf{KDF}, so per-packet keys are unrelated even when their inputs are not.
+		\item \textbf{It reused one key across every device and every packet.} No forward secrecy, no isolation: one compromise is total compromise.
+		\item \textbf{It chose a 24-bit IV.} Even with perfect key derivation, that space exhausts in hours.
+		\item \textbf{It had no real integrity protection.} WEP's CRC-32 checksum is linear, so an attacker can flip ciphertext bits and patch the checksum to match.
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{WEP timeline}
-	\begin{itemize}
-		\item \textbf{2001:} FMS attack published - WEP theoretically broken
-		\item \textbf{2001:} AirSnort released - WEP practically broken
-		\item \textbf{2003:} WPA (Wi-Fi Protected Access) standardized as replacement
-		\item \textbf{2004:} WPA2 released with AES encryption
-		\item \textbf{2006:} Wi-Fi Alliance deprecates WEP
-		\item \textbf{2012:} WEP support removed from Windows 8
-		\item \textbf{2018:} Many vendors stop supporting WEP entirely
-		\item \textbf{Today:} WEP is considered a historical curiosity
-	\end{itemize}
+	\onslide<+->{\centering\textbf{None of this is RC4's fault.} WEP would still be broken had it used AES this way.}
 \end{frame}
 
 \section{RC4 in TLS}
 
-\begin{frame}{RC4 in TLS: from preferred to prohibited}
-	\begin{itemize}
-		\item \textbf{RC4's role in TLS/SSL:} Once the default stream cipher
-		      \begin{itemize}
-			      \item Preferred over block ciphers due to speed
-			      \item No need for padding (unlike CBC mode)
-			      \item Avoided the BEAST attack against CBC ciphers
-		      \end{itemize}
-		\item \textbf{2011:} BEAST attack made RC4 more attractive
-		      \begin{itemize}
-			      \item Attack on CBC mode in TLS 1.0
-			      \item Many servers switched to RC4-only cipher suites
-			      \item RC4 usage actually increased!
-		      \end{itemize}
-		\item \textbf{The irony:} Avoiding one attack led directly into another
-		      \begin{itemize}
-			      \item RC4's biases were known but considered impractical to exploit
-			      \item This assumption would prove catastrophically wrong
-		      \end{itemize}
+\begin{frame}{The BEAST irony (2011)}
+	\begin{itemize}[<+->]
+		\item By 2011, TLS deployments had two realistic choices: \textbf{AES in CBC mode}, or \textbf{RC4}.
+		\item Then \textbf{BEAST} broke CBC in TLS 1.0 --- a chosen-plaintext attack on predictable CBC initialisation vectors, able to decrypt cookies out of a live browser session.
+		\item The industry's advice was immediate and near-unanimous: \textbf{switch to RC4}. It is a stream cipher, so there are no CBC IVs, no padding, and no padding oracles.
+		\item It worked, and RC4 usage \emph{rose sharply} --- to roughly half of all TLS traffic.
 	\end{itemize}
+	\onslide<+->{
+		\alertbox{The trap}{
+			RC4's biases were public, peer-reviewed and a decade old, but were dismissed as ``theoretical'' because the sample counts looked impossibly large. Nobody checked whether the modern web could supply them. Fleeing one attack drove the industry into another.
+		}
+	}
 \end{frame}
 
-\begin{frame}{AlFardan et al. (2013): RC4 biases in TLS}
+\begin{frame}{AlFardan et al. (2013): the biases are real, and reachable}
 	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
-			\begin{itemize}
-				\item \textbf{The discovery:} RC4's biases are exploitable in TLS:\footnote{\url{https://appliedcryptography.page/paper/\#rc4-tls}}
-				      \begin{itemize}
-					      \item First 256 bytes of keystream heavily biased
-					      \item Certain byte positions more predictable than others
-					      \item Biases persist even with proper key generation
-				      \end{itemize}
-				\item \textbf{Key finding:} Single-byte biases
-				      \begin{itemize}
-					      \item Position 1: $\Pr[Z_1 = 0] \approx 2^{-7}$ (double the expected probability)
-					      \item Position 2: $\Pr[Z_2 = 0] \approx 2^{-7}$ (double the expected probability)
-					      \item Positions 3--255: Various smaller biases
-				      \end{itemize}
+		\begin{column}{0.52\textwidth}
+			\begin{itemize}[<+->]
+				\item Rather than reason analytically, five researchers \emph{measured} RC4's keystream over a vast number of random keys.\footnote{\url{https://appliedcryptography.page/paper/\#rc4-tls}} The biases are not confined to byte 2: \textbf{every one} of the first 256 positions is non-uniform.
+				\item $2^{26}$ sessions recovered the first $\approx 40$ bytes of application data at over $50\%$ per byte; $2^{32}$ got essentially all $256$.
+				\item None of this needs a weak key: these are properties of the algorithm.
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.4\textwidth}
-			\begin{itemize}
-				\item \textbf{Multi-byte biases:} Even stronger patterns
-				      \begin{itemize}
-					      \item $(Z_1, Z_{257}) = (0, 0)$ with probability $2^{-11}$
-					      \item Should be $2^{-16}$ if truly random
-					      \item 32 times more likely than expected!
-				      \end{itemize}
-			\end{itemize}
+		\begin{column}{0.48\textwidth}
+			\onslide<+->{
+				\definitionbox{Two families of bias}{
+					\textbf{Single-byte:} at a fixed position $r \leq 256$, some values of $Z_r$ beat $1/256$. Strong, but only near the start.
+					\vspace{0.4em}
+					\\
+					\textbf{Double-byte (Fluhrer--McGrew):} certain \emph{pairs} $(Z_r, Z_{r+1})$ beat $1/256^2$, by only $\approx 1/256$ relative --- but \textbf{everywhere} in the keystream, not just the start.
+				}
+			}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The broadcast attack scenario}
-	\begin{itemize}
-		\item \textbf{Attack model:} Same plaintext encrypted many times
-		      \begin{itemize}
-			      \item HTTP cookies sent with every request
-			      \item Session tokens in fixed positions
-			      \item Password fields in web forms
-		      \end{itemize}
-		\item \textbf{The mathematics:} Bias accumulation
-		      \begin{itemize}
-			      \item Collect ciphertexts: $C_1, C_2, \ldots, C_n$
-			      \item For position $i$: count occurrences of each byte value
-			      \item Most frequent ciphertext byte reveals plaintext byte
-			      \item Required samples: $\mathcal{O}(N \cdot B^{-2})$ where $B$ is the bias
-		      \end{itemize}
-		\item \textbf{Practical requirements:}
-		      \begin{itemize}
-			      \item $2^{24}$ to $2^{30}$ encryptions needed
-			      \item Feasible for persistent attackers
-			      \item JavaScript injection can generate traffic
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Garman et al. (2015): attacks only get better}
+\begin{frame}{The broadcast attack}
 	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{The challenge:} AlFardan et al.'s attack was still ``impractical''
-				      \begin{itemize}
-					      \item Required billions of encryptions
-					      \item Took days or weeks to execute
-					      \item Many dismissed it as theoretical
-				      \end{itemize}
-				\item \textbf{Insight:} Target password verifiers, not cookies\footnote{\url{https://appliedcryptography.page/paper/\#rc4-attacks}}
-				      \begin{itemize}
-					      \item Basic Authentication sends passwords in every request
-					      \item IMAP/SMTP use similar repeated authentication
-					      \item Password structure provides additional constraints
-				      \end{itemize}
+		\begin{column}{0.56\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{The setting:} one plaintext, encrypted under many \emph{independent} keys. TLS derives a fresh key per connection, so this is the normal case, not a misuse.
+				\item \textbf{The web supplies it for free:} a session cookie sits at a fixed offset in every request your browser makes.
+				\item \textbf{The attack:} collect $C^{(1)}, \ldots, C^{(n)}$ and, for each position $r$, tally the most frequent byte. Since $C_r = M_r \oplus Z_r$, the bias in $Z_r$ shows through as a bias in $C_r$, pointing straight at $M_r$. \textbf{No key is ever recovered.}
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{The improvements:} Orders of magnitude faster
-				      \begin{itemize}
-					      \item Exploit password character distributions
-					      \item Use Mantin's ABSAB bias (positions 1--4)
-					      \item Combine with dictionary attacks
-					      \item Other attack papers use similar techniques; some even break WPA-TKIP, a successor to WEP!\footnote{\url{https://appliedcryptography.page/paper/\#rc4-biases}}
-				      \end{itemize}
-			\end{itemize}
+		\begin{column}{0.44\textwidth}
+			\onslide<+->{
+				\definitionbox{Why counting works}{
+					Telling a coin with bias $\varepsilon$ from a fair one takes about $1/\varepsilon^2$ flips.
+					\vspace{0.4em}
+					\\
+					Halve the bias and you \emph{quadruple} the samples --- but you never make the attack impossible, only expensive.
+				}
+			}
+			\onslide<+->{\centering And the attacker controls $n$: inject JavaScript into any page the victim loads and it will issue requests all day. ``Needs $2^{30}$ ciphertexts'' is a claim about \emph{time}, not feasibility.}
 		\end{column}
 	\end{columns}
 \end{frame}
 
 \begin{frame}{Mantin's ABSAB bias (2005)}
 	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item \textbf{The discovery:} Certain digraph patterns repeat with anomalous frequency\footnote{\url{https://appliedcryptography.page/paper/\#rc4-absab}}
-				      \begin{itemize}
-					      \item Pattern: Two characters repeat after a gap (e.g., ABAB, ABCAB)
-					      \item Occurs when value 1 is used to update index $j$ in RC4
-					      \item Creates correlations between distant output positions
-				      \end{itemize}
-				\item \textbf{The mathematics:} For pattern AB\ldots AB with gap $G$
-				      \begin{itemize}
-					      \item Expected probability in a random keystream: $1/N^2$
-					      \item Actual probability in RC4: $(1 + e^{(-4-8G)/N}/N) \cdot 1/N^2$
-					      \item Relative bias: $\approx 1/N$ for zero gap, decreases with gap size
-				      \end{itemize}
-				\item \textbf{Why it matters:}
-				      \begin{itemize}
-					      \item Enables distinguishing attacks with only $2^{26}$ samples
-					      \item Can predict individual bytes with 82\% accuracy after $2^{50}$ samples
-					      \item Particularly effective against password-based authentication
-				      \end{itemize}
+		\begin{column}{0.54\textwidth}
+			\begin{itemize}[<+->]
+				\item A different shape of weakness: not ``this byte is biased'' but \textbf{``this byte repeats too often.''}\footnote{\url{https://appliedcryptography.page/paper/\#rc4-absab}}
+				\item A digraph $AB$ tends to reappear $G$ positions later, forming $AB\!\ldots\!AB$. In a random keystream that has probability $1/N^2$ with $N = 256$; in RC4 it is $\frac{1}{N^2}\left(1 + \frac{e^{(-4-8G)/N}}{N}\right)$.
+				\item That is a relative bias of about $1/N$ at zero gap, decaying as the gap grows.
 			\end{itemize}
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\onslide<+->{
+				\definitionbox{Why this one matters most}{
+					Single-byte biases live in the first 256 bytes, so TLS could have escaped them by discarding the keystream's start. ABSAB is a \textbf{long-term} bias, present at position 10 and at position 10 million: there is no prefix you can throw away.
+					\vspace{0.4em}
+					\\
+					It also relates a byte to \emph{another byte of the same plaintext} --- exactly what you want against something structured, like a password.
+				}
+			}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{ABSAB bias in action: practical example}
-	\begin{itemize}
-		\item \textbf{Target:} Password ``hello123'' in HTTP Basic Authentication
-		\item \textbf{Step 1:} Password encoded as base64: ``aGVsbG8xMjM=''
-		\item \textbf{Step 2:} Look for ABSAB patterns in the collected ciphertexts:
-		      \begin{center}
-			      \begin{tikzpicture}[scale=0.8]
-				      \foreach \i/\char in {0/h,1/e,2/l,3/l,4/o,5/1,6/2,7/3} {
-						      \draw[thick] (\i*1.2,2) rectangle (\i*1.2+1,3);
-						      \node at (\i*1.2+0.5,2.5) {\texttt{\char}};
-					      }
-				      \draw[red, ultra thick] (2*1.2-0.1,1.9) rectangle (3*1.2+1.1,3.1);
-				      \node[red, below] at (5,1.75) {Repeated ``ll'' pattern};
-				      \draw[->, thick, blue] (2.5,1) -- (2.5,1.8);
-				      \node[blue, below] at (2.5,1) {ABSAB: $(l,l,*,l,l)$ occurs $1024\times$ more!};
-			      \end{tikzpicture}
-		      \end{center}
-		\item \textbf{Step 3:} After $2^{26}$ samples, frequency analysis reveals:
+\begin{frame}{2015: three attacks finish the job}
+	\begin{itemize}[<+->]
+		\item \textbf{``Bar Mitzvah'' (Mantin, Black Hat Asia).} Revisits the \textbf{invariance weakness} that Fluhrer, Mantin and Shamir had described back in 2001: for a class of weak keys, structure in the key survives the KSA and leaks plaintext. The name is a joke about a weakness finally coming of age at thirteen.
+		\item \textbf{Garman, Paterson and van der Merwe (USENIX Security),} \textit{Attacks Only Get Better}.\footnote{\url{https://appliedcryptography.page/paper/\#rc4-attacks}}
 		      \begin{itemize}
-			      \item Positions 2--3: ``ll'' pattern confirmed via ABSAB
-			      \item Position 0: ``h'' (68/256 occurrences)
-			      \item Position 1: ``e'' (65/256 occurrences)
-			      \item Password structure revealed: ``hell\_\_\_\_''
+			      \item Target \textbf{passwords} rather than cookies: HTTP Basic Authentication and IMAP resend the password on \emph{every} request.
+			      \item Combine the ABSAB bias with how humans actually choose passwords, plus a dictionary.
 		      \end{itemize}
-		\item \textbf{Result:} Search space reduced from $62^8$ to $62^4$ possibilities!
+		\item \textbf{Vanhoef and Piessens, ``RC4 NOMORE'' (USENIX Security).} The same machinery, actually executed: a real browser cookie decrypted in \textbf{52 hours}, and \textbf{WPA-TKIP} --- WEP's own RC4-based replacement --- broken in about \textbf{one}.\footnote{\url{https://appliedcryptography.page/paper/\#rc4-biases}}
+	\end{itemize}
+	\onslide<+->{\centering\textbf{After this, no serious argument for keeping RC4 remained.}}
+\end{frame}
+
+\begin{frame}{Why passwords were the softer target}
+	\begin{columns}[c]
+		\begin{column}{0.56\textwidth}
+			\begin{itemize}[<+->]
+				\item A cookie is high-entropy and random. Statistics has to recover \textbf{every byte} correctly, unaided.
+				\item A password is not random at all:
+				      \begin{itemize}
+					      \item Drawn from a small, heavily skewed alphabet, and base64-encoded in Basic Auth --- which shrinks it further and imposes a rigid known format.
+					      \item Very likely to appear in some leaked password list.
+				      \end{itemize}
+				\item So the attacker never has to \emph{recover} the password --- only narrow the candidates until a dictionary finishes.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.44\textwidth}
+			\onslide<+->{
+				\alertbox{The general principle}{
+					Statistical attacks and structural knowledge \textbf{multiply}. Every byte of context you have is a byte the statistics no longer has to earn.
+					\vspace{0.4em}
+					\\
+					So ``the attack needs $2^{n}$ samples'' is never the end of the analysis. It is the cost \emph{before} anyone gets clever.
+				}
+			}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The long goodbye}
+	\begin{itemize}[<+->]
+		\item \textbf{2013:} AlFardan et al. lands. The IETF opens the deprecation discussion; Microsoft, Google and Mozilla start advising against RC4.
+		\item \textbf{2014:} \textbf{POODLE} kills SSL 3.0. Not an RC4 attack --- but SSL 3.0's only other option was CBC, so between POODLE and the biases, \textbf{SSL 3.0 had no safe cipher left at all}.\footnote{\url{https://appliedcryptography.page/paper/\#google-poodle}}
+		\item \textbf{February 2015: RFC 7465}, \textit{Prohibiting RC4 Cipher Suites}: ``TLS clients MUST NOT include RC4 cipher suites'' and ``TLS servers MUST NOT select an RC4 cipher suite.''
+		\item \textbf{September 2015:} Google, Mozilla and Microsoft announce removal \emph{on the same day}, so that no single browser would take the blame for breaking sites. Chrome 48 and Firefox 44 ship it in January 2016; Microsoft follows that August.
+	\end{itemize}
+	\onslide<+->{\centering\textbf{Fourteen years from first practical break to removal.} Deprecating a cipher is a social problem at least as much as a technical one.}
+\end{frame}
+
+\section{What RC4 Teaches Us}
+
+\begin{frame}{Six lessons}
+	\begin{itemize}[<+->]
+		\item \textbf{1. A primitive's interface is part of its security.} RC4's missing nonce was not a bug in any line of its code, and it caused both catastrophes.
+		\item \textbf{2. Small biases are not small.} A $2^{-8}$ relative bias sounds negligible until the attacker has $2^{30}$ samples --- and the modern web hands out samples for free.
+		\item \textbf{3. ``Theoretical'' means ``practical, later.''} FMS to AirSnort took three months. Mantin--Shamir to a TLS break took twelve years, but it arrived.
+		\item \textbf{4. Attacks compose.} Bias plus password structure. Downgrade plus weak cipher. Results are components, and components multiply.
+		\item \textbf{5. Fleeing an attack is not a strategy.} BEAST pushed the industry out of a broken mode and into a broken cipher. Have somewhere \emph{good} to run to.
+		\item \textbf{6. Plan the exit before you need it.} \textbf{Cryptographic agility} --- negotiating algorithms, and being able to remove them --- has to be designed in from day one.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Password recovery: the numbers}
-	\begin{itemize}
-		\item \textbf{Basic Authentication attack performance:}
-		      \begin{itemize}
-			      \item 6-character passwords: $2^{26}$ encryptions
-			      \item Time: $\approx$50--100 hours
-		      \end{itemize}
-		\item \textbf{IMAP attack results:}
-		      \begin{itemize}
-			      \item Real passwords recovered in a laboratory setting
-			      \item Character-by-character recovery possible
-		      \end{itemize}
-	\end{itemize}
+\begin{frame}{What replaced RC4, and why it fails differently}
+	\begin{columns}[c]
+		\begin{column}{0.54\textwidth}
+			\begin{itemize}[<+->]
+				\item \textbf{It takes a nonce.} Protocols no longer improvise per-message keys, so WEP's mistake is not even expressible.
+				\item \textbf{It has no evolving secret state.} Each block is an independent function of $(K, N, \text{ctr})$: no long-lived permutation to leak, no key schedule whose residue shows up in the output.
+				\item \textbf{It comes bolted to a MAC.} \textbf{ChaCha20-Poly1305} is AEAD, so WEP's forgeable CRC-32 could not happen.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\onslide<+->{
+				\definitionbox{The structural difference}{
+					RC4 says: \emph{stir a secret state, and dribble out bytes of it.}
+					\vspace{0.4em}
+					\\
+					ChaCha20 says: \emph{apply a strong public function to a counter, keyed by the secret.}
+					\vspace{0.4em}
+					\\
+					The second is a PRF evaluated at distinct points --- a design we know how to reason about, and the same shape as AES-CTR.
+				}
+			}
+			\onslide<+->{\centering TLS 1.3 ended the argument by deleting the choice: only AEAD ciphers remain.}
+		\end{column}
+	\end{columns}
 \end{frame}
 
-\begin{frame}{POODLE (2014): the final nail}
-	\begin{itemize}
-		\item \textbf{POODLE:} Padding Oracle On Downgraded Legacy Encryption
-		      \begin{itemize}
-			      \item Not specifically an RC4 attack
-			      \item But exploited SSL 3.0's MAC-then-encrypt with CBC
-			      \item Led to mass exodus from SSL 3.0
-		      \end{itemize}
-		\item \textbf{The downgrade dance:}
-		      \begin{itemize}
-			      \item Attackers force TLS connections to fail
-			      \item Browsers retry with older SSL 3.0
-			      \item SSL 3.0 has no downgrade protection!
-		      \end{itemize}
-		\item \textbf{Why this matters for RC4:}
-		      \begin{itemize}
-			      \item SSL 3.0 heavily used RC4
-			      \item POODLE + RC4 biases = no safe ciphers left in SSL 3.0
-			      \item Final push to deprecate both SSL 3.0 and RC4
-		      \end{itemize}
+\begin{frame}{RC4 is dead. RC4 is still running.}
+	\begin{itemize}[<+->]
+		\item \textbf{Kerberos.} The \texttt{RC4-HMAC} encryption type shipped in Windows domains for two decades. Microsoft has spent years disabling it, and ``Kerberoasting'' against RC4 tickets remains a routine penetration-test finding.
+		\item \textbf{Documents and firmware.} Older Office and PDF encryption used RC4, and devices shipped in 2008 still run today. Neither will ever be updated.
+		\item \textbf{Recorded traffic.} Anyone who archived RC4-protected sessions in 2013 can attack them at leisure today. Deprecation does not protect the past.
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Coordinated response between vendors}
-	\begin{itemize}
-		\item \textbf{2013:} IETF begins discussing RC4 deprecation
-		      \begin{itemize}
-			      \item Working groups start planning migration
-		      \end{itemize}
-		\item \textbf{2014/2015:} Major browsers act
-		      \begin{itemize}
-			      \item Chrome/Firefox announce RC4 phase-out plans
-			      \item Microsoft issues security advisories
-			      \item Apple begins removing RC4 from Safari
-		      \end{itemize}
-		\item \textbf{2015:} RFC 7465 prohibits RC4 in TLS
-		      \begin{itemize}
-			      \item ``TLS clients MUST NOT include RC4 cipher suites''
-			      \item ``TLS servers MUST NOT select RC4 cipher suites''
-			      \item Formal end of RC4 in internet protocols
-		      \end{itemize}
-		\item \textbf{2016/2018:} RC4 removed from all major browsers
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Technical lessons from RC4's demise}
-	\begin{itemize}
-		\item \textbf{Lesson 1:} Statistical biases matter at scale
-		      \begin{itemize}
-			      \item ``Small'' biases become exploitable with enough data
-			      \item The modern internet generates massive data volumes
-			      \item Never dismiss statistical irregularities
-		      \end{itemize}
-		\item \textbf{Lesson 2:} Attacks combine in unexpected ways
-		      \begin{itemize}
-			      \item ABSAB bias + password structure = practical attack
-			      \item Protocol downgrade + cipher weakness = disaster
-		      \end{itemize}
-		\item \textbf{Lesson 3:} Migration is painful but necessary
-		      \begin{itemize}
-			      \item RC4 removal broke many legacy systems
-			      \item But waiting would have been catastrophic
-			      \item Plan for crypto-agility from the start
-		      \end{itemize}
-	\end{itemize}
+	\onslide<+->{
+		\alertbox{The real lesson about deprecation}{
+			An algorithm dies when its last deployment stops, not when the RFC is published --- and those can be decades apart. Judge the cost of adopting an algorithm by how hard it will be to remove.
+		}
+	}
 \end{frame}
 
 \begin{frame}{RC4: a complete timeline}
-	\begin{itemize}
-		\item \textbf{1987:} Ron Rivest designs RC4
-		\item \textbf{1994:} Algorithm leaked to the Cypherpunks mailing list
-		\item \textbf{1995--2000:} Early bias discoveries
-		\item \textbf{2001:} FMS attack breaks WEP
-		\item \textbf{2011:} BEAST attack increases RC4 usage
-		\item \textbf{2013:} AlFardan et al. show TLS attacks are almost practical
-		\item \textbf{2014:} POODLE compromises SSL 3.0
-		\item \textbf{2015:} Garman et al. improve password recovery
-		\item \textbf{2015:} IETF prohibits RC4 (RFC 7465)
-		\item \textbf{2016:} RC4 removed from browsers
-		\item \textbf{Today:} RC4 is cryptographically dead
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{1987:} Rivest designs RC4.
+				\item \textbf{1994:} Leaked to Cypherpunks.
+				\item \textbf{1995:} Roos finds weak keys.
+				\item \textbf{1996--97:} Glimpse theorem; Goli\'{c}'s distinguisher.
+				\item \textbf{1997:} WEP standardises on RC4.
+				\item \textbf{2001:} Mantin--Shamir second-byte bias.
+				\item \textbf{2001:} FMS attack, then AirSnort. WEP is over.
+				\item \textbf{2003--04:} WPA, then WPA2 with AES.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{2005:} ABSAB bias; Klein's attack.
+				\item \textbf{2007:} PTW breaks WEP in under a minute.
+				\item \textbf{2011:} BEAST \emph{increases} RC4 usage.
+				\item \textbf{2013:} AlFardan et al. break RC4 in TLS.
+				\item \textbf{2014:} POODLE leaves SSL 3.0 with nothing safe.
+				\item \textbf{2015:} Bar Mitzvah, Garman et al., RC4 NOMORE.
+				\item \textbf{2015:} RFC 7465 prohibits RC4 in TLS.
+				\item \textbf{2016:} Removed from major browsers.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\centering\textbf{Twenty years of published warnings between the first crack and the ban.}
+	\vspace{-0.5em}
 \end{frame}
 
-\begin{frame}{The broader impact}
-	\begin{itemize}
-		\item \textbf{On cryptographic design:}
-		      \begin{itemize}
-			      \item Stream ciphers now use different designs (ChaCha20)
-			      \item Focus on provable security properties
-			      \item Extensive bias analysis before deployment
-		      \end{itemize}
-		\item \textbf{On protocol design:}
-		      \begin{itemize}
-			      \item TLS 1.3 removed all weak ciphers
-			      \item Mandatory authenticated encryption (AEAD)
-			      \item No more downgrade attacks
-		      \end{itemize}
-		\item \textbf{On deployment practices:}
-		      \begin{itemize}
-			      \item Regular security audits of cipher suites
-			      \item Sunset dates for algorithms
-			      \item Crypto-agility built into protocols
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Modern alternatives to RC4}
-	\begin{itemize}
-		\item \textbf{ChaCha20-Poly1305:} The modern stream cipher
-		      \begin{itemize}
-			      \item Designed by Daniel J. Bernstein
-			      \item No known biases after extensive analysis
-			      \item Includes authentication (AEAD)
-		      \end{itemize}
-		\item \textbf{AES-GCM:} The block cipher alternative
-		      \begin{itemize}
-			      \item Hardware acceleration on modern CPUs
-			      \item Well-studied security properties
-			      \item Standard choice for TLS 1.3
-		      \end{itemize}
-		\item \textbf{Key differences from RC4:}
-		      \begin{itemize}
-			      \item Authenticated encryption prevents tampering
-			      \item No statistical biases in the keystream
-			      \item Designed with modern cryptanalysis in mind
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{RC4: final thoughts}
-	\begin{itemize}
-		\item \textbf{A cipher of its time:}
-		      \begin{itemize}
-			      \item Perfect for 1990s hardware constraints
-			      \item Served the early internet well
-			      \item But couldn't survive modern cryptanalysis
-		      \end{itemize}
-		\item \textbf{The lifecycle of cryptography:}
-		      \begin{itemize}
-			      \item All ciphers eventually fall
-			      \item Plan for migration from day one
-			      \item Monitor academic literature for early warnings
-		      \end{itemize}
-		\item \textbf{The human element:}
-		      \begin{itemize}
-			      \item Ron Rivest's elegant design lasted 28 years
-			      \item Cryptographers who broke it built on decades of research
-			      \item The cycle continues with new algorithms and new attacks
-		      \end{itemize}
-	\end{itemize}
+\begin{frame}{Discussion time}
+	\begin{columns}[c]
+		\begin{column}{0.68\textwidth}
+			\begin{enumerate}
+				\item \textbf{When is a cipher ``broken''?}
+				      \begin{itemize}
+					      \item In 2001 RC4 failed our formal definition; in 2013 it failed in practice. Which year should have triggered removal?
+				      \end{itemize}
+				\item \textbf{Was the flight to RC4 after BEAST a mistake?}
+				      \begin{itemize}
+					      \item It was the consensus advice of competent people, given what they knew. What would you have recommended?
+				      \end{itemize}
+				\item \textbf{Who owns the fourteen-year gap?}
+				      \begin{itemize}
+					      \item Academics who called their own attacks impractical? Vendors afraid of breaking sites? Standards bodies?
+				      \end{itemize}
+				\item \textbf{What are we doing right now that will look like this in 2040?}
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.32\textwidth}
+			\imagewithcaption{spamton-sez.png}{}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}[plain]
