@@ -519,7 +519,7 @@
 		\begin{column}{0.4\textwidth}
 			\begin{tikzpicture}[scale=0.8]
 				% Server
-				\node[draw, rectangle, minimum width=3cm, minimum height=1cm, fill=red!20] (server) at (0,4) {Malicious Server};
+				\node[draw, rectangle, minimum width=3cm, minimum height=1cm, fill=red!15] (server) at (0,4) {Malicious Server};
 
 				% Client
 				\node[draw, rectangle, minimum width=3cm, minimum height=1cm, fill=blue!20] (client) at (0,0) {MEGA Client};
@@ -914,9 +914,9 @@
 					      \item Forces the client to use an all-zero encryption key
 					      \item Exploits missing bounds checking
 				      \end{itemize}
-				\item \textbf{IV Reuse in AES-GCM}
+				\item \textbf{nonce Reuse in AES-GCM}
 				      \begin{itemize}
-					      \item Same IV used when files are modified
+					      \item Same nonce used when files are modified
 					      \item Enables plaintext recovery and forgery
 				      \end{itemize}
 			\end{enumerate}
@@ -947,7 +947,7 @@
 		\begin{column}{0.3\textwidth}
 			\begin{tikzpicture}[scale=0.8]
 				% Malicious server
-				\node[draw, rectangle, minimum width=3cm, minimum height=0.8cm, fill=red!20] (server) at (0,4) {Malicious Server};
+				\node[draw, rectangle, minimum width=3cm, minimum height=0.8cm, fill=red!15] (server) at (0,4) {Malicious Server};
 
 				% Chosen key
 				\node[draw, rectangle, minimum width=2.5cm, minimum height=0.6cm] (chosenkey) at (0,2.5) {Chosen Key};
@@ -1043,13 +1043,13 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Attack 3: IV Reuse in AES-GCM}
+\begin{frame}{Attack 3: nonce Reuse in AES-GCM}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
-				\item \textbf{Critical flaw:} Same IV used when file is modified
-				\item \textbf{AES-GCM requirement:} Never reuse IV with same key
-				\item \textbf{Consequences of IV reuse:}
+				\item \textbf{Critical flaw:} Same nonce used when file is modified
+				\item \textbf{AES-GCM requirement:} Never reuse nonce with same key
+				\item \textbf{Consequences of nonce reuse:}
 				      \begin{itemize}
 					      \item Keystream repeats
 					      \item XOR of plaintexts revealed
@@ -1070,8 +1070,8 @@
 				% Modified file
 				\node[draw, rectangle, minimum width=3cm, minimum height=0.8cm] (file2) at (0,1.5) {Modified File};
 
-				% Same key and IV
-				\node[draw, rectangle, minimum width=2.5cm, minimum height=0.6cm, fill=yellow!20] (keyiv) at (0,0) {Same Key, IV};
+				% Same key and nonce
+				\node[draw, rectangle, minimum width=2.5cm, minimum height=0.6cm, fill=yellow!20] (keyiv) at (0,0) {Same Key, nonce};
 
 				% XOR reveals difference
 				\node[draw, rectangle, minimum width=3.5cm, minimum height=0.8cm, fill=red!30] (xor) at (0,-1.5) {$C_1 \oplus C_2 = P_1 \oplus P_2$};
@@ -1091,7 +1091,7 @@
 				\item \textbf{Initial patches:}
 				      \begin{itemize}
 					      \item Added bounds checking (Ghost Key)
-					      \item Generate new IV on file modification
+					      \item Generate new nonce on file modification
 					      \item But the Key Insertion attack remained\ldots
 				      \end{itemize}
 				\item \textbf{Drastic measure (2023):}
@@ -1131,7 +1131,7 @@
 			\begin{itemize}
 				\item Missing authentication
 				\item Implementation bugs
-				\item IV reuse in AES-GCM
+				\item nonce reuse in AES-GCM
 				\item Bounds checking errors
 				\item Had to disable features
 			\end{itemize}
@@ -1180,7 +1180,7 @@
 			\begin{itemize}
 				\item \textbf{Protocol downgrade (Seafile)}
 				      \begin{itemize}
-					      \item Forces client to use weak KDF
+					      \item Forces client to use weak password hash
 					      \item 3 iterations of SHA-1 instead of PBKDF2
 					      \item Enables offline password cracking
 				      \end{itemize}
@@ -1238,8 +1238,8 @@
 	\begin{itemize}
 		\item Password hashing has fundamental limitations:
 		      \begin{itemize}
-			      \item Server must receive the password (or its hash) to verify
-			      \item Vulnerable to offline dictionary attacks
+			      \item Server must receive the password's hash to verify
+			      \item Vulnerable to offline dictionary attacks (even though salts and memory-hard functions do help)
 			      \item Trade-off between security and performance
 		      \end{itemize}
 		\item \textbf{Zero-knowledge password protocols} offer better security:
@@ -1268,6 +1268,93 @@
 			      \item Based on discrete logarithm problem
 		      \end{itemize}
 		\item \textbf{Adoption:} Used by Apple iCloud, 1Password, and ProtonMail
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{SRP: How it works, visually}
+	\begin{center}
+		\begin{tikzpicture}[
+				scale=0.85, transform shape,
+				actor/.style={draw, rounded corners, minimum width=2.8cm, minimum height=0.62cm, font=\small\bfseries},
+				note/.style={draw, rounded corners, align=center, font=\scriptsize, inner sep=3.5pt},
+				stepnum/.style={circle, fill=cipherprimary, text=cipherwhite, font=\bfseries\scriptsize, inner sep=1.2pt, minimum size=0.42cm},
+				band/.style={rounded corners, draw=ciphergraydark, thick},
+				msg/.style={->, very thick}
+			]
+			% Phase bands (drawn first, everything else on top)
+			\draw[band, fill=ciphergray] (-2.95,-0.42) rectangle (11.15,-2.28);
+			\draw[band, fill=ciphergray] (-2.95,-2.42) rectangle (11.15,-6.45);
+			\node[rotate=90, font=\tiny\bfseries, text=cipherprimary] at (-2.7,-1.35) {SIGN-UP (once)};
+			\node[rotate=90, font=\tiny\bfseries, text=cipherprimary] at (-2.7,-4.4) {LOGIN (every time)};
+
+			% Lifelines and actors
+			\draw[dashed, gray] (0,-0.31) -- (0,-6.45);
+			\draw[dashed, gray] (9,-0.31) -- (9,-6.45);
+			\node[actor, fill=blue!15] (alice) at (0,0) {Alice's device};
+			\node[actor, fill=red!15] (server) at (9,0) {Server};
+			\node[font=\tiny, text=gray] at (4.5,0) {public: prime $N$, generator $g$, $k = H(N, g)$; all math mod $N$};
+
+			% Step 1: password -> verifier
+			\node[stepnum] at (-2.05,-1.18) {1};
+			\node[note, fill=blue!12] at (0,-1.18) {picks salt, computes\\$x = H(\mathrm{salt}, pw)$,\\verifier $v = g^x$};
+			\node[note, fill=red!12] at (9,-1.18) {stores $(\mathrm{salt}, v)$:\\can \emph{verify} Alice, but\\inverting $g^x$ is infeasible};
+
+			% Step 2: send verifier
+			\node[stepnum] at (-2.05,-1.98) {2};
+			\draw[msg, cipherprimary] (0,-1.98) -- node[above, font=\scriptsize] {$\mathrm{salt},\ v = g^x$}
+			node[below, font=\tiny, text=red!70!black] {neither $pw$ nor $x$ is ever sent} (9,-1.98);
+
+			% Step 3: exchange ephemeral DH values
+			\node[stepnum] at (-2.05,-3.28) {3};
+			\draw[msg, cipherprimary] (0,-2.95) -- node[above, font=\scriptsize] {$A = g^a$ \ (fresh secret exponent $a$)} (9,-2.95);
+			\draw[msg, cipherprimary] (9,-3.62) -- node[above, font=\scriptsize] {$\mathrm{salt},\ B = kv + g^b$ \ (fresh secret exponent $b$)} (0,-3.62);
+			\node[font=\tiny, text=cipherprimary] at (4.5,-3.88) {both sides compute $u = H(A, B)$};
+
+			% Step 4: both derive the shared secret
+			\node[stepnum] at (-2.05,-4.42) {4};
+			\node[note, fill=blue!12] (mixa) at (0,-4.42) {$x = H(\mathrm{salt}, pw)$\\$S = (B - kg^x)^{\,a + ux}$\\$K = H(S)$};
+			\node[note, fill=red!12] (mixs) at (9,-4.42) {$S = (A \cdot v^u)^{\,b}$\\$K = H(S)$};
+			\node[note, fill=cipherprimarylight!45, font=\scriptsize] (samek) at (4.5,-4.42) {\textbf{the same $K$!}\\{\tiny both $S = g^{\,b(a + ux)}$}};
+			\draw[<->, thick, ciphersecondary] (mixa.east) -- (samek.west);
+			\draw[<->, thick, ciphersecondary] (samek.east) -- (mixs.west);
+
+			% Step 5: mutual proof
+			\node[stepnum] at (-2.05,-5.38) {5};
+			\draw[<->, very thick, ciphersecondary] (0,-5.38) -- node[above, font=\scriptsize] {proofs: $M_1 = H(A, B, K)$, $M_2 = H(A, M_1, K)$}
+			node[below, font=\tiny, text=red!70!black] {wrong password? the $K$'s don't match, proofs fail, login rejected} (9,-5.38);
+
+			% Eavesdropper note
+			\node[note, fill=cipherwhite, font=\tiny, text width=9.6cm] at (4.5,-6.13) {\textbf{Eve on the wire?} Recovering $a$ or $b$ from $A$ and $B$ means solving\\the discrete log problem; without $pw$ or $v$, she cannot compute $S$.};
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Discrete logarithm problem}{Reminder}
+	\begin{itemize}
+		\item The discrete logarithm problem:
+		      \begin{itemize}
+			      \item Given a finite cyclic group $G$, a generator $g \in G$, and an element
+			            $h \in G$, find the integer $x$ such that $g^{x}=h$
+		      \end{itemize}
+		\item In more concrete terms:
+		      \begin{itemize}
+			      \item Let $p$ be a large prime and let $g$ be a generator of the multiplicative
+			            group $\mathbb{Z}_{p}^{*}$ (all nonzero integers modulo $p$).
+			      \item Given:
+			            \begin{itemize}
+				            \item $g \in \mathbb{Z}_{p}^{*}$, $h \in \mathbb{Z}_{p}^{*}$
+
+				            \item Find $x \in \{0, 1, \ldots, p-2\}$ such that $g^{x} \equiv h \pmod
+					                  {p}$
+			            \end{itemize}
+			      \item This problem is believed to be computationally hard when $p$ is large
+			            and $g$ is a primitive root modulo $p$.
+			            \begin{itemize}
+				            \item ``Believed to be'' = we don't know of any way to do it that doesn't
+				                  take forever, unless we have a large-scale, fault-tolerant quantum computer (Shor's
+				                  algorithm)
+			            \end{itemize}
+		      \end{itemize}
 	\end{itemize}
 \end{frame}
 
