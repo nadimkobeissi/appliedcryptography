@@ -4,7 +4,7 @@
 \title{Applied Cryptography - Quiz 2.5: High-Assurance Cryptography}
 \author{Nadim Kobeissi}
 \subject{Multiple choice quiz to help you see how much you remembered from the high-assurance cryptography session of the Applied Cryptography course.}
-\keywords{cryptography, security, computer-aided cryptography, formal verification, symbolic security, computational security, ProVerif, Tamarin, F*, constant-time}
+\keywords{cryptography, security, computer-aided cryptography, formal verification, symbolic security, computational security, ProVerif, Tamarin, Verifpal, F*, constant-time, protocol modeling}
 
 \begin{document}
 \classhandoutheader
@@ -80,13 +80,6 @@
 		\choice Using timers to ensure operations complete quickly
 	\end{randomizechoices}
 
-	\question Why can't you use if-statements with secret values in constant-time code?
-	\begin{randomizechoices}
-		\choice They make the code slower
-		\CorrectChoice They create branches that leak information through timing
-		\choice They cause compiler errors
-	\end{randomizechoices}
-
 	\question What problem can compilers cause for constant-time code?
 	\begin{randomizechoices}
 		\CorrectChoice They might reintroduce branches through optimizations
@@ -108,25 +101,11 @@
 		\choice It removed all cryptographic operations
 	\end{randomizechoices}
 
-	\question How many drafts did TLS 1.3 go through?
-	\begin{randomizechoices}
-		\choice 5 drafts
-		\choice 14 drafts
-		\CorrectChoice 28 drafts
-	\end{randomizechoices}
-
 	\question What is the main achievement of \haclstar?
 	\begin{randomizechoices}
 		\CorrectChoice First verified crypto deployed at scale with performance parity
 		\choice First crypto library written in assembly
 		\choice First library to break all encryption
-	\end{randomizechoices}
-
-	\question What does ``verification-friendly design'' mean?
-	\begin{randomizechoices}
-		\choice Using only simple algorithms
-		\CorrectChoice Making small changes that dramatically simplify formal analysis
-		\choice Avoiding all optimizations
 	\end{randomizechoices}
 
 	\question What is the fundamental tension in cryptographic implementation?
@@ -143,18 +122,39 @@
 		\choice They only work on specific hardware
 	\end{randomizechoices}
 
-	\question What is observational non-interference?
+	\question In a Verifpal model, what does appending \texttt{?} to a primitive do?
 	\begin{randomizechoices}
-		\CorrectChoice A property where leakage is independent of secrets
-		\choice A way to prevent all side channels
-		\choice A method for faster encryption
+		\choice It marks the value as secret
+		\CorrectChoice It makes the primitive checked, so the principal halts if it fails
+		\choice It tells the attacker to ignore that line
 	\end{randomizechoices}
 
-	\question What lesson did TLS 1.3 teach about protocol development?
+	\question What do square brackets around a value in a Verifpal message mean?
 	\begin{randomizechoices}
-		\choice Formal methods are too slow for real development
-		\CorrectChoice Machine-checked proofs can evolve with rapidly changing protocols
-		\choice Security analysis should only happen after standardization
+		\choice The attacker cannot read the value
+		\CorrectChoice The attacker may read the value but cannot replace it
+		\choice The value is optional and may be omitted
+	\end{randomizechoices}
+
+	\question How many concurrent sessions per principal does Verifpal analyze by default?
+	\begin{randomizechoices}
+		\choice One
+		\CorrectChoice Two
+		\choice An unbounded number
+	\end{randomizechoices}
+
+	\question What does \texttt{PUBKEY[weak from phase 1](a)} declare?
+	\begin{randomizechoices}
+		\choice That \texttt{a} is leaked to the attacker in phase 1
+		\CorrectChoice That from phase 1 onward, the attacker holding the public key recovers the private one
+		\choice That the key exchange should be skipped after phase 1
+	\end{randomizechoices}
+
+	\question What does a passing Verifpal query establish?
+	\begin{randomizechoices}
+		\choice A proof that no attack against the protocol exists
+		\CorrectChoice That its search found no attack, which is weaker than a proof
+		\choice That the protocol is secure in the computational model
 	\end{randomizechoices}
 
 \end{questions}

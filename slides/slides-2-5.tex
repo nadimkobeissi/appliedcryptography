@@ -3,8 +3,8 @@
 
 \title{Applied Cryptography - 2.5: High-Assurance Cryptography}
 \author{Nadim Kobeissi}
-\subject{An exploration of high-assurance cryptography through computer-aided design, verification, and implementation techniques, followed by a critical examination of verification boundaries in practice.}
-\keywords{computer-aided cryptography, formal verification, verification boundaries, verification theatre, symbolic security, computational security, ProVerif, Tamarin, F*, side-channel resistance}
+\subject{An exploration of high-assurance cryptography through computer-aided design, verification, and implementation techniques, a critical examination of verification boundaries in practice, and a hands-on introduction to protocol modeling with Verifpal.}
+\keywords{computer-aided cryptography, formal verification, verification boundaries, verification theatre, symbolic security, computational security, ProVerif, Tamarin, Verifpal, F*, protocol modeling, side-channel resistance}
 \institute{Symbolic Software}
 \instituteimage{images/symbolicsoft-white.png}
 \date{\today}
@@ -14,6 +14,86 @@
 \coverwebsite{https://appliedcryptography.page}
 
 \usetikzlibrary{decorations.pathreplacing, fit}
+
+%% --------------------------------------------------------------------
+%%  Verifpal syntax highlighting (Part 3), recolored to the cipher palette.
+%%  Frames containing a listing must be declared [fragile].
+%% --------------------------------------------------------------------
+\usepackage{listings}
+
+\definecolor{vpink}{HTML}{1A2810}
+\definecolor{vpazure}{HTML}{1F5C8B}
+\definecolor{vpolive}{HTML}{5F7314}
+\definecolor{vpsienna}{HTML}{A0522D}
+\definecolor{vpbreach}{HTML}{B03030}
+\definecolor{vpcomment}{HTML}{6E7F62}
+
+\lstdefinelanguage{Verifpal}{
+	morekeywords=[1]{principal, attacker, queries, knows, generates, leaks, public, private, password, phase, from, active, passive},
+	morekeywords=[2]{confidentiality, authentication, freshness, unlinkability, equivalence, precondition},
+	morekeywords=[3]{ASSERT, CONCAT, SPLIT, HASH, MAC, HKDF, PW_HASH, PUBKEY, DH_KEX, ENC, DEC, AEAD_ENC, AEAD_DEC, PKE_ENC, PKE_DEC, SIGN, SIGNVERIF, RINGSIGN, RINGSIGNVERIF, BLIND, UNBLIND, KEM_ENCAP, KEM_DECAP, SHAMIR_SPLIT, SHAMIR_JOIN},
+	morekeywords=[4]{weak, forgeable, malleable},
+	morekeywords=[5]{PASS, Pass},
+	morekeywords=[6]{FAIL, Fail},
+	morekeywords=[7]{Info, Warning},
+	sensitive=true,
+	extendedchars=true,
+	tabsize=2,
+	breaklines=true,
+	basicstyle=\footnotesize\ttfamily\color{vpink},
+	identifierstyle=\ttfamily\color{vpink},
+	keywordstyle=[1]\bfseries\color{cipherprimarydark},
+	keywordstyle=[2]\bfseries\color{vpazure},
+	keywordstyle=[3]\color{vpolive},
+	keywordstyle=[4]\bfseries\color{vpsienna},
+	keywordstyle=[5]\bfseries\color{vpolive},
+	keywordstyle=[6]\bfseries\color{vpbreach},
+	keywordstyle=[7]\bfseries\color{vpsienna},
+	comment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	commentstyle=\ttfamily\itshape\color{vpcomment},
+}
+\lstset{language=Verifpal, columns=fullflexible, keepspaces=true, aboveskip=0pt, belowskip=0pt,
+	basicstyle=\scriptsize\ttfamily\color{vpink}}
+% Tighter leading, for listings that carry a whole model.
+\newcommand{\vpcode}{\fontsize{6}{6.4}\selectfont\ttfamily\color{vpink}}
+
+% A Verifpal model listing.
+\newtcolorbox{vpmodel}[2][]{
+	enhanced,
+	colback=ciphergray,
+	colframe=cipherprimary,
+	colbacktitle=cipherprimary!40!white,
+	title={#2},
+	fonttitle=\bfseries\sffamily\scriptsize,
+	boxrule=0.35mm,
+	arc=2mm,
+	boxsep=0pt,
+	left=2mm, right=2mm, top=1mm, bottom=1mm,
+	toptitle=0.4mm, bottomtitle=0.4mm,
+	drop shadow={opacity=0.1},
+	sharp corners=southeast,
+	#1
+}
+
+% Verifpal's own output.
+\newtcolorbox{vpresult}[2][]{
+	enhanced,
+	colback=cipherdark!4!cipherlight,
+	colframe=cipherdark!60!cipherlight,
+	colbacktitle=cipherdark!25!cipherlight,
+	coltitle=cipherdark,
+	title={#2},
+	fonttitle=\bfseries\sffamily\scriptsize,
+	boxrule=0.35mm,
+	arc=2mm,
+	boxsep=0pt,
+	left=2mm, right=2mm, top=1mm, bottom=1mm,
+	toptitle=0.4mm, bottomtitle=0.4mm,
+	drop shadow={opacity=0.1},
+	sharp corners=southeast,
+	#1
+}
 
 \begin{document}
 \begin{frame}[plain]
@@ -45,24 +125,36 @@
 		\vspace{1em}
 
 		Part 2 is based on new research by the instructor.
+
+		\vspace{1em}
+
+		Part 3 is based on the \textit{Verifpal User Manual}, also by the instructor.
 	\end{center}
 \end{frame}
 
-\begin{frame}{Today: The promise and the pitfalls}
+\begin{frame}{Today: The promise, the pitfalls, and the practice}
+	\footnotesize
 	\textbf{Part 1 --- The promise: computer-aided cryptography}
 	\begin{itemize}
 		\item Why cryptography fails at three levels: design, implementation, deployment
 		\item Tools that prove designs secure: ProVerif, Tamarin, CryptoVerif, \fstar
 		\item Verified implementations that match hand-optimized speed: \haclstar, Fiat
-		\item Side channels, constant-time code, and how compilers betray it
-		\item How TLS 1.3 was designed hand-in-hand with formal analysis
+		\item Side channels, constant-time code, and TLS 1.3 designed alongside its proofs
 	\end{itemize}
-	\vspace{0.5em}
+	\vspace{0.15em}
 	\textbf{Part 2 --- The pitfalls: verification theatre}
 	\begin{itemize}
 		\item Thirteen vulnerabilities I found in ``the formally verified crypto library''
 		\item A taxonomy of five ways verification claims fail in practice
 		\item What separates real assurance from the \textit{appearance} of assurance
+	\end{itemize}
+	\vspace{0.15em}
+	\textbf{Part 3 --- The practice: modeling protocols in Verifpal}
+	\begin{itemize}
+		\item The language, the attacker, the five queries
+		\item Two protocols modeled, attacked, and repaired from the traces
+		\item Declaring a primitive broken: forgeable signatures, harvest now decrypt later
+		\item What a passing query does and does not promise
 	\end{itemize}
 \end{frame}
 
@@ -1042,45 +1134,31 @@
 	\definitionbox{Verification Boundary}{The interface separating code whose properties carry \textbf{machine-checked proofs} from code that is \textbf{trusted without proof}.}
 	\vspace{0.5em}
 	\begin{itemize}
-		\item Every formally verified system embeds one: it can be drawn tightly or loosely, but it always exists
+		\item Every formally verified system embeds one. It can be drawn tightly or loosely, but it always exists
 		\item Outside the boundary: compilers, operating system, hardware, platform intrinsics, ``glue code''
-		\item The existence of this boundary is well understood by experts\ldots
+		\item Experts understand that the boundary is there. Users often do not
 	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{But it is not always communicated clearly to users}
+		\textit{The question is whether a project tells you where its boundary runs}
 	\end{center}
 \end{frame}
 
-\begin{frame}{Good boundary documentation exists}
+\begin{frame}{Boundaries documented, and boundaries assumed}
+	\textbf{Projects that treat the boundary as first-class documentation:}
 	\begin{itemize}
-		\item \textbf{CompCert}: Explicitly documents which compiler passes are verified and which (parser, assembler, linker) are not
-		\item \textbf{seL4}: Maintains a dedicated page listing every trust assumption about hardware behavior
-		\item \textbf{EverCrypt}: Explicitly identifies compiler, Vale embedding semantics, and hardware as trusted components
-		\item \textbf{Jasmin}: Documents which compiler passes have machine-checked proofs
+		\item \textbf{CompCert}: documents which compiler passes are verified and which (parser, assembler, linker) are not
+		\item \textbf{seL4}: maintains a dedicated page listing every trust assumption about hardware behavior
+		\item \textbf{EverCrypt}: names the compiler, the Vale embedding semantics, and the hardware as trusted
+		\item \textbf{Jasmin}: documents which compiler passes carry machine-checked proofs
 	\end{itemize}
 	\vspace{0.5em}
-	\begin{center}
-		\Large
-		These projects treat verification boundaries as \textbf{first-class documentation}
-	\end{center}
-\end{frame}
-
-\begin{frame}{When boundaries go wrong}
-	\begin{center}
-		\Large
-		What happens when a library is marketed as ``formally verified'' \textbf{without qualification}?
-	\end{center}
-	\vspace{1em}
+	\textbf{What happens when a library says ``formally verified'' with no qualification:}
 	\begin{itemize}
-		\item Users reasonably interpret this as a comprehensive guarantee
-		\item The gap between verification \textit{claims} and verification \textit{reality} creates false assurance
-		\item We call this gap \textbf{``verification theatre''}
+		\item Users read it as a guarantee over the whole library
+		\item The gap between the claim and the reality produces false assurance
+		\item Call that gap \textbf{verification theatre}
 	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Deploying formal methods with unqualified claims creates an appearance of correctness while leaving significant code paths unverified}
-	\end{center}
 \end{frame}
 
 \begin{frame}{Case study: Cryspen's libcrux}
@@ -1128,29 +1206,13 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{The formal verification pipeline}
+\begin{frame}{What the pipeline actually verifies}
+	\textbf{Cryspen's pipeline:} spec in hacspec or \fstar $\rightarrow$ optimized Rust with portable, AVX2 and NEON backends $\rightarrow$ hax extracts Rust to \fstar $\rightarrow$ compiled by an \textbf{unverified} rustc/LLVM
+	\vspace{0.3em}
 	\begin{center}
-		\Large
-		How does Cryspen's verification work?
-	\end{center}
-	\vspace{0.5em}
-	\begin{enumerate}
-		\item \textbf{Specification}: Algorithm spec written in hacspec (a Rust subset) or \fstar
-		\item \textbf{Implementation}: Optimized Rust with multiple backends (portable, AVX2, NEON)
-		\item \textbf{Extraction and proof}: The hax toolchain extracts Rust to \fstar; provers verify correctness, safety, and secret independence
-		\item \textbf{Compilation}: Verified source compiled by an \textbf{unverified} compiler (rustc/LLVM)
-	\end{enumerate}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Each stage introduces a trust boundary}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Verification status reality}
-	\begin{center}
-		\small
+		\scriptsize
 		\textbf{ML-KEM verification status as documented by Cryspen}
-		\vspace{0.3em}
+		\vspace{0.2em}
 
 		\begin{tabular}{|l|l|c|c|c|}
 			\hline
@@ -1170,9 +1232,10 @@
 			\hline
 		\end{tabular}
 	\end{center}
-	\vspace{0.3em}
+	\vspace{0.2em}
 	\begin{center}
-		The NEON backend---implicated in a platform-dependent output failure---has \textbf{no completed proofs} for any module beyond lax checking
+		\small
+		The NEON backend, implicated in a platform-dependent output failure, has \textbf{no completed proofs} for any module beyond lax checking
 	\end{center}
 \end{frame}
 
@@ -1198,9 +1261,9 @@
 	\end{center}
 	\vspace{1em}
 	\begin{itemize}
-		\item Types I--IV: Bugs at or \textbf{beyond} the verification boundary
-		\item Type V: Bugs \textbf{inside} the formally verified code itself
-		\item Type V is the most insidious: it corrupts the foundation
+		\item Types I--IV: bugs at or \textbf{beyond} the verification boundary
+		\item Type V: bugs \textbf{inside} the formally verified code itself
+		\item Type V corrupts the foundation the other proofs stand on
 	\end{itemize}
 \end{frame}
 
@@ -1344,298 +1407,148 @@
 	\end{center}
 \end{frame}
 
-\subsection{Type I: Unverified Platform Abstractions}
+\begin{frame}{Type I: Platform abstractions the verifier takes on faith}
+	\small
+	Verified code calls platform intrinsics marked \texttt{\#[hax\_lib::opaque]}: the verifier takes their specification as an \textbf{axiom} and never looks at the implementation.
 
-\begin{frame}{Type I: Unverified Platform Abstractions}
+	\textbf{V1: Incorrect ARM64 SHA-3 intrinsic}
+	\begin{itemize}
+		\item The \texttt{\_vxarq\_u64} wrapper falls back to software on ARM64 chips without SHA-3 instructions, and that fallback was wrong
+		\item The axiom was correct; the implementation behind it was not. Found independently by Filippo Valsorda
+	\end{itemize}
+	\vspace{0.2em}
+	\textbf{V2: Cross-backend endianness bug}
+	\begin{itemize}
+		\item The portable backend serialized ML-KEM state in a different byte order than the SIMD backends
+		\item Each backend was proved correct on its own. Nobody specified that they had to agree
+		\item Caused \textbf{decryption failures in Signal's post-quantum ratchet}; reported by GuuJiang, December 2025
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Type II: Unverified protocol logic}
 	\begin{center}
 		\Large
-		The verified code depends on platform intrinsics treated as \textbf{axioms}
+		The primitives are used correctly. The protocol around them has bugs.
 	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Formal proofs \textbf{assume} these operations implement their specified semantics
-		\item The actual implementations may contain bugs
-		\item Marked \texttt{\#[hax\_lib::opaque]}: the verifier accepts the specification without proof
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{V1: Incorrect ARM64 SHA-3 intrinsic}
-	\begin{itemize}
-		\item The \texttt{\_vxarq\_u64} intrinsic wrapper for ARM64 SHA-3
-		\item On platforms \textbf{without} SHA-3 hardware support, a fallback path is used
-		\item The fallback implementation was \textbf{incorrect}
-		\item Produced wrong cryptographic output on certain ARM64 devices
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Why verification missed it:}
-	\begin{itemize}
-		\item Function marked as opaque to the verifier
-		\item The verifier accepted the \textit{specification} as an axiom
-		\item The axiom was correct; the \textit{implementation} was wrong
-		\item Discovered independently by Filippo Valsorda
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{V2: Cross-backend endianness bug}
-	\begin{itemize}
-		\item ML-KEM incremental API: \texttt{from\_bytes}/\texttt{to\_bytes} serialization
-		\item The portable backend used a \textbf{different byte order} than the SIMD backends
-		\item Serialize state on one platform, deserialize on another $\rightarrow$ \textbf{failure}
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Real-world impact:}
-	\begin{itemize}
-		\item Caused \textbf{decryption failures in Signal's post-quantum ratchet}
-		\item Reported by GuuJiang (December 2025)
-		\item Each backend was individually correct, but they were \textbf{mutually incompatible}
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Verification proved each backend correct in isolation; the cross-backend property was never specified}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Type I: Lessons}
-	\begin{center}
-		\Large
-		What Type I failures teach us
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Platform abstractions are \textbf{axioms}: the verifier takes them on faith
-		\item Cross-platform properties (endianness, representation) are rarely specified
-		\item Testing each backend individually is \textbf{not enough}
-		\item Need cross-backend compatibility testing
-		\item Axiomatized specifications should be \textbf{proved or exhaustively tested} against a reference
-	\end{itemize}
-\end{frame}
-
-\subsection{Type II: Unverified Protocol Logic}
-
-\begin{frame}{Type II: Unverified Protocol Logic}
-	\begin{center}
-		\Large
-		Verified primitives used correctly\ldots
-
-		but the protocol logic around them has bugs
-	\end{center}
-	\vspace{1em}
+	\vspace{0.7em}
 	\textbf{V3: Missing X25519 zero check}
 	\begin{itemize}
-		\item RFC 9180 \textbf{requires} checking whether the DH output is all-zero
-		\item hpke-rs returns the raw result without validation
-		\item Small-subgroup attack: an adversary can force the shared secret to zero
+		\item RFC 9180 requires rejecting an all-zero Diffie-Hellman output. hpke-rs returns it unchecked
+		\item A small-subgroup attack can force the shared secret to zero
 	\end{itemize}
-	\vspace{0.5em}
+	\vspace{0.3em}
 	\textbf{V4: Nonce reuse via integer overflow}
 	\begin{itemize}
-		\item The HPKE sequence counter is a \texttt{u32} (wraps at $2^{32}$)
-		\item In release builds, wrapping is \textbf{silent}: the counter goes back to 0
-		\item After $2^{32}$ messages: \textbf{nonce reuse!}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Type II: Lessons}
-	\begin{center}
-		\Large
-		What Type II failures teach us
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Verifying the \textbf{crypto primitive} does not verify the \textbf{protocol}
-		\item Standard-mandated checks (RFC 9180 zero check) live in protocol logic
-		\item Integer overflow behavior depends on build mode (debug vs.\ release)
-		\item Protocol-level code needs its own analysis---symbolic or otherwise
+		\item The HPKE sequence counter is a \texttt{u32}. Release builds wrap silently back to 0
+		\item After $2^{32}$ messages, the nonce repeats
 	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{The most dangerous bugs live in the space \textbf{between} verified components}
+		\textit{Standard-mandated checks live in protocol code, which nothing here verifies}
 	\end{center}
 \end{frame}
 
-\subsection{Type III: Specification Incompleteness}
-
-\begin{frame}{Type III: Specification Incompleteness}
+\begin{frame}{Type III: Specification incompleteness}
 	\begin{center}
 		\Large
-		Code is \textbf{provably correct} per its spec\ldots
-
-		but the spec doesn't capture all real-world requirements
+		The code is provably correct against its spec. The spec omits a real requirement.
 	\end{center}
 	\vspace{1em}
 	\textbf{V5: ECDSA missing low-$S$ normalization}
 	\begin{itemize}
-		\item ECDSA signatures exhibit malleability: both $(r, s)$ and $(r, n-s)$ are valid
-		\item Bitcoin, Ethereum, and other systems \textbf{require} $s \leq n/2$ (``low-$S$'')
-		\item libcrux's \fstar specification doesn't include this requirement
-		\item Implementation is provably correct per spec, but \textbf{rejected by practical systems}
+		\item ECDSA signatures are malleable: both $(r, s)$ and $(r, n-s)$ verify
+		\item Bitcoin, Ethereum and others require $s \leq n/2$, the ``low-$S$'' form
+		\item libcrux's \fstar specification never states that requirement
+		\item The implementation is correct per spec, and rejected by the systems that consume it
 	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{The spec was incomplete, not the proof}
+		\textit{Nothing is wrong with the proof. The thing being proved is too weak.}
 	\end{center}
 \end{frame}
 
-\subsection{Type IV: Unverified Wrapper Logic}
-
-\begin{frame}{Type IV: Unverified Wrapper Logic}
+\begin{frame}{Type IV: Unverified wrapper logic}
 	\begin{center}
 		\Large
-		The verified core is correct, but the \textbf{API layer} introduces defects
+		The verified core is correct. The API layer around it introduces defects.
 	\end{center}
 	\vspace{1em}
 	\textbf{V6: Ed25519 double clamping}
 	\begin{itemize}
-		\item The key generation wrapper applies clamping \textbf{before} hashing
-		\item Should be: hash first, then clamp the result
-		\item Reduces entropy of generated keys
+		\item The key generation wrapper clamps before hashing; the standard hashes first, then clamps
+		\item Reduces the entropy of generated keys
 	\end{itemize}
 	\vspace{0.5em}
 	\textbf{V7: AES-GCM decryption panic}
 	\begin{itemize}
-		\item The decryption wrapper calls \texttt{.unwrap()} on the result
-		\item If decryption fails (e.g., a tampered ciphertext): the \textbf{program panics}
-		\item Denial of service via any invalid ciphertext
-		\item The correct error handling was \textit{commented out} in the source
+		\item The decryption wrapper calls \texttt{.unwrap()} on its result
+		\item Any tampered ciphertext panics the process, and the correct error handling sits right above it, commented out
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{V8: ML-DSA norm check rendered dead code}
-	\textbf{FIPS 204 requirement:} Reject the signature if the signer response exceeds $\gamma_1 - \beta$
-	\vspace{0.5em}
-
-	\textbf{The bug:}
+\begin{frame}{V8 and V9: two FIPS 204 checks that never fire}
+	\small
+	\textbf{V8: the norm check is dead code}
 	\begin{flushleft}
 		\texttt{if vector\_infinity\_norm\_exceeds(response, \textbf{(2 << GAMMA1\_EXPONENT)} - BETA)}
 	\end{flushleft}
-	\vspace{0.3em}
 	\begin{itemize}
-		\item \texttt{2 << GAMMA1\_EXPONENT} computes $2\gamma_1$, not $\gamma_1$
-		\item The bound is \textbf{doubled}: $2\gamma_1 - \beta$ instead of $\gamma_1 - \beta$
-		\item Since the signer response is already bounded by $\gamma_1 - \beta$, the check \textbf{always passes}
-		\item A FIPS 204 security check is effectively \textbf{dead code}
+		\item \texttt{2 << GAMMA1\_EXPONENT} is $2\gamma_1$, not $\gamma_1$, so the bound is doubled. The response is already within $\gamma_1 - \beta$, and the check always passes
 	\end{itemize}
-	\vspace{0.3em}
-	\begin{center}
-		\textit{libcrux accepts non-conforming ML-DSA signatures}
-	\end{center}
-\end{frame}
-
-\begin{frame}{V9: ML-DSA hint deserialization off-by-one}
-	\textbf{FIPS 204 requirement:} Check that the hint count does not exceed the maximum
-	\vspace{0.5em}
-
-	\textbf{The bug:} The overflow check compares against the \textbf{previous} iteration's count, not the current one
+	\vspace{0.4em}
+	\textbf{V9: the hint bound is checked one iteration late}
 	\begin{flushleft}
-		\texttt{if (\textbf{previous\_true\_hints\_seen} > max\_ones\_in\_hint) \{}\\
-		\texttt{~~~~malformed\_hint = true;}\\
-		\texttt{\}}
+		\texttt{if (\textbf{previous\_true\_hints\_seen} > max\_ones\_in\_hint) \{ malformed\_hint = true; \}}
 	\end{flushleft}
 	\begin{itemize}
-		\item Should check \texttt{current\_true\_hints\_seen > max\_ones\_in\_hint}
-		\item The final iteration's bound is \textbf{never validated}
-		\item Allows non-conforming signatures to pass verification
+		\item Should compare \texttt{current\_true\_hints\_seen}; the final iteration is never validated
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Types I--IV: Summary}
+	\vspace{0.4em}
 	\begin{center}
-		\Large
-		Nine vulnerabilities outside the verified core
-	\end{center}
-	\vspace{0.5em}
-	\begin{itemize}
-		\item \textbf{Real-world impact}: Signal PQ ratchet failures (V2), potential DoS (V7), non-conforming ML-DSA signatures (V8, V9)
-		\item \textbf{Common pattern}: The verified primitive works correctly, but everything \textit{around} it is unverified
-		\item \textbf{Key insight}: Formal verification of primitives provides a \textbf{false sense of security} when the surrounding code is not analyzed
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{But the most surprising findings are still ahead\ldots}
+		\textit{Both are FIPS 204 requirements, and libcrux accepts non-conforming ML-DSA signatures}
 	\end{center}
 \end{frame}
 
-\subsection{Type V: Specification Errors and False Proofs}
-
-\begin{frame}{Type V: The most insidious failures}
+\begin{frame}{Type V: bugs inside the verified code}
 	\begin{center}
 		\Large
-		Bugs \textbf{inside} the formally verified code itself
+		Everything so far lived outside the boundary. These four live inside it.
 	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item The formal \textbf{specification} is wrong
-		\item Or the \textbf{proofs} contain false claims silently accepted by the build system
-		\item These undermine the \textbf{entire foundation} on which all verification rests
-		\item Even complete proofs only establish correctness with respect to the \textbf{wrong definition}
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Four concrete examples in ML-KEM and ML-DSA\ldots}
-	\end{center}
-\end{frame}
-
-\begin{frame}{How can bugs exist inside ``verified'' code?}
-	\begin{center}
-		\Large
-		Three mechanisms that allow false proofs to survive
-	\end{center}
-	\vspace{0.5em}
+	\vspace{0.7em}
+	\textbf{Three mechanisms let a false proof survive:}
 	\begin{enumerate}
-		\item \textbf{Wrong specifications}: The formal spec is a mathematical statement---if the statement is wrong, proving it doesn't help
-		\item \textbf{Admitted proofs}: The build system can skip proof checking entirely while reporting success
-		\item \textbf{False axioms}: Unproved assumptions can contradict reality; all downstream proofs become unsound
+		\item \textbf{Wrong specifications.} A formal spec is a mathematical statement. Proving a wrong statement buys nothing
+		\item \textbf{Admitted proofs.} The build system can skip proof checking and still report success
+		\item \textbf{False axioms.} An unproved assumption can contradict reality, and every proof above it becomes unsound
 	\end{enumerate}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{Let's see each mechanism in action\ldots}
+		\textit{Four concrete examples follow, two of each kind}
 	\end{center}
 \end{frame}
 
-\begin{frame}{V10: Wrong decompression constant}
-	\textbf{FIPS 203 specification:}
+\begin{frame}{V10 and V11: two wrong ML-KEM specifications}
+	\textbf{V10: the decompression constant does not depend on $d$}
 	\begin{flushleft}
-		$\mathtt{decompress}_d(x) = \lceil x \cdot q / 2^d \rfloor = (x \cdot 3329 + 2^{d-1}) / 2^d$
+		FIPS 203: $\mathtt{decompress}_d(x) = \lceil x \cdot q / 2^d \rfloor = (x \cdot 3329 + 2^{d-1}) / 2^d$\\
+		libcrux: \texttt{let decompress\_d d x = (x * v\_FIELD\_MODULUS + \textbf{1664}) / pow2 d}
 	\end{flushleft}
-	\vspace{0.3em}
-	\textbf{libcrux \fstar specification:}
-	\begin{flushleft}
-		\texttt{let decompress\_d d x = (x * v\_FIELD\_MODULUS + \textbf{1664}) / pow2 d}
-	\end{flushleft}
-	\vspace{0.5em}
 	\begin{itemize}
-		\item $1664 = (q-1)/2 = (3329-1)/2$, a fixed value unrelated to $d$
-		\item The correct rounding constant should be $2^{d-1}$, which varies with $d$
-		\item ML-KEM uses $d \in \{1, 4, 5, 10, 11\}$: all five values produce wrong results
+		\item $1664 = (q-1)/2$, a fixed value, where the rounding constant should be $2^{d-1}$
+		\item ML-KEM uses $d \in \{1, 4, 5, 10, 11\}$, and all five come out wrong
 	\end{itemize}
-	\vspace{0.3em}
-	\begin{center}
-		\textit{The specification disagrees with the standard it claims to formalize}
-	\end{center}
-\end{frame}
-
-\begin{frame}{V11: Missing inverse NTT}
-	\textbf{ML-KEM encryption computes:}
-	\begin{itemize}
-		\item $\mathbf{u} = \text{NTT}^{-1}(\hat{A}^T \circ \hat{r}) + e_1$ \quad (correct in spec)
-		\item $v = \text{NTT}^{-1}(\hat{t}^T \circ \hat{r}) + e_2 + \lceil q/2 \rfloor \cdot m$ \quad (FIPS 203)
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{libcrux \fstar specification for $v$:}
+	\vspace{0.4em}
+	\textbf{V11: the inverse NTT is missing}
 	\begin{flushleft}
 		\texttt{let v = poly\_add (poly\_add (\textbf{vector\_dot\_product\_ntt} t\_as\_ntt r\_as\_ntt) error\_2) mu}
 	\end{flushleft}
-	\vspace{0.3em}
 	\begin{itemize}
-		\item The result of \texttt{vector\_dot\_product\_ntt} is in the \textbf{NTT domain}
-		\item But \texttt{error\_2} and \texttt{mu} are in the \textbf{coefficient domain}
-		\item Adding them together is mathematically \textbf{nonsensical}
-		\item The missing \texttt{poly\_inv\_ntt} call makes the spec wrong
-		\item Yet it \textbf{type-checks}, because both domains share the same polynomial type
+		\item The dot product lands in the NTT domain; \texttt{error\_2} and \texttt{mu} are coefficients
+		\item Adding them is meaningless, and it type-checks anyway, because both domains share one type
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{V12: A false serialization proof}
+\begin{frame}{V12: a false serialization proof}
 	\textbf{The claim:}
 	\begin{flushleft}
 		\texttt{let deserialize\_12\_bit\_vec\_lemma\_bounded (v: t\_Array u8 (sz 24))}\\
@@ -1644,14 +1557,14 @@
 	\end{flushleft}
 	\vspace{0.5em}
 	\begin{itemize}
-		\item This claims that 12-bit deserialized values are bounded by $2^{\textbf{1}} = 2$
-		\item The correct bound should be $2^{12} = 4096$
-		\item This is \textbf{obviously false}: 12-bit values can be up to 4095
+		\item The lemma says 12-bit deserialized values are bounded by $2^{\textbf{1}} = 2$
+		\item The correct bound is $2^{12} = 4096$
+		\item A 12-bit value reaches 4095, so the statement is false on its face
 	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}
 		\Large
-		How does a false proof get accepted?
+		So how did it get accepted?
 	\end{center}
 \end{frame}
 
@@ -1664,21 +1577,19 @@
 		\texttt{~~else prove\_bit\_vector\_equality'' ()}
 	\end{flushleft}
 	\vspace{0.5em}
-	\textbf{Three-layer failure mechanism:}
+	\textbf{Three layers, each individually defensible:}
 	\begin{enumerate}
-		\item The Makefile \textbf{admits this module by default} (\texttt{ADMIT\_MODULES})
-		\item When admitted, \texttt{lax\_on()} returns true
-		\item The tactic calls \texttt{tadmit}: \textbf{all proof goals are accepted unconditionally}
+		\item The Makefile admits this module by default (\texttt{ADMIT\_MODULES})
+		\item When a module is admitted, \texttt{lax\_on()} returns true
+		\item The tactic then calls \texttt{tadmit}, which accepts every goal unconditionally
 	\end{enumerate}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{A false proof becomes a ``verified'' proof whenever the module is admitted}
-
-		\textit{Full verification is \textbf{never triggered} in any automated pipeline}
+		\textit{The false proof becomes a ``verified'' proof, and full verification never runs in any automated pipeline}
 	\end{center}
 \end{frame}
 
-\begin{frame}{V13: Wrong multiplication specification}
+\begin{frame}{V13: an axiom that computes the wrong thing}
 	\textbf{ML-DSA AVX2 intrinsics specification:}
 	\begin{flushleft}
 		\texttt{let i16\_mul\_32extended (x y: i16): i32 =}\\
@@ -1686,151 +1597,67 @@
 	\end{flushleft}
 	\vspace{0.5em}
 	\begin{itemize}
-		\item The second parameter \texttt{y} is \textbf{completely ignored}
-		\item The body computes $x^2$ instead of $x \cdot y$
-		\item This specification is \textbf{axiomatized}: marked \texttt{[@@ "opaque\_to\_smt"]}
-		\item The axiom is \textbf{never proved} against a reference model
-		\item All proofs building on this axiom are \textbf{unsound}
+		\item The second parameter \texttt{y} is ignored, and the body computes $x^2$ instead of $x \cdot y$
+		\item The specification is axiomatized with \texttt{[@@ "opaque\_to\_smt"]} and never proved against a reference model
+		\item Every proof resting on this axiom is unsound
 	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{The verified ML-DSA AVX2 proofs prove properties about $x^2$, not $x \cdot y$}
+		\textit{The verified ML-DSA AVX2 proofs establish properties of $x^2$, not of $x \cdot y$}
 	\end{center}
 \end{frame}
 
-\begin{frame}{Why Type V bugs survive}
+\begin{frame}{ADMIT\_MODULES, and what ``lax checking'' means}
+	\footnotesize
+	\begin{columns}[t]
+		\begin{column}{0.52\textwidth}
+			\textbf{From the ML-KEM extraction Makefile:}
+			\begin{flushleft}
+				\scriptsize
+				\texttt{ADMIT\_MODULES = Libcrux\_ml\_kem.Ind\_cpa.fst \textbackslash}\\
+				\texttt{~~Libcrux\_ml\_kem.Sampling.fst \textbackslash}\\
+				\texttt{~~Libcrux\_ml\_kem.Vector.Neon.Arithmetic.fst \textbackslash}\\
+				\texttt{~~Libcrux\_ml\_kem.Vector.Neon.Compress.fst \textbackslash}\\
+				\texttt{~~...}
+			\end{flushleft}
+			\vspace{0.1em}
+			These modules ship with their proofs unchecked by default.
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\begin{center}
+				\small
+				\begin{tabular}{|l|c|c|c|}
+					\hline
+					\textbf{Level}    & \textbf{Syn.} & \textbf{Typ.} & \textbf{Proofs} \\
+					\hline
+					Lax checking      & $\checkmark$  & $\checkmark$  & --              \\
+					\hline
+					Runtime safety    & $\checkmark$  & $\checkmark$  & Partial         \\
+					\hline
+					Full verification & $\checkmark$  & $\checkmark$  & $\checkmark$    \\
+					\hline
+				\end{tabular}
+			\end{center}
+			\vspace{0.2em}
+			\small
+			\begin{itemize}
+				\item Lax checking says the code is well-formed \fstar, and nothing about its proofs
+				\item A lemma claiming $2^{12} < 2^1$ passes it
+				\item NEON has only lax checking, for every module
+			\end{itemize}
+		\end{column}
+	\end{columns}
 	\begin{center}
-		\Large
-		Why do specification errors and false proofs persist?
+		\textit{Admitted proofs are worse than unverified code: unverified code was never claimed to be verified}
 	\end{center}
-	\vspace{0.5em}
-	\begin{enumerate}
-		\item \textbf{Build system admits proofs by default}: \texttt{ADMIT\_MODULES} in Makefile
-		\item \textbf{Lax-mode escape hatches}: Tactics silently accept all claims
-		\item \textbf{Axioms are never proved}: \texttt{val} declarations without implementations
-		\item \textbf{Full verification never triggered}: Not in CI, not on any automated pipeline
-		\item \textbf{Manual status documents}: Can claim verification that doesn't exist
-	\end{enumerate}
-	\vspace{0.5em}
-	\begin{center}
-		Specifications can contain mathematical errors, proofs can make false claims, axioms can contradict their definitions---\textbf{all simultaneously}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Type V: Summary}
-	\begin{center}
-		\Large
-		Four bugs inside the ``verified'' code
-	\end{center}
-	\vspace{0.5em}
-	\begin{center}
-		\begin{tabular}{|l|l|l|}
-			\hline
-			\textbf{Vuln} & \textbf{Description}         & \textbf{Algorithm} \\
-			\hline
-			V10           & Wrong rounding constant      & ML-KEM             \\
-			\hline
-			V11           & Missing inverse NTT          & ML-KEM             \\
-			\hline
-			V12           & False serialization bound    & ML-KEM             \\
-			\hline
-			V13           & $x^2$ instead of $x \cdot y$ & ML-DSA             \\
-			\hline
-		\end{tabular}
-	\end{center}
-	\vspace{0.5em}
-	\begin{itemize}
-		\item The deployed Rust implementations are currently correct---the risk is \textbf{indirect}
-		\item A developer who trusts the spec and refactors to match it would silently introduce the errors
-		\item The proofs are \textbf{not checked in any CI pipeline}
-	\end{itemize}
-\end{frame}
-
-\section{Systemic Issues}
-
-\begin{frame}{The ADMIT\_MODULES pattern}
-	\textbf{From the ML-KEM extraction Makefile:}
-	\begin{flushleft}
-		\texttt{ADMIT\_MODULES = Libcrux\_ml\_kem.Ind\_cpa.fst \textbackslash}\\
-		\texttt{~~~~Libcrux\_ml\_kem.Sampling.fst \textbackslash}\\
-		\texttt{~~~~Libcrux\_ml\_kem.Vector.Neon.Arithmetic.fst \textbackslash}\\
-		\texttt{~~~~Libcrux\_ml\_kem.Vector.Neon.Compress.fst \textbackslash}\\
-		\texttt{~~~~...}
-	\end{flushleft}
-	\vspace{0.5em}
-	\begin{itemize}
-		\item These modules are \textbf{admitted by default}: proofs are not checked
-		\item ``Lax checking'' means the \fstar type-checker accepts the code, but proofs are \textbf{not verified}
-		\item Like spell-checking a math proof: the syntax is fine, but the content may be wrong
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Admitted proofs as systemic risk}
-	\begin{center}
-		\Large
-		Admitted proofs are \textbf{more dangerous} than unverified code
-	\end{center}
-	\vspace{0.5em}
-	\textbf{Unverified code (V1--V9):}
-	\begin{itemize}
-		\item Was never claimed to be verified
-		\item Developers and users can identify it as a risk
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Admitted proofs (V10--V13):}
-	\begin{itemize}
-		\item Code \textit{is} claimed to be verified
-		\item But the proofs are \textbf{silently not checked}
-		\item Creates false confidence in the verified core
-		\item A developer who trusts the spec and refactors the implementation to match it would \textbf{introduce the spec's errors into production}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{What ``lax checking'' actually means}
-	\begin{center}
-		\begin{tabular}{|l|c|c|c|}
-			\hline
-			\textbf{Level}    & \textbf{Syntax} & \textbf{Types} & \textbf{Proofs} \\
-			\hline
-			Lax checking      & $\checkmark$    & $\checkmark$   & --              \\
-			\hline
-			Runtime safety    & $\checkmark$    & $\checkmark$   & Partial         \\
-			\hline
-			Full verification & $\checkmark$    & $\checkmark$   & $\checkmark$    \\
-			\hline
-		\end{tabular}
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Lax checking confirms the code is \textbf{well-formed} \fstar
-		\item It does \textbf{not} confirm that the proofs are valid
-		\item A false lemma claiming $2^{12} < 2^1$ passes lax checking
-		\item The NEON backend has \textbf{only} lax checking for all modules
-	\end{itemize}
 \end{frame}
 
 \section{Comparative Analysis}
 
 \begin{frame}{How AWS does it differently}
+	\footnotesize
 	\begin{center}
-		\Large
-		The same failure types exist in AWS's verified libcrypto---but they are managed differently
-	\end{center}
-	\vspace{0.5em}
-	\textbf{AWS verification projects:}
-	\begin{itemize}
-		\item aws-lc-verification (SAW/Cryptol)
-		\item s2n-bignum (HOL Light)
-		\item mlkem-native (CBMC)
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		Same verification boundary challenges, \textbf{very different practices}
-	\end{center}
-\end{frame}
-
-\begin{frame}{What good boundary management looks like}
-	\begin{center}
+		\small
 		\begin{tabular}{|l|c|c|}
 			\hline
 			\textbf{Practice}               & \textbf{Cryspen} & \textbf{AWS} \\
@@ -1847,48 +1674,15 @@
 			\hline
 		\end{tabular}
 	\end{center}
-	\vspace{0.5em}
+	\vspace{0.4em}
 	\begin{itemize}
-		\item AWS's soundness documents enumerate verified properties, assumptions, residual risks, and open gaps
-		\item The gold standard remains \textbf{seL4}: a dedicated page listing every trust assumption
+		\item aws-lc-verification (SAW/Cryptol), s2n-bignum (HOL Light) and mlkem-native (CBMC) face the same boundary problems, and their soundness documents enumerate verified properties, assumptions, residual risks and open gaps
+		\item seL4 remains the high-water mark: one page listing every trust assumption
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Parallels with CompCert}
+	\vspace{0.2em}
 	\begin{center}
-		\Large
-		Yang et al.'s Csmith campaign (2011)
-	\end{center}
-	\vspace{0.5em}
-	\begin{itemize}
-		\item Randomly generated C programs to find compiler bugs
-		\item \textbf{Found zero wrong-code bugs} in CompCert's verified middle-end
-		\item \textbf{Did find bugs} in the unverified front-end
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Direct parallel to our findings:}
-	\begin{itemize}
-		\item libcrux's verified core is more robust than its wrappers
-		\item But we go further: the verified core can contain \textbf{specification errors} (V10, V11), \textbf{false proofs} (V12), and \textbf{false axioms} (V13) when the build system doesn't check them
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Thompson's ``Reflections on Trusting Trust''}
-	\begin{center}
-		\Large
-		``Who verifies the verifiers?''
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item Ken Thompson (1984): You can't trust code you didn't write yourself
-		\item Remains relevant: proofs dispatched through \textbf{unverified SMT solvers}
-		\item \fstar relies on Z3 for proof obligations
-		\item Z3 is a complex piece of software with its own bugs
-		\item The trusted computing base is \textbf{never zero}
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{But we can at least ensure the proofs are \textbf{actually run}}
+		\scriptsize
+		\textit{Thompson's question from 1984 has not gone away: \fstar dispatches its proofs through Z3, and Z3 has bugs like anything else. The trusted computing base is never zero, but the proofs can at least be run.}
 	\end{center}
 \end{frame}
 
@@ -1896,25 +1690,15 @@
 
 \begin{frame}{Five recommendations}
 	\begin{enumerate}
-		\item \textbf{Machine-readable verification manifests}: Every release should include a manifest of which code paths are verified, against which properties, for which platforms. Generated from the build system, not manually maintained.
-		\item \textbf{Proofs in CI on every commit}: All proof obligations discharged in CI. Too-slow proofs flagged as incomplete, not silently admitted.
-		\item \textbf{No lax-mode escape hatches}: Proof tactics should fail loudly in lax mode, not silently admit all goals.
+		\item \textbf{Machine-readable verification manifests.} Every release ships a manifest of which code paths are verified, against which properties, for which platforms, generated from the build system rather than maintained by hand
+		\item \textbf{Proofs in CI on every commit.} Discharge all proof obligations. Flag proofs too slow to run as incomplete instead of admitting them silently
+		\item \textbf{No lax-mode escape hatches.} A proof tactic should fail loudly in lax mode, not admit every goal
+		\item \textbf{Scope the claim.} ``Formally verified'' should name the properties, the code paths and the platforms. Reserve the unqualified phrase for a minimal TCB, at CompCert or seL4 level
+		\item \textbf{Defense in depth.} Code review, specification compliance auditing, cross-platform testing and fuzzing catch what formal verification does not
 	\end{enumerate}
 \end{frame}
 
-\begin{frame}{Five recommendations (continued)}
-	\begin{enumerate}
-		\setcounter{enumi}{3}
-		\item \textbf{Clear scope communication}: Claims of ``formally verified'' should specify which properties, which code paths, which platforms. Unqualified claims should be reserved for systems with a minimal TCB (CompCert/seL4 level).
-		\item \textbf{Defense in depth}: Formal verification is one component of a defense-in-depth strategy. Code review, specification compliance auditing, cross-platform testing, and fuzzing catch categories of bugs that formal verification does not.
-	\end{enumerate}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Traditional practices remain essential alongside formal methods}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Disclosure: A cautionary tale}
+\begin{frame}{Disclosure: a cautionary tale}
 	\begin{itemize}
 		\item Feb 5, 2026: I submit PRs with tested fixes for V3--V6
 		\item Feb 5--6: Cryspen \textbf{blocks my GitHub account}, closes all PRs
@@ -1925,79 +1709,7 @@
 	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{``No bugs in the verified code'' is directly contradicted by V10--V13}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Why this matters: The trust chain}
-	\begin{center}
-		\Large
-		Users trust the library $\rightarrow$ Library trusts the proofs $\rightarrow$ Proofs trust the spec
-	\end{center}
-	\vspace{1em}
-	\begin{itemize}
-		\item If the spec is wrong (V10, V11): the entire chain is broken
-		\item If the proofs are false (V12): the chain is illusory
-		\item If axioms are wrong (V13): the chain is unsound
-		\item If proofs are never checked: the chain doesn't exist
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Trust is only as strong as the weakest link}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Connecting Part 1 and Part 2}
-	\begin{center}
-		\Large
-		Part 1 showed us the \textbf{promise} of CAC
-
-		\vspace{0.5em}
-
-		Part 2 shows us the \textbf{pitfalls}
-	\end{center}
-	\vspace{0.5em}
-	\begin{itemize}
-		\item The same \fstar technology behind \haclstar (success story) powers libcrux
-		\item The difference is not the tools---it's the \textbf{engineering practices}
-		\item EverCrypt documents its trust assumptions; libcrux does not
-		\item \haclstar ran full proofs in CI; libcrux admits modules by default
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Verification is only as strong as the process around it}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Auditing methodology}
-	\begin{center}
-		\Large
-		A lightweight methodology for detecting verification boundary failures
-	\end{center}
-	\vspace{0.5em}
-	\begin{enumerate}
-		\item \textbf{Map the verification boundary}: Find extraction annotations, build system admission flags, unverified wrappers, and platform-specific code paths
-		\item \textbf{Audit specifications against standards}: Check constants, domain transformations, and required validations against FIPS/RFC
-		\item \textbf{Verify proofs are actually checked}: Run the full verifier, not just lax checking; look for \texttt{tadmit} and \texttt{assume}
-		\item \textbf{Cross-reference documentation}: Compare claimed verification status against actual build system behavior
-	\end{enumerate}
-\end{frame}
-
-\begin{frame}{What ``formally verified'' should mean}
-	\begin{center}
-		\Large
-		A spectrum of claims
-	\end{center}
-	\vspace{0.5em}
-	\begin{enumerate}
-		\item \textbf{``Lax-checked''}: Syntax and types are valid (minimal guarantee)
-		\item \textbf{``Partially verified''}: Some modules have completed proofs, others are admitted
-		\item \textbf{``Verified with caveats''}: All proofs checked, but with documented trust assumptions (compiler, hardware, axioms)
-		\item \textbf{``Fully verified''}: Minimal TCB, all proofs in CI, explicit boundary documentation (CompCert/seL4 level)
-	\end{enumerate}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{Most projects are at level 2 or 3. Claims should reflect this.}
+		\textit{``No bugs in the verified code'' is contradicted by V10 through V13}
 	\end{center}
 \end{frame}
 
@@ -2008,58 +1720,1112 @@
 			\item Communicates these proofs using language that implies \textbf{comprehensive coverage},
 			\item Fails to adequately disclose the verification boundary, unverified components, unchecked proofs, or properties not covered.
 		\end{enumerate}}
-	\vspace{0.5em}
+	\vspace{0.3em}
 	\begin{center}
-		\textit{Echoes Schneier's ``security theater'': an appearance of security that doesn't match reality}
+		\small
+		\textbf{A spectrum of honest claims:} \textit{lax-checked} (syntax and types) $\rightarrow$ \textit{partially verified} (some modules admitted) $\rightarrow$ \textit{verified with caveats} (all proofs run, trust assumptions documented) $\rightarrow$ \textit{fully verified} (minimal TCB, proofs in CI, boundary documented).
+
+		Most projects sit at the middle two. Their claims should say so.
 	\end{center}
 \end{frame}
 
-\begin{frame}{Looking forward: Post-quantum transition}
-	\begin{center}
-		\Large
-		The stakes are rising
-	\end{center}
-	\vspace{0.5em}
+\begin{frame}{Part 2 recap: the pitfalls}
 	\begin{itemize}
-		\item ML-KEM and ML-DSA are the \textbf{new NIST standards} for post-quantum cryptography
-		\item They will be deployed in virtually every secure communication system
-		\item Getting their implementations right is \textbf{critical}
-		\item libcrux provides the ML-KEM implementation used by Google
+		\item Formal verification is worth doing. \haclstar, Fiat Crypto, Jasmin and EverCrypt are real achievements, and the same \fstar technology sits under libcrux
+		\item What separates them is engineering practice, not tooling: EverCrypt documents its trust assumptions and runs its proofs; libcrux admits modules by default
+		\item Nine of the thirteen bugs were outside the boundary. Four were inside it, in specifications and proofs nobody checked
+		\item ML-KEM and ML-DSA are about to be deployed almost everywhere, which is when boundary practices matter most
 	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{The post-quantum transition is the moment when verification boundary practices matter most}
-	\end{center}
-\end{frame}
+		\Large
+		Partial verification is not comprehensive assurance.
 
-\begin{frame}{The bottom line}
-	\begin{center}
-		\Large
-		Formal verification is genuinely valuable
-	\end{center}
-	\vspace{0.5em}
-	\begin{itemize}
-		\item Machine-checked proofs of correctness, memory safety, and secret independence are real contributions to software security
-		\item \haclstar, Fiat Crypto, Jasmin, EverCrypt: these are genuine achievements
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\Large
-		But partial verification $\neq$ comprehensive assurance
-	\end{center}
-	\vspace{0.3em}
-	\begin{itemize}
-		\item Treat verification boundaries as first-class documentation
-		\item Ensure build systems actually verify the proofs they claim to check
-		\item Formal methods \textbf{complement}, rather than replace, engineering practices
-	\end{itemize}
-	\vspace{0.3em}
-	\begin{center}
+		\vspace{0.3em}
+
 		\textbf{Verify the verifiers.}
+	\end{center}
+\end{frame}
+
+%% ====================================================================
+%%  PART 3: VERIFPAL
+%% ====================================================================
+
+\begin{frame}[plain]
+	\begin{tikzpicture}[remember picture, overlay]
+		\fill[cipherdarkbg] (current page.north west) rectangle (current page.south east);
+		\draw[cipheraccent, line width=3pt] (current page.north west) rectangle (current page.south east);
+	\end{tikzpicture}
+	\vspace{1cm}
+	\begin{center}
+		{\usebeamercolor[fg]{section header}\usebeamerfont{subtitle}\Large Part 3}
+
+		\vspace{0.5cm}
+
+		{\color{cipheraccent}\usebeamerfont{title}\fontsize{20}{24}\selectfont Verifpal\par}
+
+		\vspace{0.8cm}
+
+		{\usebeamercolor[fg]{section header}\large Modeling protocols in a language you can read out loud}
+
+		\vspace{1.2cm}
+
+		{\usebeamercolor[fg]{section header}\normalsize \url{https://verifpal.com}\par}
+	\end{center}
+\end{frame}
+
+\section{Verifpal: A Symbolic Verifier for the Rest of Us}
+
+\begin{frame}{Where Verifpal sits}
+	Part 1 gave you the tool table. Verifpal belongs in the symbolic column, next to ProVerif and Tamarin, and it aims at a different reader.
+	\vspace{0.5em}
+	\begin{center}
+		\small
+		\begin{tabular}{|l|l|l|l|}
+			\hline
+			                     & \textbf{ProVerif}  & \textbf{Tamarin}   & \textbf{Verifpal}      \\
+			\hline
+			Model                & Applied $\pi$      & Multiset rewriting & Principals \& messages \\
+			\hline
+			Primitives           & User-defined       & User-defined       & 25 built in, fixed     \\
+			\hline
+			Sessions             & Unbounded          & Unbounded          & Bounded (2 by default) \\
+			\hline
+			Termination          & Not guaranteed     & Not guaranteed     & Always                 \\
+			\hline
+			Equivalence props.\  & Yes                & Yes                & No                     \\
+			\hline
+			Output               & Clause derivations & Interactive proof  & Numbered causal steps  \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{0.5em}
+	\begin{center}
+		Same Dolev-Yao attacker, same symbolic abstraction. Different audience.
+	\end{center}
+\end{frame}
+
+\begin{frame}{Why a third symbolic tool?}
+	\small
+	\textbf{The barrier is rarely the theory. It is the modeling language.}
+	\begin{itemize}
+		\item ProVerif's applied $\pi$-calculus reads naturally if you already know the ML family that inspired it
+		\item It asks you to reason about Horn clauses over a network rather than messages between Alice and Bob, and recovering an attack from its output can take an afternoon
+		\item Tamarin is more expressive still, and Part 1 told you what TLS 1.3 cost there: a week and 100GB of RAM
+	\end{itemize}
+	\vspace{0.3em}
+	\textbf{Verifpal inverts the usual research order: user first, verification capability second.}
+	\begin{itemize}
+		\item Explicit principals with their own state, knowledge and computations
+		\item Primitives ship with the tool, so you cannot define AEAD incorrectly
+		\item Attacks are printed as numbered causal steps, in the names your model chose
+		\item The binary is also a language server, with extensions for VS Code, Neovim and Zed
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What you give up, and what you get}
+	\small
+	\begin{columns}[t]
+		\begin{column}{0.48\textwidth}
+			\textbf{Given up}
+			\begin{itemize}
+				\item No user-defined primitives or equational theories
+				\item No observational equivalence, so no vote privacy or anonymity in the ProVerif sense
+				\item Bounded sessions: two per principal by default, sixteen at most
+				\item A passing query means ``this search found no attack'', which is weaker than a proof
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\textbf{Gained}
+			\begin{itemize}
+				\item \textbf{Attack soundness}: every reported attack was re-executed against real principal state before being printed
+				\item Analysis terminates unconditionally
+				\item Cross-session attacks (replays, redirected nonces) without duplicating principals by hand
+				\item Models short enough to read in a lecture
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\begin{center}
+		\footnotesize
+		\textit{A solver bug costs you a missed attack. It cannot manufacture a false one.} Designing for production? Cross-check with ProVerif and Tamarin.
+	\end{center}
+\end{frame}
+
+\section{The Verifpal Language}
+
+\begin{frame}{Every model has four parts, in this order}
+	\begin{enumerate}
+		\item \textbf{The attacker.} \texttt{attacker[passive]} or \texttt{attacker[active]}: what you are up against
+		\item \textbf{The principals.} \texttt{principal Alice[\ldots]}: who exists, what they know, what they compute
+		\item \textbf{The messages.} \texttt{Alice -> Bob: ga}: what crosses the network, and therefore what the attacker sees
+		\item \textbf{The queries.} \texttt{queries[\ldots]}: the questions you want answered
+	\end{enumerate}
+	\vspace{0.7em}
+	\begin{itemize}
+		\item The \texttt{queries} block is mandatory and must come last
+		\item Anything written after it is an error, so a stray principal at the end of a file cannot go unanalyzed
+		\item Comments are \texttt{//} to end of line, or \texttt{/* \ldots */} across lines
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{A complete model}
+	\begin{columns}[t]
+		\begin{column}{0.53\textwidth}
+			\begin{vpmodel}{A pre-shared-key exchange}
+				\begin{lstlisting}
+attacker[active]
+principal Alice[
+  knows private k
+  generates m1
+  e1 = AEAD_ENC(k, m1, nil)
+]
+Alice -> Bob: e1
+principal Bob[
+  knows private k
+  d1 = AEAD_DEC(k, e1, nil)?
+]
+queries[
+  confidentiality? m1
+  authentication? Alice -> Bob: e1
+]
+\end{lstlisting}
+			\end{vpmodel}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\small
+			All four parts, in order:
+			\vspace{0.2em}
+			\begin{itemize}
+				\item An \textbf{active} attacker owns the network
+				\item Alice and Bob share a long-term key \texttt{k}. Alice draws a fresh \texttt{m1} and encrypts it
+				\item The ciphertext crosses the network, so the attacker sees it
+				\item Two questions: can the attacker read \texttt{m1}, and could Bob accept an \texttt{e1} that Alice never sent him?
+			\end{itemize}
+			\vspace{0.3em}
+			The \texttt{?} makes that decryption \textbf{checked}: if it fails, Bob halts there.
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The attacker}
+	\begin{columns}[t]
+		\begin{column}{0.48\textwidth}
+			\textbf{\texttt{attacker[passive]}}
+			\begin{itemize}
+				\item A malicious observer
+				\item Sees every value that crosses the network
+				\item Reasons about what it can derive from them
+				\item Injects nothing, modifies nothing
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\textbf{\texttt{attacker[active]}}
+			\begin{itemize}
+				\item Owns the network
+				\item Drops, replays and replaces any unguarded value
+				\item Injects values it has constructed itself
+				\item Holds \texttt{nil}, a private value of its own, at all times
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.7em}
+	\begin{center}
+		The same model under both attackers answers two different questions.
+
+		\vspace{0.3em}
+
+		\textit{Under a passive attacker, the model on the last slide passes both queries. Under an active one, it fails both.}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Principals}
+	\begin{itemize}
+		\item Declared with a name and a block of operations, and each has independent state
+		\item A principal may be declared \textbf{more than once}. Each later block continues where that principal left off
+		\item That is how you write a protocol as turns: Alice acts, sends, Bob replies, Alice acts on what she received
+		\item Names are title-cased, so \texttt{alice} and \texttt{Alice} are the same principal
+		\item At most 128 principals per model
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		Every principal is analyzed as \textbf{two concurrent sessions} by default.
+
+		\vspace{0.3em}
+
+		\small Set the count with \texttt{verifpal verify model.vp --sessions k}, up to sixteen. This matters more than it sounds, and we will come back to it.
+	\end{center}
+\end{frame}
+
+\begin{frame}{Four ways a constant comes into existence}
+	\begin{itemize}
+		\item \texttt{knows public c0} \quad Everyone has it, the attacker included
+		\item \texttt{knows private m1} \quad Prior knowledge, not shared with the attacker. \textbf{Long-term}: the same value in every session and every run
+		\item \texttt{knows password pw} \quad Private, but weak. If it lands inside a primitive whose output the attacker obtains, the attacker recovers it. Pass it through \texttt{PW\_HASH} first
+		\item \texttt{generates a} \quad \textbf{Fresh}: drawn anew on every run, and separately in every session
+		\item \texttt{leaks a} \quad Hands a value the principal already knows to the attacker, at that point in the protocol
+		\item \texttt{ga = PUBKEY(a)} \quad Assignment, always to a primitive expression
+	\end{itemize}
+	\vspace{0.3em}
+	\begin{center}
+		\small
+		\textit{The split between \texttt{knows} and \texttt{generates} is what makes cross-session attacks possible: two sessions share the long-term key, so a message from one can verify in the other.}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Four rules that keep models readable}
+	\begin{enumerate}
+		\item \textbf{Immutability.} Once assigned, a constant cannot be reassigned
+		\item \textbf{Global name-space.} If Bob declares \texttt{c}, Alice cannot declare \texttt{c}, even if Bob's was private
+		\item \textbf{No referencing.} Constants are assigned to primitives, never to other constants
+		\item \textbf{Reserved names.} No keywords, no primitive names, nothing beginning with \texttt{attacker} or \texttt{unnamed}
+	\end{enumerate}
+	\vspace{0.7em}
+	\begin{itemize}
+		\item Together these guarantee that a name means the same value everywhere it appears, so any line reads on its own
+		\item Identifiers are case-insensitive: \texttt{AEAD\_ENC} and \texttt{aead\_enc} are the same primitive
+		\item Write \texttt{\_} on the left of an assignment when you will not refer to the result again, which is the usual way to write a checked primitive you only care about for its side effect
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Messages, and guarded constants}
+	\begin{vpmodel}{Sending values}
+		\begin{lstlisting}
+Alice -> Bob: ga, e1     // the attacker may read and replace both
+Bob -> Alice: [gb], e2   // gb is guarded: readable, not replaceable
+\end{lstlisting}
+	\end{vpmodel}
+	\vspace{0.2em}
+	\footnotesize
+	\begin{itemize}
+		\item Only constants may be sent, and messages live outside principal blocks
+		\item Brackets \textbf{guard} a value: an active attacker still observes it, but cannot substitute its own
+		\item A guard says the recipient already knows what that value should be: a certificate, a QR code, a trusted directory, a fingerprint checked out of band
+	\end{itemize}
+	\vspace{0.2em}
+	\alertbox{A guard is a claim about the real world}{Guarding every public key models a deployment where every key was pre-authenticated, and few deployments provide that. One exception is deliberate: if the same constant \textit{also} reached its sender unguarded, Verifpal treats it as substitutable anyway.}
+\end{frame}
+
+\begin{frame}[fragile]{Checked primitives: the question mark}
+	\begin{vpmodel}{Two decryptions, two behaviors}
+		\begin{lstlisting}
+d1 = AEAD_DEC(k, e1, c0)     // failure produces a value and Bob carries on
+d2 = AEAD_DEC(k, e1, c0)?    // failure halts Bob here, permanently
+\end{lstlisting}
+	\end{vpmodel}
+	\vspace{0.5em}
+	\begin{itemize}
+		\item Only primitives with a rewrite rule are checkable: \texttt{ASSERT}, \texttt{SPLIT}, \texttt{AEAD\_DEC}, \texttt{SIGNVERIF}, \texttt{RINGSIGNVERIF}, \texttt{KEM\_DECAP}
+		\item A check constrains the attacker: whatever it substitutes must still satisfy the check, or the principal stops and computes nothing further
+		\item A verification whose outcome nothing depends on is not a verification. \texttt{SIGNVERIF} without \texttt{?} lets the principal sail past a signature that did not verify
+	\end{itemize}
+	\vspace{0.4em}
+	\begin{center}
+		\textit{What you check decides what counts as someone having been fooled, which is why authentication queries lean so heavily on this one character.}
+	\end{center}
+\end{frame}
+
+\begin{frame}{The primitive catalog}
+	\begin{center}
+		\scriptsize
+		\begin{tabular}{|l|l|}
+			\hline
+			\textbf{Group}    & \textbf{Primitives}                                                 \\
+			\hline
+			Core              & \texttt{ASSERT}, \texttt{CONCAT}, \texttt{SPLIT}                    \\
+			\hline
+			Hashing           & \texttt{HASH}, \texttt{MAC}, \texttt{HKDF}, \texttt{PW\_HASH}       \\
+			\hline
+			Public key        & \texttt{PUBKEY}, \texttt{DH\_KEX}                                   \\
+			\hline
+			Encryption        & \texttt{ENC}, \texttt{DEC}, \texttt{AEAD\_ENC}, \texttt{AEAD\_DEC}, \\
+			                  & \texttt{PKE\_ENC}, \texttt{PKE\_DEC}                                \\
+			\hline
+			Signatures        & \texttt{SIGN}, \texttt{SIGNVERIF}, \texttt{RINGSIGN},               \\
+			                  & \texttt{RINGSIGNVERIF}, \texttt{BLIND}, \texttt{UNBLIND}            \\
+			\hline
+			Key encapsulation & \texttt{KEM\_ENCAP}, \texttt{KEM\_DECAP}                            \\
+			\hline
+			Secret sharing    & \texttt{SHAMIR\_SPLIT}, \texttt{SHAMIR\_JOIN}                       \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{0.3em}
+	\footnotesize
+	\begin{itemize}
+		\item Twenty-five, and you cannot add a twenty-sixth. That is the point
+		\item \texttt{DH\_KEX(their\_public, my\_private)} is commutative, so Alice's and Bob's shared secrets are the same term
+		\item A primitive may be annotated \textbf{broken}: \texttt{SIGN[forgeable](sk, m)}, also \texttt{weak} and \texttt{malleable}. We come back to these once phases are on the table
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Phases: modeling the passage of time}
+	\begin{vpmodel}{Compromise, after the fact}
+		\begin{lstlisting}
+principal Alice[...]      // the protocol runs to completion
+Bob -> Alice: b1
+phase[1]
+principal Alice[leaks a2] // only now does a2 escape
+\end{lstlisting}
+	\end{vpmodel}
+	\vspace{0.3em}
+	\small
+	\begin{enumerate}
+		\item \textbf{Knowledge.} The attacker learns a value at the earliest phase in which it is communicated: \texttt{b1} in phase 0, \texttt{a2} in phase 1
+		\item \textbf{Manipulation.} A substitution is judged against what the attacker knew at that earliest phase, so it cannot use \texttt{a2} to forge \texttt{b1}
+		\item \textbf{No retroaction.} Without this rule, any key ever leaked would forge any signature ever checked
+	\end{enumerate}
+	\begin{center}
+		\small Phase numbers increase by exactly one. This is how forward secrecy and harvest-now-decrypt-later get expressed.
+	\end{center}
+\end{frame}
+
+\section{Queries}
+
+\begin{frame}{Five questions you can ask}
+	\begin{center}
+		\small
+		\begin{tabular}{|l|l|}
+			\hline
+			\textbf{Query}                     & \textbf{Asks}                                       \\
+			\hline
+			\texttt{confidentiality? v}        & Can the attacker obtain \texttt{v}?                 \\
+			\hline
+			\texttt{authentication? A -> B: x} & If B uses \texttt{x}, did A really send it?         \\
+			\hline
+			\texttt{freshness? v}              & Could \texttt{v} recur across runs, enabling a replay? \\
+			\hline
+			\texttt{equivalence? x, y}         & Do these always resolve to the same value?          \\
+			\hline
+			\texttt{unlinkability? x, y}       & Can the attacker link these to one principal?       \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{0.7em}
+	\begin{itemize}
+		\item All five are judged against the same executions: the honest one, plus every mutated execution the search validates
+		\item A query \textbf{passes} when no explored execution contradicts it
+		\item A single contradicting execution fails it, and Verifpal prints that execution
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{\texttt{confidentiality?}}
+	\definitionbox{\texttt{confidentiality? v} is contradicted when}{In some explored execution, the attacker's knowledge contains a value \textbf{equivalent} to what \texttt{v} \textbf{resolves to} in some principal's state.}
+	\vspace{0.5em}
+	\begin{itemize}
+		\item \textbf{Resolves to}: the query is about the value, not the name. If the model says \texttt{v = HASH(a, b)}, the attacker must come to hold that hash
+		\item \textbf{Equivalent}: equality is judged under the equational theory, so an attacker holding \texttt{DH\_KEX(PUBKEY(b), a)} holds \texttt{DH\_KEX(PUBKEY(a), b)}
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		A passive attacker gets \texttt{m1} only if the key protecting it, or every ingredient of that key, crosses the network. An active attacker has a second route: replace the public keys before they are used.
+	\end{center}
+\end{frame}
+
+\begin{frame}{\texttt{authentication?}}
+	\definitionbox{Contradicted when all three hold in Bob's state}{\textbf{(1)} the sender recorded for \texttt{e1} is not Alice, \textbf{(2)} the value is not just this session's own \texttt{e1} handed back, and \textbf{(3)} Bob \textit{successfully uses} \texttt{e1} inside at least one primitive.}
+	\vspace{0.3em}
+	\small
+	\begin{itemize}
+		\item Evaluated in the recipient's state and nowhere else. What Alice believes she sent has no bearing on whether Bob was fooled
+		\item This is \textbf{injective agreement} in Lowe's hierarchy: each acceptance by Bob needs its own sending by Alice behind it
+		\item Condition 3 is why checks matter: a substitution that makes a checked primitive fail merely halts Bob, and halting Bob is not impersonation
+	\end{itemize}
+	\begin{center}
+		\footnotesize
+		\textit{Two shapes of failure, and traces name them apart: the attacker \textbf{replaces} a value Alice never produced, or it \textbf{replays} one she really sent, from another session.}
+	\end{center}
+\end{frame}
+
+\begin{frame}{The other three}
+	\small
+	\textbf{\texttt{freshness? v}} --- contradicted when \texttt{v} resolves to a value containing no \texttt{generates} constant at any depth, and a principal uses it inside a primitive.
+	\begin{itemize}
+		\item About how a value is \textit{derived}, not who knows it: leaking a generated value does not make it stale
+		\item Catches values that \textit{could} be replayed, where \texttt{authentication?} catches the replays actually carried out
+	\end{itemize}
+	\vspace{0.3em}
+	\textbf{\texttt{equivalence? c1, c2}} --- contradicted when a principal holds both and they do not resolve to equivalent values, after mutation and rewriting.
+	\begin{itemize}
+		\item Answered by a \textit{divergence} in principals' states, not by a deduction in attacker knowledge
+		\item Halting a principal is not the same as making two diverge, and Verifpal will not report it as such
+	\end{itemize}
+	\vspace{0.3em}
+	\textbf{\texttt{unlinkability? c1, c2}} --- contradicted when the attacker holds a concrete \textit{link witness} tying two observed values to the same principal. Built for contact tracing, voting and RFID.
+\end{frame}
+
+\section{Worked Example: Unauthenticated Diffie-Hellman}
+
+\begin{frame}[fragile]{The ``hello world'' of protocol modeling}
+	\begin{columns}[t]
+		\begin{column}{0.53\textwidth}
+			\begin{vpmodel}{simple.vp}
+				\begin{lstlisting}[basicstyle=\vpcode]
+attacker[active]
+principal Alice[
+  generates a
+  ga = PUBKEY(a)
+]
+Alice -> Bob: ga
+principal Bob[
+  knows private m1
+  generates b
+  gb = PUBKEY(b)
+  ss_a = DH_KEX(ga, b)
+  e1 = AEAD_ENC(ss_a, m1, gb)
+]
+Bob -> Alice: gb, e1
+principal Alice[
+  ss_b = DH_KEX(gb, a)
+  e1_dec = AEAD_DEC(ss_b, e1, gb)?
+]
+queries[
+  confidentiality? m1
+  authentication? Bob -> Alice: e1
+  equivalence? ss_a, ss_b
+]
+\end{lstlisting}
+			\end{vpmodel}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\vspace{0.3em}
+			The cryptography here is impeccable: AEAD, fresh ephemerals on both sides, a checked decryption.
+			\vspace{0.5em}
+
+			Before the next slide: \textbf{will any of the three queries survive?}
+			\vspace{0.5em}
+
+			Look at line 6. \texttt{ga} crosses the network with nothing vouching for it, and the attacker owns the network.
+			\vspace{0.5em}
+
+			\begin{center}
+				\texttt{verifpal verify simple.vp}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Verifpal's answer}
+	\begin{vpresult}{All three queries fail}
+		\begin{lstlisting}[basicstyle=\vpcode]
+Info . Analyzing 2 parallel sessions per principal; per-session values
+       and principals are suffixed #2.
+Info . Attacker is configured as active.
+
+FAIL x confidentiality? m1
+       Attack trace:
+       | 1. Attacker constructs PUBKEY(nil) from nil.
+       | 2. Attacker replaces ga (sent by Alice to Bob) with PUBKEY(nil).
+       |    (ga was PUBKEY(a))
+       | 3. Attacker observes e1 on the wire.
+       | 4. Attacker observes gb on the wire.
+       | 5. Attacker constructs ss_a from gb, nil.
+       | 6. Attacker opens e1 with ss_a, obtaining m1.
+       > m1 (m1) is obtained by Attacker.
+
+FAIL x 3 of 3 queries failed.
+\end{lstlisting}
+	\end{vpresult}
+	\vspace{0.3em}
+	\begin{center}
+		\small Two milliseconds. The other two traces follow from the same substitution: the attacker builds a ciphertext Alice will accept, and the two sides never derive the same secret.
+	\end{center}
+\end{frame}
+
+\begin{frame}{Reading the trace}
+	\begin{center}
+		\Large
+		Read the last line first. It names what went wrong.
+	\end{center}
+	\vspace{0.4em}
+	\begin{itemize}
+		\item \texttt{> m1 (m1) is obtained by Attacker} --- the property you asked about, and what happened to it
+		\item \textbf{Step 1}: \texttt{nil} is the private value the attacker always holds, so \texttt{PUBKEY(nil)} is a key it controls
+		\item \textbf{Step 2}: the substitution, with the parenthetical recording what the value honestly was. This is the whole attack
+		\item \textbf{Steps 3--6}: Bob derived \texttt{ss\_a} from a public key the attacker chose, so the attacker recomputes it and decrypts
+	\end{itemize}
+	\vspace{0.4em}
+	\begin{center}
+		\small
+		This is the textbook Mayor-in-the-Middle, and it is not a claim about the model. Verifpal re-executed these steps against real principal state before printing them.
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Two brackets}
+	\begin{columns}[t]
+		\begin{column}{0.5\textwidth}
+			\begin{vpmodel}{The only change}
+				\begin{lstlisting}
+Alice -> Bob: [ga]
+...
+Bob -> Alice: [gb], e1
+\end{lstlisting}
+			\end{vpmodel}
+			\vspace{0.5em}
+			\begin{vpresult}{Re-run}
+				\begin{lstlisting}
+PASS + confidentiality? m1
+PASS + authentication? Bob -> Alice: e1
+PASS + equivalence? ss_a, ss_b
+
+PASS + All 3 queries pass.
+\end{lstlisting}
+			\end{vpresult}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\vspace{0.4em}
+			Guarding both public keys models a deployment where Alice and Bob each pre-authenticated the other's key.
+			\vspace{0.4em}
+
+			The attacker still reads everything. It can no longer substitute, and the protocol holds.
+			\vspace{0.4em}
+
+			Whether you are \textit{entitled} to those brackets is a question about your deployment, not your protocol. Verifpal will not ask.
+
+			\begin{center}
+				\textit{The bracket is where the hard question lives.}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\section{Worked Example: Challenge-Response}
+
+\begin{frame}[fragile]{A challenge-response mechanism}
+	\begin{columns}[t]
+		\begin{column}{0.49\textwidth}
+			\begin{vpmodel}{challengeresponse.vp}
+				\begin{lstlisting}[basicstyle=\vpcode]
+attacker[active]
+principal Server[
+  knows private s
+  gs = PUBKEY(s)
+]
+principal Client[
+  knows private c
+  gc = PUBKEY(c)
+  generates nonce
+]
+Client -> Server: nonce
+principal Server[
+  proof = SIGN(s, nonce)
+]
+Server -> Client: gs, proof
+\end{lstlisting}
+			\end{vpmodel}
+		\end{column}
+		\begin{column}{0.49\textwidth}
+			\begin{vpmodel}{\ldots continued}
+				\begin{lstlisting}[basicstyle=\vpcode]
+principal Client[
+  valid = SIGNVERIF(gs, nonce, proof)
+  generates attestation
+  signed = SIGN(c, attestation)
+]
+Client -> Server: [gc], attestation, signed
+principal Server[
+  storage = SIGNVERIF(gc, attestation, signed)?
+]
+queries[
+  authentication? Server -> Client: proof
+  authentication? Client -> Server: signed
+]
+\end{lstlisting}
+			\end{vpmodel}
+		\end{column}
+	\end{columns}
+	\vspace{0.4em}
+	\begin{center}
+		\small
+		Client challenges Server to prove it holds the key behind \texttt{gs} by signing a nonce Client chose. Client then makes a signed attestation of its own, which Server verifies. Mechanisms like this sit inside many larger protocols. \textit{Does this one say what it means?}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Two failures, of two different shapes}
+	\begin{vpresult}{Both queries fail, for unrelated reasons}
+		\begin{lstlisting}[basicstyle=\vpcode]
+FAIL x authentication? Server -> Client: proof
+       | 1. Attacker observes nonce on the wire.
+       | 2. Attacker constructs SIGN(nil, nonce) from nil, nonce.
+       | 3. Attacker replaces proof (sent by Server to Client) with
+       |    SIGN(nil, nonce). (proof was SIGN(s, nonce))
+       > proof (SIGN(nil, nonce)), sent by Attacker and not by Server, is
+       successfully used in SIGNVERIF(PUBKEY(nil), nonce, proof) within
+       Client's state.
+
+FAIL x authentication? Client -> Server: signed
+       | 3. Attacker replays attestation (Client to Server) from another
+       |    session, where it is attestation#2.
+       | 4. Attacker replays signed (Client to Server) from another
+       |    session, where it is SIGN(c, attestation#2).
+       > signed, which Client sent in another session and not in this one,
+       is successfully used within Server's state: Client sent it once,
+       Server accepts it twice, so agreement is not injective.
+\end{lstlisting}
+	\end{vpresult}
+	\vspace{0.2em}
+	\begin{center}
+		\small The first is a \textbf{forgery}. The second is a \textbf{replay}. They need different fixes.
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Fix one: guard the key, check the signature}
+	\begin{columns}[t]
+		\begin{column}{0.5\textwidth}
+			\begin{vpmodel}{Two characters}
+				\begin{lstlisting}
+Server -> Client: [gs], proof
+...
+valid = SIGNVERIF(gs, nonce, proof)?
+\end{lstlisting}
+			\end{vpmodel}
+			\vspace{0.4em}
+			\begin{vpresult}{Re-run}
+				\begin{lstlisting}
+PASS + authentication? Server -> Client: proof
+FAIL x authentication? Client -> Server: signed
+
+FAIL x 1 of 2 queries failed.
+\end{lstlisting}
+			\end{vpresult}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\small
+			The trace named both problems.
+			\vspace{0.3em}
+			\begin{itemize}
+				\item The forged signature verified under \texttt{PUBKEY(nil)}, not \texttt{gs}, because \texttt{gs} was unguarded and could be replaced in the same message
+				\item \texttt{SIGNVERIF} had no \texttt{?}, so Client computed \texttt{valid} and then signed an attestation regardless of the result
+			\end{itemize}
+			\vspace{0.3em}
+			Guard the key, check the verification, and the forgery is gone.
+
+			The replay is not.
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The replay that remains}
+	\begin{center}
+		\Large
+		Nothing in \texttt{signed} belongs to this run of the protocol.
+	\end{center}
+	\vspace{0.7em}
+	\begin{itemize}
+		\item \texttt{attestation} is fresh, so it differs between Client's two sessions. Good
+		\item But it is fresh \textit{on Client's side}. Server contributed nothing to it
+		\item So the attacker takes \texttt{attestation\#2} and \texttt{signed\#2} off session 2's wire and delivers both into session 1
+		\item Server's \texttt{SIGNVERIF} passes: the signature is real, by the real Client, over a real attestation. Client signed once, Server accepted twice, and that is what injective agreement forbids
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{A signature proves who made a value. It says nothing about which conversation the value belongs to.}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Why the default is two sessions}
+	\begin{vpresult}{The same model, one session per principal}
+		\begin{lstlisting}
+$ verifpal verify challengeresponse.vp --sessions 1
+
+PASS + authentication? Server -> Client: proof
+PASS + authentication? Client -> Server: signed
+
+PASS + All 2 queries pass.
+\end{lstlisting}
+	\end{vpresult}
+	\vspace{0.4em}
+	\small
+	\begin{itemize}
+		\item Under one session the replay cannot be \textbf{stated}, let alone found: \texttt{attestation\#2} does not exist as a term
+		\item Before analysis, Verifpal rewrites the model so each principal and message appears once per session, values renamed apart. \texttt{knows} material stays shared; \texttt{generates} values do not
+	\end{itemize}
+	\begin{center}
+		\footnotesize
+		\textit{Two is not unbounded. An attack needing three concurrent sessions is out of reach at the default, the way this one was out of reach at one.}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Fix two: let the Server choose the challenge}
+	\begin{columns}[t]
+		\begin{column}{0.52\textwidth}
+			\begin{vpmodel}{The real fix}
+				\begin{lstlisting}[basicstyle=\vpcode]
+principal Server[
+  knows private s
+  gs = PUBKEY(s)
+  generates schallenge
+]
+...
+Server -> Client: [gs], proof, schallenge
+principal Client[
+  valid = SIGNVERIF(gs, nonce, proof)?
+  signed = SIGN(c, schallenge)
+]
+Client -> Server: [gc], signed
+principal Server[
+  storage = SIGNVERIF(gc, schallenge, signed)?
+]
+\end{lstlisting}
+			\end{vpmodel}
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\vspace{0.3em}
+			\begin{vpresult}{Re-run}
+				\begin{lstlisting}
+PASS + authentication?
+       Server -> Client: proof
+PASS + authentication?
+       Client -> Server: signed
+
+PASS + All 2 queries pass.
+\end{lstlisting}
+			\end{vpresult}
+			\vspace{0.3em}
+			\footnotesize
+			Now each side signs something the \textit{other} side drew fresh. A signature from session 2 is over \texttt{schallenge\#2}, which session 1's Server never sent and will not accept.
+			\vspace{0.3em}
+
+			Binding \texttt{attestation} to Client's own \texttt{nonce} does not work: the attacker replays the nonce too.
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The loop you will live in}
+	\begin{center}
+		\Large
+		Model. Query. Read the trace. Adjust. Re-run.
+	\end{center}
+	\vspace{0.7em}
+	\begin{itemize}
+		\item Three edits took that challenge-response from two failures to two passes, and each one came from reading a trace rather than from guessing
+		\item Two levers decided most of it: \textbf{what is guarded}, and \textbf{what is checked}
+		\item The third was structural, and the tool found it because it analyzes two sessions rather than one
+	\end{itemize}
+	\vspace{0.7em}
+	\begin{center}
+		\textit{The value of the exercise is not that Verifpal fixed the protocol. It is that writing the model down forced three questions that reading the protocol description never would have.}
+	\end{center}
+\end{frame}
+
+\section{Phases in Practice}
+
+\begin{frame}[fragile]{Forward secrecy, measured}
+	\begin{columns}[t]
+		\begin{column}{0.49\textwidth}
+			\begin{vpmodel}{Key transport}
+				\begin{lstlisting}[basicstyle=\vpcode]
+Bob -> Alice: [gb]
+principal Alice[
+  generates m1
+  e1 = PKE_ENC(gb, m1)
+]
+Alice -> Bob: e1
+
+phase[1]
+principal Bob[leaks b]
+\end{lstlisting}
+			\end{vpmodel}
+			\vspace{0.3em}
+			\begin{vpresult}{}
+				\begin{lstlisting}[basicstyle=\vpcode]
+FAIL x confidentiality? m1
+ | 1. Attacker observes e1 on the wire.
+ | 2. Attacker is handed b by a leaks
+ |    declaration.
+ | 3. Attacker opens e1 with b,
+ |    obtaining m1.
+\end{lstlisting}
+			\end{vpresult}
+		\end{column}
+		\begin{column}{0.49\textwidth}
+			\begin{vpmodel}{Signed ephemeral DH}
+				\begin{lstlisting}[basicstyle=\vpcode]
+principal Bob[
+  generates y
+  gy = PUBKEY(y)
+  sig = SIGN(b, gy)
+]
+Bob -> Alice: [gb], gy, sig
+principal Alice[
+  _ = SIGNVERIF(gb, gy, sig)?
+  k = DH_KEX(gy, x)
+  e1 = AEAD_ENC(k, m1, gx)
+]
+...
+phase[1]
+principal Bob[leaks b]
+\end{lstlisting}
+			\end{vpmodel}
+			\vspace{0.3em}
+			\begin{vpresult}{}
+				\begin{lstlisting}[basicstyle=\vpcode]
+PASS + confidentiality? m1
+\end{lstlisting}
+			\end{vpresult}
+		\end{column}
+	\end{columns}
+	\begin{center}
+		\scriptsize Both leak Bob's long-term key \texttt{b} in phase 1. On the left it decrypts everything he ever received. On the right it signs nothing that was not already sent, because \texttt{k} was never derived from it.
+	\end{center}
+\end{frame}
+
+\section{Declared Weakening Assumptions}
+
+\begin{frame}[fragile]{When the primitive itself is the assumption}
+	\footnotesize
+	Everything so far assumed each primitive is perfect. A call site may declare otherwise:
+	\begin{vpmodel}{Three capabilities}
+		\begin{lstlisting}
+s  = SIGN[forgeable](sk, m)         // authenticity is lost
+c  = ENC[malleable](k, m)           // this ciphertext can be reshaped
+ga = PUBKEY[weak from phase 1](a)   // confidentiality lost, from phase 1 on
+\end{lstlisting}
+	\end{vpmodel}
+	\vspace{0.3em}
+	\begin{itemize}
+		\item \texttt{weak}: holding the term recovers what it protects. On \texttt{PUBKEY} it recovers the private key, which is the discrete logarithm problem falling
+		\item \texttt{forgeable}: the term becomes constructible without its secret argument. Declared for \texttt{SIGN}, \texttt{MAC}, \texttt{RINGSIGN} and \texttt{AEAD\_ENC}
+		\item \texttt{malleable}: \texttt{ENC} only. Reshape a ciphertext you already hold, without ever learning the key
+		\item \texttt{from phase N} delays a capability. Cryptanalysis does not un-happen, so it reads \textit{from} a phase rather than \textit{in} one
+	\end{itemize}
+	\begin{center}
+		Each keyword grants one named capability and nothing else. An unannotated model behaves exactly as before.
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Forgeability, demonstrated}
+	\begin{columns}[t]
+		\begin{column}{0.53\textwidth}
+			\begin{vpmodel}{A signed ephemeral, bound to a nonce}
+				\begin{lstlisting}[basicstyle=\vpcode]
+principal Client[
+  generates n, x, m1
+  gx = PUBKEY(x)
+]
+Client -> Server: n, gx
+principal Server[
+  knows private s
+  gs = PUBKEY(s)
+  generates y
+  gy = PUBKEY(y)
+  sig = SIGN[forgeable](s, HASH(gy, n))
+]
+Server -> Client: [gs], gy, sig
+principal Client[
+  _ = SIGNVERIF(gs, HASH(gy, n), sig)?
+  k = DH_KEX(gy, x)
+  e1 = AEAD_ENC(k, m1, gx)
+]
+Client -> Server: e1
+\end{lstlisting}
+			\end{vpmodel}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\begin{vpresult}{With plain \texttt{SIGN}}
+				\begin{lstlisting}[basicstyle=\vpcode]
+PASS + confidentiality? m1
+PASS + authentication? Server -> Client: sig
+\end{lstlisting}
+			\end{vpresult}
+			\vspace{0.3em}
+			\begin{vpresult}{With \texttt{SIGN[forgeable]}}
+				\begin{lstlisting}[basicstyle=\vpcode]
+FAIL x confidentiality? m1
+ | 2. Attacker replaced gy with PUBKEY(nil),
+ |    after which sig resolved to
+ |    SIGN(s, HASH(PUBKEY(nil), n)).
+ | 4. Client's SIGNVERIF(gs, HASH(gy, n),
+ |    sig)? passes.
+ | 8. Attacker opens e1 with k, obtaining m1.
+FAIL x authentication? Server -> Client: sig
+\end{lstlisting}
+			\end{vpresult}
+			\vspace{0.3em}
+			\scriptsize
+			One bracketed word, and both properties go. Note that \texttt{gs} is guarded throughout: pre-authenticating the signing key buys nothing once the scheme itself is forgeable.
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Harvest now, decrypt later}
+	\begin{columns}[t]
+		\begin{column}{0.49\textwidth}
+			\begin{vpmodel}{Classical Diffie-Hellman}
+				\begin{lstlisting}[basicstyle=\vpcode]
+principal Bob[
+  knows private b
+  gb = PUBKEY[weak from phase 1](b)
+]
+Bob -> Alice: [gb]
+principal Alice[
+  generates a, m1
+  ga = PUBKEY[weak from phase 1](a)
+  k = DH_KEX(gb, a)
+  e1 = AEAD_ENC(k, m1, nil)
+]
+Alice -> Bob: ga, e1
+phase[1]
+\end{lstlisting}
+			\end{vpmodel}
+			\vspace{0.2em}
+			\begin{vpresult}{}
+				\begin{lstlisting}[basicstyle=\vpcode]
+FAIL x confidentiality? m1
+ | 1. Attacker observes e1 on the wire.
+ | 3. Attacker observes ga on the wire.
+ | 4. Attacker breaks ga under the declared
+ |    `weak` assumption, obtaining a.
+ | 5. Attacker constructs k from gb, a.
+ | 6. Attacker opens e1 with k, obtaining m1.
+\end{lstlisting}
+			\end{vpresult}
+		\end{column}
+		\begin{column}{0.49\textwidth}
+			\begin{vpmodel}{Hybrid: the same DH, plus a KEM}
+				\begin{lstlisting}[basicstyle=\vpcode]
+principal Bob[
+  knows private b, dkb
+  gb = PUBKEY[weak from phase 1](b)
+  ekb = PUBKEY(dkb)
+]
+Bob -> Alice: [gb], [ekb]
+principal Alice[
+  generates a, m1, r
+  ga = PUBKEY[weak from phase 1](a)
+  ss, ct = KEM_ENCAP(ekb, r)
+  k = HKDF(DH_KEX(gb, a), ss, nil)
+  e1 = AEAD_ENC(k, m1, nil)
+]
+Alice -> Bob: ga, ct, e1
+phase[1]
+\end{lstlisting}
+			\end{vpmodel}
+			\vspace{0.2em}
+			\begin{vpresult}{}
+				\begin{lstlisting}[basicstyle=\vpcode]
+PASS + confidentiality? m1
+\end{lstlisting}
+			\end{vpresult}
+			\vspace{0.2em}
+			\scriptsize
+			Same assumption, same phase, same message. The KEM secret is the leg that survives.
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Reading a result under assumptions}
+	\scriptsize
+	\begin{columns}[t]
+		\begin{column}{0.52\textwidth}
+			\begin{vpresult}{Printed before every result, pass or fail}
+				\begin{lstlisting}[basicstyle=\vpcode]
+Warning ! Analysis performed under 3 declared
+          weakening assumptions:
+Warning ! PUBKEY[weak from phase 1](b)
+Warning ! PUBKEY[weak from phase 1](a)
+Warning ! PUBKEY[weak from phase 1](a#2)
+\end{lstlisting}
+			\end{vpresult}
+			\vspace{0.3em}
+			\begin{vpresult}{Rejected at load time}
+				\begin{lstlisting}[basicstyle=\vpcode]
+SIGN[weak]: SIGN provides authenticity, not
+  confidentiality; did you mean SIGN[forgeable]?
+DH_KEX[weak]: discrete log is a property of the key,
+  not the exchange; did you mean PUBKEY[weak]?
+\end{lstlisting}
+			\end{vpresult}
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\begin{itemize}
+				\item An attack found under a declared assumption is genuine \textit{under that assumption}, and individual trace steps name the assumption they rest on
+				\item Annotations reach past their own call site, and an \texttt{Info} notice names every occurrence they cover: \textbf{equivalent terms} share an annotation, and \texttt{forgeable} attaches to the \textbf{scheme under one secret}. A signature scheme that has lost authenticity has lost it for every message
+				\item An assumption taking force after the protocol ends is an error, not a no-op
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\begin{center}
+		\scriptsize
+		\textit{A clean result under a stated assumption is not a clean result. The summary line exists so that a trace pasted into an issue tracker does not read as an unconditional finding.}
+	\end{center}
+\end{frame}
+
+\section{Limits, and Getting Started}
+
+\begin{frame}{Sound, but incomplete}
+	\footnotesize
+	\begin{columns}[t]
+		\begin{column}{0.48\textwidth}
+			\textbf{What a \texttt{FAIL} means}
+			\begin{itemize}
+				\item A sequence of attacker actions the engine re-executed against real principal state and re-checked before printing
+				\item Nothing in the search can record a result on its own, so a bug there costs a missed attack, never an invented one
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\textbf{What a \texttt{PASS} does not mean}
+			\begin{itemize}
+				\item Not a proof: the search did not reach an attack, which is weaker
+				\item Bounded sessions, so an attack needing more concurrent runs than you analyzed is out of reach
+				\item Symbolic model, so padding oracles, timing channels and weak randomness are not modeled
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.2em}
+	\alertbox{The honest claim}{Verifpal is a bug-finding tool, not a proof-producing verifier. It says so in its own manual, and it labels the traces whose witnesses rest on within-session value sharing. Compare that to Part 2.}
+\end{frame}
+
+\begin{frame}{Getting started}
+	\footnotesize
+	\begin{columns}[t]
+		\begin{column}{0.48\textwidth}
+			\textbf{Install}
+			\begin{itemize}
+				\item Homebrew on macOS and Linux, Scoop on Windows, or \texttt{cargo build --release}
+				\item Or install nothing: \url{https://verifpal.com/workbench} runs the analyzer in your browser as WebAssembly
+			\end{itemize}
+			\vspace{0.3em}
+			\textbf{Editors}
+			\begin{itemize}
+				\item \texttt{verifpal lsp} drives extensions for VS Code, Neovim and Zed: live analysis, diagrams, hover docs
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\textbf{Read}
+			\begin{itemize}
+				\item Manual: \url{https://static.verifpal.com/manual.pdf}, with case studies on Signal, Scuttlebutt and a post-quantum handshake
+				\item Paper: \textit{Verifpal Seven Years Later}, ePrint 2026/1654
+			\end{itemize}
+			\vspace{0.3em}
+			\textbf{Try}
+			\begin{itemize}
+				\item Model a protocol you already use: a password reset flow, a device pairing handshake, an API token exchange
+				\item Ask for confidentiality and authentication first. Add \texttt{phase[1]} once those hold
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Where this leaves us}
+	\begin{itemize}
+		\item \textbf{Part 1}: machine-checked proofs of designs and implementations are real, and they are deployed at Internet scale
+		\item \textbf{Part 2}: a claim of verification is only worth the boundary documentation and the CI behind it
+		\item \textbf{Part 3}: the tools are within reach, and a model can state which hardness assumption it is betting on, then report what the protocol is worth if that bet loses
+	\end{itemize}
+	\vspace{0.7em}
+	\begin{center}
+		\Large
+		Writing the model is most of the benefit.
+
+		\vspace{0.3em}
+
+		\normalsize
+		\textit{You cannot specify a protocol precisely without discovering what you left unspecified. That was Lesson 1 from TLS 1.3, and it holds at every scale, including a twenty-line model you wrote this afternoon.}
 	\end{center}
 \end{frame}
 
 \begin{frame}[plain]
 	\titlepage
 \end{frame}
+
 \end{document}
