@@ -26,54 +26,46 @@
 	<script type="module" src="../res/js/certificate-page.js"></script>
 	<script defer data-domain="appliedcryptography.page" data-api="https://restless-block-0a1e.symbolicsoft.workers.dev/oil-ocean/event" src="https://restless-block-0a1e.symbolicsoft.workers.dev/emerald-hill/script.js"></script>
 	<style>
-		/* ──────────  Verification panel (raised over the hero)  ────────── */
+		/* ──────────  Verification panel  ────────── */
 		.verify-panel {
-			max-width: 760px;
-			margin: -4rem auto 0;
-			position: relative;
-			z-index: 3;
+			margin: var(--space-7) 0 0;
 			background-color: var(--surface);
-			border: 1px solid var(--border-soft);
-			border-top: 3px solid var(--primary);
+			border: 1px solid var(--border);
 			border-radius: var(--radius);
-			box-shadow: var(--shadow-md);
-			padding: clamp(1.5rem, 1rem + 3vw, 2.7rem);
+			padding: clamp(1.5rem, 1rem + 2vw, 2.25rem);
 		}
 
 		.verify-head {
-			text-align: center;
-			margin-bottom: 1.6rem;
+			margin-bottom: 1.4rem;
 		}
 
 		.verify-title {
 			font-family: var(--font-display);
-			font-size: clamp(1.6rem, 1.1rem + 2vw, 2.2rem);
-			line-height: 1.1;
+			font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2rem);
+			line-height: 1.15;
 			color: var(--primary);
-			margin: 0.3rem 0 0.55rem;
+			margin: 0 0 0.4rem;
 		}
 
 		.verify-lead {
 			color: var(--ink-soft);
-			max-width: 50ch;
-			margin: 0 auto;
+			max-width: 56ch;
+			margin: 0;
 		}
 
 		.cert-label {
 			display: block;
-			font-family: var(--font-mono);
-			font-size: 0.66rem;
+			font-size: 0.85rem;
 			font-weight: 700;
-			letter-spacing: 0.12em;
-			text-transform: uppercase;
-			color: var(--muted);
-			margin-bottom: 0.5rem;
+			color: var(--ink);
+			margin-bottom: 0.4rem;
 		}
 
 		.cert-form {
 			display: flex;
 			flex-direction: column;
-			gap: 0.85rem;
+			align-items: flex-start;
+			gap: 0.8rem;
 		}
 
 		#cert-input {
@@ -88,7 +80,7 @@
 			border: 1px solid var(--border);
 			border-radius: var(--radius);
 			padding: var(--space-4);
-			transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+			transition: border-color var(--duration-fast) var(--ease), box-shadow var(--duration-fast) var(--ease);
 		}
 
 		#cert-input::placeholder {
@@ -98,21 +90,15 @@
 		#cert-input:focus-visible {
 			outline: none;
 			border-color: var(--secondary);
-			box-shadow: 0 0 0 3px var(--ring);
+			box-shadow: 0 0 0 2px var(--ring);
 		}
 
-		.cert-form .btn {
-			align-self: center;
-			border: none;
-			padding-inline: 1.6rem;
-		}
-
-		/* ──────────  Result: the official seal  ────────── */
+		/* ──────────  Result  ────────── */
 		.cert-result {
 			margin-top: var(--space-5);
 			border: 1px solid var(--border);
 			border-radius: var(--radius);
-			padding: var(--space-6) var(--space-5);
+			padding: var(--space-5);
 		}
 
 		.cert-result[hidden] {
@@ -120,111 +106,88 @@
 		}
 
 		.cert-result.ok {
-			text-align: center;
-			border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
-			border-top: 3px solid var(--accent);
-			background-color: color-mix(in srgb, var(--secondary) 6%, var(--surface));
+			border-color: color-mix(in srgb, var(--secondary) 45%, var(--border));
+			background-color: color-mix(in srgb, var(--secondary) 7%, var(--surface));
+		}
+
+		.cert-result h3 .icon {
+			margin: 0;
+		}
+
+		.cert-result h3 {
+			display: flex;
+			align-items: center;
+			gap: 0.4rem;
+			margin-bottom: 0.5rem;
+			font-family: var(--font-body);
+			font-size: 1rem;
+			font-weight: 700;
 		}
 
 		.cert-result.ok h3 {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			gap: 0.6rem;
-			margin-bottom: 0.4rem;
-			font-family: var(--font-mono);
-			font-size: 0.78rem;
-			font-weight: 700;
-			letter-spacing: 0.22em;
-			text-transform: uppercase;
 			color: var(--primary);
 		}
 
-		.cert-result.ok h3 .icon {
-			width: 3.5rem;
-			height: 3.5rem;
+		.cert-result p {
 			margin: 0;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 1.9rem;
-			color: var(--primary);
-			background-color: var(--surface);
-			border: 2px solid var(--accent);
-			border-radius: 50%;
-			box-shadow: 0 3px 12px rgba(44, 94, 42, 0.14);
-		}
-
-		.cert-result.ok p {
-			margin: 0 auto;
-			max-width: 48ch;
+			max-width: 56ch;
 			color: var(--ink-soft);
 		}
 
 		.cert-result.ok .cert-name {
 			display: block;
 			font-family: var(--font-display);
-			font-size: clamp(1.5rem, 1rem + 2vw, 1.95rem);
-			line-height: 1.15;
+			font-size: clamp(1.35rem, 1rem + 1.4vw, 1.7rem);
+			line-height: 1.2;
 			color: var(--primary-dark);
-			margin: 0.25rem 0 0.5rem;
+			margin: 0 0 0.35rem;
 		}
 
 		.cert-result.ok .cert-meta {
 			font-family: var(--font-mono);
-			font-size: 0.72rem;
-			letter-spacing: 0.04em;
+			font-size: 0.75rem;
 			color: var(--muted);
-			margin-top: 0.75rem;
+			margin-top: 0.7rem;
 		}
 
 		.cert-result.err {
-			border-left: 3px solid #b04a2f;
+			border-color: color-mix(in srgb, #b04a2f 45%, var(--border));
 			background-color: color-mix(in srgb, #b04a2f 6%, var(--surface));
 		}
 
 		.cert-result.err h3 {
-			display: flex;
-			align-items: center;
-			gap: 0.5rem;
-			margin-bottom: 0.4rem;
 			color: #b04a2f;
-		}
-
-		.cert-result.err p {
-			margin: 0;
-			color: var(--ink-soft);
 		}
 
 		/* ──────────  Credential: two-part structure  ────────── */
 		.cred-parts {
 			display: grid;
 			grid-template-columns: 1fr 1fr;
-			gap: var(--space-5);
-			margin-top: var(--space-5);
+			gap: var(--space-4);
+			margin-top: var(--space-4);
 		}
 
 		.cred-part {
 			background-color: var(--surface);
-			border: 1px solid var(--border-soft);
+			border: 1px solid var(--border);
 			border-radius: var(--radius);
 			padding: var(--space-5);
 		}
 
 		.cred-part-eyebrow {
 			font-family: var(--font-mono);
-			font-size: 0.64rem;
-			font-weight: 700;
-			letter-spacing: 0.14em;
-			text-transform: uppercase;
-			color: var(--accent);
+			font-size: 0.72rem;
+			font-weight: 600;
+			letter-spacing: 0.04em;
+			color: var(--muted);
+			margin: 0;
 		}
 
 		.cred-part h3 {
 			font-family: var(--font-display);
-			font-size: 1.25rem;
+			font-size: 1.2rem;
 			color: var(--primary);
-			margin: 0.3rem 0 0.55rem;
+			margin: 0.2rem 0 0.5rem;
 		}
 
 		.cred-part p {
@@ -245,8 +208,8 @@
 		}
 
 		.inst-photo {
-			width: 116px;
-			height: 116px;
+			width: 110px;
+			height: 110px;
 			flex-shrink: 0;
 			object-fit: cover;
 			border-radius: var(--radius);
@@ -261,37 +224,9 @@
 			margin-bottom: 0;
 		}
 
-		/* ──────────  Assurance badges  ────────── */
-		.trust-row {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 0.7rem;
-			margin-top: var(--space-5);
-		}
-
-		.trust-badge {
-			display: inline-flex;
-			align-items: center;
-			gap: 0.45rem;
-			font-family: var(--font-mono);
-			font-size: 0.72rem;
-			font-weight: 600;
-			letter-spacing: 0.03em;
-			color: var(--ink-soft);
-			background-color: var(--surface-alt);
-			border: 1px solid var(--border);
-			border-radius: var(--radius-pill);
-			padding: 0.45rem 0.9rem;
-		}
-
-		.trust-badge .icon {
-			margin: 0;
-			color: var(--secondary);
-		}
-
 		.cert-fp {
 			font-family: var(--font-mono);
-			font-size: 0.72rem;
+			font-size: 0.75rem;
 			word-break: break-all;
 			color: var(--ink-soft);
 		}
@@ -305,14 +240,6 @@
 		@media (max-width: 560px) {
 			.inst {
 				flex-direction: column;
-				align-items: center;
-				text-align: center;
-			}
-		}
-
-		@media (max-width: 640px) {
-			.verify-panel {
-				margin-top: -2rem;
 			}
 		}
 	</style>
@@ -337,7 +264,6 @@
 	</nav>
 
 	<div class="hero">
-		<div class="hero-frame" aria-hidden="true"></div>
 		<div class="hero-content">
 			<p class="hero-eyebrow"><img src="../res/images/symbolicsoft-white.png" alt="Symbolic Software" /></p>
 			<h1>Credential Verification</h1>
@@ -348,7 +274,6 @@
 	<div class="container">
 		<section class="verify-panel" aria-labelledby="verify-title">
 			<div class="verify-head">
-				<p class="section-eyebrow">Verification</p>
 				<h2 id="verify-title" class="verify-title">Verify a certificate</h2>
 				<p class="verify-lead">Paste the certificate token below, or open the link inside its QR code.</p>
 			</div>
@@ -366,7 +291,6 @@
 	<div class="container">
 		<section class="section" id="credential">
 			<div class="section-header">
-				<p class="section-eyebrow">&sect; The Credential</p>
 				<h2 class="section-title">What this certifies</h2>
 			</div>
 
@@ -395,7 +319,6 @@
 
 		<section class="section" id="method">
 			<div class="section-header">
-				<p class="section-eyebrow">&sect; Assurance</p>
 				<h2 class="section-title">How verification works</h2>
 			</div>
 

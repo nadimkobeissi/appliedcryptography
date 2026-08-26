@@ -4,11 +4,6 @@ export const navspyInit = () => {
 		return
 	}
 
-	const progress = document.createElement("div")
-	progress.className = "nav-progress"
-	progress.setAttribute("aria-hidden", "true")
-	navbar.appendChild(progress)
-
 	const links = [...document.querySelectorAll(".navbar-links a[href^='#']")].filter((a) => a.hash.length > 1)
 	const sections = links
 		.map((a) => document.getElementById(a.hash.slice(1)))
@@ -29,10 +24,6 @@ export const navspyInit = () => {
 	let ticking = false
 	const update = () => {
 		ticking = false
-		const doc = document.documentElement
-		const max = doc.scrollHeight - doc.clientHeight
-		progress.style.transform = `scaleX(${max > 0 ? Math.min(window.scrollY / max, 1) : 0})`
-
 		navbar.classList.toggle("scrolled", window.scrollY > 8)
 		toTop.classList.toggle("visible", window.scrollY > 640)
 
