@@ -3,7 +3,7 @@
 
 \title{Applied Cryptography - 2.5: High-Assurance Cryptography}
 \author{Nadim Kobeissi}
-\subject{An exploration of high-assurance cryptography through computer-aided design, verification, and implementation techniques, a critical examination of verification boundaries in practice, and a hands-on introduction to protocol modeling with Verifpal.}
+\subject{How designs, implementations and deployments get machine-checked; where verification claims break down in practice; and how to model protocols in Verifpal.}
 \keywords{computer-aided cryptography, formal verification, verification boundaries, verification theatre, symbolic security, computational security, ProVerif, Tamarin, Verifpal, F*, protocol modeling, side-channel resistance}
 \institute{Symbolic Software}
 \instituteimage{images/symbolicsoft-white.png}
@@ -181,7 +181,7 @@
 	\end{center}
 \end{frame}
 
-\section{Introduction}
+\section{The Case for Computer-Aided Cryptography}
 
 \begin{frame}{Securely implementing cryptography}
 	\begin{itemize}
@@ -235,7 +235,7 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Success stories}
+\begin{frame}{Where verified crypto already ships}
 	\begin{itemize}
 		\item Computer-aided security analyses were influential in \textbf{TLS 1.3} standardization
 		\item \textbf{\haclstar}: Verified crypto integrated into Mozilla Firefox's NSS
@@ -424,11 +424,11 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Symbolic analysis tools overview}
+\begin{frame}{Symbolic analysis tools, compared}
 	\bigimagewithcaption{verif-symbolic.png}{The previous slide's features, tool by tool. Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao, and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
 \end{frame}
 
-\begin{frame}{ProVerif: Real-world success stories}
+\begin{frame}{ProVerif: how long real protocols take}
 	\textbf{TLS 1.0}: Verification in seconds to hours
 	\vspace{0.3em}
 
@@ -445,7 +445,7 @@
 	\vspace{0.5em}
 	\begin{center}
 		\Large
-		Key insight: More Diffie-Hellman operations = longer analysis
+		More Diffie-Hellman operations = longer analysis
 
 		\vspace{0.3em}
 
@@ -510,7 +510,7 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Computational analysis tools overview}
+\begin{frame}{Computational analysis tools, compared}
 	\bigimagewithcaption{verif-computational.png}{The previous slide's dimensions, tool by tool. Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao, and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
 \end{frame}
 
@@ -553,7 +553,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{\fstar: Real-world impact}
+\begin{frame}{\fstar: attacks found, code verified}
 	\textbf{How \fstar handles computational proofs:}
 	\begin{enumerate}
 		\item Start with detailed protocol description
@@ -663,7 +663,7 @@
 	\end{itemize}
 	\vspace{0.3em}
 	\begin{center}
-		\textit{Best-in-class crypto needs manual optimization; compilers can't match expert assembly}
+		\textit{The fastest crypto still needs manual optimization; compilers can't match expert assembly}
 	\end{center}
 \end{frame}
 
@@ -710,7 +710,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Real deployment success stories}
+\begin{frame}{Verified crypto in production}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{\haclstar in Firefox's NSS:}
@@ -722,7 +722,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Three critical success factors:}
+			\textbf{Why it landed:}
 			\begin{enumerate}
 				\item Performance parity
 				\item API compatibility (drop-in)
@@ -956,7 +956,7 @@
 		\item Provide formal guarantees
 	\end{itemize}
 	\vspace{0.5em}
-	\textbf{Important caveats:}
+	\textbf{Caveats:}
 	\begin{itemize}
 		\item Proofs are relative to the leakage model
 		\item Hardware may leak more than modeled (e.g., Spectre)
@@ -964,7 +964,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Verified implementations: The state of the art}
+\begin{frame}{Verified implementations, compared}
 	\bigimagewithcaption{verif-implementations.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao, and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
 \end{frame}
 
@@ -978,7 +978,7 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Devastating impact:}
+			\textbf{What it breaks:}
 			\begin{itemize}
 				\item Breaks Intel TDX
 				\item Breaks AMD SEV-SNP
@@ -1020,7 +1020,7 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{TLS 1.3: A paradigm shift}
+\begin{frame}{TLS 1.3: designed and analyzed together}
 	\begin{center}
 		\Large
 		From reactive patching to proactive design
@@ -1075,10 +1075,6 @@
 	\vspace{0.5em}
 	\begin{center}
 		From ``ship and patch'' to ``verify and ship''
-
-		\vspace{0.3em}
-
-		\textit{This is the future of secure protocol design}
 	\end{center}
 \end{frame}
 
@@ -1168,7 +1164,7 @@
 		\item Documentation: ``every implementation in libcrux is formally verified''
 	\end{itemize}
 	\vspace{0.5em}
-	\textbf{Real-world deployment:}
+	\textbf{Where it ships:}
 	\begin{itemize}
 		\item ML-KEM implementation used internally at Google
 		\item hpke-rs is a dependency of Signal's \texttt{signal-crypto} crate
@@ -1652,7 +1648,7 @@
 	\end{center}
 \end{frame}
 
-\section{Comparative Analysis}
+\section{How Other Projects Handle the Boundary}
 
 \begin{frame}{How AWS does it differently}
 	\footnotesize
