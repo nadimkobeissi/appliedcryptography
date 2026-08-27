@@ -429,29 +429,28 @@
 \end{frame}
 
 \begin{frame}{ProVerif: how long real protocols take}
-	\textbf{TLS 1.0}: Verification in seconds to hours
-	\vspace{0.3em}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{TLS 1.0}: Verification in seconds to hours
+				\item \textbf{TLS 1.3}: $\sim$1 hour
+				\item \textbf{Signal Protocol}: Minutes to days
+				\item \textbf{Noise Protocol Framework}: Seconds to hours\footnote{Used to be seconds to days, but ProVerif recently was optimized for performance.}
+			\end{itemize}
 
-	\textbf{TLS 1.3}: $\sim$1 hour
-	\vspace{0.3em}
-
-	\textbf{Signal Protocol}: Minutes to days
-	\vspace{0.3em}
-
-	\textbf{Noise Protocol Framework}: Seconds to days
-	\begin{itemize}
-		\item Demo: \url{https://noiseexplorer.com}
-	\end{itemize}
-	\vspace{0.5em}
-	\begin{center}
-		\Large
-		More Diffie-Hellman operations = longer analysis
-
-		\vspace{0.3em}
-
-		\normalsize
-		(TLS 1.3, Signal, and Noise: all part of my Ph.D. thesis!)
-	\end{center}
+			\begin{itemize}
+				\item Demo: \url{https://noiseexplorer.com}
+			\end{itemize}
+			\vspace{0.5em}
+			\begin{center}
+				\Large
+				More Diffie-Hellman operations = longer analysis
+				\vspace{0.3em}
+				\normalsize
+				(TLS 1.3, Signal, and Noise: all part of my Ph.D. thesis!)
+			\end{center}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Tamarin: Tackling massive protocols}
@@ -870,6 +869,28 @@
 	\begin{center}
 		\textit{Even perfect constant-time source code may not survive to execution!}
 	\end{center}
+\end{frame}
+
+\begin{frame}{The pessimist case}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\textbf{BearSSL's constant-time conditional move, written around 2015:}\footnote{\url{https://appliedcryptography.page/paper/\#pessimist-case}}
+			\begin{flushleft}
+				\texttt{mask1 = -(uint64\_t)(((x | -x) >> 31) \textasciicircum{} 1); mask2 = \textasciitilde mask1;}\\
+				\texttt{a[i] = (mask1 \& a[i]) | (mask2 \& b[i]);}
+			\end{flushleft}
+			{\scriptsize\textit{Builds an all-ones or all-zeros mask from the secret \texttt{x}, then blends \texttt{a} and \texttt{b} word by word: every word is touched, whatever \texttt{x} is.}}
+
+			\textbf{What Clang 18.1.3 emits for it today, at \texttt{-O3}:}
+			\begin{flushleft}
+				\texttt{test ecx, ecx} \quad \texttt{je .LBB0\_2} \quad \texttt{jmp \textbf{memcpy@PLT}}
+			\end{flushleft}
+			{\scriptsize\textit{Clang saw through the arithmetic: it now \textbf{branches on the secret} and calls \texttt{memcpy}, so timing and cache behavior reveal \texttt{x}: exactly the leak the mask existed to prevent.}}
+			\begin{itemize}
+				\item \textit{Not a compiler defect.} Finding that shortcut is exactly its job
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Why constant-time is hard}
@@ -2082,17 +2103,17 @@ principal Alice[leaks a2] // only now does a2 escape
 		\small
 		\begin{tabular}{|l|l|}
 			\hline
-			\textbf{Query}                     & \textbf{Asks}                                       \\
+			\textbf{Query}                     & \textbf{Asks}                                          \\
 			\hline
-			\texttt{confidentiality? v}        & Can the attacker obtain \texttt{v}?                 \\
+			\texttt{confidentiality? v}        & Can the attacker obtain \texttt{v}?                    \\
 			\hline
-			\texttt{authentication? A -> B: x} & If B uses \texttt{x}, did A really send it?         \\
+			\texttt{authentication? A -> B: x} & If B uses \texttt{x}, did A really send it?            \\
 			\hline
 			\texttt{freshness? v}              & Could \texttt{v} recur across runs, enabling a replay? \\
 			\hline
-			\texttt{equivalence? x, y}         & Do these always resolve to the same value?          \\
+			\texttt{equivalence? x, y}         & Do these always resolve to the same value?             \\
 			\hline
-			\texttt{unlinkability? x, y}       & Can the attacker link these to one principal?       \\
+			\texttt{unlinkability? x, y}       & Can the attacker link these to one principal?          \\
 			\hline
 		\end{tabular}
 	\end{center}
