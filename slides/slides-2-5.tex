@@ -4,7 +4,7 @@
 \title{Applied Cryptography - 2.5: High-Assurance Cryptography}
 \author{Nadim Kobeissi}
 \subject{How designs, implementations and deployments get machine-checked; where verification claims break down in practice; and how to model protocols in Verifpal.}
-\keywords{computer-aided cryptography, formal verification, verification boundaries, verification theatre, symbolic security, computational security, ProVerif, Tamarin, Verifpal, F*, protocol modeling, side-channel resistance}
+\keywords{computer-aided cryptography, formal verification, verification boundaries, verification theatre, symbolic security, computational security, ProVerif, Tamarin, Verifpal, F*, protocol modeling, side-channel resistance, key transparency, Signal Protocol}
 \institute{Symbolic Software}
 \instituteimage{images/symbolicsoft-white.png}
 \date{\today}
@@ -140,13 +140,13 @@
 		\item Tools that prove designs secure: ProVerif, Tamarin, CryptoVerif, \fstar
 		\item Verified implementations that match hand-optimized speed: \haclstar, Fiat
 		\item Side channels, constant-time code, and TLS 1.3 designed alongside its proofs
+		\item Signal's key transparency, and the assumption it discharges
 	\end{itemize}
 	\vspace{0.15em}
 	\textbf{Part 2 --- The pitfalls: verification theatre}
 	\begin{itemize}
 		\item Thirteen vulnerabilities I found in ``the formally verified crypto library''
-		\item A taxonomy of five ways verification claims fail in practice
-		\item What separates real assurance from the \textit{appearance} of assurance
+		\item Five ways verification claims fail, and what separates real assurance from its \textit{appearance}
 	\end{itemize}
 	\vspace{0.15em}
 	\textbf{Part 3 --- The practice: modeling protocols in Verifpal}
@@ -530,6 +530,11 @@
 		\item TLS 1.3 and the Signal Protocol (same Ph.D. thesis!)
 		\item WireGuard VPN
 	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\small
+		\textit{Both models take the peers' long-term public keys as authentic inputs. Where those keys come from is a separate problem.}
+	\end{center}
 \end{frame}
 
 \begin{frame}{\fstar: Beyond the cryptographic core}
@@ -586,7 +591,55 @@
 	\end{itemize}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{We will return to this theme in Part 2\ldots}
+		\textit{One of those assumptions sits in a protocol most of you have on your phone\ldots}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Where does Bob's identity key come from?}
+	The ProVerif and CryptoVerif models of the Signal Protocol prove what they claim. Both start with Alice already holding the right long-term identity key for Bob.
+	\vspace{0.5em}
+	\begin{itemize}
+		\item In deployment that key reaches Alice inside a \textbf{prekey bundle}, served to her by Signal's servers
+		\item A compromised or coerced server can serve a key it controls. Every theorem still holds, for a session with the wrong Bob
+		\item Signal's long-standing answer: \textbf{safety numbers}, compared out of band, in person or over another channel
+		\item Correct, and almost nobody did it. The assumption was discharged by a human action the model never sees
+	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{Key distribution sat outside the boundary. Closing it was the user's job}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Signal's automatic key verification (August 2026)}
+	\footnotesize
+	Since August 11, 2026, the mapping from a phone number or username to a public key is \textbf{globally consistent and auditable}.
+	\vspace{0.3em}
+	\begin{itemize}
+		\item A \textbf{log tree} appends every registration, number change, username change and account re-creation
+		\item \textbf{Prefix trees} index it, so a lookup is a deterministic search the server cannot steer
+		\item A \textbf{verifiable random function} hides identifiers, a \textbf{keyed hash} hides values: auditors see no plaintext
+		\item \textbf{Cloudflare} and \textbf{Trail of Bits} sign entries, so Alice and Bob cannot be shown different ledgers
+		\item Clients re-check their own entry, and keys they already accepted, so later substitution is caught too
+	\end{itemize}
+	\vspace{0.3em}
+	\begin{center}
+		\scriptsize
+		Built on an earlier draft of the IETF key transparency protocol. \url{https://signal.org/blog/automatic-key-verification/}
+	\end{center}
+\end{frame}
+
+\begin{frame}{The limits of automatic key verification}
+	\small
+	The check runs on its own now, and ``View Safety Number'' reports \textbf{``Encryption verified''} when it passes. The limits:
+	\vspace{0.4em}
+	\begin{itemize}
+		\item Verification needs the contact's \textbf{phone number}. Meet someone by username alone and there is nothing to check against
+		\item Everyone sees the same key for an identifier. Nobody proves that the identifier belongs to the person you have in mind
+		\item The server and its auditors still have to not collude, and clients still have to monitor
+	\end{itemize}
+	\vspace{0.4em}
+	\begin{center}
+		\textit{Software checks the assumption on a schedule now, which is more than the user ever did. We will return to this theme in Part 2\ldots}
 	\end{center}
 \end{frame}
 
