@@ -25,7 +25,7 @@
 		\item \textbf{Pretty Good Privacy} (PGP)---created by Phil Zimmermann in 1991
 		\item First widely available strong encryption for everyday people
 		\item Uses public key cryptography for email encryption and digital signatures
-		\item Revolutionary: Previously, strong crypto was government/military only
+		\item Before PGP, strong crypto was effectively government/military-only and export-controlled: Zimmermann spent 1993--1996 under criminal investigation for ``exporting munitions''
 		\item Core idea: Each user has a key pair (public key + private key)
 	\end{itemize}
 \end{frame}
@@ -79,14 +79,14 @@
 \end{frame}
 
 \begin{frame}{Look at this mess}
-	\bigimagewithcaption{pgp-keyserver.png}{A PGP ``key server''. The SKS keyserver network shut down in 2021 after ``certificate flooding'' attacks made it unusable.}
+	\bigimagewithcaption[0.7\textwidth]{pgp-keyserver.png}{A PGP ``key server''. Anyone can upload anything: in 2019, ``certificate flooding'' attacks attached tens of thousands of bogus signatures to well-known keys, making GnuPG hang for anyone who fetched them. The SKS keyserver pool shut down in 2021.}
 \end{frame}
 
 \begin{frame}{Look at this mess}
-	\bigimagewithcaption{pgp-pubkey.png}{Allegedly my public key. Is it even? I don't know!}
+	\bigimagewithcaption[0.32\textwidth]{pgp-pubkey.png}{Allegedly my public key. Is it even? I don't know!}
 \end{frame}
 
-\begin{frame}{The Key Distribution Problem}
+\begin{frame}{The key distribution problem}
 	\begin{columns}
 		\begin{column}{0.6\textwidth}
 			\textbf{How do you get someone's public key?}
@@ -139,8 +139,7 @@
 				      \end{itemize}
 				\item \textbf{Metadata exposed}
 				      \begin{itemize}
-					      \item Subject lines, recipients visible
-					      \item Timing and frequency observable
+					      \item Subject lines, recipients, timing and frequency all visible
 				      \end{itemize}
 				\item \textbf{Web of Trust failed in practice}
 				      \begin{itemize}
@@ -240,7 +239,7 @@
 		      \end{itemize}
 		\item Designed specifically for instant messaging, not email
 		\item Key insight: Chat is synchronous, both parties online!
-		\item \textbf{Revolutionary features}:
+		\item \textbf{What it offered}:
 		      \begin{itemize}
 			      \item Perfect forward secrecy
 			      \item Deniable authentication
@@ -295,32 +294,22 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{OTR integration success}
+\begin{frame}{Why OTR spread: it needed nobody's permission}
 	\begin{columns}
-		\begin{column}{0.6\textwidth}
-			\textbf{Wide Platform Adoption}
+		\begin{column}{0.55\textwidth}
+			\textbf{OTR is a plugin, not a network}
 			\begin{itemize}
-				\item \textbf{Pidgin}: Multi-protocol IM client
-				\item \textbf{Adium}: Mac OS X messaging
-				\item \textbf{Kopete}: KDE instant messenger
-				\item \textbf{Jitsi}: Voice/video/chat
-			\end{itemize}
-			\textbf{Protocol Support}
-			\begin{itemize}
-				\item XMPP/Jabber
-				\item IRC (via proxy)
-				\item AIM, ICQ, Yahoo Messenger
-				\item Google Talk
+				\item An OTR message is just text, \texttt{?OTR:AAMD\ldots} (base64), sent over whatever IM network you already use
+				\item Servers see gibberish and don't care: no server-side changes needed
+				\item Clients advertise support by appending an invisible whitespace tag to ordinary messages
+				\item If the peer doesn't answer, you simply keep chatting in plaintext
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.4\textwidth}
-			\textbf{Why It Worked}
+		\begin{column}{0.45\textwidth}
+			\textbf{Where it ran}
 			\begin{itemize}
-				\item Plugin architecture
-				\item No server changes needed
-				\item Transparent to users
-				\item ``Just works'' experience
-				\item Graceful degradation
+				\item \textbf{Clients}: Pidgin, Adium (Mac OS X), Kopete (KDE), Jitsi
+				\item \textbf{Networks}: XMPP/Jabber, AIM, ICQ, Yahoo Messenger, Google Talk, IRC (via proxy)
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -350,31 +339,24 @@
 \end{frame}
 
 \begin{frame}{Pidgin: an IM client with OTR support}
-	\bigimagewithcaption{pidgin-chat.jpg}{Pidgin supported MSN Messenger, Yahoo Messenger, IRC, etc.}
+	\bigimagewithcaption[0.62\textwidth]{pidgin-chat.jpg}{Pidgin supported MSN Messenger, Yahoo Messenger, IRC, etc.}
 \end{frame}
 
 \begin{frame}{Pidgin: an IM client with OTR support}
-	\bigimagewithcaption{pidgin-otr.jpg}{Pidgin was a popular way to use OTR.}
+	\bigimagewithcaption[0.71\textwidth]{pidgin-otr.jpg}{Pidgin was a popular way to use OTR.}
 \end{frame}
 
 \begin{frame}{OTR's legacy}
 	\begin{itemize}
-		\item \textbf{Proved feasibility of usable crypto}
+		\item \textbf{Usable crypto is possible}: automatic key management, no key servers, no user-facing PKI
+		\item \textbf{Two ideas that stuck}
 		      \begin{itemize}
-			      \item Automatic key management works
-			      \item Users don't need to understand crypto
-			      \item Security can be transparent
+			      \item Long-term keys only \textit{authenticate}; ephemeral keys \textit{encrypt} (forward secrecy, ratcheting)
+			      \item Authentication without non-repudiation (deniability)
 		      \end{itemize}
-		\item \textbf{Established core principles}
+		\item \textbf{A direct descendant}: the Signal Protocol's DH ratchet is OTR's ratchet, made asynchronous
 		      \begin{itemize}
-			      \item Forward secrecy is essential
-			      \item Ephemeral keys > long-term keys
-			      \item Authentication without non-repudiation
-		      \end{itemize}
-		\item \textbf{Influenced modern messaging}
-		      \begin{itemize}
-			      \item The Signal Protocol builds directly on OTR's ideas
-			      \item Its descendants now run on billions of devices: Signal, WhatsApp, Google Messages, Facebook Messenger
+			      \item It now runs on billions of devices: Signal, WhatsApp, Google Messages, Facebook Messenger
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -436,7 +418,9 @@
 		      \begin{enumerate}
 			      \item Introduce a notion of \textit{ephemeral} key pairs.
 			      \item Use long-term key pairs (``identity keys'') \textit{only} in the AKE, and \textit{only} for authentication and identity binding, not in the ratcheting steps.
+			      \item Derive message keys from ephemeral secrets only, and delete ephemeral material as soon as it is no longer needed.
 		      \end{enumerate}
+		\item So the question becomes: how do we build an AKE in which the long-term keys \textit{only} authenticate? Enter SIGMA.
 	\end{itemize}
 \end{frame}
 
@@ -455,9 +439,8 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Ephemeral Keys}
 			\begin{itemize}
-				\item Generated per conversation
-				\item Used for actual encryption
-				\item Derived via Diffie-Hellman
+				\item Generated per conversation, then per message (ratcheting)
+				\item Combined via Diffie-Hellman into the secrets that encrypt messages
 				\item Deleted after use
 				\item Cannot be recovered later
 			\end{itemize}
@@ -468,28 +451,9 @@
 	\end{alertblock}
 \end{frame}
 
-\begin{frame}{Forward secrecy in practice}
-	\begin{itemize}
-		\item \textbf{The OTR approach:}
-		      \begin{enumerate}
-			      \item Alice and Bob perform authenticated DH exchange
-			      \item Long-term keys sign the ephemeral public values
-			      \item Shared secret derived from ephemeral keys only
-			      \item Message keys derived from shared secret
-			      \item All ephemeral material deleted after use
-		      \end{enumerate}
-		\item \textbf{Contrast with PGP:}
-		      \begin{itemize}
-			      \item PGP uses same key pair for years
-			      \item One key compromise = all messages exposed
-			      \item No automatic key rotation
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{SIGMA: SIGn-and-MAc Authenticated Key Exchange}
+\begin{frame}{SIGMA: SIGn-and-MAc authenticated key exchange}
 	\begin{columns}
-		\begin{column}{0.4\textwidth}
+		\begin{column}{0.38\textwidth}
 			\begin{itemize}
 				\item \textbf{AKE}\footnote{\url{https://appliedcryptography.page/paper/\#sigma-ake}}
 				      \begin{itemize}
@@ -502,7 +466,7 @@
 				\item $K_m \twoheadleftarrow \func{hash}{g^{xy}}$
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.6\textwidth}
+		\begin{column}{0.62\textwidth}
 			\begin{center}
 				\begin{tikzpicture}[>=Stealth]
 					\node (A) at (0,0) {$A$};
@@ -599,7 +563,7 @@
 
 \begin{frame}{But why HMAC though?}{Why not just add the identity key to the signature?}
 	\begin{columns}[c]
-		\begin{column}{0.4\textwidth}
+		\begin{column}{0.38\textwidth}
 			\begin{itemize}
 				\item Works, but\ldots
 				      \begin{itemize}
@@ -611,7 +575,7 @@
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.6\textwidth}
+		\begin{column}{0.62\textwidth}
 			\begin{center}
 				\begin{tikzpicture}[>=Stealth]
 					\node (A) at (0,0) {$A$};
@@ -637,47 +601,33 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Passive vs Active Attackers}
+\begin{frame}{Passive vs.\ active attackers}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\textbf{Passive Attacker}
 			\begin{itemize}
-				\item \textbf{Eavesdropping only}
-				\item Observes network traffic
-				\item Records all messages
+				\item \textbf{Eavesdropping only}: observes and records traffic
 				\item Cannot modify or inject messages
-				\item Examples:
-				      \begin{itemize}
-					      \item ISP logging traffic
-					      \item Government surveillance
-					      \item WiFi sniffing
-				      \end{itemize}
+				\item Examples: ISP logging, WiFi sniffing, bulk surveillance
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Active Attacker}
 			\begin{itemize}
-				\item \textbf{Can modify/inject messages}
-				\item Intercepts and alters traffic
-				\item Can impersonate parties
-				\item Controls network routing
-				\item Examples:
-				      \begin{itemize}
-					      \item Man-in-the-middle attacks
-					      \item Malicious WiFi hotspots
-					      \item Compromised routers
-				      \end{itemize}
+				\item \textbf{Can modify, inject, drop messages}
+				\item Can impersonate parties and start its own sessions
+				\item Examples: man-in-the-middle, malicious WiFi hotspots, compromised routers
 			\end{itemize}
 		\end{column}
 	\end{columns}
 	\begin{alertblock}{Protocol Design Impact}
-		Identity protection works against passive attackers, but active attackers can force identity revelation through protocol manipulation
+		Encrypting identities defeats a passive attacker. An active attacker can always start a handshake and learn whichever identity is revealed \textit{first} (Bob's, above). A protocol only chooses \textit{which} party it protects against active attacks: SIGMA-I the initiator, SIGMA-R the responder.
 	\end{alertblock}
 \end{frame}
 
-\begin{frame}{SIGMA: SIGn-and-MAc Authenticated Key Exchange}
+\begin{frame}{SIGMA: SIGn-and-MAc authenticated key exchange}
 	\begin{columns}
-		\begin{column}{0.4\textwidth}
+		\begin{column}{0.38\textwidth}
 			\begin{itemize}
 				\item \textbf{MACs for Identity Binding}
 				      \begin{itemize}
@@ -690,10 +640,10 @@
 					      \item Uses ephemeral DH keys
 					      \item Past sessions safe if long-term keys compromised
 				      \end{itemize}
-				\item \textbf{Real world}: IKEv2, OTR, TLS 1.3
+				\item \textbf{Real world}: IKEv2, OTR, TLS 1.3 (all SIGMA-style)
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.6\textwidth}
+		\begin{column}{0.62\textwidth}
 			\begin{center}
 				\begin{tikzpicture}[>=Stealth]
 					\node (A) at (0,0) {$A$};
@@ -707,7 +657,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Properties to consider: Identity Binding}
+\begin{frame}{Properties to consider: identity binding}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\textbf{The Problem}
@@ -730,17 +680,15 @@
 				\item ``Unknown Key Share'' attacks
 				\item Identity confusion attacks
 			\end{itemize}
-			\textbf{Best practices:}
+			\textbf{Coming up in OTRv2:}
 			\begin{itemize}
-				\item Include identities in authenticated data
-				\item Sign/MAC the binding
-				\item Verify before accepting keys
+				\item The signature covers a MAC over $(g^x, g^y, g^A)$: identity and ephemerals bound together, and the MAC key proves knowledge of $g^{xy}$
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Properties to consider: Replay Attacks}
+\begin{frame}{Properties to consider: replay attacks}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\textbf{What is a replay attack?}
@@ -774,44 +722,42 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Properties to consider: Key Compromise Impersonation}
+\begin{frame}{Properties to consider: key compromise impersonation}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\textbf{The Scenario:}
 			\begin{itemize}
-				\item Alice's private key is compromised
-				\item \textbf{Expected}: Attacker can impersonate Alice
+				\item Alice's long-term private key is compromised
+				\item \textbf{Expected}: Attacker can impersonate Alice to others
 				\item \textbf{KCI}: Attacker can also impersonate others \textit{to} Alice!
 			\end{itemize}
 			\textbf{Why this matters:}
 			\begin{itemize}
-				\item Compromise should be contained
-				\item Trust assumptions violated
+				\item Alice believes she is talking to Bob and confides in the attacker
+				\item A stolen key should not turn its owner into a target for impersonation
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Example Attack:}
+			\textbf{Example: static-static DH}
 			\begin{itemize}
-				\item Attacker has Alice's private key
-				\item Bob starts key exchange with Alice
-				\item Attacker intercepts and responds as ``Alice''
-				\item But also creates fake ``Bob'' messages to Alice!
+				\item Alice ($a$) and Bob ($b$) derive their session key from $g^{ab}$
+				\item Attacker steals $a$, then computes $g^{ab} = (g^b)^a$ using Bob's \textit{public} key
+				\item Attacker now chats with Alice ``as Bob''; Bob is never involved
 			\end{itemize}
 			\textbf{Preventing KCI:}
 			\begin{itemize}
-				\item Don't use static-static DH alone
-				\item Include ephemeral keys
-				\item Signatures resist KCI (as in SIGMA)
+				\item Signatures: to pose as Bob you need Bob's \textit{signing} key (SIGMA)
+				\item Mix in ephemeral keys; never rely on static-static DH alone
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{OTR version 2: Authenticated Key Exchange}
+\begin{frame}{OTR version 2: authenticated key exchange}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{flushleft}
-				\begin{tikzpicture}[>=Stealth, scale=0.67, transform shape]
+				\begin{tikzpicture}[>=Stealth, scale=0.63, transform shape]
 					\node (Alice) at (0,0) {\text{Alice}};
 					\node (Bob) at (10,0) {\text{Bob}};
 					\draw[->] (0.5,-1) -- (9.5,-1) node[midway,above] {$\begin{array}{rcl}
@@ -835,14 +781,14 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{flushright}
-				\begin{tikzpicture}[>=Stealth, scale=0.67, transform shape]
+				\begin{tikzpicture}[>=Stealth, scale=0.63, transform shape]
 					\draw[<-] (0.5,-1) -- (9.5,-1) node[midway,above] {$\begin{array}{rcl}
 								g^x                                    & =                 & \func{dec}{r, \func{enc}{r, g^x}}      \\
 								\func{hash}{g^x}                       & \overset{?}{=}    & \func{hash}{g^x}                       \\
 								s                                      & =                 & g^{xy}                                 \\
 								(c, c', m_{1}, m_{1}', m_{2}, m_{2}')  & \twoheadleftarrow & \func{hash}{s}                         \\
 								\func{hmac}{m_{2}, \func{enc}{c, X_A}} & \overset{?}{=}    & \func{hmac}{m_{2}, \func{enc}{c, X_A}} \\
-								(g^A, \func{sign}{A, M_A})             & =                 & \func{dec}{c, X_A}                     \\
+								(g^A, \func{sign}{A, M_A})             & =                 & \func{dec}{c, \func{enc}{c, X_A}}      \\
 								M_A                                    & =                 & \func{hmac}{m_{1}, (g^x, g^y, g^A)}    \\
 								\func{signverif}{g^A, M_A}             & \overset{?}{=}    & \texttt{true}                          \\
 								M_B                                    & =                 & \func{hmac}{m_{1}', (g^y, g^x, g^B)}   \\
@@ -851,7 +797,7 @@
 							\end{array}$};
 					\draw[->] (0.5,-4) -- (9.5,-4) node[midway,above] {$\begin{array}{rcl}
 								\func{hmac}{m_{2}', \func{enc}{c', X_B}} & \overset{?}{=} & \func{hmac}{m_{2}', \func{enc}{c', X_B}} \\
-								(g^B, \func{sign}{B, M_B})               & =              & \func{dec}{c', X_B}                      \\
+								(g^B, \func{sign}{B, M_B})               & =              & \func{dec}{c', \func{enc}{c', X_B}}      \\
 								M_B                                      & =              & \func{hmac}{m_{1}', (g^y, g^x, g^B)}     \\
 								\func{signverif}{g^B, M_B}               & \overset{?}{=} & \texttt{true}                            \\
 							\end{array}$};
@@ -941,26 +887,25 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Example: Curve25519 point as AES key}
 			\begin{itemize}
-				\item Curve25519 produces 32-byte $x$-coordinates
+				\item Curve25519 outputs 32-byte $x$-coordinates
 				\item But only $\approx 2^{252}$ possible outputs
 				\item AES-256 expects uniform 256-bit keys
 			\end{itemize}
 			\textbf{Why this matters:}
 			\begin{itemize}
-				\item Raw output is distinguishable from random
-				\item AES's security proofs assume uniform keys
+				\item Raw output is distinguishable from random, and AES's proofs assume uniform keys
 				\item The fix costs one hash call!
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Distribution problems:}
 			\begin{itemize}
-				\item \textbf{Bit bias}: High bit always $0$ ($x < 2^{255} - 19$)
-				\item \textbf{Small subgroups}: a few low-order points exist
-				\item \textbf{Invalid points}: Half of $x$-values have no corresponding $y$
+				\item \textbf{Bit bias}: top bit is always $0$
+				\item \textbf{Small subgroups}: low-order points exist
+				\item \textbf{Invalid points}: half of all $x$ are off-curve
 			\end{itemize}
-			\begin{alertblock}{Real vulnerability}
-				Attackers can force predictable shared secrets by sending low-order public keys
+			\begin{alertblock}{What a KDF cannot fix}
+				A KDF makes output uniform; it cannot create entropy. A low-order public key forces a tiny set of shared secrets, hashed or not: reject it.
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -1036,36 +981,30 @@
 
 \begin{frame}{HKDF in practice: reimagining OTR's key derivation}{OTR (2004) predates HKDF (2010)---here is how it could look today}
 	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.45\textwidth}
 			\textbf{From one secret to many keys:}
 			\begin{itemize}
-				\item Start with: $s = g^{xy}$
-				\item Derive some unique session ID as the salt
-				\item \texttt{HKDF(ikm, info, salt, len)}
-			\end{itemize}
-			\begin{exampleblock}{OTR Key Derivation}
-				\ttfamily\scriptsize
-				c = HKDF(s, "OTR-ENC-Alice", sessionID, 32)\\
-				c' = HKDF(s, "OTR-ENC-Bob", sessionID, 32)\\
-				m1 = HKDF(s, "OTR-MAC1-Alice", sessionID, 32)\\
-				m1' = HKDF(s, "OTR-MAC1-Bob", sessionID, 32)\\
-				m2 = HKDF(s, "OTR-MAC2-Alice", sessionID, 32)\\
-				m2' = HKDF(s, "OTR-MAC2-Bob", sessionID, 32)
-			\end{exampleblock}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{Domain separation benefits:}
-			\begin{itemize}
-				\item \textbf{Clear purpose}: Each key has explicit context
-				\item \textbf{No key reuse}: Different contexts = different keys
-				\item \textbf{Direction-specific}: Alice/Bob get different keys
+				\item $s = g^{xy}$; salt: the transcript $g^x \| g^y$
+				\item Extract \textit{once}; expand per key, each with its own \texttt{info} label
 			\end{itemize}
 			\textbf{Compare to the ad-hoc approach:}
 			\begin{itemize}
-				\item No semantic meaning
-				\item Easy to mess up counters
-				\item No formal analysis
+				\item Labels carry meaning; counters don't
+				\item Direction-specific keys by construction
+				\item Provable security instead of hope
 			\end{itemize}
+		\end{column}
+		\begin{column}{0.55\textwidth}
+			\begin{exampleblock}{OTR key derivation, HKDF style}
+				\ttfamily\scriptsize
+				prk = HKDF-Extract(salt, s)\\
+				c \ \ = HKDF-Expand(prk, "OTR-ENC-Alice", 32)\\
+				c' \ = HKDF-Expand(prk, "OTR-ENC-Bob", 32)\\
+				m1 \ = HKDF-Expand(prk, "OTR-MAC1-Alice", 32)\\
+				m1' = HKDF-Expand(prk, "OTR-MAC1-Bob", 32)\\
+				m2 \ = HKDF-Expand(prk, "OTR-MAC2-Alice", 32)\\
+				m2' = HKDF-Expand(prk, "OTR-MAC2-Bob", 32)
+			\end{exampleblock}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1090,10 +1029,9 @@
 		      \end{enumerate}
 		\item \textbf{MAC key revelation (for deniability):}
 		      \begin{itemize}
-			      \item Once both parties have acknowledged receipt
-			      \item Publish the old MAC keys in cleartext
-			      \item Anyone could now forge past messages!
-			      \item No cryptographic proof of who sent what
+			      \item Once both parties have acknowledged receipt, publish the old MAC keys in cleartext
+			      \item Safe because OTR sets MAC key $= \func{hash}{\text{encryption key}}$: revealing it leaks nothing about plaintexts
+			      \item Anyone could now forge past messages: no cryptographic proof of who sent what
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -1228,7 +1166,7 @@
 				\item Classified U.S. military footage from July 2007
 				\item Apache helicopter attack in Baghdad
 				\item Killed 11 people, including two Reuters journalists
-				\item Allegedly leaked by Chelsea Manning to WikiLeaks
+				\item Leaked by Chelsea Manning to WikiLeaks (convicted in 2013)
 				\item Published April 2010
 			\end{itemize}
 		\end{column}
@@ -1252,7 +1190,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{The deniability debate: Is deniability worth anything?}
+\begin{frame}{The deniability debate: is deniability worth anything?}
 	\begin{itemize}
 		\item \textbf{Arguments for:}
 		      \begin{itemize}
@@ -1278,36 +1216,17 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Version Rollback Attack}\footnote{\url{https://appliedcryptography.page/paper/\#otr-analysis}}
 			\begin{itemize}
-				\item Version negotiation happens before authentication
-				\item Attacker can force use of older, weaker version
-				\item \textbf{Attack scenario:}
-				      \begin{itemize}
-					      \item Attacker modifies messages to claim only OTRv1 is supported
-				      \end{itemize}
-				\item \textbf{The fix:}
-				      \begin{itemize}
-					      \item Include version number in AKE
-					      \item Authenticate the negotiated version
-				      \end{itemize}
+				\item Version negotiation happens \textit{before} authentication
+				\item Attacker rewrites the query message to claim only OTRv1 is supported: both sides fall back to the weaker version
+				\item \textbf{The fix:} include the negotiated version in the AKE, so it gets authenticated
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Authentication Failure}
 			\begin{itemize}
-				\item Mallory can convince Alice she completed an AKE with Bob
-				\item Bob has no knowledge of this exchange
-				\item Only affects AKE completion belief
-				\item \textbf{Important limitations:}
-				      \begin{itemize}
-					      \item No actual MITM possible
-					      \item Cannot decrypt messages
-					      \item Cannot impersonate either party
-				      \end{itemize}
-				\item \textbf{Real impact:}
-				      \begin{itemize}
-					      \item Alice thinks she's secure with Bob
-					      \item Sends encrypted messages Bob can't read
-				      \end{itemize}
+				\item Mallory can convince Alice she completed an AKE with Bob, while Bob knows nothing of it
+				\item \textbf{Limitations:} no MITM, no decryption, no impersonation of either party
+				\item \textbf{Real impact:} Alice thinks she's secure with Bob and sends encrypted messages Bob can't read
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1316,25 +1235,21 @@
 \begin{frame}{OTRv2 message integrity attack}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Attack Setup:}
+			\textbf{The idea:}
 			\begin{itemize}
-				\item Exploits MAC key revelation + message ordering
-				\item Requires network control (active attacker)
-			\end{itemize}
-			\textbf{Key Insight:}
-			\begin{itemize}
-				\item Alice reveals MAC keys after ``finishing'' with them
-				\item Assumes messages arrive in order, but attacker can delay/reorder messages!
-				\item Combined with malleable encryption = attack
+				\item Alice publishes a MAC key once she believes she is ``finished'' with it
+				\item She infers that from Bob's messages, assuming they arrive in order\ldots
+				\item \ldots but an active attacker can delay and reorder messages
+				\item Once the MAC key is public, \textit{anyone} can compute valid MACs, including the attacker
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Attack Prerequisites:}
+			\textbf{What the attacker needs:}
 			\begin{itemize}
-				\item \textbf{MAC key revelation} for deniability
-				\item \textbf{Malleable encryption} (stream cipher)
-				\item \textbf{Network control} by attacker
-				\item \textbf{Message ordering assumptions}
+				\item \textbf{MAC key revelation} (there for deniability)
+				\item \textbf{Malleable encryption}: OTR uses AES-CTR, so flipping a ciphertext bit flips a plaintext bit
+				\item \textbf{Network control}: block and delay messages
+				\item \textbf{A receiver that still accepts old keys}, to tolerate late messages
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1347,31 +1262,23 @@
 			\begin{enumerate}
 				\item Alice sends $m_0$ with keys $(x_0, y_0)$
 				\item Bob responds with $m_1$ using $(x_1, y_0)$
-				\item Alice sees Bob moved to $x_1$, assumes $(x_0, y_0)$ done
-				\item Alice publishes MAC keys for $(x_0, y_0)$
-				\item Mallory blocks Alice's next message
-				\item Mallory creates forged $m'_0$ using:
-				      \begin{itemize}
-					      \item Published MAC keys
-					      \item Malleable encryption
-				      \end{itemize}
+				\item Alice sees Bob moved to $x_1$, so her next message reveals the $(x_0, y_0)$ MAC keys in the clear
+				\item Mallory blocks that message and reads the MAC keys off it
+				\item Mallory forges $m'_0$ under $(x_0, y_0)$: flip bits in the old ciphertext, MAC with the published key
 				\item Bob accepts it as a delayed message
 			\end{enumerate}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Why Bob accepts it:}
 			\begin{itemize}
-				\item Message appears to precede $m_1$
-				\item Valid MAC (Mallory has the key!)
-				\item Network delays are common
-				\item No way to detect forgery
+				\item Bob still holds the $(x_0, y_0)$ keys, precisely to cope with late messages
+				\item The MAC verifies (Mallory has the key!)
+				\item Nothing distinguishes it from a message delayed by the network
 			\end{itemize}
 			\textbf{Attack Impact:}
 			\begin{itemize}
-				\item Insert forged messages
-				\item Modify past messages
-				\item Break conversation integrity
-				\item The deniability feature enables the attack!
+				\item Inject a forged message ``from Alice'', or an altered copy of an earlier one
+				\item The deniability mechanism is what enables the attack!
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1380,33 +1287,19 @@
 \begin{frame}{Fixing the message integrity attack}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
-			\textbf{Potential solutions:}
+			\textbf{The root cause is timing, not the MAC:}
 			\begin{itemize}
-				\item \textbf{Delayed MAC revelation}
-				      \begin{itemize}
-					      \item Wait longer before publishing
-					      \item Ensure truly done with keys
-				      \end{itemize}
-				\item \textbf{Better state machine}
-				      \begin{itemize}
-					      \item Track message expectations
-					      \item Reject out-of-order messages
-				      \end{itemize}
+				\item Alice reveals a MAC key while Bob will still accept messages under it
+				\item \textbf{Fix}: both sides must agree on when a key pair is retired---reveal only once the peer has moved on, and have the receiver actually refuse retired keys
+				\item \textbf{Lesson}: a security feature (deniability) implemented as a mechanism (key revelation) interacts with the whole protocol state machine
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Additional improvements:}
+			\textbf{Wouldn't AEAD fix it?}
 			\begin{itemize}
-				\item \textbf{Use authenticated encryption}
-				      \begin{itemize}
-					      \item Not just MAC + malleable cipher
-					      \item Modern AEAD constructions
-				      \end{itemize}
-				\item \textbf{Include counters in MAC}
-				      \begin{itemize}
-					      \item Prevent message reordering
-					      \item Detect replay attempts
-				      \end{itemize}
+				\item The forger needs malleability to produce \textit{meaningful} plaintext, so a non-malleable cipher would blunt the attack\ldots
+				\item \ldots but AEAD uses one key for both encryption and integrity; revealing it would leak plaintexts. OTR's separate MAC key is deliberate
+				\item \textbf{Signal's answer}: no MAC key revelation at all; deniability rests on X3DH authenticating with DH rather than signatures
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1450,12 +1343,12 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{OTR version 2: Authenticated Key Exchange}{Reminder}
+\begin{frame}{OTR version 2: authenticated key exchange}{Reminder}
 	\vspace{-0.5cm}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{flushleft}
-				\begin{tikzpicture}[>=Stealth, scale=0.67, transform shape]
+				\begin{tikzpicture}[>=Stealth, scale=0.63, transform shape]
 					\node (Alice) at (0,0) {\text{Alice}};
 					\node (Bob) at (10,0) {\text{Bob}};
 					\draw[->] (0.5,-1) -- (9.5,-1) node[midway,above] {$\begin{array}{rcl}
@@ -1479,14 +1372,14 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{flushright}
-				\begin{tikzpicture}[>=Stealth, scale=0.67, transform shape]
+				\begin{tikzpicture}[>=Stealth, scale=0.63, transform shape]
 					\draw[<-] (0.5,-1) -- (9.5,-1) node[midway,above] {$\begin{array}{rcl}
 								g^x                                    & =                 & \func{dec}{r, \func{enc}{r, g^x}}      \\
 								\func{hash}{g^x}                       & \overset{?}{=}    & \func{hash}{g^x}                       \\
 								s                                      & =                 & g^{xy}                                 \\
 								(c, c', m_{1}, m_{1}', m_{2}, m_{2}')  & \twoheadleftarrow & \func{hash}{s}                         \\
 								\func{hmac}{m_{2}, \func{enc}{c, X_A}} & \overset{?}{=}    & \func{hmac}{m_{2}, \func{enc}{c, X_A}} \\
-								(g^A, \func{sign}{A, M_A})             & =                 & \func{dec}{c, X_A}                     \\
+								(g^A, \func{sign}{A, M_A})             & =                 & \func{dec}{c, \func{enc}{c, X_A}}      \\
 								M_A                                    & =                 & \func{hmac}{m_{1}, (g^x, g^y, g^A)}    \\
 								\func{signverif}{g^A, M_A}             & \overset{?}{=}    & \texttt{true}                          \\
 								M_B                                    & =                 & \func{hmac}{m_{1}', (g^y, g^x, g^B)}   \\
@@ -1495,7 +1388,7 @@
 							\end{array}$};
 					\draw[->] (0.5,-4) -- (9.5,-4) node[midway,above] {$\begin{array}{rcl}
 								\func{hmac}{m_{2}', \func{enc}{c', X_B}} & \overset{?}{=} & \func{hmac}{m_{2}', \func{enc}{c', X_B}} \\
-								(g^B, \func{sign}{B, M_B})               & =              & \func{dec}{c', X_B}                      \\
+								(g^B, \func{sign}{B, M_B})               & =              & \func{dec}{c', \func{enc}{c', X_B}}      \\
 								M_B                                      & =              & \func{hmac}{m_{1}', (g^y, g^x, g^B)}     \\
 								\func{signverif}{g^B, M_B}               & \overset{?}{=} & \texttt{true}                            \\
 							\end{array}$};
@@ -1505,7 +1398,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{X3DH: Signal's Asynchronous Key Exchange}
+\begin{frame}{X3DH: Signal's asynchronous key exchange}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\vspace{-0.75cm}
@@ -1533,9 +1426,9 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{X3DH: Signal's Asynchronous Key Exchange}
+\begin{frame}{X3DH: Signal's asynchronous key exchange}
 	\begin{itemize}
-		\item $spk$: ``Signed pre-key''---a signed ephemeral key
+		\item $spk$: ``Signed pre-key''---a medium-term key, signed by Bob's identity key
 		      \begin{itemize}
 			      \item Replaced every 2 days
 		      \end{itemize}
@@ -1545,15 +1438,23 @@
 		      \end{itemize}
 		\item $eph$: Ephemeral keys, generated during the session
 		\item $c_0 \ldots c_n$: Various constants found in the protocol
-		\item Alice can obtain $S$ even if Bob is offline!
-		\item Now, using $S$, Alice can derive a bunch of keys to get the session going
-		\item \textbf{2023 update}: Signal extended X3DH into \textbf{PQXDH}, mixing a post-quantum KEM (ML-KEM) into $S$ against ``harvest now, decrypt later''---more in topic 2.6
+		\item Alice can compute $S$ even if Bob is offline, then derive the session keys from it
+		\item \textbf{Authentication is implicit} (DH with identity keys, no signatures). Look at $\Delta_1$: anyone holding Bob's $spk$ private value can compute it for \textit{any} $g^A$, and impersonate anyone to Bob (KCI!)
+		\item \textbf{2023 update}: X3DH became \textbf{PQXDH}, mixing a post-quantum KEM (Kyber, now ML-KEM) into $S$ against ``harvest now, decrypt later''---more in topic 2.6
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Signal Double Ratchet}
-	\vspace{-1.25cm}
-	\begin{center}\resizebox{0.7\textwidth}{!}{
+\begin{frame}{Discussion time}
+	\begin{enumerate}
+		\item \textbf{What does the Signal server learn} when Alice fetches Bob's bundle and sends her first message?
+		\item \textbf{Why is the signed pre-key signed}, given that the same server also hands out Bob's identity key? What can a malicious server do, and what stops it?
+		\item \textbf{Bob is popular and his 100 one-time pre-keys run out.} The X3DH specification says Alice then proceeds without $\Delta_4$. What property do we lose?
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Signal Double Ratchet (1/2): Alice's first message}
+	\vspace{-1cm}
+	\begin{center}\resizebox{0.72\textwidth}{!}{
 			\begin{msc}{}
 				\setmscvalues{small}
 				\drawframe{none}
@@ -1561,37 +1462,58 @@
 				\declinst{alice}{}{Alice}
 				\declinst{bob}{}{Bob}
 				\action*{$\begin{array}{rcl}
-							(rk_0, ck_0) & \twoheadleftarrow & \func{hkdf}{S, c_1, c_2}                                                                              \\
-							A_{eph_1}    & \twoheadleftarrow & \bits^\lambda                                                                                         \\
-							(rk_1, ck_1) & \twoheadleftarrow & \func{hkdf}{\func{dh}{A_{eph_1}, g^{B}_{spk}}, rk_0, c_2}                                             \\
-							e_0          & \twoheadleftarrow & \func{hkdf}{\func{hmac}{ck_1, c_3}, c_1, c_4}                                                         \\
-							m_0          & =                 & \func{aead-enc}{e_0, \texttt{msg}_0, (g^{A} \| g^{A}_{spk} \| g^{B} \| g^{B}_{spk} \| g^{A}_{eph_1})}
+							(rk_0, ck_0) & \twoheadleftarrow & \func{hkdf}{S, c_1, c_2}                                                    \\
+							A_{eph_1}    & \twoheadleftarrow & \bits^\lambda                                                               \\
+							(rk_1, ck_1) & \twoheadleftarrow & \func{hkdf}{\func{dh}{A_{eph_1}, g^{B}_{spk}}, rk_0, c_2}                   \\
+							e_0          & \twoheadleftarrow & \func{hkdf}{\func{hmac}{ck_1, c_3}, c_1, c_4}                               \\
+							m_0          & =                 & \func{aead-enc}{e_0, \texttt{msg}_0, (g^{A} \| g^{B} \| g^{A}_{eph_1})}
 						\end{array}$}{alice}
 				\nextlevel[9]
-				\mess{$g^{A}, g^{A}_{spk}, g^{A}_{eph_0}, g^{A}_{eph_1}, m_0$}{alice}{bob}
+				\mess{$g^{A}, g^{A}_{eph_0}, g^{A}_{eph_1}, m_0$}{alice}{bob}
 				\nextlevel[1]
 				\action*{$\begin{array}{rcl}
-							S              & =                 & c_0 \| \func{dh}{B_{spk}, g^{A}} \| \func{dh}{B, g^{A}_{eph_0}} \| \func{dh}{B_{spk}, g^{A}_{eph_0}} \| \func{dh}{{B}_{opk_i}, g^{A}_{eph_0}} \\
-							(rk_0, ck_0)   & \twoheadleftarrow & \func{hkdf}{S, c_1, c_2}                                                                                                                      \\
-							(rk_1, ck_1)   & \twoheadleftarrow & \func{hkdf}{\func{dh}{B_{spk}, g^{A}_{eph_1}}, rk_0, c_2}                                                                                     \\
-							e_0            & \twoheadleftarrow & \func{hkdf}{\func{hmac}{ck_1, c_3}, c_1, c_4}                                                                                                 \\
-							\texttt{msg}_0 & =                 & \func{aead-dec}{e_0, m_0, (g^{A} \| g^{A}_{spk} \| g^{B} \| g^{B}_{spk} \| g^{A}_{eph_1})}                                                    \\
-							B_{eph_0}      & \twoheadleftarrow & \bits^\lambda                                                                                                                                 \\
-							(rk_2, ck_2)   & \twoheadleftarrow & \func{hkdf}{\func{dh}{B_{eph_0}, g^{A}_{eph_1}}, rk_1, c_2}                                                                                   \\
-							e_1            & \twoheadleftarrow & \func{hkdf}{\func{hmac}{ck_2, c_3}, c_1, c_4}                                                                                                 \\
-							m_1            & =                 & \func{aead-enc}{e_1, \texttt{msg}_1, (g^{B} \| g^{B}_{spk} \| g^{A} \| g^{A}_{spk} \| g^{B}_{eph_0})}
+							S              & =                 & c_0 \| \func{dh}{B_{spk}, g^{A}} \| \func{dh}{B, g^{A}_{eph_0}} \|          \\
+							               &                   & \quad \func{dh}{B_{spk}, g^{A}_{eph_0}} \| \func{dh}{{B}_{opk_i}, g^{A}_{eph_0}} \\
+							(rk_0, ck_0)   & \twoheadleftarrow & \func{hkdf}{S, c_1, c_2}                                                    \\
+							(rk_1, ck_1)   & \twoheadleftarrow & \func{hkdf}{\func{dh}{B_{spk}, g^{A}_{eph_1}}, rk_0, c_2}                   \\
+							e_0            & \twoheadleftarrow & \func{hkdf}{\func{hmac}{ck_1, c_3}, c_1, c_4}                               \\
+							\texttt{msg}_0 & =                 & \func{aead-dec}{e_0, m_0, (g^{A} \| g^{B} \| g^{A}_{eph_1})}
 						\end{array}$}{bob}
-				\nextlevel[14]
+				\nextlevel[10]
+			\end{msc}
+		}\end{center}
+	\vspace{-0.5cm}
+	\small $S$ is X3DH's output; $rk$ is the \textbf{root key}, $ck$ a \textbf{chain key}, $e_i$ a one-time \textbf{message key}. Bob's signed pre-key doubles as his first ratchet key.
+\end{frame}
+
+\begin{frame}{Signal Double Ratchet (2/2): Bob's reply}
+	\vspace{-1cm}
+	\begin{center}\resizebox{0.74\textwidth}{!}{
+			\begin{msc}{}
+				\setmscvalues{small}
+				\drawframe{none}
+				\setlength{\instdist}{7cm}
+				\declinst{alice}{}{Alice}
+				\declinst{bob}{}{Bob}
+				\action*{$\begin{array}{rcl}
+							B_{eph_0}      & \twoheadleftarrow & \bits^\lambda                                                               \\
+							(rk_2, ck_2)   & \twoheadleftarrow & \func{hkdf}{\func{dh}{B_{eph_0}, g^{A}_{eph_1}}, rk_1, c_2}                 \\
+							e_1            & \twoheadleftarrow & \func{hkdf}{\func{hmac}{ck_2, c_3}, c_1, c_4}                               \\
+							m_1            & =                 & \func{aead-enc}{e_1, \texttt{msg}_1, (g^{A} \| g^{B} \| g^{B}_{eph_0})}
+						\end{array}$}{bob}
+				\nextlevel[8]
 				\mess{$g^{B}_{eph_0}, m_1$}{bob}{alice}
 				\nextlevel[1]
 				\action*{$\begin{array}{rcl}
-							(rk_2, ck_2)   & \twoheadleftarrow & \func{hkdf}{\func{dh}{A_{eph_1}, g^{B}_{eph_0}}, rk_1, c_2}                                \\
-							e_1            & \twoheadleftarrow & \func{hkdf}{\func{hmac}{ck_2, c_3}, c_1, c_4}                                              \\
-							\texttt{msg}_1 & =                 & \func{aead-dec}{e_1, m_1, (g^{B} \| g^{B}_{spk} \| g^{A} \| g^{A}_{spk} \| g^{B}_{eph_0})}
+							(rk_2, ck_2)   & \twoheadleftarrow & \func{hkdf}{\func{dh}{A_{eph_1}, g^{B}_{eph_0}}, rk_1, c_2}                 \\
+							e_1            & \twoheadleftarrow & \func{hkdf}{\func{hmac}{ck_2, c_3}, c_1, c_4}                               \\
+							\texttt{msg}_1 & =                 & \func{aead-dec}{e_1, m_1, (g^{A} \| g^{B} \| g^{B}_{eph_0})}
 						\end{array}$}{alice}
-				\nextlevel[5]
+				\nextlevel[6]
 			\end{msc}
 		}\end{center}
+	\vspace{-0.5cm}
+	\small Bob's fresh $B_{eph_0}$ mixes new randomness into the root key: the \textbf{DH ratchet}. Several messages in a row in the same direction only advance the chain key ($ck \leftarrow \func{hmac}{ck, c_5}$): the \textbf{symmetric ratchet}.
 \end{frame}
 
 \begin{frame}{Why the Double Ratchet is nice}
@@ -1614,12 +1536,12 @@
 			      \item If an attacker steals your state at time $t$\ldots
 			      \item After one DH ratchet step, they're locked out again
 			      \item Fresh randomness from new ephemeral keys
-			      \item OTR couldn't do this---required interactive AKE
+			      \item OTR's per-message DH ratchet had this idea first; the Double Ratchet makes it work asynchronously
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Forward Secrecy vs Post-Compromise Security}
+\begin{frame}{Forward secrecy vs.\ post-compromise security}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\textbf{Forward Secrecy}
@@ -1693,7 +1615,7 @@
 				\item Short-lived, signed by the service
 				\item Contains:
 				      \begin{itemize}
-					      \item Phone number
+					      \item Sender identifier (phone number / account ID)
 					      \item Identity key
 					      \item Expiry timestamp
 				      \end{itemize}
@@ -1740,34 +1662,22 @@
 
 \begin{frame}{Sealed Sender: does it really work?}
 	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
+		\begin{column}{0.55\textwidth}
+			\textbf{Statistical disclosure attack (Martiny et al., 2021)}\footnote{\url{https://appliedcryptography.page/paper/\#sealed-sender}}
 			\begin{itemize}
-				\item \textbf{The Attack (2021): Statistical Disclosure}\footnote{\url{https://appliedcryptography.page/paper/\#sealed-sender}}
-				      \begin{itemize}
-					      \item Sealed sender hides who sent the message
-					      \item But delivery receipts create a timing pattern
-					      \item When Bob receives a message, he often replies quickly
-					      \item This creates a ``reply epoch''---a time window
-				      \end{itemize}
-				\item \textbf{The Clever Observation:}
-				      \begin{itemize}
-					      \item Alice sends to Bob $\rightarrow$ Bob likely replies within epoch
-					      \item Other users also send/receive during this time
-					      \item But Alice appears more often in Bob's reply epochs
-				      \end{itemize}
+				\item The server no longer sees who sent the message to Bob\ldots
+				\item \ldots but Bob's phone \textit{automatically} sends a delivery receipt back, as another sealed message, the instant the message arrives
+				\item So the server sees: sealed message $\rightarrow$ Bob, then moments later, sealed message $\rightarrow$ Alice
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.4\textwidth}
-			\begin{itemize}
-				\item \textbf{The Attack Algorithm:}
-				      \begin{enumerate}
-					      \item Monitor when Bob receives messages
-					      \item Count who receives messages right after (target epochs)
-					      \item Compare to random time windows
-					      \item Alice's count grows, others stay near zero
-					      \item After just a few messages: Bob's contacts revealed!
-				      \end{enumerate}
-			\end{itemize}
+		\begin{column}{0.45\textwidth}
+			\textbf{Turning it into an attack:}
+			\begin{enumerate}
+				\item Each time Bob receives a message, record who receives one right after (the ``epoch'')
+				\item Compare against random time windows
+				\item Alice's count grows; everyone else stays near zero
+				\item A handful of messages is enough to unmask Bob's contact
+			\end{enumerate}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1776,18 +1686,18 @@
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{center}
-				\Large \textbf{The Promise and Reality of Post-Compromise Security}\footnote{\url{https://appliedcryptography.page/paper/\#pcs-impossibility}}
+				\Large \textbf{The promise and reality of post-compromise security}\footnote{\url{https://appliedcryptography.page/paper/\#pcs-impossibility}}
 			\end{center}
 			\vspace{1em}
 			\begin{itemize}
-				\item Based on: ``Impossibility Results for Post-Compromise Security'' by Cremers, Medinger, and Naska (2024)
-				\item \textbf{Spoiler:} The answer might surprise you\ldots
+				\item Based on: ``Impossibility Results for Post-Compromise Security in Real-World Communication Systems'' by Cremers, Medinger, and Naska (IEEE S\&P 2025)
+				\item On paper, the Double Ratchet gives PCS. Do users of Signal and WhatsApp actually get it?
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The Dream: Self-Healing Security}
+\begin{frame}{The dream: self-healing security}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{The Promise of PCS:}
@@ -2005,84 +1915,67 @@
 \end{frame}
 
 \begin{frame}{Telegram's MTProto}
-	\textbf{What Telegram Did}
+	\textbf{What Telegram did (2013)}
 	\begin{itemize}
-		\item Designed custom encryption protocol
-		\item Ignored existing academic work
-		\item No formal security analysis initially
-		\item Multiple versions after vulnerabilities were found
+		\item Designed its own protocol rather than reuse OTR/Signal-style constructions: a home-made cipher mode (``IGE''), SHA-1 key derivation, a ``MAC'' that is a hash of the \textit{plaintext}
+		\item Answered critics with a \$200,000 ``crack our encryption'' contest that gave contestants only a passive transcript; cryptographers called it meaningless
 	\end{itemize}
-	\textbf{The Cryptographic Community Response}
+	\textbf{The community said ``don't roll your own crypto''\ldots and then analyzed it anyway}
 	\begin{itemize}
-		\item ``Don't roll your own crypto!''
-		\item Multiple published attacks
-		\item Academic papers showing weaknesses\footnote{\url{https://appliedcryptography.page/paper/\#telegram-exchange}}
-		\item Telegram's defensive responses
+		\item 2015: Jakobsen and Orlandi show MTProto 1.0 is not IND-CCA secure; Telegram later ships MTProto 2.0 (SHA-256)
+		\item 2022: Albrecht, Marekov\'a, Paterson, and Stepanovs find four attacks on MTProto 2.0 (message reordering, timing leaks), then prove the \textit{patched} version secure under bespoke SHA-256 assumptions
+		\item 2025: the key exchange finally gets a formal analysis\footnote{\url{https://appliedcryptography.page/paper/\#telegram-exchange}}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Why Telegram made these choices}
 	\begin{itemize}
-		\item \textbf{Server-side features require plaintext access:}
+		\item \textbf{Server-side features need plaintext on the server:}
 		      \begin{itemize}
-			      \item Cloud sync across unlimited devices
-			      \item Powerful search across all messages
-			      \item Large file sharing and streaming
-			      \item Bots and integrations
+			      \item Instant cloud sync across unlimited devices (compare with Signal's 40-session juggling)
+			      \item Search across all your messages, huge public channels, bots, large-file streaming
+			      \item Never a ``this message couldn't be decrypted'' error
 		      \end{itemize}
-		\item \textbf{Different threat model:}
+		\item \textbf{A different threat model:}
 		      \begin{itemize}
-			      \item ``We don't trust governments, but we trust ourselves''
-			      \item Emphasis on government censorship resistance
-			      \item Less focus on protecting from the service provider
-		      \end{itemize}
-		\item \textbf{User experience priorities:}
-		      \begin{itemize}
-			      \item Instant sync, no waiting for key exchange
-			      \item Works the same across all platforms
-			      \item No ``this message couldn't be decrypted'' errors
+			      \item Telegram's stance: governments are the adversary; Telegram itself is trustworthy
+			      \item Signal's threat model, by contrast, includes Signal
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{The Telegram Paradox}
+\begin{frame}{The Telegram paradox}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{What activists think they're getting:}
 			\begin{itemize}
 				\item End-to-end encrypted messaging
 				\item Protection from government surveillance
-				\item Secure communication platform
 				\item ``Telegram is encrypted, right?''
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{What they're actually getting:}
 			\begin{itemize}
-				\item Messages readable by Telegram servers
-				\item Subject to legal requests and seizure
-				\item Only secret chats are E2E encrypted
-				\item Most users never enable secret chats
-				\item Since late 2024: IP addresses and phone numbers handed to authorities upon valid legal requests
+				\item Messages readable by Telegram's servers, hence subject to legal requests and seizure
+				\item Since Durov's 2024 arrest in France: IPs and phone numbers handed over on valid legal requests
 			\end{itemize}
 		\end{column}
 	\end{columns}
 	\begin{alertblock}{Real-world Impact}
-		Pavel Durov can read your Telegram chats at his discretion
+		Pavel Durov's company can read your cloud chats whenever it likes---policy, not cryptography
 	\end{alertblock}
 \end{frame}
 
 \section{Group Secure Messaging}
 
-\begin{frame}{The Group Messaging Problem}
+\begin{frame}{The group messaging problem}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Two-party protocols work great for\ldots two parties}
 			\begin{itemize}
-				\item Signal Protocol: Alice $\leftrightarrow$ Bob
-				\item OTR: Real-time 1-on-1 chat
-				\item X3DH: Asynchronous key agreement
-				\item Double Ratchet: Forward secrecy
+				\item X3DH: one Alice, one Bob, one shared secret
+				\item Double Ratchet: one chain per direction
 			\end{itemize}
 			\textbf{But what about groups?}
 			\begin{itemize}
@@ -2103,11 +1996,11 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{How Signal handles groups today}
-	\textbf{The Pairwise Channel Approach}
+\begin{frame}{The obvious approach: pairwise fan-out}
+	\textbf{Signal's original group design (analyzed by R\"osler et al.\ in 2018)}
 	\begin{itemize}
 		\item No true group protocol
-		\item Sender encrypts to each member
+		\item Sender encrypts to each member over its two-party session
 		\item For $n$ members: $n-1$ encryptions
 		\item Each member has separate ratchet
 		\item Upside: pairwise guarantees (FS, PCS, deniability) carry over
@@ -2126,16 +2019,15 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{How Sender Keys Work:}
 			\begin{itemize}
-				\item Each group member has a ``sender key''
-				\item Shared with all other members
+				\item Each group member generates its own ``sender key''
+				\item Distributed to the other members over the \textit{pairwise} Signal sessions
 				\item One encryption per message (not per recipient!)
 			\end{itemize}
 			\textbf{Sender Key Components:}
 			\begin{itemize}
-				\item $SK = (spk, ck)$
-				\item $spk$: Public signature key
-				\item $ck$: Symmetric chain key
-				\item Chain key ratchets forward
+				\item $SK = (sk_{\text{sig}}, pk_{\text{sig}}, ck)$
+				\item $(sk_{\text{sig}}, pk_{\text{sig}})$: Signing key pair
+				\item $ck$: Symmetric chain key, ratchets forward
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -2143,7 +2035,7 @@
 			\begin{enumerate}
 				\item Derive message key: $mk = H_1(ck)$
 				\item Encrypt: $c = \func{enc}{mk, m}$
-				\item Sign: $\sigma = \func{sign}{ssk, c}$
+				\item Sign: $\sigma = \func{sign}{sk_{\text{sig}}, c}$
 				\item Erase $mk$ immediately
 				\item Ratchet: $ck_{\text{new}} = H_2(ck)$
 			\end{enumerate}
@@ -2158,7 +2050,8 @@
 \end{frame}
 
 \begin{frame}{WhatsApp's approach: sender keys}
-	\bigimagewithcaption{sender-keys.png}{Source: David Balbás, Daniel Collins, and Phillip Gajland, \textit{WhatsUpp with Sender Keys? Analysis, Improvements and Security Proofs}, IACR Asiacrypt, 2023.}
+	\vspace{-0.4cm}
+	\bigimagewithcaption{sender-keys.png}{Source: Balb\'as, Collins, and Gajland, \textit{WhatsUpp with Sender Keys?}, Asiacrypt 2023.}
 \end{frame}
 
 \begin{frame}{Sender keys: trade-offs}
@@ -2213,14 +2106,14 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Hybrid Public Key Encryption (RFC 9180)\footnote{\url{https://www.rfc-editor.org/rfc/rfc9180.html}}}
 			\begin{itemize}
-				\item Combines asymmetric + symmetric crypto
-				\item Encrypts to a public key, no interaction needed
-				\item Used in MLS, TLS Encrypted Client Hello, and more
+				\item Asymmetric + symmetric crypto, packaged
+				\item Encrypt to a public key; no interaction
+				\item Used in MLS, TLS Encrypted Client Hello
 			\end{itemize}
 			\textbf{Two-step process:}
 			\begin{enumerate}
-				\item \textbf{Encapsulation}: Generate shared secret
-				\item \textbf{Seal}: Encrypt data with that secret
+				\item \textbf{Encapsulation}: a shared secret, plus \texttt{enc} so Bob can recover it
+				\item \textbf{Seal}: encrypt under a key derived from it
 			\end{enumerate}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -2228,14 +2121,14 @@
 			\begin{exampleblock}{Sender (Alice)}
 				\ttfamily\scriptsize
 				// Bob's public key: pk\_bob\\
-				(enc, ctx) = HPKE.Setup(pk\_bob)\\
+				(enc, ctx) = HPKE.SetupS(pk\_bob)\\
 				ciphertext = ctx.Seal("Hello Bob!")\\
 				// Send: (enc, ciphertext)
 			\end{exampleblock}
 			\begin{exampleblock}{Receiver (Bob)}
 				\ttfamily\scriptsize
 				// Bob's private key: sk\_bob\\
-				ctx = HPKE.Setup(enc, sk\_bob)\\
+				ctx = HPKE.SetupR(enc, sk\_bob)\\
 				plaintext = ctx.Open(ciphertext)\\
 				// plaintext = "Hello Bob!"
 			\end{exampleblock}
@@ -2285,48 +2178,31 @@
 \end{frame}
 
 \begin{frame}{TreeKEM}
-	\bigimagewithcaption{treekem-a.png}{Source: Théophile Wallez}
+	\vspace{-0.4cm}
+	\bigimagewithcaption[0.95\textwidth]{treekem-a.png}{Source: Th\'eophile Wallez}
 \end{frame}
 
 \begin{frame}{TreeKEM}
-	\bigimagewithcaption{treekem-b.png}{Source: Théophile Wallez}
+	\vspace{-0.4cm}
+	\bigimagewithcaption[0.95\textwidth]{treekem-b.png}{Source: Th\'eophile Wallez}
 \end{frame}
 
 \begin{frame}{MLS: reality check}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{The Complexity Problem:}
+			\textbf{It is big:}
 			\begin{itemize}
-				\item \textbf{Massive specification}: RFC 9420 is 132 pages!
-				\item \textbf{Implementation nightmare}:
-				      \begin{itemize}
-					      \item Multiple tree operations
-					      \item Complex state management
-					      \item Intricate error handling
-				      \end{itemize}
-				\item \textbf{Correctness is hard}:
-				      \begin{itemize}
-					      \item Easy to get wrong
-					      \item Subtle security bugs
-					      \item Few complete implementations
-				      \end{itemize}
+				\item \textbf{Massive specification}: RFC 9420 is 132 pages, plus an architecture document (RFC 9750, 2025) for the services around it
+				\item Tree operations, epochs, proposals, commits, welcome messages, external joins\ldots
+				\item Getting it right is hard enough that Wallez et al.\ built a \textit{formally verified} implementation in \fstar (more in topic 2.5)
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Developer Hostility:}
+			\textbf{The server is part of the protocol:}
 			\begin{itemize}
-				\item \textbf{No standard API}:
-				      \begin{itemize}
-					      \item Each implementation different
-					      \item No drop-in replacement
-					      \item Steep learning curve
-				      \end{itemize}
-				\item \textbf{Infrastructure requirements}:
-				      \begin{itemize}
-					      \item Need custom delivery service
-					      \item Complex server-side logic
-					      \item State synchronization issues
-				      \end{itemize}
+				\item A \textbf{Delivery Service} must put commits in a total order: if two members commit concurrently, one loses and must retry
+				\item An \textbf{Authentication Service} binds identities to keys: the PKI problem never goes away
+				\item So MLS is not a drop-in library; deploying it means redesigning your server
 			\end{itemize}
 		\end{column}
 	\end{columns}

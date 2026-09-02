@@ -34,7 +34,7 @@
 		\begin{column}{0.45\textwidth}
 			\begin{tcolorbox}
 				[colback=black!5!white,colframe=ciphergray] $\mathsf{SHA256}(\texttt{hello}) =$ \\ {\small\texttt{2cf24dba5fb0a30e26e83b2ac5}\\ \texttt{b9e29e1b161e5c1fa7425e7304}\\
-					\texttt{3362938b9824}}\\[1em]
+					\texttt{3362938b9824}}\\[0.6em]
 				$\mathsf{SHA256}(\texttt{hullo}) =$ \\ {\small\texttt{7835066a1457504217688c8f5d}\\
 					\texttt{06909c6591e0ca78c254ccf174}\\ \texttt{50d0d999cab0}}
 			\end{tcolorbox}
@@ -50,8 +50,8 @@
 			\begin{itemize}
 				\item \textbf{Collision resistance}: computationally infeasible to find
 				      two different inputs producing the same hash.
-				\item \textbf{Preimage resistance}: given the output of a hash function,
-				      it is computationally infeasible to reconstruct the original input.
+				\item \textbf{Preimage resistance}: given an output of a hash function,
+				      it is computationally infeasible to find \emph{any} input that hashes to it.
 				\item \textbf{Second preimage resistance}: given an input and an output,
 				      it's computationally infeasible to find a different input
 				      producing the same output.
@@ -117,9 +117,8 @@
 				$x \neq y$ but $H(x) = H(y)$
 			}
 			\begin{itemize}
-				\item Collisions \textbf{must exist} due to the pigeonhole principle:
-				      infinitely many possible inputs map to a finite set of outputs.
-				\item A secure hash function makes finding collisions \textbf{computationally infeasible}.
+				\item Collisions \textbf{must exist} (pigeonhole principle): infinitely many inputs, finitely many outputs.
+				\item Security means \emph{finding} one is infeasible. The generic cost is $\approx 2^{n/2}$ for an $n$-bit hash (birthday paradox, next).
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.45\textwidth}
@@ -144,57 +143,60 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Hash function collisions}
+\begin{frame}{Collision resistance, formally}{Library-style definition (The Joy of Cryptography)}
 	\begin{columns}[c]
-		\begin{column}{0.55\textwidth}
-			\definitionbox{Hash Function Collision}{
-				A \textbf{collision} occurs when two different inputs produce the same hash output:
-				$x \neq y$ but $H(x) = H(y)$
-			}
+		\begin{column}{0.52\textwidth}
+			\begin{center}
+				\sslinked{
+					\sslibrary{H}{cr-real}{
+						$s \twoheadleftarrow \bits^\lambda$\\[0.3em]
+						\sslibrarysubroutine{getsalt}{}{
+							return $s$
+						}{1}\\[0.3em]
+						\sslibrarysubroutine{test}{x, x' \in \bits^*}{
+							if $x \neq x'$ and $H(s, x) = H(s, x')$:\\
+							\quad return true\\
+							return false
+						}{1}
+					}{0.68}
+				}{\interchangeable{}}{
+					\sslibrary{H}{cr-fake}{
+						$s \twoheadleftarrow \bits^\lambda$\\[0.3em]
+						\sslibrarysubroutine{getsalt}{}{
+							return $s$
+						}{1}\\[0.3em]
+						\sslibrarysubroutine{test}{x, x' \in \bits^*}{
+							return false
+						}{1}
+					}{0.68}
+				}
+			\end{center}
+		\end{column}
+		\begin{column}{0.48\textwidth}
 			\begin{itemize}
-				\item If an attacker can find collisions, they could substitute malicious data
-				      that produces the same hash as legitimate data.
-				\item The \textbf{birthday paradox} shows collisions are found faster than
-				      expected (after $\approx 2^{n/2}$ attempts for an $n$-bit hash).
+				\item $H\colon \bits^\lambda \times \bits^* \rightarrow \bits^n$ is \textbf{collision-resistant} if nobody can make \textsc{test} return true.
+				\item The public salt $s$ is the ``surprise'': without it, a collision \emph{exists} and could be hard-coded into the adversary.
+				\item SHA-256 is unsalted: think $H(s, \cdot)$ for a fixed $s$. ``Collision-resistant'' = nobody knows a collision (Rogaway: ``human ignorance'').
 			\end{itemize}
-		\end{column}
-		\begin{column}{0.45\textwidth}
-			\begin{tcolorbox}[colback=black!5!white,colframe=ciphergray]
-				\textbf{Collision Example:}
-
-				\vspace{0.2cm}
-
-				\texttt{Input 1: document.pdf}\\
-				$\mathsf{SHA256} = \texttt{a1b2c3...}$
-
-				\vspace{0.2cm}
-
-				\texttt{Input 2: malware.exe}\\
-				$\mathsf{SHA256} = \texttt{a1b2c3...}$
-
-				\vspace{0.2cm}
-
-				\textcolor{cipherprimary}{\textbf{Problem:} \small Attacker could substitute malware.exe for document.pdf without detection!}
-			\end{tcolorbox}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{$\mathsf{PRF}: F_{k}\colon X \rightarrow Y$}
+\begin{frame}{$\mathsf{PRF}: F_{k}\colon X \rightarrow Y$}{Reminder}
 	\begin{columns}[c]
-		\begin{column}{0.4\textwidth}
+		\begin{column}{0.34\textwidth}
 			\begin{itemize}
 				\item We want the mapping to be:
 				      \begin{itemize}
-					      \item One-way
+					      \item Many-to-one: there is no inverse (and we don't need one)
 					      \item ``Randomized''
 					      \item Relations between inputs not reflected in outputs
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
 
-		\begin{column}{0.8\textwidth}
-			\begin{tikzpicture}[scale=0.38]
+		\begin{column}{0.66\textwidth}
+			\begin{tikzpicture}[scale=0.34]
 				% Define colors
 				\definecolor{domaingreen}{RGB}{102, 170, 68}
 				\definecolor{rangegreen}{RGB}{170, 187, 136}
@@ -205,10 +207,10 @@
 				% Input space (domain) X - made square
 				\draw[dashed, thick, domaingreen, fill=domaingreen]
 				(0,0) rectangle (8,8);
-				\node[text width=6.5cm, align=center, font=\normalsize]
+				\node[text width=4.5cm, align=center, font=\normalsize]
 				at
 				(4,-0.8)
-				{Size: infinite!};
+				{Size: $2^n$ (can be huge)};
 				\node[font=\small] at (4,9) {Input space (domain) $X$};
 
 				% Output (range) Y - made square - moved more to the right
@@ -216,14 +218,13 @@
 				\node[text width=4cm, align=center, font=\normalsize]
 				at
 				(17.5,1.2)
-				{Size: fixed};
+				{Size: $2^m$ (fixed)};
 				\node[font=\small] at (17.5,8.5) {Output (range) $Y$};
 				% Input dots - adjusted positions for square domain
 				\filldraw[circlecolor] (2,7) circle (0.3);
 				\pause
 				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
 				(2,7) -- (16.2,6.4);
-				\pause
 				\filldraw[circlecolor] (16.2,6.4) circle (0.3);
 				\pause
 
@@ -231,7 +232,6 @@
 				\pause
 				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
 				(3,6) -- (18.6,5.3);
-				\pause
 				\filldraw[circlecolor] (18.6,5.3) circle (0.3);
 				\pause
 
@@ -239,7 +239,6 @@
 				\pause
 				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
 				(2,5) -- (16.8,4.2);
-				\pause
 				\filldraw[circlecolor] (16.8,4.2) circle (0.3);
 				\pause
 
@@ -247,7 +246,6 @@
 				\pause
 				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
 				(4,3.5) -- (18.4,3.2);
-				\pause
 				\filldraw[circlecolor] (18.4,3.2) circle (0.3);
 				\pause
 
@@ -255,7 +253,6 @@
 				\pause
 				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
 				(2,2) -- (17.1,2.7);
-				\pause
 				\filldraw[circlecolor] (17.1,2.7) circle (0.3);
 				\pause
 
@@ -274,13 +271,13 @@
 
 \begin{frame}{Pseudorandomness}{Reminder}
 	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.55\textwidth}
 			\begin{itemize}
 				\item In cryptography, something is \textbf{pseudorandom} if it is indistinguishable from a uniform distribution.\footnote{The Oxford English Dictionary defines the prefix pseudo- as ``apparently but not really.''}
-				\item We need to invent some \textbf{``secure pseudorandom generator'' (PRG)} $G$ that takes a \textbf{seed} $S$ and ends up being indistinguishable from a true uniform distribution when thrown into a library:
+				\item We need to invent some \textbf{``secure pseudorandom generator'' (PRG)} $G$ that takes a \textbf{seed} $S$ and ends up being indistinguishable from a true uniform distribution when thrown into a library.
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.45\textwidth}
 			\imagewithcaption{prg-distributions.pdf}{Source: The Joy of Cryptography}
 		\end{column}
 	\end{columns}
@@ -298,7 +295,7 @@
 					      \item 97\%?
 				      \end{itemize}
 				\item Many people guess around 15--20\%, but the actual probability is about 97\%!
-				\item This is counterintuitive because \textbf{we're not looking for a specific birthday - we're looking for \textit{any} match among all possible pairs}.
+				\item This is counterintuitive because \textbf{we're not looking for a specific birthday -- we're looking for \textit{any} match among all possible pairs}.
 				\item With 50 students, we have $\binom{50}{2} = 1{,}225$ possible pairs to check!\footnote{$\binom{50}{2}$ is a binomial coefficient. It means: \textit{``how many ways can I choose two different items from a set of 50?''}}
 			\end{itemize}
 		\end{column}
@@ -319,22 +316,40 @@
 
 \begin{frame}{Birthday probabilities}
 	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
+		\begin{column}{0.55\textwidth}
 			\begin{itemize}
 				\item Many cryptographic algorithms fail if two executions sample the same random value.
-				\item General question: If we take $q$ independent uniform samples from a set of $N$ items, what's the probability that some value is chosen more than once?
+				\item General question: take $q$ independent uniform samples from a set of $N$ items. What's the probability that some value is chosen more than once?
 				\item This probability is called $\func{birthday}{q,N}$.
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.4\textwidth}
+		\begin{column}{0.45\textwidth}
 			\begin{align*}
 				\func{birthday}{q,N} = 1 - \prod_{i=1}^{q-1} \left(1 - \frac{i}{N}\right)
 			\end{align*}
 			\begin{itemize}
-				\item Surprisingly high probability!
-				\item With $q \approx 1.2\sqrt{N}$, the probability is $\approx 0.5$
-				\item For birthdays: we only need 23 people for a $>50\%$ chance
+				\item Surprisingly high! At $q \approx 1.2\sqrt{N}$ it is already $\approx 0.5$.
+				\item Handy upper bound: $\func{birthday}{q,N} \leq q(q-1)/2N \leq q^2/2N$.
+				\item For $N = 2^{128}$: a repeat is likely after only $\approx 2^{64}$ samples.
 			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Quick check: how big must $n$ be?}
+	\begin{columns}[c]
+		\begin{column}{0.6\textwidth}
+			\begin{enumerate}
+				\item \textbf{MD5 has a 128-bit output. Birthday attack cost?} \pause
+				      $2^{64} \approx 1.8 \times 10^{19}$ hashes. One consumer GPU does $1.6 \times 10^{11}$ MD5/s: about 3.5 years. A thousand GPUs: about a day.
+				\item \textbf{And SHA-256?} \pause
+				      $2^{128} \approx 3.4 \times 10^{38}$. At $2 \times 10^{10}$ hashes/s: around $10^{20}$ years.
+				\item \textbf{So MD5 is ``merely'' expensive to break?} \pause
+				      No: the attacks in the next section find MD5 collisions in \emph{seconds}. The birthday bound is what a \emph{perfect} 128-bit function would give you.
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\alertbox{Rule of thumb}{An $n$-bit hash offers at most $n/2$ bits of collision resistance (and $n$ bits of preimage resistance). This is why 256-bit outputs are the modern floor.}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -358,11 +373,11 @@
 					      \item \textbf{SHA-2 family} (2001): SHA-224, SHA-256, SHA-384, SHA-512
 					      \item \textbf{SHA-3 family} (2015): Based on the Keccak sponge construction
 				      \end{itemize}
-				\item \textbf{Modern alternatives:}
+				\item \textbf{Modern alternatives:}\footnote{\url{https://www.blake2.net}, \url{https://github.com/BLAKE3-team/BLAKE3}, \url{https://datatracker.ietf.org/doc/rfc9861/}}
 				      \begin{itemize}
-					      \item \textbf{BLAKE2} (2012): Faster than MD5\footnote{\url{https://www.blake2.net}}
-					      \item \textbf{BLAKE3} (2020): Highly parallelizable, extremely fast\footnote{\url{https://github.com/BLAKE3-team/BLAKE3}}
-					      \item \textbf{KangarooTwelve} (2016) and \textbf{TurboSHAKE} (2023): High-performance variants\footnote{\url{https://datatracker.ietf.org/doc/rfc9861/}}
+					      \item \textbf{BLAKE2} (2012): Faster than MD5; used inside Argon2 and WireGuard
+					      \item \textbf{BLAKE3} (2020): Highly parallelizable, extremely fast
+					      \item \textbf{KangarooTwelve} (2016), \textbf{TurboSHAKE} (2023): Reduced-round Keccak, RFC 9861 (2025)
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -411,7 +426,7 @@
 						            \item Modes of operation (encryption, hashing) often have security proofs.
 					            \end{itemize}
 				      \end{itemize}
-				\item In both cases, security rests on assumptions - the difference is in the \textit{type} of assumptions, not their existence.
+				\item In both cases, security rests on assumptions -- the difference is in the \textit{type} of assumptions, not their existence.
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -419,15 +434,13 @@
 
 \begin{frame}{What about attacks on hash functions?}
 	\begin{itemize}
-		\item Despite their security properties, hash functions can be vulnerable.
-		\item We'll explore key attack strategies:
+		\item The birthday bound is the \emph{generic} attack. Everything else in this section exploits how hash functions are actually \textbf{used} or \textbf{built}:
 		      \begin{itemize}
-			      \item Precomputation attacks using rainbow tables.
-			      \item Birthday attacks exploiting the birthday paradox.
-			      \item Ways attackers try to find collisions.
+			      \item \textbf{Precomputation}: hashing predictable inputs (passwords) lets attackers do the work once, in advance. Countermeasure: \textbf{salting}.
+			      \item \textbf{Length extension}: Merkle--Damg\aa rd hashes leak their internal state. Countermeasures: the sponge construction, \textbf{HMAC}.
+			      \item \textbf{Actual collisions}: MD5 (2004), rogue certificate authorities (2008), SHA-1 (2017).
 		      \end{itemize}
-		\item Then we'll discuss countermeasures like salting.
-		\item Finally, we'll show additional attacks on hash functions and discuss their practical evolution.
+		\item Then, in the next section, we turn these lessons into a recipe for storing passwords.
 	\end{itemize}
 \end{frame}
 
@@ -447,13 +460,12 @@
 
 \begin{frame}{Rainbow tables}
 	\definitionbox{Rainbow Tables}{
-		\textbf{Rainbow tables} are specialized data structures that store precomputed hash values to efficiently crack passwords with minimal computation during the actual attack.
+		\textbf{Rainbow tables} are precomputed data structures that let an attacker invert an unsalted hash of any password from a chosen space (say, all 8-character alphanumeric strings) with a lookup and a few hash evaluations, instead of a brute-force search.
 	}
 	\begin{itemize}
-		\item Represent a time-memory tradeoff for password cracking.
-		\item Store chains of hashes rather than individual hash-password pairs.
-		\item Can crack any password within the table's character set and length parameters.
-		\item Completely defeated by properly salted hashes.
+		\item A \textbf{time--memory tradeoff} (Hellman, 1980; refined by Oechslin, 2003): store \emph{chains} of hashes rather than every hash--password pair, so a table covering billions of passwords fits on a disk.
+		\item Cover essentially every password within the table's character set and length; miss everything outside it.
+		\item Completely defeated by properly salted hashes, as we'll see next.
 	\end{itemize}
 \end{frame}
 
@@ -469,39 +481,7 @@
 			      \item Long enough to prevent precomputation ($\geq 16$ bytes).
 			      \item Stored alongside the hash value.
 		      \end{itemize}
-		\item Salting prevents attackers from using precomputed tables (rainbow tables) to find hash values.
-		\item Without salt, same inputs always hash to same outputs, enabling reusable attacks.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Practical applications of salting}{Real-world examples}
-	\begin{itemize}
-		\item \textbf{Web application user accounts}
-		      \begin{itemize}
-			      \item Different users with same password have different hashes.
-			      \item Breach of one site doesn't compromise accounts on others.
-		      \end{itemize}
-		\item \textbf{Password reset tokens}
-		      \begin{itemize}
-			      \item Salt + timestamp prevents token reuse.
-			      \item Each reset request generates unique token.
-		      \end{itemize}
-		\item \textbf{API key generation}
-		      \begin{itemize}
-			      \item Salting ensures unique keys even for similar services.
-			      \item Allows key rotation without pattern recognition.
-		      \end{itemize}
-		\item \textbf{Database record anonymization}
-		      \begin{itemize}
-			      \item Different salts for different datasets prevent correlation attacks.
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Hash functions in the real world}
-	\begin{itemize}
-		\item Hash functions you encounter ``in the wild'' are \textbf{standardized} as \textbf{unsalted} functions.
-		\item They have only a single input argument: a string to be hashed.
+		\item Without a salt, equal inputs give equal hashes, so one precomputed table works against \emph{every} system using that hash function. With a salt, the table is useless.
 	\end{itemize}
 \end{frame}
 
@@ -522,18 +502,17 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Length extension attacks}{SHA-1 and SHA-2 vulnerability}
+\begin{frame}{Length extension attacks}{Why $H(\texttt{secret} \| \texttt{message})$ is not a MAC}
 	\definitionbox{Length Extension Attack}{
-		A \textbf{length extension attack} allows an attacker who knows $H(M)$ to calculate $H(M \| P \| X)$ for the padding $P$ and any attacker-chosen $X$, without knowing $M$ itself.
+		A \textbf{length extension attack} allows an attacker who knows $H(M)$ and the \emph{length} of $M$ to calculate $H(M \| P \| X)$ for the padding $P$ and any attacker-chosen $X$, without knowing $M$ itself.
 	}
 	\begin{itemize}
-		\item Affects hash functions built using the Merkle-Damg\aa rd construction:
+		\item Affects hash functions built using the Merkle--Damg\aa rd construction:
 		      \begin{itemize}
-			      \item SHA-1, SHA-256, SHA-512, MD5, and others
-			      \item Not SHA-3 (which uses the sponge construction)
+			      \item MD5, SHA-1, SHA-256, SHA-512, and others.
+			      \item Not SHA-3 (sponge construction), and not truncated variants such as SHA-384 or SHA-512/256: their output hides part of the state.
 		      \end{itemize}
-		\item An attacker who knows $H(\texttt{message})$ and the length of $\texttt{message}$ can compute $H(\texttt{message} \| \texttt{padding} \| \texttt{extra\_data})$.
-		\item This can break naive authentication schemes using $H(\texttt{secret} \| \texttt{message})$.
+		\item This breaks naive authentication schemes that use $H(\texttt{secret} \| \texttt{message})$ as a tag: the attacker extends \texttt{message} and gets a valid tag for the result, for free.
 	\end{itemize}
 \end{frame}
 
@@ -547,14 +526,15 @@
 		      \end{itemize}
 		\item An attacker can:
 		      \begin{itemize}
-			      \item Take a valid \texttt{hash} value
-			      \item Compute a new hash for \texttt{val=foo\&malicious=true}
+			      \item Take a valid \texttt{hash} value (and guess the length of the secret: a few tries).
+			      \item Compute a valid hash for \texttt{val=foo} $\|$ \texttt{padding} $\|$ \texttt{\&malicious=true}. The padding bytes end up in the URL, but sloppy parsers don't mind.
 			      \item Without knowing the secret!
 		      \end{itemize}
+		\item This is exactly how Thai Duong and Juliano Rizzo forged API calls against Flickr in 2009. The fix, then and now: use \textbf{HMAC}.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{The Merkle-Damg\aa rd construction}{SHA-1, SHA-2}
+\begin{frame}{The Merkle--Damg\aa rd construction}{SHA-1, SHA-2}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
@@ -580,15 +560,15 @@
 			\begin{itemize}
 				\item Two phases:
 				      \begin{itemize}
-					      \item \textbf{Absorbing}: Input blocks are XORed into the state and processed.
+					      \item \textbf{Absorbing}: Input blocks are XORed into the state, which is then scrambled by the Keccak permutation.
 					      \item \textbf{Squeezing}: Output blocks are extracted from the state.
 				      \end{itemize}
 				\item Naturally resistant to length extension attacks.
-				\item Versatile: Can produce output of any desired length.
+				\item Versatile: can squeeze output of any desired length (the SHAKE128 and SHAKE256 ``extendable-output functions'').
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.45\textwidth}
-			\imagewithcaption{sponge.png}{Source: The Hash Function BLAKE (by Jean-Philippe Aumasson)}
+			\imagewithcaption{sponge.png}{Source: \emph{The Hash Function BLAKE} (Aumasson et al.)}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -597,24 +577,24 @@
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}
 			\begin{itemize}
-				\item In Merkle-Damg\aa rd, the final state becomes the hash output directly.
-				\item This allows attackers to continue from that state without knowing the input.
+				\item In Merkle--Damg\aa rd, the final state \emph{is} the hash output.
+				\item So whoever holds the output holds the state, and can keep hashing without knowing the input.
 				\item The sponge construction protects against this by:
 				      \begin{itemize}
 					      \item Maintaining a larger internal state than the output size.
-					      \item Only revealing part of the state as output.
-					      \item The hidden portion (capacity) remains secret.
+					      \item Only exposing part of the state (the \emph{rate}) to input and output.
+					      \item Never revealing the rest (the \emph{capacity}).
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.45\textwidth}
 			\begin{tcolorbox}[colback=black!5!white,colframe=ciphergray]
-				\textbf{Sponge State:}
+				\textbf{Sponge state (SHA3-256, 1600 bits):}
 
 				\vspace{0.2cm}
 
 				\texttt{Rate (r): 1088 bits}\\
-				\textcolor{cipheraccent}{\texttt{[Revealed in output]}}
+				\textcolor{cipheraccent}{\texttt{[Exposed to input/output]}}
 
 				\vspace{0.2cm}
 
@@ -629,7 +609,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{HMAC: Protection against length extension}
+\begin{frame}{HMAC: protection against length extension}
 	\definitionbox{HMAC}{
 		\textbf{HMAC} (Hash-based Message Authentication Code) is a specific construction for calculating a message authentication code (MAC) using a cryptographic hash function and a secret key.
 	}
@@ -637,60 +617,55 @@
 		\textsf{HMAC}(K, m) = H((K \oplus \mathsf{opad}) \| H((K \oplus \mathsf{ipad}) \| m))
 	\end{align*}
 	\begin{itemize}
-		\item $\mathsf{opad}$ and $\mathsf{ipad}$ are fixed padding values.
-		\item This nested construction defeats length extension attacks.
-		\item Widely used in TLS, IPsec, and other security protocols.
-		\item Provides both integrity and authentication.
+		\item $\mathsf{opad}$, $\mathsf{ipad}$: fixed constants; $K$ is padded to the block size.
+		\item The outer hash hides the inner state: length extension gains nothing.
+		\item Bellare, Canetti and Krawczyk (1996); RFC 2104. In TLS, IPsec, everywhere.
+		\item A MAC (remember 1.5): integrity and authentication, not confidentiality.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Xiaoyun Wang's MD5 Collision}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item In 2004, Chinese researcher Xiaoyun Wang demonstrated the first practical MD5 collision.
-				\item Presented at the CRYPTO 2004 rump session, causing a sensation in the cryptographic community.
-				\item Interesting backstory: Wang's team initially got confused by endianness issues.
-				\item The Chinese translation of Bruce Schneier's ``Applied Cryptography'' had incorrectly translated the MD5 algorithm.
-				\item The translation got the byte ordering (endianness) wrong, making their early collision attempts fail.
-				\item Once corrected, they succeeded in breaking MD5 much faster than expected.
-				\item This discovery accelerated the migration away from MD5 in security applications.
-			\end{itemize}
-		\end{column}
-	\end{columns}
+\begin{frame}{Xiaoyun Wang's MD5 collision}{CRYPTO 2004 rump session}
+	\begin{itemize}
+		\item In 2004, Xiaoyun Wang and her team at Shandong University demonstrated the first practical MD5 collision, twelve years after MD5 was published.
+		\item Announced at the CRYPTO 2004 rump session, causing a sensation: MD5 was everywhere, from certificates to file integrity checks.
+		\item Interesting backstory: the team's early attempts failed because of an \textbf{endianness} mix-up. The Chinese translation of Bruce Schneier's \emph{Applied Cryptography} had the byte ordering of MD5 wrong.
+		\item Once corrected, the attack worked: about an hour on an IBM p690 in 2005. Today, a laptop finds an MD5 collision in seconds.
+		\item This discovery accelerated the migration away from MD5 in security applications. ``Accelerated'' is generous, as we'll see.
+	\end{itemize}
 \end{frame}
 
-\begin{frame}{MD5 Chosen-Prefix Collision}{Attacking certificate authorities}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item In 2008, researchers created a rogue CA certificate using MD5 collisions.
-				\item Exploited weaknesses in how certificates were issued by a legitimate CA.
-				\item By predicting serial numbers and timestamps, they crafted a malicious certificate with the same MD5 hash as a legitimate one.
-				\item Created a fake Certificate Authority that browsers would trust!
-				\item Demonstrated at the 25th Chaos Communication Congress.
-				\item Led to MD5 being rapidly phased out for digital signatures.
-			\end{itemize}
-		\end{column}
-	\end{columns}
+\begin{frame}{Two kinds of collision}{Identical-prefix vs.\ chosen-prefix}
+	\definitionbox{Identical-Prefix vs.\ Chosen-Prefix Collisions}{
+		\textbf{Identical-prefix}: find $M \neq M'$ with $H(M) = H(M')$, where the attacker controls both messages entirely. \textbf{Chosen-prefix}: given \emph{any} two prefixes $P \neq P'$, find suffixes $S, S'$ with $H(P \| S) = H(P' \| S')$.
+	}
+	\begin{itemize}
+		\item Wang's 2004 attack is identical-prefix: the two messages differ only in a few blocks of random-looking bytes, so the ``documents'' must hide the difference in a comment field or padding.
+		\item A chosen-prefix collision lets the two documents say completely different things: for instance, two certificates with different names and different keys.
+		\item Costlier to find, but far more dangerous.
+	\end{itemize}
 \end{frame}
 
-\begin{frame}{SHA-1 Collision Attack (SHAttered)}{The first practical SHA-1 collision}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item In 2017, Google and CWI Amsterdam researchers demonstrated the first practical collision for SHA-1.\footnote{\url{https://appliedcryptography.page/paper/\#shattered-sha1}}
-				\item Created two different PDF files with identical SHA-1 hashes.
-				\item Required about 6,500 CPU years and 110 GPU years of computation.
-				\item Cost estimate: approximately \$110,000 using cloud computing.
-				\item Proved that SHA-1 should no longer be used for security-critical applications.
-			\end{itemize}
-		\end{column}
-	\end{columns}
+\begin{frame}{MD5 chosen-prefix collisions in the wild}{Attacking certificate authorities}
+	\begin{itemize}
+		\item In 2008, Sotirov, Stevens, Appelbaum, Lenstra, Molnar, Osvik and de Weger forged a \textbf{rogue CA certificate}: $P$ = an ordinary website certificate that RapidSSL would sign, $P'$ = a CA certificate. One signature, valid for both.
+		\item The catch: the CA fills in the serial number and validity period, so $P$ had to be predicted. RapidSSL used sequential serials and a fixed delay. The collision itself took a day or two on 200 PlayStation 3s.
+		\item Demonstrated at the 25th Chaos Communication Congress (December 2008). MD5 was finally dropped for certificate signatures.
+		\item Encore, 2012: the \textbf{Flame} malware forged a Microsoft code-signing certificate with a new, independently developed chosen-prefix MD5 collision.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{SHAttered: the first practical SHA-1 collision}{2017}
+	\begin{itemize}
+		\item In 2017, Google and CWI Amsterdam researchers (Stevens, Bursztein, Karpman, Albertini, Markov) demonstrated the first practical collision for SHA-1.\footnote{\url{https://appliedcryptography.page/paper/\#shattered-sha1}}
+		\item Two different PDF files with identical SHA-1 hashes, displaying different content.
+		\item Cost: $2^{63.1}$ SHA-1 computations (6,500 CPU-years plus 110 GPU-years, about \$110,000 of cloud time), versus $2^{80}$ for the birthday bound.
+		\item 2020, ``SHA-1 is a Shambles'' (Leurent and Peyrin): the first \textbf{chosen-prefix} SHA-1 collision, for about \$45,000 of rented GPU time, used to forge PGP identity certificates.
+		\item SHA-1 should have died in 2005, when Wang's team published the first theoretical break. Browsers only stopped accepting SHA-1 certificates in early 2017; Git still uses it by default.
+	\end{itemize}
 \end{frame}
 
 \iffalse
-	\begin{frame}{Multi-Collision Attacks}
+	\begin{frame}{Multi-collision attacks}
 		\definitionbox{Multi-Collision}{
 			A \textbf{multi-collision} is a set of $k$ distinct inputs that all hash to the same output value.
 		}
@@ -779,7 +754,7 @@
 					      \item The encrypted passwords.
 					      \item The decryption key.
 				      \end{itemize}
-				\item Result: Encryption adds no security!
+				\item Result: encryption adds (almost) nothing.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.45\textwidth}
@@ -837,30 +812,10 @@
 
 				\vspace{0.3cm}
 
-				\textcolor{cipherprimary}{\textbf{Problem:} \small Alice and Bob have the same password (visible from identical hashes)!}
+				\textcolor{cipherprimary}{\textbf{Problem:} \small Alice and Bob visibly share a password, and anyone can Google that hash: it's $\mathsf{MD5}(\texttt{password})$.}
 			\end{tcolorbox}
 		\end{column}
 	\end{columns}
-\end{frame}
-
-\begin{frame}{Limitations of unsalted hashing}
-	\begin{itemize}
-		\item Attacker's work can be \textbf{precomputed}:
-		      \begin{itemize}
-			      \item Generate lookup tables before compromising the server.
-			      \item Rainbow tables provide time-memory tradeoff.
-		      \end{itemize}
-		\item Same effort cracks multiple accounts:
-		      \begin{itemize}
-			      \item If users have same password, they have same hash.
-			      \item Cracking 1,000 accounts may be no harder than cracking one.
-		      \end{itemize}
-		\item Common passwords are instantly recognized:
-		      \begin{itemize}
-			      \item $H(\texttt{password123})$ is well-known.
-			      \item Attacker doesn't even need to compute hashes for common passwords.
-		      \end{itemize}
-	\end{itemize}
 \end{frame}
 
 \begin{frame}{Salted password hashing}{The proper approach}
@@ -900,27 +855,6 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Benefits of salted hashing}
-	\begin{itemize}
-		\item Prevents precomputation attacks:
-		      \begin{itemize}
-			      \item Rainbow tables become useless.
-			      \item Attacker must compute hashes after server compromise.
-		      \end{itemize}
-		\item Requires unique effort per user:
-		      \begin{itemize}
-			      \item Each password must be attacked individually.
-			      \item Cracking 1,000 accounts requires 1,000 times the effort.
-		      \end{itemize}
-		\item Same passwords produce different hashes:
-		      \begin{itemize}
-			      \item Identical passwords across users aren't visible.
-			      \item Doesn't leak information about password reuse.
-		      \end{itemize}
-		\item \textbf{Always salt your password hashes!}
-	\end{itemize}
-\end{frame}
-
 \begin{frame}{Specialized password hashing functions}{Beyond regular hash functions}
 	\begin{itemize}[<+->]
 		\item Regular cryptographic hash functions (SHA-2, SHA-3) are designed to be \textbf{fast}.
@@ -933,7 +867,7 @@
 		\item Simple approach: Iterate the hash function thousands of times.
 		      \begin{itemize}
 			      \item $H(S \| H(S \| \ldots H(S \| P)\ldots))$ with many iterations.
-			      \item \textbf{Example}: PBKDF2 (now considered obsolete).
+			      \item \textbf{Example}: PBKDF2 (1999). Still standardized and FIPS-approved, but no longer the first choice.
 		      \end{itemize}
 		\item \textbf{Modern approach}: Memory-hard functions like Argon2 and Scrypt.
 	\end{itemize}
@@ -948,9 +882,9 @@
 			\begin{itemize}
 				\item Key components:
 				      \begin{itemize}
-					      \item \textbf{Password}: Secret input.
-					      \item \textbf{Salt}: Provides randomization.
-					      \item \textbf{Iteration count}: Controls computational cost.
+					      \item \textbf{Password} $P$: Secret input.
+					      \item \textbf{Salt} $S$: Provides randomization.
+					      \item \textbf{Iterations} $c$: Cost knob (OWASP: 600,000).
 					      \item \textbf{PRF}: Usually HMAC-SHA1 or HMAC-SHA256.
 				      \end{itemize}
 			\end{itemize}
@@ -959,11 +893,11 @@
 			\begin{tcolorbox}[colback=black!5!white,colframe=ciphergray]
 				\small
 				\begin{align*}
-					U_1 & = \mathsf{PRF}(\mathsf{Password}, \mathsf{Salt} \| \mathsf{Int}(1)) \\
-					U_2 & = \mathsf{PRF}(\mathsf{Password}, U_1)                              \\
-					U_3 & = \mathsf{PRF}(\mathsf{Password}, U_2)                              \\
-					\vdots                                                                    \\
-					U_c & = \mathsf{PRF}(\mathsf{Password}, U_{c-1})                          \\
+					U_1 & = \mathsf{PRF}(P, S \| \mathsf{Int}(1))    \\
+					U_2 & = \mathsf{PRF}(P, U_1)                     \\
+					U_3 & = \mathsf{PRF}(P, U_2)                     \\
+					\vdots                                           \\
+					U_c & = \mathsf{PRF}(P, U_{c-1})                 \\
 					T_1 & = U_1 \oplus U_2 \oplus \cdots \oplus U_c
 				\end{align*}
 			\end{tcolorbox}
@@ -975,16 +909,16 @@
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
-				\item \textbf{Problem}: Attackers can build specialized hardware.
+				\item \textbf{Problem}: PBKDF2 is just a lot of SHA-256, and attackers build hardware for that.
 				      \begin{itemize}
-					      \item ASICs can compute hashes millions of times faster.
-					      \item Iteration alone isn't enough protection.
+					      \item GPUs and ASICs hash orders of magnitude faster than the defender's server CPU.
+					      \item More iterations slow down both sides equally.
 				      \end{itemize}
-				\item \textbf{Solution}: Memory-hard functions
+				\item \textbf{Solution}: memory-hard functions
 				      \begin{itemize}
-					      \item Requires significant memory speed.
-					      \item Hardware specialization offers less advantage.
-					      \item Both attackers and defenders use similar memory tech.
+					      \item Each guess needs a large amount of fast memory.
+					      \item Memory is the one resource an ASIC can't pack in cheaply.
+					      \item Attackers and defenders end up buying the same RAM.
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -994,163 +928,118 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Blockchain and hash functions}
+\begin{frame}{What Bitcoin mining teaches us about fast hashes}
 	\begin{itemize}
-		\item Bitcoin and blockchain technology rely heavily on hash functions:
-		      \begin{itemize}
-			      \item \textbf{Proof-of-work}: Finding partial preimages (leading zeros).
-			      \item \textbf{Merkle trees}: Efficient verification of large datasets.
-			      \item \textbf{Block chaining}: Each block contains the hash of the previous block.
-		      \end{itemize}
-		\item Miners try to find inputs that produce hashes with specific properties.
-		\item The extreme computational cost of Bitcoin mining ($\approx$90 TWh/year) demonstrates hash function security.
-		\item Bitcoin mining consumes more electricity than many countries.
+		\item Bitcoin mining is the Anubis puzzle at planetary scale: find a nonce with $\mathsf{SHA256}(\mathsf{SHA256}(\text{header}))$ below a target. Pure SHA-256, about $10^{21}$ times per second.
+		\item Hardware followed the money: CPUs $\rightarrow$ GPUs $\rightarrow$ FPGAs $\rightarrow$ ASICs in four years (2009--2013), chips that do only SHA-256, orders of magnitude more efficient than a CPU.
+		\item It burns well over 100 TWh a year (Cambridge, 2025: 140--190 TWh).
+		\item \textbf{Lesson}: PBKDF2-HMAC-SHA256 is just more SHA-256, so the attacker's edge is the miner's. Remove it by making each guess need what ASICs lack: \textbf{memory}.
+		\item Litecoin (2011) picked Scrypt against ASICs, but with only 128 KB per hash: Scrypt ASICs arrived in 2014. Memory-hardness needs actual memory.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Scrypt: A memory-hard password hashing function}
+\begin{frame}{Scrypt: a memory-hard password hashing function}
 	\definitionbox{Scrypt}{
-		\textbf{Scrypt} is a password-based key derivation function designed to be computationally and memory--speed-intensive, making it resistant to hardware acceleration attacks.
+		\textbf{Scrypt} is a password-based key derivation function designed so that each evaluation needs a large amount of memory, not just CPU time, making hardware acceleration expensive.
 	}
 	\begin{itemize}
-		\item Created by Colin Percival in 2009 specifically to make attacks costly.
+		\item Created by Colin Percival in 2009 (for his Tarsnap backup service) specifically to make brute force costly.
 		\item Key components:
 		      \begin{itemize}
-			      \item \textbf{PBKDF2}: Initial and final mixing of password and salt.
+			      \item \textbf{PBKDF2-HMAC-SHA256}: Initial and final mixing of password and salt.
 			      \item \textbf{ROMix}: Core memory-hard function.
 			      \item \textbf{BlockMix}: Based on the Salsa20/8 core function.
 		      \end{itemize}
-		\item \textbf{Parameters:}
-		      \begin{itemize}
-			      \item \texttt{N}: CPU/memory cost
-			      \item \texttt{r}: Block size
-			      \item \texttt{p}: Parallelization
-		      \end{itemize}
+		\item \textbf{Parameters}: \texttt{N} (CPU/memory cost), \texttt{r} (block size), \texttt{p} (parallelization). Memory used: $128 \cdot N \cdot r$ bytes, e.g.\ 16 MiB for $N = 2^{14}, r = 8$. OWASP recommends $N = 2^{17}$ (128 MiB).
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Why Scrypt is memory-hard}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item Scrypt enforces memory hardness through its ROMix function:
-				      \begin{itemize}
-					      \item Creates a large array of pseudorandom values (often many MB).
-					      \item Each new value depends on previous values in unpredictable patterns.
-					      \item Forces the entire array to be stored in memory during computation.
-				      \end{itemize}
-				\item Memory hardness creates multiple benefits:
-				      \begin{itemize}
-					      \item GPUs/ASICs have limited memory per processing unit.
-					      \item Memory is expensive and its speed scales poorly on specialized hardware.
-					      \item Time-memory tradeoffs are possible but highly unfavorable.
-					      \item Using less memory makes computation drastically slower.
-				      \end{itemize}
-				\item Even with custom hardware, attackers face similar costs to defenders.
-				\item Proven to be maximally memory-hard!\footnote{\url{https://appliedcryptography.page/paper/\#scrypt-memory}}
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Password cracking speeds}{The importance of slow hashing}
 	\begin{itemize}
-		\item Modern hardware can compute hash functions at astonishing speeds.
-		\item A single high-end GPU can compute:
+		\item ROMix, on $N$ blocks of $128 r$ bytes:
 		      \begin{itemize}
-			      \item MD5: 25+ billion hashes/second
-			      \item SHA-1: 10+ billion hashes/second
-			      \item SHA-256: 2+ billion hashes/second
-			      \item bcrypt (cost 12): 20,000 hashes/second
-			      \item Scrypt: $<$1,000 hashes/second
+			      \item \textbf{Fill}: $V_i = \mathsf{BlockMix}^{i}(X)$ for $i = 0, \ldots, N-1$.
+			      \item \textbf{Mix}: repeat $N$ times: $j \leftarrow \mathsf{Integerify}(X) \bmod N$, then $X \leftarrow \mathsf{BlockMix}(X \oplus V_j)$.
 		      \end{itemize}
-		\item This is why specialized password hashing algorithms are essential.
-		\item The stark speed difference (billions vs. thousands) is a critical security factor.
+		\item The index $j$ depends on the data, so you can't predict which block you'll need next: either keep all $N$ blocks in memory, or recompute them on demand.
+		\item That tradeoff is what hurts attackers: cut the memory by a factor $k$ and the time goes up by about a factor $k$. Memory $\times$ time stays large, and that product is what an ASIC has to pay for. RAM costs the same for everyone.
+		\item Proven \textbf{maximally memory-hard} by Alwen, Chen, Pietrzak, Reyzin and Tessaro (2017).\footnote{\url{https://appliedcryptography.page/paper/\#scrypt-memory}}
+		\item Weak spot: with small $N$ (Litecoin's 128 KB) the guarantee is worth little. Pick $N$ large.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Insights from Hashcat 7.0.0}{The evolving landscape of password cracking}
+\begin{frame}{Password cracking speeds}{The importance of slow hashing}
 	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\definitionbox{Hashcat}{
-				\textbf{Hashcat} is the world's fastest and most advanced password recovery tool, supporting over 300 hash algorithms and multiple attack modes.
-			}
+		\begin{column}{0.55\textwidth}
 			\begin{itemize}
-				\item Released after 2+ years of development with 900,000+ lines of code changed.\footnote{\url{https://hashcat.net/forum/thread-13330.html}}
-				\item 105 contributors show the scale of the password cracking community.
-				\item Major architectural changes reveal trends in both attack and defense strategies.
+				\item One RTX 4090 GPU (Hashcat benchmark):\footnote{\url{https://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb422222fd}}
+				      \begin{itemize}
+					      \item MD5: 164 billion hashes/second
+					      \item SHA-1: 51 billion hashes/second
+					      \item SHA-256: 22 billion hashes/second
+					      \item bcrypt (cost 12): $\approx$ 1,400/second (cost 5: 184,000)
+					      \item Scrypt ($N = 2^{14}$, 16 MiB): $\approx$ 7,100/second
+				      \end{itemize}
+				\item $10^{11}$ vs.\ $10^{3}$ per second: each guess becomes $10^8$ times more expensive.
 			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\alertbox{Worked example}{A leaked list of $10^8$ common passwords, tried against one account:\\[0.3em]
+				SHA-256: under a second.\\
+				Scrypt (16 MiB): about four hours.\\
+				bcrypt (cost 12): about a day.\\[0.3em]
+				And thanks to the salt, this is \emph{per account}.}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Trend 1: Memory-hard functions are winning}{But attackers are adapting}
+\begin{frame}{Insights from Hashcat 7.0.0}{August 2025: reading the attackers' changelog}
+	\definitionbox{Hashcat}{
+		\textbf{Hashcat} is the de-facto standard open-source password cracker: hundreds of hash types, GPU-accelerated, with dictionary, rule-based, mask and hybrid attack modes.
+	}
+	\begin{itemize}
+		\item Version 7.0.0 (1 August 2025) landed after two years of development, 900,000+ changed lines of code and 105 contributors.\footnote{\url{https://hashcat.net/forum/thread-13330.html}}
+		\item It now runs on anything: NVIDIA (CUDA), AMD (HIP), Apple Silicon (Metal) and, through the new ``Assimilation Bridge'', CPUs, FPGAs and even Python plugins. Assume your attacker uses every chip they own.
+		\item Two trends in the release notes matter for this lecture.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Trend 1: memory-hard functions are winning}{But attackers are adapting}
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}
 			\begin{itemize}
-				\item \textbf{Argon2 support added} - defenders are adopting memory-hard functions.
-				\item \textbf{Scrypt optimization}: +320\% performance improvement shows attackers aren't giving up.
-				\item \textbf{Memory management rewrite}: Removed 4GB allocation caps, enabling full device memory usage.
-				\item This arms race validates our discussion about memory-hard functions!
+				\item \textbf{Argon2 support added}: defenders adopt memory-hard functions, attackers follow.
+				\item \textbf{Scrypt up to $+320\%$ faster}: nobody is giving up on memory-hard targets.
+				\item \textbf{4 GB allocation cap removed}: cracking rigs can now use all of their GPU memory.
+				\item Memory-hardness raises the price per guess; it doesn't make guessing impossible.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.45\textwidth}
 			\begin{tcolorbox}[colback=black!5!white,colframe=ciphergray]
-				\textbf{Performance Gains:}\\
-				\texttt{Scrypt: +320\%}\\
-				\texttt{RAR3: +54\%}\\
-				\texttt{NetNTLMv2: +223\%}\\[0.5em]
+				\textbf{Performance gains (7.0.0 release notes):}\\
+				\texttt{Scrypt: up to +320\%}\\
+				\texttt{RAR3: up to +54\%}\\
+				\texttt{NetNTLMv2: +223\% (Intel CPUs)}\\[0.5em]
 				\textcolor{cipherprimary}{\textbf{Note:} \small Even memory-hard functions face continuous optimization pressure!}
 			\end{tcolorbox}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Trend 2: Hardware diversity in attacks}
+\begin{frame}{Trend 2: real-world targets dominate}
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}
 			\begin{itemize}
-				\item \textbf{Assimilation Bridge}: Integrates CPUs, FPGAs, and embedded devices.
-				\item \textbf{Multiple backend support}:
-				      \begin{itemize}
-					      \item HIP (AMD GPUs)
-					      \item Metal (Apple Silicon)
-					      \item Virtual Backend Devices
-				      \end{itemize}
-				\item \textbf{Python Bridge Plugin}: Rapid prototyping of new attack methods.
-				\item Attackers now leverage every available compute resource, not just traditional GPUs.
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.45\textwidth}
-			\begin{tcolorbox}[colback=black!5!white,colframe=ciphergray]
-				\textbf{Attack Surface Expansion:}
-				\vspace{0.2cm}
-				\begin{center}
-					Traditional: GPU farms\\
-					$\downarrow$\\
-					Modern: Heterogeneous computing
-				\end{center}
-				\vspace{0.3cm}
-				\textcolor{cipherprimary}{\textbf{Implication:} \small Defenders must assume attackers have access to diverse, optimized hardware ecosystems.}
-			\end{tcolorbox}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Trend 3: Real-world targets dominate}
-	\begin{columns}[c]
-		\begin{column}{0.55\textwidth}
-			\begin{itemize}
-				\item \textbf{58 new application-specific hashes}:
+				\item \textbf{58 new application-specific hash types}:
 				      \begin{itemize}
 					      \item MetaMask (cryptocurrency wallets)
 					      \item Microsoft Online Accounts
 					      \item LUKS2 (disk encryption)
 					      \item GPG, OpenSSH (security tools)
 				      \end{itemize}
-				\item \textbf{20 new extraction tools} for BitLocker, APFS, VirtualBox.
-				\item \textbf{Hash-mode autodetection}: Attackers don't even need to know the algorithm!
-				\item Focus has shifted from breaking algorithms to extracting and cracking real-world implementations.
+				\item \textbf{20 new extraction tools} for BitLocker, APFS, VirtualBox, wallet files.
+				\item \textbf{Hash-mode autodetection}: paste a hash, Hashcat guesses the algorithm.
+				\item Password hashing is not just about web logins: wherever a password protects a key, the same cracking pipeline applies.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.45\textwidth}
@@ -1173,36 +1062,23 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Best practices for password hashing}
-	\begin{columns}
-		\begin{column}{\textwidth}
-			\begin{itemize}
-				\item Use a dedicated password hashing function (not raw SHA-256).
-				\item Always use random, unique salts (at least 16 bytes).
-				\item Store salts alongside hashes - they don't need to be secret.
-				\item Consider modern memory-hard functions like Argon2 or Scrypt.
-				      \begin{itemize}
-					      \item Tune parameters based on your server capabilities.
-					      \item Aim for 0.5--1 second processing time per hash.
-				      \end{itemize}
-				\item Keep your hashing mechanism current:\footnote{\url{https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html}}
-				      \begin{itemize}
-					      \item Cryptographic advice changes as attacks improve.
-					      \item Be prepared to migrate to stronger algorithms.
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-	\end{columns}
+\begin{frame}{Best practices for password hashing}{OWASP Password Storage Cheat Sheet, 2025}
+	\begin{itemize}
+		\item Use a dedicated password hashing function, never raw SHA-256. In order of preference (and tune upward as your login latency budget allows):\footnote{\url{https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html}}
+		      \begin{itemize}
+			      \item \textbf{Argon2id}: winner of the Password Hashing Competition (2015), RFC 9106. Minimum: 19 MiB of memory, 2 iterations, parallelism 1.
+			      \item \textbf{Scrypt} if Argon2 is unavailable: $N = 2^{17}$ (128 MiB), $r = 8$, $p = 1$.
+			      \item \textbf{bcrypt} for legacy systems: work factor $\geq 10$ (and mind its 72-byte input limit).
+			      \item \textbf{PBKDF2} only where FIPS-140 compliance forces it: 600,000 iterations of HMAC-SHA256.
+		      \end{itemize}
+		\item Salts are handled for you: good libraries generate a random 16-byte salt per password and store it inside the output string.
+		\item Optional extra: a \textbf{pepper}, a secret key kept outside the database (e.g.\ in an HSM), applied as $\mathsf{HMAC}(\mathsf{pepper}, \mathsf{hash})$. A database dump alone is then useless to the attacker.
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{``Migrate to stronger algorithms?''}
 	\begin{itemize}
-		\item Cryptographic algorithms have limited lifespans:
-		      \begin{itemize}
-			      \item New attacks emerge over time.
-			      \item Computing power continuously increases.
-			      \item Quantum computers threaten some algorithms.
-		      \end{itemize}
+		\item Cryptographic algorithms have limited lifespans: new attacks, more computing power, and (for some of them) quantum computers.
 		\item \textbf{Protocol agility} refers to a system's ability to:
 		      \begin{itemize}
 			      \item Support multiple cryptographic algorithms.
@@ -1212,62 +1088,71 @@
 		\item Challenges with protocol agility:
 		      \begin{itemize}
 			      \item Complexity leads to implementation errors.
-			      \item Downgrade attacks target weakest supported option.
+			      \item Downgrade attacks target the weakest supported option.
 			      \item Backward compatibility vs. security tradeoffs.
 		      \end{itemize}
+		\item Password hashes are a special case: the server can't rehash what it doesn't have. Either upgrade at the user's next login, or wrap the legacy hash right now, $\mathsf{bcrypt}(\mathsf{md5}(P))$, and replace it with a direct hash when the user next logs in.
 		\item We'll talk a lot more about all of this in Part 2 of the course.
 	\end{itemize}
 \end{frame}
 
 \section{The Random Oracle Model}
 
-\begin{frame}{Hash functions can't be truly pseudorandom}
+\begin{frame}{Why can't we just say ``$H$ is pseudorandom''?}
 	\begin{itemize}
-		\item No deterministic algorithm can produce truly random output.
-		\item Hash functions only statistically approximate pseudorandomness:
-		      \begin{itemize}
-			      \item They attempt to distribute outputs uniformly across their range,
-			      \item They aim to make outputs appear uncorrelated with inputs,
-			      \item But they remain deterministic functions.
-		      \end{itemize}
-		\item But we analyze hash functions as if they were truly random oracles!
-		      \begin{itemize}
-			      \item This creates a gap between theory and implementation.
-			      \item Implementations can only ever approximate ideal properties.
-		      \end{itemize}
+		\item A PRF $F_k$ looks random only to someone who doesn't know $k$. A hash function has \textbf{no key}: everyone, including the adversary, can compute $H$.
+		\item So ``$H$ is indistinguishable from a random function'' is false for every fixed $H$: the distinguisher just computes $H(x)$ itself and compares.
+		\item Yet many schemes (signatures, key derivation, Fiat--Shamir, RSA-OAEP) are only secure if $H$ behaves like ``random junk''. Collision resistance alone is not enough to prove them.
+		\item The way out: \textbf{pretend}. Analyze the scheme as if $H$ were a truly random function that everyone can query, then instantiate it with SHA-256 and hope the analysis carries over.
+		\item That ``pretend'' has a name: the \textbf{random oracle model}.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{The Random Oracle Model}
-	\definitionbox{Random Oracle Model}{
-		The \textbf{Random Oracle Model} is a theoretical framework that models hash functions as truly random functions that can be queried by all parties.
-	}
-	\begin{itemize}
-		\item A random oracle is an idealized black box that:
-		      \begin{itemize}
-			      \item Responds to new queries with truly random outputs.
-			      \item Consistently returns the same output when queried with the same input.
-			      \item Can be accessed by all parties (both honest and adversarial).
-		      \end{itemize}
-		\item Provides a mathematical abstraction that's easier to analyze than actual hash functions.
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{0.55\textwidth}
+			\definitionbox{Random Oracle Model}{
+				The \textbf{Random Oracle Model} treats the hash function as a truly random function that every party can query.
+			}
+			\begin{itemize}
+				\item A random oracle is a black box that:
+				      \begin{itemize}
+					      \item Answers new queries with fresh random outputs.
+					      \item Repeats itself: same input, same output.
+					      \item Is available to everyone, honest or not.
+				      \end{itemize}
+				\item Far easier to analyze than 64 rounds of SHA-256.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.45\textwidth}
+			\begin{center}
+				\sslibrary{}{ro}{
+					$T := $ empty associative array\\[0.3em]
+					\sslibrarysubroutine{h}{x}{
+						if $T[x]$ undefined:\\
+						\quad $T[x] \twoheadleftarrow \bits^n$\\
+						return $T[x]$
+					}{1}
+				}{0.9}
+			\end{center}
+			\small In library terms, the oracle is \emph{lazily sampled}: no output exists until somebody asks.
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Using the Random Oracle Model}
 	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.55\textwidth}
 			\begin{itemize}
-				\item Used to prove security of cryptographic protocols:
+				\item Used to prove security where standard assumptions don't suffice. Examples: RSA-OAEP, Schnorr and Ed25519 signatures, Fiat--Shamir (see 2.8).
+				\item Two ``superpowers'' the proof gets, which no real hash function offers:
 				      \begin{itemize}
-					      \item Allows rigorous mathematical analysis.
-					      \item Simplifies proofs that would otherwise be intractable.
-					      \item Many important schemes are proven secure in this model.
+					      \item \textbf{Observability}: it sees every query the adversary makes.
+					      \item \textbf{Programmability}: it may choose the answers, as long as they look uniform.
 				      \end{itemize}
-				\item Example: OAEP for RSA encryption.
-				\item Provides confidence in schemes before deployment.
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.45\textwidth}
 			\begin{itemize}
 				\item \textbf{Proving in the ROM:}
 				      \begin{enumerate}
@@ -1281,20 +1166,30 @@
 \end{frame}
 
 \begin{frame}{Limitations of the Random Oracle Model}
+	\begin{itemize}
+		\item \textbf{Gap between theory and practice}: no real hash function is a random oracle, so a ROM proof says nothing about attacks that exploit the \emph{structure} of SHA-256 specifically.
+		\item \textbf{Artificial counterexamples exist}: Canetti, Goldreich and Halevi (1998) built schemes that are provably secure in the ROM, yet provably insecure once the oracle is replaced by \emph{any} concrete hash function.\footnote{\url{https://appliedcryptography.page/paper/\#rom-methodology}}
+		      \begin{itemize}
+			      \item The trick: the scheme misbehaves only when fed a short program that computes its own hash function. No such program exists for a random oracle; one exists for every real $H$.
+		      \end{itemize}
+		\item \textbf{In practice}: no \emph{natural} scheme has fallen this way, and much of deployed cryptography (RSA-OAEP, Ed25519, every Fiat--Shamir signature) has only ROM proofs. The model is a heuristic, but a remarkably reliable one.
+		\item \ldots mostly. In 2.8 we'll see a 2025 attack on Fiat--Shamir where the gap between a random oracle and a real hash function is exploited on a real proof system.\footnote{\url{https://appliedcryptography.page/paper/\#prove-false}}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Key takeaways}
 	\begin{columns}[c]
-		\begin{column}{1\textwidth}
+		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item \textbf{Gap between theory and practice}:
-				      \begin{itemize}
-					      \item No real hash function can perfectly implement a random oracle.
-					      \item Schemes secure in the RO model might be insecure when implemented with real hash functions.
-				      \end{itemize}
-				\item \textbf{Artificial counterexamples exist}:
-				      \begin{itemize}
-					      \item Researchers have constructed schemes that are:
-					      \item Provably secure in the RO model, but
-					      \item Provably insecure with any real hash function.\footnote{\url{https://appliedcryptography.page/paper/\#rom-methodology}}
-				      \end{itemize}
+				\item \textbf{Collisions always exist}; collision resistance means nobody can find one. An $n$-bit hash gives at most $n/2$ bits of it (birthday bound).
+				\item \textbf{Real breaks beat the birthday bound}: MD5 (2004) and SHA-1 (2017) fell to structural attacks. Never use them for anything security-related.
+				\item \textbf{Merkle--Damg\aa rd leaks its state}: $H(k \| m)$ is not a MAC. Use HMAC (or a sponge).
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Passwords}: salt (kills precomputation), slow down (kills brute force), use memory (kills ASICs). Today that means Argon2id.
+				\item \textbf{Random oracle model}: a useful lie. Proofs in it rule out every attack except those that exploit the specific hash function, and so far that has been enough. Mostly.
 			\end{itemize}
 		\end{column}
 	\end{columns}

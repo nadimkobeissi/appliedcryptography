@@ -86,37 +86,21 @@
 \begin{frame}{Also, knowledge soundness}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
+			\textbf{Plain soundness:}
 			\begin{itemize}
-				\item \textbf{Regular Soundness:}
-				      \begin{itemize}
-					      \item Prevents false statements from being proved
-					      \item ``Can't prove something that's false''
-					      \item Example: Can't prove $g^a = X$ if no such $a$ exists
-					      \item Weaker guarantee
-				      \end{itemize}
-				\item \textbf{Sufficient when:}
-				      \begin{itemize}
-					      \item Only care about statement validity
-					      \item Don't need witness extraction
-					      \item Simple yes/no verification
-				      \end{itemize}
+				\item ``If the statement is false, no prover can convince the verifier''
+				\item But Schnorr's statement is ``there exists $a$ with $g^a = A$''
+				\item In a cyclic group, \textit{every} $A$ has such an $a$
+				\item Always true, so plain soundness guarantees nothing here!
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
+			\textbf{Knowledge soundness:}
 			\begin{itemize}
-				\item \textbf{Knowledge Soundness:}
-				      \begin{itemize}
-					      \item If prover succeeds, they \textit{know} a witness\footnote{A witness is the secret information or evidence that proves a statement is true - like the private key that corresponds to a public key, or the solution to a puzzle.}
-					      \item ``Can extract the witness from successful prover''
-					      \item Example: Can extract the actual value $a$
-					      \item Stronger guarantee
-				      \end{itemize}
-				\item \textbf{Essential when:}
-				      \begin{itemize}
-					      \item Building signature schemes
-					      \item Proving knowledge of credentials
-					      \item Composition with other protocols
-				      \end{itemize}
+				\item ``If a prover convinces the verifier, a witness\footnote{A witness is the secret information that makes a statement true: the private key behind a public key, or the solution to a puzzle.} can be \textit{extracted} from that prover''
+				\item The prover doesn't just show that $a$ exists: it must \textit{know} $a$
+				\item The guarantee authentication and signatures actually need
+				\item We'll see how to extract $a$ later (``special soundness'')
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -133,9 +117,9 @@
 			\end{itemize}
 			\textbf{Zero-knowledge solution:}
 			\begin{enumerate}
-				\item Interactive protocol
-				\item Multiple rounds of challenges
-				\item Statistically convincing
+				\item An interactive challenge-response protocol
+				\item You pick a challenge I can't predict
+				\item Convincing (up to negligible error)
 				\item Reveals nothing about $a$
 			\end{enumerate}
 		\end{column}
@@ -143,21 +127,18 @@
 			\begin{alertblock}{Can't prove to others}
 				After our interaction:
 				\begin{itemize}
-					\item You're 100\% convinced I know $a$
+					\item You're convinced I know $a$
 					\item You've learned nothing about $a$
-					\item You can't prove to others that I know it
+					\item You can't prove to others that I know it: no transferable evidence
 				\end{itemize}
 			\end{alertblock}
-			\begin{exampleblock}{No ``trace'' or ``evidence''}
-				The interaction leaves no transferable evidence
-			\end{exampleblock}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Schnorr Identification Protocol}
+\begin{frame}{The Schnorr identification protocol}
 	\vspace{-1.5cm}
-	\begin{center}\resizebox{0.8\textwidth}{!}{
+	\begin{center}\resizebox{0.78\textwidth}{!}{
 			\begin{msc}{}
 				\setmscvalues{small}
 				\drawframe{none}
@@ -194,17 +175,17 @@
 		}\end{center}
 \end{frame}
 
-\begin{frame}{Schnorr Identification Protocol}
+\begin{frame}{Schnorr, step by step}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
-				\item \textbf{Interactive proof:} Multiple rounds of communication
+				\item \textbf{Interactive proof:} three messages
 				\item \textbf{Commitment phase:} Prover commits to random $Y = g^y$
 				\item \textbf{Challenge phase:} Verifier sends random challenge $c$
 				\item \textbf{Response phase:} Prover computes $r = y + ca$
 				\item \textbf{Verification:} Check if $g^r = Y \cdot A^c$
-				\item \textbf{Zero-knowledge property:} $r$ reveals nothing about $a$ due to random masking by $y$
-				\item \textbf{Soundness:} Without knowing $a$, prover can't answer random challenges correctly
+				\item \textbf{Zero-knowledge:} $r$ reveals nothing about $a$, thanks to the random mask $y$
+				\item \textbf{Soundness:} without $a$, the prover can't answer a random challenge
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -265,22 +246,16 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.45\textwidth}
-			\resizebox{0.8\textwidth}{!}{%
-				\begin{minipage}{\textwidth}
-					\begin{alertblock}{Self-generated transcripts}
-						For any challenge $c$ and response $r$:
-						\begin{itemize}
-							\item Set $Y = g^r / A^c$
-							\item Now $(Y, c, r)$ is a valid transcript
-							\item Indistinguishable from real protocol
-							\item Real interaction: Prover knows secret
-							\item Simulated transcript: No secret needed
-							\item Both look exactly the same!
-							\item This is what makes it ``zero-knowledge''
-						\end{itemize}
-					\end{alertblock}
-				\end{minipage}%
-			}
+			\begin{alertblock}{Self-generated transcripts}
+				For \textit{any} $c$ and $r$ of your choosing:
+				\begin{itemize}
+					\item Set $Y = g^r / A^c$
+					\item Now $(Y, c, r)$ passes the check $g^r = Y \cdot A^c$
+					\item No secret was needed
+					\item And it is distributed exactly like a real transcript
+				\end{itemize}
+				This is what ``zero-knowledge'' means.
+			\end{alertblock}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -312,7 +287,7 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Quick reminder: What does $x^{-1}$ mean?}
+\begin{frame}{Quick reminder: what does $x^{-1}$ mean?}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{In modular arithmetic:}
@@ -493,7 +468,7 @@
 	\begin{center}
 		\vfill
 		\large
-		\textit{\rmfamily ``Later that day, the Sheriff of Nottingham arrives at the King's castle. The King describes Robin Hood's exceptional performance, pointing to the arrows still in the targets. The Sheriff is not impressed. ``Robin Hood is a fraud and a liar. Those arrows prove nothing,'' he says. He takes his own bow and fires a series of arrows into blank parts of the wall. He finds a bucket of paint and paints a target around each of his arrows. ``See,'' he says again, ``arrows in targets prove nothing!''''}
+		\textit{\rmfamily ``Later that day, the Sheriff of Nottingham arrives at the King's castle. The King describes Robin Hood's exceptional performance, pointing to the arrows still in the targets. The Sheriff is not impressed. ``Robin Hood is a fraud and a liar. Those arrows prove nothing,'' he says. He takes his own bow and fires a series of arrows into blank parts of the wall. He finds a bucket of paint and paints a target around each of his arrows. ``See,'' he says again, ``arrows in targets prove nothing!''\,''}
 		\vfill
 	\end{center}
 \end{frame}
@@ -531,37 +506,31 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
-			\imagewithcaption{battleship.jpg}{Battleship board game. Source: Hasbro}
+			\imagewithcaption[0.8\textwidth]{battleship.jpg}{Battleship board game. Source: Hasbro}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Beyond authentication: the power of zero-knowledge}
-	\begin{center}
-		\textbf{Zero-knowledge is not limited to proving identity!}
-	\end{center}
+\begin{frame}{Zero-knowledge is not just for logging in}
 	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
+		\begin{column}{0.45\textwidth}
+			\textbf{Statements we'd like to prove in zero knowledge:}
 			\begin{itemize}
-				\item \textbf{Can prove statements like:}
-				      \begin{itemize}
-					      \item \textit{``I know a solution to this Sudoku puzzle''}
-					      \item \textit{``This encrypted value is in range [0, 100]''} (range proofs)
-					      \item \textit{``I performed this computation correctly''}
-					      \item \ldots without revealing any information!
-				      \end{itemize}
+				\item \textit{``I know a solution to this Sudoku''}
+				\item \textit{``This encrypted number is between 0 and 100''} (a range proof)
+				\item \textit{``This encrypted vote is a yes or a no''}
+				\item \textit{``I ran this program, and this is its output''}
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.4\textwidth}
-			\begin{itemize}
-				\item \textbf{Applications:}
-				      \begin{itemize}
-					      \item Private transactions (Zcash)
-					      \item Anonymous credentials
-					      \item Secure voting systems
-					      \item Privacy-preserving audits
-				      \end{itemize}
-			\end{itemize}
+		\begin{column}{0.55\textwidth}
+			\textbf{Today's route, from Schnorr to entire programs:}
+			\begin{enumerate}
+				\item \textbf{Sigma protocols:} the general three-message pattern behind Schnorr
+				\item \textbf{AND / OR:} composing proofs (``this vote is yes OR no'')
+				\item \textbf{Fiat-Shamir:} removing the verifier, getting signatures, and a 2025 attack
+				\item \textbf{Circuits and zkVMs:} proving any program ran correctly (Battleship, Project D)
+				\item \textbf{The real world:} Zcash, and Google's age verification
+			\end{enumerate}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -591,9 +560,9 @@
 					      \begin{itemize}
 						      \item Witness: $a$
 					      \end{itemize}
-					\item ``I know $(r, s)$ such that $g^r h^s = X$''
+					\item ``I know $(a, b)$ such that $g^a h^b = X$''
 					      \begin{itemize}
-						      \item Witness: $(r, s)$
+						      \item Witness: $(a, b)$
 					      \end{itemize}
 					\item ``I know a factorization of $X$''
 					      \begin{itemize}
@@ -611,7 +580,7 @@
 
 \begin{frame}{Sigma protocol structure}
 	\vspace{-1.5cm}
-	\begin{center}\resizebox{0.8\textwidth}{!}{
+	\begin{center}\resizebox{0.78\textwidth}{!}{
 			\begin{msc}{}
 				\setmscvalues{small}
 				\drawframe{none}
@@ -776,33 +745,26 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The power of Sigma protocols}
-	\begin{center}
-		\textbf{Sigma protocols can prove almost any statement!}
-	\end{center}
+\begin{frame}{How far do Sigma protocols reach?}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Graph Problems:}
+			\textbf{Statements with algebraic structure (efficient):}
 			\begin{itemize}
-				\item ``I know a 3-coloring of this graph''
-				\item ``I know a Hamiltonian cycle''
-				\item ``I know an isomorphism between graphs''
-			\end{itemize}
-			\textbf{Number Theory:}
-			\begin{itemize}
-				\item ``I know the square root of $X \bmod N$''
-				\item ``I know the factorization of $N$''
+				\item ``I know $a$ with $g^a = A$'' (Schnorr)
+				\item ``I know $(a, b)$ with $g^a h^b = X$'' (representation)
+				\item ``These two ciphertexts encrypt the same value'' (an AND proof, coming up)
+				\item ``This ciphertext encrypts 0 or 1'' (an OR proof, coming up)
+				\item ``I shuffled these ciphertexts correctly'' (mix networks)
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Cryptographic Statements:}
+			\textbf{Statements without it (possible, but painful):}
 			\begin{itemize}
-				\item ``This ciphertext encrypts 0 or 1''
-				\item ``These ciphertexts encrypt the same value''
-				\item ``I shuffled these ciphertexts correctly''
+				\item ``I know a 3-coloring of this graph''
+				\item ``I know a Hamiltonian cycle in this graph''
 			\end{itemize}
-			\begin{alertblock}{Universal result}
-				Any NP statement has a Sigma protocol!
+			\begin{alertblock}{Universal, in principle}
+				Hamiltonian cycle is NP-complete and has a Sigma protocol (Blum, 1986), so \textit{every} NP statement has one, via a reduction. In practice that route is hopelessly slow. Circuits, later today, are the fix.
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -810,32 +772,25 @@
 
 \subsection{Formal Properties of Sigma Protocols}
 
-\begin{frame}{The three essential properties}
-	\begin{center}
-		\textbf{What makes a Sigma protocol actually work?}
-	\end{center}
+\begin{frame}{The three properties, now made precise}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Mathematical guarantees:}
+			\textbf{Reminder} from the start of the lecture:
 			\begin{enumerate}
-				\item \textbf{Completeness:} Honest provers always succeed
-				\item \textbf{Soundness:} Dishonest provers almost always fail
-				\item \textbf{Zero-Knowledge:} Nothing leaks about the witness
+				\item \textbf{Completeness:} honest provers always succeed
+				\item \textbf{Soundness:} dishonest provers almost always fail
+				\item \textbf{Zero-knowledge:} nothing leaks about the witness
 			\end{enumerate}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{alertblock}{In proof language}
-				\begin{itemize}
-					\item Completeness: Every true thing has a valid proof
-					\item Soundness: Only true things have valid proofs
-					\item Zero-Knowledge: Proofs reveal nothing extra
-				\end{itemize}
-			\end{alertblock}
+			\textbf{What's new for Sigma protocols:}
+			\begin{itemize}
+				\item Soundness comes in a stronger, very concrete form: \textbf{special soundness}, with an explicit extractor
+				\item Zero-knowledge comes in a weaker form: \textbf{honest-verifier} zero-knowledge
+				\item We'll define each one, then check it on Schnorr
+			\end{itemize}
 		\end{column}
 	\end{columns}
-	\begin{center}
-		\textbf{All three are essential for a useful protocol!}
-	\end{center}
 \end{frame}
 
 \begin{frame}{Completeness: honest provers always win}
@@ -850,7 +805,7 @@
 	\textbf{In other words:}
 	\begin{itemize}
 		\item If you actually know the secret, you can always prove it
-		\item No ``false negatives'' - legitimate users never get rejected
+		\item No ``false negatives'': legitimate users never get rejected
 		\item The protocol doesn't accidentally lock out honest participants
 	\end{itemize}
 \end{frame}
@@ -884,7 +839,7 @@
 	\end{exampleblock}
 \end{frame}
 
-\begin{frame}{Special soundness: cheaters get caught}{Unique to Sigma protocols}
+\begin{frame}{Special soundness: cheaters get caught}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\textbf{The challenge for cheaters:}
@@ -906,7 +861,7 @@
 				Being able to handle multiple challenges proves knowledge
 			\end{alertblock}
 			\begin{exampleblock}{Why ``special''?}
-				This specific form of soundness is unique to Sigma protocols
+				It's soundness with a concrete recipe: two accepting transcripts with the same commitment are enough to compute the witness
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
@@ -927,24 +882,18 @@
 \end{frame}
 
 \begin{frame}{Example: extracting from Schnorr}
-	\begin{center}
-		\textbf{Given two accepting transcripts with the same $Y$ but different challenges:}
-	\end{center}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Transcript 1:}
+			\textbf{Two accepting transcripts, same $Y$:}
 			\begin{itemize}
-				\item Commitment: $Y$
-				\item Challenge: $c$
-				\item Response: $r$
-				\item Valid: $g^r = Y \cdot A^c$
+				\item Transcript 1: $(Y, c, r)$, valid since $g^r = Y \cdot A^c$
+				\item Transcript 2: $(Y, c', r')$, valid since $g^{r'} = Y \cdot A^{c'}$
+				\item Different challenges: $c \neq c'$
 			\end{itemize}
-			\textbf{Transcript 2:}
+			\textbf{One detail:}
 			\begin{itemize}
-				\item Commitment: $Y$ (same!)
-				\item Challenge: $c'$
-				\item Response: $r'$
-				\item Valid: $g^{r'} = Y \cdot A^{c'}$
+				\item The last step divides by $c - c'$
+				\item Fine: $c \neq c'$ and $n$ is prime, so $(c - c')^{-1} \bmod n$ exists
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -953,8 +902,7 @@
 				g^r                & = Y \cdot A^c                \\
 				g^{r'}             & = Y \cdot A^{c'}             \\
 				\frac{g^r}{g^{r'}} & = \frac{A^c}{A^{c'}}         \\
-				g^{r-r'}           & = A^{c-c'}                   \\
-				g^{r-r'}           & = g^{a(c-c')}                \\
+				g^{r-r'}           & = A^{c-c'} = g^{a(c-c')}     \\
 				r-r'               & = a(c-c') \pmod{n}           \\
 				a                  & = \frac{r-r'}{c-c'} \pmod{n}
 			\end{align*}
@@ -1033,45 +981,6 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Putting it all together}
-	\begin{center}
-		\textbf{A Sigma protocol is useful when it has all three properties:}
-	\end{center}
-	\begin{columns}[c]
-		\begin{column}{0.33\textwidth}
-			\begin{block}{Completeness}
-				\begin{itemize}
-					\item Honest users succeed
-					\item No false rejections
-					\item Protocol is usable
-				\end{itemize}
-			\end{block}
-		\end{column}
-		\begin{column}{0.33\textwidth}
-			\begin{block}{Special Soundness}
-				\begin{itemize}
-					\item Cheaters get caught
-					\item Can extract witness
-					\item Protocol is secure
-				\end{itemize}
-			\end{block}
-		\end{column}
-		\begin{column}{0.33\textwidth}
-			\begin{block}{Zero-Knowledge}
-				\begin{itemize}
-					\item No information leaks
-					\item Privacy preserved
-					\item Protocol is private
-				\end{itemize}
-			\end{block}
-		\end{column}
-	\end{columns}
-	\vspace{1em}
-	\begin{center}
-		\textbf{Together, these properties create the ``magic'' of zero-knowledge proofs!}
-	\end{center}
-\end{frame}
-
 \section{Proving AND, OR}
 
 \begin{frame}{Combining proofs: AND and OR}
@@ -1122,11 +1031,8 @@
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
-			\begin{exampleblock}{Key property}
-				OR proofs hide \textit{which} condition is satisfied
-			\end{exampleblock}
-			\begin{alertblock}{Privacy guarantee}
-				Verifier learns that at least one condition holds, but not which one
+			\begin{alertblock}{The guarantee}
+				The verifier learns that at least one condition holds, and nothing about \textit{which} one
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -1135,35 +1041,28 @@
 \begin{frame}{The Robin Hood analogy}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
+			\textbf{Robin Hood has two bows:}
 			\begin{itemize}
-				\item \textit{Robin Hood has two bows:}
-				      \begin{itemize}
-					      \item One bow shoots accurately
-					      \item One bow is erratic
-					      \item King wants proof Robin can shoot well
-					      \item But Robin doesn't want to reveal which bow works!
-				      \end{itemize}
+				\item One shoots true, one is erratic
+				\item Robin must prove he can shoot, but won't say \textit{which} bow is good
 			\end{itemize}
+			\textbf{The King's test:}
 			\begin{itemize}
-				\item \textit{The challenge:}
-				      \begin{itemize}
-					      \item King draws one target
-					      \item Robin must fire both bows
-					      \item Arrows must be equidistant from target
-				      \end{itemize}
+				\item Robin fires one arrow; the King paints a target; Robin fires the other
+				\item The arrows must sit at equal distances from the target, on opposite sides
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textit{Robin's strategy:}
-				      \begin{enumerate}
-					      \item Fire the erratic bow first (lands randomly)
-					      \item Calculate where to place second arrow
-					      \item Use accurate bow to hit that exact spot
-					      \item Target appears centered between arrows!
-				      \end{enumerate}
-				\item \textbf{Control over one arrow is enough to satisfy the constraint}
-			\end{itemize}
+			\textbf{Robin's strategy:}
+			\begin{enumerate}
+				\item Fire the erratic bow first: it lands where it lands
+				\item The King paints the target
+				\item Work out the spot that balances the first arrow
+				\item Hit it with the good bow
+			\end{enumerate}
+			\begin{alertblock}{The mapping}
+				Erratic arrow $=$ simulated transcript; target $=$ challenge $C$; balance $=$ $C_0 + C_1 = C$.
+			\end{alertblock}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1173,7 +1072,7 @@
 	\textbf{Goal:} Prove ``I know $W$ such that $P_0(X,W)$ OR $P_1(X,W)$''
 	\begin{block}{The protocol}
 		\begin{enumerate}
-			\item \textbf{Commit:} Prover sends $(Y_0, Y_1)$ - commitments for both protocols
+			\item \textbf{Commit:} Prover sends $(Y_0, Y_1)$, commitments for both protocols
 			\item \textbf{Challenge:} Verifier sends single challenge $C$
 			\item \textbf{Constraint:} Prover must provide $(C_0, R_0)$ and $(C_1, R_1)$ such that:
 			      \begin{itemize}
@@ -1217,7 +1116,7 @@
 
 \begin{frame}{OR proof protocol diagram}
 	\vspace{-1.5cm}
-	\begin{center}\resizebox{0.8\textwidth}{!}{
+	\begin{center}\resizebox{0.74\textwidth}{!}{
 			\begin{msc}{}
 				\setmscvalues{small}
 				\drawframe{none}
@@ -1330,17 +1229,14 @@
 \end{frame}
 
 \begin{frame}{Example: proving equality of discrete logs}
-	\textbf{Setup:} Given $(g_1, g_2, g_3, A_1, A_2, A_3)$ where $A_i = g_i^a$ for same $a$\\
-	\textbf{Protocol to prove knowledge of $a$:}
+	\textbf{Setup:} $(g_1, g_2, g_3, A_1, A_2, A_3)$ with $A_i = g_i^a$ for the same $a$; prove knowledge of $a$ (Chaum-Pedersen, 1992):
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{enumerate}
 				\item \textbf{Commit:}
 				      \begin{itemize}
-					      \item Pick $y \twoheadleftarrow \mathbb{Z}_n$
-					      \item Compute $Y_1 = g_1^y$
-					      \item Compute $Y_2 = g_2^y$
-					      \item Compute $Y_3 = g_3^y$
+					      \item Pick one $y \twoheadleftarrow \mathbb{Z}_n$
+					      \item Compute $Y_i = g_i^y$ for $i = 1, 2, 3$
 					      \item Send $(Y_1, Y_2, Y_3)$
 				      \end{itemize}
 				\item \textbf{Challenge:} Receive $C$
@@ -1363,8 +1259,8 @@
 			\end{enumerate}
 		\end{column}
 	\end{columns}
-	\begin{alertblock}{Single response proves all!}
-		One value $R$ satisfies all three equations if and only if all discrete logs are equal
+	\begin{alertblock}{One $y$, one $R$: that is what proves equality}
+		Separate runs allow different $a$'s; one shared $y$ and $R$ forces the \textit{same} $a$ everywhere.
 	\end{alertblock}
 \end{frame}
 
@@ -1483,7 +1379,7 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Example: Non-interactive Schnorr}
+\begin{frame}{Example: non-interactive Schnorr}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Interactive Schnorr:}
@@ -1512,55 +1408,29 @@
 \end{frame}
 
 \begin{frame}{Why Fiat-Shamir is sound}
-	\begin{center}
-		\textbf{The order of operations is crucial}
-	\end{center}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
+			\textbf{The hash enforces the order:}
 			\begin{itemize}
-				\item \textbf{With random oracle:}
-				      \begin{itemize}
-					      \item Must choose $Y$ first
-					      \item Then compute $C = \func{hash}{X, Y}$
-					      \item Can't predict $C$ before choosing $Y$
-					      \item Can't ``work backwards'' like in simulation
-				      \end{itemize}
-			\end{itemize}
-			\begin{itemize}
-				\item \textbf{This enforces honest behavior:}
-				      \begin{itemize}
-					      \item Prover commits before seeing challenge
-					      \item Just like in interactive protocol
-					      \item Hash function enforces ordering
-				      \end{itemize}
+				\item The prover must fix $Y$ first
+				\item Only then does $C = \func{hash}{X, Y}$ exist
+				\item In the random oracle model, $C$ is unpredictable until $Y$ is fixed, just like a verifier's challenge
+				\item So the prover can't ``work backwards'' from $C$ to $Y$ the way our simulator did
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{alertblock}{Key difference from interactive}
-				\begin{itemize}
-					\item In interactive Sigma protocol:
-					      \begin{itemize}
-						      \item Can simulate by choosing $C, R$ first
-						      \item Then compute $Y$ backwards
-						      \item This creates deniability
-					      \end{itemize}
-				\end{itemize}
-				\begin{itemize}
-					\item In Fiat-Shamir:
-					      \begin{itemize}
-						      \item Can't choose $C$ arbitrarily
-						      \item Must be $C = \func{hash}{X, Y}$
-						      \item Can't work backwards!
-						      \item \textbf{Loses the deniability property}
-					      \end{itemize}
-				\end{itemize}
+			\begin{alertblock}{Still zero-knowledge?}
+				Yes, in the random oracle model: the simulator picks $C, R$, computes $Y$ backwards, then \textit{programs} the oracle so $\func{hash}{X, Y} := C$.
 			\end{alertblock}
+			\begin{exampleblock}{Why hash $X$ too?}
+				Omit the statement (``weak'' Fiat-Shamir) and a prover can fix $Y$ first, then pick $X$. This broke Helios's voting proofs (Bernhard-Pereira-Warinschi, 2012).
+			\end{exampleblock}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The Forking Lemma: extracting witnesses}
-	\begin{block}{Lemma (Forking Lemma)}
+\begin{frame}{The forking lemma: extracting witnesses}
+	\begin{block}{Lemma (Forking Lemma, Pointcheval-Stern 1996)}
 		If an algorithm $A$ can produce valid Fiat-Shamir proofs with non-negligible probability, then we can extract a valid witness with non-negligible probability.
 	\end{block}
 	\textbf{The extraction strategy:}
@@ -1642,40 +1512,31 @@
 	\end{alertblock}
 \end{frame}
 
-\begin{frame}{Applications of Fiat-Shamir}
-	\begin{center}
-		\textbf{Fiat-Shamir is widely used in practice}
-	\end{center}
+\begin{frame}{Fiat-Shamir is everywhere}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Digital signatures:}
+			\textbf{Signatures you already use:}
 			\begin{itemize}
-				\item Schnorr signatures
-				\item EdDSA (used in many systems)
-				\item ECDSA (related, but not a direct Fiat-Shamir construction)
-			\end{itemize}
-			\textbf{Blockchain applications:}
-			\begin{itemize}
-				\item Proof of reserves
-				\item Ring signatures for privacy
-				\item Bulletproofs (range proofs)
+				\item Schnorr signatures (in Bitcoin since Taproot, 2021)
+				\item Ed25519 (SSH, TLS, Signal): Schnorr over Curve25519
+				\item ML-DSA (Dilithium), from lecture 2.6: ``Fiat-Shamir with aborts''
+				\item ECDSA is the odd one out: not a Fiat-Shamir construction
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Advanced protocols:}
+			\textbf{Proof systems:}
 			\begin{itemize}
-				\item SNARKs (succinct proofs)
-				\item STARKs (transparent proofs)
-				\item Proof of knowledge of signature
+				\item Bulletproofs: the range proofs hiding Monero amounts
+				\item Every SNARK and STARK: an interactive protocol, made non-interactive by hashing
 			\end{itemize}
-			\begin{alertblock}{Key advantage}
-				Convert any interactive ZK proof into a non-interactive one that can be verified by anyone, anytime
+			\begin{alertblock}{Keep this in mind}
+				All of these lean on the random oracle model. Next: what happens when the hash is a real function and the protocol is a big one.
 			\end{alertblock}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\subsection{Fiat-Shamir Circuits}
+\subsection{From Statements to Circuits}
 
 \begin{frame}{From statements to circuits: a paradigm shift}
 	\begin{center}
@@ -1720,11 +1581,11 @@
 				      \end{itemize}
 				\item \textbf{Example: $y = (a + b) \cdot c$}
 				      \begin{center}
-					      \begin{tikzpicture}[scale=0.8]
-						      \node[circle,draw] (a) at (0,2) {$a$};
+					      \begin{tikzpicture}[scale=0.7]
+						      \node[circle,draw] (a) at (0,1.6) {$a$};
 						      \node[circle,draw] (b) at (0,0) {$b$};
-						      \node[circle,draw] (c) at (0,-2) {$c$};
-						      \node[rectangle,draw] (add) at (2,1) {$+$};
+						      \node[circle,draw] (c) at (0,-1.6) {$c$};
+						      \node[rectangle,draw] (add) at (2,0.8) {$+$};
 						      \node[rectangle,draw] (mul) at (4,0) {$\times$};
 						      \node[circle,draw] (y) at (6,0) {$y$};
 
@@ -1754,96 +1615,60 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The zero-knowledge circuit paradigm}
-	\begin{center}
-		\textbf{The fundamental shift in thinking}
-	\end{center}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{Old way (Sigma protocols):}
-			\begin{itemize}
-				\item Design specific protocol for each statement
-				\item Schnorr for discrete log
-				\item Different protocol for factoring
-				\item Custom protocol for each problem
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{New way (Circuit ZK):}
-			\begin{itemize}
-				\item Convert problem to circuit
-				\item Use general ZK protocol for circuits
-				\item Same protocol works for everything!
-				\item Just change the circuit
-			\end{itemize}
-		\end{column}
-	\end{columns}
-	\begin{alertblock}{This changes everything!}
-		Instead of crafting clever protocols, we write programs and prove we executed them correctly
-	\end{alertblock}
-\end{frame}
-
 \begin{frame}{Example: proving knowledge of a hash preimage}
 	\begin{center}
-		\textbf{Claim: ``I know $x$ such that SHA256($x$) = $y$''}
+		\textbf{Claim: ``I know $x$ such that SHA-256($x$) = $y$''}
 	\end{center}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{As a Sigma protocol:}
+			\textbf{As a hand-made Sigma protocol:}
 			\begin{itemize}
-				\item Would be incredibly complex
-				\item SHA-256 has 64 rounds
-				\item Each round has bitwise operations
-				\item No elegant mathematical structure
-				\item Basically impossible in practice!
+				\item SHA-256 has 64 rounds of bitwise operations
+				\item No algebraic structure to exploit, unlike $g^a$
+				\item Only the generic NP route remains: hopelessly impractical
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{As a circuit:}
 			\begin{itemize}
-				\item Write SHA-256 as circuit
-				\item Input: private $x$
-				\item Output: public $y$
-				\item Apply general circuit ZK protocol
-				\item Done! Works automatically
+				\item Write SHA-256 as a circuit: private input $x$, public output $y$
+				\item Run one general-purpose circuit ZK protocol
+				\item Done, at a price: tens of thousands of constraints for a single block
 			\end{itemize}
 		\end{column}
 	\end{columns}
+	\begin{alertblock}{The shift}
+		Old way: a clever protocol per statement. New way: write the computation as a circuit, and use one protocol for everything.
+	\end{alertblock}
 \end{frame}
 
 \begin{frame}[fragile]{From theory to practice: ZK programming}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Modern ZK development:}
-			\begin{itemize}
-				\item Write programs in high-level languages
-				\item Compiler converts to circuits
-				\item ZK protocol proves circuit execution
-				\item Developer doesn't see the circuit!
-			\end{itemize}
-			\textbf{Example (Circom syntax):}
-			\begin{verbatim}
+			\textbf{Circom's \texttt{IsZero}:} out $= 1$ if in $= 0$, else $0$
+			{\small
+\begin{verbatim}
 template IsZero() {
   signal input in;
   signal output out;
-  // Proves: out = (in == 0)
+  signal inv;
+  inv <-- in != 0 ? 1/in : 0;
+  out <== -in*inv + 1;
+  in*out === 0;
 }
-   \end{verbatim}
+\end{verbatim}
+			}
+			A compiler turns this into a constraint system; a general proof system proves the constraints hold.
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{The compilation pipeline:}
-			\begin{enumerate}
-				\item High-level code
-				\item Intermediate representation
-				\item Arithmetic circuit
-				\item Constraint system
-				\item ZK proof
-			\end{enumerate}
-			\begin{alertblock}{We've come full circle}
-				Started with ``I know a secret''\\
-				Now: ``I ran this program correctly''\\
-				Both use the same ZK machinery!
-			\end{alertblock}
+			\textbf{Read the constraints:}
+			\begin{itemize}
+				\item \texttt{<--} is a \textit{hint}: the prover just computes \texttt{inv}, nothing is checked
+				\item \texttt{<==} and \texttt{===} are \textit{constraints} the proof enforces
+				\item If in $\neq 0$: out $= 1 - \text{in} \cdot \text{in}^{-1} = 0$, and in $\cdot$ out $= 0$ holds
+				\item If in $= 0$: out $= 1$, and $0 \cdot 1 = 0$ holds
+				\item No branches, no loops, only equations: getting here from ordinary code is the compiler's job
+			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1856,9 +1681,9 @@ template IsZero() {
 		\begin{column}{0.5\textwidth}
 			\textbf{Advantages:}
 			\begin{itemize}
-				\item Universal - works for any computation
-				\item Compositional - combine circuits
-				\item Tool support - compilers, libraries
+				\item Universal: works for any computation
+				\item Compositional: combine circuits
+				\item Tool support: compilers, libraries
 				\item No need for crypto expertise
 			\end{itemize}
 		\end{column}
@@ -1900,7 +1725,7 @@ template IsZero() {
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{alertblock}{New result (2025)}
+			\begin{alertblock}{New result: Khovratovich, Rothblum, Soukhanov (2025)}
 				First practical attack on a standard protocol!\footnote{\url{https://appliedcryptography.page/paper/\#prove-false}}
 				\begin{itemize}
 					\item Targets GKR-based proof systems
@@ -1978,31 +1803,21 @@ template IsZero() {
 		\begin{column}{0.5\textwidth}
 			\textbf{From circuit to digest:}
 			\begin{itemize}
-				\item A circuit $C$ is a computation graph
-				\item Gates, wires, input/output structure
-				\item Can be serialized to bytes
-				\item \textbf{Circuit digest:} $\psi = \langle C \rangle$
+				\item A circuit $C$ is a computation graph: gates, wires, inputs, outputs
+				\item Serialize it in a fixed order and hash it: the \textbf{circuit digest} $\psi = \langle C \rangle$
+				\item $\psi$ goes into the Fiat-Shamir hash: the challenge depends on \textit{which} circuit is proved
 			\end{itemize}
-			\textbf{The encoding process:}
-			\begin{enumerate}
-				\item Enumerate all gates in order
-				\item Record gate types and connections
-				\item Include input/output specifications
-				\item Hash or encode to fixed-size digest
-			\end{enumerate}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Why digests matter for the attack:}
 			\begin{itemize}
-				\item Circuit can ``know itself''
-				\item Pass $\psi = \langle C^* \rangle$ as witness
-				\item Circuit computes hash of own description
-				\item Creates self-reference needed for attack
+				\item A circuit can't contain its own digest (circular)
+				\item But it can receive it as the witness: $w = \psi = \langle C^* \rangle$
+				\item Then it can hash its own description, just like the verifier does
 			\end{itemize}
 			\begin{alertblock}{If a circuit is deep enough, it can:}
 				\begin{itemize}
-					\item Take its own digest as input
-					\item Compute $\func{hash}{\psi, \ldots}$
+					\item Compute $\func{hash}{\psi, \ldots}$ internally
 					\item Predict its own challenge!
 				\end{itemize}
 			\end{alertblock}
@@ -2044,80 +1859,34 @@ template IsZero() {
 	\end{center}
 \end{frame}
 
-\begin{frame}{Understanding the attack: a real-world analogy}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{Imagine a magic lock:}
-			\begin{itemize}
-				\item The lock asks you a random question
-				\item You must answer correctly to open it
-				\item The question depends on what you show it
-				\item Normally: you can't predict the question
-			\end{itemize}
-			\textbf{The honest scenario:}
-			\begin{enumerate}
-				\item Show the lock your credentials
-				\item Lock generates random challenge
-				\item You answer based on your secret
-				\item Lock verifies and opens
-			\end{enumerate}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{The attack:}
-			\begin{itemize}
-				\item You build a special mirror
-				\item Mirror shows the lock... itself!
-				\item Lock's question now depends on the mirror
-				\item But mirror was built knowing the lock
-				\item You pre-computed the ``random'' question!
-			\end{itemize}
-		\end{column}
-	\end{columns}
+\begin{frame}{Understanding the attack: an exam analogy}
+	\textbf{The honest exam:}
+	\begin{itemize}
+		\item You hand in an essay ($C$), a sealed answer sheet ($w$), and a claimed grade ($y^*$)
+		\item The professor hashes all three to pick the questions ($r$), so you can't predict them
+	\end{itemize}
+	\textbf{The cheat:}
+	\begin{itemize}
+		\item Your essay says: ``hash the ID on my answer sheet with the grade and the sheet; that's the question. Tune the output so the check passes exactly there''
+		\item On the answer sheet you write the essay's real ID, $\langle C^* \rangle$: the essay now knows the question before the professor does
+	\end{itemize}
+	\begin{alertblock}{Why the detour through the answer sheet?}
+		The ID is a hash \textit{of the essay}, so the essay can't contain it. Passing it in as the witness breaks the circle.
+	\end{alertblock}
 \end{frame}
 
-\begin{frame}{The attack analogy continued: exam cheating}
-	\begin{columns}[c]
-		\begin{column}{0.67\textwidth}
-			\textbf{Think of it like an exam:}
-			\begin{itemize}
-				\item Professor creates exam based on submitted essay
-				\item Questions are ``random'' but derived from your essay
-				\item Write essay first, then face unknown questions
-			\end{itemize}
-			\textbf{The cheater's trick:}
-			\begin{enumerate}
-				\item Submit an essay on ``how this exam will be graded''
-				\item Essay contains the grading algorithm itself
-				\item Essay predicts exactly which questions will be asked
-				\item Cheater embeds the answers in the essay!
-			\end{enumerate}
-		\end{column}
-		\begin{column}{0.33\textwidth}
-			\textbf{Why it works:}
-			\begin{itemize}
-				\item ``Random'' challenge comes from hashing your input
-				\item But your input describes the hash process
-				\item You compute the hash inside your submission
-				\item Your answer is tailored to that exact challenge
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Why this attack is devastating}
+\begin{frame}{What the attack needs, and what it exploits}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{What makes this different:}
-			\begin{itemize}
-				\item GKR is widely used
-				\item Works for \textit{any} hash
-				\item Affects real deployed systems
-			\end{itemize}
 			\textbf{The depth requirement:}
 			\begin{itemize}
 				\item Attack needs: $d \geq d_{\text{comm}} + d_h + \mathcal{O}(1)$
-				\item Circuit must be deep enough to compute hash + commitment
-				\item Many practical circuits satisfy this!
+				\item The circuit must be deep enough to compute the hash and the commitment itself
+				\item Many practical circuits are, and it works for \textit{any} concrete hash function
+			\end{itemize}
+			\textbf{Who can pull it off?}
+			\begin{itemize}
+				\item Whoever gets to choose the circuit, or to slip one in (next slide)
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -2166,9 +1935,6 @@ template IsZero() {
 \end{frame}
 
 \begin{frame}{Implications for practice}
-	\begin{center}
-		\textbf{What does this mean for real systems?}
-	\end{center}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Immediate impact:}
@@ -2188,13 +1954,13 @@ template IsZero() {
 		\begin{column}{0.5\textwidth}
 			\textbf{Mitigations:}
 			\begin{itemize}
-				\item Restrict circuit depth
-				\item Avoid circuits with crypto ops
+				\item Cap the circuit depth
+				\item Distrust in-circuit crypto operations
+				\item Know where your circuit came from
 				\item Use canonical representations
-				\item Domain separation techniques
 			\end{itemize}
 			\begin{exampleblock}{Silver lining}
-				Simple circuits (e.g., for lookups) seem safe - they have canonical forms
+				Simple circuits (e.g., for lookups) seem safe: they have canonical forms
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
@@ -2223,7 +1989,7 @@ template IsZero() {
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item \textbf{Why is this revolutionary?}
+				\item \textbf{Why does this matter?}
 				      \begin{itemize}
 					      \item No need to design custom circuits
 					      \item Write normal code, get ZK proofs
@@ -2250,7 +2016,7 @@ template IsZero() {
 				      \begin{itemize}
 					      \item RAM with read/write operations
 					      \item Stack and heap management
-					      \item Merkle trees for efficiency
+					      \item Every access must be proven consistent
 				      \end{itemize}
 				\item \textbf{Execution trace:}
 				      \begin{itemize}
@@ -2270,44 +2036,34 @@ template IsZero() {
 				\item Output: proof + public result
 			\end{enumerate}
 			\begin{exampleblock}{Examples in practice}
-				RISC Zero, SP1, Jolt, Cairo VM - each with different trade-offs
+				RISC Zero, SP1, Jolt, Cairo VM, each with different trade-offs
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{zkVM applications and impact}
+\begin{frame}{What are zkVMs used for?}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
+			\textbf{Blockchain scaling (recall 2.7):}
 			\begin{itemize}
-				\item \textbf{Blockchain scaling:}
-				      \begin{itemize}
-					      \item Rollups: execute off-chain, prove on-chain
-					      \item Compress thousands of transactions
-					      \item Ethereum's Layer 2 revolution
-					      \item Orders of magnitude cheaper
-				      \end{itemize}
-				\item \textbf{Verifiable computation:}
-				      \begin{itemize}
-					      \item Cloud computing with proof
-					      \item Outsource work, verify results
-					      \item No trust in compute provider
-					      \item Perfect for untrusted environments
-				      \end{itemize}
+				\item ZK rollups: execute thousands of transactions off-chain, post one proof on-chain
+				\item The chain verifies the proof instead of re-executing everything
+			\end{itemize}
+			\textbf{Verifiable outsourced computation:}
+			\begin{itemize}
+				\item Outsource a job to an untrusted cloud; get the result plus a proof it is correct
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
+			\textbf{Private computation:}
 			\begin{itemize}
-				\item \textbf{Private applications:}
-				      \begin{itemize}
-					      \item Machine learning inference
-					      \item Private smart contracts
-					      \item Confidential databases
-					      \item Regulatory compliance proofs
-				      \end{itemize}
+				\item ML inference without revealing the model or the input
+				\item Compliance proofs: ``this transaction passed the checks'', without showing the data
+				\item Games with hidden state: our Battleship
 			\end{itemize}
 			\begin{alertblock}{The trade-off}
-				Proving is 1,000--1,000,000$\times$ slower than native execution
+				Proving is $10^5$--$10^6\times$ slower than just running the program.
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -2401,7 +2157,7 @@ template IsZero() {
 						            \item GPU acceleration available
 						            \item Full control over process
 					            \end{itemize}
-					      \item \textbf{Bonsai (remote):}
+					      \item \textbf{Remote proving (RISC Zero's hosted service):}
 					            \begin{itemize}
 						            \item Cloud-based proving
 						            \item No host code needed
@@ -2414,7 +2170,7 @@ template IsZero() {
 	\end{columns}
 \end{frame}
 
-\begin{frame}{ZK Battleship: proving without revealing}
+\begin{frame}{ZK Battleship (Project D): proving without revealing}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{The classic problem:}
@@ -2436,7 +2192,7 @@ template IsZero() {
 				\item Server proves each response is correct
 				\item Without revealing ship positions!
 				\item Player 2 verifies proof cryptographically
-				\item Cheating is mathematically impossible
+				\item Cheating is caught, except with negligible probability
 			\end{itemize}
 			\begin{alertblock}{The witness}
 				The secret \texttt{GameState}: 5 ships with positions, orientations, and a random ``pepper'' for hiding
@@ -2505,6 +2261,7 @@ fn main() {
 			\textbf{The guest program (round.rs):}
 			\begin{verbatim}
 fn main() {
+  // state, shot: env::read()
   let old = state.commit();
   let hit =
     state.apply_shot(shot);
@@ -2540,7 +2297,7 @@ fn main() {
 	\end{columns}
 \end{frame}
 
-\begin{frame}{ZK Battleship: verification and security}
+\begin{frame}{ZK Battleship: one round, end to end}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\vspace{-2cm}
@@ -2638,7 +2395,7 @@ fn main() {
 					      \item \textbf{1d:} Verify constraint $\leftrightarrow$ VM semantics
 					      \item \textbf{1e:} Glue everything together
 				      \end{itemize}
-				\item \textbf{Timeline:} No zkVM likely to fully meet Stage 1 for at least \textbf{2 years}
+				\item \textbf{Timeline (2025 estimate):} no zkVM likely to fully meet Stage 1 for at least \textbf{2 years}
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -2656,7 +2413,7 @@ fn main() {
 					      \item Ensures completeness
 					      \item Zero-knowledge if claimed
 				      \end{itemize}
-				\item \textbf{Timeline:} Stage 3 in \textbf{4+ years}
+				\item \textbf{Timeline (2025 estimate):} Stage 3 in \textbf{4+ years}
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -2717,7 +2474,7 @@ fn main() {
 				\item \textbf{Why so slow?}
 				      \begin{itemize}
 					      \item Every instruction $\rightarrow$ constraints
-					      \item Memory access needs Merkle proofs
+					      \item Every memory access must be proven consistent
 					      \item Polynomial commitments are expensive
 					      \item Recursion adds more overhead
 				      \end{itemize}
@@ -2756,7 +2513,7 @@ fn main() {
 						            \item Use classical SNARKs for now
 					            \end{itemize}
 				      \end{itemize}
-				\item \textbf{Realistic timeline:}
+				\item \textbf{Timeline (2025 estimate):}
 				      \begin{itemize}
 					      \item 2 years: Stage 1 protocols
 					      \item 3 years: Stage 2 verifiers
@@ -2823,7 +2580,7 @@ fn main() {
 						            \item Receiver
 						            \item Amount
 					            \end{itemize}
-					      \item Revolutionary achievement!
+					      \item The first time ZK proofs guarded real money
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -2852,9 +2609,10 @@ fn main() {
 		\begin{column}{0.5\textwidth}
 			\textbf{What the ZK proof proves:}
 			\begin{itemize}
-				\item Input notes exist
-				\item Sender owns the input notes
-				\item No double spending
+				\item The input notes exist on the chain
+				\item The sender owns them
+				\item They haven't been spent before
+				\item Values balance: no ZEC created from nothing
 			\end{itemize}
 			\begin{alertblock}{The magic}
 				All this is proved without revealing which notes are spent or created!
@@ -2880,11 +2638,11 @@ fn main() {
 					      \item Memory: $\approx$40 MB
 					      \item Mobile feasible
 				      \end{itemize}
-				\item \textbf{Halo 2 (today):}
+				\item \textbf{Orchard / Halo 2 (2022):}
 				      \begin{itemize}
 					      \item No trusted setup!
-					      \item Recursive proofs
-					      \item Even better performance
+					      \item Supports recursive proofs
+					      \item Proving is fast enough for phones
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -2903,64 +2661,54 @@ fn main() {
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Impact and lessons learned}
+\begin{frame}{Zcash: lessons from a decade in production}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Technical achievements:}
+			\textbf{What went right:}
 			\begin{itemize}
-				\item First production ZK system at scale
-				\item Proved ZK can work in an adversarial environment
-				\item Inspired countless other projects
-				\item Advanced the field significantly
+				\item First ZK system guarding real money
+				\item Proof-system engineering (Sprout, Sapling, Orchard) the whole field reused
 			\end{itemize}
-			\textbf{Challenges faced:}
+			\textbf{What went wrong:}
 			\begin{itemize}
-				\item Regulatory concerns
-				\item Exchange delistings
-				\item Slow progress and growth
+				\item 2018: a soundness bug in the original proof system (BCTV14) allowed counterfeiting; fixed in Sapling, disclosed 2019
+				\item Delistings under regulatory pressure
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Lessons for ZK adoption:}
+			\textbf{Lessons:}
 			\begin{itemize}
-				\item Privacy must be easy to use
-				\item Optional privacy $\rightarrow$ limited adoption
-				\item Performance matters enormously
-				\item Trust assumptions are critical
-				\item Regulatory environment is key
+				\item Optional privacy gets little use: most ZEC sat in the transparent pool for years
+				\item A trusted setup is a permanent liability; Halo 2 removed it
+				\item Peer-reviewed proof systems can still be wrong (compare Fiat-Shamir)
+				\item Proving time decides whether phones can join (40 s $\rightarrow$ 2.5 s)
 			\end{itemize}
-			\begin{exampleblock}{Legacy}
-				Zcash showed the world that zero-knowledge proofs aren't just theory - they can secure billions in value
-			\end{exampleblock}
 		\end{column}
 	\end{columns}
 \end{frame}
 
 \subsection{ZK Goes Mainstream: Google's Open Source Initiative}
 
-\begin{frame}{From academic curiosity to industry adoption}
+\begin{frame}{2025: Google open-sources ZK age verification}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{What just happened?}
+			\textbf{What happened:}
 			\begin{itemize}
-				\item Google open-sourced ZKP libraries
-				\item Partnership with Sparkasse (German bank)
-				\item Focus on EU age assurance
-				\item Code available on GitHub\footnote{\url{https://github.com/google/longfellow-zk}}
+				\item Google open-sourced its ZK library, longfellow-zk\footnote{\url{https://github.com/google/longfellow-zk}}
+				\item Partnership with Sparkasse (German bank) on age assurance under EU rules
 			\end{itemize}
-			\textbf{Why this matters:}
+			\textbf{What the proof says:}
 			\begin{itemize}
-				\item Tech giant embracing privacy tech
-				\item Real-world deployment at scale
-				\item Not just research anymore!
+				\item ``I hold an issuer-signed credential whose birthdate is over 18 years ago''
+				\item A circuit checks the signature and the date, in zero knowledge
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{exampleblock}{The promise fulfilled}
+			\begin{exampleblock}{In Google's words}
 				``In layperson's terms, ZKP makes it possible for people to prove that something about them is true without exchanging any other data.''
 			\end{exampleblock}
-			\begin{alertblock}{Think about it}
-				We've spent this lecture learning the theory. Now it's becoming everyday technology!
+			\begin{alertblock}{But (see Bellovin, in the readings)}
+				The proof is zero-knowledge; the system around it isn't automatically private: you still trust the issuer and the wallet, and nothing says who holds the phone.
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -2994,8 +2742,37 @@ fn main() {
 				\item Cryptographically secure
 			\end{itemize}
 			\begin{block}{Question for you}
-				What other attributes could we prove this way? Think beyond age...
+				What other attributes could we prove this way? Think beyond age\ldots
 			\end{block}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{So, what else could you prove about yourself?}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Financial services:}
+			\begin{itemize}
+				\item ``My income is above the threshold'', without the amount
+				\item KYC checks without handing over your identity
+			\end{itemize}
+			\textbf{Healthcare:}
+			\begin{itemize}
+				\item Vaccination status
+				\item Insurance eligibility
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Online platforms:}
+			\begin{itemize}
+				\item ``I am a human, and a different human from the last 100 accounts''
+				\item Reputation or membership without identity
+			\end{itemize}
+			\textbf{Government services:}
+			\begin{itemize}
+				\item Voting eligibility
+				\item Holding a valid driving licence
+			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -3003,12 +2780,11 @@ fn main() {
 \begin{frame}{The European regulatory landscape}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{eIDAS Regulation (2026):}
+			\textbf{eIDAS 2.0 (in force since 2024):}
 			\begin{itemize}
-				\item European Digital Identity Wallet
-				\item Every EU citizen gets one
-				\item Must work across all member states
-				\item Privacy-enhancing tech encouraged
+				\item Member states must offer a Digital Identity Wallet by end of 2026
+				\item Accepted across all member states
+				\item Selective disclosure is required; ZK is one way to deliver it
 			\end{itemize}
 			\textbf{The tension:}
 			\begin{itemize}
@@ -3027,145 +2803,29 @@ fn main() {
 				\end{itemize}
 			\end{alertblock}
 			\begin{exampleblock}{Looking for extra credit?}
-				Research the EUDI Wallet proposal. Does it truly protect privacy or just shift trust?
+				Research the EUDI Wallet Architecture Reference Framework. Does it truly protect privacy, or just shift trust?
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The open source angle: democratizing privacy}
+\subsection{Wrapping Up}
+
+\begin{frame}{What we learned today}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Benefits of open sourcing:}
 			\begin{itemize}
-				\item Transparency - no backdoors
-				\item Community review
-				\item Faster innovation
-				\item No vendor lock-in
-				\item Educational value
-			\end{itemize}
-			\textbf{The ecosystem effect:}
-			\begin{itemize}
-				\item Developers can build on it
-				\item Researchers can improve it
-				\item Standards can emerge
+				\item \textbf{Schnorr:} commit $Y = g^y$, challenge $c$, respond $r = y + ca$; a transcript can be faked, so it teaches the verifier nothing
+				\item \textbf{Sigma protocols:} the general three-message pattern. Special soundness: two transcripts with the same $Y$ give away the witness
+				\item \textbf{AND / OR:} share one challenge, or split it and simulate the branch you can't prove
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{But consider:}
 			\begin{itemize}
-				\item Google's motivations?
-				\item Control through contribution?
-				\item Patent considerations?
-				\item Implementation vs. specification
+				\item \textbf{Fiat-Shamir:} the hash plays verifier. Gained: signatures, non-interaction. Lost: deniability, and a real hash is not a random oracle (the 2025 attack)
+				\item \textbf{Circuits and zkVMs:} prove any program ran correctly, at $10^5$--$10^6\times$ the cost, on immature systems
+				\item \textbf{In the wild:} Zcash since 2016; ZK age verification arriving on phones and in EU wallets
 			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\subsection{The Future of Real-World Zero-Knowledge Systems}
-
-\begin{frame}{Beyond age verification: the possibilities}
-	\begin{center}
-		\textbf{Where else could ZK proofs transform our digital lives?}
-	\end{center}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{Financial services:}
-			\begin{itemize}
-				\item Prove income without revealing amount
-				\item Creditworthiness without credit score
-				\item KYC without identity exposure
-			\end{itemize}
-			\textbf{Healthcare:}
-			\begin{itemize}
-				\item Vaccination status
-				\item Insurance eligibility
-				\item Clinical trial participation
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{Social platforms:}
-			\begin{itemize}
-				\item Prove you're human (not a bot)
-				\item Community membership
-				\item Reputation without identity
-			\end{itemize}
-			\textbf{Government services:}
-			\begin{itemize}
-				\item Voting eligibility
-				\item Benefit qualification
-				\item License verification
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Technical challenges ahead}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{Current limitations:}
-			\begin{itemize}
-				\item Proof generation time
-				\item Verification complexity
-				\item Key management
-				\item Trusted setup ceremonies
-				\item Quantum resistance
-			\end{itemize}
-			\textbf{Research frontiers:}
-			\begin{itemize}
-				\item Recursive proof composition
-				\item Hardware acceleration
-				\item Post-quantum ZK
-				\item Universal circuits
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{User experience challenges:}
-			\begin{itemize}
-				\item How to explain ZK to users?
-				\item Wallet backup and recovery
-				\item Cross-device synchronization
-				\item Fallback mechanisms
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{The future of privacy online}
-	\begin{center}
-		\textbf{Three possible futures - which will we choose?}
-	\end{center}
-	\begin{columns}[c]
-		\begin{column}{0.33\textwidth}
-			\begin{block}{Surveillance capitalism}
-				\begin{itemize}
-					\item Status quo continues
-					\item Data = currency
-					\item Privacy theater
-					\item ZK never adopted
-				\end{itemize}
-			\end{block}
-		\end{column}
-		\begin{column}{0.33\textwidth}
-			\begin{block}{Privacy renaissance}
-				\begin{itemize}
-					\item ZK everywhere
-					\item Self-sovereign identity
-					\item Minimal disclosure
-					\item User empowerment
-				\end{itemize}
-			\end{block}
-		\end{column}
-		\begin{column}{0.33\textwidth}
-			\begin{block}{Hybrid reality}
-				\begin{itemize}
-					\item Some privacy gains
-					\item Corporate control
-					\item Government oversight
-					\item Compromises
-				\end{itemize}
-			\end{block}
 		\end{column}
 	\end{columns}
 \end{frame}

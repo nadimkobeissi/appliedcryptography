@@ -27,7 +27,7 @@
 		\item \textbf{What we are actually here to learn:}
 		      \begin{itemize}
 			      \item How a tiny statistical flaw becomes a total break, given enough traffic.
-			      \item How a \emph{primitive} can be sound while every \emph{protocol} using it fails.
+			      \item How a primitive's \emph{interface}, not just its internals, can sink every \emph{protocol} built on it.
 			      \item How long it takes to remove a broken algorithm from the internet, and why.
 		      \end{itemize}
 		\item RC4 itself is dead. Every one of its failure modes is alive.
@@ -58,7 +58,7 @@
 				\item \textbf{September 1994:} the algorithm is posted anonymously to the Cypherpunks mailing list.
 				      \begin{itemize}
 					      \item Verified against licensed implementations within days.
-					      \item RSA never confirmed it, so the public version was politely called \textbf{``Alleged RC4''} or \textbf{ARCFOUR} --- a name still in OpenSSH and GnuTLS today.
+					      \item RSA never confirmed it, so the public version was politely called \textbf{``Alleged RC4''} or \textbf{ARCFOUR} --- a name OpenSSH kept until 2017 and GnuTLS keeps today.
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -188,7 +188,7 @@
 					\filldraw[circlecolor] (3,6) circle (0.3);
 					\draw[-{Stealth[length=3mm, width=2mm]}, thick, purplearrow] (3,6) -- (18.6,5.3);
 					\filldraw[circlecolor] (18.6,5.3) circle (0.3);
-					\pause
+					\pause[4]
 
 					\filldraw[circlecolor] (2,5) circle (0.3);
 					\draw[-{Stealth[length=3mm, width=2mm]}, thick, purplearrow] (2,5) -- (13.8,4.2);
@@ -231,7 +231,7 @@
 			}
 		\end{column}
 		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<3->]
+			\begin{itemize}[<+(2)->]
 				\item One key must never produce the same keystream twice. Modern ciphers use a \textbf{nonce}: same $K$, different $N$, unrelated keystream.
 				\item RC4 offers no such input, so every protocol had to \textbf{invent one} by manufacturing a fresh $k$ per message.
 				\item \textbf{WEP's answer:} $k \coloneq IV \,\|\, K$. Cheap, and catastrophic.
@@ -254,7 +254,7 @@
 		\item \textbf{1997 --- Goli\'{c} (Eurocrypt).} A linear statistical weakness in the output, giving a distinguisher from random.
 		\item \textbf{2001 --- Mantin \& Shamir (FSE).} The cleanest result of the era, and the one that should have ended RC4 on the spot.
 	\end{itemize}
-	\onslide<+->{\centering\textit{Every one of these was published, peer-reviewed, and deployed straight past.}}
+	\onslide<+->{\centering\textit{Every one of these was public. Every one was deployed straight past.}}
 \end{frame}
 
 \begin{frame}{Mantin \& Shamir (2001): the second byte betrays you}
@@ -269,7 +269,7 @@
 		\begin{column}{0.48\textwidth}
 			\onslide<+->{
 				\definitionbox{Why this is devastating}{
-					Take one plaintext byte encrypted under many independent keys --- say, byte 2 of a cookie sent on every request.
+					Take one plaintext byte encrypted under many independent keys --- say, a byte of a session cookie, resent at the same position in every request.
 					\vspace{0.5em}
 					\\
 					The most common ciphertext byte at position 2 is $M_2 \oplus 0 = M_2$.
@@ -312,7 +312,7 @@
 		\begin{column}{0.5\textwidth}
 			An encryption scheme has one-time secrecy if its ciphertexts are uniformly distributed when keys are sampled uniformly, kept secret, and used for only one encryption, no matter how the plaintexts are chosen.
 			\\[1em]
-			\textbf{Mantin and Shamir just handed us a distinguisher between these two libraries:} call \textsf{ots.enc} on a fixed $M$ a few million times, and count how often byte 2 of $C$ equals $M_2$.
+			\textbf{Mantin and Shamir just handed us a distinguisher between these two libraries:} call \textsf{ots.enc} on a fixed $M$ a few thousand times, and count how often byte 2 of $C$ equals $M_2$.
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -345,12 +345,12 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{In fact\ldots}
+\begin{frame}{In fact, byte 2 is only the beginning}
 	\begin{center}
 		\vspace{-0.3em}
 		\begin{tikzpicture}
 			\node[fill=white, anchor=center, inner sep=1mm]{
-				\includegraphics[height=0.68\textheight, keepaspectratio]{images/rc4-bias.png}
+				\includegraphics[height=0.65\textheight, keepaspectratio]{images/rc4-bias.png}
 			};
 			\node[fit=(current bounding box), inner sep=0.5mm, draw=white, line width=0.5mm] {};
 		\end{tikzpicture}
@@ -367,10 +367,10 @@
 			\begin{itemize}
 				\item \textbf{A 104-bit key $K$}, shared by every device on the network.
 				      \begin{itemize}
-					      \item Typed in as hex or ASCII, \emph{not} run through a KDF. Originally 40 bits, for US export controls.
+					      \item Typed in directly, \emph{no} KDF. Originally 40 bits, for export.
 				      \end{itemize}
 				\item \textbf{A 24-bit IV}, chosen per packet.
-				\item \textbf{Per packet:} form the RC4 key $IV \,\|\, K$, XOR the keystream with the plaintext, and send the IV \textbf{in the clear}.
+				\item \textbf{Per packet:} append a \textbf{CRC-32} checksum (the ICV), encrypt both with RC4 under $IV \,\|\, K$, and send the IV \textbf{in the clear}.
 			\end{itemize}
 			\begin{center}
 				\begin{tikzpicture}[scale=0.5]
@@ -442,7 +442,7 @@
 		\begin{column}{0.54\textwidth}
 			\begin{itemize}[<+->]
 				\item Fluhrer, Mantin and Shamir showed that for certain IVs the KSA's early steps ``resolve'' into a state that leaks a key byte into the \emph{first keystream byte}.\footnote{\url{https://appliedcryptography.page/paper/\#rc4-ksa}}
-				\item To attack key byte $K_A$, wait for an IV of the form $(A+3,\ 255,\ X)$, where $X$ is anything.
+				\item To attack secret byte $K_{A+1}$, which sits at position $A+3$ of the RC4 key, wait for an IV of the form $(A+3,\ 255,\ X)$, where $X$ is anything.
 				\item Roughly $1$ packet in $2^{16}$ matches, and about \textbf{60 of them} pin down one key byte. Then move to $A+1$ and repeat.
 			\end{itemize}
 		\end{column}
@@ -478,7 +478,7 @@
 
 \begin{frame}{Why $(A+3, 255, X)$? Let us trace it}
 	\begin{columns}[c]
-		\begin{column}{0.52\textwidth}
+		\begin{column}{0.5\textwidth}
 			Take $A = 0$, so $IV = (3, 255, X)$. Every step below depends only on the \emph{public} IV, so the attacker can replay it.
 			\begin{center}
 				\footnotesize
@@ -496,24 +496,24 @@
 			\end{center}
 			First PRGA step: $i = 1$, $j = S[1] = 0$, so swap $S[1]$ with $S[0]$ and emit $Z_1 = S[S[1] {+} S[0]] = S[3]$.
 		\end{column}
-		\begin{column}{0.48\textwidth}
+		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item The first keystream byte \textbf{is} whatever step $i=3$ deposited at $S[3]$, and it came from index $X + 6 + K_1$. The attacker replayed the permutation, so they invert it: $K_1 = S_3^{-1}[Z_1] - X - 6$.
+				\item $Z_1$ \textbf{is} whatever step $i=3$ deposited at $S[3]$: the entry at index $X + 6 + K_1$ of the state $S$ just before that step, which depends only on the IV. Rebuild $S$ and invert it: $K_1 = S^{-1}[Z_1] - X - 6$.
 				\item This holds only if the remaining $252$ KSA steps never touch indices $0, 1, 3$: probability $\approx e^{-3} \approx \textbf{5\%}$.
-				\item The other $95\%$ is evenly spread noise. \textbf{So take a vote:} the true $K_1$ polls $\approx 5\%$, each wrong value $\approx 0.4\%$.
+				\item The other $95\%$ is evenly spread noise, \textbf{so take a vote:} the true $K_1$ polls $\approx 5\%$, each wrong value $\approx 0.4\%$.
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{From paper to practice, in months}
+\begin{frame}{From paper to practice, in weeks}
 	\begin{itemize}[<+->]
 		\item \textbf{August 2001:} the FMS paper appears at Selected Areas in Cryptography.
 		\item \textbf{August 2001:} Stubblefield, Ioannidis and Rubin implement it and pull a real key off a real access point, in a paper titled \textit{Using the Fluhrer, Mantin, and Shamir Attack to Break WEP}.
 		\item \textbf{Weeks later:} \textbf{AirSnort} and \textbf{WEPCrack} ship as free public tools. Point, click, wait for a few million packets, get the key.
 		\item \textbf{2004--2006:} \textbf{aircrack-ng} adds \textbf{packet injection} --- replay an ARP request and the access point generates traffic on demand. The attacker stops waiting for a busy network and manufactures the traffic instead.
 	\end{itemize}
-	\onslide<+->{\centering\textbf{From ``interesting theoretical result'' to script-kiddie tool: about three months.}}
+	\onslide<+->{\centering\textbf{From ``interesting theoretical result'' to script-kiddie tool: a few weeks.}}
 \end{frame}
 
 \begin{frame}{Attacks only get better}
@@ -521,7 +521,7 @@
 		\begin{column}{0.54\textwidth}
 			\begin{itemize}[<+->]
 				\item \textbf{Klein:} a stronger key--keystream correlation that does \emph{not} need the special FMS IV shape. Suddenly \emph{every} packet is useful, not one in $2^{16}$.
-				\item \textbf{PTW --- Tews, Weinmann and Pyshkin (2007):} combine Klein's correlation with Bayesian ranking of candidate key bytes, attacking all bytes at once instead of left to right.
+				\item \textbf{PTW --- Tews, Weinmann and Pyshkin (2007):} combine Klein's correlation with key ranking, and recover each key byte independently instead of left to right, so one wrong byte no longer poisons the rest.
 				      \begin{itemize}
 					      \item \textbf{40{,}000} packets for $50\%$ success, \textbf{85{,}000} for $95\%$.
 					      \item Paper title: \textit{Breaking 104 bit WEP in less than 60 seconds}.
@@ -537,7 +537,7 @@
 					\\[0.2em]
 					\textbf{2007:} tens of thousands, under a minute.
 					\\[0.5em]
-					Nobody found a \emph{new} weakness in RC4 between 2001 and 2007. They just got better at using the one they had.
+					Between 2001 and 2007 the weakness stayed the same --- the key schedule leaking into the first bytes. Only the exploitation improved.
 				}
 			}
 			\onslide<+->{\centering\textit{``Attacks always get better; they never get worse.''}}
@@ -547,12 +547,12 @@
 
 \begin{frame}{What WEP got wrong}
 	\begin{itemize}[<+->]
-		\item \textbf{It fed attacker-visible data straight into the key.} Concatenating a public IV with a secret key is not key derivation. WPA2 and everything since run a \textbf{KDF}, so per-packet keys are unrelated even when their inputs are not.
+		\item \textbf{It fed attacker-visible data straight into the key.} Concatenating a public IV with a secret key is not key derivation. WPA's TKIP fixed it with a per-packet \textbf{key-mixing function}; WPA2 gave AES a proper nonce instead.
 		\item \textbf{It reused one key across every device and every packet.} No forward secrecy, no isolation: one compromise is total compromise.
 		\item \textbf{It chose a 24-bit IV.} Even with perfect key derivation, that space exhausts in hours.
 		\item \textbf{It had no real integrity protection.} WEP's CRC-32 checksum is linear, so an attacker can flip ciphertext bits and patch the checksum to match.
 	\end{itemize}
-	\onslide<+->{\centering\textbf{None of this is RC4's fault.} WEP would still be broken had it used AES this way.}
+	\onslide<+->{\centering\textbf{Only the first needed RC4.} The other three would have sunk WEP with any cipher.}
 \end{frame}
 
 \section{RC4 in TLS}
@@ -575,9 +575,8 @@
 	\begin{columns}[c]
 		\begin{column}{0.52\textwidth}
 			\begin{itemize}[<+->]
-				\item Rather than reason analytically, five researchers \emph{measured} RC4's keystream over a vast number of random keys.\footnote{\url{https://appliedcryptography.page/paper/\#rc4-tls}} The biases are not confined to byte 2: \textbf{every one} of the first 256 positions is non-uniform.
-				\item $2^{26}$ sessions recovered the first $\approx 40$ bytes of application data at over $50\%$ per byte; $2^{32}$ got essentially all $256$.
-				\item None of this needs a weak key: these are properties of the algorithm.
+				\item Rather than reason analytically, five researchers \emph{measured} RC4's keystream over $2^{44}$ random keys.\footnote{\url{https://appliedcryptography.page/paper/\#rc4-tls}} The bias is not confined to byte 2, and needs no weak key: \textbf{every one} of the first 256 positions is non-uniform.
+				\item $2^{26}$ sessions recovered the first $40$ bytes of application data at over $50\%$ per byte; $2^{32}$ got over $96\%$ for all $220$ within reach (keystream bytes $1$--$36$ encrypt the handshake's \textsf{Finished} message).
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.48\textwidth}
@@ -631,7 +630,7 @@
 					Single-byte biases live in the first 256 bytes, so TLS could have escaped them by discarding the keystream's start. ABSAB is a \textbf{long-term} bias, present at position 10 and at position 10 million: there is no prefix you can throw away.
 					\vspace{0.4em}
 					\\
-					It also relates a byte to \emph{another byte of the same plaintext} --- exactly what you want against something structured, like a password.
+					It also relates a byte to \emph{another byte of the same plaintext} --- exactly what you want against structured plaintext like a password.
 				}
 			}
 		\end{column}
@@ -640,11 +639,11 @@
 
 \begin{frame}{2015: three attacks finish the job}
 	\begin{itemize}[<+->]
-		\item \textbf{``Bar Mitzvah'' (Mantin, Black Hat Asia).} Revisits the \textbf{invariance weakness} that Fluhrer, Mantin and Shamir had described back in 2001: for a class of weak keys, structure in the key survives the KSA and leaks plaintext. The name is a joke about a weakness finally coming of age at thirteen.
+		\item \textbf{``Bar Mitzvah'' (Mantin, Black Hat Asia).} Revisits the \textbf{invariance weakness} from the 2001 FMS paper: for a class of weak keys, structure in the key survives the KSA and leaks plaintext. The name: a weakness finally coming of age at thirteen.
 		\item \textbf{Garman, Paterson and van der Merwe (USENIX Security),} \textit{Attacks Only Get Better}.\footnote{\url{https://appliedcryptography.page/paper/\#rc4-attacks}}
 		      \begin{itemize}
 			      \item Target \textbf{passwords} rather than cookies: HTTP Basic Authentication and IMAP resend the password on \emph{every} request.
-			      \item Combine the ABSAB bias with how humans actually choose passwords, plus a dictionary.
+			      \item Combine the keystream biases with how humans actually choose passwords: Bayesian inference over a dictionary.
 		      \end{itemize}
 		\item \textbf{Vanhoef and Piessens, ``RC4 NOMORE'' (USENIX Security).} The same machinery, actually executed: a real browser cookie decrypted in \textbf{52 hours}, and \textbf{WPA-TKIP} --- WEP's own RC4-based replacement --- broken in about \textbf{one}.\footnote{\url{https://appliedcryptography.page/paper/\#rc4-biases}}
 	\end{itemize}
@@ -653,21 +652,21 @@
 
 \begin{frame}{Why passwords were the softer target}
 	\begin{columns}[c]
-		\begin{column}{0.56\textwidth}
+		\begin{column}{0.55\textwidth}
 			\begin{itemize}[<+->]
 				\item A cookie is high-entropy and random. Statistics has to recover \textbf{every byte} correctly, unaided.
 				\item A password is not random at all:
 				      \begin{itemize}
-					      \item Drawn from a small, heavily skewed alphabet, and base64-encoded in Basic Auth --- which shrinks it further and imposes a rigid known format.
-					      \item Very likely to appear in some leaked password list.
+					      \item Drawn from a small, skewed alphabet, then base64-encoded in Basic Auth, which imposes a rigid known format.
+					      \item Very likely to be in a leaked password list.
 				      \end{itemize}
-				\item So the attacker never has to \emph{recover} the password --- only narrow the candidates until a dictionary finishes.
+				\item So the attacker never has to \emph{recover} the password --- only narrow the candidates until a dictionary finishes: $2^{26}$ encryptions, against $\approx 2^{34}$ for a cookie.
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.44\textwidth}
+		\begin{column}{0.45\textwidth}
 			\onslide<+->{
 				\alertbox{The general principle}{
-					Statistical attacks and structural knowledge \textbf{multiply}. Every byte of context you have is a byte the statistics no longer has to earn.
+					Statistics and structure \textbf{multiply}. Every byte of context you already know is a byte the statistics no longer has to earn.
 					\vspace{0.4em}
 					\\
 					So ``the attack needs $2^{n}$ samples'' is never the end of the analysis. It is the cost \emph{before} anyone gets clever.
@@ -693,7 +692,7 @@
 	\begin{itemize}[<+->]
 		\item \textbf{1. A primitive's interface is part of its security.} RC4's missing nonce was not a bug in any line of its code, and it caused both catastrophes.
 		\item \textbf{2. Small biases are not small.} A $2^{-8}$ relative bias sounds negligible until the attacker has $2^{30}$ samples --- and the modern web hands out samples for free.
-		\item \textbf{3. ``Theoretical'' means ``practical, later.''} FMS to AirSnort took three months. Mantin--Shamir to a TLS break took twelve years, but it arrived.
+		\item \textbf{3. ``Theoretical'' means ``practical, later.''} FMS to AirSnort took a few weeks. Mantin--Shamir to a TLS break took twelve years, but it arrived.
 		\item \textbf{4. Attacks compose.} Bias plus password structure. Downgrade plus weak cipher. Results are components, and components multiply.
 		\item \textbf{5. Fleeing an attack is not a strategy.} BEAST pushed the industry out of a broken mode and into a broken cipher. Have somewhere \emph{good} to run to.
 		\item \textbf{6. Plan the exit before you need it.} \textbf{Cryptographic agility} --- negotiating algorithms, and being able to remove them --- has to be designed in from day one.
@@ -704,9 +703,9 @@
 	\begin{columns}[c]
 		\begin{column}{0.54\textwidth}
 			\begin{itemize}[<+->]
-				\item \textbf{It takes a nonce.} Protocols no longer improvise per-message keys, so WEP's mistake is not even expressible.
-				\item \textbf{It has no evolving secret state.} Each block is an independent function of $(K, N, \text{ctr})$: no long-lived permutation to leak, no key schedule whose residue shows up in the output.
-				\item \textbf{It comes bolted to a MAC.} \textbf{ChaCha20-Poly1305} is AEAD, so WEP's forgeable CRC-32 could not happen.
+				\item \textbf{It takes a nonce.} ChaCha20 and AES-GCM both do, so WEP's improvised per-message keys are not even expressible.
+				\item \textbf{It has no evolving secret state.} Each block is an independent function of $(K, N, \text{ctr})$: nothing long-lived to leak, no key-schedule residue in the output.
+				\item \textbf{It comes bolted to a MAC.} \textbf{ChaCha20-Poly1305} is AEAD, so WEP's forgeable CRC-32 could not happen; TLS 1.3 allows nothing else.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.46\textwidth}
@@ -718,10 +717,10 @@
 					ChaCha20 says: \emph{apply a strong public function to a counter, keyed by the secret.}
 					\vspace{0.4em}
 					\\
-					The second is a PRF evaluated at distinct points --- a design we know how to reason about, and the same shape as AES-CTR.
+					The second is a PRF evaluated at distinct points --- a shape we know how to reason about, shared with AES-CTR.
 				}
 			}
-			\onslide<+->{\centering TLS 1.3 ended the argument by deleting the choice: only AEAD ciphers remain.}
+			\onslide<+->{\centering\textbf{It fails differently:} repeat a nonce under one key and you are back to a two-time pad.}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -772,7 +771,7 @@
 
 \begin{frame}{Discussion time}
 	\begin{columns}[c]
-		\begin{column}{0.68\textwidth}
+		\begin{column}{0.72\textwidth}
 			\begin{enumerate}
 				\item \textbf{When is a cipher ``broken''?}
 				      \begin{itemize}
@@ -787,9 +786,12 @@
 					      \item Academics who called their own attacks impractical? Vendors afraid of breaking sites? Standards bodies?
 				      \end{itemize}
 				\item \textbf{What are we doing right now that will look like this in 2040?}
+				      \begin{itemize}
+					      \item Candidates: RSA-2048? SHA-1 in Git? 3DES in payment terminals?
+				      \end{itemize}
 			\end{enumerate}
 		\end{column}
-		\begin{column}{0.32\textwidth}
+		\begin{column}{0.28\textwidth}
 			\imagewithcaption{spamton-sez.png}{}
 		\end{column}
 	\end{columns}

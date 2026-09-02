@@ -27,7 +27,7 @@
 		\end{column}
 
 		\begin{column}{0.5\textwidth}
-			\imagewithcaption{caesar.png}{Source: Serious Cryptography, 2nd Edition}
+			\imagewithcaption{caesar.png}{The Caesar cipher: shift every letter by 3. Source: Serious Cryptography, 2nd Edition}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -39,7 +39,7 @@
 		\end{column}
 
 		\begin{column}{0.5\textwidth}
-			\imagewithcaption{vigenere.png}{Source: Serious Cryptography, 2nd Edition}
+			\imagewithcaption{vigenere.png}{The Vigen\`ere cipher: a different shift per letter, taken from a key. Source: Serious Cryptography, 2nd Edition}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -49,19 +49,20 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Let's count the cryptographic operations happening right now:}
 			\begin{itemize}[<+->]
-				\item Wi-Fi connection (WPA3)
-				\item Cellular connection (5G AES)
+				\item Wi-Fi (WPA2/WPA3: every frame is encrypted)
+				\item Cellular (4G/5G: every packet is encrypted)
 				\item App notifications (TLS)
 				\item Face/Touch ID (Secure Enclave)
-				\item Background app refreshes
+				\item Background app refreshes (TLS again)
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Real-time calculation}
+			\textbf{Back-of-the-envelope count}
 			\begin{itemize}[<+->]
-				\item Average smartphone: 100+ crypto operations/second
-				\item In this 75-minute class: 450,000+ operations
-				\item By end of semester: Billions of operations
+				\item Every Wi-Fi frame and every TLS record is encrypted separately.
+				\item A phone in use: easily hundreds of cryptographic operations per second.
+				\item Over this 75-minute class: hundreds of thousands.
+				\item Over the semester: billions.
 			\end{itemize}
 			\vspace{0.5cm}
 			\textcolor{cipherprimary}{\textbf{You're already a crypto user!}}
@@ -95,20 +96,18 @@
 				\item DRM solutions
 				\item Private contact discovery
 				\item Cryptocurrencies
-				\item That Apple Photos feature that detects similar photos
+				\item Apple Photos landmark search (homomorphic encryption)
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
 \begin{frame}{How it's made}
-	\bigimagewithcaption{fischer.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
+	\bigimagewithcaption[0.88\textwidth]{fischer.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
 \end{frame}
 
 \begin{frame}{How it's made}
-	\begin{center}
-		\bigimagewithcaption{fischer-sectioned.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
-	\end{center}
+	\bigimagewithcaption[0.88\textwidth]{fischer-sectioned.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
 \end{frame}
 
 \begin{frame}{Cryptographic building blocks}
@@ -119,7 +118,7 @@
 				\item Cryptography manifests as a set of primitives, from which we
 				      build protocols intended to accomplish well-defined security goals.
 				\item \textbf{Primitives}: AES, RSA, SHA-2, DH\ldots
-				\item \textbf{Protocols}: TLS, Signal, SSH, FileVault 2, BitLocker\ldots
+				\item \textbf{Protocols and systems}: TLS, Signal, SSH, FileVault 2, BitLocker\ldots
 			\end{itemize}
 		\end{column}
 
@@ -143,10 +142,10 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Cryptographic building blocks}
+\begin{frame}{Security goals}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Security goals}
+			\textbf{Definitions}
 			\begin{itemize}[<+->]
 				\item \textbf{Confidentiality}: Data exchanged between Client and Server
 				      is only known to those parties.
@@ -162,8 +161,8 @@
 			\begin{itemize}[<+->]
 				\item \textbf{Confidentiality}: When you send a private message on Signal,
 				      only you and the recipient can read the content.
-				\item \textbf{Authentication}: When you receive an email from your boss,
-				      you can verify it actually came from them.
+				\item \textbf{Authentication}: When you connect to gmail.com, your browser
+				      checks that it is really talking to Google, not to someone in the middle.
 				\item \textbf{Integrity}: Your computer can verify that software update
 				      downloads haven't been tampered with during transmission.
 			\end{itemize}
@@ -178,8 +177,8 @@
 		      \begin{itemize}
 			      \item Allows you to log into gmail.com without your ISP learning your password.
 		      \end{itemize}
-		\item \textbf{FileVault 2} ensures data confidentiality and integrity on
-		      your MacBook.
+		\item \textbf{FileVault 2} ensures the confidentiality of the data on your
+		      MacBook.
 		      \begin{itemize}
 			      \item Prevents thieves from accessing your data if your MacBook is stolen.
 		      \end{itemize}
@@ -204,10 +203,10 @@
 	\end{itemize}
 	\definitionbox{The problem with traditional access control}{
 		\begin{itemize}[<+->]
-			\item Requires trusting the server completely
-			\item No protection during transmission
-			\item No way to verify integrity
-			\item No way to establish trust between strangers
+			\item You must trust the server completely (it sees your password).
+			\item Nothing protects the data in transit: your ISP sees it all.
+			\item No way to detect tampering.
+			\item No way for two strangers to establish trust.
 		\end{itemize}
 	}
 \end{frame}
@@ -252,8 +251,8 @@
 				\item Bob picks secret: \textcolor{red}{$b = 7$}
 			\end{itemize}
 			\pause
-			\vspace{0.5cm}
-			\textbf{Public Exchange}
+			\vspace{0.3cm}
+			\textbf{Public exchange}
 			\begin{itemize}[<+->]
 				\item Alice computes: $A = g^{\textcolor{red}{a}} \bmod p = 6$
 				\item Bob computes: $B = g^{\textcolor{red}{b}} \bmod p = 11$
@@ -263,7 +262,7 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\pause
-			\textbf{Shared Secret Computation}
+			\textbf{Shared secret computation}
 			\begin{itemize}[<+->]
 				\item Alice computes: $s = B^{\textcolor{red}{a}} \bmod p = 11^{\textcolor{red}{5}} \bmod 13$
 				      \begin{itemize}
@@ -276,7 +275,7 @@
 				\item \textcolor{red}{\textbf{Shared secret: $s = 7$}}
 			\end{itemize}
 			\pause
-			\vspace{0.5cm}
+			\vspace{0.3cm}
 			\textbf{Eavesdropper sees only:}
 			\begin{itemize}[<+->]
 				\item $p = 13$, $g = 2$, $A = 6$, $B = 11$
@@ -288,6 +287,27 @@
 
 \begin{frame}{Time for actual magic}
 	\bigimagewithcaption{dh.png}{}
+\end{frame}
+
+\begin{frame}{Your turn: be the eavesdropper}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{You saw everything on the wire:} $p = 13$, $g = 2$, $A = 6$, $B = 11$.
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item \textbf{Find Alice's secret $a$}: solve $2^{a} \bmod 13 = 6$.
+				\item Hint: there are only twelve candidates.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\pause
+			\begin{itemize}
+				\item Brute force: $2^1 = 2$, $2^2 = 4$, $2^3 = 8$, $2^4 \equiv 3$, $2^5 \equiv 6 \pmod{13}$. So $a = 5$, and $s = 11^{5} \bmod 13 = 7$.
+			\end{itemize}
+			\pause
+			\alertbox{Why did this work?}{Because $p = 13$. With a 2048-bit $p$, no known algorithm, brute force or clever, finishes in any reasonable time: the \textbf{discrete logarithm problem}.}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{No known feasible computation}
@@ -325,17 +345,15 @@
 	\begin{columns}[c]
 		\begin{column}{0.7\textwidth}
 			\begin{itemize}
-				\item \textbf{Initial key exchange}: Uses X3DH (Extended Triple DH)
+				\item \textbf{Initial key exchange}: X3DH, \textbf{three} DH exchanges combined; works even when the recipient is offline (\textit{``asynchronous''}).\footnote{Everything on this slide will be covered in much more detail later in the course.}
 				      \begin{itemize}
-					      \item Combines \textbf{three} DH key exchanges for security.
-					      \item Works even when the recipient is offline (\textit{``asynchronous''} protocol).\footnote{Everything on this slide will be covered in much more detail later in the course.}
+					      \item Since 2023: PQXDH, which mixes in a post-quantum KEM.
 				      \end{itemize}
-				\item \textbf{Ongoing communication}: Uses Double Ratchet
+				\item \textbf{Ongoing communication}: the Double Ratchet.
 				      \begin{itemize}
-					      \item New DH key exchange for every message!
-					      \item Provides ``forward secrecy'' and ``post-compromise security''.
-					      \item If your phone gets compromised today, yesterday's messages remain secure.
-					      \item If your phone recovers from compromise, tomorrow's messages are secure again.
+					      \item Fresh DH key exchange at every change of direction; a symmetric ``ratchet'' covers the messages in between.
+					      \item Forward secrecy: phone compromised today? Yesterday's messages stay secure.
+					      \item Post-compromise security: compromise over? Tomorrow's messages are secure again.
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -345,10 +363,10 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Hard problems}
+\begin{frame}{Two families of primitives}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Asymmetric Primitives}
+			\textbf{Asymmetric primitives}
 			\begin{itemize}[<+->]
 				\item Diffie-Hellman, RSA, ML-KEM, etc.
 				\item ``Asymmetric'' because there is a ``public key'' and a ``private
@@ -359,10 +377,10 @@
 		\end{column}
 
 		\begin{column}{0.5\textwidth}
-			\textbf{Symmetric Primitives}
+			\textbf{Symmetric primitives}
 			\begin{itemize}[<+->]
 				\item AES, SHA-2, ChaCha20, HMAC\ldots
-				\item ``Symmetric'' because there is one secret key.
+				\item ``Symmetric'' because there is a single shared secret key (or none at all: hash functions have no key).
 				\item Not algebraic but unstructured, relying on their understood
 				      resistance to $n$ years of cryptanalysis.
 				\item Can act as substitutes for assumptions in security proofs!
@@ -377,7 +395,7 @@
 \begin{frame}{Kerckhoffs' principle}
 	\begin{itemize}[<+->]
 		\item \textit{``A cryptosystem should be secure even if everything about
-			      the system, except the key, is public knowledge.''} — Auguste Kerckhoffs,
+			      the system, except the key, is public knowledge.''} --- Auguste Kerckhoffs,
 		      1883
 		\item \textbf{Why it matters}:
 		      \begin{itemize}[<+->]
@@ -421,8 +439,8 @@
 			\begin{itemize}[<+->]
 				\item \textbf{Collision resistance}: computationally infeasible to find
 				      two different inputs producing the same hash.
-				\item \textbf{Preimage resistance}: given the output of a hash function,
-				      it is computationally infeasible to reconstruct the original input.
+				\item \textbf{Preimage resistance}: given an output of a hash function,
+				      it is computationally infeasible to find \emph{any} input that hashes to it.
 				\item \textbf{Second preimage resistance}: given an input and an output,
 				      it's computationally infeasible to find a different input
 				      producing the same output.
@@ -489,9 +507,9 @@
 				      a secret without revealing any information about it.
 				\item Researchers have built ``zero-knowledge virtual machines'' where you can execute
 				      an entire program that runs as a zero-knowledge proof.
-				\item ZKP battleship game: the server proves to the players that its
-				      responses to their battleship guesses are correct, without revealing any
-				      additional information (e.g., ship locations).
+				\item ZKP Battleship: each player proves that their answer to a guess
+				      (hit or miss) is correct, without revealing anything else about
+				      where their ships are.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -530,7 +548,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Block cipher examples}
+\begin{frame}{Trying our proposal on a picture}
 	\begin{columns}
 		\begin{column}{0.33\textwidth}
 			\imagewithcaption{tux-plaintext.png}{What we start with}
@@ -547,64 +565,37 @@
 \end{frame}
 
 \begin{frame}{Block cipher modes of operation}
-	\bigimagewithcaption{block-cipher-modes.png}{Source: Wikipedia}
+	\bigimagewithcaption[0.72\textwidth]{block-cipher-modes.png}{Source: Wikipedia}
 \end{frame}
 
-\begin{frame}{Cryptographic building blocks}
+\begin{frame}{From primitives to protocols}{Reminder}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Security goals}
+			\textbf{The security goals we set out}
 			\begin{itemize}
 				\item \textbf{Confidentiality}: Data exchanged between Client and Server
 				      is only known to those parties.
-
 				\item \textbf{Authentication}: If Server receives data from Client,
 				      then Client sent it to Server.
-
 				\item \textbf{Integrity}: If Server modifies data owned by Client,
 				      Client can find out.
 			\end{itemize}
 		\end{column}
-
 		\begin{column}{0.5\textwidth}
-			\textbf{Examples}
+			\textbf{The primitives we now have}
 			\begin{itemize}
-				\item \textbf{Confidentiality}: When you send a private message on Signal,
-				      only you and the recipient can read the content.
-				\item \textbf{Authentication}: When you receive an email from your boss,
-				      you can verify it actually came from them.
-				\item \textbf{Integrity}: Your computer can verify that software update
-				      downloads haven't been tampered with during transmission.
+				\item \textbf{Diffie-Hellman}: two strangers agree on a secret key.
+				\item \textbf{AES}: encrypt with that key (in a sane mode).
+				\item \textbf{SHA-2}: fingerprint anything.
 			\end{itemize}
+			\vspace{0.3cm}
+			\textcolor{cipherprimary}{\textbf{How does a real protocol combine them to reach the goals? Case study: TLS 1.3.}}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Security goals: more examples}
-	\begin{itemize}
-		\item \textbf{TLS (HTTPS)} ensures that data exchanged between the client
-		      and the server is confidential and that parties are authenticated.
-		      \begin{itemize}
-			      \item Allows you to log into gmail.com without your ISP learning your password.
-		      \end{itemize}
-		\item \textbf{FileVault 2} ensures data confidentiality and integrity on
-		      your MacBook.
-		      \begin{itemize}
-			      \item Prevents thieves from accessing your data if your MacBook is stolen.
-		      \end{itemize}
-		\item \textbf{Signal and WhatsApp} implement post-compromise security, an advanced security
-		      goal.
-		      \begin{itemize}
-			      \item Allows a conversation to ``heal'' in the event of a temporary key
-			            compromise.
-
-			      \item More on that later in the course.
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
 \begin{frame}{TLS 1.3: high-level sketch}
-	\bigimagewithcaption{tls-13-sketch}{Source: Mostafa Ibrahim}
+	\bigimagewithcaption[0.62\textwidth]{tls-13-sketch}{Source: Mostafa Ibrahim}
 \end{frame}
 
 \begin{frame}{TLS 1.3: high-level sketch}
@@ -614,12 +605,12 @@
 				\item \textbf{Public key agreement} (e.g., Diffie-Hellman) is used to establish
 				      a shared secret between the client and the server.
 				\item \textbf{AES} is used for encrypting data in transit.
-				\item \textbf{SHA-2} is used for hashing (checking certificates, etc.)
+				\item \textbf{SHA-2} is used for hashing: key derivation, the handshake transcript, the signatures on certificates.
 			\end{itemize}
 		\end{column}
 
 		\begin{column}{0.5\textwidth}
-			\bigimagewithcaption{tls-13-sketch}{Source: Mostafa Ibrahim}
+			\bigimagewithcaption[0.88\textwidth]{tls-13-sketch}{Source: Mostafa Ibrahim}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -638,33 +629,32 @@
 		\end{column}
 
 		\begin{column}{0.5\textwidth}
-			\bigimagewithcaption{tls-13-sketch}{Source: Mostafa Ibrahim}
+			\bigimagewithcaption[0.88\textwidth]{tls-13-sketch}{Source: Mostafa Ibrahim}
 		\end{column}
 	\end{columns}
 \end{frame}
 
 \begin{frame}{How TLS 1.3 was made}
-	\bigimagewithcaption{fischer}{}
+	\bigimagewithcaption[0.88\textwidth]{fischer.png}{}
 \end{frame}
 
 \begin{frame}{How TLS 1.3 was made}
-	\bigimagewithcaption{fischer-tls-13-bubbles}{}
+	\bigimagewithcaption[0.88\textwidth]{fischer-tls-13-bubbles.png}{}
 \end{frame}
 
 \begin{frame}{From hard problems to real-world security}
-	\begin{center}
-		\Large\textbf{The journey we'll trace}
-	\end{center}
-	\vspace{0.5cm}
-	\pause
+	\textbf{What we saw today}
 	\begin{enumerate}[<+->]
-		\item \textbf{Mathematical insight}: Discrete logarithm is hard to compute.
-		\item \textbf{Cryptographic innovation}: Diffie-Hellman key exchange leverages this hardness.
-		\item \textbf{Real-world impact}: Secure communication for billions of people daily.
+		\item A \textbf{hard problem} (discrete logarithms) that nobody knows how to solve at scale.
+		\item \textbf{Primitives} resting on it, or on decades of cryptanalysis: Diffie-Hellman, AES, SHA-2.
+		\item \textbf{Protocols} that compose primitives to reach \textbf{security goals} under a \textbf{threat model}: TLS 1.3, Signal.
 	\end{enumerate}
 	\pause
-	\vspace{1cm}
-	\textbf{This is the power of applied cryptography}: transforming abstract mathematical problems into tools that help people and protect our digital lives.
+	\textbf{Where the course goes}
+	\begin{itemize}[<+->]
+		\item \textbf{Part 1: Provable Security} (1.2--1.8). Define ``secure'' precisely, build primitives from one another, and \emph{prove} the constructions secure (\textit{The Joy of Cryptography}).
+		\item \textbf{Part 2: Real-World Cryptography}. Take apart deployed systems (TLS, secure messaging, encrypted cloud storage, post-quantum, zero-knowledge proofs) and see where they break.
+	\end{itemize}
 \end{frame}
 
 \section{Course Goals}
@@ -686,8 +676,10 @@
 
 \begin{frame}{Course prerequisites}
 	\begin{itemize}
-		\item Good but optional: CMPS 215 (Theory of Computation)
+		\item Good but optional: CMPS 215 (Theory of Computation).
 		\item If you want to understand whether you have sufficient background for this course, work through this review chapter and try to do all the exercises: \url{https://joyofcryptography.com/pdf/chap0.pdf}
+		\item \textbf{\LaTeX{} is mandatory}: every assignment and project report must be written in it.
+		\item \textbf{Go or Rust}: strongly encouraged, and your project must be written in one of them.
 	\end{itemize}
 \end{frame}
 
@@ -709,7 +701,8 @@
 	\begin{itemize}[<+->]
 		\item \textbf{Weekly project sessions}: Hands-on complement to lectures.
 		\item \textbf{Team structure}: Groups of 1--3 students.
-		\item \textbf{Project selection}: Pick at most \textbf{two project topics} to work on throughout the entire course.
+		\item \textbf{Project selection}: Pick one (at most \textbf{two}) of the project sheets A--H, or propose your own: an implementation, a security analysis of a real system, a formal verification.
+		\item \textbf{Mandatory}: worth 10\% of your grade; code in Go or Rust, report in \LaTeX.
 		\item \textbf{What you'll do}:
 		      \begin{itemize}
 			      \item Experiment with real-world cryptographic libraries.
@@ -720,15 +713,15 @@
 	\end{itemize}
 	\vspace{0.1cm}
 	\begin{center}
-		\Large\textcolor{cipherprimary}{\textbf{Project sheets available on the course website. \\ Pick one or suggest your own!}}
+		\Large\textcolor{cipherprimary}{\textbf{Project sheets are on the course website.}}
 	\end{center}
 \end{frame}
 
-\begin{frame}{Project A: Designing a Password Manager}
+\begin{frame}{Project A: building a secure password manager}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\definitionbox{Build Your Digital Vault!}{
-				Create a fortress for your passwords using real cryptographic techniques!
+				Build a real password vault, from the primitives up:
 				\begin{itemize}
 					\item Master password protection with key derivation
 					\item Encrypted storage that even you can't break
@@ -750,13 +743,13 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Project B: Designing a Secure Messenger}
+\begin{frame}{Project B: building a secure messenger}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\definitionbox{Build the Next Signal!}{
 				Create your own end-to-end encrypted messaging app from scratch!
 				\begin{itemize}
-					\item Implement the Double Ratchet protocol
+					\item Implement a Signal-style ratcheting protocol
 					\item Perfect forward secrecy by default
 					\item Group messaging that stays private
 				\end{itemize}
@@ -776,7 +769,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Project C: Protocol Modeling with ProVerif}
+\begin{frame}{Project C: verifying a TLS-like protocol with ProVerif}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\definitionbox{Prove It Secure!}{
@@ -794,7 +787,7 @@
 				\item Design protocols that are \textit{provably} secure
 				\item Learn how TLS was formally verified
 				\item Discover subtle attack patterns
-				\item Master formal methods used by pros
+				\item Model man-in-the-middle, replay and downgrade attackers
 			\end{itemize}
 			\vspace{0.5cm}
 			\textcolor{cipherprimary}{\textbf{If you can't prove it, don't ship it!}}
@@ -802,11 +795,11 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Project D: Zero-Knowledge Battleship Game}
+\begin{frame}{Project D: building a zero-knowledge Battleship game}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\definitionbox{Cryptographic Gaming!}{
-				Build Battleship where cheating is mathematically impossible!
+				Build Battleship where nobody can lie about a hit or a miss!
 				\begin{itemize}
 					\item Zero-knowledge proofs with RISC Zero
 					\item Prove hits without revealing ship positions
@@ -818,9 +811,8 @@
 			\textbf{The magic of ZK proofs:}
 			\begin{itemize}[<+->]
 				\item Build on a real zkVM
-				\item Create proofs that feel impossible
+				\item Write the guest program that checks each move
 				\item Learn by building an actual game
-				\item Impress your friends with crypto magic!
 			\end{itemize}
 			\vspace{0.5cm}
 			\textcolor{cipherprimary}{\textbf{You sank my battleship\ldots{} provably!}}
@@ -828,13 +820,13 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Project E: Post-Quantum Migration}
+\begin{frame}{Project E: post-quantum cryptography migration}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\definitionbox{Quantum-Proof the Future!}{
 				Prepare systems for the quantum computing era!
 				\begin{itemize}
-					\item Implement NIST's ML-KEM (Kyber)
+					\item Integrate NIST's ML-KEM (Kyber)
 					\item Deploy ML-DSA (Dilithium) signatures
 					\item Design hybrid classical/post-quantum systems
 				\end{itemize}
@@ -846,33 +838,33 @@
 				\item Migrate real protocols to PQC
 				\item Analyze performance impacts
 				\item Handle message size explosions
-				\item Future-proof existing systems
+				\item Hedge with hybrids: secure if \emph{either} component holds
 			\end{itemize}
 			\vspace{0.5cm}
-			\textcolor{cipherprimary}{\textbf{Beat quantum computers at their own game!}}
+			\textcolor{cipherprimary}{\textbf{Ready before the quantum computer is!}}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Project F: Private Contact Discovery}
+\begin{frame}{Project F: private set intersection for contact discovery}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\definitionbox{Find Friends with Privacy!}{
-				Build WhatsApp-style contact discovery that's actually private!
+				Build contact discovery that never hands your address book to the server!
 				\begin{itemize}
 					\item Private Set Intersection (PSI)
 					\item Oblivious PRFs in action
-					\item Zero leakage to servers
+					\item The server learns nothing about whom you queried
 				\end{itemize}
 			}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Real-world privacy tech:}
 			\begin{itemize}[<+->]
-				\item Protect address books from servers
+				\item Design the wire protocol; write both client and server
 				\item Prevent enumeration attacks
 				\item Handle thousands of contacts efficiently
-				\item Used by Signal!
+				\item Compare with what Signal and WhatsApp actually deploy
 			\end{itemize}
 			\vspace{0.5cm}
 			\textcolor{cipherprimary}{\textbf{Your contacts, your business!}}
@@ -880,7 +872,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Project G: Privacy-Preserving Age Verification}
+\begin{frame}{Project G: privacy-preserving age verification}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\definitionbox{Prove Your Age Privately!}{
@@ -906,55 +898,28 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Project H: Time-Locked Message Capsule}
+\begin{frame}{Project H: building a time-locked message capsule}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\definitionbox{Send Messages to the Future!}{
 				Create digital time capsules that can't be opened early!
 				\begin{itemize}
-					\item Timelock encryption with drand beacon
+					\item Timelock encryption (tlock) on the drand beacon
 					\item Threshold BLS signatures
-					\item Unstoppable future reveals
+					\item Identity-based encryption where the ``identity'' is a future round
 				\end{itemize}
 			}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Time travel for data:}
 			\begin{itemize}[<+->]
-				\item Messages that decrypt themselves
+				\item Nobody can open it before the deadline; anyone can after
 				\item Perfect for auctions \& commitments
 				\item Build on League of Entropy infrastructure
 				\item No key escrow, no early access!
 			\end{itemize}
 			\vspace{0.5cm}
 			\textcolor{cipherprimary}{\textbf{Encrypt today, decrypt tomorrow!}}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Create Your Own Cryptographic Adventure!}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\definitionbox{Be the Innovator!}{
-				Design your own cryptographic project from scratch!
-				\begin{itemize}
-					\item Novel protocol implementation
-					\item Security analysis of real systems
-					\item Formal verification challenges
-					\item Your creative crypto idea!
-				\end{itemize}
-			}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{The sky's the limit:}
-			\begin{itemize}[<+->]
-				\item Follow your cryptographic passion
-				\item Solve a real problem you care about
-				\item Combine techniques in new ways
-				\item Potentially publishable research!
-			\end{itemize}
-			\vspace{0.5cm}
-			\textcolor{cipherprimary}{\textbf{Your idea could change cryptography!}}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -988,7 +953,6 @@
 				\item \textbf{What's covered}: Specific topics, chapters, and concepts clearly outlined.
 				\item \textbf{Format details}: Question types, duration, and grading scheme all disclosed.
 				\item \textbf{Practice materials}: Sample questions are available through the problem sets.
-				\item \textbf{No stress approach}: Focus on understanding concepts, not guessing what might appear.
 				\item \textbf{If it wasn't mentioned in the slides or problem sets, then it's not on the exam.}
 			\end{itemize}
 		\end{column}
@@ -998,18 +962,27 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Exam logistics}
+\begin{frame}{Grading and exam logistics}
 	\begin{columns}[c]
-		\begin{column}{0.65\textwidth}
-			\begin{itemize}[<+->]
-				\item Will be held at the Lebanese University campus in Hadath, Beirut.
-				\item High achievers will receive a recommendation letter from me + a certificate.
-				\item Certificate can be authenticated online (to verify it's genuine).
-				\item Encourages you to learn + gives you a credential for your CV and grad studies!
-			\end{itemize}
+		\begin{column}{0.45\textwidth}
+			\definitionbox{How your grade is computed}{
+				\begin{tabular}{lr}
+					Problem sets      & 10\% \\
+					Take-home project & 10\% \\
+					Midterm exam      & 40\% \\
+					Final exam        & 40\%
+				\end{tabular}
+
+				\vspace{0.2cm}
+				No dropping of low grades, no shifting of percentages between components.
+			}
 		\end{column}
-		\begin{column}{0.35\textwidth}
-			\imagewithcaption{website-midterm.png}{Check the website for complete exam information! \\ \url{https://appliedcryptography.page}}
+		\begin{column}{0.55\textwidth}
+			\begin{itemize}[<+->]
+				\item Two in-person exams, midterm and final. Dates and locations are on the website calendar.
+				\item Final grade of 80/100 or higher: a \textbf{Certificate of Completion}, signed with the course's Ed25519 key and verifiable in any browser at \url{https://appliedcryptography.page/certificate}.
+				\item High achievers also get a recommendation letter from me: a credential for your CV and for grad school.
+			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1048,13 +1021,11 @@
 			}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Why join?}
+			\textbf{What it's like}
 			\begin{itemize}[<+->]
-				\item Learn to read research papers efficiently
-				\item Present technical concepts clearly
-				\item Write like a cryptographer
-				\item Navigate career decisions with confidence
-				\item Build lasting connections with peers
+				\item Relaxed, coffee-shop style, low stakes.
+				\item Visiting researchers, feedback on your talks, blog posts for a general audience.
+				\item Someone debugging their first encryption routine is as welcome as someone designing a new protocol.
 			\end{itemize}
 			\vspace{0.5cm}
 			\textcolor{cipherprimary}{\textbf{The only prerequisite is your curiosity!}}
@@ -1066,15 +1037,15 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item \textbf{Week 1: Paper Deep Dive}
+				\item \textbf{Week 1: Paper Reading Group}
 				      \begin{itemize}
 					      \item Read and analyze research papers
 					      \item Learn efficient reading strategies
-					      \item Discuss recent CRYPTO/Eurocrypt papers
+					      \item Discuss recent CRYPTO/Eurocrypt/CCS papers
 				      \end{itemize}
 				\item \textbf{Week 2: Student Presentations}
 				      \begin{itemize}
-					      \item 15-minute talks on crypto topics
+					      \item 15-minute talks, plus 3-minute ``lightning talks''
 					      \item Practice with visual aids and demos
 					      \item Receive constructive peer feedback
 				      \end{itemize}
@@ -1088,7 +1059,7 @@
 					      \item Blog posts and security reports
 					      \item LaTeX tutorials for papers
 				      \end{itemize}
-				\item \textbf{Week 4: Career Café}
+				\item \textbf{Week 4: Career Caf\'e}
 				      \begin{itemize}
 					      \item Industry guest speakers
 					      \item Graduate school applications
@@ -1146,31 +1117,6 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{My goals for this course}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\definitionbox{My Commitment}{
-				\textit{``To provide you with an excellent applied cryptography education that prepares you for success in this field.''}
-				\begin{itemize}
-					\item High standards and quality teaching
-					\item Your success is my priority
-					\item We'll work together to achieve this
-				\end{itemize}
-			}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{What I aim to deliver}
-			\begin{itemize}[<+->]
-				\item Strong foundation in cryptographic science and engineering
-				\item Practical skills for research and industry
-				\item Clear technical communication abilities
-				\item A learning environment driven by \textbf{curiosity} and \textbf{intellectual excitement}
-				\item Deep understanding over memorization
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
 \begin{frame}{My expectations: be intellectually present}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -1209,32 +1155,6 @@
 
 \subsection{About You}
 
-\begin{frame}{This is YOUR learning journey}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{What I need from you}
-			\begin{itemize}[<+->]
-				\item Think about what YOU want from this course.
-				\item Express your interests and goals.
-				\item Participate in shaping our discussions.
-				\item I didn't come here just to watch you stare at me from a corner!
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{We're learning together}
-			\begin{itemize}[<+->]
-				\item This isn't just another course to check off.
-				\item Applied cryptography is an exciting, specialized field.
-				\item Your questions make the class better for everyone.
-				\item Your engagement shapes the experience.
-			\end{itemize}
-		\end{column}
-	\end{columns}
-	\begin{center}
-		\textcolor{cipherprimary}{\Large\textbf{Let's make this journey extraordinary together!}}
-	\end{center}
-\end{frame}
-
 \begin{frame}{Let's get to know each other!}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -1251,10 +1171,10 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Why this matters}
 			\begin{itemize}[<+->]
-				\item Helps me tailor examples to your interests
-				\item Enables better project matching
-				\item Builds our classroom community
-				\item Allows me to connect course material to your goals
+				\item Helps me tailor examples to your interests and goals.
+				\item Enables better project matching.
+				\item Your questions make the class better for everyone.
+				\item I didn't come here just to watch you stare at me from a corner!
 			\end{itemize}
 		\end{column}
 	\end{columns}

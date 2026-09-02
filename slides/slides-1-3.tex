@@ -18,6 +18,29 @@
 	\titlepage
 \end{frame}
 
+\begin{frame}{Today's plan}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Provable security}
+			\begin{itemize}
+				\item Attack scenarios as \textbf{libraries}; adversaries as \textbf{programs} that call them.
+				\item When are two libraries \textbf{interchangeable} ($\equiv$)?
+				\item Attacks are \textbf{distinguisher programs}; proofs are chains of tiny, justified rewrites.
+				\item Defining a primitive: syntax, correctness, security.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Computational cryptography}
+			\begin{itemize}
+				\item Why ``perfect'' is too strict: dismiss attacks that are too expensive or too lucky.
+				\item Concrete vs.\ asymptotic security; polynomial time and negligible probability.
+				\item Interchangeable ($\equiv$) becomes \textbf{indistinguishable} ($\approxeq$).
+				\item Birthday probabilities and the \textbf{bad event} proof technique.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \section{Provable Security}
 
 \begin{frame}{Last time, we defined subroutines}
@@ -156,12 +179,12 @@
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}
 			\begin{itemize}
-				\item Libraries are \textbf{interchangeable} when they:
+				\item Libraries \lib{}{1} and \lib{}{2} are \textbf{interchangeable}, written \lib{}{1} \interchangeable{} \lib{}{2}, when they:
 				      \begin{itemize}
 					      \item Have the same interface,
-					      \item \prob{\prog{}\link\lib{}{1} \Rightarrow \texttt{true}} $=$ \prob{\prog{}\link\lib{}{2} \Rightarrow \texttt{true}}
+					      \item Satisfy \prob{\prog{}\link\lib{}{1} \Rightarrow \texttt{true}} $=$ \prob{\prog{}\link\lib{}{2} \Rightarrow \texttt{true}} for \textbf{every} calling program \prog{}.
 				      \end{itemize}
-				\item i.e., when their usage and output are indistinguishable from the adversary's perspective when they are paired with \prog{}.
+				\item i.e., no program whatsoever can tell them apart from the outputs it sees.
 				\item A lot of the time, \prog{}'s mission is to try to \textit{distinguish} between \lib{}{1} and \lib{}{2}.
 			\end{itemize}
 		\end{column}
@@ -655,6 +678,7 @@
 			\begin{itemize}
 				\item Interchangeable!
 				\item Note how we had to show equivalence \textbf{at each step}.
+				\item The intermediate libraries \lib{}{hyb-1}, \lib{}{hyb-2}, \ldots are called \textbf{hybrids}, and this is a \textbf{hybrid proof}. We will write many more of these.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -687,8 +711,8 @@
 		\item In cryptography, useful abstractions like ``encryption scheme'' are called \textbf{primitives}.
 		\item Three things are important when defining a cryptographic primitive:
 		      \begin{enumerate}
-			      \item \textbf{Syntax}: The basic raw interface - algorithms, inputs/outputs, and their types.
-			      \item \textbf{Correctness}: Basic functionality without adversaries - e.g., ``decryption should be the inverse of encryption''.
+			      \item \textbf{Syntax}: The basic raw interface -- algorithms, inputs/outputs, and their types.
+			      \item \textbf{Correctness}: Basic functionality without adversaries -- e.g., ``decryption should be the inverse of encryption''.
 			      \item \textbf{Security}: Guarantees that hold in specific attack scenarios with adversaries.
 		      \end{enumerate}
 	\end{itemize}
@@ -728,8 +752,7 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
 				\item The definition involves a probability because $\Sigma.\textsf{Enc}$ may be a randomized algorithm.
-				\item This means that decryption should \textbf{always} recover the original message.
-				\item Even if encryption is randomized, decryption must always map each key-ciphertext pair back to the original message.
+				\item Even so, decryption must \textbf{always} recover the original message: every key-ciphertext pair maps back to the plaintext it came from.
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -854,8 +877,7 @@
 			      \item We dismiss attacks with ``ridiculously'' high computational cost.
 			      \item We dismiss attacks with ``ridiculously'' tiny success probability.
 		      \end{itemize}
-		\item Instead of ``no attack can succeed, not even in principle'',
-		\item We prove: ``every attack has either ridiculously high cost or ridiculously small success probability''.
+		\item Instead of ``no attack can succeed, not even in principle'', we prove: ``every attack has either ridiculously high cost or ridiculously small success probability''.
 	\end{itemize}
 \end{frame}
 
@@ -867,18 +889,16 @@
 		      \begin{itemize}
 			      \item \textit{``Any attack that expends at most $2^{80}$ effort can succeed with probability no better than $2^{-64}$.''}
 		      \end{itemize}
-		\item It is up to the user to judge whether this quantitative level of security is acceptable based on their use case.
-		\item This gives users a concrete basis for security decisions.
+		\item It is up to the user to judge whether this quantitative level of security is acceptable for their use case.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Monetary cost of huge computations}
 	\begin{itemize}
-		\item One way to think about huge computations is their monetary cost.
-		\item The table below shows roughly how much a computation involving $2^n$ CPU cycles would cost on the cheapest available Amazon EC2 cloud computing service:
+		\item One way to grasp a huge computation is its price tag: roughly what $2^n$ CPU cycles would cost on the cheapest available Amazon EC2 instances (figures from \textit{The Joy of Cryptography}; orders of magnitude, not price quotes):
 	\end{itemize}
-	\begin{table}
-		\centering
+	\begin{center}
+		\small
 		\begin{tabular}{cll}
 			\textbf{Clock cycles} & \textbf{Approx cost (USD)} & \textbf{Point of reference}                      \\
 			\hline
@@ -891,7 +911,7 @@
 			$2^{99}$              & \$2 quadrillion            & all of human economic activity since 300,000 BCE \\
 			$2^{128}$             & a lot!                     & a billion human civilizations' worth of effort   \\
 		\end{tabular}
-	\end{table}
+	\end{center}
 \end{frame}
 
 \begin{frame}{Exponential vs polynomial growth}{Quick side-note}
@@ -934,7 +954,7 @@
 					\end{axis}
 				\end{tikzpicture}
 			\end{center}
-			\textit{\small Note: Exponential growth quickly surpasses all polynomial functions!}
+			\textit{\small Note: exponential growth eventually beats \textbf{every} polynomial.}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -952,9 +972,9 @@
 			      \item In 1943, a roulette wheel reportedly landed on red 32 consecutive times.
 			      \item Probability: $(18/38)^{32} \approx 2^{-34.5}$
 			      \item Winning the American Powerball lottery: $2^{-28.1}$
-			      \item Winning Powerball two consecutive weeks: $2^{-56.2}$
+			      \item Winning Powerball twice in a row: $2^{-56.2}$
 		      \end{itemize}
-		\item These examples help us intuitively grasp what probabilities like $2^{-40}$ or $2^{-50}$ actually mean.
+		\item So $2^{-40}$ is ``most improbable event in gambling history'' territory. The bounds we accept in cryptography ($2^{-64}$, $2^{-80}$, $2^{-128}$) are unimaginably rarer still.
 	\end{itemize}
 \end{frame}
 
@@ -968,8 +988,8 @@
 		      \end{itemize}
 		\item Probabilities must be between 0 and 1:
 		      \begin{itemize}
-			      \item $2^{40}$ would be a huge number (over a trillion) - not a valid probability!
-			      \item $2^{-40}$ is a tiny fraction - exactly what we want for unlikely events
+			      \item $2^{40}$ would be a huge number (over a trillion) -- not a valid probability!
+			      \item $2^{-40}$ is a tiny fraction -- exactly what we want for unlikely events
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -977,19 +997,19 @@
 \begin{frame}{Computational scale of Bitcoin mining}
 	\begin{itemize}
 		\item Let's consider cryptocurrencies based on proof-of-work, like Bitcoin.
-		\item These systems incentivize users to perform truly obscene amounts of computation.
-		\item In Bitcoin's proof-of-work mechanism:
+		\item These systems incentivize users to perform truly obscene amounts of computation: miners race to compute SHA-256 hashes as fast as possible.
+		\item Order-of-magnitude figures, as of 2025:
 		      \begin{itemize}
-			      \item Users race to perform SHA-256 hash computations as fast as possible.
-			      \item The collective Bitcoin network has performed approximately $2^{95}$ SHA-256 hashes in total.
-			      \item In the last 12 months alone: approximately $2^{93.6}$ hashes.
-			      \item Current market cap for Bitcoin: approximately 1.7 trillion USD.
+			      \item The network computes about $2^{70}$ SHA-256 hashes \textit{per second}, so roughly $2^{95}$ per year.
+			      \item Over Bitcoin's entire history: roughly $2^{95}$--$2^{96}$ hashes in total.
+			      \item Bitcoin's market capitalization: on the order of two trillion USD.
 		      \end{itemize}
-		\item This shows the enormous scale of computation that economic incentives can support.
+		\item This shows the enormous scale of computation that economic incentives can support\ldots
+		\item \ldots and it is nowhere near $2^{128}$: at $2^{95}$ hashes per year, $2^{128}$ hashes would take $2^{33} \approx 8.6$ billion years.
 	\end{itemize}
 \end{frame}
 
-\subsection{Asymptotic approach to security}
+\subsection{Asymptotic Approach to Security}
 
 \begin{frame}{The asymptotic approach to provable security}
 	\begin{columns}
@@ -1009,32 +1029,23 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{AES: An example of asymptotic security analysis}
+\begin{frame}{AES: an example of asymptotic security analysis}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item The Advanced Encryption Standard (AES) is a common symmetric-key encryption algorithm.
-				\item It comes in different variants: AES-128, AES-192, AES-256.
-				\item In asymptotic analysis, we'd say:
+				\item The Advanced Encryption Standard (AES) is a common symmetric-key encryption algorithm. It comes in three variants: AES-128, AES-192, AES-256.
+				\item In asymptotic language we'd say (a widely held \textit{conjecture}, not a theorem):
 				      \begin{itemize}
 					      \item AES is secure against all polynomial-time adversaries.
 					      \item Any successful attack must take exponential time in the key length.
 				      \end{itemize}
-				\item This hides the concrete details about specific computational costs.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item Concrete security for AES-128:
-				      \begin{itemize}
-					      \item Best known attack: $\approx 2^{126.1}$ operations
-				      \end{itemize}
-				\item For AES-256:
-				      \begin{itemize}
-					      \item Best known attack: $\approx 2^{254.4}$ operations
-					      \item Far beyond the capability of any conceivable computation
-				      \end{itemize}
-				\item Asymptotic approach: Both are ``computationally secure''
+				\item Concrete security of AES-128: best known attack $\approx 2^{126.1}$ operations (biclique cryptanalysis, 2011) -- barely better than brute force ($2^{128}$), and hopelessly out of reach.
+				\item AES-256: best known attack $\approx 2^{254.4}$ operations.
+				\item Asymptotic approach: both are simply ``computationally secure''.
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1082,11 +1093,11 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\definitionbox{Negligible Functions}{
-				A function $f$ is negligible if it approaches zero faster than $1/p(\lambda)$, for every polynomial $p$. Formally:
-				\begin{itemize}
-					\item For every polynomial $p$, there exists $\lambda_0$ such that $f(\lambda) < 1/p(\lambda)$ for all $\lambda > \lambda_0$.
-					\item For every polynomial $p$, we have $p(\lambda) \in \mathcal{O}(1/f(\lambda))$.
-				\end{itemize}
+				A function $f$ is negligible if it approaches zero faster than $1/p(\lambda)$ for \textit{every} polynomial $p$. Formally, for every polynomial $p$:
+				\begin{align*}
+					\lim_{\lambda \to \infty} p(\lambda) \cdot f(\lambda) = 0.
+				\end{align*}
+				Equivalently: for every polynomial $p$, $f(\lambda) < 1/p(\lambda)$ for all sufficiently large $\lambda$.
 			}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1094,6 +1105,7 @@
 				\item \textbf{You can probably ignore the definition and just think about this intuitively:}
 				\item In cryptography, we want attack success probabilities to be negligible in the security parameter $\lambda$.
 				\item Negligible probability: essentially zero for practical purposes when $\lambda$ is large enough.
+				\item Examples: $2^{-\lambda}$ (guessing a $\lambda$-bit key) is negligible. $1/\lambda^{10}$ is \textbf{not}: multiply by $p(\lambda) = \lambda^{11}$ and it blows up.
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1120,7 +1132,7 @@
 	\end{columns}
 \end{frame}
 
-\subsection{Birthday paradox}
+\subsection{Birthday Paradox}
 
 \begin{frame}{Birthday paradox}
 	\begin{columns}[c]
@@ -1134,7 +1146,7 @@
 					      \item 97\%?
 				      \end{itemize}
 				\item Many people guess around 15--20\%, but the actual probability is about 97\%!
-				\item This is counterintuitive because \textbf{we're not looking for a specific birthday - we're looking for \textit{any} match among all possible pairs}.
+				\item This is counterintuitive because \textbf{we're not looking for a specific birthday -- we're looking for \textit{any} match among all possible pairs}.
 				\item With 50 students, we have $\binom{50}{2} = 1{,}225$ possible pairs to check!\footnote{$\binom{50}{2}$ is a binomial coefficient. It means: \textit{``how many ways can I choose two different items from a set of 50?''}}
 			\end{itemize}
 		\end{column}
@@ -1155,27 +1167,27 @@
 
 \begin{frame}{Birthday probabilities}
 	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
+		\begin{column}{0.55\textwidth}
 			\begin{itemize}
 				\item Many cryptographic algorithms fail if two executions sample the same random value.
-				\item General question: If we take $q$ independent uniform samples from a set of $N$ items, what's the probability that some value is chosen more than once?
+				\item General question: take $q$ independent uniform samples from a set of $N$ items. What's the probability that some value is chosen more than once?
 				\item This probability is called $\func{birthday}{q,N}$.
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.4\textwidth}
+		\begin{column}{0.45\textwidth}
 			\begin{align*}
 				\func{birthday}{q,N} = 1 - \prod_{i=1}^{q-1} \left(1 - \frac{i}{N}\right)
 			\end{align*}
 			\begin{itemize}
-				\item Surprisingly high probability!
-				\item With $q \approx 1.2\sqrt{N}$, the probability is $\approx 0.5$
-				\item For birthdays: we only need 23 people for a $>50\%$ chance
+				\item Surprisingly high! At $q \approx 1.2\sqrt{N}$ it is already $\approx 0.5$.
+				\item Handy upper bound: $\func{birthday}{q,N} \leq q(q-1)/2N \leq q^2/2N$.
+				\item For $N = 2^{128}$: a repeat is likely after only $\approx 2^{64}$ samples.
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\subsection{``Bad event'' proof technique}
+\subsection{``Bad Event'' Proof Technique}
 
 \begin{frame}{The ``bad event'' proof technique}{Why we need a new tool}
 	\begin{itemize}[<+->]
@@ -1223,9 +1235,8 @@
 		\end{align*}
 	}
 	\begin{itemize}[<+->]
-		\item The left side is exactly the \textbf{advantage} from our indistinguishability definition: how well \prog{} tells the two libraries apart.
-		\item The right side is the probability of \textbf{ever tripping the wire}.
-		\item You can't distinguish the libraries any better than you can trigger the bad event.
+		\item The left side is exactly the \textbf{advantage} from our indistinguishability definition.
+		\item The right side is the probability of \textbf{ever tripping the wire}: you can't distinguish the libraries any better than you can trigger the bad event.
 		\item So the whole proof reduces to one task: \textbf{show the bad event happens with negligible probability.}
 	\end{itemize}
 \end{frame}
@@ -1234,10 +1245,10 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item \textbf{Claim:} these two libraries are \textbf{computationally indistinguishable}.
-				\item \lib{}{1} returns \texttt{true} only when the caller's guess $X$ matches a fresh random string $R$.
-				\item \lib{}{2} never returns \texttt{true} at all.
-				\item Intuitively, guessing a uniformly random $\lambda$-bit string is \textbf{almost impossible} -- so \lib{}{1} practically never returns \texttt{true} either.
+				\item \textbf{Claim:} \lib{}{1} $\approxeq$ \lib{}{2} (computationally indistinguishable).
+				\item \lib{}{1} returns \texttt{true} only when the guess $X$ matches a fresh random $R$; \lib{}{2} never does.
+				\item Not interchangeable: calling $\func{predict}{\bit{0}^\lambda}$ once distinguishes with advantage exactly $2^{-\lambda} \neq 0$.
+				\item But guessing a random $\lambda$-bit string is \textbf{almost impossible}, so that advantage is negligible. Let's prove it.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1343,16 +1354,16 @@
 
 \begin{frame}{The ``bad event'' proof technique}{Example: bound the bad event}
 	\begin{columns}[c]
-		\begin{column}{0.8\textwidth}
+		\begin{column}{0.68\textwidth}
 			\begin{itemize}[<+->]
 				\item All that's left is to bound how likely the tripwire is tripped.
 				\item The bad event is exactly $R = X$, with $R \twoheadleftarrow \bits^\lambda$ fresh and uniform. For a single call, $\prob{\texttt{bad}} = \prob{R = X} = 1/2^\lambda$.
 				\item Across $q$ calls, a union bound gives $\prob{\texttt{bad}} \leq q/2^\lambda$ -- still \textbf{negligible} for any polynomial $q$ (the same ``rare collision'' flavor as the birthday bound).
-				\item Since advantage $\leq \prob{\texttt{bad}} \to 0$, we conclude \lib{}{1} $\approxeq$ \lib{}{2}. \textbf{Done!}
+				\item Since advantage $\leq \prob{\texttt{bad}} \leq q/2^\lambda$, which is negligible, we conclude \lib{}{1} $\approxeq$ \lib{}{2}. \textbf{Done!}
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.2\textwidth}
-			\sslinked{
+		\begin{column}{0.32\textwidth}
+			\begin{center}
 				\sslibrary{'}{1}{
 					\sslibrarysubroutine{predict}{X}{
 						$R \twoheadleftarrow \bits^\lambda$\\
@@ -1361,18 +1372,8 @@
 						\quad return \hl{\texttt{true}}\\
 						return \texttt{false}
 					}{1}
-				}{0.4}
-			}{\overset{?}{\approxeq}}{
-				\sslibrary{'}{2}{
-					\sslibrarysubroutine{predict}{X}{
-						$R \twoheadleftarrow \bits^\lambda$\\
-						if $R \stackrel{?}{=} X$:\\
-						\quad \hl{$\texttt{bad} \coloneq \texttt{true}$}\\
-						\quad return \hl{\texttt{false}}\\
-						return \texttt{false}
-					}{1}
-				}{0.4}
-			}
+				}{0.85}
+			\end{center}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1392,6 +1393,27 @@
 		      \end{itemize}
 		\item We'll lean on this trick in the next topic!
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{What to take away from today}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item A security definition is a pair of \textbf{libraries}; secure means no calling program can tell them apart.
+				\item \lib{}{1} \interchangeable{} \lib{}{2}: \textit{identical} output probabilities for \textbf{every} program.
+				\item An \textbf{attack} is a distinguisher program; a \textbf{proof} is a chain of hybrids, each step a small, checkable rewrite.
+				\item A primitive needs a syntax, a correctness property and a security definition.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item Perfect secrecy is too strict, so we restrict adversaries to \textbf{polynomial time} and \textbf{negligible} advantage: \lib{}{1} $\approxeq$ \lib{}{2}.
+				\item \textbf{Birthday bound:} a repeat among $q$ samples from $N$ values is likely once $q \approx \sqrt{N}$.
+				\item \textbf{Bad events:} advantage $\leq \prob{\texttt{bad}}$, so bound the bad event and you're done.
+				\item Next time: \textbf{pseudorandom generators}, a short seed instead of a long key.
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}[plain]

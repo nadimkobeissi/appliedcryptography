@@ -18,80 +18,7 @@
 	\titlepage
 \end{frame}
 
-\begin{frame}{How it's made}
-	\bigimagewithcaption{fischer.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
-\end{frame}
-
-\begin{frame}{Cryptographic building blocks}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{Security goals}
-			\begin{itemize}[<+->]
-				\item \textbf{Confidentiality}: Data exchanged between Client and Server
-				      is only known to those parties.
-				\item \textbf{Authentication}: If Server receives data from Client,
-				      then Client sent it to Server.
-				\item \textbf{Integrity}: If Server modifies data owned by Client,
-				      Client can find out.
-			\end{itemize}
-		\end{column}
-
-		\begin{column}{0.5\textwidth}
-			\textbf{Examples}
-			\begin{itemize}[<+->]
-				\item \textbf{Confidentiality}: When you send a private message on Signal,
-				      only you and the recipient can read the content.
-				\item \textbf{Authentication}: When you receive an email from your boss,
-				      you can verify it actually came from them.
-				\item \textbf{Integrity}: Your computer can verify that software update
-				      downloads haven't been tampered with during transmission.
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Security goals: more examples}
-	\begin{itemize}[<+->]
-		\item \textbf{TLS (HTTPS)} ensures that data exchanged between the client
-		      and the server is confidential and that parties are authenticated.
-		      \begin{itemize}
-			      \item Allows you to log into gmail.com without your ISP learning your password.
-		      \end{itemize}
-		\item \textbf{FileVault 2} ensures data confidentiality and integrity on
-		      your MacBook.
-		      \begin{itemize}
-			      \item Prevents thieves from accessing your data if your MacBook is stolen.
-		      \end{itemize}
-		\item \textbf{Signal} implements post-compromise security, an advanced security
-		      goal.
-		      \begin{itemize}
-			      \item Allows a conversation to ``heal'' in the event of a temporary key
-			            compromise.
-			      \item More on that later in the course.
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Why bother?}
-	\begin{itemize}[<+->]
-		\item Can't we just use access control?
-		\item Strictly speaking, usernames and passwords can be implemented
-		      without cryptography\ldots
-		\item Server checks if the password matches, or if the IP address matches,
-		      etc., before granting access.
-		\item What's so bad about that?
-	\end{itemize}
-	\definitionbox{The problem with traditional access control}{
-		\begin{itemize}[<+->]
-			\item Requires trusting the server completely
-			\item No protection during transmission
-			\item No way to verify integrity
-			\item No way to establish trust between strangers
-		\end{itemize}
-	}
-\end{frame}
-
-\begin{frame}[c]{The magic of cryptography}
+\begin{frame}[c]{The magic of cryptography}{Reminder}
 	\begin{center}
 		\Large\textbf{Cryptography lets us achieve what seems impossible}
 		\vspace{1cm}
@@ -185,25 +112,17 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Hard problems}
+\begin{frame}{Complexity theory: the plan for this section}
+	\definitionbox{Computational Complexity Theory}{The mathematical framework for what makes a problem ``hard'': it classifies problems by the time and memory any algorithm must spend on them.}
 	\begin{itemize}[<+->]
-		\item Hard computational problems are the cornerstone of modern cryptography.
-		\item These are problems for which even the best algorithms wouldn't find a solution before the sun burns out.
-		\item They provide the security foundation for cryptographic schemes.
-		\item Without hard problems, most of our encryption systems would collapse.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{The rise of computational complexity theory}
-	\definitionbox{Computational Complexity Theory}{Complexity theory provides the mathematical framework to understand what makes problems ``hard''.}
-	\begin{itemize}
-		\item In the 1970s, rigorous study of hard problems led to computational complexity theory.
-		\item This field has had dramatic impacts beyond cryptography:
-		      \begin{itemize}
-			      \item \textbf{Economics}: Computational complexity of finding Nash equilibria in game theory.
-			      \item \textbf{Physics}: Simulating quantum many-body systems with exponential complexity.
-			      \item \textbf{Biology}: Protein folding prediction and DNA sequence alignment algorithms.
-		      \end{itemize}
+		\item Born in the 1960s--70s (Hartmanis--Stearns 1965; Cook 1971, Karp 1972 and Levin 1973 for NP-completeness).
+		\item Our route, in four stops:
+		      \begin{enumerate}
+			      \item What a computational problem is, and how we measure ``hard''.
+			      \item The classes P and NP: solving vs.\ checking.
+			      \item NP-completeness, reductions, and the P vs.\ NP question.
+			      \item \textbf{The punchline}: why NP-complete is the \emph{wrong} kind of hard for cryptography.
+		      \end{enumerate}
 	\end{itemize}
 \end{frame}
 
@@ -213,7 +132,7 @@
 		\begin{itemize}
 			\item \textbf{Decision problems}: Questions with ``yes'' or ``no'' answers
 			      \begin{itemize}
-				      \item Example: ``Is 217 a prime number?''
+				      \item Example: ``Is 217 a prime number?'' (No: $217 = 7 \times 31$.)
 			      \end{itemize}
 			\item \textbf{Search problems}: Questions that require finding a specific value
 			      \begin{itemize}
@@ -222,9 +141,7 @@
 		\end{itemize}
 	}
 	\begin{itemize}[<+->]
-		\item Computational problems form the foundation of theoretical computer science.
-		\item Different types of problems require different algorithmic approaches.
-		\item The difficulty of solving these problems is central to cryptography.
+		\item Cryptography cares about \textbf{search} problems (find the key!); complexity theory prefers \textbf{decision} problems. Usually the two are equivalent: an oracle for ``is $x < k$?'' lets you binary-search for $x$.
 	\end{itemize}
 \end{frame}
 
@@ -233,15 +150,13 @@
 		The property of computational problems for which no algorithm exists that can solve the problem in a reasonable amount of time.
 		\begin{itemize}
 			\item Also called \textbf{intractable problems}.
-			\item Hardness is independent of the computing device used.
-			\item All standard computing models are equivalent in terms of what they can compute efficiently.
-			\item \textbf{Exception}: Quantum computers for certain problems.
+			\item Hardness is independent of the computing device used: all standard computing models are equivalent in what they can compute efficiently.
+			\item \textbf{Exception}: Quantum computers, for certain problems.
 		\end{itemize}
 	}
 	\begin{itemize}[<+->]
-		\item Hardness is a fundamental concept in computational complexity theory.
-		\item Cryptography deliberately uses hard problems to create security.
-		\item What's ``hard'' should remain hard regardless of hardware advances.
+		\item ``Hard'' means hard for \textbf{every} algorithm, not just the ones we have thought of --- which is what makes hardness so difficult to prove.
+		\item Faster hardware only shifts constants: what is hard today should stay hard after ten more years of Moore's law.
 	\end{itemize}
 \end{frame}
 
@@ -249,35 +164,20 @@
 	\begin{columns}[c]
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}[<+->]
-				\item To evaluate computational hardness, we need to measure an algorithm's running time.
-				\item We typically use \textbf{asymptotic analysis} to express complexity.
+				\item To evaluate hardness, we measure an algorithm's running time using \textbf{asymptotic analysis}.
 				\item Common notation:
 				      \begin{itemize}
 					      \item $\mathcal{O}(n)$: Linear time.
 					      \item $\mathcal{O}(n^2)$: Quadratic time.
 					      \item $\mathcal{O}(2^n)$: Exponential time.
 				      \end{itemize}
+				\item What matters is the \textbf{growth} with the input size $n$, not the constants.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.6\textwidth}
 			\imagewithcaption{complexity.png}{Complexity classes growth. Source: Serious Cryptography}
 		\end{column}
 	\end{columns}
-\end{frame}
-
-\begin{frame}{Measuring algorithm complexity}
-	\begin{itemize}
-		\item To evaluate computational hardness, we need to measure an algorithm's running time.
-		\item We typically use \textbf{asymptotic analysis} to express complexity.
-		\item Common notation:
-		      \begin{itemize}
-			      \item $\mathcal{O}(n)$: Linear time.
-			      \item $\mathcal{O}(n^2)$: Quadratic time.
-			      \item $\mathcal{O}(2^n)$: Exponential time.
-		      \end{itemize}
-		\item We care about how the running time grows as the input size increases.
-		\item \textbf{Example}: An algorithm that takes $n^2$ operations for input size $n$ becomes impractical as $n$ grows large.
-	\end{itemize}
 \end{frame}
 
 \begin{frame}{Categorizing computational hardness}
@@ -296,24 +196,27 @@
 			\textbf{Hard Problems}
 			\begin{itemize}[<+->]
 				\item No known polynomial-time solution.
-				\item \textbf{Example}: Factoring product of two large primes.
-				\item Running time: Often exponential, e.g., $\mathcal{O}(2^n)$.
+				\item \textbf{Example}: Factoring the product of two large primes.
+				\item Best known running time: exponential or subexponential in the input size.
 				\item Becomes impractical quickly as input grows.
-				\item Includes NP-hard, NP-complete classes.
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Hard problems in practice}
-	\begin{itemize}
-		\item Public-key cryptography relies on specific hard problems:
+\begin{frame}{Why hard problems matter}
+	\begin{itemize}[<+->]
+		\item Hard problems \textbf{create asymmetry between legitimate users and attackers}: easy in one direction, hard in reverse.
 		      \begin{itemize}
-			      \item RSA: Integer factorization problem.
-			      \item Diffie-Hellman: Discrete logarithm problem.
+			      \item Easy to multiply two large primes; hard to factor the product.
+			      \item Easy to compute $g^x \bmod p$; hard to recover $x$.
 		      \end{itemize}
-		\item Cryptography leverages these problems to maximize security assurance.
-		\item The security of these schemes depends on the continued hardness of these problems.
+		\item Public-key cryptography is built on exactly these two problems:
+		      \begin{itemize}
+			      \item \textbf{RSA}: integer factorization.
+			      \item \textbf{Diffie-Hellman}: discrete logarithm.
+		      \end{itemize}
+		\item The security of these schemes depends on the \textbf{continued} hardness of these problems: an algorithmic breakthrough breaks the crypto, no bug required.
 	\end{itemize}
 \end{frame}
 
@@ -329,7 +232,7 @@
 			      \item Multivariate cryptography.
 			      \item Isogeny-based cryptography.
 		      \end{itemize}
-		\item NIST has standardized post-quantum cryptographic algorithms to replace our vulnerable systems.
+		\item In 2024, NIST standardized the first post-quantum algorithms (FIPS 203--205: ML-KEM, ML-DSA, SLH-DSA). More in topic 2.6.
 	\end{itemize}
 \end{frame}
 
@@ -354,13 +257,15 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Funny things standardized by NIST}
+\begin{frame}{Funny things NIST sells as Standard Reference Materials}
+	NIST's job is to make measurements comparable, so it sells physical reference samples for calibrating laboratory equipment. The catalogue includes:
 	\begin{itemize}[<+->]
-		\item \textbf{Standard Reference Peanut Butter}: for calibrating food testing equipment.
-		\item \textbf{The ``Odor Unit''}: for standardizing measurements of smell intensity in environmental monitoring.
-		\item \textbf{The Standard Banana Equivalent Dose (BED)}: for comparing radiation exposure levels to the natural radiation in a banana.
-		\item \textbf{Toilet Paper Testing}: for measuring strength, absorbency, and softness of toilet paper products.
-		\item \textbf{Standard Reference Whale Blubber}: for calibrating instruments that measure environmental pollutants in marine life.
+		\item \textbf{Standard Reference Peanut Butter}: for calibrating food-testing equipment.
+		\item \textbf{Standard Reference Baking Chocolate}.
+		\item \textbf{Standard Reference Whale Blubber}: for calibrating instruments that measure pollutants in marine life.
+		\item \textbf{Standard Reference House Dust}: for measuring organic contaminants in homes.
+		\item \textbf{Standard Reference Domestic Sludge}: exactly what it sounds like.
+		\item \textbf{The Standard Cigarette}: for testing whether mattresses and furniture catch fire.
 	\end{itemize}
 \end{frame}
 
@@ -368,18 +273,9 @@
 	\begin{itemize}[<+->]
 		\item \textbf{AES (Advanced Encryption Standard)}: Selected in 2001 to replace DES, now the worldwide standard for symmetric encryption.
 		\item \textbf{SHA-2 and SHA-3 (Secure Hash Algorithms)}: Cryptographic hash functions used for digital signatures and data integrity.
-		\item \textbf{DSA and ECDSA}: Digital Signature Algorithms based on the discrete logarithm problem.
-		\item \textbf{Triple DES}: An interim standard before AES that enhanced the security of the original DES.
-		\item \textbf{ML-KEM and ML-DSA}: Recently standardized post-quantum public-key cryptography and signature schemes.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Why hard problems matter}
-	\begin{itemize}
-		\item Hard problems \textbf{create asymmetry between legitimate users and attackers}.
-		\item Easy in one direction, difficult in the reverse.
-		\item Example: Easy to multiply large primes, hard to factor the product.
-		\item This asymmetry is what enables secure communication!
+		\item \textbf{DSA and ECDSA}: Digital signature algorithms based on the discrete logarithm problem (DSA itself was retired in 2023).
+		\item \textbf{Triple DES}: An interim standard before AES; disallowed since the end of 2023.
+		\item \textbf{ML-KEM and ML-DSA}: Post-quantum key encapsulation and signature schemes, standardized in 2024.
 	\end{itemize}
 \end{frame}
 
@@ -420,33 +316,19 @@
 	\begin{itemize}[<+->]
 		\item Most practical algorithms we use daily are in class P.
 		\item Examples: Sorting, searching, basic arithmetic.
-		\item Cryptography often relies on problems \textbf{not} in P!
+		\item Cryptography relies on problems \textbf{believed} not to be in P --- nobody can prove it!
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{SPACE complexity classes}
+\begin{frame}{SPACE complexity classes: memory matters too}
 	\begin{itemize}[<+->]
-		\item Time isn't everything—memory usage matters too!
-		\item A single memory access can be orders of magnitude slower than CPU operations.
-		\item \textbf{SPACE}$(f(n))$ = class of problems solvable using $\mathcal{O}(f(n))$ bits of memory.
-		\item Examples:
+		\item \textbf{SPACE}$(f(n))$ = class of problems solvable using $\mathcal{O}(f(n))$ bits of memory; \textbf{PSPACE} = union of all \textbf{SPACE}$(n^k)$ for constants $k$.
+		\item An algorithm running in time $f(n)$ can touch at most $f(n)$ memory cells, so \textbf{TIME}$(f(n)) \subseteq$ \textbf{SPACE}$(f(n))$, and hence $P \subseteq PSPACE$.
+		\item The converse fails: brute-force key search uses almost no memory but takes forever.
+		\item Why a cryptographer cares: memory is the expensive resource on real hardware.
 		      \begin{itemize}
-			      \item \textbf{SPACE}$(n)$ = problems using $\mathcal{O}(n)$ memory
-			      \item \textbf{SPACE}$(n^2)$ = problems using $\mathcal{O}(n^2)$ memory
-		      \end{itemize}
-		\item \textbf{PSPACE} = union of all \textbf{SPACE}$(n^k)$ for constants $k$.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Relationship between TIME and SPACE}
-	\begin{itemize}[<+->]
-		\item \textbf{Key insight}: Any algorithm running in time $f(n)$ uses at most $f(n)$ memory.
-		\item Why? You can write at most one bit per time unit.
-		\item Therefore: \textbf{TIME}$(f(n)) \subseteq$ \textbf{SPACE}$(f(n))$.
-		\item This gives us: $P \subseteq PSPACE$.
-		\item \textbf{Important}: Low memory doesn't guarantee fast execution!
-		      \begin{itemize}
-			      \item Example: Brute-force key search uses little memory but takes forever.
+			      \item Reminder from 1.6: \textbf{scrypt} is \textbf{memory-hard} on purpose, so that GPU and ASIC password crackers lose their advantage.
+			      \item Baby-step giant-step (coming up) trades memory for time.
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -458,55 +340,51 @@
 	\begin{itemize}[<+->]
 		\item \textbf{Key insight}: Easy to check, hard to find!
 		\item Given a potential solution, you can run a polynomial-time algorithm to verify if it's correct.
-		\item You don't need to find the solution efficiently—only verify it efficiently.
+		\item You don't need to find the solution efficiently --- only verify it efficiently.
 		\item \textbf{Relationship}: $P \subseteq NP$ (if you can solve it quickly, you can certainly verify it quickly).
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{NP: A cryptographic example}
-	\textbf{Problem}: Given a hash value $H$, does there exist an input $M$ such that $\func{hash}{M} = H$?
+\begin{frame}{NP: two cryptographic examples}
+	\begin{columns}[t]
+		\begin{column}{0.5\textwidth}
+			\textbf{Hash preimage}\\
+			Given a hash value $H$, does there exist an input $M$ such that $\func{hash}{M} = H$?
+			\begin{itemize}[<+->]
+				\item \textbf{Finding} $M$: brute force over inputs, exponential time.
+				\item \textbf{Checking} a candidate $M_0$: compute $\func{hash}{M_0}$ once and compare it with $H$.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Key recovery}\\
+			Given plaintext $P$ and ciphertext $C$, does there exist a key $K$ such that $C = E(K, P)$?
+			\begin{itemize}[<+->]
+				\item \textbf{Finding} $K$: brute-force key search, exponential time.
+				\item \textbf{Checking} a candidate $K_0$: compute $E(K_0, P)$ once and compare it with $C$.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.4cm}
 	\begin{itemize}[<+->]
-		\item \textbf{Finding the solution}: Could take exponential time (brute-force searching through possible inputs).
-		\item \textbf{Verifying a candidate solution}: Given a potential input $M_0$:
-		      \begin{enumerate}
-			      \item Compute $\func{hash}{M_0}$
-			      \item Check if $\func{hash}{M_0} = H$
-			      \item Return ``yes'' if they match, ``no'' otherwise
-		      \end{enumerate}
-		\item This verification runs in polynomial time!
-		\item Therefore, this hash preimage problem is in NP.
+		\item In both cases verification is one hash or one encryption: polynomial time. Both problems are in NP.
+		\item This is the whole reason brute force ``works'' at all: you can tell when you have found the answer.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{NP: Another cryptographic example}
-	\textbf{Problem}: Given plaintext $P$ and ciphertext $C$, does there exist a key $K$ such that $C = E(K, P)$?
+\begin{frame}{What's (probably) NOT in NP?}
 	\begin{itemize}[<+->]
-		\item \textbf{Finding the solution}: Could take exponential time (brute-force key search).
-		\item \textbf{Verifying a candidate solution}: Given a potential key $K_0$:
-		      \begin{enumerate}
-			      \item Compute $E(K_0, P)$
-			      \item Check if $E(K_0, P) = C$
-			      \item Return ``yes'' if they match, ``no'' otherwise
-		      \end{enumerate}
-		\item This verification runs in polynomial time!
-		\item Therefore, this key recovery problem is in NP.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{What's NOT in NP?}
-	\begin{itemize}[<+->]
-		\item \textbf{Known-ciphertext attacks}: You only have $E(K, P)$ values for random unknown plaintexts $P$.
+		\item Flip the question: ``Is there \textbf{no} key $K$ with $E(K, P) = C$?''
 		      \begin{itemize}
-			      \item How do you verify if candidate key $K_0$ is correct?
-			      \item You don't know what the plaintexts should be!
-			      \item Can't express this as a decision problem with efficient verification.
+			      \item A ``yes'' answer has no short certificate: to convince someone, you seem to need to rule out all $2^{128}$ keys.
+			      \item This is the complement of the NP problem on the previous slide. The class of such complements is \textbf{coNP}.
+			      \item Whether NP $=$ coNP is open; almost everyone believes they differ.
 		      \end{itemize}
-		\item \textbf{Proving absence of solutions}: ``Does there exist NO solution to this problem?''
+		\item Ciphertext-only key recovery, with truly random plaintexts, isn't even a well-posed problem:
 		      \begin{itemize}
-			      \item To verify ``no solution exists'', you might need to check all possible inputs.
-			      \item If there are exponentially many inputs, this takes exponential time.
-			      \item Therefore, proving non-existence is generally not in NP.
+			      \item There is nothing to check a candidate key against, so there is no certificate at all.
+			      \item Every key ``decrypts'' to \emph{some} plaintext, and all of them look equally plausible.
 		      \end{itemize}
+		\item \textbf{Moral}: ``in NP'' is a statement about \emph{checking}, and it silently assumes you know what a correct answer looks like.
 	\end{itemize}
 \end{frame}
 
@@ -616,21 +494,6 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Why are NP-complete problems equally hard?}
-	\begin{itemize}[<+->]
-		\item \textbf{Key insight}: You can \textit{reduce} any NP-complete problem to any other NP-complete problem.
-		\item \textbf{Reduction}: Transform one problem into another in polynomial time.
-		      \begin{itemize}
-			      \item If you can solve problem B efficiently, you can solve problem A efficiently too.
-		      \end{itemize}
-		\item \textbf{Mathematical equivalence}: Different NP-complete problems may look completely different but are fundamentally the same from a computational perspective.
-		\item \textbf{Consequence}: Solving any single NP-complete problem efficiently would solve \textit{all} problems in NP efficiently!
-		      \begin{itemize}
-			      \item This would prove that P = NP (one of the biggest open questions in computer science).
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
 \begin{frame}{The remarkable equivalence of NP-complete problems}
 	\begin{center}
 		\Large\textbf{These problems look completely different\ldots}
@@ -657,58 +520,15 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Concrete examples of equivalent problems}
-	\begin{itemize}[<+->]
-		\item \textbf{3-SAT} (Boolean satisfiability): Given a logical formula, can you set the variables to make it true?
-		      \begin{itemize}
-			      \item Example: $(x_1 \lor \neg x_2 \lor x_3) \land (\neg x_1 \lor x_2 \lor \neg x_3) \land \ldots$
-		      \end{itemize}
-		\item \textbf{Traveling Salesman Problem}: Given cities and distances, what's the shortest route visiting each city exactly once?
-		      \begin{itemize}
-			      \item Looks like a geometry/optimization problem!
-		      \end{itemize}
-		\item \textbf{Graph Coloring}: Can you color a graph's vertices with $k$ colors so no adjacent vertices share a color?
-		      \begin{itemize}
-			      \item Looks like a combinatorial puzzle!
-		      \end{itemize}
-		\item \textbf{Subset Sum}: Given a set of integers, is there a subset that sums to exactly $k$?
-		      \begin{itemize}
-			      \item Looks like an arithmetic problem!
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
 \begin{frame}{The magic of reductions}
 	\definitionbox{Problem Reduction}{
-		A polynomial-time transformation that converts any instance of problem A into an equivalent instance of problem B.
+		A polynomial-time transformation of any instance of problem A into an instance of problem B with the same yes/no answer. Solve B efficiently and you solve A efficiently.
 	}
 	\begin{itemize}[<+->]
-		\item You can transform \textbf{any} Sudoku puzzle into a Boolean logic formula!
-		      \begin{itemize}
-			      \item The Sudoku has a solution $\Leftrightarrow$ the formula is satisfiable
-		      \end{itemize}
-		\item You can transform \textbf{any} traveling salesman instance into a graph coloring problem!
-		\item You can transform \textbf{any} Boolean formula into a subset sum problem!
-		\item These transformations preserve the ``yes/no'' answer and run in polynomial time.
-		\item \textbf{Mind-blowing consequence}: Solve Sudoku efficiently = solve every problem in NP efficiently!
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Real-world impact of this equivalence}
-	\begin{itemize}[<+->]
-		\item \textbf{Good news}: Any algorithmic breakthrough on one NP-complete problem immediately applies to thousands of others!
-		      \begin{itemize}
-			      \item Better SAT solvers $\Rightarrow$ better protein folding, circuit design, AI planning\ldots
-		      \end{itemize}
-		\item \textbf{Sobering reality}: 50+ years of computer science research suggests these problems are fundamentally hard.
-		      \begin{itemize}
-			      \item Despite massive incentives (millions in prize money, practical applications worth billions)
-		      \end{itemize}
-		\item \textbf{Cryptographic relevance}: We rely on NP-complete problems being hard for certain security models.
-		      \begin{itemize}
-			      \item Though most practical cryptography uses different hard problems (factoring, discrete log)
-		      \end{itemize}
-		\item \textbf{Universal truth}: The computational universe has these deep, hidden connections that unite seemingly unrelated problems.
+		\item You can transform \textbf{any} (generalized) Sudoku puzzle into a Boolean formula: the Sudoku has a solution $\Leftrightarrow$ the formula is satisfiable.
+		\item NP-complete means: \textbf{every} problem in NP reduces to it. So all NP-complete problems reduce to each other --- the same problem in different costumes.
+		\item \textbf{Consequence}: a polynomial-time algorithm for Sudoku would solve \textbf{every} problem in NP efficiently, and prove $P = NP$.
+		\item \textbf{The practical upside}: progress on one is progress on all --- better SAT solvers mean better chip verification and planning.
 	\end{itemize}
 \end{frame}
 
@@ -722,20 +542,20 @@
 					      \item Donkey Kong Country 1--3
 					      \item All classic Legend of Zelda games
 					      \item All classic Metroid games
-					      \item All classic Pokémon role-playing games
+					      \item All classic Pok\'emon role-playing games
 				      \end{itemize}
 				\item \textbf{The catch}: ``Generalized versions'' with arbitrarily large levels.
 				      \begin{itemize}
 					      \item Real Nintendo levels are designed to be solvable by humans.
 					      \item But the \textbf{mathematical structure} of these games is inherently complex.
 				      \end{itemize}
-				\item \textbf{Cool insight}: Video games naturally encode complex computational problems!
+				\item \textbf{Bonus}: the Donkey Kong Country games and several Zelda games are even \textbf{PSPACE-complete}: as hard as anything solvable with polynomial memory.
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The P vs. NP Problem}
+\begin{frame}{The P vs. NP problem}
 	\definitionbox{The P vs. NP Problem}{
 		One of the most important unsolved problems in computer science and mathematics.
 		\begin{itemize}
@@ -752,22 +572,12 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{The million-dollar question}
-	\begin{itemize}[<+->]
-		\item The \textbf{Clay Mathematics Institute} offers \$1,000,000 for solving P vs. NP.
-		\item One of seven ``Millennium Prize Problems''.
-		\item Renowned complexity theorist Scott Aaronson called it \textit{``one of the deepest questions that human beings have ever asked''}.
-		\item \textbf{To win}: Prove either $P = NP$ or $P \neq NP$.
-		\item Over 50 years of research, no solution yet!
-	\end{itemize}
-\end{frame}
-
 \begin{frame}{What if P = NP?}
 	\begin{center}
 		\Large\textbf{The cryptographic apocalypse scenario}
 	\end{center}
 	\begin{itemize}[<+->]
-		\item If P = NP, then \textbf{any easily checked solution would also be easy to find}.
+		\item If P = NP, then \textbf{any easily checked solution would also be easy to find} (assuming a practical algorithm, not $n^{1000}$).
 		\item \textbf{Symmetric cryptography} would be completely broken:
 		      \begin{itemize}
 			      \item Key recovery becomes polynomial-time.
@@ -778,23 +588,24 @@
 			      \item Finding preimages becomes easy.
 			      \item Digital signatures, password storage, all broken.
 		      \end{itemize}
-		\item \textbf{All of modern cryptography} would collapse overnight!
-		\item \textbf{But also}: We could solve protein folding, optimize supply chains perfectly, revolutionize climate modeling\ldots
+		\item \textbf{All of modern cryptography} would collapse overnight --- except the one-time pad and other information-theoretic schemes, which never relied on hardness.
+		\item \textbf{But also}: protein folding, logistics, chip design and finding mathematical proofs would all become easy\ldots
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Why we don't panic}
+\begin{frame}{The million-dollar question: why we don't panic}
 	\begin{itemize}[<+->]
-		\item \textbf{Overwhelming consensus}: Most complexity theorists believe $P \neq NP$.
-		\item \textbf{Intuitive reasoning}: Problems that look hard actually \textbf{are} hard.
-		\item \textbf{The structure of reality}: Easy-to-verify but hard-to-solve problems seem fundamental to the universe.
-		\item \textbf{50+ years of evidence}: Despite massive incentives, no polynomial-time algorithms found for NP-complete problems.
-		\item \textbf{Current belief}: P is a strict subset of NP, with NP-complete problems outside P.
+		\item The \textbf{Clay Mathematics Institute} offers \$1,000,000 for settling P vs.\ NP --- one of its seven ``Millennium Prize Problems'', unclaimed since 2000.
+		\item Scott Aaronson calls it \textit{``one of the deepest questions that human beings have ever asked''}.
+		\item \textbf{The consensus}: most complexity theorists believe $P \neq NP$.
+		      \begin{itemize}
+			      \item 50+ years of attacks on thousands of NP-complete problems, with enormous practical incentives, and not one polynomial-time algorithm.
+		      \end{itemize}
 	\end{itemize}
-	\definitionbox{The Challenge}{
+	\definitionbox{Why the question is so hard}{
 		\begin{itemize}
-			\item \textbf{Proving $P = NP$}: Need only one polynomial-time algorithm for one NP-complete problem
-			\item \textbf{Proving $P \neq NP$}: Must prove no such algorithm can \textbf{ever} exist—much harder!
+			\item \textbf{Proving $P = NP$}: exhibit one polynomial-time algorithm for one NP-complete problem.
+			\item \textbf{Proving $P \neq NP$}: show that no such algorithm can \textbf{ever} exist, for any of them --- a statement about all possible programs.
 		\end{itemize}
 	}
 \end{frame}
@@ -813,8 +624,8 @@
 		      \end{itemize}
 		\item \textbf{What we actually use}: Problems that are probably \textbf{not} NP-hard.
 		      \begin{itemize}
-			      \item Factoring, discrete logarithm, lattice problems.
-			      \item Believed hard on average, but not proven NP-complete.
+			      \item Factoring, discrete logarithm, lattice problems: believed hard on average, not known to be NP-complete.
+			      \item Factoring even lies in NP $\cap$ coNP; if it were NP-complete then NP $=$ coNP, which almost nobody believes.
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -835,22 +646,38 @@
 			\begin{itemize}[<+->]
 				\item Random instances are typically hard.
 				      \begin{itemize}
-					      \item \textbf{Example}: Finding $a$ or $b$ given $(g, g^a \bmod p, g^b \bmod p, g^{ab} \bmod p)$ (Diffie-Hellman).
-					      \item \textbf{Example}: Factoring products of large primes (RSA).
+					      \item \textbf{Example}: given $g^a \bmod p$ for random $a$, find $a$ (Diffie-Hellman).
+					      \item \textbf{Example}: factoring $N = pq$ for random primes (RSA).
 				      \end{itemize}
-				\item Perfect for cryptographic applications.
+				\item Exception: lattices (Ajtai, 1996) --- random instances are as hard as the worst case.
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.5cm}
 	\definitionbox{Hard Problems for Cryptography}{
 		We need problems where almost every instance is hard, not just the worst ones.
 	}
 \end{frame}
 
+\begin{frame}{Discussion time}
+	\begin{enumerate}
+		\item \textbf{Sudoku is NP-complete. Why would a cipher whose key is ``the solution to this Sudoku'' be a terrible idea?}
+		      \begin{itemize}
+			      \item Think about which Sudokus you would actually be handing out.
+		      \end{itemize}
+		\item \textbf{``This AES key maps this plaintext to this ciphertext'' is easy to check. What about ``no AES key does''?}
+		      \begin{itemize}
+			      \item Which class is each statement in?
+		      \end{itemize}
+		\item \textbf{Suppose someone proves $P \neq NP$ tomorrow. Is Diffie-Hellman now proven secure?}
+		      \begin{itemize}
+			      \item What exactly would that proof say about the discrete logarithm?
+		      \end{itemize}
+	\end{enumerate}
+\end{frame}
+
 \section{Diffie-Hellman}
 
-\begin{frame}{Time for actual magic}
+\begin{frame}{Time for actual magic: remember this picture?}
 	\bigimagewithcaption{dh.png}{}
 \end{frame}
 
@@ -871,50 +698,45 @@
 	\begin{itemize}[<+->]
 		\item Whitfield Diffie and Martin Hellman solved this ``impossible'' problem.
 		\item Their solution (1976) came one year \textbf{before} RSA (1977).
+		      \begin{itemize}
+			      \item Hellman himself says it should be called \emph{Diffie-Hellman-Merkle}: Ralph Merkle had the idea of public-key distribution first.
+			      \item GCHQ's Malcolm Williamson had found the same scheme in 1974; it stayed classified until 1997.
+		      \end{itemize}
 		\item Uses the \textbf{discrete logarithm problem} as its foundation.
 		\item Allows two strangers to create a shared secret in public!
 	\end{itemize}
-	\vspace{0.5cm}
+	\vspace{0.3cm}
 	\begin{center}
 		\Large\textbf{This was the birth of modern cryptography}
 	\end{center}
 \end{frame}
 
-\begin{frame}{What makes discrete logarithm hard?}
-	\begin{itemize}[<+->]
-		\item Remember: we need problems that are easy in one direction, hard in reverse.
-		\item \textbf{Easy direction}: Given $g$ and $x$, compute $g^x \bmod p$.
-		      \begin{itemize}
-			      \item Example: $2^{10} \bmod 17 = 1024 \bmod 17 = 4$
-		      \end{itemize}
-		\item \textbf{Hard direction}: Given $g$, $p$, and $g^x \bmod p$, find $x$.
-		      \begin{itemize}
-			      \item Example: Given $g = 2$, $p = 17$, and a result of $4$, find $x = 10$
-		      \end{itemize}
-		\item For small numbers, this is easy. For huge numbers (thousands of bits), it's computationally infeasible!
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{A simple example}
-	Let's work with small numbers to see the pattern:
-	\vspace{0.5cm}
-	\begin{itemize}[<+->]
-		\item Let $p = 17$ (a prime) and $g = 2$ (a base)
-		\item \textbf{Computing powers is easy}:
-		      \begin{itemize}
-			      \item $2^1 \bmod 17 = 2$
-			      \item $2^2 \bmod 17 = 4$
-			      \item $2^3 \bmod 17 = 8$
-			      \item $2^4 \bmod 17 = 16$
-			      \item $2^5 \bmod 17 = 15$
-		      \end{itemize}
-		\item \textbf{Finding the exponent is harder}:
-		      \begin{itemize}
-			      \item Given result $15$, can you quickly find that the exponent was $5$?
-			      \item With small numbers: yes, by trying all possibilities
-			      \item With 2048-bit numbers: practically impossible!
-		      \end{itemize}
-	\end{itemize}
+\begin{frame}{What makes the discrete logarithm hard?}
+	Take $p = 17$ and $g = 3$ (a generator of $\mathbb{Z}_{17}^*$). Easy one way, hard the other:
+	\vspace{0.15cm}
+	\begin{columns}[t]
+		\begin{column}{0.5\textwidth}
+			\textbf{Easy direction: computing powers}
+			\begin{itemize}[<+->]
+				\item $3^1 \bmod 17 = 3$
+				\item $3^2 \bmod 17 = 9$
+				\item $3^3 \bmod 17 = 27 \bmod 17 = 10$
+				\item $3^4 \bmod 17 = 81 \bmod 17 = 13$
+				\item $3^5 \bmod 17 = 243 \bmod 17 = 5$
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Hard direction: finding the exponent}
+			\begin{itemize}[<+->]
+				\item Given $g = 3$, $p = 17$ and the result $5$: which exponent was it?
+				\item With small numbers: easy, try them all (answer: $x = 5$, the only one below $16$).
+				\item With a 2048-bit $p$: practically impossible, even with every computer on Earth.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.2cm}
+	\pause
+	Computing $g^x \bmod p$ takes about $\log_2 x$ multiplications (square-and-multiply); going back has no known shortcut.
 \end{frame}
 
 \begin{frame}{Mathematical groups: the foundation}
@@ -980,9 +802,9 @@
 	\begin{itemize}[<+->]
 		\item \textbf{``Discrete''} because we work with integers, not real numbers.
 		\item \textbf{``Logarithm''} because we're finding the exponent (like $\log_2(8) = 3$).
-		\item \textbf{Example}: Given $g = 2$, $p = 17$, $h = 8$, find $x$ such that $2^x \equiv 8 \pmod{17}$.
+		\item \textbf{Example}: Given $g = 3$, $p = 17$, $h = 10$, find $x$ such that $3^x \equiv 10 \pmod{17}$.
 		      \begin{itemize}
-			      \item Answer: $x = 3$ (since $2^3 = 8$)
+			      \item Answer: $x = 3$ (since $3^3 = 27 \equiv 10$)
 			      \item Easy with small numbers, hard with large ones!
 		      \end{itemize}
 		\item For cryptographic-sized numbers (2048+ bits), no efficient algorithm is known.
@@ -1057,7 +879,7 @@
 				\item Bob picks secret: \textcolor{red}{$b = 7$}
 			\end{itemize}
 			\pause
-			\vspace{0.5cm}
+			\vspace{0.3cm}
 			\textbf{Public Exchange}
 			\begin{itemize}[<+->]
 				\item Alice computes: $A = g^{\textcolor{red}{a}} \bmod p = 6$
@@ -1081,7 +903,7 @@
 				\item \textcolor{red}{\textbf{Shared secret: $S = 7$}}
 			\end{itemize}
 			\pause
-			\vspace{0.5cm}
+			\vspace{0.3cm}
 			\textbf{Eavesdropper sees only:}
 			\begin{itemize}[<+->]
 				\item $p = 13$, $g = 2$, $A = 6$, $B = 11$
@@ -1089,6 +911,22 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{Your turn: run Diffie-Hellman by hand}
+	Public parameters: $p = 23$, $g = 5$. Alice picks $a = 6$, Bob picks $b = 15$. Work in pairs and reduce mod $23$ after every multiplication.
+	\begin{enumerate}
+		\item What does Alice send? ($A = 5^6 \bmod 23$)
+		\item What does Bob send? ($B = 5^{15} \bmod 23$)
+		\item What shared secret do they both end up with?
+		\item You are Eve and you see $p, g, A, B$. How many exponents might you have to try to find $a$?
+	\end{enumerate}
+	\pause
+	\vspace{0.1cm}
+	\definitionbox{Answers}{
+		$A = 8$ (since $5^2 = 25 \equiv 2$, so $5^6 = 2^3 = 8$); \quad $B = 19$; \quad $S = B^6 \bmod 23 = A^{15} \bmod 23 = 2$.\\
+		Eve: at most $22$ tries here; $2^{2048}$ for a 2048-bit prime, still $2^{1024}$ with baby-step giant-step. And Eve doesn't actually need $a$ or $b$, only $S$: that is the next slide's problem.
+	}
 \end{frame}
 
 \begin{frame}{The computational Diffie-Hellman (CDH) problem}
@@ -1099,7 +937,7 @@
 		\item \textbf{Motivation}: Even if an eavesdropper captures the public values $g^a$ and $g^b$, they shouldn't be able to determine the shared secret $g^{ab}$.
 		\item \textbf{Example}: Given $A = 6$ and $B = 11$ from our earlier example, can you compute $S = 7$?
 		      \begin{itemize}
-			      \item Without knowing $a = 5$ and $b = 7$, this becomes very difficult!
+			      \item With $p = 13$ you can brute-force it in seconds; with a 2048-bit $p$, nobody knows how.
 		      \end{itemize}
 		\item \textbf{Real-world relevance}: This is exactly what an attacker faces when trying to break Diffie-Hellman.
 	\end{itemize}
@@ -1127,21 +965,16 @@
 
 \begin{frame}{The decisional Diffie-Hellman (DDH) problem}
 	\definitionbox{Decisional Diffie-Hellman (DDH) Problem}{
-		Given $g^a \bmod p$, $g^b \bmod p$, and a value $X$ that is either:
-		\begin{itemize}
-			\item $g^{ab} \bmod p$ (the real shared secret), or
-			\item $g^c \bmod p$ for some random $c$
-		\end{itemize}
-		\ldots determine which one $X$ is (each choice has probability $1/2$).
+		Given $g^a \bmod p$, $g^b \bmod p$, and a value $X$ that is either $g^{ab} \bmod p$ (the real shared secret) or $g^c \bmod p$ for a random $c$, each with probability $1/2$: determine which one $X$ is.
 	}
 	\begin{itemize}[<+->]
 		\item \textbf{Why do we need this?} Indistinguishability!
 		      \begin{itemize}
 			      \item What if an attacker can compute the first 32 bits of $g^{ab}$?
-			      \item CDH isn't completely broken, but the attacker learns something.
-			      \item This partial information might compromise application security.
+			      \item CDH isn't broken, but the attacker learns something --- and that partial leak may be all an application needs to fail.
 		      \end{itemize}
 		\item \textbf{DDH ensures}: The shared secret $g^{ab}$ is \textbf{indistinguishable} from a random group element.
+		\item \textbf{Where it's used}: security proofs of ElGamal, Cramer-Shoup and many key exchange protocols. In our library notation, it's what lets us swap the real key for a uniform one.
 	\end{itemize}
 \end{frame}
 
@@ -1159,31 +992,10 @@
 		      \end{itemize}
 		\item \textbf{Surprising fact}: DDH is \textbf{not hard} in certain groups!
 		      \begin{itemize}
-			      \item In $\mathbb{Z}_p^*$, DDH can be broken using the Legendre symbol (quadratic residuosity).
+			      \item In $\mathbb{Z}_p^*$, DDH can be broken using the Legendre symbol (quadratic residuosity): $g^{ab}$ is a square exactly when $g^a$ or $g^b$ is, while a random $g^c$ is a square only half the time.
 			      \item But CDH remains hard in the same group.
 		      \end{itemize}
-		\item \textbf{Solution}: Use elliptic curve groups where DDH is believed hard.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Why DDH matters in cryptography}
-	\begin{itemize}[<+->]
-		\item \textbf{Indistinguishability}: DDH ensures that shared secrets ``look random''.
-		      \begin{itemize}
-			      \item Critical for encryption schemes and key derivation.
-			      \item Prevents attackers from learning partial information.
-		      \end{itemize}
-		\item \textbf{Security proofs}: Many cryptographic protocols prove security under DDH.
-		      \begin{itemize}
-			      \item ElGamal encryption.
-			      \item Cramer-Shoup cryptosystem.
-			      \item Various authenticated key exchange protocols.
-		      \end{itemize}
-		\item \textbf{Real-world impact}: Even though DDH is a \textbf{stronger assumption} than CDH, it's one of the most studied and used assumptions.
-		      \begin{itemize}
-			      \item Provides stronger security guarantees for applications.
-			      \item Enables more sophisticated cryptographic constructions.
-		      \end{itemize}
+		\item \textbf{Solution}: work in a group of large \textbf{prime order} $q$, where this leak disappears: the order-$q$ subgroup of $\mathbb{Z}_p^*$ for $p = 2q + 1$, or a prime-order elliptic curve. There DDH is believed hard.
 	\end{itemize}
 \end{frame}
 
@@ -1237,7 +1049,7 @@
 		\item \textbf{Problem}: $S$ is \textbf{not} a uniformly random bitstring --- it's a specific element of a specific algebraic group.
 		      \begin{itemize}
 			      \item It always lies in the subgroup generated by $g$, and depending on $g$ may always be a \textbf{quadratic residue}.
-			      \item Its byte-length can vary (leading zero bytes), a classic source of real implementation bugs.
+			      \item Its byte-length can vary (leading zero bytes), a classic source of real bugs: the \textbf{Raccoon attack} (2020) on TLS 1.2 exploited exactly this.
 		      \end{itemize}
 		\item Structured, biased input makes a \textbf{terrible} symmetric key --- it hands an attacker a head start.
 	\end{itemize}
@@ -1247,12 +1059,12 @@
 \begin{frame}{Pseudorandom and uniform distributions}{Reminder}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\imagewithcaption{prg-distributions.pdf}{Source: The Joy of Cryptography}
+			\imagewithcaption[0.6\textwidth]{prg-distributions.pdf}{Source: The Joy of Cryptography}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Whitening the secret: Key Derivation Functions}
+\begin{frame}{Whitening the secret: key derivation functions}
 	\begin{columns}[c]
 		\begin{column}{0.48\textwidth}
 			\begin{itemize}[<+->]
@@ -1286,38 +1098,37 @@
 \end{frame}
 
 \begin{frame}{TLS handshake: Diffie-Hellman in action}
-	\textbf{When you visit https://gmail.com, here's what happens:}
-	\vspace{0.5cm}
+	\textbf{When you visit https://gmail.com, here's what happens} (TLS 1.2 flavour, simplified):
+	\vspace{0.2cm}
 	\begin{enumerate}[<+->]
 		\item \textbf{Client Hello}: Your browser says ``I want to talk securely''
-		\item \textbf{Server Hello}: Gmail's server responds with its certificate and DH parameters
+		\item \textbf{Server Hello}: Gmail's server responds with its certificate and its DH share
 		      \begin{itemize}
-			      \item Includes $p$, $g$, and server's public value $g^b \bmod p$
+			      \item Includes $p$, $g$, and the server's public value $g^b \bmod p$
 		      \end{itemize}
 		\item \textbf{Client Key Exchange}: Your browser generates its own secret $a$ and sends $g^a \bmod p$
 		\item \textbf{Secret computation}: Both sides compute $g^{ab} \bmod p$
-		\item \textbf{Key derivation}: The shared secret is used to derive encryption keys
+		\item \textbf{Key derivation}: The shared secret goes through a KDF to produce the session keys
 		\item \textbf{Secure communication}: All further messages are encrypted with these keys
 	\end{enumerate}
-	\vspace{0.5cm}
-	\textbf{Result}: Your password is encrypted before leaving your computer!
+	\vspace{0.2cm}
+	\textbf{Result}: Your password is encrypted before leaving your computer! (TLS 1.3 sends the browser's share in its first message and uses named groups such as X25519: topic 2.1.)
 \end{frame}
 
 \begin{frame}{Signal's double ratchet: DH everywhere}
 	\begin{columns}[c]
 		\begin{column}{0.7\textwidth}
 			\begin{itemize}[<+->]
-				\item \textbf{Initial key exchange}: Uses X3DH (Extended Triple DH)
+				\item \textbf{Initial key exchange}: X3DH (Extended Triple DH)
 				      \begin{itemize}
-					      \item Combines \textbf{three} DH key exchanges for security.
+					      \item Combines \textbf{three} DH key exchanges; since 2023, PQXDH adds a post-quantum KEM.
 					      \item Works even when recipient is offline (\textit{``asynchronous''} protocol).\footnote{Everything on this slide will be covered in much more detail later in the course.}
 				      \end{itemize}
 				\item \textbf{Ongoing communication}: Uses Double Ratchet
 				      \begin{itemize}
 					      \item New DH key exchange with every reply!
 					      \item Provides ``forward secrecy'' and ``post-compromise security''.
-					      \item If your phone gets compromised today, yesterday's messages remain secure.
-					      \item If your phone recovers from compromise, tomorrow's messages are secure again.
+					      \item Phone compromised today? Yesterday's messages stay secure, and once you recover, tomorrow's are secure again.
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -1330,66 +1141,54 @@
 \subsection{Attacks on Diffie-Hellman}
 
 \begin{frame}{Weak groups in the wild: the Logjam findings}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{center}
-				\Large\textbf{Not all Diffie-Hellman implementations are created equal}
-			\end{center}
-			\vspace{0.5cm}
-			\begin{itemize}[<+->]
-				\item The Logjam paper (2015)\footnote{\url{https://appliedcryptography.page/paper/\#imperfect-dh}} revealed widespread weaknesses in real-world DH deployments
-				\item Researchers scanned millions of servers and found shocking vulnerabilities
-				\item Three major categories of problems:
-				      \begin{itemize}
-					      \item Servers using 512-bit primes for non-export DHE.
-					      \item Composite-order subgroup attacks.
-					      \item Misconfigured DSA groups.
-				      \end{itemize}
-				\item \textbf{Observation}: Even correct algorithms fail when deployed incorrectly!
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Logjam finding: 512-bit primes still in use}
-	2,631 servers with browser-trusted certificates used 512-bit primes!
+	\begin{center}
+		\Large\textbf{Not all Diffie-Hellman deployments are created equal}
+	\end{center}
+	\vspace{0.2cm}
 	\begin{itemize}[<+->]
-		\item \textbf{Why this is bad}:
+		\item In 2015, the \emph{Imperfect Forward Secrecy} paper\footnote{\url{https://appliedcryptography.page/paper/\#imperfect-dh}} scanned millions of TLS, SSH and VPN servers to see how DH was actually deployed.
+		\item \textbf{Headline result}: an academic team can break a 768-bit prime and a nation-state a 1024-bit one. Breaking the single most common 1024-bit group would let a passive attacker read 18\% of the top million HTTPS sites; a second group covers 66\% of VPN and 26\% of SSH servers. (The Logjam downgrade attack itself: topic 2.1.)
+		\item \textbf{Our interest today}: the misconfigurations they found along the way.
 		      \begin{itemize}
-			      \item 512-bit discrete logarithm is solvable with modest resources
-			      \item A passive eavesdropper can decrypt connections after the fact
-			      \item No active attack needed—just record and decrypt later!
+			      \item Servers using 512-bit primes for ordinary, non-export DHE.
+			      \item Non-safe primes with composite-order subgroups.
 		      \end{itemize}
-		\item \textbf{Real-world proof}: Researchers decrypted test connections to www.fbi.gov
-		      \begin{itemize}
-			      \item The FBI website used OpenSSL's default 512-bit group until April 2015
-			      \item Researchers had precomputed the discrete log table for this group
-			      \item Complete compromise of ``secure'' government communications!
-		      \end{itemize}
-		\item \textbf{The lesson}: Default configurations can be dangerously weak
-		      \begin{itemize}
-			      \item Many admins never change defaults
-			      \item OpenSSL's 512-bit default was catastrophically inadequate
-		      \end{itemize}
+		\item \textbf{Observation}: a correct algorithm still fails when deployed with bad parameters.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Another Logjam finding: Composite-order subgroup attacks}
+\begin{frame}{Logjam finding: 512-bit primes still in use}
+	2,631 servers with browser-trusted certificates used 512-bit primes --- no export downgrade needed!
 	\begin{itemize}[<+->]
-		\item Not all servers use ``safe'' primes where $(p-1)/2$ is also prime
+		\item \textbf{Why this is bad}:
 		      \begin{itemize}
-			      \item 4,800 out of 70,000 primes were not safe.
-			      \item If $p-1$ has small factors, the group has weak subgroups.
-			      \item \textbf{Note}: Even with non-safe primes, proper generator choice can maintain security.
+			      \item A 512-bit discrete logarithm was within academic reach in 2015: about a week of precomputation per group, then individual logs in about a minute (median 70 seconds).
+			      \item A passive eavesdropper can record now and decrypt later. No active attack needed.
 		      \end{itemize}
-		\item Non-safe primes used with incorrectly chosen $g$:
+		\item \textbf{Real-world proof}: the researchers decrypted test connections to www.fbi.gov
 		      \begin{itemize}
-			      \item Servers use short exponents (160--256 bits) for ``efficiency''
-			      \item \textbf{AND} generator $g$ generates a small subgroup
-			      \item If $g$ generates the full group (order $p-1$), you're still secure!
-			      \item But many implementations chose $g$ poorly
+			      \item The site used OpenSSL's default 512-bit group until April 2015.
+			      \item Precompute once for that group, and every connection to it falls.
 		      \end{itemize}
-		\item \textbf{Real impact}: 159 servers fully compromised, including VPN devices and web conferencing servers!
+		\item \textbf{The lesson}: default configurations can be dangerously weak, and many admins never change defaults.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Logjam finding: composite-order subgroups}
+	\begin{itemize}[<+->]
+		\item Not all servers use \textbf{safe primes}, where $(p-1)/2$ is also prime.
+		      \begin{itemize}
+			      \item 4,800 of the 70,000 distinct primes seen were not safe.
+			      \item If $p-1$ has many small factors, $\mathbb{Z}_p^*$ has many small subgroups.
+		      \end{itemize}
+		\item The dangerous combination the paper found:
+		      \begin{itemize}
+			      \item a generator $g$ whose order has small factors, \textbf{and}
+			      \item short exponents (160--256 bits), chosen ``for efficiency''.
+			      \item Then an attacker recovers the exponent piece by piece, one small factor at a time. (How? Next slide.)
+		      \end{itemize}
+		\item \textbf{Safe usage}: $g$ generates a subgroup of one large prime order $q$, and exponents live in $\{1, \ldots, q-1\}$. Then there are no small pieces to recover.
+		\item \textbf{Real impact}: 159 hosts fully compromised, including VPN devices and web-conferencing servers.
 	\end{itemize}
 \end{frame}
 
@@ -1405,7 +1204,7 @@
 		\end{column}
 		\begin{column}{0.46\textwidth}
 			\begin{center}
-				\begin{tikzpicture}[scale=0.72, every node/.style={align=center}]
+				\begin{tikzpicture}[scale=0.68, every node/.style={align=center}]
 					\node[draw, thick, cipherprimary, rounded corners, fill=cipherprimary!8, text width=3.2cm] (top) at (0,2.4) {\small solve $x$ mod $n$\\ $n = q_1 q_2 q_3$};
 					\node[draw, thick, cipheraccent, rounded corners, fill=cipheraccent!15, text width=1.6cm] (q1) at (-3.2,0) {\small mod $q_1$ (easy)};
 					\node[draw, thick, cipheraccent, rounded corners, fill=cipheraccent!15, text width=1.6cm] (q2) at (0,0) {\small mod $q_2$ (easy)};
@@ -1425,24 +1224,26 @@
 \end{frame}
 
 \begin{frame}{Pohlig-Hellman: a tiny worked example}
-	Let $p = 41$: the group order $n = p - 1 = 40 = 2^3 \cdot 5$ is \textbf{smooth}.
+	Let $p = 41$: the group order $n = 40 = 2^3 \cdot 5$ is \textbf{smooth}. Brute force: up to $40$ checks.
 	\begin{itemize}[<+->]
-		\item Brute force over $\mathbb{Z}_{40}$: up to $40$ checks.
 		\item Pohlig-Hellman instead solves $x \bmod 8$ (8 checks) and $x \bmod 5$ (5 checks) separately.
-		\item Combine with the \textbf{Chinese Remainder Theorem}: exactly one $x \bmod 40$ matches both.
-		\item Total: $\sim 13$ checks instead of $40$ --- and the saving \textbf{explodes} for cryptographic-sized primes.
+		      \begin{itemize}
+			      \item How? $h^5 = (g^5)^x$ and $g^5$ has order $8$: a discrete log in a group of $8$ elements gives $x \bmod 8$. Likewise $h^8 = (g^8)^x$ gives $x \bmod 5$.
+		      \end{itemize}
+		\item Combine with the \textbf{Chinese Remainder Theorem}: one $x \bmod 40$ matches both.
+		\item Total: $\sim 13$ checks instead of $40$ --- and the saving \textbf{explodes} for large primes.
 	\end{itemize}
-	\definitionbox{The general rule}{If $p - 1$'s largest prime factor has $b$ bits, Pohlig-Hellman solves the discrete log in $\mathcal{O}(\sqrt{2^b})$ time --- regardless of how big $p$ itself is!}
+	\definitionbox{The general rule}{If the largest prime factor of $p - 1$ has $b$ bits, Pohlig-Hellman runs in $\mathcal{O}(\sqrt{2^b})$ time --- regardless of how big $p$ is!}
 \end{frame}
 
 \begin{frame}{Safe primes: closing the door on Pohlig-Hellman}
 	\definitionbox{Safe Prime}{A prime $p = 2q + 1$ where $q$ is \textbf{also prime} (a ``Sophie Germain prime'').}
 	\begin{itemize}[<+->]
 		\item If $p$ is safe, the group order $p - 1 = 2q$ has \textbf{only} the factors $2$ and $q$.
-		\item $q$ is itself huge, so Pohlig-Hellman gains \textbf{nothing}: the best attack stays $\mathcal{O}(\sqrt{q}) \approx \mathcal{O}(\sqrt{p})$.
-		\item Compare an \textbf{unsafe} prime, where $p-1$ is smooth --- exactly what Pohlig-Hellman needs.
+		\item $q$ is huge, so Pohlig-Hellman gains \textbf{nothing}: the best generic attack stays $\mathcal{O}(\sqrt{q}) \approx \mathcal{O}(\sqrt{p})$.
+		\item Bonus: a $g$ of order $q$ also kills the Legendre-symbol leak in DDH.
 	\end{itemize}
-	\alertbox{Back to Logjam}{The ``composite-order subgroup attacks'' from Logjam are Pohlig-Hellman in the wild: non-safe primes handed attackers exactly the smooth structure it needs.}
+	\alertbox{Back to Logjam}{Logjam's ``composite-order subgroup attacks'' are Pohlig-Hellman in the wild: non-safe primes handed attackers exactly the smooth structure it needs.}
 \end{frame}
 
 \begin{frame}{The dark side: unauthenticated Diffie-Hellman}
@@ -1469,7 +1270,7 @@
 
 \begin{frame}{Man-in-the-middle attack on DH}
 	\textbf{How Mallory breaks ``secure'' communication:}
-	\vspace{0.5cm}
+	\vspace{0.2cm}
 	\begin{enumerate}[<+->]
 		\item \textbf{Alice $\rightarrow$ Mallory}: Alice sends $g^a$ (thinking it goes to Bob)
 		\item \textbf{Mallory $\rightarrow$ Bob}: Mallory sends $g^m$ (Bob thinks it's from Alice)
@@ -1483,7 +1284,7 @@
 		      \end{itemize}
 		\item \textbf{Communication}: Alice encrypts with $g^{am}$, Mallory decrypts, reads/modifies, re-encrypts with $g^{bm}$ for Bob
 	\end{enumerate}
-	\vspace{0.5cm}
+	\vspace{0.2cm}
 	\textbf{Alice and Bob never know they've been compromised!}
 \end{frame}
 
@@ -1504,11 +1305,10 @@
 			      \item DH protects against \textbf{passive} eavesdropping.
 			      \item Does nothing against \textbf{active} manipulation.
 		      \end{itemize}
-		\item \textbf{Historical impact}: This attack has compromised real systems for decades.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Solution: Authenticated Key Exchange}
+\begin{frame}{Solution: authenticated key exchange}
 	\definitionbox{Authenticated Key Exchange (AKE)}{
 		Key exchange that verifies the identity of the parties involved, preventing man-in-the-middle attacks.
 	}
@@ -1528,10 +1328,10 @@
 \begin{frame}{TLS: authenticated DH with certificates}
 	\textbf{How HTTPS prevents MITM attacks:}
 	\begin{enumerate}[<+->]
-		\item \textbf{Server authentication}: Gmail sends its certificate along with $g^b$
+		\item \textbf{Server authentication}: Gmail sends its certificate and a \textbf{signature} on $g^b$
 		      \begin{itemize}
-			      \item Certificate proves ``this DH value really came from gmail.com''
-			      \item Signed by a trusted Certificate Authority (CA)
+			      \item The certificate binds the signing key to ``gmail.com''; the signature binds $g^b$ to that key
+			      \item The certificate is signed by a trusted Certificate Authority (CA)
 		      \end{itemize}
 		\item \textbf{Certificate verification}: Your browser checks:
 		      \begin{itemize}
@@ -1574,15 +1374,12 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{WhatsApp: Key transparency}
+\begin{frame}{WhatsApp: key transparency}
 	\begin{columns}[c]
 		\begin{column}{0.52\textwidth}
 			\begin{itemize}[<+->]
-				\item \textbf{The problem}: Manual QR verification scales terribly.
-				      \begin{itemize}
-					      \item A group of 100 needs $\binom{100}{2} = \frac{100 \cdot 99}{2} = \textbf{4,950}$ pairwise checks!
-				      \end{itemize}
-				\item \textbf{WhatsApp (2023)}: \textbf{Key transparency} verifies connections automatically. No user action.\footnote{\url{https://appliedcryptography.page/paper/\#whatsapp-transparency}}
+				\item \textbf{The problem}: Manual QR verification scales terribly: a group of 100 needs $\binom{100}{2} = \textbf{4,950}$ pairwise checks!
+				\item \textbf{WhatsApp (2023)}: \textbf{Key transparency} verifies connections automatically, no user action.\footnote{\url{https://appliedcryptography.page/paper/\#whatsapp-transparency}} Signal followed in August 2026 (topic 2.5).
 				\item \textbf{How}: Server keeps an \textbf{append-only key directory}; a public \textbf{audit record} proves it is correct.
 			\end{itemize}
 		\end{column}
@@ -1632,56 +1429,32 @@
 \subsection{The Future of Diffie-Hellman}
 
 \begin{frame}{Modern implementations: elliptic curves}
+	\begin{itemize}[<+->]
+		\item Baby-step giant-step and Pollard's rho are \textbf{generic}: the same $\mathcal{O}(\sqrt{n})$ attack works in \textbf{any} group of order $n$.
+		\item But $\mathbb{Z}_p^*$ has \textbf{extra structure} that elliptic curves lack: it also falls to \textbf{index calculus} and the number field sieve, a faster, \textbf{subexponential} attack. That is why $p$ needs 2048+ bits.
+	\end{itemize}
+	\vspace{0.2cm}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Traditional DH}
-			\begin{itemize}[<+->]
-				\item Uses $\mathbb{Z}_p^*$ (integers mod $p$)
-				\item Requires 2048+ bit numbers
-				\item Slower computations
-				\item Larger public keys
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{Elliptic Curve DH (ECDH)}
-			\begin{itemize}[<+->]
-				\item Uses elliptic curve groups
-				\item 256-bit keys $\approx$ 3072-bit traditional DH
-				\item Much faster computations
-				\item Smaller public keys, less bandwidth
-			\end{itemize}
-		\end{column}
-	\end{columns}
-	\vspace{0.5cm}
-	\begin{itemize}[<+->]
-		\item \textbf{Popular curves}: P-256, P-384, X25519, X448
-		\item \textbf{Same security}: Based on the elliptic curve discrete logarithm problem
-		\item \textbf{Real-world adoption}: ECDH is now standard in TLS, Signal, etc.
-		\item \textbf{Performance matters}: Especially important for mobile devices and IoT
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Elliptic curve vs. finite field DH: key sizes}
-	\begin{itemize}[<+->]
-		\item Baby-step giant-step and Pollard's rho are \textbf{generic}: the same $\mathcal{O}(\sqrt{n})$ attack works in \textbf{any} group of order $n$, whether $\mathbb{Z}_p^*$ or an elliptic curve.
-		\item But $\mathbb{Z}_p^*$ has \textbf{extra structure} elliptic curves lack: it also falls to \textbf{index calculus}, a faster, \textbf{subexponential} attack.
-	\end{itemize}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{$\mathbb{Z}_p^*$ (finite field DH)}
+			\textbf{Finite-field DH ($\mathbb{Z}_p^*$)}
 			\begin{itemize}[<+->]
 				\item Falls to index calculus.
 				\item Needs $p \geq 2048$ bits.
+				\item Slower, larger public keys.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Elliptic curves (ECDH)}
+			\textbf{Elliptic-curve DH (ECDH)}
 			\begin{itemize}[<+->]
-				\item Only generic $\mathcal{O}(\sqrt{n})$ applies.
-				\item Needs just $\sim$256 bits.
+				\item Only the generic $\mathcal{O}(\sqrt{n})$ attack applies.
+				\item $\sim$256-bit keys $\approx$ 3072-bit $\mathbb{Z}_p^*$.
+				\item Much faster, smaller keys: the standard in TLS, Signal, SSH.
 			\end{itemize}
 		\end{column}
 	\end{columns}
+	\vspace{0.2cm}
+	\pause
+	\textbf{Popular curves}: P-256, P-384, X25519, X448. All of topic 1.8 is about them.
 \end{frame}
 
 \begin{frame}{The quantum threat to Diffie-Hellman}
@@ -1701,66 +1474,39 @@
 			      \item But adversaries might store encrypted data now and decrypt it later.
 			      \item ``Harvest now, decrypt later'' attacks.
 		      \end{itemize}
-		\item \textbf{Post-quantum key exchange}: New algorithms are being standardized and deployed.
+		\item \textbf{Post-quantum key exchange}: the replacements are standardized and already deployed.
 		      \begin{itemize}
-			      \item ML-KEM (based on lattice problems)
-			      \item SIDH/SIKE (based on isogenies, but recently broken!)
-			      \item Code-based and hash-based alternatives
+			      \item ML-KEM (lattices): NIST standard since 2024, already in TLS and Signal
+			      \item SIDH/SIKE (isogenies): broken in 2022 by Castryck and Decru
+			      \item Code-based alternatives (topic 2.6)
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Lessons from 50 years of Diffie-Hellman}
 	\begin{itemize}[<+->]
-		\item \textbf{Elegant mathematics}: Simple idea with profound implications.
-		      \begin{itemize}
-			      \item Two numbers raised to secret powers in a mathematical group.
-		      \end{itemize}
-		\item \textbf{Security requires more than math}: Authentication is crucial.
-		      \begin{itemize}
-			      \item Pure DH is vulnerable to active attacks.
-			      \item Real systems need identity verification.
-		      \end{itemize}
-		\item \textbf{Efficiency drives adoption}: Elliptic curves made DH practical everywhere.
-		      \begin{itemize}
-			      \item Performance improvements enable new applications.
-		      \end{itemize}
-		\item \textbf{Future challenges}: Quantum computers will force reinvention.
-		      \begin{itemize}
-			      \item But the core insight—shared secrets from public exchanges—will survive.
-		      \end{itemize}
-		\item \textbf{Cryptography is a living field}: Continuous evolution and adaptation.
+		\item \textbf{The math is three lines; the deployments still broke.} Logjam's victims ran a correct algorithm with 512-bit defaults, non-safe primes and short exponents.
+		\item \textbf{A shared secret is not an identity.} DH alone falls to the man in the middle; every real system bolts on authentication: certificates (TLS), fingerprints and key transparency (Signal, WhatsApp), trust on first use (SSH).
+		\item \textbf{Never use $g^{ab}$ raw.} It is a structured group element, not a uniform key: always run it through a KDF.
+		\item \textbf{The group is part of the design.} Prime-order subgroups defeat Pohlig-Hellman and the DDH leak; elliptic curves defeat index calculus and shrink keys by an order of magnitude.
+		\item \textbf{Shor changes the primitive, not the idea.} ML-KEM replaces the exponentiation, but ``agree on a secret over a public channel'' remains the job description.
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{From hard problems to real-world security}
-	\begin{center}
-		\Large\textbf{The journey we've traced}
-	\end{center}
-	\vspace{0.5cm}
-	\begin{enumerate}[<+->]
-		\item \textbf{Mathematical insight}: Discrete logarithm is hard to compute.
-		\item \textbf{Cryptographic innovation}: Diffie-Hellman key exchange leverages this hardness.
-		\item \textbf{Real-world impact}: Secure communication for billions of people daily.
-	\end{enumerate}
-	\vspace{1cm}
-	\textbf{This is the power of applied cryptography}: transforming abstract mathematical problems into tools that help people and protect our digital lives.
 \end{frame}
 
 \section{RSA}
 
-\begin{frame}{RSA: The other public-key pioneer}
+\begin{frame}{RSA: the other public-key pioneer}
 	\begin{center}
 		\Large\textbf{One year after Diffie-Hellman came RSA (1977)}
 	\end{center}
-	\vspace{0.5cm}
+	\vspace{0.15cm}
 	\begin{itemize}[<+->]
 		\item \textbf{Named after}: Rivest, Shamir, and Adleman (MIT researchers)
 		\item \textbf{Different approach}: Based on the hardness of factoring large numbers
-		\item \textbf{Key innovation}: Combines public-key encryption AND digital signatures
-		\item \textbf{Revolutionary impact}: Enabled secure communication without prior key exchange
+		\item \textbf{Key innovation}: One trapdoor gives both public-key encryption AND digital signatures
+		\item \textbf{Secret history}: GCHQ's Clifford Cocks found the same scheme in 1973 (classified until 1997)
 	\end{itemize}
-	\vspace{0.5cm}
+	\vspace{0.15cm}
 	\definitionbox{RSA's Core Idea}{
 		Anyone can encrypt messages to you using your public key, but only you can decrypt them with your private key.
 	}
@@ -1819,7 +1565,7 @@
 \begin{frame}{RSA in practice}
 	\textbf{Where RSA dominated for decades}:
 	\begin{itemize}[<+->]
-		\item \textbf{HTTPS certificates}: Most websites used RSA signatures until recently
+		\item \textbf{HTTPS certificates}: RSA signatures dominated for two decades; ECDSA certificates only became common in the late 2010s
 		\item \textbf{Email encryption}: PGP/GPG relied heavily on RSA
 		\item \textbf{Software signing}: Windows, macOS, Linux packages
 		\item \textbf{SSH keys}: RSA was the default for years
@@ -1827,8 +1573,8 @@
 	\vspace{0.5cm}
 	\textbf{Key sizes and security}:
 	\begin{itemize}[<+->]
-		\item 1024-bit RSA: Deprecated, considered insecure since 2010
-		\item 2048-bit RSA: Current minimum, but showing its age
+		\item 1024-bit RSA: NIST disallowed it after 2013 (about 80-bit security)
+		\item 2048-bit RSA: Current minimum (about 112-bit security), but showing its age
 		\item 4096-bit RSA: Secure but slow and unwieldy
 		\item Compare to ECDSA: 256-bit keys offer similar security to 3072-bit RSA!
 	\end{itemize}
@@ -1838,25 +1584,19 @@
 	\begin{center}
 		\Large\textbf{RSA is a cryptographic dinosaur}
 	\end{center}
-	\vspace{0.25cm}
 	\begin{itemize}[<+->]
 		\item \textbf{On its way out}: Being actively replaced everywhere
 		      \begin{itemize}
-			      \item TLS 1.3 prefers ECDSA and EdDSA
-			      \item Modern systems default to elliptic curves
-			      \item Even RSA Inc. recommends moving away from RSA!
+			      \item TLS 1.3, SSH, Signal and WireGuard all default to elliptic curves
+			      \item Trail of Bits, 2019: ``Seriously, stop using RSA''
 		      \end{itemize}
-		\item \textbf{Not a building block}: Unlike Diffie-Hellman
+		\item \textbf{Its math doesn't travel}: DH moves to elliptic curves unchanged; RSA's trapdoor is tied to factoring, where the number field sieve keeps pushing key sizes up
+		\item \textbf{Performance}: Terribly slow to sign or decrypt
 		      \begin{itemize}
-			      \item DH principles apply to modern protocols (ECDH, X25519)
-			      \item RSA's approach doesn't translate to newer systems
+			      \item 4096-bit RSA signature: $\sim$10ms; Ed25519 signature: $\sim$0.1ms
+			      \item (RSA \emph{verification} is fast, which is why it lingered in certificates)
 		      \end{itemize}
-		\item \textbf{Performance issues}: Terribly slow compared to alternatives
-		      \begin{itemize}
-			      \item 4096-bit RSA signature: $\sim$10ms
-			      \item Ed25519 signature: $\sim$0.1ms (100x faster!)
-		      \end{itemize}
-		\item \textbf{Implementation pitfalls}: Padding oracle attacks, timing attacks, etc.
+		\item \textbf{Implementation pitfalls}: Textbook RSA is deterministic and malleable, so it needs padding --- and PKCS\#1 v1.5 padding gave us Bleichenbacher's oracle attack (1998), rediscovered as ROBOT in 2018
 		\item \textbf{The future is elliptic curves and post-quantum}: Time better spent there!
 	\end{itemize}
 \end{frame}

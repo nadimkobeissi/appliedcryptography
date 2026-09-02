@@ -32,7 +32,7 @@
 					      \item High data availability
 					      \item Access data from anywhere
 				      \end{itemize}
-				\item Major providers (Google, Microsoft, Apple, Amazon) control encryption keys
+				\item The major providers (Google, Microsoft, Amazon, and Apple by default) hold the encryption keys
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -41,7 +41,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Regular vs End-to-End Encrypted Cloud Storage}
+\begin{frame}{Regular vs end-to-end encrypted cloud storage}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\textbf{Regular Cloud Storage}\\
@@ -66,7 +66,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Regular vs End-to-End Encrypted Cloud Storage}
+\begin{frame}{Regular vs end-to-end encrypted cloud storage}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\textbf{Regular Cloud Storage}\\
@@ -97,30 +97,30 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{End-to-End Encryption (E2EE) for cloud storage}
+\begin{frame}{The threat model: a malicious provider}
 	\begin{itemize}
-		\item Alternative approach: Users encrypt before uploading
-		\item Users control their own encryption keys
-		\item Security guarantees:
+		\item The last two slides say what E2EE storage \textit{promises}. To check the promise, we have to say what the adversary can do
+		\item \textbf{Honest-but-curious server:} follows the protocol, but reads everything it stores and sees
+		\item \textbf{Malicious server:} may also \textit{modify} what it stores and \textit{lie} in protocol messages
 		      \begin{itemize}
-			      \item Cryptographic confidentiality
-			      \item Authenticity and integrity protection
-			      \item Provider can't read file contents
-			      \item Provider can't modify files undetectably
+			      \item A breached provider, a rogue insider, or a provider under legal compulsion all look like this
 		      \end{itemize}
-		\item Security maintained even if service is compromised
-		\item Ideally secure against malicious service providers
+		\item What E2EE storage should guarantee even against a malicious server:
+		      \begin{itemize}
+			      \item \textbf{Confidentiality:} file contents stay secret
+			      \item \textbf{Integrity:} tampered or forged files are detected by the client
+		      \end{itemize}
+		\item Keep this in mind: every attack in this lecture is carried out \textit{by the server}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Key management challenges}
 	\begin{itemize}
-		\item Key management delegated to users
-		\item Humans are poor at memorizing cryptographic keys
-		\item Security typically bootstrapped from passwords
-		\item Fundamental limitation: Dictionary attacks possible
-		\item Trade-off between convenience and security
-		\item Strong password policies can partially mitigate risks
+		\item E2EE hands key management to the user --- and humans cannot memorize 256-bit keys
+		\item So in practice, everything is bootstrapped from a \textbf{password}
+		\item Fundamental limitation: passwords come from a small space, so \textbf{dictionary attacks} are always on the table
+		\item A slow key derivation function buys time; it does not change the size of the space
+		\item Every design in this lecture is, at bottom, a different answer to the same question: how do we get from a password to a key without letting the server guess the password?
 	\end{itemize}
 \end{frame}
 
@@ -145,27 +145,17 @@
 \end{frame}
 
 \begin{frame}{The authentication vs encryption dilemma}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item Traditional services: Server stores password hash
-				\item E2EE requirement: Server must never see encryption key
-				\item Three common approaches:
-				      \begin{itemize}
-					      \item \textbf{Dual-password:} Separate login and encryption passwords
-					      \item \textbf{SRP (Secure Remote Password):} Password-authenticated key exchange
-					      \item \textbf{Hardware-backed authentication:} Passkeys, Apple Secure Enclave, etc.
-				      \end{itemize}
-				\item Trade-offs:
-				      \begin{itemize}
-					      \item Dual-password: Poor usability, users often reuse passwords
-					      \item SRP: Complex implementation
-					      \item Hardware-backed: Requires specific devices/platforms
-				      \end{itemize}
-				\item MEGA uses custom authentication with encryption keys
-			\end{itemize}
-		\end{column}
-	\end{columns}
+	\begin{itemize}
+		\item Traditional services: the server stores a password hash and checks your password at login
+		\item E2EE requirement: the server must never learn the key that encrypts your data
+		\item So one password must do two jobs, and the server may only see one of them:
+		      \begin{itemize}
+			      \item \textbf{Two passwords:} one for login, one for encryption (Proton Mail offers this as an option) --- nobody wants two passwords
+			      \item \textbf{One password, two derived keys:} stretch it, send half of the output to the server as an \textit{authentication key}, keep the other half as the \textit{encryption key} --- MEGA's approach
+			      \item \textbf{Password-authenticated key exchange (PAKE):} prove you know the password without the server ever holding a password-equivalent --- SRP, OPAQUE; more later
+			      \item \textbf{Hardware-backed:} passkeys, Secure Enclave --- requires specific devices or platforms
+		      \end{itemize}
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{The mud puddle test}
@@ -197,24 +187,14 @@
 
 \begin{frame}{Password recovery expectations vs reality}
 	\begin{itemize}
-		\item \textbf{User expectations:}
+		\item \textbf{What users expect} (trained by Gmail, Facebook, \ldots): ``forgot password'' always works, and data is never permanently lost
+		\item \textbf{What E2EE providers can offer instead:}
 		      \begin{itemize}
-			      \item ``Forgot password'' should always work
-			      \item Data should never be permanently lost
-			      \item Trained by non-E2EE services (Gmail, Facebook)
+			      \item \textbf{Recovery keys:} a long random string the user must store somewhere safe --- routinely lost or never written down (Apple ADP and WhatsApp's 64-digit key, both coming up)
+			      \item \textbf{Social recovery:} split the key among trusted contacts, any $t$ of $n$ can restore it --- setup is complex, and the contacts must be trusted
+			      \item \textbf{Security questions:} familiar, but weak against anyone who knows you
 		      \end{itemize}
-		\item \textbf{Common mitigation strategies:}
-		      \begin{itemize}
-			      \item \textbf{Recovery keys:} A long random string users must store
-			      \item \textbf{Social recovery:} Threshold sharing among contacts
-			      \item \textbf{Security questions:} Weaker but familiar to users
-		      \end{itemize}
-		\item \textbf{Each approach has trade-offs:}
-		      \begin{itemize}
-			      \item Recovery keys: Often lost or not backed up
-			      \item Social recovery: Complex setup, trust issues
-			      \item Security questions: Weak against targeted attacks
-		      \end{itemize}
+		\item Each is a different trade-off between passing the mud puddle test and keeping the provider out
 	\end{itemize}
 \end{frame}
 
@@ -227,7 +207,7 @@
 				      \begin{itemize}
 					      \item Photos, Notes, iCloud Drive, Reminders, Safari bookmarks, iCloud and Messages backups
 				      \end{itemize}
-				\item \textbf{Recovery:} user-managed recovery key, or Apple escrow (the default)
+				\item \textbf{Recovery:} before ADP can be turned on, the user must set up a recovery contact or a recovery key --- Apple keeps no copy of the keys and cannot recover the data
 				\item Fundamental tension: security vs.\ recoverability --- Apple chose opt-in over mandatory E2EE
 				\item 2025: withdrawn for new UK users under government pressure (more later)\footnote{\url{https://support.apple.com/en-us/122234}}
 			\end{itemize}
@@ -254,23 +234,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Research directions in usable key management}
-	\begin{itemize}
-		\item \textbf{Threshold cryptography:} Split keys across multiple locations
-		\item \textbf{Hardware tokens:} FIDO2/WebAuthn/Passkeys for encryption key storage
-		\item \textbf{Biometric key derivation:} Fuzzy extractors from fingerprints
-		\item \textbf{Social key recovery:} Friends/family as key custodians
-		\item Open problems:
-		      \begin{itemize}
-			      \item Balancing security with user-friendliness
-			      \item Recovery without trusted third parties
-			      \item Protecting against coercion/rubber-hose attacks
-		      \end{itemize}
-		\item Most solutions add complexity or trust assumptions
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Passkeys: A new authentication paradigm}{Quick aside}
+\begin{frame}{Passkeys: a new authentication paradigm}{Quick aside}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
@@ -298,51 +262,28 @@
 
 \begin{frame}{WebAuthn PRF: symmetric keys from passkeys}{Quick aside}
 	\begin{itemize}
-		\item WebAuthn's \textbf{PRF (Pseudorandom Function)} extension enables key derivation
-		\item Key derivation process:
+		\item Passkeys \textit{sign}; they don't hand out keys. WebAuthn's \textbf{PRF extension} adds exactly that: a per-credential secret function, evaluated inside the authenticator
 		      \begin{itemize}
-			      \item PRF can be evaluated during credential creation/assertion
-			      \item Produces 32-byte outputs suitable for encryption keys
-			      \item Supports two inputs per operation (for key rotation)
+			      \item Input: a salt chosen by the website; output: 32 bytes, suitable as an encryption key
+			      \item Two salts per evaluation, so a site can rotate to a new key without losing the old one
+			      \item Under the hood: typically HMAC-SHA-256 (CTAP2's \texttt{hmac-secret} extension)
 		      \end{itemize}
-		\item Implementation typically uses HMAC-SHA256 internally
-		\item Support has broadened since 2024 (Chrome, Safari 18+, platform authenticators), but remains uneven across hardware security keys
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Using passkeys for key management}{Quick aside}
-	\begin{itemize}
-		\item Potential architecture combining passkeys with E2EE:
-		      \begin{itemize}
-			      \item User authenticates with passkey (no password needed)
-			      \item PRF extension derives encryption keys on-demand
-			      \item Keys never leave the authenticator/device
-		      \end{itemize}
-		\item Benefits:
-		      \begin{itemize}
-			      \item No password-derived keys (stronger security)
-			      \item Hardware-backed key storage
-			      \item Seamless multi-device via platform sync
-		      \end{itemize}
-		\item Current limitations:
-		      \begin{itemize}
-			      \item PRF support is now broad, but not yet universal
-			      \item Security keys may not support PRF evaluation at creation
-		      \end{itemize}
+		\item \textbf{What it enables:} authenticate with the passkey, evaluate the PRF, unwrap your encryption keys --- no password anywhere, multi-device via platform sync
+		\item \textbf{Limitations:} support has broadened since 2024 (Chrome, Safari 18+, platform authenticators) but is uneven across hardware security keys
 		\item No longer hypothetical: WhatsApp shipped passkey-encrypted backups in late 2025 (more on this later in this lecture)
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{File sharing challenges}
 	\begin{itemize}
-		\item Primary feature: Sharing files with selected users
-		\item Recipients need decryption keys
-		\item Keys cannot be sent unprotected via an untrusted provider
+		\item Primary feature: sharing files with selected users
+		\item Recipients need the file's decryption key --- and it cannot travel unprotected through an untrusted provider
 		\item Common solutions:
 		      \begin{itemize}
-			      \item Encrypt file key under recipient's public key
-			      \item Use out-of-band mechanisms
+			      \item Encrypt the file key under the recipient's public key
+			      \item Use an out-of-band channel (a link sent over a messenger, say)
 		      \end{itemize}
+		\item But who vouches for that public key? Usually the server hands it to you. Remember this when we get to Nextcloud
 	\end{itemize}
 \end{frame}
 
@@ -362,47 +303,34 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Security concerns with current E2EE providers}
-	\begin{itemize}
-		\item Recent analyses found attacks on MEGA and Nextcloud
-		\item Both providers use complex, ad-hoc cryptographic designs
-		\item Lack formal security guarantees
-		\item MEGA's challenges:
-		      \begin{itemize}
-			      \item Migration infeasible --- requires user participation
-			      \item Initial minimal patches proved insufficient
-			      \item Required second round of complex patching
-		      \end{itemize}
-		\item Nextcloud's response:
-		      \begin{itemize}
-			      \item Forced to disable E2EE file sharing entirely
-			      \item Significant feature regression
-			      \item Required full redesign
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Current state of E2EE cloud storage}
-	\begin{itemize}
-		\item Most providers rely on proprietary, unanalyzed designs
-		\item Highlights need for formally analyzed cryptographic designs
-		\item Security confidence lags behind E2EE messaging and browsing
-		\item Less design input from cryptographic research community
-		\item Need for standardized, proven security approaches
-		\item \textbf{In this topic, we'll cover:} \begin{enumerate}
-			      \item What went wrong with MEGA
-			      \item What went wrong with Nextcloud
-			      \item A quick look at WhatsApp encrypted cloud backups
-			      \item An attempt by cryptographers to design a provably secure E2EE cloud storage protocol
-		      \end{enumerate}
-	\end{itemize}
+\begin{frame}{Where this lecture is going}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The state of things}
+			\begin{itemize}
+				\item Every provider above ships a home-grown cryptographic design with no public security analysis
+				\item Messaging (Signal) and the web (TLS 1.3), by contrast: analyzed, proven, standardized
+				\item 2022--2024: cryptographers (mostly Kenny Paterson's group at ETH Zurich) went through the providers one by one
+				\item Nearly all of them fell
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Roadmap}
+			\begin{enumerate}
+				\item What went wrong at MEGA, at Nextcloud, and across the rest of the ecosystem
+				\item Authentication done better: SRP and OPAQUE
+				\item Case study: WhatsApp's encrypted backups, and what we have to take on faith
+				\item How cryptographers would design E2EE storage from scratch --- with a proof
+			\end{enumerate}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \section{Attacks on MEGA and Nextcloud}
 
 \subsection{Attacks on MEGA}
 
-\begin{frame}{MEGA: Overview}
+\begin{frame}{MEGA: overview}
 	\begin{columns}[c]
 		\begin{column}{0.75\textwidth}
 			\begin{itemize}
@@ -420,7 +348,7 @@
 					      \item Cross-platform support (web, desktop, mobile)
 					      \item Free tier with 20 GB of storage
 				      \end{itemize}
-				\item All encryption performed in JavaScript (web client)
+				\item Web client: all cryptography in JavaScript, in the browser
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.25\textwidth}
@@ -429,7 +357,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{MEGA: Key hierarchy}
+\begin{frame}{MEGA: key hierarchy}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
@@ -449,7 +377,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{MEGA: Key hierarchy}
+\begin{frame}{MEGA: key hierarchy}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
@@ -472,12 +400,11 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{MEGA: Where's the attack?}
-	\bigimagewithcaption{mega-keys.png}{MEGA's key hierarchy. The master key encrypts the share, chat, sign,
-		and node keys using AES-ECB. Source: \url{https://appliedcryptography.page/paper/\#mega-awry}}
+\begin{frame}{MEGA: where's the attack?}
+	\imagewithcaption[\textwidth]{mega-keys.png}{Same picture. Hint: what protects the \textit{integrity} of the encrypted keys?}
 \end{frame}
 
-\begin{frame}{MEGA: Password-to-key derivation}
+\begin{frame}{MEGA: password-to-key derivation}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
@@ -539,40 +466,35 @@
 				\draw[->, thick] (client) -- (result);
 
 				% Attack count
-				\node at (3.5,2) {\textbf{512 logins}};
+				\node[align=center] at (3.6,2) {\textbf{${\sim}$512 logins}\\{\small (1 bit each)}};
 			\end{tikzpicture}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Attack 1: High-level overview}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item \textbf{Threat model:} Malicious service provider controls MEGA infrastructure
-				\item \textbf{Attack strategy:}
-				      \begin{enumerate}
-					      \item Modify encrypted RSA private key (no integrity protection)
-					      \item Use modified key to create decryption oracle
-					      \item Binary search to recover RSA prime factor
-				      \end{enumerate}
-				\item \textbf{Key insight:} RSA-CRT implementation leaks information
-				      \begin{itemize}
-					      \item Modified key causes different behavior for $m < q$ vs $m \geq q$
-					      \item Where $q$ is one of the RSA primes
-					      \item Observable through session ID responses
-				      \end{itemize}
-				\item \textbf{Attack efficiency:}
-				      \begin{itemize}
-					      \item Binary search requires ${\sim}$512 login attempts\footnote{Later improved to 2 logins: \url{https://appliedcryptography.page/paper/\#mega-recovery}}
-					      \item Each login leaks 1 bit of information about $q$
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-	\end{columns}
+\begin{frame}{Attack 1: high-level overview}
+	\begin{itemize}
+		\item \textbf{Threat model:} a malicious service provider controls MEGA's infrastructure
+		\item \textbf{Attack strategy:}
+		      \begin{enumerate}
+			      \item Modify the encrypted RSA private key (no integrity protection)
+			      \item Use the client's decryption of the session ID as an oracle
+			      \item Binary-search for one of the RSA primes, $q$
+		      \end{enumerate}
+		\item \textbf{Key insight:} the RSA-CRT implementation leaks information
+		      \begin{itemize}
+			      \item With a corrupted key, decryption is correct for $m < q$ and garbled for $m \geq q$
+			      \item Observable through the session ID the client sends back
+		      \end{itemize}
+		\item \textbf{Attack cost:} each login leaks one bit of $q$
+		      \begin{itemize}
+			      \item $q$ has 1024 bits, so a plain binary search needs ${\sim}$1023 logins
+			      \item But half the bits of a prime factor suffice: lattice methods (Coppersmith) finish the job $\Rightarrow$ ${\sim}$512 logins\footnote{Later improved to 6 logins by Ryan and Heninger, then to 2: \url{https://appliedcryptography.page/paper/\#mega-recovery}}
+		      \end{itemize}
+	\end{itemize}
 \end{frame}
 
-\begin{frame}{Quick reminder: What does $x^{-1}$ mean?}
+\begin{frame}{Quick reminder: what does $x^{-1}$ mean?}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{In modular arithmetic:}
@@ -605,7 +527,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Attack 1: The decryption oracle}
+\begin{frame}{Attack 1: the decryption oracle}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
@@ -645,19 +567,19 @@
 				\draw[->, thick] (oracle) -- (decision);
 
 				% Left and right
-				\node at (-2,-3) {Left half};
-				\node at (2,-3) {Right half};
+				\node[font=\small] at (-2,-3) {$q > m$: upper half};
+				\node[font=\small] at (2,-3) {$q \leq m$: lower half};
 				\draw[->, thick] (decision) -- (-2,-2.5) node[midway, left, xshift=-3mm] {Yes};
 				\draw[->, thick] (decision) -- (2,-2.5) node[midway, right, xshift=3mm] {No};
 
 				% Iteration count
-				\node[draw, rectangle, fill=red!20] at (4.5,0) {512 iterations};
+				\node[draw, rectangle, fill=red!20, align=center, font=\small] at (3.4,1.25) {${\sim}$512 logins\\(1 bit each)};
 			\end{tikzpicture}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Attack 2: Plaintext recovery attack}
+\begin{frame}{Attack 2: plaintext recovery attack}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
@@ -675,6 +597,7 @@
 					      \item Ability to modify key ciphertexts
 					      \item Control authentication plaintexts
 				      \end{itemize}
+				\item \textbf{Cost:} one login recovers 32 bytes --- one full node key
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -705,52 +628,44 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{MEGA's patches: A cautionary tale}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item \textbf{MEGA's response to attacks:} Added sanity checks instead of proper fixes
-				\item \textbf{New paper (2023):} ``Caveat Implementor! Key Recovery Attacks on MEGA''\footnote{\url{https://appliedcryptography.page/paper/\#mega-recovery}}
-				\item \textbf{Key findings:}
-				      \begin{itemize}
-					      \item MEGA's patches introduced \textit{new} vulnerabilities
-					      \item Detailed error reporting became an attack vector
-				      \end{itemize}
-				\item \textbf{The irony:} Ad-hoc fixes to ad-hoc designs created more problems
-				      \begin{itemize}
-					      \item ECB encryption oracle in MEGAdrop feature
-					      \item Distinguishable error messages leak information
-					      \item Patches made attacks \textit{easier}, not harder
-				      \end{itemize}
-				\item \textbf{Contrast with Nextcloud:} Had the wisdom to pause and redesign
-				\item \textbf{Lesson:} Band-aid fixes to broken crypto are dangerous!
-			\end{itemize}
-		\end{column}
-	\end{columns}
+\begin{frame}{MEGA's patches: a cautionary tale}
+	\begin{itemize}
+		\item \textbf{MEGA's response (2022):} not the recommended redesign, but ``sanity checks'' on the decrypted RSA key, plus detailed error reporting when a check fails
+		\item \textbf{Follow-up paper (Eurocrypt 2023):} ``Caveat Implementor! Key Recovery Attacks on MEGA''\footnote{\url{https://appliedcryptography.page/paper/\#mega-recovery}}
+		      \begin{itemize}
+			      \item The new sanity checks and their error messages are themselves a new oracle
+			      \item Combined with an AES-ECB \textit{encryption} oracle hiding in the MEGAdrop feature, they yield two new RSA key recovery attacks against the \textit{patched} client
+			      \item Slower (${\sim}2^{11}$ logins for the full key), but key recovery all the same
+			      \item Side result: the original attack on the unpatched client needs only 2 logins
+		      \end{itemize}
+		\item \textbf{The irony:} ad-hoc fixes to an ad-hoc design created the next vulnerability
+		\item \textbf{Contrast with Nextcloud:} pulled the affected feature and redesigned (coming up)
+		\item \textbf{Lesson:} band-aid fixes to broken crypto are dangerous!
+	\end{itemize}
 \end{frame}
 
-\begin{frame}{MEGA attacks: Summary}
+\begin{frame}{MEGA attacks: summary}
 	\begin{center}
 		\textbf{Note: Due to time constraints, we won't dive into the details of each attack}
 	\end{center}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item \textbf{Attack 1 (RSA Key Recovery):} Exploit missing integrity protection to recover RSA private key in 512 logins\footnote{Later improved to 2 logins: \url{https://appliedcryptography.page/paper/\#mega-recovery}}
-				\item \textbf{Attack 2 (Plaintext Recovery):} Use recovered RSA key to build AES-ECB decryption oracle for all encrypted keys
+				\item \textbf{Attack 1 (RSA Key Recovery):} Exploit missing integrity protection to recover the RSA private key in ${\sim}$512 logins
+				\item \textbf{Attack 2 (Plaintext Recovery):} Use the recovered RSA key as an AES-ECB decryption oracle for all wrapped keys
+				\item \textbf{Attack 3a (Framing):} Forge files via the decryption oracle to frame users with malicious content
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item \textbf{Attack 3a (File Integrity -- Oracle):} Forge files using decryption oracle to frame users with malicious content
-				\item \textbf{Attack 3b (File Integrity -- Key Reuse):} Forge files without oracle by exploiting MEGA's key obfuscation scheme
-				\item \textbf{Attack 4 (RSA Decryption):} Bleichenbacher's attack on PKCS\#1 v1.5 to decrypt RSA-encrypted keys
+				\item \textbf{Attack 3b (Integrity):} Forge files with no oracle at all, from one known plaintext/ciphertext block under the master key (e.g., from a public share link)
+				\item \textbf{Attack 4 (RSA Decryption):} Bleichenbacher-style padding oracle on MEGA's homebrew RSA padding; ${\sim}2^{17}$ logins, so mostly theoretical
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{MEGA attacks: At a glance}
+\begin{frame}{MEGA attacks: at a glance}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{table}
@@ -758,26 +673,26 @@
 				\small
 				\begin{tabular}{|l|c|c|l|}
 					\hline
-					\textbf{Attack}    & \textbf{Attempts}  & \textbf{Prerequisites} & \textbf{Impact}        \\
+					\textbf{Attack}    & \textbf{Logins}         & \textbf{Prerequisites} & \textbf{Impact}             \\
 					\hline
-					RSA Key Recovery   & 2 logins (was 512) & None                   & Share keys compromised \\
+					RSA Key Recovery   & ${\sim}$512 (later 2)   & None                   & Share keys compromised      \\
 					\hline
-					Plaintext Recovery & Varies             & Attack 1               & All keys compromised   \\
+					Plaintext Recovery & 1 per 32 bytes          & Attack 1               & All keys compromised        \\
 					\hline
-					Integrity Attack A & 1                  & Attack 2               & File forgery           \\
+					Integrity Attack A & 1                       & Attack 2               & File forgery                \\
 					\hline
-					Integrity Attack B & 1                  & One AES block          & File forgery           \\
+					Integrity Attack B & 1                       & One known AES block    & File forgery                \\
 					\hline
-					RSA Decryption     & $2^{17}$           & Weaker model           & Chat/node keys         \\
+					RSA Decryption     & ${\sim}2^{17}$          & None                   & One chat/node key           \\
 					\hline
 				\end{tabular}
 			\end{table}
-			\vspace{0.5cm}
+			\vspace{0.3cm}
 			\textbf{Root causes:}
 			\begin{itemize}
-				\item No authenticated encryption (AES-ECB without MAC)
+				\item No authenticated encryption (AES-ECB without a MAC)
 				\item Key reuse across different contexts
-				\item Legacy cryptography (PKCS\#1 v1.5)
+				\item Homebrew RSA padding instead of OAEP
 				\item \textbf{Complex, ad-hoc design without formal analysis!}
 			\end{itemize}
 		\end{column}
@@ -786,7 +701,7 @@
 
 \subsection{Attacks on Nextcloud}
 
-\begin{frame}{Nextcloud: Overview}
+\begin{frame}{Nextcloud: overview}
 	\begin{columns}[c]
 		\begin{column}{0.75\textwidth}
 			\begin{itemize}
@@ -812,24 +727,15 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Nextcloud: E2EE Design}
+\begin{frame}{Nextcloud: E2EE design}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
-				\item E2EE is \textbf{not enabled by default}
-				\item Users must manually mark folders as E2EE
-				\item \textbf{Encryption approach:}
-				      \begin{itemize}
-					      \item Each file: AES-GCM with unique key
-					      \item File keys encrypted by metadata key
-					      \item Metadata keys encrypted by RSA-OAEP
-				      \end{itemize}
-				\item \textbf{Key rotation support:}
-				      \begin{itemize}
-					      \item Array of metadata keys per folder
-					      \item Uses the highest-indexed key for encryption
-					      \item Re-encrypts on each sync
-				      \end{itemize}
+				\item E2EE is \textbf{off by default}; users mark folders as E2EE
+				\item \textbf{Mnemonic} (12 words, client-generated, user stores it) $\rightarrow$ master key $\rightarrow$ wraps the RSA private key, stored on the server
+				\item \textbf{Metadata key}, one per folder: RSA-OAEP-encrypted to each member's public key; encrypts the folder metadata, i.e., all file keys
+				\item \textbf{File key}: random 128-bit AES-GCM key per file
+				\item \textbf{Key rotation}: an \textit{array} of metadata keys per folder; the highest index is current
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -857,74 +763,34 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Nextcloud: Key hierarchy}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{Mnemonic (top level):}
-				      \begin{itemize}
-					      \item 12 random words
-					      \item Generated by client
-					      \item User must memorize/store
-				      \end{itemize}
-				\item \textbf{Master key:}
-				      \begin{itemize}
-					      \item Derived from mnemonic
-					      \item Encrypts RSA private key
-				      \end{itemize}
-				\item \textbf{RSA key pair:}
-				      \begin{itemize}
-					      \item Public key stored in clear
-					      \item Private key encrypted on server
-					      \item Used for sharing folders
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{Metadata keys:}
-				      \begin{itemize}
-					      \item One per E2EE folder
-					      \item Encrypted with RSA-OAEP
-					      \item Encrypts file keys and metadata
-				      \end{itemize}
-				\item \textbf{File keys (bottom level):}
-				      \begin{itemize}
-					      \item Unique per file
-					      \item Random 128-bit AES key
-					      \item Encrypted by metadata key
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Nextcloud vulnerabilities: Overview}
+\begin{frame}{Nextcloud vulnerabilities: overview}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\textbf{Three critical vulnerabilities found:}\footnote{\url{https://appliedcryptography.page/paper/\#nextcloud-break}}
+			\textbf{Three vulnerabilities, found by Albrecht, Backendal, Coppola and Paterson (2024):}\footnote{\url{https://appliedcryptography.page/paper/\#nextcloud-break}}
 			\begin{enumerate}
-				\item \textbf{Key Insertion Attack}
+				\item \textbf{Key insertion attack}
 				      \begin{itemize}
-					      \item Server can substitute metadata keys
-					      \item Exploits lack of authentication in RSA-OAEP
+					      \item The server substitutes a metadata key of its own choosing
+					      \item Exploits the fact that RSA-OAEP says nothing about \textit{who} encrypted
 				      \end{itemize}
-				\item \textbf{Ghost Key Attack}
+				\item \textbf{Ghost key attack}
 				      \begin{itemize}
-					      \item Forces the client to use an all-zero encryption key
-					      \item Exploits missing bounds checking
+					      \item The server makes the client index past the end of the key array
+					      \item The default entry is an all-zero key
 				      \end{itemize}
-				\item \textbf{nonce Reuse in AES-GCM}
+				\item \textbf{Nonce reuse in AES-GCM}
 				      \begin{itemize}
-					      \item Same nonce used when files are modified
-					      \item Enables plaintext recovery and forgery
+					      \item A modified file is re-encrypted under the same key \textit{and} the same nonce
+					      \item Plaintext recovery and forgery follow
 				      \end{itemize}
 			\end{enumerate}
+			\vspace{0.2cm}
+			Each one, on its own, lets a malicious server read and modify every file.
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Attack 1: Key Insertion Attack}
+\begin{frame}{Attack 1: key insertion attack}
 	\begin{columns}[c]
 		\begin{column}{0.7\textwidth}
 			\begin{itemize}
@@ -999,7 +865,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Attack 2: Ghost Key Attack}
+\begin{frame}{Attack 2: ghost key attack}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
@@ -1043,7 +909,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Attack 3: nonce Reuse in AES-GCM}
+\begin{frame}{Attack 3: nonce reuse in AES-GCM}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
@@ -1057,8 +923,8 @@
 				      \end{itemize}
 				\item \textbf{Attack scenarios:}
 				      \begin{itemize}
-					      \item \textbf{Plaintext recovery:} If the attacker knows one version
-					      \item \textbf{Forgery:} Create valid ciphertexts
+					      \item \textbf{Plaintext recovery:} two versions of one file suffice
+					      \item \textbf{Forgery:} recover the GCM key, inject files
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -1085,31 +951,17 @@
 \end{frame}
 
 \begin{frame}{Nextcloud's response}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item \textbf{Initial patches:}
-				      \begin{itemize}
-					      \item Added bounds checking (Ghost Key)
-					      \item Generate new nonce on file modification
-					      \item But the Key Insertion attack remained\ldots
-				      \end{itemize}
-				\item \textbf{Drastic measure (2023):}
-				      \begin{itemize}
-					      \item \textbf{Disabled E2EE file sharing entirely}
-					      \item Could not fix authentication issues
-					      \item Major feature regression
-				      \end{itemize}
-				\item \textbf{Lessons learned:}
-				      \begin{itemize}
-					      \item Ad-hoc crypto designs are dangerous
-					      \item Retrofitting security is difficult
-					      \item Need formal analysis before deployment
-					      \item Authentication is as important as confidentiality
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-	\end{columns}
+	\begin{itemize}
+		\item \textbf{Disclosure:} January 2, 2023; Nextcloud confirmed within ten days; patches for all three vulnerabilities on March 29, 2023, each with a CVE
+		\item \textbf{Ghost key and nonce reuse:} straightforward implementation fixes (a bounds check; a fresh nonce on every re-encryption)
+		\item \textbf{Key insertion:} no such quick fix --- the design had no notion of \textit{who} encrypted a metadata key
+		      \begin{itemize}
+			      \item Stop-gap: a checksum over the metadata keys, derived from the user's own mnemonic
+			      \item Only the owner can verify it, so \textbf{E2EE file sharing was disabled} until a redesign
+			      \item A significant revision of the cryptographic design later restored sharing
+		      \end{itemize}
+		\item \textbf{Lesson:} authentication is as important as confidentiality --- and much harder to retrofit
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{Comparing MEGA and Nextcloud failures}
@@ -1121,7 +973,7 @@
 				\item No authenticated encryption
 				\item Complex key hierarchy
 				\item ECB mode usage
-				\item Legacy crypto (PKCS\#1 v1.5)
+				\item Homebrew RSA padding
 				\item Patches introduced new flaws
 			\end{itemize}
 		\end{column}
@@ -1131,7 +983,7 @@
 			\begin{itemize}
 				\item Missing authentication
 				\item Implementation bugs
-				\item nonce reuse in AES-GCM
+				\item Nonce reuse in AES-GCM
 				\item Bounds checking errors
 				\item Had to disable features
 			\end{itemize}
@@ -1143,29 +995,29 @@
 	\end{center}
 \end{frame}
 
-\subsection{Additional Ecosystem Analysis}
+\subsection{The Rest of the Ecosystem}
 
-\begin{frame}{Additional attacks in the ecosystem (2024)}
+\begin{frame}{The rest of the ecosystem (2024)}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
-				\item Recent comprehensive analysis of 5 major E2EE providers\footnote{\url{https://appliedcryptography.page/paper/\#cloud-broken}}
+				\item 2024 (ACM CCS): a systematic analysis of five more E2EE providers --- Sync, pCloud, Icedrive, Seafile, Tresorit\footnote{\url{https://appliedcryptography.page/paper/\#cloud-broken}}
 				\item Collectively serving 22+ million users
-				\item \textbf{Key finding:} Widespread cryptographic failures across the ecosystem
+				\item \textbf{Key finding:} the same failures, rediscovered independently by each vendor
 				\item \textbf{Common patterns:}
 				      \begin{itemize}
 					      \item Unauthenticated key material (Sync, pCloud)
 					      \item Unauthenticated encryption modes (Icedrive, Seafile)
-					      \item Missing integrity protection
+					      \item Missing integrity protection on file chunks
 					      \item Protocol downgrade attacks
 				      \end{itemize}
-				\item \textbf{Impact:} Most ``secure'' providers fail basic security requirements
+				\item \textbf{Impact:} four of the five fail basic security requirements against a malicious server
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Attack highlights: Breaking confidentiality}
+\begin{frame}{Attack highlights across five providers}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
@@ -1180,8 +1032,8 @@
 			\begin{itemize}
 				\item \textbf{Protocol downgrade (Seafile)}
 				      \begin{itemize}
-					      \item Forces client to use weak password hash
-					      \item 3 iterations of SHA-1 instead of PBKDF2
+					      \item Server forces the client back to a deprecated key derivation
+					      \item OpenSSL's \texttt{EVP\_BytesToKey}: 3 rounds of SHA-1 instead of PBKDF2
 					      \item Enables offline password cracking
 				      \end{itemize}
 			\end{itemize}
@@ -1200,7 +1052,7 @@
 				\item \textbf{Unauthenticated chunking}
 				      \begin{itemize}
 					      \item Seafile/pCloud: Can reorder/remove file chunks
-					      \item Icedrive: CBC mode allows controlled tampering
+					      \item Icedrive: Twofish-CBC allows controlled tampering
 					      \item Files corrupted without detection
 				      \end{itemize}
 			\end{itemize}
@@ -1208,46 +1060,62 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The state of E2EE cloud storage: A broken ecosystem}
+\begin{frame}{The state of E2EE cloud storage: a broken ecosystem}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
 				\item \textbf{Systemic failures across providers:}
 				      \begin{itemize}
 					      \item 4 out of 5 analyzed providers have critical vulnerabilities
-					      \item Only Tresorit showed reasonable security design
-					      \item Common mistakes repeated independently
+					      \item Tresorit fared best: only metadata tampering and a limited public-key substitution issue
+					      \item The same mistakes, made independently, by companies that never talked to each other
 				      \end{itemize}
-				\item \textbf{Root causes echo MEGA/Nextcloud:}
+				\item \textbf{Root causes echo MEGA and Nextcloud:}
 				      \begin{itemize}
-					      \item Ad-hoc cryptographic designs
-					      \item Misunderstanding primitive guarantees
-					      \item No formal security analysis
-					      \item Missing authentication at multiple levels
+					      \item Ad-hoc designs that misunderstand what a primitive guarantees (encryption $\neq$ integrity, PKE $\neq$ authentication)
+					      \item Nobody wrote down a threat model with a malicious server in it
 				      \end{itemize}
-				\item \textbf{Key lesson:} E2EE cloud storage is not a ``solved problem''
-				\item \textbf{Need for:} Standardized, formally analyzed protocols
+				\item \textbf{Key lesson:} E2EE cloud storage is not a ``solved problem'' --- it is a problem the industry solved wrong, five times
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\section{Authentication: Moving Beyond Passwords}
+\begin{frame}{Discussion time}
+	\begin{columns}[c]
+		\begin{column}{0.8\textwidth}
+			\begin{enumerate}
+				\item \textbf{Which of the attacks you just saw need a \textit{malicious} server?}
+				      \begin{itemize}
+					      \item Which would also work for an outsider who breached the server once and walked off with its database?
+				      \end{itemize}
+				\item \textbf{MEGA could not simply rotate everyone's keys. Why not?}
+				      \begin{itemize}
+					      \item Hint: who holds the only means of decrypting the master key?
+				      \end{itemize}
+				\item \textbf{Nextcloud pulled a feature; MEGA added checks.} Which response would you rather have as a user? As the engineer on call?
+				\item \textbf{Both MEGA and Nextcloud used RSA encryption to hand out keys.} What property were they assuming that public-key encryption simply does not provide?
+			\end{enumerate}
+		\end{column}
+	\end{columns}
+\end{frame}
 
-\begin{frame}{Beyond password hashing: Zero-knowledge protocols}
+\section{Authentication: Beyond Password Hashing}
+
+\begin{frame}{Beyond password hashing: PAKEs}
 	\begin{itemize}
-		\item Password hashing has fundamental limitations:
+		\item With password hashing, the server \textit{sees your password} at every login --- TLS protects it in transit, then the server hashes it
 		      \begin{itemize}
-			      \item Server must receive the password's hash to verify
-			      \item Vulnerable to offline dictionary attacks (even though salts and memory-hard functions do help)
-			      \item Trade-off between security and performance
+			      \item A malicious or compromised server can simply log passwords as they arrive
+			      \item And a stolen hash database is an offline dictionary attack waiting to happen (salts and memory-hard functions slow it down; they don't stop it)
 		      \end{itemize}
-		\item \textbf{Zero-knowledge password protocols} offer better security:
+		\item \textbf{Password-authenticated key exchange (PAKE)}, sometimes marketed as ``zero-knowledge password proofs'':
 		      \begin{itemize}
-			      \item Server never sees the password or a password equivalent
-			      \item No offline dictionary attacks possible
-			      \item Cryptographic proof of password knowledge
+			      \item The server never sees the password --- not at login, not even at registration
+			      \item An eavesdropper, or a fake server, learns nothing it can attack offline
+			      \item Both sides end up with a shared session key --- handy for E2EE storage
 		      \end{itemize}
+		\item Two examples: \textbf{SRP} (1998, deployed everywhere) and \textbf{OPAQUE} (2018, the modern one)
 	\end{itemize}
 \end{frame}
 
@@ -1271,7 +1139,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{SRP: How it works, visually}
+\begin{frame}{SRP: how it works, visually}
 	\begin{center}
 		\begin{tikzpicture}[
 				scale=0.85, transform shape,
@@ -1358,7 +1226,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{OPAQUE: Next-generation password authentication}
+\begin{frame}{OPAQUE: next-generation password authentication}
 	\begin{itemize}
 		\item Developed by Jarecki, Krawczyk, and Xu (2018)
 		\item \textbf{Advantages over SRP:}
@@ -1376,81 +1244,21 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Forward secrecy in OPAQUE}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item \textbf{What is forward secrecy for passwords?}
-				      \begin{itemize}
-					      \item If server is compromised \textit{after} authentication
-					      \item Attacker cannot test password guesses offline
-					      \item Past sessions remain secure even with server data
-				      \end{itemize}
-				\item \textbf{Contrast with traditional password hashing:}
-				      \begin{itemize}
-					      \item Hash database breach $\rightarrow$ offline cracking possible
-					      \item OPAQUE breach $\rightarrow$ offline cracking possible, but no pre-computation advantage
-					      \item Past session keys remain secure (AKE forward secrecy)
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Comparing authentication approaches}
-	\begin{columns}
-		\begin{column}{0.33\textwidth}
-			\textbf{Password Hashing}
-			\vspace{0.3cm}
-			\begin{itemize}
-				\item[\textcolor{green}{\mycheckmark}] Simple to implement
-				\item[\textcolor{green}{\mycheckmark}] Well understood
-				\item[\textcolor{red}{$\times$}] Offline attacks
-				\item[\textcolor{red}{$\times$}] Server sees password
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.33\textwidth}
-			\textbf{SRP}
-			\vspace{0.3cm}
-			\begin{itemize}
-				\item[\textcolor{green}{\mycheckmark}] No offline attacks by eavesdroppers
-				\item[\textcolor{green}{\mycheckmark}] Decades of deployment
-				\item[\textcolor{red}{$\times$}] No formal security proof
-				\item[\textcolor{red}{$\times$}] Pre-computation attacks
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.34\textwidth}
-			\textbf{OPAQUE}
-			\vspace{0.3cm}
-			\begin{itemize}
-				\item[\textcolor{green}{\mycheckmark}] Strongest security
-				\item[\textcolor{green}{\mycheckmark}] Forward secrecy
-				\item[\textcolor{red}{$\times$}] Standardized only in 2025
-				\item[\textcolor{red}{$\times$}] Adoption still ramping up
-			\end{itemize}
-		\end{column}
-	\end{columns}
-	\vspace{0.5cm}
-	\begin{center}
-		\textit{For E2EE storage: Can derive encryption keys from authentication protocol outputs}
-	\end{center}
-\end{frame}
-
-\begin{frame}{OPAQUE: How it works under the hood}
+\begin{frame}{OPAQUE: how it works under the hood}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
 				\item \textbf{OPAQUE combines three key components:}
 				      \begin{itemize}
-					      \item \textbf{OPRF (Oblivious PRF):} Server helps compute function without seeing input
-					      \item \textbf{Authenticated Key Exchange:} Derives session keys after password verification
-					      \item \textbf{Password hardening:} Makes brute-force attacks computationally expensive
+					      \item \textbf{OPRF (Oblivious PRF):} the server helps compute a function of the password without seeing it
+					      \item \textbf{Authenticated key exchange:} derives session keys once the password checks out
+					      \item \textbf{Password hardening:} a slow, memory-hard hash makes every guess expensive
 				      \end{itemize}
-				\item \textbf{The magic:} Server stores a ``password file'' but:
+				\item \textbf{The magic:} the server stores a ``password file'' per user, but:
 				      \begin{itemize}
-					      \item File doesn't contain password or hash
-					      \item Server can't test password guesses offline
-					      \item Client proves password knowledge without revealing it
+					      \item It contains no password and no password hash
+					      \item In the protocol, the server only ever sees \textit{blinded} values --- nothing it can test a guess against
+					      \item The client proves knowledge of the password without revealing it
 					            \begin{itemize}
 						            \item You could even say they perform a \textit{zero-knowledge proof}!
 					            \end{itemize}
@@ -1485,7 +1293,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{OPAQUE Registration: Step by step}
+\begin{frame}{OPAQUE registration: step by step}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Client actions:}
@@ -1602,31 +1410,26 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Why can't the server test passwords?}
+\begin{frame}{Can the server test passwords?}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{What the server sees:}
+			\textbf{From the protocol: no}
 			\begin{itemize}
-				\item Random group element $\alpha$
-				\item No relation to password visible
-				\item Different $\alpha$ each login (random $r$)
-				\item Can't extract $H(pw)$ from $\alpha$
+				\item It sees only $\alpha = H(pw)^r$: a uniformly random group element, fresh each login
+				\item Nothing to test a guess against --- same for an eavesdropper or a phishing server
+				\item Contrast SRP: the salt is public, so attackers can \textit{pre-compute} a per-user dictionary
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{What prevents offline attacks:}
+			\textbf{From its own password file: yes, slowly}
 			\begin{itemize}
-				\item Server doesn't know $H(pw)$
-				\item Can't verify guesses without client
-				\item Each guess requires online interaction
-				\item Rate limiting becomes enforceable
+				\item Whoever holds $k$ and $env$ can guess: compute $H(pw')^k$, try to open $env$
+				\item Unavoidable for any password scheme --- the server must be able to check the password
+				\item OPAQUE's promise: no pre-computation ($k$ is a secret salt); every guess pays for the memory-hard hash
+				\item WhatsApp's trick, next: keep $k$ inside an HSM that counts attempts
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.5cm}
-	\begin{center}
-		\textbf{Key insight:} The OPRF makes the server ``blind'' to the password while still enabling authentication
-	\end{center}
 \end{frame}
 
 \begin{frame}{OPAQUE's security guarantees}
@@ -1634,23 +1437,62 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Against server compromise:}
 			\begin{itemize}
-				\item[\textcolor{green}{\mycheckmark}] No pre-computation advantage
-				\item[\textcolor{green}{\mycheckmark}] Forward secrecy for session keys
-				\item[\textcolor{green}{\mycheckmark}] Past sessions remain secure
+				\item[\textcolor{green}{\mycheckmark}] No pre-computation: the attacker's dictionary work starts \textit{after} the breach, per user
+				\item[\textcolor{green}{\mycheckmark}] Forward secrecy: past session keys stay secret even if $sk_s$ and the password file leak
+				\item[\textcolor{red}{$\times$}] Offline guessing against the stolen file is still possible (as in any password scheme)
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Against active attacks:}
 			\begin{itemize}
-				\item[\textcolor{green}{\mycheckmark}] Mutual authentication
-				\item[\textcolor{green}{\mycheckmark}] Key confirmation
-				\item[\textcolor{green}{\mycheckmark}] Protection from phishing
+				\item[\textcolor{green}{\mycheckmark}] Mutual authentication and key confirmation
+				\item[\textcolor{green}{\mycheckmark}] A fake server learns nothing about the password (unlike a phishing page that asks you to type it)
+				\item[\textcolor{green}{\mycheckmark}] Each online guess costs one interaction --- so rate limiting actually works
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.3cm}
+	\begin{center}
+		\textbf{Bonus:} the client also gets an \textit{export key} nobody else knows --- authentication and key derivation in one protocol!
+	\end{center}
+\end{frame}
+
+\begin{frame}{Comparing authentication approaches}
+	\begin{columns}
+		\begin{column}{0.33\textwidth}
+			\textbf{Password Hashing}
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item[\textcolor{green}{\mycheckmark}] Simple to implement
+				\item[\textcolor{green}{\mycheckmark}] Well understood
+				\item[\textcolor{red}{$\times$}] Offline attacks
+				\item[\textcolor{red}{$\times$}] Server sees password
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.33\textwidth}
+			\textbf{SRP}
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item[\textcolor{green}{\mycheckmark}] No offline attacks by eavesdroppers
+				\item[\textcolor{green}{\mycheckmark}] Decades of deployment
+				\item[\textcolor{red}{$\times$}] No formal security proof
+				\item[\textcolor{red}{$\times$}] Pre-computation attacks
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.34\textwidth}
+			\textbf{OPAQUE}
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item[\textcolor{green}{\mycheckmark}] Strongest security
+				\item[\textcolor{green}{\mycheckmark}] Forward secrecy
+				\item[\textcolor{red}{$\times$}] Standardized only in 2025
+				\item[\textcolor{red}{$\times$}] Adoption still ramping up
 			\end{itemize}
 		\end{column}
 	\end{columns}
 	\vspace{0.5cm}
 	\begin{center}
-		\textbf{Bonus:} Provides both authentication \textit{and} key derivation --- perfect for E2EE storage!
+		\textit{For E2EE storage: Can derive encryption keys from authentication protocol outputs}
 	\end{center}
 \end{frame}
 
@@ -1658,7 +1500,7 @@
 
 \subsection{WhatsApp's Design}
 
-\begin{frame}{WhatsApp End-to-End Encrypted Backups: Overview}
+\begin{frame}{WhatsApp end-to-end encrypted backups: overview}
 	\begin{columns}[c]
 		\begin{column}{0.75\textwidth}
 			\begin{itemize}
@@ -1708,7 +1550,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Hardware Security Modules (HSMs)}{What are they?}
+\begin{frame}{Hardware security modules (HSMs)}{What are they?}
 	\begin{columns}[c]
 		\begin{column}{0.4\textwidth}
 			\begin{itemize}
@@ -1743,31 +1585,21 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Signal's SVR3: Multi-enclave key recovery}{Quick aside}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item Signal faced same challenge: E2EE backups need secure key recovery
-				\item \textbf{SVR3 (Secure Value Recovery 3)\footnote{\url{https://appliedcryptography.page/paper/\#signal-recovery}}:} PIN-based key recovery
-				      \begin{itemize}
-					      \item Distributes trust across 3 different hardware enclaves
-					      \item Intel SGX (Azure), AMD SEV-SNP (Google Cloud), Nitro (AWS)
-					      \item Attacker must compromise ALL three to access keys
-				      \end{itemize}
-				\item \textbf{Key features:}
-				      \begin{itemize}
-					      \item Uses Password Protected Secret Sharing (PPSS)
-					      \item Limits PIN guesses via secure hardware
-					      \item No single point of failure
-					      \item Cost: \$0.0025/user/year
-				      \end{itemize}
-				\item Already deployed to millions of Signal users
-			\end{itemize}
-		\end{column}
-	\end{columns}
+\begin{frame}{Signal's SVR3: multi-enclave key recovery}{Quick aside}
+	\begin{itemize}
+		\item Signal faced the same problem: PIN-protected recovery of secrets needs a server that \textit{cannot} guess PINs itself
+		\item \textbf{SVR3 (Secure Value Recovery 3):}\footnote{\url{https://appliedcryptography.page/paper/\#signal-recovery}} split the secret across three \textit{different} kinds of hardware enclave, at three different cloud providers
+		      \begin{itemize}
+			      \item Intel SGX (Azure), AMD SEV-SNP (Google Cloud), AWS Nitro
+			      \item Password-protected secret sharing: an attacker must break \textit{all three} to recover anything
+			      \item Guess limits are enforced inside the enclaves
+		      \end{itemize}
+		\item Cost: about \$0.0025 per user per year; rolled out to millions of Signal users (2024)
+		\item Keep this in mind when we look at WhatsApp's single-vendor HSM vault
+	\end{itemize}
 \end{frame}
 
-\begin{frame}{WhatsApp Encrypted Backups: System architecture}
+\begin{frame}{WhatsApp encrypted backups: system architecture}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
@@ -1827,9 +1659,9 @@
 				\item WhatsApp uses OPAQUE for password-based key storage
 				\item \textbf{Key properties of OPAQUE:}
 				      \begin{itemize}
-					      \item Server never learns password
-					      \item No offline dictionary attacks
-					      \item Derives encryption key from password
+					      \item Server never learns the password
+					      \item No offline dictionary attacks without the OPRF key --- which never leaves the HSM
+					      \item Derives an encryption key (the export key) from the password
 					      \item Strong security proofs
 				      \end{itemize}
 			\end{itemize}
@@ -1935,10 +1767,9 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Infrastructure resilience}
 			\begin{itemize}
-				\item 5-datacenter deployment
-				\item Majority consensus system
-				\item Tolerates multiple failures
-				\item Geographic distribution
+				\item Deployed across seven or more data-center sites (2026 whitepaper)
+				\item Majority-consensus replication
+				\item Tolerates a failed replica and a disconnected site at once
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1948,7 +1779,7 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Alternative: User-managed 64-digit key}
+\begin{frame}{Alternative: user-managed 64-digit key}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
@@ -1971,133 +1802,60 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{WhatsApp's design principles}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item \textbf{Use proven protocols:} OPAQUE for password authentication
-				\item \textbf{Hardware security:} HSMs for tamper-resistant key storage
-				\item \textbf{Defense in depth:}
-				      \begin{itemize}
-					      \item Client-side encryption
-					      \item Zero-knowledge password protocol
-					      \item Rate limiting in hardware
-					      \item Geographic distribution
-				      \end{itemize}
-				\item \textbf{User choice:} Password vs self-managed key
-				\item \textbf{Clear threat model:}
-				      \begin{itemize}
-					      \item Protects against cloud provider access
-					      \item Protects against WhatsApp compromise
-					      \item Limits brute-force attacks
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Lessons from WhatsApp's approach}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{What they did right:}
-			\begin{itemize}
-				\item Used established OPAQUE protocol
-				\item Hardware-backed security
-				\item Simple, clear design
-				\item Published detailed whitepaper
-				\item Gradual rollout with testing
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{Key takeaways:}
-			\begin{itemize}
-				\item Don't reinvent authentication
-				\item User education is crucial
-				\item Transparency builds trust
-				\item Complexity should be hidden
-			\end{itemize}
-		\end{column}
-	\end{columns}
-	\vspace{0.5cm}
+\begin{frame}{What WhatsApp got right}
+	\begin{itemize}
+		\item \textbf{A standard protocol instead of a homebrew one:} OPAQUE, with a published security proof --- compare MEGA's AES-ECB key wrapping and custom RSA padding
+		\item \textbf{A stated threat model:} the cloud provider, an outside attacker, and brute force on the password are in scope; WhatsApp's own HSMs are trusted
+		\item \textbf{A published whitepaper}, later formally analyzed in the UC framework (Davies et al., CRYPTO 2023)\footnote{Gareth T. Davies, Sebastian Faller, Kai Gellert, Tobias Handirk, Julia Hesse, M\'at\'e Horv\'ath and Tibor Jager, \textit{Security Analysis of the WhatsApp End-to-End Encrypted Backup Protocol}, CRYPTO 2023.} --- under the assumption that the HSM is honest
+		\item \textbf{User choice:} password + HSM vault, a self-managed 64-digit key, or (since 2025) a passkey
+		\item \textbf{Complexity hidden:} the user sees a password prompt; the OPRF, the AKE and the HSM consensus are invisible
+	\end{itemize}
+	\vspace{0.3cm}
 	\begin{center}
-		\textit{Compare with MEGA/Nextcloud: Standard protocols vs. custom designs}
+		\textit{Now let's look at what that threat model leaves out.}
 	\end{center}
 \end{frame}
 
 \subsection{Critiquing WhatsApp's Design}
 
-\begin{frame}{Specification ambiguity: A major flaw}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item \textbf{The problem:} WhatsApp's specification is ambiguous about $\mathtt{OPAQUE}_K$
-				\item \textbf{Two possible interpretations:}
-				      \begin{itemize}
-					      \item \textbf{Option 1:} OPAQUE's export key (client-only secret)
-					      \item \textbf{Option 2:} OPAQUE's shared session key (known to both parties)
-				      \end{itemize}
-				\item \textbf{Why this matters:}
-				      \begin{itemize}
-					      \item If Option 2: Server learns $\mathtt{OPAQUE}_K$
-					      \item Server could decrypt the backup key directly!
-					      \item Completely breaks the security model
-				      \end{itemize}
-				\item \textbf{This type of ambiguity is dangerous:}
-				      \begin{itemize}
-					      \item Different implementations may choose differently
-					      \item Security analysis becomes impossible
-					      \item Opens door to implementation vulnerabilities
-				      \end{itemize}
-				\item \textbf{Lesson:} Cryptographic specifications must be \textit{unambiguous}
-			\end{itemize}
-		\end{column}
-	\end{columns}
+\begin{frame}{Specification ambiguity: a flaw in the whitepaper}
+	\begin{itemize}
+		\item \textbf{The problem:} the whitepaper calls $\mathtt{OPAQUE}_K$ ``a symmetric key which is used to secure the backup key $K$'' --- and never says \textit{which} OPAQUE output it is
+		\item \textbf{Two candidates:}
+		      \begin{itemize}
+			      \item \textbf{Export key:} known to the client only
+			      \item \textbf{Session key:} shared with the server
+		      \end{itemize}
+		\item \textbf{Why it matters:} if it were the session key, the vault could decrypt $K$ directly --- the whole point of the design would be gone
+		\item \textbf{Resolving it takes outside knowledge:} the key is output by \textit{registration}, which in OPAQUE involves no key exchange, so it must be the export key; the login flow also lists $\mathtt{SHARED}_K$ separately
+		\item \textbf{Lesson:} a cryptographic specification must be unambiguous \textit{on its own}. Two implementers reading this document could make different choices --- and one of them would be catastrophic
+	\end{itemize}
 \end{frame}
 
-\begin{frame}{Critical limitation: Trust in WhatsApp's infrastructure}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item \textbf{The fundamental trust problem:}
-				      \begin{itemize}
-					      \item WhatsApp claims to use HSMs, but users cannot verify this
-					      \item HSMs are owned and operated by WhatsApp
-					      \item No independent audit or verification possible
-					      \item Could be software emulation instead
-				      \end{itemize}
-				\item \textbf{What users must trust:}
-				      \begin{itemize}
-					      \item WhatsApp actually deployed HSMs as described
-					      \item HSMs are configured correctly
-					      \item Rate limiting is enforced as claimed
-					      \item WhatsApp doesn't have backdoor access
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{The HSM security theater problem}
+\begin{frame}{What you have to take on faith}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{What WhatsApp claims:}
 			\begin{itemize}
-				\item Hardware-enforced rate limiting
-				\item Tamper-resistant key storage
-				\item Geographic distribution
-				\item No backdoor access
+				\item Keys live in HSMs, and only there
+				\item Attempt limits are enforced in hardware
+				\item The vault runs the code described in the whitepaper
+				\item No backdoor access, for anyone
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{What users can verify:}
+			\textbf{What a user can check:}
 			\begin{itemize}
-				\item Nothing!
-				\item No attestation provided
-				\item No third-party audits
-				\item Closed-source implementation
+				\item Since 2026: \textit{which public keys} the vault fleet uses, via a Cloudflare-run transparency log and Meta's open-source audit tool
+				\item Everything else: nothing. No remote attestation, no independent audit, closed source
+				\item ``Evidence of secure deployment'' is a Meta blog post
 			\end{itemize}
 		\end{column}
 	\end{columns}
+	\vspace{0.2cm}
+	\begin{center}
+		The HSMs are owned, operated and programmed by the very party the backups are meant to keep out.
+	\end{center}
 \end{frame}
 
 \begin{frame}{Potential vulnerabilities in WhatsApp's design}
@@ -2133,10 +1891,9 @@
 			\begin{itemize}
 				\item \textbf{What's missing:}
 				      \begin{itemize}
-					      \item Remote attestation from HSMs
-					      \item Cryptographic proof of HSM usage
-					      \item Public audit logs
-					      \item Third-party verification
+					      \item Remote attestation from the HSMs
+					      \item Cryptographic proof that the logged keys live in an HSM running the published code
+					      \item Independent third-party verification
 				      \end{itemize}
 				\item \textbf{Technical solutions exist:}
 				      \begin{itemize}
@@ -2155,7 +1912,7 @@
 					      \item Legal requirements?
 					      \item Law enforcement pressure?
 				      \end{itemize}
-				\item \textbf{The irony:} Meta already runs key transparency for WhatsApp identity keys (2023) --- just not for the Backup Key Vault
+				\item \textbf{The irony:} Meta runs key transparency for WhatsApp identity keys (2023) and, since 2026, for the vault's fleet keys --- but a transparency log proves \textit{which} keys are in use, not \textit{what} runs behind them
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -2178,14 +1935,13 @@
 			\begin{itemize}
 				\item \textbf{What is the 64-digit key, really?}
 				      \begin{itemize}
-					      \item The raw 256-bit backup key $K$, printed as 64 hexadecimal characters
-					      \item No checksum, no error detection
+					      \item The whitepaper says only ``64-digit encryption key''; 64 decimal digits carry ${\approx}$212 bits, so it is not simply $K$ written out
+					      \item No checksum or error detection mentioned
 					      \item Hard to transcribe and store correctly
 				      \end{itemize}
 				\item \textbf{We already have friendlier encodings:}
 				      \begin{itemize}
-					      \item BIP39 mnemonic phrases (12--24 words) with a built-in checksum
-					      \item Proven by a decade of cryptocurrency wallets
+					      \item BIP39 mnemonics: 12--24 words with a checksum, proven by a decade of crypto wallets
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -2223,7 +1979,7 @@
 				      \end{itemize}
 				\item \textbf{Alternatives:}
 				      \begin{itemize}
-					      \item Threshold cryptography across providers
+					      \item Threshold cryptography across providers (Signal's SVR3)
 					      \item Client-side key derivation only
 					      \item Transparent, auditable systems
 				      \end{itemize}
@@ -2232,82 +1988,64 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Discussion time}
+	\begin{columns}[c]
+		\begin{column}{0.8\textwidth}
+			\begin{enumerate}
+				\item \textbf{Password + HSM vault, or a 64-digit key on paper?}
+				      \begin{itemize}
+					      \item Which would you pick for yourself? For your parents?
+					      \item Does either pass the mud puddle test?
+				      \end{itemize}
+				\item \textbf{``Trust our hardware'' vs.\ ``trust our servers''}
+				      \begin{itemize}
+					      \item Is an HSM you cannot inspect meaningfully better than a plain server you cannot inspect?
+					      \item What would it take to convince you? Remote attestation? Signal's three-vendor split? Open source?
+				      \end{itemize}
+				\item \textbf{Apple withdrew ADP from the UK rather than add a backdoor.} Was that the right call? What should WhatsApp do if it receives the same order?
+			\end{enumerate}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \section{Designing an End-to-End Cloud Storage Protocol}
 
 \subsection{Lessons Learned}
 
-\begin{frame}{Lessons from MEGA and Nextcloud failures}
+\begin{frame}{Security definitions matter}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
-			\textbf{What went wrong?}
+			\textbf{MEGA's mistake:} Assumed encryption provides integrity
 			\begin{itemize}
-				\item \textbf{Ad-hoc design:} Both created custom cryptographic protocols
-				\item \textbf{No formal analysis:} Security claims without proofs
-				\item \textbf{Complexity spiral:} Features added without security review
-				\item \textbf{Missing fundamentals:}
-				      \begin{itemize}
-					      \item MEGA: No authenticated encryption
-					      \item Nextcloud: No sender authentication
-					      \item Both: Improper use of cryptographic primitives
-				      \end{itemize}
-				\item \textbf{Patch difficulties:}
-				      \begin{itemize}
-					      \item MEGA: Multiple rounds of incomplete fixes
-					      \item Nextcloud: Had to disable core features
-				      \end{itemize}
+				\item Used AES-ECB without MAC
+				\item Encryption $\neq$ Authenticated encryption
+				\item Led to complete key recovery
 			\end{itemize}
+			\textbf{Nextcloud's mistake:} Assumed encryption provides authentication
+			\begin{itemize}
+				\item RSA-OAEP only provides confidentiality
+				\item Anyone can create valid ciphertexts
+				\item Led to key insertion attacks
+			\end{itemize}
+			\textbf{Sync, pCloud (2024):} same mistake as Nextcloud, made independently
+			\vspace{0.2cm}
+
+			\textbf{Lesson:} understand exactly what each primitive guarantees --- ``it encrypts, so it's secure'' is how every one of these systems was designed
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The danger of ad-hoc designs}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item \textbf{Common mistakes in ad-hoc designs:}
-				      \begin{itemize}
-					      \item Misunderstanding primitive guarantees
-					      \item Ignoring composition problems
-					      \item No clear threat model
-					      \item Feature creep without security analysis
-				      \end{itemize}
-				\item \textbf{Why it happens:}
-				      \begin{itemize}
-					      \item Overconfidence in understanding
-					      \item Time/resource constraints
-					      \item Lack of cryptographic expertise
-					      \item ``It encrypts, so it's secure''
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Principles of secure protocol design}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{enumerate}
-				\item \textbf{Start with a clear threat model}
-				      \begin{itemize}
-					      \item What are you protecting against?
-					      \item What can the adversary do?
-					      \item What are acceptable trade-offs?
-				      \end{itemize}
-				\item \textbf{Use established cryptographic patterns}
-				      \begin{itemize}
-					      \item Authenticated encryption (AES-GCM, ChaCha20-Poly1305)
-					      \item Standard key exchange (X3DH, Noise Protocol Framework)
-					      \item Proven constructions (don't invent new ones!)
-				      \end{itemize}
-				\item \textbf{Keep it simple}
-				      \begin{itemize}
-					      \item Complexity is the enemy of security
-					      \item Each feature multiplies attack surface
-					      \item Can you explain your protocol in one page?
-				      \end{itemize}
-			\end{enumerate}
-		\end{column}
-	\end{columns}
+\begin{frame}{What a sound design needs}
+	\begin{enumerate}
+		\item \textbf{A written threat model.} Malicious server, or merely curious? Writing down ``the server may modify what it stores'' would have flagged every MEGA attack
+		\item \textbf{Standard primitives, used for what they guarantee.} AEAD wherever integrity matters (everywhere); no ECB, no bare RSA, no PKE where you need authentication
+		\item \textbf{A key hierarchy that fits on one slide.} A random master key wrapped under a password-derived key, so passwords can change without re-encrypting everything
+		\item \textbf{A proof, before deployment.} TLS 1.3 and Signal (topics 2.1, 2.3) were analyzed \textit{while} being designed; MEGA and Nextcloud by strangers, afterwards
+	\end{enumerate}
+	\vspace{0.2cm}
+	\begin{center}
+		\textit{The paper we look at next does all four.}
+	\end{center}
 \end{frame}
 
 \begin{frame}{Reminder: formal analysis}
@@ -2316,11 +2054,9 @@
 			\begin{itemize}
 				\item \textbf{What is formal analysis?}\footnote{Coming up next, in topic 2.5: High-Assurance Cryptography!}
 				      \begin{itemize}
-					      \item Automated using software
-					      \item Mathematical proofs of security
-					      \item Clear security definitions
-					      \item Reduction to hard problems
-					      \item Machine-verified proofs
+					      \item Precise security definitions (our libraries from Part 1)
+					      \item Proofs by reduction to hard problems
+					      \item Increasingly: machine-checked, with software
 				      \end{itemize}
 				\item \textbf{Benefits:}
 				      \begin{itemize}
@@ -2351,152 +2087,16 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Security definitions matter}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\textbf{MEGA's mistake:} Assumed encryption provides integrity
-			\begin{itemize}
-				\item Used AES-ECB without MAC
-				\item Encryption $\neq$ Authenticated encryption
-				\item Led to complete key recovery
-			\end{itemize}
-			\textbf{Nextcloud's mistake:} Assumed encryption provides authentication
-			\begin{itemize}
-				\item RSA-OAEP only provides confidentiality
-				\item Anyone can create valid ciphertexts
-				\item Led to key insertion attacks
-			\end{itemize}
-			\textbf{Lesson:} Understand exactly what each primitive guarantees!
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Protocol design methodology}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{Requirements gathering}
-				      \begin{itemize}
-					      \item Security goals (confidentiality, integrity, authentication)
-					      \item Functionality requirements
-					      \item Performance constraints
-				      \end{itemize}
-				\item \textbf{Threat modeling}
-				      \begin{itemize}
-					      \item Define adversary capabilities
-					      \item Identify trust assumptions
-					      \item Document acceptable risks
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{Protocol design}
-				      \begin{itemize}
-					      \item Use standard building blocks
-					      \item Create formal specification
-					      \item Keep complexity minimal
-				      \end{itemize}
-				\item \textbf{Security analysis}
-				      \begin{itemize}
-					      \item Formal proofs or verification
-					      \item External review
-					      \item Test edge cases
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Learning from other successful protocols}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{Signal Protocol}
-				      \begin{itemize}
-					      \item Formal security proofs
-					      \item Clear threat model
-					      \item Simple, modular design
-					      \item Widely analyzed
-				      \end{itemize}
-				\item \textbf{WireGuard}
-				      \begin{itemize}
-					      \item Minimal codebase
-					      \item Fixed crypto choices
-					      \item Formal verification
-					      \item Clear specification
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{TLS 1.3}
-				      \begin{itemize}
-					      \item Removed legacy features
-					      \item Formal analysis during design
-					      \item Simplified handshake
-					      \item Clear security properties
-				      \end{itemize}
-				\item \textbf{Common themes:}
-				      \begin{itemize}
-					      \item Simplicity over features
-					      \item Formal analysis early
-					      \item Clear documentation
-					      \item Conservative choices
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Key takeaways for protocol designers}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{Don't roll your own crypto}
-				      \begin{itemize}
-					      \item Use established, analyzed protocols
-					      \item If you must innovate, get expert review
-				      \end{itemize}
-				\item \textbf{Security is not just encryption}
-				      \begin{itemize}
-					      \item Authentication, integrity equally important
-					      \item Consider key management, revocation
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{Formal analysis is worth it}
-				      \begin{itemize}
-					      \item Catches issues before deployment
-					      \item Provides clear security guarantees
-				      \end{itemize}
-				\item \textbf{Simplicity is security}
-				      \begin{itemize}
-					      \item Every feature adds complexity
-					      \item Complex protocols have more bugs
-				      \end{itemize}
-				\item \textbf{Learn from failures}
-				      \begin{itemize}
-					      \item Study what went wrong
-					      \item Apply lessons to new designs
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
 \subsection{A Formal Treatment of End-to-End Encrypted Cloud Storage}
 
-\begin{frame}{Next: A formal treatment from the literature}
+\begin{frame}{Next: a formal treatment from the literature}
 	\begin{center}
 		\textbf{What follows is based on:}\\
 		\vspace{0.3cm}
 		\textit{``A Formal Treatment of End-to-End Encrypted Cloud Storage''}\\
 		{\tiny\url{https://appliedcryptography.page/paper/\#cloud-storage}}\\
 		\vspace{0.2cm}
-		{\footnotesize by Matilda Backendal, Hannah Davis, Felix Günther, Miro Haller, and Kenneth G. Paterson --- CRYPTO 2024}
+		{\footnotesize by Matilda Backendal, Hannah Davis, Felix G\"unther, Miro Haller, and Kenneth G. Paterson --- CRYPTO 2024}
 	\end{center}
 	\begin{columns}[t]
 		\begin{column}{0.5\textwidth}
@@ -2522,7 +2122,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{A formal treatment: Building blocks}
+\begin{frame}{A formal treatment: building blocks}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\textbf{Core cryptographic primitives:}
@@ -2530,7 +2130,7 @@
 				\item \textbf{PRF (Pseudorandom Function):} $F: \bits^{\kappa} \times \bits^{*} \to \bits^{\kappa}$
 				\item \textbf{MAC (Message Authentication Code):} For integrity verification
 				\item \textbf{AEAD (Authenticated Encryption):} AES-GCM or ChaCha20-Poly1305
-				\item \textbf{2HashDH OPRF:} Password hardening against offline attacks
+				\item \textbf{2HashDH OPRF:} Password-based key derivation with the server's help --- no pre-computation, nothing for outsiders to attack offline
 			\end{itemize}
 			\vspace{0.3cm}
 			\textbf{Key insight:} Use standard, proven primitives --- don't invent new ones!
@@ -2538,13 +2138,13 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The 2HashDH OPRF: Motivation}
+\begin{frame}{The 2HashDH OPRF: motivation}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
 				\item \textbf{Problem:} How to derive keys from passwords without server learning them?
 				\item \textbf{Challenge:} Server needs to help with computation, but shouldn't learn password
-				\item \textbf{Solution:} Oblivious Pseudorandom Function (OPRF), also used by OPAQUE
+				\item \textbf{Solution:} an Oblivious Pseudorandom Function (OPRF) --- the same idea as in OPAQUE
 				      \begin{itemize}
 					      \item Client has secret input (account ID + password)
 					      \item Server has key $k$
@@ -2553,7 +2153,7 @@
 				\item \textbf{In our protocol:}
 				      \begin{itemize}
 					      \item Client generates OPRF key during registration
-					      \item Sends key to server (ensures honest key generation)
+					      \item Sends the key to the server --- so the key is honestly random, not server-chosen
 					      \item Later uses OPRF to derive keys from password
 				      \end{itemize}
 			\end{itemize}
@@ -2561,7 +2161,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The 2HashDH OPRF: How it works}
+\begin{frame}{The 2HashDH OPRF: how it works}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\textbf{Setup:} Group $\mathbb{G}$ of prime order $q$, hash functions $H_1$ and $H_2$\footnote{$H_1$ hashes onto the group (``hash-to-curve''); $H_2$ should be slow and memory-hard, so that learning $k$ doesn't make password guessing cheap.}
@@ -2586,22 +2186,17 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The 2HashDH OPRF: How it works}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item \textbf{Security properties:}
-				      \begin{itemize}
-					      \item Server sees only random group element $\alpha$ (learns nothing about $x$)
-					      \item Client gets consistent PRF output
-					      \item Memory-hard hash functions prevent brute-force attacks
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-	\end{columns}
+\begin{frame}{The 2HashDH OPRF: what it buys us}
+	\begin{itemize}
+		\item \textbf{Obliviousness:} for random $r$, $\alpha = H_1(x)^r$ is a uniformly random group element --- the server learns nothing about $x$, at registration or at any login
+		\item \textbf{Pseudorandomness:} without $k$, the output $y$ is unpredictable --- a network attacker, or anyone who steals the client's transcript, has nothing to guess against
+		\item \textbf{No pre-computation:} $k$ acts as a secret salt that is never sent to the client
+		\item \textbf{What it cannot do:} the party holding $k$ (here, the server) can still run a dictionary attack after the fact --- which is why the paper wants $H_1$ and $H_2$ slow and memory-hard, and why the client picks $k$
+		\item Same primitive as in OPAQUE and in WhatsApp's vault --- there, $k$ lives inside the HSM
+	\end{itemize}
 \end{frame}
 
-\begin{frame}{Scheme architecture: Clean key hierarchy}
+\begin{frame}{Scheme architecture: clean key hierarchy}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
@@ -2680,7 +2275,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{File operations: Simple and secure}
+\begin{frame}{File operations: simple and secure}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Upload (put):}
@@ -2709,7 +2304,7 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Sharing design: Each owner has their own header}
+\begin{frame}{Sharing design: each owner has their own header}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
@@ -2767,9 +2362,9 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Against malicious server:}
 			\begin{itemize}
-				\item[\textcolor{green}{\mycheckmark}] No offline password attacks (OPRF)
+				\item[\textcolor{green}{\mycheckmark}] No pre-computation, nothing for outsiders to attack offline (OPRF)
 				\item[\textcolor{green}{\mycheckmark}] Authenticated encryption throughout
-				\item[\textcolor{green}{\mycheckmark}] Unique account ID prevents correlation
+				\item[\textcolor{green}{\mycheckmark}] Account ID in the OPRF input: users sharing a password get unrelated keys, so the server can't swap their files
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -2805,7 +2400,7 @@
 				\item[\textcolor{red}{$\times$}] Missing authentication
 				\item[\textcolor{red}{$\times$}] Implementation bugs
 				\item[\textcolor{red}{$\times$}] Ad-hoc design
-				\item[\textcolor{red}{$\times$}] Feature creep
+				\item[\textcolor{red}{$\times$}] Nonce reuse
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.34\textwidth}

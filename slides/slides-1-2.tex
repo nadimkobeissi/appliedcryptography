@@ -29,6 +29,7 @@
 			      \log_x(ab) & = \log_x a + \log_x b
 		      \end{align*}
 		\item \alert{Never write $(x^a)(x^b) = x^{ab}$!}
+		\item Why we care: an $n$-bit key has $2^n$ possible values, and one more bit \emph{doubles} them: $2^{n+1} = 2 \cdot 2^n$.
 	\end{itemize}
 \end{frame}
 
@@ -45,6 +46,7 @@
 	\begin{itemize}[<+->]
 		\item $a \bmod n$ gives the remainder when dividing $a$ by $n$
 		\item Result is always in $\{0, 1, \ldots, n-1\}$
+		\item We call this set $\mathbb{Z}_n = \{0, 1, \ldots, n-1\}$ (it comes back at the end of the lecture)
 		\item \textbf{Even for negative numbers!}
 		      \begin{align*}
 			      21 \bmod 7  & = 0                          \\
@@ -69,7 +71,7 @@
 				      \begin{itemize}[<+->]
 					      \item $(2 - 5) \bmod 12 = -3 \bmod 12 = 9$
 				      \end{itemize}
-				\item Wrapping around: when we go past 12, we start over from 1
+				\item The clock face is $\mathbb{Z}_{12}$ in disguise: its ``12'' is our $0$
 			\end{itemize}
 		}
 		\column{0.5\textwidth}{
@@ -96,6 +98,7 @@
 		\item $\bits^n$ = set of $n$-bit binary strings
 		\item $|x|$ = length of string $x$
 		\item $\bit{0}^n$ = string of $n$ zeros, $\bit{1}^n$ = string of $n$ ones
+		\item $|\bits^n| = 2^n$: there are $2^n$ such strings, e.g.\ $\bits^2 = \{\bit{00}, \bit{01}, \bit{10}, \bit{11}\}$
 	\end{itemize}
 \end{frame}
 
@@ -128,14 +131,14 @@
 \section{The Provable Security Mindset}
 
 \begin{frame}{How it's made}
-	\bigimagewithcaption{fischer-theory.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
+	\bigimagewithcaption[0.9\textwidth]{fischer-theory.png}{Fischer et al., The Challenges of Bringing Cryptography from Research Papers to Products: Results from an Interview Study with Experts, USENIX Security 2024}
 \end{frame}
 
-\begin{frame}{Thinking about secrecy}
-	\bigimagewithcaption{naive-enc.pdf}{Source: The Joy of Cryptography}
+\begin{frame}{Thinking about secrecy}{Attempt 1: keep the whole design secret}
+	\bigimagewithcaption[0.97\textwidth]{naive-enc.pdf}{Source: The Joy of Cryptography}
 \end{frame}
 
-\begin{frame}{Thinking about secrecy}
+\begin{frame}{Thinking about secrecy}{Attempt 1: keep the whole design secret}
 	\begin{columns}[c]
 		\column{0.5\textwidth}{
 			\begin{itemize}[<+->]
@@ -158,9 +161,9 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Kerckhoffs' principle}
+\begin{frame}{Kerckhoffs' principle}{Reminder}
 	\begin{itemize}[<+->]
-		\item \textit{``A cryptosystem should be secure even if everything about the system, except the key, is public knowledge.''} — Auguste Kerckhoffs, 1883
+		\item \textit{``A cryptosystem should be secure even if everything about the system, except the key, is public knowledge.''} --- Auguste Kerckhoffs, 1883
 		\item \textbf{Why it matters}:
 		      \begin{itemize}[<+->]
 			      \item No ``security through obscurity''
@@ -171,11 +174,11 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Thinking about secrecy}
-	\bigimagewithcaption{keyed-enc.pdf}{\textbf{Concentrate all the need for secrecy in the key!}}
+\begin{frame}{Thinking about secrecy}{Attempt 2: keep only the key secret}
+	\bigimagewithcaption[0.97\textwidth]{keyed-enc.pdf}{\textbf{Concentrate all the need for secrecy in the key!}}
 \end{frame}
 
-\begin{frame}{Thinking about secrecy}
+\begin{frame}{Thinking about secrecy}{Attempt 2: keep only the key secret}
 	\begin{columns}[c]
 		\column{0.5\textwidth}{
 			\begin{itemize}[<+->]
@@ -205,13 +208,16 @@
 			}{2}
 		\end{column}
 	\end{columns}
+	\vspace{0.5em}
+	\begin{center}
+		$K, M \in \bits^n$: the key is exactly as long as the message, $|K| = |M|$. Remember this.
+	\end{center}
 \end{frame}
 
-\begin{frame}{XOR (Exclusive OR) operation}
+\begin{frame}{The XOR (exclusive OR) operation}
 	\begin{columns}[c]
 		\column{0.6\textwidth}{
-			\begin{table}
-				\centering
+			\begin{center}
 				\begin{tabular}{|c|c|c|}
 					\hline
 					\textbf{A} & \textbf{B} & \textbf{A $\oplus$ B} \\
@@ -225,13 +231,12 @@
 					\bit{1}    & \bit{1}    & \bit{0}               \\
 					\hline
 				\end{tabular}
-				\caption{Truth table for XOR operation}
-			\end{table}
+			\end{center}
 			\begin{itemize}
-				\item XOR returns 1 when inputs differ
-				\item XOR returns 0 when inputs are the same
-				\item Key property: $x \oplus x = 0$ and $x \oplus 0 = x$
-				\item Self-inverse: $(M \oplus K) \oplus K = M$
+				\item \bit{1} when the inputs differ, \bit{0} when they agree
+				\item On strings, bit by bit: $\bit{0110} \oplus \bit{1100} = \bit{1010}$
+				\item Commutative and associative: reorder and regroup freely
+				\item $x \oplus x = \bit{0}$ and $x \oplus \bit{0} = x$, so $(M \oplus K) \oplus K = M$
 			\end{itemize}
 		}
 		\column{0.4\textwidth}{
@@ -255,36 +260,38 @@
 \end{frame}
 
 \begin{frame}{One-time pad}{First look at a symmetric cipher}
-	\bigimagewithcaption{xor-enc.png}{(We're encoding the message and key as bits)}
+	\bigimagewithcaption[0.97\textwidth]{xor-enc.png}{(We're encoding the message and key as bits)}
 \end{frame}
 
 \begin{frame}{One-time pad}{First look at a symmetric cipher}
-	\bigimagewithcaption{xor-dec.png}{(We're encoding the message and key as bits)}
+	\bigimagewithcaption[0.97\textwidth]{xor-dec.png}{(We're encoding the message and key as bits)}
 \end{frame}
 
-\begin{frame}{Key derivation}{Uniform distribution}
+\begin{frame}{Where does the key come from?}{Sampling $K$ uniformly}
 	\begin{itemize}[<+->]
-		\item How to derive $K$?
-		\item $K$ is ideally random.
-		\item True randomness is hard to obtain, so in practice $K$ is pseudo-random.
-		\item We need a pseudo-random uniform distribution:
-		\item If $\mathcal{S}$ is a set of $m$ items, then the uniform distribution over $\mathcal{S}$ assigns probability $\frac{1}{m}$ to each item $x \in \mathcal{S}$
-		\item In practice, this just means we need the bits to be random, unpredictable, and uniformly distributed
-		\item Sampling a $K$ from a pseudo-random uniform distribution is written as $K \twoheadleftarrow \bits^n$
+		\item The cipher is only as good as its key. How should the victim pick $K$?
+		\item $K \twoheadleftarrow \bits^n$: sample $K$ \textbf{uniformly} from all $2^n$ possible $n$-bit strings.
+		      \begin{itemize}
+			      \item Every key has probability exactly $\frac{1}{2^n}$; no key is likelier than any other.
+			      \item Nothing about $K$ can be predicted before it is sampled, not even a single bit.
+		      \end{itemize}
+		\item A \textbf{fresh} $K$ for every message. The name is a hint: one-\emph{time} pad.
+		\item In practice, the operating system harvests unpredictable events (interrupt timings, hardware noise) and stretches them with a pseudorandom generator. That is topic 1.4.
+		\item Today we \emph{assume} $K$ is truly uniform. Whether real machines deliver that is a separate question; we return to it at the end.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{One-time pad}{Correctness proof}
 	\begin{itemize}[<+->]
-		\item $\forall(n > 0,\; K \in \bits^{n},\; M \in \bits^{n}),\; \textsf{Dec}(K, \textsf{Enc}(K, M)) = M$
-		\item For all positive $n$: encrypting any $n$-bit message under any $n$-bit key, then decrypting under the same key, returns the original message.
+		\item \textbf{Claim}: $\forall n > 0,\; \forall K, M \in \bits^{n}:\; \textsf{Dec}(K, \textsf{Enc}(K, M)) = M$.\\
+		      In words: decrypting with the same key always undoes encrypting.
 		\item \textbf{Proof}:
 		      \begin{align*}
-			      \textsf{Dec}(K, \textsf{Enc}(K, M)) & = \textsf{Dec}(K, K \oplus M) \\
-			                                          & = K \oplus (K \oplus M)       \\
-			                                          & = (K \oplus K) \oplus M       \\
-			                                          & = \bit{0}^n \oplus M          \\
-			                                          & = M \quad \qed
+			      \textsf{Dec}(K, \textsf{Enc}(K, M)) & = \textsf{Dec}(K, K \oplus M) && \textcolor{gray}{\small\text{definition of Enc}} \\
+			                                          & = K \oplus (K \oplus M)       && \textcolor{gray}{\small\text{definition of Dec}} \\
+			                                          & = (K \oplus K) \oplus M       && \textcolor{gray}{\small\text{associativity}}     \\
+			                                          & = \bit{0}^n \oplus M          && \textcolor{gray}{\small x \oplus x = \bit{0}^n}   \\
+			                                          & = M                           && \textcolor{gray}{\small \bit{0}^n \oplus x = x} \quad \qed
 		      \end{align*}
 	\end{itemize}
 \end{frame}
@@ -292,24 +299,11 @@
 \begin{frame}{One-time pad}{How do we prove security?}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item When we prove security, we prove what is or isn't possible for an attacker who calls \textsc{Attack}$(M)$.
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\imagewithcaption{attacker-interface.pdf}{Source: The Joy of Cryptography}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{One-time pad}{How do we prove security?}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
+				\item A security proof says what an attacker can and cannot learn when they interact with the victim only through a fixed interface: \textsc{Attack}$(M)$.
 				\item ``Victim'' chooses their key.
 				      \begin{itemize}
 					      \item Fresh key for each message (each key used only once)
-					      \item This means the output will differ even if the adversary inputs the same plaintext twice
 				      \end{itemize}
 				\item Adversary chooses the message and receives the ciphertext.
 				\item We say that \textbf{the adversary has access to an encryption oracle}.
@@ -343,16 +337,16 @@
 
 \begin{frame}{One-time pad}{How do we prove security?}
 	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.55\textwidth}
 			\begin{itemize}[<+->]
-				\item Adversary can query oracle an unbounded number of times.
-				\item Two queries with the same $M$ (almost always) return different $(C, C')$, since the victim samples a fresh $K$ each time.
-				\item $K$ is always chosen correctly (pseudo-random uniform sampling).
-				\item ``Randomized oracle''
-				\item Attacker cannot see $K$.
+				\item Adversary can query the oracle an unbounded number of times.
+				\item The same $M$ twice gives (almost always) different $C, C'$: fresh $K$ each time.
+				\item $K$ is always sampled correctly: uniformly, by the victim.
+				\item The oracle is \textbf{randomized}: its output depends on coins the attacker never sees.
+				\item The attacker never sees $K$.
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.45\textwidth}
 			\imagewithcaption{attacker-interface.pdf}{Source: The Joy of Cryptography}
 		\end{column}
 	\end{columns}
@@ -370,7 +364,7 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
 				\item \textbf{Generally}: a cipher is secure if the adversary can't distinguish the output of calls to \textsc{Attack} from random junk.
-				\item \textbf{Formally}: For all positive integers $n$ and all choices of plaintext $M \in \bits^n$, the output of the following subroutine is uniformly distributed:
+				\item \textbf{Formally, for OTP}: for all positive integers $n$ and all choices of plaintext $M \in \bits^n$, the output of the following subroutine is uniformly distributed:
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -387,14 +381,15 @@
 	\begin{columns}[c]
 		\begin{column}{0.7\textwidth}
 			\begin{itemize}[<+->]
-				\item If the key is random, the output will be uniformly distributed!
+				\item Claim: if $K$ is uniform, so is $C$. Let's check it by hand for $n = 2$.
 				\item Suppose $M = \bit{01}$:
 				      \begin{itemize}[<+->]
-					      \item $K = \bit{00}$ is chosen with probability $1/4$:\\$C = K \oplus M = \bit{00} \oplus \bit{01} = \bit{01}$.
-					      \item $K = \bit{01}$ is chosen with probability $1/4$:\\$C = K \oplus M = \bit{01} \oplus \bit{01} = \bit{00}$.
-					      \item $K = \bit{10}$ is chosen with probability $1/4$:\\$C = K \oplus M = \bit{10} \oplus \bit{01} = \bit{11}$.
-					      \item $K = \bit{11}$ is chosen with probability $1/4$:\\$C = K \oplus M = \bit{11} \oplus \bit{01} = \bit{10}$.
+					      \item $K = \bit{00}$ (probability $1/4$): $C = \bit{00} \oplus \bit{01} = \bit{01}$.
+					      \item $K = \bit{01}$ (probability $1/4$): $C = \bit{01} \oplus \bit{01} = \bit{00}$.
+					      \item $K = \bit{10}$ (probability $1/4$): $C = \bit{10} \oplus \bit{01} = \bit{11}$.
+					      \item $K = \bit{11}$ (probability $1/4$): $C = \bit{11} \oplus \bit{01} = \bit{10}$.
 				      \end{itemize}
+				\item Every $C \in \bits^2$ shows up exactly once, so $\Pr[C] = 1/4$ for each. Uniform!
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.3\textwidth}
@@ -407,77 +402,30 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{XOR (Exclusive OR) operation}
-	\begin{columns}[c]
-		\column{0.6\textwidth}{
-			\begin{table}
-				\centering
-				\begin{tabular}{|c|c|c|}
-					\hline
-					\textbf{A} & \textbf{B} & \textbf{A $\oplus$ B} \\
-					\hline
-					\bit{0}    & \bit{0}    & \bit{0}               \\
-					\hline
-					\bit{0}    & \bit{1}    & \bit{1}               \\
-					\hline
-					\bit{1}    & \bit{0}    & \bit{1}               \\
-					\hline
-					\bit{1}    & \bit{1}    & \bit{0}               \\
-					\hline
-				\end{tabular}
-				\caption{Truth table for XOR operation}
-			\end{table}
-			\begin{itemize}
-				\item XOR returns 1 when inputs differ
-				\item XOR returns 0 when inputs are the same
-				\item Key property: $x \oplus x = 0$ and $x \oplus 0 = x$
-				\item Self-inverse: $(M \oplus K) \oplus K = M$
-			\end{itemize}
-		}
-		\column{0.4\textwidth}{
-			\begin{center}
-				\begin{tikzpicture}[scale=0.8]
-					\fill[cyan!30] (0,0) circle (1.5);
-					\fill[cyan!30] (1,0) circle (1.5);
-					\begin{scope}
-						\clip (0,0) circle (1.5);
-						\fill[white] (1,0) circle (1.5);
-					\end{scope}
-					\draw[thick] (0,0) circle (1.5);
-					\draw[thick] (1,0) circle (1.5);
-					\node at (0,-2) {A};
-					\node at (1,-2) {B};
-					\node at (0.5,0) {$A \oplus B$};
-				\end{tikzpicture}
-			\end{center}
-		}
-	\end{columns}
-\end{frame}
-
 \begin{frame}{One-time pad}{What's so special about XOR?}
 	\begin{columns}[c]
 		\begin{column}{0.7\textwidth}
 			\begin{itemize}[<+->]
-				\item Let's replace $\oplus$ with $\land$. What would happen?
-				\item Output no longer uniform!
+				\item Let's replace $\oplus$ with $\land$ (AND). What would happen?
+				\item Output no longer uniform! Wherever $M$ has a \bit{0}, so does $C$, whatever $K$ is: $\textsc{Attack}(\bit{0}^n) = \bit{0}^n$ every time.
+				\item XOR's trick: fix $M$ and read down its column. Every output appears exactly once, so uniform $K$ gives uniform $C$.
 			\end{itemize}
-			\begin{table}
-				\centering
-				\begin{tabular}{|c|c|c|}
+			\begin{center}
+				\small
+				\begin{tabular}{|c|c|c|c|}
 					\hline
-					\textbf{A} & \textbf{B} & \textbf{A $\land$ B} \\
+					\textbf{K} & \textbf{M} & \textbf{K $\oplus$ M} & \textbf{K $\land$ M} \\
 					\hline
-					\bit{0}    & \bit{0}    & \bit{0}              \\
+					\bit{0}    & \bit{0}    & \bit{0}               & \bit{0}              \\
 					\hline
-					\bit{0}    & \bit{1}    & \bit{0}              \\
+					\bit{0}    & \bit{1}    & \bit{1}               & \bit{0}              \\
 					\hline
-					\bit{1}    & \bit{0}    & \bit{0}              \\
+					\bit{1}    & \bit{0}    & \bit{1}               & \bit{0}              \\
 					\hline
-					\bit{1}    & \bit{1}    & \bit{1}              \\
+					\bit{1}    & \bit{1}    & \bit{0}               & \bit{1}              \\
 					\hline
 				\end{tabular}
-				\caption{Truth table for AND operation}
-			\end{table}
+			\end{center}
 		\end{column}
 		\begin{column}{0.3\textwidth}
 			\sssubroutine{Attack}{M}{
@@ -498,7 +446,8 @@
 				\item What is \prob{\textsc{Attack}(M) = C}?
 				\item \textsc{Attack}$(M)$ returns $C$ exactly when $C = \textsf{Enc}(K, M) = K \oplus M$\ldots
 				\item \ldots which occurs for exactly one key: $K = M \oplus C$.
-				\item Since $K$ is chosen uniformly from $\bits^n$, the probability of choosing that $K$ is $\frac{1}{2^n}. \quad \qed$
+				\item Since $K$ is chosen uniformly from $\bits^n$, the probability of choosing that $K$ is $\frac{1}{2^n}$.
+				\item Same for every $C \in \bits^n$: all $2^n$ outputs are equally likely. That is what ``uniform'' means. $\qed$
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.3\textwidth}
@@ -543,14 +492,18 @@
 
 \begin{frame}{One-time pad}{What about addition modulo $n$?}
 	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.58\textwidth}
 			\begin{itemize}[<+->]
-				\item Let's replace $\oplus$ with addition modulo $n$. What would happen?
+				\item Let's replace $\oplus$ with addition modulo $n$. What would happen? ($K, M, C \in \mathbb{Z}_n$ are now numbers, not bit strings.)
 				\item Still good!
 				\item Can you prove correctness and security?
+				      \begin{itemize}[<+->]
+					      \item Correctness: what is $\textsf{Dec}$? Remember $(2 - 5) \bmod 12 = 9$.
+					      \item Security: how many $K \in \mathbb{Z}_n$ give $(K + M) \bmod n = C$, for fixed $M$ and $C$?
+				      \end{itemize}
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.42\textwidth}
 			\sssubroutine{Attack}{M}{
 				$K \twoheadleftarrow \mathbb{Z}_{n}$ \\
 				$C \coloneq (K + M) \bmod n$ \\
@@ -586,7 +539,7 @@
 		      \begin{itemize}[<+->]
 			      \item Common words: ``the'', ``and'', ``of'', ``to''
 			      \item Letter frequencies: E is most common in English (12.7\%)
-			      \item Spaces are very frequent (about 18\% of characters)
+			      \item Spaces are very frequent (about 18\% of characters), and in ASCII, letter $\oplus$ space just flips the letter's case: where $M_1 \oplus M_2$ looks like a letter, one message probably has a space
 		      \end{itemize}
 		\item \textbf{Crib dragging}: Try XORing common words at different positions
 		\item \textbf{Example}: If we guess ``the'' at position $i$ in $M_1$:
@@ -613,7 +566,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Practical attack}{Bit flipping}
+\begin{frame}{Malleability in practice}{Turning \$100 into \$900}
 	\begin{itemize}[<+->]
 		\item \textbf{Scenario}: Bank transfer message
 		\item Original: ``Transfer \$0100.00 to Account 12345''
@@ -626,7 +579,59 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Discussion time}
+	\begin{columns}[c]
+		\begin{column}{0.68\textwidth}
+			\begin{enumerate}
+				\item \textbf{We proved OTP secure, then broke it twice. Which is wrong: the proof or the attacks?}
+				      \begin{itemize}
+					      \item Reread \textsc{Attack}$(M)$ line by line. Which line does the two-time pad violate? Which one does malleability violate?
+				      \end{itemize}
+				\item \textbf{Is malleability an attack on secrecy?}
+				      \begin{itemize}
+					      \item The attacker turned \$100 into \$900 without learning a single bit of $M$. What did our definition promise, and what did it never promise?
+				      \end{itemize}
+				\item \textbf{Would addition modulo $n$ have helped against either attack?}
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.32\textwidth}
+			\imagewithcaption{spamton-sez.png}{}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \section{Limitations of Security Proofs}
+
+\begin{frame}{OTP: security assumptions \& constraints}{Part 1}
+	\begin{itemize}[<+->]
+		\item Our security proofs rely on specific assumptions about the adversary:
+		      \begin{itemize}[<+->]
+			      \item \textbf{Key reuse}: Keys are never intentionally reused (though may repeat by chance).
+			      \item \textbf{Observation only}: Adversary passively observes the ciphertext but doesn't tamper with it.
+			      \item \textbf{Message independence}: Choice of message $M$ is independent of key $K$.
+			      \item \textbf{Key secrecy}: Adversary learns nothing about the key.
+			      \item \textbf{No sampling influence}: Adversary cannot influence how the key is sampled.
+		      \end{itemize}
+		\item Each attack in the last section broke exactly one of these. The proof never claimed to survive that.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{OTP: security assumptions \& constraints}{Part 2}
+	\begin{itemize}[<+->]
+		\item Side-channel attacks violate our model:
+		      \begin{itemize}[<+->]
+			      \item We assume the adversary cannot coerce the victim into running a different algorithm.
+			      \item Cannot observe execution details:
+			            \begin{itemize}[<+->]
+				            \item CPU timing information (clock cycles).
+				            \item Memory access patterns.
+				            \item Cache hits/misses.
+				            \item Power consumption during encryption.
+			            \end{itemize}
+		      \end{itemize}
+		\item The proof covers exactly the interface of \textsc{Attack}$(M)$: one input in, one output out. Anything else the attacker can measure is outside the model, and the proof is silent about it.
+	\end{itemize}
+\end{frame}
 
 \begin{frame}{Limitations of security proofs}{Part 1}
 	\begin{itemize}[<+->]
@@ -650,100 +655,23 @@
 			      \item How can we incentivize Alice and Bob to use encryption?
 			      \item Should the government be allowed to obtain a warrant to read encrypted communications?
 		      \end{itemize}
-		\item Security proofs are about specific properties within specific models.
-		\item Real-world security depends on many factors beyond what our models capture.
-		\item Having a security proof is necessary but not sufficient for real-world security.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{The value of security proofs}
-	\begin{itemize}[<+->]
-		\item Despite limitations, security proofs provide important benefits:
-		      \begin{itemize}[<+->]
-			      \item \textbf{Precise guarantees}: Clearly define what security properties are achieved.
-			      \item \textbf{Confidence}: A valid proof rules out all attacks within the model.
-			      \item \textbf{Foundation for composition}: Proven components can be securely combined.
-			      \item \textbf{Precise terminology}: Forces us to clearly define our terms and assumptions.
-		      \end{itemize}
-		\item Security proofs help identify the \textit{boundaries} of security:
-		      \begin{itemize}[<+->]
-			      \item What assumptions are necessary?
-			      \item What threats are addressed vs. unaddressed?
-			      \item What conditions must hold for security to be maintained?
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{The provable security mindset}
-	\begin{itemize}[<+->]
-		\item Building systems with provable security in mind:
-		      \begin{itemize}[<+->]
-			      \item Start with clear security goals and adversary model.
-			      \item Design systems whose security can be formally analyzed.
-			      \item Identify and document necessary assumptions.
-			      \item Distinguish between proven properties and conjectures.
-		      \end{itemize}
-		\item Good practical security requires both:
-		      \begin{itemize}[<+->]
-			      \item Rigorous proofs for core mechanisms.
-			      \item Practical engineering to address real-world constraints.
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{OTP: security assumptions \& constraints}{Part 1}
-	\begin{itemize}[<+->]
-		\item Our security proofs rely on specific assumptions about the adversary:
-		      \begin{itemize}[<+->]
-			      \item \textbf{Key reuse}: Keys are never intentionally reused (though may repeat by chance).
-			      \item \textbf{Observation only}: Adversary passively observes the ciphertext but doesn't tamper with it.
-			      \item \textbf{Message independence}: Choice of message $M$ is independent of key $K$.
-			      \item \textbf{Key secrecy}: Adversary learns nothing about the key.
-			      \item \textbf{No sampling influence}: Adversary cannot influence how the key is sampled.
-		      \end{itemize}
-		\item These constraints are \textit{necessary} for the security proofs to hold!
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{OTP: security assumptions \& constraints}{Part 2}
-	\begin{itemize}[<+->]
-		\item Side-channel attacks violate our model:
-		      \begin{itemize}[<+->]
-			      \item We assume the adversary cannot coerce the victim into running a different algorithm.
-			      \item Cannot observe execution details:
-			            \begin{itemize}[<+->]
-				            \item CPU timing information (clock cycles).
-				            \item Memory access patterns.
-				            \item Cache hits/misses.
-				            \item Power consumption during encryption.
-			            \end{itemize}
-		      \end{itemize}
-		\item Real-world security requires considering these additional attack vectors.
-		\item Our security proofs address a \textit{specific threat model} that may not capture all real-world threats.
+		\item A proof is a precise answer to a precise question: \emph{in this scenario, against this adversary, this property holds.}
+		\item On every question above it is not wrong, just silent. Necessary, not sufficient.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Key distribution problem}{The elephant in the room}
 	\begin{columns}[c]
-		\column{0.55\textwidth}{
+		\column{0.6\textwidth}{
 			\begin{itemize}[<+->]
-				\item OTP requires a key as long as the message
-				\item How do Alice and Bob share this key?
-				\item \textbf{The paradox}:
-				      \begin{itemize}[<+->]
-					      \item If you can securely send the key...
-					      \item ...why not just send the message?
-				      \end{itemize}
-				\item \textbf{Historical solutions}:
-				      \begin{itemize}[<+->]
-					      \item Diplomatic pouches
-					      \item Trusted couriers
-					      \item Pre-shared codebooks
-				      \end{itemize}
-				\item \textbf{Modern issue}: Impractical at internet scale
+				\item OTP needs a fresh key as long as the message. How do Alice and Bob share it?
+				\item \textbf{The paradox}: if you can securely send the key\ldots\ why not just send the message?
+				\item \textbf{Historical answer}: share it \emph{in advance}: printed pads (hence the name), couriers, pouches.
+				\item \textbf{Modern problem}: you can't pre-share a pad with every website you'll ever visit.
+				\item Topic 1.4 shrinks the key; topic 1.7 shares it in public.
 			\end{itemize}
 		}
-		\column{0.45\textwidth}{
+		\column{0.4\textwidth}{
 			\begin{center}
 				\begin{tikzpicture}[scale=0.7]
 					\node[circle, draw, minimum size=1cm] (alice) at (0, 0) {Alice};
@@ -762,38 +690,24 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{From theory to practice}
-	\begin{columns}[c]
-		\column{0.5\textwidth}{
-			\begin{itemize}[<+->]
-				\item \textbf{Theory provides foundation}:
-				      \begin{itemize}[<+->]
-					      \item Precise security definitions
-					      \item Mathematical guarantees
-					      \item Clear assumptions
-				      \end{itemize}
-				\item \textbf{Practice reveals challenges}:
-				      \begin{itemize}[<+->]
-					      \item Implementation vulnerabilities
-					      \item Usability constraints
-					      \item Side-channel attacks
-					      \item Human factors
-				      \end{itemize}
-			\end{itemize}
-		}
-		\column{0.5\textwidth}{
-			\begin{center}
-				\begin{tikzpicture}[scale=0.8]
-					\draw[thick, fill=green!20] (-1,0) circle (1.5cm);
-					\node at (-1,0) {Theory};
-					\draw[thick, fill=blue!20] (1.8,0) circle (1.5cm);
-					\node at (1.8,0) {Practice};
-					\node[text width=3cm, align=center] at (0.5,-2.5) {\small \textbf{Sweet spot}: Provably secure \& practically usable};
-					\draw[->, thick, red] (0.4,-1.5) -- (0.4,-0.3);
-				\end{tikzpicture}
-			\end{center}
-		}
-	\end{columns}
+\begin{frame}{What did the proof actually buy us?}
+	\begin{itemize}[<+->]
+		\item \textbf{A checklist for deployment.} Every assumption in the proof is a requirement on whoever implements it: fresh key, uniform key, attacker never tampers. Miss one and you get the attacks from the last section.
+		\item \textbf{Freedom to modify.} We swapped $\oplus$ for addition mod $n$ and knew it was fine; we swapped it for $\land$ and knew it wasn't. Without the proof, both are just ``looks random to me''.
+		\item \textbf{A vocabulary.} OTP is ``secure'' and ``insecure'' at the same time, depending on what you mean. Only precise definitions let us say: secrecy yes, integrity no.
+		\item \textbf{A building block.} Every stream cipher in this course is ``OTP with a fake key''. We will reuse today's proof, not redo it (topic 1.4).
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The provable security mindset}{What we actually did today}
+	\begin{enumerate}[<+->]
+		\item \textbf{Wrote the attack scenario as code.} \textsc{Attack}$(M)$: who picks what, in what order, and what the attacker gets to see.
+		\item \textbf{Stated the goal as a claim about that code.} ``For every $M$, the output is uniform'', or equivalently: indistinguishable from \textsc{Junk}.
+		\item \textbf{Proved it, or found the distinguisher.} XOR: exactly one key per $(M, C)$, so $1/2^n$. AND: $\textsc{Attack}(\bit{0}^n) = \bit{0}^n$, always.
+		\item \textbf{Read the assumptions back as requirements.} Fresh uniform key per message; the attacker only observes.
+	\end{enumerate}
+	\vspace{0.5em}
+	\uncover<+->{\textbf{Next time}: the same recipe with \emph{libraries} instead of a single subroutine, adversaries as \emph{programs}, and a precise definition of ``indistinguishable''.}
 \end{frame}
 
 \begin{frame}[plain]

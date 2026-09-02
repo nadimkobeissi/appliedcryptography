@@ -132,7 +132,7 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Today: The promise, the pitfalls, and the practice}
+\begin{frame}{Today: the promise, the pitfalls, and the practice}
 	\footnotesize
 	\textbf{Part 1 --- The promise: computer-aided cryptography}
 	\begin{itemize}
@@ -142,13 +142,11 @@
 		\item Side channels, constant-time code, and TLS 1.3 designed alongside its proofs
 		\item Signal's key transparency, and the assumption it discharges
 	\end{itemize}
-	\vspace{0.15em}
 	\textbf{Part 2 --- The pitfalls: verification theatre}
 	\begin{itemize}
 		\item Thirteen vulnerabilities I found in ``the formally verified crypto library''
 		\item Five ways verification claims fail, and what separates real assurance from its \textit{appearance}
 	\end{itemize}
-	\vspace{0.15em}
 	\textbf{Part 3 --- The practice: modeling protocols in Verifpal}
 	\begin{itemize}
 		\item The language, the attacker, the five queries
@@ -208,21 +206,22 @@
 \begin{frame}{The problem}
 	\begin{center}
 		\Large
-		Attackers can break designs, exploit bugs, recover secrets via side-channels, or \textbf{any combination}
+		Attackers can break designs, exploit bugs, recover secrets via side channels, or \textbf{any combination}
 	\end{center}
-	\vspace{1em}
+	\vspace{0.7em}
 	\begin{itemize}
-		\item \textbf{Pen-and-paper proofs}: Consider only ``cores,'' still error-prone
-		\item \textbf{Aggressive optimization}: Increases bug risk
-		\item \textbf{Current modus operandi}: A select few experts with rudimentary tools
+		\item \textbf{Pen-and-paper proofs}: the only way to rule out entire classes of attacks, and required for any new standard. But they are tedious, cover only the ``core,'' and their errors go unnoticed for years
+		\item \textbf{Simplified models}: a proof about an idealized protocol misses attacks on the real one
+		\item \textbf{Aggressive optimization}: every hand-tuned line is a chance to get it wrong
+		\item \textbf{Current modus operandi}: a select few experts with rudimentary tools
 	\end{itemize}
-	\vspace{1em}
+	\vspace{0.7em}
 	\begin{center}
 		This approach \textbf{cannot keep pace} with the rate of innovation in cryptography
 	\end{center}
 \end{frame}
 
-\begin{frame}{Enter: Computer-Aided Cryptography (CAC)}
+\begin{frame}{Enter: computer-aided cryptography (CAC)}
 	\begin{itemize}
 		\item Active area of research: \textbf{formal, machine-checkable} approaches to designing, analyzing, and implementing cryptography
 		\item \textbf{Design level}: Tools manage the complexity of security proofs, can reveal subtle flaws
@@ -262,19 +261,9 @@
 		\item Each layer introduces new attack surfaces and unexpected interactions
 		\item \textbf{Result}: Security proofs may not hold in practice!
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Challenges ahead}
-	\begin{itemize}
-		\item CAC risks becoming a \textbf{victim of its own success}
-		\item Trust can be undermined by the difficulty of understanding guarantees and fine-print caveats
-		\item Field is increasingly broad, complex, and rapidly evolving
-		\item \textbf{Post-quantum transition}: New algorithms need verification
-		\item \textbf{Scaling}: Moving from primitives to whole cryptographic systems
-	\end{itemize}
-	\vspace{1em}
+	\vspace{0.5em}
 	\begin{center}
-		\textit{No one has a complete understanding of every facet}
+		\textit{The SoK's own warning: CAC risks becoming a victim of its own success, its guarantees hedged by fine print that nobody reads. Hold that thought until Part 2}
 	\end{center}
 \end{frame}
 
@@ -284,14 +273,14 @@
 	\begin{itemize}
 		\item Developed over years in \textbf{two separate communities}:
 		      \vspace{0.5em}
-		\item \textbf{Symbolic Security} (Formal methods community)
+		\item \textbf{Symbolic security} (formal methods community)
 		      \begin{itemize}
 			      \item Messages are abstract \textbf{symbols}, not bits
 			      \item Cryptographic primitives are \textbf{perfect black boxes}
 			      \item Adversary has \textbf{full network control}: the \textbf{Dolev-Yao model}
 		      \end{itemize}
 		      \vspace{0.5em}
-		\item \textbf{Computational Security} (Cryptography community)
+		\item \textbf{Computational security} (cryptography community)
 		      \begin{itemize}
 			      \item Messages are \textbf{bitstrings} of specific length
 			      \item Encryption is a \textbf{probabilistic algorithm}
@@ -300,7 +289,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Symbolic security: The Dolev-Yao model}
+\begin{frame}{Symbolic security: the Dolev-Yao model}
 	\textbf{Symmetric encryption modeled by:}
 	\begin{itemize}
 		\item Functions: \texttt{Enc} and \texttt{Dec}
@@ -317,7 +306,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Symbolic vs. Computational: Key differences}
+\begin{frame}{Symbolic vs.\ computational: key differences}
 	\begin{center}
 		\begin{tabular}{|l|l|l|}
 			\hline
@@ -329,7 +318,7 @@
 			\hline
 			Security        & All-or-nothing    & Probabilistic bounds           \\
 			\hline
-			Analysis        & Often decidable   & Generally undecidable          \\
+			Automation      & Mostly push-button & Often hand-guided             \\
 			\hline
 			Guarantees      & ``Cannot break''  & ``Hard to break''              \\
 			\hline
@@ -390,24 +379,7 @@
 \end{frame}
 
 \begin{frame}{How protocol models end up, intuitively}
-	\bigimagewithcaption{cas-comparison.png}{Computational models capture a small slice of reality in fine detail; symbolic models capture much more of it, but coarsely. Source: Cas Cremers}
-\end{frame}
-
-\begin{frame}{Why design-level security matters}
-	\begin{itemize}
-		\item Mathematical arguments are the \textbf{only way} to demonstrate security against entire classes of attacks
-		\item Security proofs are \textbf{necessary} for any new standard
-	\end{itemize}
-	\vspace{1em}
-	\textbf{But pen-and-paper arguments are alarmingly fragile:}
-	\begin{enumerate}
-		\item \textbf{Erroneous arguments}: Tedious, error-prone, errors go unnoticed for years
-		\item \textbf{Inappropriate modeling}: Simplified models miss real attacks
-	\end{enumerate}
-	\vspace{0.5em}
-	\begin{center}
-		\textit{CAC tools can detect flaws and manage complexity beyond pen-and-paper reach}
-	\end{center}
+	\bigimagewithcaption[0.96\textwidth]{cas-comparison.png}{Computational models: a small slice of reality, in fine detail. Symbolic models: much more of it, coarsely. Source: Cas Cremers}
 \end{frame}
 
 \begin{frame}{Key features of symbolic analysis tools}
@@ -425,7 +397,14 @@
 \end{frame}
 
 \begin{frame}{Symbolic analysis tools, compared}
-	\bigimagewithcaption{verif-symbolic.png}{The previous slide's features, tool by tool. Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao, and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
+	\begin{center}
+		\vspace{-0.5cm}
+		\includegraphics[width=\textwidth, height=0.7\textheight, keepaspectratio]{images/verif-symbolic.png}\\[0.4em]
+		\begin{minipage}{0.8\textwidth}
+			\centering
+			\usebeamerfont{caption}The previous slide's features, tool by tool. Source: Barbosa et al., SoK: Computer-Aided Cryptography, IEEE S\&P 2021.
+		\end{minipage}
+	\end{center}
 \end{frame}
 
 \begin{frame}{ProVerif: how long real protocols take}
@@ -435,7 +414,7 @@
 				\item \textbf{TLS 1.0}: Verification in seconds to hours
 				\item \textbf{TLS 1.3}: $\sim$1 hour
 				\item \textbf{Signal Protocol}: Minutes to days
-				\item \textbf{Noise Protocol Framework}: Seconds to hours\footnote{Used to be seconds to days, but ProVerif recently was optimized for performance.}
+				\item \textbf{Noise Protocol Framework}: Seconds to hours\footnote{Earlier ProVerif releases took seconds to \textit{days} on the same models; later releases improved performance considerably.}
 			\end{itemize}
 
 			\begin{itemize}
@@ -453,7 +432,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Tamarin: Tackling massive protocols}
+\begin{frame}{Tamarin: tackling massive protocols}
 	\textbf{5G Authentication Key Exchange}: $\sim$5 hours
 	\vspace{0.3em}
 
@@ -471,7 +450,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Game-based security}
+\begin{frame}{Switching sides: game-based security, mechanized}
 	\begin{itemize}
 		\item Probabilistic experiment: ``game'' between challenger and adversary
 		\item Security statement:
@@ -484,9 +463,12 @@
 			      \item Transform step-by-step
 			      \item Reach a game where the success probability is known
 			      \item Bound the probability increase at each step
-			      \item Similar to what we saw in Part 1 of this course!
 		      \end{enumerate}
 	\end{itemize}
+	\vspace{0.5em}
+	\begin{center}
+		\textit{This is the hybrid argument from Part 1 of this course, with a tool checking every hop}
+	\end{center}
 \end{frame}
 
 \begin{frame}{Key features of computational analysis tools}
@@ -510,10 +492,17 @@
 \end{frame}
 
 \begin{frame}{Computational analysis tools, compared}
-	\bigimagewithcaption{verif-computational.png}{The previous slide's dimensions, tool by tool. Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao, and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
+	\begin{center}
+		\vspace{-0.5cm}
+		\includegraphics[width=\textwidth, height=0.7\textheight, keepaspectratio]{images/verif-computational.png}\\[0.4em]
+		\begin{minipage}{0.8\textwidth}
+			\centering
+			\usebeamerfont{caption}The previous slide's dimensions, tool by tool. Source: Barbosa et al., SoK: Computer-Aided Cryptography, IEEE S\&P 2021.
+		\end{minipage}
+	\end{center}
 \end{frame}
 
-\begin{frame}{CryptoVerif: Automated protocol analysis}
+\begin{frame}{CryptoVerif: automated protocol analysis}
 	\begin{center}
 		\Large
 		Best for highly automated protocol analysis
@@ -537,7 +526,7 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{\fstar: Beyond the cryptographic core}
+\begin{frame}{\fstar: beyond the cryptographic core}
 	\begin{center}
 		\Large
 		Best for analyzing full protocols and systems
@@ -699,21 +688,21 @@
 		\Large
 		High-level languages? Too slow.
 	\end{center}
-	\vspace{0.5em}
+	\vspace{0.2em}
 	\textbf{Reality of high-performance crypto:}
 	\begin{itemize}
 		\item C for ``portable'' performance
 		\item Assembly for ultimate speed
 		\item Platform-specific optimizations everywhere
 	\end{itemize}
-	\vspace{0.5em}
+	\vspace{0.2em}
 	\textbf{The cost:}
 	\begin{itemize}
 		\item Memory safety becomes a critical concern
 		\item Bugs can leak secrets (Heartbleed)
 		\item Verification becomes much harder
 	\end{itemize}
-	\vspace{0.3em}
+	\vspace{0.1em}
 	\begin{center}
 		\textit{The fastest crypto still needs manual optimization; compilers can't match expert assembly}
 	\end{center}
@@ -762,7 +751,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Verified crypto in production}
+\begin{frame}{Why \haclstar landed in Firefox}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{\haclstar in Firefox's NSS:}
@@ -780,17 +769,15 @@
 				\item API compatibility (drop-in)
 				\item Industry collaboration
 			\end{enumerate}
-			\vspace{0.5em}
-			\textbf{Fiat Crypto}: Powers Google's BoringSSL
 		\end{column}
 	\end{columns}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{Billions of users rely on verified crypto every day}
+		\textit{Proofs open the door. Performance parity and a drop-in API get you through it}
 	\end{center}
 \end{frame}
 
-\begin{frame}{Input languages: Many flavors}
+\begin{frame}{Input languages: many flavors}
 	\textbf{Verification-oriented languages:}
 	\begin{itemize}
 		\item \textbf{Dafny}: High-level imperative
@@ -805,16 +792,11 @@
 	\end{itemize}
 	\textbf{And, increasingly, Rust:}
 	\begin{itemize}
-		\item \textbf{hax}, \textbf{Verus}, \textbf{Aeneas}: Verify Rust via extraction to provers (hax returns in Part 2\ldots)
+		\item \textbf{hax} and \textbf{Aeneas} extract Rust into a prover (\fstar, Rocq, Lean); \textbf{Verus} checks annotated Rust directly with an SMT solver (hax returns in Part 2\ldots)
 	\end{itemize}
-	\vspace{0.3em}
-	\begin{center}
-		Source-level verification needs a verified compiler for guarantees;\\
-		assembly-level verification gives direct machine-code guarantees
-	\end{center}
 \end{frame}
 
-\begin{frame}{Curve25519: Verified implementations win}
+\begin{frame}{Curve25519: verified implementations win}
 	\textbf{C implementations:}
 	\begin{itemize}
 		\item \textbf{hacl} (verified) $\rightarrow$ Beats donna64 (fast unverified C)
@@ -839,32 +821,9 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{The verification effort spectrum}
-	\begin{center}
-		\begin{tikzpicture}[scale=0.8, font=\sffamily\small]
-			\draw[->, thick, cipherdark] (0,0) -- (10.4,0) node[right] {Performance};
-			\draw[->, thick, cipherdark] (0,0) -- (0,4.4) node[above] {Verification effort};
-
-			\draw[dashed, black!30] (2,0) -- (2,1);
-			\draw[dashed, black!30] (5,0) -- (5,2);
-			\draw[dashed, black!30] (8,0) -- (8,3.5);
-
-			\node[rounded corners=2pt, draw=ciphersecondary, fill=ciphersecondary!20, thick, inner sep=2mm] at (2,1) {High-level};
-			\node[rounded corners=2pt, draw=cipheraccent!80!black, fill=cipheraccent!25, thick, inner sep=2mm] at (5,2) {C code};
-			\node[rounded corners=2pt, draw=red!70!black, fill=red!15, thick, inner sep=2mm] at (8,3.5) {Assembly};
-		\end{tikzpicture}
-	\end{center}
-	\vspace{0.5em}
-	\begin{center}
-		Higher performance = Higher verification effort
-
-		\textit{But even at the assembly level, verification is now practical}
-	\end{center}
-\end{frame}
-
 \section{Deployment-Level Security: Side Channels}
 
-\begin{frame}{Side channels: The hidden attack surface}
+\begin{frame}{Side channels: the hidden attack surface}
 	\begin{center}
 		\Large
 		Design-level security assumes attackers only see inputs and outputs.
@@ -925,25 +884,23 @@
 \end{frame}
 
 \begin{frame}{The pessimist case}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\textbf{BearSSL's constant-time conditional move, written around 2015:}\footnote{\url{https://appliedcryptography.page/paper/\#pessimist-case}}
-			\begin{flushleft}
-				\texttt{mask1 = -(uint64\_t)(((x | -x) >> 31) \textasciicircum{} 1); mask2 = \textasciitilde mask1;}\\
-				\texttt{a[i] = (mask1 \& a[i]) | (mask2 \& b[i]);}
-			\end{flushleft}
-			{\scriptsize\textit{Builds an all-ones or all-zeros mask from the secret \texttt{x}, then blends \texttt{a} and \texttt{b} word by word: every word is touched, whatever \texttt{x} is.}}
+	\textbf{BearSSL's constant-time conditional move, written around 2015:}\footnote{\url{https://appliedcryptography.page/paper/\#pessimist-case}}
+	\begin{flushleft}
+		\texttt{mask1 = -(uint64\_t)(((x | -x) >> 31) \textasciicircum{} 1); mask2 = \textasciitilde mask1;}\\
+		\texttt{a[i] = (mask1 \& a[i]) | (mask2 \& b[i]);}
+	\end{flushleft}
+	{\scriptsize\textit{Builds an all-ones or all-zeros mask from the secret \texttt{x}, then blends \texttt{a} and \texttt{b} word by word: every word is touched, whatever \texttt{x} is.}}
+	\vspace{0.4em}
 
-			\textbf{What Clang 18.1.3 emits for it today, at \texttt{-O3}:}
-			\begin{flushleft}
-				\texttt{test ecx, ecx} \quad \texttt{je .LBB0\_2} \quad \texttt{jmp \textbf{memcpy@PLT}}
-			\end{flushleft}
-			{\scriptsize\textit{Clang saw through the arithmetic: it now \textbf{branches on the secret} and calls \texttt{memcpy}, so timing and cache behavior reveal \texttt{x}: exactly the leak the mask existed to prevent.}}
-			\begin{itemize}
-				\item \textit{Not a compiler defect.} Finding that shortcut is exactly its job
-			\end{itemize}
-		\end{column}
-	\end{columns}
+	\textbf{What Clang 18.1.3 emits for it today, at \texttt{-O3}:}
+	\begin{flushleft}
+		\texttt{test ecx, ecx} \quad \texttt{je .LBB0\_2} \quad \texttt{jmp \textbf{memcpy@PLT}}
+	\end{flushleft}
+	{\scriptsize\textit{Clang saw through the arithmetic: it now \textbf{branches on the secret} and calls \texttt{memcpy}, so timing and cache behavior reveal \texttt{x}: exactly the leak the mask existed to prevent.}}
+	\vspace{0.4em}
+	\begin{center}
+		\textit{Not a compiler defect. Finding that shortcut is exactly its job}
+	\end{center}
 \end{frame}
 
 \begin{frame}{Why constant-time is hard}
@@ -993,53 +950,30 @@
 \end{frame}
 
 \begin{frame}{Formal leakage models}
-	\textbf{Three levels of increasing strictness:}
-	\vspace{0.5em}
+	\textbf{Three levels of strictness. Each fixes what the attacker is assumed to observe:}
 	\begin{enumerate}
-		\item \textbf{Program counter (PC) model}: Leaks control flow only
-		      \begin{itemize}
-			      \item Protects against simple timing attacks
-		      \end{itemize}
-		\item \textbf{Constant-time model}: Leaks PC + memory addresses
-		      \begin{itemize}
-			      \item Protects against cache and timing attacks
-			      \item Most common in practice
-		      \end{itemize}
-		\item \textbf{Size-respecting model}: Leaks PC + memory + operand sizes
-		      \begin{itemize}
-			      \item Protects against variable-time instruction attacks
-		      \end{itemize}
+		\item \textbf{Program counter (PC) model}: control flow only. Covers simple timing attacks
+		\item \textbf{Constant-time model}: PC + memory addresses. Covers cache attacks; the usual target
+		\item \textbf{Size-respecting model}: PC + memory + operand sizes. Covers variable-time instructions
 	\end{enumerate}
-	\vspace{0.5em}
-	\begin{center}
-		Security = Leakage independent of secrets (\textbf{observational non-interference})
-	\end{center}
-\end{frame}
-
-\begin{frame}{CAC for side-channel security}
-	\begin{center}
-		\Large
-		What if we could \textbf{prove} constant-time?
-	\end{center}
-	\vspace{0.5em}
-	\textbf{CAC tools can:}
+	\vspace{0.4em}
+	\textbf{Security = leakage independent of secrets} (\textbf{observational non-interference}), and a tool can check it for \textit{all} inputs, not just the ones a test suite tried
+	\vspace{0.4em}
 	\begin{itemize}
-		\item Automatically check constant-time compliance for all possible inputs
-		\item Find subtle violations
-		\item Even repair non-compliant code
-		\item Provide formal guarantees
-	\end{itemize}
-	\vspace{0.5em}
-	\textbf{Caveats:}
-	\begin{itemize}
-		\item Proofs are relative to the leakage model
-		\item Hardware may leak more than modeled (e.g., Spectre)
-		\item Physical attacks bypass all software protections
+		\item \textbf{Caveat 1}: the proof is relative to the model. Hardware may leak more (Spectre)
+		\item \textbf{Caveat 2}: physical attacks bypass all software protections (next slides)
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Verified implementations, compared}
-	\bigimagewithcaption{verif-implementations.png}{Source: Manuel Barbosa, Gilles Barthe, Karthikeyan Bhargavan, Bruno Blanchet, Cas Cremers, Kevin Liao, and Bryan Parno, SoK: Computer-Aided Cryptography, IEEE Symposium on Security and Privacy, 2021.}
+	\begin{center}
+		\vspace{-0.5cm}
+		\includegraphics[width=\textwidth, height=0.7\textheight, keepaspectratio]{images/verif-implementations.png}\\[0.4em]
+		\begin{minipage}{0.8\textwidth}
+			\centering
+			\usebeamerfont{caption}Source: Barbosa et al., SoK: Computer-Aided Cryptography, IEEE S\&P 2021.
+		\end{minipage}
+	\end{center}
 \end{frame}
 
 \begin{frame}{Hardware attacks: TEE.fail (2025)}
@@ -1073,7 +1007,7 @@
 
 \section{Case Study: Lessons from TLS}
 
-\begin{frame}{TLS before 1.3: Reactive patching}
+\begin{frame}{TLS before 1.3: reactive patching}
 	\begin{center}
 		\Large
 		One of the most important deployments of cryptography
@@ -1086,6 +1020,9 @@
 	\begin{enumerate}
 		\item Attack found $\rightarrow$ Quick patch $\rightarrow$ Long-term fix $\rightarrow$ New attack
 	\end{enumerate}
+	\vspace{0.2em}
+	\textit{The Lucky 13 patching cycle from the last section is one lap of this loop}
+
 	\vspace{0.3em}
 	\textbf{When academics looked at real TLS:} BEAST, CRIME, Lucky 13, POODLE, Logjam\ldots
 	\vspace{0.3em}
@@ -1130,29 +1067,13 @@
 		\item Small changes (key separation, consistent tagging) dramatically simplify analysis
 		\item Negligible performance impact, huge verification benefit
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{Impact beyond TLS}
+	\vspace{0.3em}
 	\begin{center}
-		\Large
-		TLS 1.3 proved formal methods can scale
-	\end{center}
-	\vspace{0.5em}
-	\textbf{The new playbook for protocol design:}
-	\begin{enumerate}
-		\item Involve formal methods experts early
-		\item Design with verification in mind
-		\item Use tools throughout development
-		\item Update proofs with each draft
-		\item Fix issues before standardization
-	\end{enumerate}
-	\vspace{0.5em}
-	\begin{center}
-		From ``ship and patch'' to ``verify and ship''
+		\textit{From ``ship and patch'' to ``verify and ship''}
 	\end{center}
 \end{frame}
 
-\begin{frame}{Part 1 recap: The promise}
+\begin{frame}{Part 1 recap: the promise}
 	\begin{itemize}
 		\item \textbf{Design level}: Symbolic (Verifpal, ProVerif, Tamarin) and computational (CryptoVerif, \fstar, EasyCrypt) tools find real flaws and prove real theorems
 		\item \textbf{Implementation level}: Verified code now matches or beats hand-optimized code (\haclstar, Fiat, EverCrypt)
@@ -1339,7 +1260,7 @@
 
 \begin{frame}{The verification boundary, visually}
 	\begin{center}
-		\resizebox{!}{6.5cm}{%
+		\resizebox{!}{6.3cm}{%
 			\definecolor{cI}{HTML}{D35400}%
 			\definecolor{cII}{HTML}{2471A3}%
 			\definecolor{cIII}{HTML}{B7950B}%
@@ -1349,7 +1270,7 @@
 			\definecolor{cCore}{HTML}{1A7A4C}%
 			\begin{tikzpicture}[font=\sffamily, >=latex]
 
-				% == LAYER 1 — Protocol / Application Logic (Type II) ==
+				% == LAYER 1 -- Protocol / Application Logic (Type II) ==
 				\node[draw=cII!50!black, thick, fill=cII!6, rounded corners=3pt,
 					minimum width=7.2cm, minimum height=1.4cm] (L1) at (0, 7.6) {};
 				\node[font=\sffamily\scriptsize\bfseries, text=cII!80!black] at (0, 8.1) {Protocol / Application Logic};
@@ -1365,7 +1286,7 @@
 				\node[font=\sffamily\scriptsize\itshape, text=cII!65!black, anchor=west, align=left] at (3.9, 7.8) {\textit{Type\,II}};
 				\node[font=\sffamily\tiny, text=cII!55!black, anchor=west, align=left] at (3.9, 7.45) {Unverified\\[-1pt]protocol logic};
 
-				% == LAYER 2 — Unverified / Admitted Implementation (Type IV) ==
+				% == LAYER 2 -- Unverified / Admitted Implementation (Type IV) ==
 				\node[draw=cIV!50!black, thick, fill=cIV!6, rounded corners=3pt,
 					minimum width=7.2cm, minimum height=1.8cm] (L2) at (0, 5.55) {};
 				\node[font=\sffamily\scriptsize\bfseries, text=cIV!80!black] at (0, 6.2) {Unverified / Admitted Implementation};
@@ -1405,7 +1326,7 @@
 					minimum width=6.6cm, minimum height=0.9cm] (impl) at (0, 3.3) {};
 				\node[font=\sffamily\scriptsize, text=cCore!65!black] at (0, 3.3) {Verified Implementation};
 
-				% V5 (Type III) — straddles the boundary edge
+				% V5 (Type III) -- straddles the boundary edge
 				\node[circle, draw=cIII!70!black, fill=cIII!20, thick,
 					minimum size=5mm, font=\sffamily\scriptsize\bfseries, inner sep=0pt] (v5) at (3.8, 4.3) {V5};
 				\node[font=\sffamily\tiny, text=cIII!70!black, anchor=north west] at (4.1, 3.95) {Spec gap};
@@ -1438,7 +1359,7 @@
 				\node[font=\sffamily\scriptsize\itshape, text=cV!65!black, anchor=west, align=left] at (3.9, 1.6) {\textit{Type\,V}};
 				\node[font=\sffamily\tiny, text=cV!55!black, anchor=west, align=left] at (3.9, 1.2) {Spec errors \&\\[-1pt]false proofs};
 
-				% == LAYER 3 — Platform Abstractions (Type I) ==
+				% == LAYER 3 -- Platform Abstractions (Type I) ==
 				\node[draw=cI!50!black, thick, fill=cI!6, rounded corners=3pt,
 					minimum width=7.2cm, minimum height=1.2cm] (L3) at (0, -0.7) {};
 				\node[font=\sffamily\scriptsize\bfseries, text=cI!80!black] at (0, -0.3) {Platform Abstractions};
@@ -1477,7 +1398,7 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Type I: Platform abstractions the verifier takes on faith}
+\begin{frame}{Type I: platform abstractions the verifier takes on faith}
 	\small
 	Verified code calls platform intrinsics marked \texttt{\#[hax\_lib::opaque]}: the verifier takes their specification as an \textbf{axiom} and never looks at the implementation.
 
@@ -1486,7 +1407,6 @@
 		\item The \texttt{\_vxarq\_u64} wrapper falls back to software on ARM64 chips without SHA-3 instructions, and that fallback was wrong
 		\item The axiom was correct; the implementation behind it was not. Found independently by Filippo Valsorda
 	\end{itemize}
-	\vspace{0.2em}
 	\textbf{V2: Cross-backend endianness bug}
 	\begin{itemize}
 		\item The portable backend serialized ML-KEM state in a different byte order than the SIMD backends
@@ -1495,7 +1415,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Type II: Unverified protocol logic}
+\begin{frame}{Type II: unverified protocol logic}
 	\begin{center}
 		\Large
 		The primitives are used correctly. The protocol around them has bugs.
@@ -1518,7 +1438,7 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Type III: Specification incompleteness}
+\begin{frame}{Type III: specification incompleteness}
 	\begin{center}
 		\Large
 		The code is provably correct against its spec. The spec omits a real requirement.
@@ -1537,7 +1457,7 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Type IV: Unverified wrapper logic}
+\begin{frame}{Type IV: unverified wrapper logic}
 	\begin{center}
 		\Large
 		The verified core is correct. The API layer around it introduces defects.
@@ -1563,7 +1483,7 @@
 		\texttt{if vector\_infinity\_norm\_exceeds(response, \textbf{(2 << GAMMA1\_EXPONENT)} - BETA)}
 	\end{flushleft}
 	\begin{itemize}
-		\item \texttt{2 << GAMMA1\_EXPONENT} is $2\gamma_1$, not $\gamma_1$, so the bound is doubled. The response is already within $\gamma_1 - \beta$, and the check always passes
+		\item \texttt{2 << GAMMA1\_EXPONENT} is $2\gamma_1$, not $\gamma_1$, so the bound is doubled. Any $z$ the signature encoding can express has norm at most $\gamma_1$, below the doubled bound, so the check can never fire
 	\end{itemize}
 	\vspace{0.4em}
 	\textbf{V9: the hint bound is checked one iteration late}
@@ -1584,7 +1504,7 @@
 		\Large
 		Everything so far lived outside the boundary. These four live inside it.
 	\end{center}
-	\vspace{0.7em}
+	\vspace{0.4em}
 	\textbf{Three mechanisms let a false proof survive:}
 	\begin{enumerate}
 		\item \textbf{Wrong specifications.} A formal spec is a mathematical statement. Proving a wrong statement buys nothing
@@ -1593,7 +1513,7 @@
 	\end{enumerate}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{Four concrete examples follow, two of each kind}
+		\textit{Four examples follow: two wrong specs, one admitted proof, one false axiom}
 	\end{center}
 \end{frame}
 
@@ -1722,7 +1642,7 @@
 	\end{center}
 \end{frame}
 
-\section{How Other Projects Handle the Boundary}
+\section{Getting the Boundary Right}
 
 \begin{frame}{How AWS does it differently}
 	\footnotesize
@@ -1755,8 +1675,6 @@
 		\textit{Thompson's question from 1984 has not gone away: \fstar dispatches its proofs through Z3, and Z3 has bugs like anything else. The trusted computing base is never zero, but the proofs can at least be run.}
 	\end{center}
 \end{frame}
-
-\section{Recommendations and Lessons}
 
 \begin{frame}{Five recommendations}
 	\begin{enumerate}
@@ -1797,6 +1715,31 @@
 
 		Most projects sit at the middle two. Their claims should say so.
 	\end{center}
+\end{frame}
+
+\begin{frame}{Discussion time}
+	\begin{columns}[c]
+		\begin{column}{0.68\textwidth}
+			\begin{enumerate}
+				\item \textbf{Unverified code, or code with admitted proofs?}
+				      \begin{itemize}
+					      \item Both ship the same binary. Is the admitted proof strictly worse, as this lecture claims, or at least a spec someone wrote down?
+				      \end{itemize}
+				\item \textbf{Who is ``formally verified'' for?}
+				      \begin{itemize}
+					      \item Google's ML-KEM integrators can read a Makefile. Signal's users cannot. Should the phrase come with mandatory fine print?
+				      \end{itemize}
+				\item \textbf{You are the maintainer.}
+				      \begin{itemize}
+					      \item A researcher files thirteen reports against your flagship claim. What disclosure process would you have wanted, from both sides?
+				      \end{itemize}
+				\item \textbf{Your bank's TLS stack: libcrux or OpenSSL?}
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.32\textwidth}
+			\imagewithcaption{spamton-sez.png}{}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Part 2 recap: the pitfalls}
@@ -1863,7 +1806,7 @@
 			\hline
 			Termination          & Not guaranteed     & Not guaranteed     & Always                 \\
 			\hline
-			Equivalence props.\  & Yes                & Yes                & No                     \\
+			Observational equiv.\ & Yes               & Yes                & No                     \\
 			\hline
 			Output               & Clause derivations & Interactive proof  & Numbered causal steps  \\
 			\hline
@@ -1879,46 +1822,18 @@
 	\small
 	\textbf{The barrier is rarely the theory. It is the modeling language.}
 	\begin{itemize}
-		\item ProVerif's applied $\pi$-calculus reads naturally if you already know the ML family that inspired it
-		\item It asks you to reason about Horn clauses over a network rather than messages between Alice and Bob, and recovering an attack from its output can take an afternoon
-		\item Tamarin is more expressive still, and Part 1 told you what TLS 1.3 cost there: a week and 100GB of RAM
+		\item ProVerif's applied $\pi$-calculus reads naturally if you already know the ML family behind it
+		\item Its output is Horn-clause derivations, not Alice-and-Bob messages; recovering the attack takes an afternoon
+		\item Tamarin is more expressive still; Part 1 told you what TLS 1.3 cost there: a week and 100GB of RAM
 	\end{itemize}
 	\vspace{0.3em}
 	\textbf{Verifpal inverts the usual research order: user first, verification capability second.}
 	\begin{itemize}
 		\item Explicit principals with their own state, knowledge and computations
 		\item Primitives ship with the tool, so you cannot define AEAD incorrectly
-		\item Attacks are printed as numbered causal steps, in the names your model chose
-		\item The binary is also a language server, with extensions for VS Code, Neovim and Zed
+		\item Attacks print as numbered steps in your model's names, each \textbf{re-executed against real principal state}: a solver bug costs a missed attack, never an invented one
+		\item Two sessions per principal by default, so replays come for free
 	\end{itemize}
-\end{frame}
-
-\begin{frame}{What you give up, and what you get}
-	\small
-	\begin{columns}[t]
-		\begin{column}{0.48\textwidth}
-			\textbf{Given up}
-			\begin{itemize}
-				\item No user-defined primitives or equational theories
-				\item No observational equivalence, so no vote privacy or anonymity in the ProVerif sense
-				\item Bounded sessions: two per principal by default, sixteen at most
-				\item A passing query means ``this search found no attack'', which is weaker than a proof
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.48\textwidth}
-			\textbf{Gained}
-			\begin{itemize}
-				\item \textbf{Attack soundness}: every reported attack was re-executed against real principal state before being printed
-				\item Analysis terminates unconditionally
-				\item Cross-session attacks (replays, redirected nonces) without duplicating principals by hand
-				\item Models short enough to read in a lecture
-			\end{itemize}
-		\end{column}
-	\end{columns}
-	\begin{center}
-		\footnotesize
-		\textit{A solver bug costs you a missed attack. It cannot manufacture a false one.} Designing for production? Cross-check with ProVerif and Tamarin.
-	\end{center}
 \end{frame}
 
 \section{The Verifpal Language}
@@ -1998,13 +1913,13 @@ queries[
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.7em}
+	\vspace{0.4em}
 	\begin{center}
 		The same model under both attackers answers two different questions.
 
-		\vspace{0.3em}
+		\vspace{0.1em}
 
-		\textit{Under a passive attacker, the model on the last slide passes both queries. Under an active one, it fails both.}
+		\textit{Under a passive attacker, the last slide's model passes both queries. Under an active one, confidentiality holds, but authentication fails: an \texttt{e1} from another run decrypts just as well under the shared \texttt{k}.}
 	\end{center}
 \end{frame}
 
@@ -2026,7 +1941,7 @@ queries[
 	\end{center}
 \end{frame}
 
-\begin{frame}{Four ways a constant comes into existence}
+\begin{frame}{Four ways a constant enters a model}
 	\begin{itemize}
 		\item \texttt{knows public c0} \quad Everyone has it, the attacker included
 		\item \texttt{knows private m1} \quad Prior knowledge, not shared with the attacker. \textbf{Long-term}: the same value in every session and every run
@@ -2228,7 +2143,7 @@ principal Alice[leaks a2] // only now does a2 escape
 \begin{frame}[fragile]{The ``hello world'' of protocol modeling}
 	\begin{columns}[t]
 		\begin{column}{0.53\textwidth}
-			\begin{vpmodel}{simple.vp}
+			\begin{vpmodel}[top=0.5mm, bottom=0.5mm]{simple.vp}
 				\begin{lstlisting}[basicstyle=\vpcode]
 attacker[active]
 principal Alice[
@@ -2441,7 +2356,7 @@ FAIL x authentication? Client -> Server: signed
 \begin{frame}[fragile]{Fix one: guard the key, check the signature}
 	\begin{columns}[t]
 		\begin{column}{0.5\textwidth}
-			\begin{vpmodel}{Two characters}
+			\begin{vpmodel}{Two edits}
 				\begin{lstlisting}
 Server -> Client: [gs], proof
 ...
@@ -2493,7 +2408,7 @@ FAIL x 1 of 2 queries failed.
 \end{frame}
 
 \begin{frame}[fragile]{Why the default is two sessions}
-	\begin{vpresult}{The same model, one session per principal}
+	\begin{vpresult}{The model after fix one, run with one session per principal}
 		\begin{lstlisting}
 $ verifpal verify challengeresponse.vp --sessions 1
 
@@ -2577,7 +2492,7 @@ PASS + All 2 queries pass.
 	\end{center}
 \end{frame}
 
-\section{Phases in Practice}
+\section{Phases and Weakening Assumptions in Practice}
 
 \begin{frame}[fragile]{Forward secrecy, measured}
 	\begin{columns}[t]
@@ -2635,11 +2550,9 @@ PASS + confidentiality? m1
 		\end{column}
 	\end{columns}
 	\begin{center}
-		\scriptsize Both leak Bob's long-term key \texttt{b} in phase 1. On the left it decrypts everything he ever received. On the right it signs nothing that was not already sent, because \texttt{k} was never derived from it.
+		\scriptsize Both leak Bob's long-term key \texttt{b} in phase 1. On the left it decrypts everything he ever received. On the right, the leaked key could sign new things, but the phase-0 run is over, and \texttt{k} never depended on \texttt{b}.
 	\end{center}
 \end{frame}
-
-\section{Declared Weakening Assumptions}
 
 \begin{frame}[fragile]{When the primitive itself is the assumption}
 	\footnotesize
@@ -2810,7 +2723,7 @@ DH_KEX[weak]: discrete log is a property of the key,
 			\begin{itemize}
 				\item An attack found under a declared assumption is genuine \textit{under that assumption}, and individual trace steps name the assumption they rest on
 				\item Annotations reach past their own call site, and an \texttt{Info} notice names every occurrence they cover: \textbf{equivalent terms} share an annotation, and \texttt{forgeable} attaches to the \textbf{scheme under one secret}. A signature scheme that has lost authenticity has lost it for every message
-				\item An assumption taking force after the protocol ends is an error, not a no-op
+				\item An assumption scheduled for a phase the model never declares is an error, not a no-op
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -2866,11 +2779,12 @@ DH_KEX[weak]: discrete log is a property of the key,
 				\item Manual: \url{https://static.verifpal.com/manual.pdf}, with case studies on Signal, Scuttlebutt and a post-quantum handshake
 				\item Paper: \textit{Verifpal Seven Years Later}, ePrint 2026/1654
 			\end{itemize}
-			\vspace{0.3em}
+			\vspace{0.1em}
 			\textbf{Try}
 			\begin{itemize}
-				\item Model a protocol you already use: a password reset flow, a device pairing handshake, an API token exchange
+				\item Model something you already use: a password reset or an API login
 				\item Ask for confidentiality and authentication first. Add \texttt{phase[1]} once those hold
+				\item Shipping? Cross-check in ProVerif/Tamarin
 			\end{itemize}
 		\end{column}
 	\end{columns}

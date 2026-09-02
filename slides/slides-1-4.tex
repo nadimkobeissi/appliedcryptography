@@ -18,9 +18,22 @@
 	\titlepage
 \end{frame}
 
+\begin{frame}{Today: three kinds of fake randomness}
+	\begin{itemize}
+		\item In 1.3 we defined security as \textbf{indistinguishability} between a real library and an ideal one, and learned to prove it with hybrids and bad events.
+		\item Today we meet the three objects that all of symmetric cryptography is built from. Each is a ``fake'' version of an ideal that is too big to exist:
+		      \begin{itemize}
+			      \item \textbf{Pseudorandom generator (PRG)}: a short seed that looks like a long uniform string. Stream ciphers.
+			      \item \textbf{Pseudorandom function (PRF)}: a short key that looks like a giant dictionary of uniform values. HMAC.
+			      \item \textbf{Pseudorandom permutation (PRP)}: a short key that looks like a uniformly shuffled, invertible table. Block ciphers such as AES.
+		      \end{itemize}
+		\item Along the way: how to break bad constructions (and the golden rule behind every break), how to build a PRP out of a PRF (Feistel), why DES died and why AES hasn't.
+	\end{itemize}
+\end{frame}
+
 \section{Pseudorandom Generators}
 
-\begin{frame}{Limitations of One-Time Pad}
+\begin{frame}{Limitations of the one-time pad}
 	\definitionbox{The Key Length Problem}{
 		One-time pad is not a particularly useful encryption scheme in practice.
 	}
@@ -57,15 +70,15 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Requirements for Key Expansion}
+\begin{frame}{Requirements for key expansion}
 	\begin{itemize}
 		\item Our method would need to be \textbf{deterministic}, so that both the sender and receiver can expand their key in the same way (to encrypt/decrypt).
 		\item Its output distribution would need to be \textbf{uniform}, since that is a crucial property for the security of OTP.
 		\item Unfortunately, it's \textbf{not possible} to achieve both of these properties simultaneously.
 		      \begin{itemize}
-			      \item Suppose the expansion method is a deterministic function $G: \bits^n \rightarrow \bits^{n+\ell}$.
+			      \item Suppose the expansion method is a deterministic function $G: \bits^\lambda \rightarrow \bits^{\lambda+\ell}$.
 			      \item Its outputs are $\ell$ bits longer than its inputs!
-			      \item There are $2^{n+\ell}$ strings of length $n+\ell$ but only (at most) $2^n$ possible outputs of $G$.
+			      \item There are $2^{\lambda+\ell}$ strings of length $\lambda+\ell$ but only (at most) $2^\lambda$ possible outputs of $G$.
 			      \item So the outputs of $G$ can never induce a uniform distribution.
 		      \end{itemize}
 	\end{itemize}
@@ -81,14 +94,14 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\sslinked{
-				\sslibrary{}{prg-real}{
+				\sslibrary{G}{prg-real}{
 					\sslibrarysubroutine{prg.sample}{}{
 						$S \twoheadleftarrow \bits^\lambda$\\
 						return $G(S)$
 					}{1}
 				}{1}
 			}{\approxeq}{
-				\sslibrary{}{prg-rand}{
+				\sslibrary{G}{prg-rand}{
 					\sslibrarysubroutine{prg.sample}{}{
 						$Y \twoheadleftarrow \bits^{\lambda+\ell}$\\
 						return $Y$
@@ -103,8 +116,9 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item In cryptography, something is \textbf{pseudorandom} if it is indistinguishable from a uniform distribution.\footnote{The Oxford English Dictionary defines the prefix pseudo- as ``apparently but not really.''}
-				\item We need to invent some \textbf{``secure pseudorandom generator'' (PRG)} $G$ that takes a \textbf{seed} $S$ and ends up being indistinguishable from a true uniform distribution when thrown into a library:
+				\item The picture: $G$ sends the $2^\lambda$ seeds to (at most) $2^\lambda$ points of the much larger space $\bits^{\lambda+\ell}$: the dots on the left.
+				\item Only a $2^{-\ell}$ fraction of all strings can ever come out of $G$, so the two distributions are wildly different in principle.
+				\item ``Secure PRG'' means that no efficient program can tell the dots from the whole square anyway.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -117,21 +131,21 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item We don't know how to make PRGs, or even whether they exist.
+				\item We don't know how to make PRGs, or even whether they exist. (Proving that one exists would prove P $\neq$ NP.)
 				\item So we simply invent functions that we think act close enough to PRGs (when subjected to statistical and mathematical analysis).
 				\item The concept of \textbf{computational indistinguishability} with \textbf{negligible difference} is again useful here!
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\sslinked{
-				\sslibrary{}{prg-real}{
+				\sslibrary{G}{prg-real}{
 					\sslibrarysubroutine{prg.sample}{}{
 						$S \twoheadleftarrow \bits^\lambda$\\
 						return $G(S)$
 					}{1}
 				}{1}
 			}{\approxeq}{
-				\sslibrary{}{prg-rand}{
+				\sslibrary{G}{prg-rand}{
 					\sslibrarysubroutine{prg.sample}{}{
 						$Y \twoheadleftarrow \bits^{\lambda+\ell}$\\
 						return $Y$
@@ -142,7 +156,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{One-time secrecy of an SKE}
+\begin{frame}{One-time secrecy of an SKE}{Reminder from 1.3}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\definitionbox{One-time Secrecy for SKE}{
@@ -179,14 +193,14 @@
 		\begin{column}{0.5\textwidth}
 			If:
 			\sslinked{
-				\sslibrary{}{prg-real}{
+				\sslibrary{G}{prg-real}{
 					\sslibrarysubroutine{prg.sample}{}{
 						$S \twoheadleftarrow \bits^\lambda$\\
 						return $G(S)$
 					}{1}
 				}{1}
 			}{\approxeq}{
-				\sslibrary{}{prg-rand}{
+				\sslibrary{G}{prg-rand}{
 					\sslibrarysubroutine{prg.sample}{}{
 						$Y \twoheadleftarrow \bits^{\lambda+\ell}$\\
 						return $Y$
@@ -222,7 +236,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item Assume that $G$ is a secure PRG.
+				\item Assume that $G: \bits^\lambda \rightarrow \bits^{2\lambda}$ is a secure PRG.
 				\item Is \func{H}{S} secure?
 			\end{itemize}
 			\sssubroutine{H}{S}{
@@ -257,7 +271,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.45\textwidth}
 			\begin{itemize}
-				\item<1-2> Assume that $G$ is a secure PRG.
+				\item<1-2> Assume that $G: \bits^\lambda \rightarrow \bits^{2\lambda}$ is a secure PRG.
 				\item<1-2> Is \func{H}{S} secure?
 				\item<1-2> \textbf{No}:
 				\item<1-2> \prob{\prog{}\link\lib{H}{prg-real} \Rightarrow \texttt{true}} $ = 1$
@@ -289,58 +303,57 @@
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
-				\item Used in WEP, SSL/TLS, and other protocols.
-				\item Simple PRG that takes a seed and produces a keystream.
-				\item Basic operation:
-				      \begin{itemize}
-					      \item Initialize the S-box with a permutation of bytes 0--255.
-					      \item Use the key to scramble the S-box.
-					      \item Generate pseudorandom bytes iteratively.
-				      \end{itemize}
-				\item Several weaknesses found over time:
-				      \begin{itemize}
-					      \item Statistical biases in initial output.
-					      \item Correlation between key and output bytes.
-					      \item Considered cryptographically broken today.
-				      \end{itemize}
+				\item Designed by Ron Rivest at RSA Security in 1987; leaked in 1994.
+				\item The most widely deployed stream cipher ever: WEP, SSL/TLS, Kerberos, PDF, Office\ldots
+				\item A PRG in exactly our sense: the key (40--2048 bits, usually 128) is the seed; the output is an endless \textbf{keystream} of bytes, XORed with the message.
+				\item The whole state: a permutation $S$ of the 256 byte values and two indices.
+				\item Its keystream is biased. Topic 2.2 tells the whole story.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
-			\alertbox{Security Warning}{
-				RC4 is presented as a historical example only. It should not be used in new applications due to known weaknesses. Modern alternatives include ChaCha20.
+			\alertbox{Spoiler}{
+				RC4 is dead: banned from TLS in 2015 (RFC 7465). We study it because it is tiny, because it carried much of the web for two decades, and because its slow death is a lesson in itself.
 			}
-			\vspace{1em}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{RC4 PRG Algorithm}
+\begin{frame}{RC4's keystream generator}
 	\begin{columns}[c]
-		\begin{column}{0.55\textwidth}
+		\begin{column}{0.6\textwidth}
 			\begin{itemize}
-				\item RC4 generates a pseudorandom stream of bytes used to encrypt data.
-				\item After key setup (which initializes array S), the algorithm produces keystream bytes.
-				\item Each output byte requires simple operations:
+				\item \textbf{Key setup} (not shown) scrambles $S = (0, 1, \ldots, 255)$ with the key.
+				\item Each keystream byte then costs two additions, a swap and a lookup:
 				      \begin{itemize}
-					      \item Array index calculations.
-					      \item Array value swapping.
-					      \item Modular addition.
+					      \item $i \coloneq i + 1$, \ $j \coloneq j + S[i]$ \ (mod 256),
+					      \item swap $S[i]$ and $S[j]$,
+					      \item output $S[S[i] + S[j]]$.
 				      \end{itemize}
-				\item Fast implementation in software.
-				\item Despite simplicity, it has several cryptographic weaknesses.
+				\item Ten lines of Python, much faster than DES in software: that is why it was everywhere.
+				\item Swapping keeps $S$ a permutation. Remember this when we get to PRPs.
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.45\textwidth}
-			\imagewithcaption{rc4-prga-py.png}{RC4 PRG implementation in Python.}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption{rc4-prga-py.png}{RC4's keystream generation (PRGA) in Python.}
 		\end{column}
 	\end{columns}
 \end{frame}
 
 \section{Pseudorandom Functions}
 
+\begin{frame}{From one long string to a giant dictionary}
+	\begin{itemize}
+		\item A PRG hands us \textbf{one long string} $G(S)$, in order. To use its millionth block, we must first generate the 999,999 blocks before it.
+		\item What Alice and Bob would really like to share is a \textbf{dictionary} $L$ with $2^n$ entries, each a fresh uniform $m$-bit value, that either of them can look up in any order: $L[X]$.
+		\item Storing it is hopeless: for $n = m = 128$ that is $2^{128}$ entries of 128 bits each.
+		\item A \textbf{pseudorandom function} is a compressed dictionary. The $\lambda$-bit key $K$ stands in for the whole table, and $F(K, X)$ computes entry $X$ on demand.
+		\item Security goal: without $K$, nobody can tell the compressed dictionary $F(K, \cdot)$ from a real one filled with uniform entries.
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{Pseudorandom function: definition}
 	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.48\textwidth}
 			\definitionbox{Pseudorandom Function (PRF)}{
 				A function $F: \bits^\lambda \times \bits^n \rightarrow \bits^m$ is a secure pseudorandom function (PRF) if the following two libraries are indistinguishable:
 			}
@@ -350,7 +363,7 @@
 				\item $\lambda$ is the key size and hence the security parameter.
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.52\textwidth}
 			\sslinked{
 				\sslibrary{F}{prf-real}{
 					$K \twoheadleftarrow \bits^\lambda$\\[1em]
@@ -372,121 +385,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{PRG versus PRF: Key Differences}
-	\begin{columns}[t]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{PRG (Pseudorandom Generator)}:
-				      \begin{itemize}
-					      \item Takes a short seed, produces a longer output.
-					      \item Generates the entire output as a monolithic string.
-					      \item $G: \bits^\lambda \rightarrow \bits^{\lambda+\ell}$
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-		\pause
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{PRF (Pseudorandom Function)}:
-				      \begin{itemize}
-					      \item Maps inputs to pseudorandom outputs.
-					      \item Provides access to individual blocks of output.
-					      \item Can generate output for any input on demand.
-					      \item $F: \bits^\lambda \times \bits^n \rightarrow \bits^m$
-				      \end{itemize}
-				\item PRFs enable ``selective access'' to pseudorandom values without generating the entire sequence.
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{$\mathsf{PRF}: F_{k}\colon X \rightarrow Y$}
-	\begin{columns}[c]
-		\begin{column}{0.4\textwidth}
-			\begin{itemize}
-				\item We want the mapping to be:
-				      \begin{itemize}
-					      \item One-way
-					      \item ``Randomized''
-					      \item Relations between inputs not reflected in outputs
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.8\textwidth}
-			\begin{tikzpicture}[scale=0.38]
-				% Define colors
-				\definecolor{domaingreen}{RGB}{102, 170, 68}
-				\definecolor{rangegreen}{RGB}{170, 187, 136}
-				\definecolor{circlecolor}{RGB}{235, 137, 85}
-				\definecolor{purplearrow}{RGB}{160, 78, 160}
-				\definecolor{redarrow}{RGB}{237, 50, 36}
-
-				% Input space (domain) X - made square
-				\draw[dashed, thick, domaingreen, fill=domaingreen]
-				(0,0) rectangle (8,8);
-				\node[text width=6.5cm, align=center, font=\normalsize]
-				at
-				(4,-0.8)
-				{Size: infinite!};
-				\node[font=\small] at (4,9) {Input space (domain) $X$};
-
-				% Output (range) Y - made square - moved more to the right
-				\draw[thick, rangegreen, fill=rangegreen] (15,2) rectangle (20,7);
-				\node[text width=4cm, align=center, font=\normalsize]
-				at
-				(17.5,1.2)
-				{Size: fixed};
-				\node[font=\small] at (17.5,8.5) {Output (range) $Y$};
-				% Input dots - adjusted positions for square domain
-				\filldraw[circlecolor] (2,7) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(2,7) -- (16.2,6.4);
-				\filldraw[circlecolor] (16.2,6.4) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (3,6) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(3,6) -- (18.6,5.3);
-				\filldraw[circlecolor] (18.6,5.3) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (2,5) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(2,5) -- (16.8,4.2);
-				\filldraw[circlecolor] (16.8,4.2) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (4,3.5) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(4,3.5) -- (18.4,3.2);
-				\filldraw[circlecolor] (18.4,3.2) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (2,2) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, thick, purplearrow]
-				(2,2) -- (17.1,2.7);
-				\filldraw[circlecolor] (17.1,2.7) circle (0.3);
-				\pause
-
-				\filldraw[circlecolor] (3,1) circle (0.3);
-				\pause
-				\draw[-{Stealth[length=6mm, width=4mm]}, ultra thick, redarrow]
-				(3,1) -- (16.8,4.2);
-				\node[redarrow, font=\scriptsize\bfseries, rotate=14]
-				at
-				(10,3)
-				{Collisions are inevitable};
-			\end{tikzpicture}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{PRFs in the real world: hash functions}
+\begin{frame}{Cousins of PRFs: hash functions (reminder from 1.1)}
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}
 			\definitionbox{Hash Function Properties}{
@@ -516,10 +415,10 @@
 			\begin{itemize}
 				\item \textbf{Collision resistance}: computationally infeasible to find
 				      two different inputs producing the same hash.
-				\item \textbf{Preimage resistance}: given the output of a hash function,
-				      it is computationally infeasible to reconstruct the original input.
+				\item \textbf{Preimage resistance}: given an output of a hash function,
+				      it is computationally infeasible to find \emph{any} input that hashes to it.
 				\item \textbf{Second preimage resistance}: given an input and an output,
-				      it's computationally infeasible to find another different input
+				      it's computationally infeasible to find a different input
 				      producing the same output.
 			\end{itemize}
 		\end{column}
@@ -628,7 +527,7 @@
 					      Y_1 \oplus Y_2 & = G(K) \oplus X_1 \oplus G(K) \oplus X_2 \\
 					                     & = X_1 \oplus X_2
 				      \end{align*}
-				\item With a truly random function, $Y_1 \oplus Y_2 = X_1 \oplus X_2$ would be extremely unlikely!
+				\item With a truly random function, $Y_1 \oplus Y_2 = X_1 \oplus X_2$ would hold with probability only $2^{-m}$.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -693,8 +592,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item When inputs share the same first half, the corresponding outputs of $H$ have a common term $F(K_1, X_1)$.
-				\item Consider querying four inputs: $A\|B$, $A\|B'$, $A'\|B$, $A'\|B'$ (where $A \neq A'$ and $B \neq B'$)
+				\item Query four inputs $A\|B$, $A\|B'$, $A'\|B$, $A'\|B'$ (with $A \neq A'$, $B \neq B'$). Outputs that share a first half share the term $F(K_1, \cdot)$:
 				      \begin{align*}
 					      Y_1 & = F(K_1, A) \oplus F(K_2, B)   \\
 					      Y_2 & = F(K_1, A) \oplus F(K_2, B')  \\
@@ -705,32 +603,51 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item If we XOR $Y_1 \oplus Y_2$, the $F(K_1, A)$ terms cancel out.
-				\item Similarly, $Y_3 \oplus Y_4$ causes $F(K_1, A')$ to cancel:
-				      \begin{itemize}
-					      \item $Y_1 \oplus Y_2 = F(K_2, B) \oplus F(K_2, B')$
-					      \item $Y_3 \oplus Y_4 = F(K_2, B) \oplus F(K_2, B')$
-				      \end{itemize}
-				\item So $\prob{Y_1 \oplus Y_2 = Y_3 \oplus Y_4} = 1$.
-				\item With a truly random function, $\prob{Y_1 \oplus Y_2 = Y_3 \oplus Y_4} = \frac{1}{2^m}$ (extremely unlikely!)
-				\item Also, given $Y_{1\cdots3}$, we can predict $Y_4$!
+				\item XOR the pairs that share a first half, and the $F(K_1, \cdot)$ terms cancel:
+				      \begin{align*}
+					      Y_1 \oplus Y_2 & = F(K_2, B) \oplus F(K_2, B') \\
+					      Y_3 \oplus Y_4 & = F(K_2, B) \oplus F(K_2, B')
+				      \end{align*}
+				\item So $\prob{Y_1 \oplus Y_2 = Y_3 \oplus Y_4} = 1$ for $H$, but only $\frac{1}{2^m}$ for a truly random function.
+				\item Also, given $Y_1, Y_2, Y_3$, we can predict $Y_4 = Y_1 \oplus Y_2 \oplus Y_3$!
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The Golden Rule of PRFs}
+\begin{frame}{The golden rule of PRFs}
 	\definitionbox{The Golden Rule of PRFs}{
 		If a PRF $F$ is being used as a component in a larger construction $H$, then security usually rests on how well $H$ can ensure distinct inputs to $F$.
 	}
 	\begin{itemize}[<+->]
-		\item When analyzing PRF security, focus on input uniqueness.
-		\item Repeated inputs to a PRF create exploitable patterns.
-		\item Even if $F$ is secure, $H$ can be broken if it causes $F$ to receive duplicate inputs.
-		\item Don't try to directly distinguish $F$'s outputs from uniform.
-		\item Instead, exploit how $H$ uses $F$ incorrectly.
-		\item Find input patterns that force collisions within $F$.
+		\item Both attacks forced $F$ to see the \textbf{same input twice}, then XORed it away.
+		\item On new inputs a secure PRF is fresh coin flips; on a repeated input it is a deterministic function, and that is what gets exploited.
+		\item Attacking a construction: don't fight $F$ (you can't), hunt for the input collision that $H$ lets you cause. Designing one: give every call to $F$ a fresh input. That is what nonces and counters are for.
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Your turn: secure PRF or not?}
+	\begin{columns}[c]
+		\begin{column}{0.52\textwidth}
+			Let $F: \bits^\lambda \times \bits^n \rightarrow \bits^n$ be a secure PRF, and write $\overline{X}$ for the bitwise complement of $X$. Which of these are secure PRFs?
+			\begin{enumerate}
+				\item $H_1(K, X) = F(K, X) \oplus X$
+				\item $H_2(K, X) = F(K, X) \oplus F(K, \overline{X})$
+				\item $H_3(K, X_1 \| X_2) = F(K, X_1) \oplus F(K, X_2)$
+				\item $H_4(K_1 \| K_2, X) = F(K_1, X) \oplus F(K_2, X)$
+			\end{enumerate}
+			Golden rule: can you make $F$ see the same input twice?
+		\end{column}
+		\pause
+		\begin{column}{0.48\textwidth}
+			\begin{itemize}
+				\item $H_1$: \textbf{secure}. Each new $X$ gets a fresh uniform $F(K, X)$, and XORing a known value into a uniform value keeps it uniform.
+				\item $H_2$: \textbf{broken}. $H_2(K, X) = H_2(K, \overline{X})$, always.
+				\item $H_3$: \textbf{broken}. $H_3(K, X \| X) = 0^n$, always.
+				\item $H_4$: \textbf{secure}. $F(K_1, X)$ alone already makes every output fresh, whatever $F(K_2, X)$ does.
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \section{Pseudorandom Permutations}
@@ -749,18 +666,13 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item \textbf{Example}: simple substitution cipher. Each letter maps to another letter:
+				\item \textbf{Example}: a simple substitution cipher maps each letter to another letter:
 				      \begin{align*}
-					      a & \mapsto g,\quad b \mapsto a,\quad c \mapsto r \\
-					      d & \mapsto b,\quad e \mapsto l,\quad \ldots
+					      a & \mapsto g,\quad b \mapsto a,\quad c \mapsto r, \\
+					      d & \mapsto b,\quad e \mapsto l,\quad g \mapsto d,\quad \ldots
 				      \end{align*}
-				\item Under this permutation:
-				      \begin{itemize}
-					      \item ``cabbage'' $\mapsto$ ``rgaagdl''
-					      \item ``rgaagdl'' $\mapsto$ ``cabbage''
-				      \end{itemize}
-				\item This mapping is reversible because it's a permutation over $\{a,\ldots,z\}$.
-				\item Each letter appears exactly once in the output alphabet.
+				\item ``cabbage'' $\mapsto$ ``rgaagdl''. Under the \textbf{inverse} (table read right to left), ``rgaagdl'' $\mapsto$ ``cabbage''.
+				\item This works because it's a permutation over $\{a,\ldots,z\}$: each letter appears exactly once in the output alphabet.
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -769,7 +681,7 @@
 \begin{frame}{PRF versus PRP}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Pseudorandom Function (HMAC-SHA-2)}
+			\textbf{Pseudorandom Function (HMAC-SHA-256)}
 			\begin{itemize}
 				\item \textbf{Input} is arbitrary-length,
 				\item \textbf{Output} is fixed-length, looks random (as discussed
@@ -793,39 +705,31 @@
 
 \begin{frame}{PRPs compared to PRFs}
 	\begin{itemize}[<+->]
-		\item \textbf{Invertibility}: PRPs can be efficiently inverted given the key.
+		\item \textbf{Invertibility}: given $K$, we can compute $F^{-1}(K, \cdot)$ efficiently. That is what lets a block cipher decrypt.
+		\item \textbf{No collisions}: distinct inputs give distinct outputs. A random \emph{function} on $n$ bits starts repeating outputs after about $2^{n/2}$ queries (the birthday bound from 1.3); a permutation never does.
+		\item That is the \emph{only} difference an adversary can see. \textbf{PRF/PRP switching lemma}: a secure PRP is also a secure PRF as long as far fewer than $2^{n/2}$ queries are made. After $q$ queries, the two ideal worlds differ by at most $q(q-1)/2^{n+1}$.
 		      \begin{itemize}
-			      \item Enable both encryption and decryption.
-			      \item Can recover input from output (and vice versa).
+			      \item For AES ($n = 128$): treating it as a PRF is safe until about $2^{64}$ blocks.
 		      \end{itemize}
-		\item \textbf{No range collision}: Each input maps to a unique output.
-		      \begin{itemize}
-			      \item Provides perfect input recovery.
-			      \item Reduces vulnerability to collision-based attacks, birthday attacks, and certain forms of differential cryptanalysis.
-		      \end{itemize}
-		\item \textbf{Versatility}: A secure PRP can be used as a PRF.
-		      \begin{itemize}
-			      \item ``Downgrade'' trivially by ignoring inverse capability.
-			      \item The reverse is not true (PRF $\rightarrow$ PRP conversion is complex).
-		      \end{itemize}
+		\item The other direction is not free: turning a PRF into a PRP takes real work. That is the Feistel construction, coming up.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{$\mathsf{PRF}: F_{k}\colon X \rightarrow Y$}
 	\begin{columns}[c]
-		\begin{column}{0.4\textwidth}
+		\begin{column}{0.34\textwidth}
 			\begin{itemize}
 				\item We want the mapping to be:
 				      \begin{itemize}
-					      \item One-way
+					      \item Many-to-one: there is no inverse (and we don't need one)
 					      \item ``Randomized''
 					      \item Relations between inputs not reflected in outputs
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
 
-		\begin{column}{0.8\textwidth}
-			\begin{tikzpicture}[scale=0.38]
+		\begin{column}{0.66\textwidth}
+			\begin{tikzpicture}[scale=0.34]
 				% Define colors
 				\definecolor{domaingreen}{RGB}{102, 170, 68}
 				\definecolor{rangegreen}{RGB}{170, 187, 136}
@@ -836,10 +740,10 @@
 				% Input space (domain) X - made square
 				\draw[dashed, thick, domaingreen, fill=domaingreen]
 				(0,0) rectangle (8,8);
-				\node[text width=6.5cm, align=center, font=\normalsize]
+				\node[text width=4.5cm, align=center, font=\normalsize]
 				at
 				(4,-0.8)
-				{Size: infinite!};
+				{Size: $2^n$ (can be huge)};
 				\node[font=\small] at (4,9) {Input space (domain) $X$};
 
 				% Output (range) Y - made square - moved more to the right
@@ -847,7 +751,7 @@
 				\node[text width=4cm, align=center, font=\normalsize]
 				at
 				(17.5,1.2)
-				{Size: fixed};
+				{Size: $2^m$ (fixed)};
 				\node[font=\small] at (17.5,8.5) {Output (range) $Y$};
 				% Input dots - adjusted positions for square domain
 				\filldraw[circlecolor] (2,7) circle (0.3);
@@ -900,7 +804,7 @@
 
 \begin{frame}{$\mathsf{PRP}: F_{k}\colon X \rightarrow X$}
 	\begin{columns}[c]
-		\begin{column}{0.4\textwidth}
+		\begin{column}{0.34\textwidth}
 			\begin{itemize}
 				\item \textbf{Bijective} (two-way)
 				      \begin{itemize}
@@ -913,8 +817,8 @@
 			\end{itemize}
 		\end{column}
 
-		\begin{column}{0.8\textwidth}
-			\begin{tikzpicture}[scale=0.38]
+		\begin{column}{0.66\textwidth}
+			\begin{tikzpicture}[scale=0.34]
 				% Define colors
 				\definecolor{domaingreen}{RGB}{102, 170, 68}
 				\definecolor{rangegreen}{RGB}{102, 170, 68}
@@ -924,18 +828,18 @@
 				% Input space (domain) X - made square
 				\draw[dashed, thick, domaingreen, fill=domaingreen]
 				(0,0) rectangle (8,8);
-				\node[text width=6.5cm, align=center, font=\normalsize]
+				\node[text width=4.5cm, align=center, font=\normalsize]
 				at
 				(4,-0.8)
-				{Size: fixed};
+				{Size: $2^n$};
 				\node[font=\normalsize] at (4,9) {Input space (domain) $X$};
 
 				% Output (range) Y - made square, same size as domain, moved left
 				\draw[thick, rangegreen, fill=rangegreen] (12,0) rectangle (20,8);
-				\node[text width=6.5cm, align=center, font=\normalsize]
+				\node[text width=4.5cm, align=center, font=\normalsize]
 				at
 				(16,-0.8)
-				{Size: fixed};
+				{Size: $2^n$ (the same set)};
 				\node[font=\normalsize] at (16,9) {Output (range) $X$};
 				% Input dots - adjusted positions for square domain
 				\filldraw[circlecolor] (2,7) circle (0.3);
@@ -1000,11 +904,11 @@
 		\begin{column}{0.5\textwidth}
 			\begin{center}
 				\sslibrary{F}{prp-rand}{
-					$L \coloneq$ [\ ]\\[1em]
+					$L \coloneq$ [\ ],\ $\mathcal{Y} \coloneq \emptyset$\\[1em]
 					\sslibrarysubroutine{prp.query}{X}{
 						if $L[X]$ undefined:\\
-						\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
-						\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+						\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{Y}$\\
+						\quad $\mathcal{Y} \coloneq \mathcal{Y} \cup \{Y\}$\\
 						\quad $L[X] \coloneq Y$\\
 						return $L[X]$
 					}{1}
@@ -1021,21 +925,21 @@
 				\item While the PRF (on the left) just picks random outputs for each input\ldots
 				\item The PRP (on the right) must ensure outputs are never repeated:
 				      \begin{itemize}
-					      \item $\mathcal{y}$ tracks all outputs used so far.
-					      \item $\setminus$ means ``set difference'' - pick from values not in $\mathcal{y}$
-					      \item $\cup$ means ``set union'' - add the new value to $\mathcal{y}$
+					      \item $\mathcal{Y}$ tracks all outputs used so far.
+					      \item $\setminus$ means ``set difference'': pick from the values not yet in $\mathcal{Y}$.
+					      \item $\cup$ means ``set union'': add the new value to $\mathcal{Y}$.
 				      \end{itemize}
-				\item This ensures each output appears exactly once - the definition of a permutation.
+				\item This ensures each output appears exactly once: the definition of a permutation.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{center}
 				\sslibrary{F}{prp-rand}{
-					$L \coloneq$ [\ ]\\[1em]
+					$L \coloneq$ [\ ],\ $\mathcal{Y} \coloneq \emptyset$\\[1em]
 					\sslibrarysubroutine{prp.query}{X}{
 						if $L[X]$ undefined:\\
-						\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
-						\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+						\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{Y}$\\
+						\quad $\mathcal{Y} \coloneq \mathcal{Y} \cup \{Y\}$\\
 						\quad $L[X] \coloneq Y$\\
 						return $L[X]$
 					}{1}
@@ -1045,49 +949,16 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Pseudorandom function: definition}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\definitionbox{Pseudorandom Function (PRF)}{
-				A function $F: \bits^\lambda \times \bits^n \rightarrow \bits^m$ is a secure pseudorandom function (PRF) if the following two libraries are indistinguishable:
-			}
-			\begin{itemize}
-				\item $n$ is the input length of the PRF.
-				\item $m$ is the output length of the PRF.
-				\item $\lambda$ is the key size and hence the security parameter.
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\sslinked{
-				\sslibrary{F}{prf-real}{
-					$K \twoheadleftarrow \bits^\lambda$\\[1em]
-					\sslibrarysubroutine{prf.query}{X}{
-						return $F(K, X)$
-					}{1}
-				}{1}
-			}{\approxeq}{
-				\sslibrary{F}{prf-rand}{
-					$L \coloneq$ [\ ]\\[1em]
-					\sslibrarysubroutine{prf.query}{X}{
-						if $L[X]$ undefined:\\
-						\quad $L[X] \twoheadleftarrow \bits^m$\\
-						return $L[X]$
-					}{1}
-				}{1}
-			}
-		\end{column}
-	\end{columns}
-\end{frame}
-
 \begin{frame}{Pseudorandom permutation: definition}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\definitionbox{Pseudorandom Permutation (PRP)}{
-				A keyed permutation $F^{\pm}$ is a secure pseudorandom permutation (PRP) if the following two libraries are indistinguishable:
+				A keyed function $F: \bits^\lambda \times \bits^n \rightarrow \bits^n$ whose every $F(K, \cdot)$ is a permutation with an efficient inverse is a secure PRP if these libraries are indistinguishable:
 			}
 			\begin{itemize}
-				\item $n$ is the input length of the PRP. Also the output length!
-				\item $\lambda$ is the key size and hence the security parameter.
+				\item $n$ is the input \emph{and} output length; $\lambda$ is the key size and hence the security parameter.
+				\pause
+				\item \lib{F}{prp-rand} doesn't scale to the real world. We need practical stand-ins for it.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1097,53 +968,18 @@
 					\sslibrarysubroutine{prp.query}{X}{
 						return $F(K, X)$
 					}{1}
-				}{1}
+				}{0.9}
 			}{\approxeq}{
 				\sslibrary{F}{prp-rand}{
-					$L \coloneq$ [\ ]\\[1em]
+					$L \coloneq$ [\ ],\ $\mathcal{Y} \coloneq \emptyset$\\[1em]
 					\sslibrarysubroutine{prp.query}{X}{
 						if $L[X]$ undefined:\\
-						\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
-						\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+						\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{Y}$\\
+						\quad $\mathcal{Y} \coloneq \mathcal{Y} \cup \{Y\}$\\
 						\quad $L[X] \coloneq Y$\\
 						return $L[X]$
 					}{1}
-				}{1}
-			}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Pseudorandom permutation: definition}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\definitionbox{Pseudorandom Permutation (PRP)}{
-				A keyed permutation $F^{\pm}$ is a secure pseudorandom permutation (PRP) if the following two libraries are indistinguishable:
-			}
-			\begin{itemize}
-				\item We obviously can't use \lib{F}{prp-rand} in the real world.
-				\item It doesn't scale, so we need practical approximate alternatives.
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\sslinked{
-				\sslibrary{F}{prp-real}{
-					$K \twoheadleftarrow \bits^\lambda$\\[1em]
-					\sslibrarysubroutine{prp.query}{X}{
-						return $F(K, X)$
-					}{1}
-				}{1}
-			}{\approxeq}{
-				\sslibrary{F}{prp-rand}{
-					$L \coloneq$ [\ ]\\[1em]
-					\sslibrarysubroutine{prp.query}{X}{
-						if $L[X]$ undefined:\\
-						\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
-						\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
-						\quad $L[X] \coloneq Y$\\
-						return $L[X]$
-					}{1}
-				}{1}
+				}{0.9}
 			}
 		\end{column}
 	\end{columns}
@@ -1183,15 +1019,15 @@
 		      \begin{itemize}
 			      \item $X_{i-1} = X_{i+1} \oplus F_{i}(X_{i})$
 		      \end{itemize}
-		\item $F_i$ itself does not need to have an inverse - both the forward and inverse directions of the Feistel cipher evaluate $F_i$ in the forward direction! $\qed$
+		\item $F_i$ itself does not need to have an inverse: both the forward and inverse directions of the Feistel cipher evaluate $F_i$ in the forward direction! $\qed$
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Building a permutation through Feistel ciphers}{Inversion}
+\begin{frame}{Running a Feistel cipher backwards}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item $\mathbb{F}^{-1}$ is the \textbf{inversion}, allowing Feistel ciphers to function as PRPs:
+				\item $\mathbb{F}^{-1}$ runs the rounds \textbf{backwards}: anyone who knows the round functions can undo $\mathbb{F}$:
 				      \begin{center}
 					      \sssubroutine{$\mathbb{F}^{-1}$}{X_{r}\|X_{r+1}}{
 						      for $i = r$ \hl{down to} $1$:\\
@@ -1210,22 +1046,18 @@
 \begin{frame}{Forward and backward on one slide}{Just in case it's helpful}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{center}
-				\sssubroutine{$\mathbb{F}$}{X_{0}\|X_{1}}{
-					for $i = 1$ to $r$:\\
-					\quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(X_{i})$\\
-					return $X_{r}\|X_{r+1}$
-				}{1.2}
-			\end{center}
+			\sssubroutine{$\mathbb{F}$}{X_{0}\|X_{1}}{
+				for $i = 1$ to $r$:\\
+				\quad $X_{i+1} \coloneq X_{i-1} \oplus F_{i}(X_{i})$\\
+				return $X_{r}\|X_{r+1}$
+			}{1}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{center}
-				\sssubroutine{$\mathbb{F}^{-1}$}{X_{r}\|X_{r+1}}{
-					for $i = r$ down to $1$:\\
-					\quad $X_{i-1} \coloneq X_{i+1} \oplus F_{i}(X_{i})$\\
-					return $X_{0}\|X_{1}$
-				}{1.2}
-			\end{center}
+			\sssubroutine{$\mathbb{F}^{-1}$}{X_{r}\|X_{r+1}}{
+				for $i = r$ down to $1$:\\
+				\quad $X_{i-1} \coloneq X_{i+1} \oplus F_{i}(X_{i})$\\
+				return $X_{0}\|X_{1}$
+			}{1}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1236,7 +1068,7 @@
 			\begin{itemize}
 				\item Let's add a key in there. Wow, encryption!
 				\item $K_{1\cdots r}$ is called the \textbf{key schedule}.
-				\item If each round function $F_i$ uses a distinct key $K_i$, this increases the security of the Feistel network against certain attacks.
+				\item Why must the round keys differ? Next slide.
 				\item Using a PRF as each round function $F_i$ grounds the security of the Feistel cipher in the security of the PRF.
 			\end{itemize}
 		\end{column}
@@ -1252,28 +1084,28 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Meet-in-the-middle attacks on Feistel ciphers}{Why use a key schedule and not the same key?}
+\begin{frame}{Why a key schedule? The same key in every round is fatal}
 	\begin{columns}[c]
-		\begin{column}{0.65\textwidth}
+		\begin{column}{0.6\textwidth}
 			\begin{itemize}
-				\item Using the \textbf{same key} for all rounds creates significant vulnerabilities.
-				\item A meet-in-the-middle attack can break an $r$-round Feistel cipher with complexity $< 2^{|K|}$.
-				\item The attack works by computing partial encryptions from both ends:
-				      \begin{enumerate}
-					      \item Forward: Compute halfway through encryption.
-					      \item Backward: Compute halfway through decryption.
-					      \item Look for ``meeting points'' in the middle.
-				      \end{enumerate}
-				\item With identical round functions, the effective security may be only \textbf{half} the number of rounds.
+				\item Decryption is encryption with the round functions in \textbf{reverse order} (previous slides).
+				\item Same $F(K, \cdot)$ in every round? Then reversing changes nothing: the cipher is its own inverse, up to swapping the halves.
+				\item Distinguisher: encrypt $A\|B$ to get $Y_1\|Y_2$, then encrypt $Y_2\|Y_1$: out comes $B\|A$, every time. An encryption oracle is now a decryption oracle.
+				\item This really happened: DES's four \textbf{weak keys} make all 16 round keys identical, so $\mathsf{DES}_K(\mathsf{DES}_K(M)) = M$.
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.35\textwidth}
+		\begin{column}{0.4\textwidth}
+			\sssubroutine{$\mathbb{F}$}{K,\ X_0\|X_1}{
+				for $i = 1$ to $r$:\\
+				\quad $X_{i+1} \coloneq X_{i-1} \oplus F(K, X_{i})$\\
+				return $X_{r}\|X_{r+1}$
+			}{1}
 			\begin{center}
-				\sssubroutine{$\mathbb{F}$}{K,\ X_0\|X_1}{
-					for $i = 1$ to $r$:\\
-					\quad $X_{i+1} \coloneq X_{i-1} \oplus F(K, X_{i})$\\
-					return $X_{r}\|X_{r+1}$
-				}{1}
+				\ssprogram{}{
+					$Y_1\|Y_2 \coloneq \func{prp.query}{A\|B}$\\
+					$Z_1\|Z_2 \coloneq \func{prp.query}{Y_2\|Y_1}$\\
+					return $Z_1\|Z_2 \stackrel{?}{=} B\|A$
+				}{0.8}
 			\end{center}
 		\end{column}
 	\end{columns}
@@ -1319,11 +1151,11 @@
 					}{0.8}
 				}{\cancel{\approxeq}}{
 					\sslibrary{\mathbb{F}}{prp-rand}{
-						$L \coloneq$ [\ ]\\[1em]
+						$L \coloneq$ [\ ],\ $\mathcal{Y} \coloneq \emptyset$\\[1em]
 						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
 							if $L[X]$ undefined:\\
-							\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
-							\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+							\quad $Y \twoheadleftarrow \bits^{2n} \ \setminus \ \mathcal{Y}$\\
+							\quad $\mathcal{Y} \coloneq \mathcal{Y} \cup \{Y\}$\\
 							\quad $L[X] \coloneq Y$\\
 							return $L[X]$
 						}{1}
@@ -1375,45 +1207,46 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{However, a 3+ round Feistel cipher is fine!}
-	\begin{center}
-		\sslinked{
-			\sslinked{
-				\ssprogram{}{
-					$Y_1\|Y_2 = \func{prp.query}{A\|B}$\\
-					$Y^{'}_1\|Y^{'}_2 = \func{prp.query}{A^{'}\|B}$\\
-					return $Y_1 \oplus Y^{'}_1 \stackrel{?}{=} A \oplus A^{'}$
-				}{0.7}
-			}{\link}{
-				\sslibrary{\mathbb{F}}{prp-real}{
-					$K_1\|K_2 \twoheadleftarrow \bits^{2\lambda}$\\[1em]
-					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-						$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
-						$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
-						return $X_{2}\|X_{3}$
-					}{1}
-				}{0.7}
-			}
-		}{\cancel{\approxeq}}{
-			\sslinked{
-				\ssprogram{}{
-					$Y_1\|Y_2 = \func{prp.query}{A\|B}$\\
-					$Y^{'}_1\|Y^{'}_2 = \func{prp.query}{A^{'}\|B}$\\
-					return $Y_1 \oplus Y^{'}_1 \stackrel{?}{=} A \oplus A^{'}$
-				}{0.7}
-			}{\link}{
-				\sslibrary{\mathbb{F}}{prp-real}{
-					$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
-					\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
-						$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
-						$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
-						$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
-						return $X_{3}\|X_{4}$
-					}{1}
-				}{0.7}
-			}
-		}
-	\end{center}
+\begin{frame}{However, with 3 rounds the attack fails}
+	\begin{columns}[c]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item Add a third round and output $X_3\|X_4$ instead of $X_2\|X_3$.
+				\item Our attack dies: the value it exploited, $X_2 = A \oplus F(K_1, B)$, is no longer output. It only appears \emph{inside} $F(K_2, \cdot)$ and $F(K_3, \cdot)$.
+				\item Is that enough for a secure PRP, or is there a cleverer attack?
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\begin{center}
+				\sslinked{
+					\ssprogram{}{
+						$Y_1\|Y_2 = \func{prp.query}{A\|B}$\\
+						$Y^{'}_1\|Y^{'}_2 = \func{prp.query}{A^{'}\|B}$\\
+						return $Y_1 \oplus Y^{'}_1 \stackrel{?}{=} A \oplus A^{'}$
+					}{0.8}
+				}{\link}{
+					\sslibrary{\mathbb{F}}{prp-real}{
+						$K_1\|K_2\|K_3 \twoheadleftarrow \bits^{3\lambda}$\\[1em]
+						\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X_0\|X_1}{
+							$X_{2} \coloneq X_{0} \oplus F(K_1, X_1)$\\
+							$X_{3} \coloneq X_{1} \oplus F(K_2, X_2)$\\
+							$X_{4} \coloneq X_{2} \oplus F(K_3, X_3)$\\
+							return $X_{3}\|X_{4}$
+						}{1}
+					}{0.8}
+				}
+			\end{center}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Luby and Rackoff: three rounds suffice}
+	\begin{itemize}[<+->]
+		\item \textbf{Luby and Rackoff (1988)} proved it:\footnote{\url{https://appliedcryptography.page/paper/\#luby-rackoff}} if $F$ is a secure PRF, then the 3-round Feistel cipher is a secure PRP.
+		\item With 4 rounds it stays secure even against an adversary who may also query $\mathbb{F}^{-1}$ (a \textbf{strong} PRP, which is what a block cipher used for decryption needs).
+		\item The proof is a bad-event argument in the style of 1.3. The bad event: two queries collide on their $X_2$ value or on their $X_3$ value. Over $q$ queries that has probability about $q^2/2^n$, and so does the adversary's advantage.
+		\item So with a good round function, three rounds turn a PRF into a PRP. Real ciphers use many more (DES: 16) because their round functions are nowhere near ideal PRFs.
+	\end{itemize}
 \end{frame}
 
 \iffalse
@@ -1439,11 +1272,11 @@
 						}{0.8}
 					}{\approxeq}{
 						\sslibrary{\mathbb{F}}{prp-rand}{
-							$L \coloneq$ [\ ]\\[1em]
+							$L \coloneq$ [\ ],\ $\mathcal{Y} \coloneq \emptyset$\\[1em]
 							\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
 								if $L[X]$ undefined:\\
-								\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
-								\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+								\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{Y}$\\
+								\quad $\mathcal{Y} \coloneq \mathcal{Y} \cup \{Y\}$\\
 								\quad $L[X] \coloneq Y$\\
 								return $L[X]$
 							}{1}
@@ -1519,11 +1352,11 @@
 						}{0.8}
 					}{\approxeq}{
 						\sslibrary{\mathbb{F}}{prp-rand}{
-							$L \coloneq$ [\ ]\\[1em]
+							$L \coloneq$ [\ ],\ $\mathcal{Y} \coloneq \emptyset$\\[1em]
 							\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
 								if $L[X]$ undefined:\\
-								\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
-								\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+								\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{Y}$\\
+								\quad $\mathcal{Y} \coloneq \mathcal{Y} \cup \{Y\}$\\
 								\quad $L[X] \coloneq Y$\\
 								return $L[X]$
 							}{1}
@@ -1924,11 +1757,11 @@
 						}{0.7}
 					}{\approxeq}{
 						\sslibrary{\mathbb{F}}{prp-rand}{
-							$L \coloneq$ [\ ]\\[1em]
+							$L \coloneq$ [\ ],\ $\mathcal{Y} \coloneq \emptyset$\\[1em]
 							\sslibrarysubroutine{$\text{prp.query}_{\mathbb{F}}$}{X}{
 								if $L[X]$ undefined:\\
-								\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{y}$\\
-								\quad $\mathcal{y} \coloneq \mathcal{y} \cup \{Y\}$\\
+								\quad $Y \twoheadleftarrow \bits^n \ \setminus \ \mathcal{Y}$\\
+								\quad $\mathcal{Y} \coloneq \mathcal{Y} \cup \{Y\}$\\
 								\quad $L[X] \coloneq Y$\\
 								return $L[X]$
 							}{1}
@@ -1944,28 +1777,20 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item \textbf{Data Encryption Standard (DES)} is a classic real-world implementation of the Feistel structure.
-				\item Properties:
+				\item \textbf{Data Encryption Standard (DES)} is the classic real-world Feistel cipher:
 				      \begin{itemize}
-					      \item 16 Feistel rounds.
-					      \item 56-bit key (64 bits with parity).
-					      \item 64-bit block size.
-					      \item Standardized in 1977.
+					      \item 16 Feistel rounds on a 64-bit block.
+					      \item 56-bit key (64 with parity), expanded into 16 round keys of 48 bits.
+					      \item IBM design, NSA tweaks, standardized in 1977.
 				      \end{itemize}
-				\item Problem: By the 1990s, 56-bit keys became too small for security.
+				\item Problem: by the 1990s, $2^{56}$ was a number you could count to.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item \textbf{Triple DES (3DES)} replaced it:
-				      \begin{itemize}
-					      \item Uses three DES operations in sequence.
-					      \item $C = E_{K_3}(D_{K_2}(E_{K_1}(P)))$
-					      \item Effectively doubles the key length.
-					      \item Compatible with legacy DES when $K_1 = K_2 = K_3$
-				      \end{itemize}
-				\item 3DES is still used in legacy systems, but has largely been replaced by AES for performance reasons.
-				\item Lesson: Feistel structure made it possible to adapt DES rather than abandon it.
+				\item \textbf{Triple DES}: $C = E_{K_3}(D_{K_2}(E_{K_1}(P)))$. With $K_1 = K_2 = K_3$ it is plain DES.
+				\item Why not \emph{double} DES? \textbf{Meet-in-the-middle}: encrypt $P$ under every $K_1$, decrypt $C$ under every $K_2$, match: about $2^{57}$ work, not $2^{112}$. The same attack caps 3DES at 112-bit security.
+				\item Slow, and its 64-bit block hits the birthday bound at $2^{32}$ blocks. NIST disallowed it for encryption after 2023.
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1991,6 +1816,7 @@
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
 				\item July 1998: Deep Crack broke a DES challenge in just 56 hours.
+				\item January 1999, teamed with distributed.net: 22 hours and 15 minutes.
 				\item Message revealed: ``It's time for those 128-, 192-, and 256-bit keys.''
 				\item Impact:
 				      \begin{itemize}
@@ -2011,22 +1837,17 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item AES is the most widely used PRP in the world.
-				\item It works on fixed-size blocks: 128 bits.
-				\item Key sizes: 128, 192, or 256 bits.
-				\item Each AES key defines a specific permutation over the space of all 128-bit values.
-				\item For each key, AES maps each possible 128-bit input to exactly one 128-bit output.
+				\item AES is Rijndael, by Joan Daemen and Vincent Rijmen. It won NIST's open competition in 2000 and became FIPS 197 in 2001.
+				\item It is the most widely used PRP in the world.
+				\item Block size: 128 bits. Key sizes: 128, 192 or 256 bits.
+				\item Each key selects one permutation of the $2^{128}$ possible blocks; different keys, different permutations.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item Different keys create different permutations.
-				\item AES is efficiently invertible:
-				      \begin{itemize}
-					      \item $\text{Dec}(K, \text{Enc}(K, M)) = M$
-				      \end{itemize}
-				\item AES is believed to be computationally indistinguishable from a random permutation.
-				\item Has withstood extensive cryptanalysis for over 20 years.
+				\item Efficiently invertible: $\mathsf{Dec}(K, \mathsf{Enc}(K, M)) = M$.
+				\item Unlike DES, AES is \textbf{not} a Feistel network: it is a substitution--permutation network in which every step is invertible by design.
+				\item Believed to be computationally indistinguishable from a random permutation: it has withstood open cryptanalysis since 2001.
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -2043,6 +1864,7 @@
 					      \item MixColumns: mixing operation.
 					      \item AddRoundKey: XOR with round key.
 				      \end{itemize}
+				\item 10 rounds for AES-128 (12 for AES-192, 14 for AES-256); the last round skips MixColumns.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -2114,25 +1936,38 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item AES has been heavily analyzed for over 20 years.
-				\item Best attacks against full AES have gradually improved:
+				\item 25 years of open analysis. The best attacks on the full cipher:
 				      \begin{itemize}
-					      \item 2011: Biclique attack (Bogdanov et al.) reduced complexity to $2^{126.1}$ for AES-128.
-					      \item Various side-channel attacks developed (power analysis, cache timing).\footnote{This is the main way to attack AES in practice. Side-channel attacks will be discussed in more depth later in the course.}
-					      \item Advances in meet-in-the-middle and related-key techniques.
+					      \item 2011: biclique attack (Bogdanov, Khovratovich, Rechberger), $2^{126.1}$ for AES-128 versus $2^{128}$ for brute force.
+					      \item 2009: related-key attacks on AES-256 in $2^{99.5}$ (Biryukov, Khovratovich), which need related keys that no sane protocol hands out.
+					      \item Side channels (power analysis, cache timing): how AES actually gets broken in practice.\footnote{Side-channel attacks will be discussed in more depth later in the course.}
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item Despite these advances:
-				      \begin{itemize}
-					      \item No practical attacks on full AES-128.
-					      \item Best attacks still require $\approx 2^{126}$ operations.
-					      \item At this complexity, attacks remain purely theoretical.
-					      \item Would require resources far exceeding global computing power.
-				      \end{itemize}
-				\item Even quantum computers offer only a modest advantage (Grover's algorithm reduces AES-128's security to $2^{64}$ operations).\footnote{More on quantum computers and how they affect cryptography later in the course.}
+				\item So: no practical attack on full AES in 25 years. Shaving two bits off 128 is a scientific result, not a threat.
+				\item Quantum computers change little here: Grover's algorithm brings AES-128 down to about $2^{64}$ quantum operations, and AES-256 to $2^{128}$.\footnote{More on quantum computers and how they affect cryptography later in the course.}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Recap: three kinds of fake randomness}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{PRG} $G: \bits^\lambda \rightarrow \bits^{\lambda+\ell}$: one short seed, one long random-looking string. Stream ciphers: ChaCha20 (and, once, RC4).
+				\item \textbf{PRF} $F: \bits^\lambda \times \bits^n \rightarrow \bits^m$: one key, a giant random-looking dictionary you can read in any order. HMAC-SHA-256.
+				\item \textbf{PRP} $F: \bits^\lambda \times \bits^n \rightarrow \bits^n$: the same, but a shuffle you can undo. Block ciphers: DES, AES.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item All three are defined the same way: no efficient program can tell the real library from the ideal one.
+				\item \textbf{Golden rule}: a PRF-based construction is only as secure as its guarantee that $F$ never sees an input twice.
+				\item PRP $\approx$ PRF below the birthday bound; PRF $\rightarrow$ PRP with three Feistel rounds.
+				\item Next, 1.5: encrypting \emph{many} messages under one key: CPA security and block-cipher modes.
 			\end{itemize}
 		\end{column}
 	\end{columns}

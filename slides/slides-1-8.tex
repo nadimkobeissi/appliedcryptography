@@ -3,7 +3,7 @@
 
 \title{Applied Cryptography - 1.8: Elliptic Curves \& Digital Signatures}
 \author{Nadim Kobeissi}
-\subject{An exploration of elliptic curve cryptography theory and practice, covering mathematical foundations, digital signatures, security considerations, and implementation best practices.}
+\subject{An exploration of elliptic curve cryptography theory and practice, covering mathematical foundations, digital signatures, security considerations, and implementation pitfalls.}
 \keywords{elliptic curves, ECC, ECDH, ECDSA, EdDSA, Curve25519, digital signatures, cryptographic security, discrete logarithm problem, ECDLP}
 \institute{Symbolic Software}
 \instituteimage{images/symbolicsoft-white.png}
@@ -22,48 +22,21 @@
 
 \begin{frame}{Elliptic-curve cryptography}
 	\begin{itemize}[<+->]
-		\item \textbf{Revolutionary introduction (1985):} Elliptic Curve Cryptography (ECC) transformed public-key cryptography.
-		\item \textbf{Superior efficiency:} More efficient than RSA and classical Diffie-Hellman.
+		\item \textbf{Origins (1985):} proposed independently by Neal Koblitz and Victor Miller: run Diffie-Hellman (and, later, signatures) in a new kind of group.
+		\item \textbf{The idea:} the group elements are \emph{points on an elliptic curve}, and the hard problem is the \textbf{elliptic curve discrete logarithm problem (ECDLP)}.
+		\item \textbf{Why bother?} The same security with far smaller keys and faster operations:
 		      \begin{itemize}
-			      \item ECC with a 256-bit key $\approx$ RSA with a 3,072-bit key (in terms of security).
-			      \item Significantly smaller key sizes for equivalent security.
-		      \end{itemize}
-		\item \textbf{Mathematical foundation:} Operations on points of elliptic curves.
-		      \begin{itemize}
-			      \item Many curve types: simple/sophisticated, efficient/inefficient, secure/insecure.
+			      \item 256-bit ECC key $\approx$ 3,072-bit RSA key $\approx$ 3,072-bit finite-field DH.
+			      \item Smaller certificates, signatures and handshakes; cheaper on phones and embedded devices.
+			      \item A good resource for estimating key lengths: \url{https://keylength.com}
 		      \end{itemize}
 		\item \textbf{Adoption timeline:}
 		      \begin{itemize}
-			      \item Early 2000s: Standardization bodies.
+			      \item 1999--2000: standardized (ANSI X9.62, NIST FIPS 186-2, SECG).
 			      \item 2005--2011: OpenSSL, then OpenSSH support.
 			      \item 2018: TLS 1.3, with elliptic-curve key exchange as the de-facto default.
 		      \end{itemize}
-		\item \textbf{Current applications:} HTTPS, SSH, secure messaging (Signal, WhatsApp), blockchain (Bitcoin, Ethereum).
-		\item \textbf{Based on ECDLP:} the Elliptic Curve Discrete Logarithm Problem.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Why elliptic curve cryptography matters}
-	\begin{itemize}[<+->]
-		\item \textbf{Key size efficiency:} ECC provides equivalent security with much smaller keys.
-		      \begin{itemize}
-			      \item 256-bit ECC key $\approx$ 3,072-bit RSA key $\approx$ 3,072-bit finite field DH.
-			      \item The security advantage grows as key sizes increase.
-			      \item A good resource for estimating key lengths: \url{https://keylength.com}
-		      \end{itemize}
-		\item \textbf{Performance benefits:}
-		      \begin{itemize}
-			      \item Faster key generation, signing, and verification.
-			      \item Lower computational overhead.
-			      \item Reduced memory usage.
-		      \end{itemize}
-		\item \textbf{Bandwidth efficiency:} Smaller certificates, signatures, and key exchanges.
-		\item \textbf{Mobile and IoT devices:} Critical for resource-constrained environments.
-		      \begin{itemize}
-			      \item Limited battery life.
-			      \item Constrained processing power.
-			      \item Minimal storage capacity.
-		      \end{itemize}
+		\item \textbf{Today:} HTTPS, SSH, Signal and WhatsApp, WireGuard, Bitcoin and Ethereum.
 	\end{itemize}
 \end{frame}
 
@@ -109,7 +82,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Traditional Finite Field DH:}
 			\begin{itemize}[<+->]
-				\item Works in multiplicative group $\mathbb{Z}_p^*$
+				\item Works in the multiplicative group $\mathbb{Z}_p^*$
 				\item Security based on discrete log in $\mathbb{Z}_p^*$
 				\item Requires large primes (2,048+ bits)
 				\item Key exchange: $g^{ab} \bmod p$
@@ -118,7 +91,7 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Elliptic Curve DH (ECDH):}
 			\begin{itemize}[<+->]
-				\item Works on elliptic curve group
+				\item Works in the group of points on an elliptic curve
 				\item Security based on ECDLP\footnote{Elliptic-curve discrete logarithm problem}
 				\item Requires smaller keys (256 bits)
 				\item Key exchange: $a \cdot (b \cdot G)$
@@ -130,34 +103,25 @@
 	\begin{itemize}[<+->]
 		\item \textbf{Efficiency:} 10--40x faster than finite field DH for equivalent security.
 		\item \textbf{Scalability:} Performance gap widens with higher security levels.
-		\item \textbf{Standards compliance:} Widely adopted (TLS 1.3, Signal Protocol, etc.).
+		\item \textbf{Ubiquity:} the default key exchange in TLS 1.3, SSH, Signal and WireGuard.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Why finite field DH attacks don't work on ECDH}
 	\begin{itemize}[<+->]
-		\item \textbf{Different mathematical structures:}
+		\item \textbf{From 1.7:} baby-step giant-step and Pollard's rho are \emph{generic}: $\mathcal{O}(\sqrt{n})$ in any group of order $n$. What really hurts $\mathbb{Z}_p^*$ is the \emph{extra} attack.
+		\item \textbf{Index calculus}, the extra attack on $\mathbb{Z}_p^*$:
 		      \begin{itemize}
-			      \item Finite field DH: multiplicative group $\mathbb{Z}_p^*$ with multiplication.
-			      \item ECDH: elliptic curve group with point addition (geometrically defined).
+			      \item Elements of $\mathbb{Z}_p^*$ are integers. Many of them factor into small primes, and that structure can be exploited.
+			      \item Subexponential: this is why finite-field DH needs 2,048--3,072-bit primes.
 		      \end{itemize}
-		\item \textbf{Index calculus attack limitation:}
+		\item \textbf{On an elliptic curve, there is nothing to factor:}
 		      \begin{itemize}
-			      \item Works on finite fields: represents group elements as products of small primes.
-			      \item Fails on elliptic curves: no equivalent of ``small primes'' for points.
-			      \item Elliptic curve points cannot be ``factorized'' in the same way.
+			      \item Points are not numbers. There is no notion of a ``small prime'' point, so no index calculus.
+			      \item For well-chosen curves, only the generic $\mathcal{O}(\sqrt{n})$ attacks are known.
 		      \end{itemize}
-		\item \textbf{Subexponential vs. exponential algorithms:}
-		      \begin{itemize}
-			      \item Finite field DL: subexponential algorithms exist (index calculus variants).
-			      \item ECDLP: only exponential algorithms known (Pollard's rho, brute force).
-		      \end{itemize}
-		\item \textbf{Algebraic structure protection:}
-		      \begin{itemize}
-			      \item Elliptic curve addition is more ``rigid'' than modular multiplication.
-			      \item Geometric constraints prevent many algebraic manipulation attacks.
-		      \end{itemize}
-		\item \textbf{Result:} ECDH requires exponentially more work to break $\rightarrow$ smaller key sizes.
+		\item \textbf{Result:} a 256-bit curve gives $2^{128}$ security, the same as 3,072-bit $\mathbb{Z}_p^*$.
+		\item \textbf{Caveat:} ``well-chosen'' is doing real work in that sentence. The Practice section is about what happens otherwise.
 	\end{itemize}
 \end{frame}
 
@@ -176,15 +140,14 @@
 	\begin{columns}
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
-				\item \textbf{Definition:} An elliptic curve is a curve on a plane—a set of points with $x$- and $y$-coordinates.
-				\item \textbf{Curve equations:} A curve's equation defines all the points that belong to that curve.
+				\item \textbf{Start with plane curves:} a curve is a set of points with $x$- and $y$-coordinates, and its \textbf{equation} tells you exactly which points belong to it.
 				\item \textbf{Examples of curves:}
 				      \begin{itemize}
 					      \item $y = 3$: horizontal line with vertical coordinate 3
 					      \item $y = ax + b$: straight lines (with fixed $a$, $b$)
 					      \item $x^2 + y^2 = 1$: circle of radius 1 centered on the origin
 				      \end{itemize}
-				\item \textbf{Key concept:} Points on a curve are $(x, y)$ pairs that satisfy the curve's equation.
+				\item \textbf{Elliptic curves} are one particular family of such curves, defined by a cubic equation (next slide).
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -198,10 +161,10 @@
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
 				\item \textbf{Weierstrass form:} In cryptography, elliptic curves typically have equation:
-				      $$y^2 = x^3 + ax + b$$
-				\item \textbf{Shape parameters:} constants $a$ and $b$ set the curve's shape.
+				      $$y^2 = x^3 + ax + b \qquad (\text{with } 4a^3 + 27b^2 \neq 0)$$
+				\item \textbf{Shape parameters:} $a$ and $b$ set the shape; the side condition rules out cusps and self-intersections.
 				\item \textbf{Example:} $y^2 = x^3 - 4x$, i.e. $a = -4$ and $b = 0$.
-				\item \textbf{Geometric properties:} Elliptic curves have special addition properties that make them useful for cryptography.\footnote{The name is historical: these curves arose from computing arc lengths of ellipses. They are not ellipses.}
+				\item \textbf{Why we care:} points can be \emph{added}, and that addition makes the curve a group.\footnote{Historical name: they arose from computing arc lengths of ellipses. They are not ellipses.}
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -216,7 +179,7 @@
 			\imagewithcaption{elliptic-curve-real.png}{Elliptic curve over the real numbers (includes negative numbers, decimals)\ldots}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\imagewithcaption{elliptic-curve-integers.png}{Same elliptic curve over a finite field (only nonnegative whole numbers)}
+			\imagewithcaption{elliptic-curve-integers.png}{The same curve over a finite field $\mathbb{F}_p$: coordinates are integers mod $p$. The geometry stops helping; the formulas still work.}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -231,7 +194,7 @@
 					      \item Find the third point where this line meets the curve.
 					      \item Reflect it across the $x$-axis: that's $P + Q$.
 				      \end{itemize}
-				\item \textbf{Why the reflection?} It makes a beautiful rule hold: \emph{any three curve points on one line sum to zero}—the property that will make the curve a group (coming up).
+				\item \textbf{Why the reflection?} It makes a beautiful rule hold: \emph{any three curve points on one line sum to zero}---the property that will make the curve a group (coming up).
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -260,6 +223,33 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{The same thing, as formulas}{Over $\mathbb{F}_p$ there are no pictures, only arithmetic mod $p$}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Addition} $R = P + Q$, for $x_P \neq x_Q$:
+			\begin{align*}
+				\lambda & = \frac{y_Q - y_P}{x_Q - x_P} \\
+				x_R     & = \lambda^2 - x_P - x_Q      \\
+				y_R     & = \lambda (x_P - x_R) - y_P
+			\end{align*}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Doubling} $R = 2P$, for $y_P \neq 0$:
+			\begin{align*}
+				\lambda & = \frac{3x_P^2 + a}{2y_P}   \\
+				x_R     & = \lambda^2 - 2x_P          \\
+				y_R     & = \lambda (x_P - x_R) - y_P
+			\end{align*}
+		\end{column}
+	\end{columns}
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item $\lambda$ is the slope of the chord (or tangent); the division is a modular inverse, the expensive step.
+		\item Two formulas plus special cases ($P = -Q$, $y_P = 0$, $\mathcal{O}$): remember this when we get to implementation bugs.
+		\item \textbf{Notice what is missing:} $b$ appears nowhere. File that away for the invalid-curve attack.
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{From addition to scalar multiplication}
 	\begin{itemize}
 		\item \textbf{Scalar multiplication:} $k \cdot P$ just means ``add $P$ to itself $k$ times.''
@@ -282,8 +272,43 @@
 		\end{tikzpicture}
 	\end{center}
 	\begin{itemize}
-		\item \textbf{Cost:} at most 255 doublings and 255 additions for a 256-bit $k$—microseconds on a laptop.
+		\item \textbf{Cost:} at most 255 doublings and 255 additions for a 256-bit $k$---microseconds on a laptop.
 		\item \textbf{The asymmetry that powers everything:} computing $k \cdot G$ from $k$ takes a few hundred point operations. Recovering $k$ from $k \cdot G$? No known shortcut.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Remember this?}{We need an equivalent for elliptic curves}
+	For our cryptographic group $\mathbb{Z}_p^*$, these rules always hold:
+	\begin{itemize}[<+->]
+		\item \textbf{Closure}: Multiplying any two elements gives another element in the group
+		      \begin{itemize}
+			      \item In $\mathbb{Z}_5^*$: $2 \times 3 = 1$ (still in the group!)
+		      \end{itemize}
+		\item \textbf{Identity}: There's a special element (1) that doesn't change others
+		      \begin{itemize}
+			      \item $1 \times 4 = 4$, $1 \times 2 = 2$, etc.
+		      \end{itemize}
+		\item \textbf{Inverses}: Every element has a ``partner'' that multiplies to 1
+		      \begin{itemize}
+			      \item In $\mathbb{Z}_5^*$: $2 \times 3 = 1$, so 2 and 3 are inverses
+		      \end{itemize}
+		\item \textbf{Associativity}: $(a \times b) \times c = a \times (b \times c)$
+	\end{itemize}
+	\vspace{0.5cm}
+	\textbf{Why care?} These rules guarantee that our cryptographic operations will behave predictably!
+\end{frame}
+
+\begin{frame}{Group structure of elliptic curves}
+	We need to define all these operations so that our elliptic curves have a group structure, allowing us to use them as a new basis for Diffie-Hellman: doing DH with point addition instead of modular multiplication.
+	\begin{itemize}[<+->]
+		\item \textbf{Closure property:} If points $P$ and $Q$ belong to a curve, then $P + Q$ also belongs to the curve.
+		\item \textbf{Associativity:} $(P + Q) + R = P + (Q + R)$ for any points $P$, $Q$, and $R$.
+		\item \textbf{Identity element:} The \emph{point at infinity} $\mathcal{O}$ such that $P + \mathcal{O} = P$ for any $P$.
+		      \begin{itemize}
+			      \item Where does $\mathcal{O}$ come from? The line through $P$ and $-P$ is vertical: it never meets the curve a third time, so we say it meets it ``at infinity.''
+		      \end{itemize}
+		\item \textbf{Inverse elements:} Every point $P = (x_P, y_P)$ has an inverse $-P = (x_P, -y_P)$ such that $P + (-P) = \mathcal{O}$.
+		\item Great! We have a group structure!
 	\end{itemize}
 \end{frame}
 
@@ -316,27 +341,6 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Remember this?}{We need an equivalent for elliptic curves}
-	For our cryptographic group $\mathbb{Z}_p^*$, these rules always hold:
-	\begin{itemize}[<+->]
-		\item \textbf{Closure}: Multiplying any two elements gives another element in the group
-		      \begin{itemize}
-			      \item In $\mathbb{Z}_5^*$: $2 \times 3 = 1$ (still in the group!)
-		      \end{itemize}
-		\item \textbf{Identity}: There's a special element (1) that doesn't change others
-		      \begin{itemize}
-			      \item $1 \times 4 = 4$, $1 \times 2 = 2$, etc.
-		      \end{itemize}
-		\item \textbf{Inverses}: Every element has a ``partner'' that multiplies to 1
-		      \begin{itemize}
-			      \item In $\mathbb{Z}_5^*$: $2 \times 3 = 1$, so 2 and 3 are inverses
-		      \end{itemize}
-		\item \textbf{Associativity}: $(a \times b) \times c = a \times (b \times c)$
-	\end{itemize}
-	\vspace{0.5cm}
-	\textbf{Why care?} These rules guarantee that our cryptographic operations will behave predictably!
-\end{frame}
-
 \begin{frame}{The elliptic curve discrete logarithm problem (ECDLP)}
 	\begin{itemize}[<+->]
 		\item \textbf{Remember the original DLP:} Given $g$, $h$, and prime $p$, find $x$ such that $g^x \equiv h \pmod{p}$.
@@ -359,18 +363,28 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Group structure of elliptic curves}
-	We need to define all these operations so that our elliptic curves have a group structure, allowing us to use them as a new basis for Diffie-Hellman - doing DH with point addition instead of modular multiplication.
-	\begin{itemize}[<+->]
-		\item \textbf{Closure property:} If points $P$ and $Q$ belong to a curve, then $P + Q$ also belongs to the curve.
-		\item \textbf{Associativity:} $(P + Q) + R = P + (Q + R)$ for any points $P$, $Q$, and $R$.
-		\item \textbf{Identity element:} The \emph{point at infinity} $\mathcal{O}$ such that $P + \mathcal{O} = P$ for any $P$.
-		      \begin{itemize}
-			      \item Where does $\mathcal{O}$ come from? The line through $P$ and $-P$ is vertical: it never meets the curve a third time, so we say it meets it ``at infinity.''
-		      \end{itemize}
-		\item \textbf{Inverse elements:} Every point $P = (x_P, y_P)$ has an inverse $-P = (x_P, -y_P)$ such that $P + (-P) = \mathcal{O}$.
-		\item Great! We have a group structure!
-	\end{itemize}
+\begin{frame}{A toy curve you can compute by hand}
+	\textbf{Toy curve:} $E: y^2 = x^3 + 2x + 2$ over $\mathbb{F}_{17}$ has 19 points ($\mathcal{O}$ included). 19 is prime, so every other point is a generator. Take $G = (5, 1)$.
+	\begin{columns}[t]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{$2G$, by the doubling formula:}
+				      \begin{itemize}
+					      \item $\lambda = (3 \cdot 5^2 + 2) / (2 \cdot 1) \equiv 9 / 2 \equiv 9 \cdot 9 \equiv 13$
+					      \item $x = 13^2 - 10 \equiv 6$, \quad $y = 13(5 - 6) - 1 \equiv 3$
+					      \item $2G = (6, 3)$; check: $9 \equiv 230 \pmod{17}$ \mycheckmark
+				      \end{itemize}
+				\item \textbf{Then} $3G = (10, 6)$, \ldots, $19G = \mathcal{O}$.
+				\item \textbf{Hasse's theorem:} $\#E = p + 1 \pm 2\sqrt{p}$. Here $18 \pm 8.2$; indeed 19.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+				\item \textbf{Toy ECDLP:} given $H = (10, 6)$, find $k$ with $k \cdot G = H$. Try $k = 1, 2, 3$: done. On a real curve: $\approx 2^{256}$ points, $\approx 2^{128}$ steps.
+				\item \textbf{Domain parameters} $(p, a, b, G, n, h)$: prime, coefficients, base point, its order, cofactor $h = \#E/n$. Here $(17, 2, 2, (5,1), 19, 1)$.
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Diffie-Hellman key agreement over elliptic curves}
@@ -422,86 +436,55 @@
 
 \begin{frame}{What are digital signatures?}
 	\begin{itemize}
-		\item \textbf{Digital signatures:} Cryptographic equivalent of handwritten signatures.
+		\item \textbf{Digital signatures:} the public-key analogue of a MAC. The signer holds a \textbf{private key}; \emph{anyone} with the matching \textbf{public key} can verify.
+		\item \textbf{What a valid signature tells the verifier:}
 		      \begin{itemize}[<+->]
-			      \item Prove authenticity: Message came from the claimed sender.
-			      \item Ensure integrity: Message wasn't modified in transit.
-			      \item Provide non-repudiation: Sender can't deny signing.
+			      \item Authenticity: the message came from the holder of the private key.
+			      \item Integrity: the message was not modified.
+			      \item Non-repudiation: the signer cannot later deny it. A MAC can't offer this: both parties hold the same key.
 		      \end{itemize}
-		\item \textbf{Key difference from physical signatures:}
-		      \begin{itemize}[<+->]
-			      \item Each signature is unique to the message content.
-			      \item Can't copy a signature from one document to another.
-			      \item Mathematically verifiable by anyone.
-		      \end{itemize}
+		\item \textbf{Unlike a handwritten signature,} a digital one is bound to the message: you cannot lift it off one document and paste it onto another.
+		\item \textbf{Where you meet them:} software updates, TLS certificates, SSH logins, cryptocurrency transactions, email (PGP, S/MIME).
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{What are digital signatures?}
-	\begin{itemize}
-		\item \textbf{Based on asymmetric cryptography:}
-		      \begin{itemize}[<+->]
-			      \item Private key: Used to create signatures (kept secret).
-			      \item Public key: Used to verify signatures (shared openly).
-		      \end{itemize}
-		\item \textbf{Real-world applications:}
-		      \begin{itemize}[<+->]
-			      \item Software distribution and updates.
-			      \item Email authentication (PGP, S/MIME).
-			      \item Financial transactions.
-			      \item Legal documents and contracts.
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Digital signature API: The three operations}
+\begin{frame}{Digital signature API: the three operations}
 	\begin{itemize}[<+->]
-		\item \textbf{1. Key Generation:} Create a key pair
+		\item \textbf{1. Key generation:} \texttt{(private\_key, public\_key) = KeyGen()}
 		      \begin{itemize}
-			      \item \texttt{(private\_key, public\_key) = KeyGen()}
-			      \item Generate random private key (secret number).
-			      \item Derive the corresponding public key mathematically.
-			      \item Private key must be kept secret; public key can be shared.
+			      \item A random secret number, and a public value derived from it. Publish the second, guard the first.
 		      \end{itemize}
-		\item \textbf{2. Signing:} Create signature for a message
+		\item \textbf{2. Signing:} \texttt{signature = Sign(private\_key, message)}
 		      \begin{itemize}
-			      \item \texttt{signature = Sign(private\_key, message)}
-			      \item Uses private key and message to produce signature.
-			      \item Signature is unique to both key and message.
-			      \item Only holder of private key can create valid signatures.
+			      \item Only the holder of the private key can produce a valid signature on a message.
 		      \end{itemize}
-		\item \textbf{3. Verification:} Check signature validity
+		\item \textbf{3. Verification:} \texttt{is\_valid = Verify(public\_key, message, signature)}
 		      \begin{itemize}
-			      \item \texttt{is\_valid = Verify(public\_key, message, signature)}
-			      \item Returns true if signature matches message and public key.
-			      \item Anyone with public key can verify.
-			      \item Computationally infeasible to forge without private key.
+			      \item Anyone can run it. Correctness: honestly produced signatures always verify.
 		      \end{itemize}
 	\end{itemize}
+	\vspace{0.2cm}
+	\definitionbox{{Security goal: unforgeability (EUF-CMA)}}{An attacker who can request signatures on \emph{any} messages of their choice still cannot produce a valid signature on a \emph{new} message. Every scheme in this lecture aims for this; the attacks in the Practice section are ways implementations fall short of it.}
 \end{frame}
 
 \begin{frame}{Digital signatures with elliptic curves}
 	\begin{itemize}[<+->]
-		\item \textbf{Why elliptic curve signatures?} Same advantages as ECDH:
-		      \begin{itemize}
-			      \item Smaller signatures for equivalent security.
-			      \item Faster generation and verification.
-			      \item Better performance on mobile/IoT devices.
-		      \end{itemize}
+		\item \textbf{Why elliptic curve signatures?} The same reasons as ECDH: 64-byte signatures and 32-byte keys at 128-bit security, and fast signing and verification.
 		\item \textbf{Two main approaches:}
 		      \begin{itemize}
-			      \item \textbf{ECDSA:} Elliptic Curve Digital Signature Algorithm (1990s).
-			      \item \textbf{EdDSA:} Edwards-curve Digital Signature Algorithm (2011).
+			      \item \textbf{ECDSA:} Elliptic Curve Digital Signature Algorithm (1990s). The elliptic-curve version of DSA.
+			      \item \textbf{EdDSA:} Edwards-curve Digital Signature Algorithm (2011). A Schnorr-style design; Ed25519 is the instance you will meet.
 		      \end{itemize}
 		\item \textbf{Real-world adoption:}
 		      \begin{itemize}
-			      \item ECDSA: Bitcoin, Ethereum, TLS, SSH.
-			      \item Ed25519: OpenSSH, Signal Protocol, many modern systems.
+			      \item ECDSA: Bitcoin, Ethereum, TLS certificates, SSH.
+			      \item Ed25519: OpenSSH, Signal Protocol, software signing, many newer systems.
 		      \end{itemize}
+		\item \textbf{Plan:} ECDSA first (the standard), then EdDSA (the fix), then a comparison.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{ECDSA: The established standard}
+\begin{frame}{ECDSA: the established standard}
 	\begin{itemize}
 		\item \textbf{Elliptic Curve Digital Signature Algorithm (ECDSA):}
 		      \begin{itemize}
@@ -538,7 +521,7 @@
 				\item \textbf{Compute signature point:} $k \cdot G = (x, y)$
 				\item \textbf{Calculate $r$:} $r = x \bmod n$
 				\item \textbf{Calculate $s$:} $s = \frac{h + rd}{k} \bmod n$
-				\item \textbf{Output signature:} $(r, s)$
+				\item \textbf{Output signature:} $(r, s)$ \quad (if $r = 0$ or $s = 0$, start over with a new $k$)
 			\end{enumerate}
 		\end{column}
 		\begin{column}{0.4\textwidth}
@@ -551,6 +534,7 @@
 					      \item Never reused
 				      \end{itemize}
 				\item \textbf{Reusing $k$ = private key exposure!}
+				\item So is \emph{leaking} $k$: from $(r, s)$ and $k$, anyone computes $d = \frac{sk - h}{r} \bmod n$.
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -558,38 +542,29 @@
 
 \begin{frame}{ECDSA signature verification}
 	\begin{columns}
-		\begin{column}{0.6\textwidth}
+		\begin{column}{0.58\textwidth}
 			\textbf{Input:} Message $M$, signature $(r, s)$, public key $P$
 			\begin{enumerate}
+				\item \textbf{Range check:} reject unless $r, s \in [1, n-1]$
 				\item \textbf{Hash the message:} $h = \func{hash}{M}$
 				\item \textbf{Compute modular inverse:} $w = \frac{1}{s} \bmod n$
-				\item \textbf{Calculate verification values:}
-				      \begin{itemize}
-					      \item $u = h \cdot w \bmod n$
-					      \item $v = r \cdot w \bmod n$
-				      \end{itemize}
+				\item \textbf{Calculate verification values:} $u = h \cdot w \bmod n$, \quad $v = r \cdot w \bmod n$
 				\item \textbf{Compute verification point:} $Q = u \cdot G + v \cdot P$
 				\item \textbf{Check signature:} Accept if $Q_x \bmod n = r$
 			\end{enumerate}
 		\end{column}
-		\begin{column}{0.4\textwidth}
+		\begin{column}{0.42\textwidth}
 			\textbf{Why this works:}
 			\begin{itemize}
-				\item Mathematical relationship:
-				      \begin{align*}
-					      Q & = u \cdot G + v \cdot P         \\
-					        & = u \cdot G + v \cdot d \cdot G \\
-					        & = (u + vd) \cdot G
-				      \end{align*}
-				\item When signature is valid:
-				      $$u + vd = k \bmod n$$
-				\item So $Q = k \cdot G$, giving $Q_x \bmod n = r$
+				\item $Q = u \cdot G + v \cdot d \cdot G = (u + vd) \cdot G$
+				\item For an honest signature, $s = \frac{h + rd}{k}$, so $u + vd = w (h + rd) = \frac{h + rd}{s} = k$
+				\item So $Q = k \cdot G$, and $Q_x \bmod n = r$.
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{EdDSA: The modern alternative}
+\begin{frame}{EdDSA: the modern alternative}
 	\begin{itemize}
 		\item \textbf{Background:} Built on Schnorr signatures (1989).
 		      \begin{itemize}
@@ -602,7 +577,7 @@
 			      \item \textbf{Deterministic:} No random number generation during signing.
 			      \item \textbf{Faster:} Both signing and verification.
 			      \item \textbf{Simpler:} Cleaner mathematical structure.
-			      \item \textbf{Safer:} Eliminates randomness-related vulnerabilities.
+			      \item \textbf{Safer:} No per-signature randomness to get wrong (a failure mode we will meet shortly).
 		      \end{itemize}
 		\item \textbf{Design philosophy:} Avoid the pitfalls that plague ECDSA.
 		\item \textbf{Most popular instance:} Ed25519 (based on Curve25519).
@@ -612,26 +587,25 @@
 \begin{frame}{EdDSA signature generation}
 	\begin{columns}
 		\begin{column}{0.7\textwidth}
-			\textbf{Input:} Message $M$, private key $k$ (byte string). $B$ is the base point (EdDSA's name for $G$).
+			\textbf{Input:} message $M$, private key $k$ (32 random bytes); base point $B$ of prime order $\ell$.
 			\begin{enumerate}
-				\item \textbf{Expand private key:} $a \parallel h = \func{hash}{k}$
+				\item \textbf{Expand private key:} $a \parallel \mathit{prefix} = \func{hash}{k}$ \quad (SHA-512)
 				      \begin{itemize}
-					      \item $a$: actual signing scalar (first 256 bits)
-					      \item $h$: randomness source (last 256 bits)
+					      \item $a$: the signing scalar (first half, ``clamped''); $\mathit{prefix}$: secret randomness (second half)
 				      \end{itemize}
-				\item \textbf{Compute public key:} $A = a \cdot B$ (precomputed)
-				\item \textbf{Generate nonce deterministically:} $r = \func{hash}{h \parallel M}$
+				\item \textbf{Compute public key:} $A = a \cdot B$
+				\item \textbf{Nonce, deterministically:} $r = \func{hash}{\mathit{prefix} \parallel M} \bmod \ell$
 				\item \textbf{Compute signature point:} $R = r \cdot B$
-				\item \textbf{Compute signature scalar:} $S = r + \func{hash}{R, A, M} \cdot a$
-				\item \textbf{Output signature:} $(R, S)$
+				\item \textbf{Compute signature scalar:} $S = r + \func{hash}{R \parallel A \parallel M} \cdot a \bmod \ell$
+				\item \textbf{Output signature:} $(R, S)$, 32 + 32 = 64 bytes
 			\end{enumerate}
 		\end{column}
 		\begin{column}{0.3\textwidth}
 			\textbf{Benefits:}
 			\begin{itemize}
-				\item No randomness needed
+				\item No randomness needed at signing time
 				\item Same message = same signature
-				\item Immune to bad RNG
+				\item A broken RNG cannot leak the key
 				\item Faster (no modular inverse)
 			\end{itemize}
 		\end{column}
@@ -640,75 +614,51 @@
 
 \begin{frame}{EdDSA signature verification}
 	\begin{columns}
-		\begin{column}{0.6\textwidth}
+		\begin{column}{0.56\textwidth}
 			\textbf{Input:} Message $M$, signature $(R, S)$, public key $A$
 			\begin{enumerate}
-				\item \textbf{Verify equation:} Check if:
-				      $$S \cdot B = R + \func{hash}{R, A, M} \cdot A$$
-				\item \textbf{Accept signature if equation holds}
+				\item \textbf{Decode} $R$ and $A$ as curve points; check $S < \ell$.
+				\item \textbf{Verify equation:} accept if
+				      $$S \cdot B = R + \func{hash}{R \parallel A \parallel M} \cdot A$$
 			\end{enumerate}
-			\vspace{0.5cm}
 			\textbf{Why this works:}
 			\begin{itemize}
-				\item From signing: $S = r + \func{hash}{R, A, M} \cdot a$
-				\item So: $S \cdot B = (r + \func{hash}{R, A, M} \cdot a) \cdot B$
-				\item $= r \cdot B + \func{hash}{R, A, M} \cdot a \cdot B$
-				\item $= R + \func{hash}{R, A, M} \cdot A$
+				\item From signing: $S = r + \func{hash}{R \parallel A \parallel M} \cdot a$
+				\item So: $S \cdot B = r \cdot B + \func{hash}{R \parallel A \parallel M} \cdot a \cdot B$
+				\item $= R + \func{hash}{R \parallel A \parallel M} \cdot A$
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.4\textwidth}
-			\textbf{Performance benefits:}
-			\begin{itemize}
-				\item No modular inverse computation
-				\item Two scalar multiplications (like ECDSA)
-				\item Simpler arithmetic
-				\item Better constant-time implementation
-			\end{itemize}
+		\begin{column}{0.44\textwidth}
+			\textbf{vs. ECDSA:} no modular inverse; signatures can be verified in batches.
+			\vspace{0.3cm}
+
+			\textbf{Fine print:} RFC 8032 writes the check as $8S \cdot B = 8R + 8\func{hash}{\cdot} \cdot A$ (multiplied by the cofactor 8) and calls the form above ``sufficient, but not required.'' Two equations, one standard. Hold that thought.
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{ECDSA vs. Ed25519: The comparison}
-	\begin{columns}
+\begin{frame}{ECDSA vs. Ed25519: the comparison}
+	\begin{columns}[t]
 		\begin{column}{0.5\textwidth}
-			\textbf{ECDSA:}
+			\textbf{ECDSA}
 			\begin{itemize}
-				\item \textbf{Pros:}
-				      \begin{itemize}
-					      \item Established standard (1990s)
-					      \item Wide library support
-					      \item Blockchain industry standard
-				      \end{itemize}
-				\item \textbf{Cons:}
-				      \begin{itemize}
-					      \item Requires secure randomness
-					      \item Slower verification
-					      \item Complex implementation
-					      \item Vulnerable to bad RNG
-					      \item Malleable: $(r, n - s)$ also verifies
-				      \end{itemize}
+				\item[$+$] The standard since 1999: every TLS and X.509 stack; mandatory in Bitcoin and Ethereum
+				\item[$-$] Needs a fresh, secret, uniform $k$ per signature: a bad RNG leaks the key
+				\item[$-$] Modular inverse and special cases: hard to get right, and constant-time
+				\item[$-$] Malleable: $(r, n - s)$ also verifies
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Ed25519:}
+			\textbf{Ed25519}
 			\begin{itemize}
-				\item \textbf{Pros:}
-				      \begin{itemize}
-					      \item Deterministic signing
-					      \item Faster performance
-					      \item Simpler implementation
-					      \item Better security properties
-				      \end{itemize}
-				\item \textbf{Cons:}
-				      \begin{itemize}
-					      \item Newer standard
-					      \item Some validation inconsistencies
-					      \item Bitcoin and Ethereum remain on ECDSA (secp256k1)
-				      \end{itemize}
+				\item[$+$] Deterministic nonce: nothing to get wrong at signing time
+				\item[$+$] Complete formulas; fast; fixed 64-byte signatures and 32-byte keys
+				\item[$-$] Younger (2011), and RFC 8032 left verifiers choices (coming up)
+				\item[$-$] Unusable where secp256k1 is mandated; a fault during deterministic signing leaks the key
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.5cm}
+	\vspace{0.3cm}
 	\textbf{Recommendation:} Use Ed25519 for new projects unless ECDSA is specifically required.
 \end{frame}
 
@@ -718,50 +668,40 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item \textbf{Not all elliptic curves are created equal:} The mathematical structure of the curve directly impacts cryptographic security.
-				\item \textbf{Security implications:} Poor curve choice can make ECDLP much easier to solve.
-				\item \textbf{In practice:} You'll use established curves, but understanding what makes a curve safe helps you:
-				      \begin{itemize}
-					      \item Choose among available options.
-					      \item Better understand associated risks.
-					      \item Evaluate new curve proposals.
-				      \end{itemize}
+				\item \textbf{Not all elliptic curves are created equal:} the curve's structure directly determines how hard its ECDLP is.
+				\item \textbf{A poor curve choice} can make the ECDLP dramatically easier than $\sqrt{n}$.
+				\item \textbf{In practice} you will use an established curve, but knowing what makes one safe lets you choose sensibly and read a proposal (or a library default) critically.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\imagewithcaption{safecurves.png}{Elliptic curves have many distinct and complex security criteria.\\Source: \url{https://safecurves.cr.yp.to}}
+			\imagewithcaption[0.75\textwidth]{safecurves.png}{Elliptic curves have many distinct and complex security criteria.\\Source: \url{https://safecurves.cr.yp.to}}
 		\end{column}
 	\end{columns}
 \end{frame}
 
 \begin{frame}{Criteria for safe elliptic curves}
 	\begin{itemize}
-		\item \textbf{Group order security:} The number of points on the curve shouldn't factor into small numbers.
+		\item \textbf{Group order:} the number of points must have a huge prime factor. Pohlig-Hellman (1.7) eats small factors; ideally the order is prime, or has a tiny cofactor.
+		\item \textbf{Complete addition formulas:} the Weierstrass formulas have special cases ($P = Q$, $P = -Q$, $\mathcal{O}$) that need separate code paths. That is where bugs and timing leaks hide.
 		      \begin{itemize}
-			      \item If the order has small factors, ECDLP becomes much easier.
-			      \item Attackers can use algorithms like Pohlig-Hellman to exploit small factors.
+			      \item Edwards curves have one formula that works for every pair of points.
 		      \end{itemize}
-		\item \textbf{Addition formula consistency:} Unified addition laws are preferred.
+		\item \textbf{Twist security:} a point with an invalid $x$-coordinate lands on the curve's \emph{twist}. If the twist is weak, that is an attack (coming up). X25519 needs no point validation because its twist is strong too.
+		\item \textbf{Rigidity:} every constant should have a stated, checkable origin.
 		      \begin{itemize}
-			      \item Some curves require different formulas for $P + Q$ vs. $P + P$ (doubling).
-			      \item Timing differences between these operations can leak information.
-			      \item Secure curves use the same formula for all additions.
-		      \end{itemize}
-		\item \textbf{Parameter transparency:} The origin of curve parameters should be clearly explained.
-		      \begin{itemize}
-			      \item Unknown parameter origins raise suspicion of backdoors.
-			      \item ``Nothing up my sleeve'' numbers increase trust.
+			      \item ``Nothing up my sleeve'' numbers increase trust. ``Trust us'' constants are how you get the next few slides.
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{NIST curves: The establishment standard}
+\begin{frame}{NIST curves: the establishment standard}
 	\begin{itemize}
 		\item \textbf{Official standardization:} NIST standardized several curves in FIPS 186 (2000).
 		      \begin{itemize}
 			      \item ``Recommended Elliptic Curves for Federal Government Use''
 			      \item Five prime curves working modulo prime numbers.
 			      \item Ten binary polynomial curves (rarely used today).
+			      \item All five prime curves have a prime number of points (we will see why that is convenient).
 		      \end{itemize}
 		\item \textbf{Most popular: P-256}
 		      \begin{itemize}
@@ -773,7 +713,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{The NIST controversy: Suspicious constants}
+\begin{frame}{The NIST controversy: suspicious constants}
 	\begin{itemize}[<+->]
 		\item \textbf{The problem:} Only the NSA knows the true origin of the $b$ coefficient in NIST curves.
 		\item \textbf{NSA's explanation:} $b$ results from hashing a ``random-looking'' constant with SHA-1.
@@ -791,11 +731,11 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Dual\_EC\_DRBG: The NSA backdoor scandal}
+\begin{frame}{Dual\_EC\_DRBG: the NSA backdoor scandal}
 	\begin{itemize}[<+->]
 		\item \textbf{What is Dual\_EC\_DRBG?} Dual Elliptic Curve Deterministic Random Bit Generator.
 		      \begin{itemize}
-			      \item NIST standard for generating random numbers (2006).
+			      \item A NIST-standardized random number generator (SP 800-90, 2006).
 			      \item Based on elliptic curve operations.
 			      \item Suspiciously slow: 1,000x slower than alternatives.
 		      \end{itemize}
@@ -816,40 +756,30 @@
 \end{frame}
 
 \begin{frame}{How the Dual\_EC\_DRBG backdoor works}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}[<+->]
-				\item \textbf{The algorithm:} Uses two elliptic curve points $P$ and $Q = d \cdot P$.
-				      \begin{itemize}
-					      \item Internal state: $s_i = x(s_{i-1} \cdot P)$ where $x()$ extracts the $x$-coordinate.
-					      \item Output: $r_i = x(s_i \cdot Q)$ with some bits truncated.
-				      \end{itemize}
-				\item \textbf{The backdoor mechanism:}
-				      \begin{itemize}
-					      \item NSA knows secret $d$ where $Q = d \cdot P$.
-					      \item Given output $r_i$, attacker can compute possible values of $s_i \cdot Q$.
-					      \item Using $d$: $s_i \cdot Q = s_i \cdot d \cdot P$, so $s_i \cdot P = \frac{1}{d}(s_i \cdot Q)$.
-					      \item This reveals the internal state $s_{i+1} = x(s_i \cdot P)$.
-				      \end{itemize}
-				\item \textbf{Attack efficiency:} With 32 bytes of output, NSA can predict all future outputs.\footnote{\url{https://appliedcryptography.page/paper/\#dual-ec}}
-				\item \textbf{Plausible deniability:} Without knowing $d$, the backdoor is computationally undetectable: solving for $d$ requires breaking ECDLP.
-			\end{itemize}
-		\end{column}
-	\end{columns}
+	\begin{itemize}[<+->]
+		\item \textbf{The algorithm:} two curve points $P$ and $Q$. State $s_i = x(s_{i-1} \cdot P)$; output $r_i = x(s_i \cdot Q)$ minus its top 16 bits.
+		\item \textbf{The trapdoor:} whoever knows $d$ with $Q = d \cdot P$ can run it backwards.
+		      \begin{itemize}
+			      \item From $r_i$, guess the 16 missing bits: $2^{16}$ candidates for the point $s_i \cdot Q$.
+			      \item Then $s_i \cdot P = \frac{1}{d}(s_i \cdot Q)$, whose $x$-coordinate is the next state $s_{i+1}$.
+			      \item With 32 bytes of output, NSA can predict all future outputs.\footnote{\url{https://appliedcryptography.page/paper/\#dual-ec}}
+		      \end{itemize}
+		\item \textbf{Plausible deniability:} without $d$ the backdoor is undetectable: recovering $d$ from $(P, Q)$ is an ECDLP.
+	\end{itemize}
+	\alertbox{{A backdoored generator, not a backdoored curve}}{Dual\_EC runs on the ordinary P-256 curve; the trapdoor is the secret relation between $P$ and $Q$. The NIST curves have no known weakness. What died was the presumption of good faith behind unexplained constants.}
 \end{frame}
 
-\begin{frame}{Curve25519: The performance revolution}
+\begin{frame}{Curve25519: fast, and nothing up its sleeve}
 	\begin{itemize}
 		\item \textbf{Created by Daniel J. Bernstein (2006):} Motivated by performance and security concerns.
 		\item \textbf{Performance advantages:}
 		      \begin{itemize}
-			      \item Faster than NIST curves.
-			      \item Shorter keys for equivalent security.
-			      \item Optimized for software implementation.
+			      \item Faster than the NIST curves at the same security level.
+			      \item Designed for fast, simple software implementation.
 		      \end{itemize}
 		\item \textbf{Security improvements:}
 		      \begin{itemize}
-			      \item No suspicious constants—all parameters have clear origins.
+			      \item No suspicious constants---all parameters have clear origins.
 			      \item Edwards form (Ed25519) has complete addition formulas.
 			      \item More resistant to timing attacks.
 		      \end{itemize}
@@ -861,15 +791,14 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Curve25519: From rebel to standard}
+\begin{frame}{Curve25519: from rebel to standard}
 	\begin{itemize}
-		\item \textbf{Widespread adoption:}
+		\item \textbf{Widespread adoption, long before any blessing:}
 		      \begin{itemize}
-			      \item WhatsApp end-to-end encryption
-			      \item TLS 1.3 key exchange
-			      \item OpenSSH connections
-			      \item Signal Protocol
-			      \item Many cryptocurrency systems
+			      \item Signal Protocol, and therefore WhatsApp's end-to-end encryption
+			      \item TLS 1.3 key exchange (X25519 is the most common choice)
+			      \item OpenSSH, Tor, WireGuard
+			      \item Several cryptocurrencies (Monero, Solana, Cardano)
 		      \end{itemize}
 		\item \textbf{Official recognition:} Added to NIST-approved curves in February 2023.
 		      \begin{itemize}
@@ -877,7 +806,7 @@
 			      \item Took 17 years for official government approval!
 		      \end{itemize}
 		\item \textbf{Trust through transparency:} Clear parameter origins make Curve25519 more trustworthy than NIST curves.
-		\item \textbf{Related: Ed25519} for digital signatures using the same curve.
+		\item \textbf{Related: Ed25519} for digital signatures using the same curve. Let's untangle the names.
 	\end{itemize}
 \end{frame}
 
@@ -896,8 +825,8 @@
 	\begin{itemize}
 		\item \textbf{Same curve, two forms. Each form is ideal for a different job:}
 		      \begin{itemize}
-			      \item Montgomery form: $x$-coordinate-only ``ladder''—simple, fast, constant-time ECDH.
-			      \item Edwards form: complete addition formulas, no special cases—safe signatures.
+			      \item Montgomery form: $x$-coordinate-only ``ladder''---simple, fast, constant-time ECDH.
+			      \item Edwards form: complete addition formulas, no special cases---safe signatures.
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -907,10 +836,10 @@
 		\item \textbf{secp256k1: the blockchain workhorse.}
 		      \begin{itemize}
 			      \item $y^2 = x^3 + 7$: standardized by SECG (2000), chosen for Bitcoin by Satoshi Nakamoto, inherited by Ethereum.
-			      \item Almost no arbitrary constants—``rigid'' by construction, unlike the NIST curves.
+			      \item Almost no arbitrary constants---``rigid'' by construction, unlike the NIST curves.
 			      \item (This is the curve behind the \texttt{k256} library naming.)
 		      \end{itemize}
-		\item \textbf{Legacy national standards:}
+		\item \textbf{National standards:}
 		      \begin{itemize}
 			      \item \textbf{ANSSI curves (France):} Constants of unexplained origin, no unified addition law.
 			      \item \textbf{Brainpool curves (Germany):} Transparent seeds (digits of $e$ and $\pi$), but slow arithmetic and no unified addition law.
@@ -929,188 +858,114 @@
 
 \begin{frame}{Practical curve selection guidance}
 	\begin{itemize}
-		\item \textbf{For new projects:} Use Curve25519/Ed25519.
+		\item \textbf{For new projects:} Use Curve25519 (X25519 for key exchange, Ed25519 for signatures).
 		      \begin{itemize}
-			      \item Excellent performance and security.
-			      \item Transparent parameter generation.
-			      \item Wide library support.
-			      \item Now NIST-approved for government use.
+			      \item Excellent performance and security; transparent parameter generation.
+			      \item Wide library support; NIST-approved since 2023.
 		      \end{itemize}
-		\item \textbf{For government/compliance:} NIST P-256 is still widely accepted.
+		\item \textbf{For government or compliance work:} NIST P-256 is still widely accepted.
 		      \begin{itemize}
-			      \item Required by some standards and regulations.
-			      \item Well-audited implementations available.
-			      \item Despite parameter concerns, no known weaknesses.
+			      \item Required by some standards and regulations, and the only curve in most certificate ecosystems.
+			      \item Well-audited implementations exist. Despite the parameter concerns, no known weakness.
 		      \end{itemize}
-		\item \textbf{Avoid:} Legacy curves with unknown parameter origins.
+		\item \textbf{Avoid:}
 		      \begin{itemize}
-			      \item ANSSI, Brainpool curves.
-			      \item Curves without unified addition laws.
+			      \item ANSSI curves: unexplained constants.
+			      \item Brainpool curves: transparent, but slow and without complete formulas.
+			      \item Binary curves, and anything below 256 bits.
 		      \end{itemize}
-		\item \textbf{Future-proofing:} Consider post-quantum alternatives for long-term security.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{How things can go wrong}
 	\begin{itemize}
-		\item \textbf{ECC complexity brings risks:} More parameters than RSA create a larger attack surface.
-		\item \textbf{Implementation vulnerabilities:}
-		      \begin{itemize}
-			      \item Side-channel attacks on big-number arithmetic.
-			      \item Timing attacks when computation time depends on secret values.
-			      \item Point validation failures.
-		      \end{itemize}
-		\item \textbf{Design-level vulnerabilities:}
-		      \begin{itemize}
-			      \item Bad randomness in signature generation.
-			      \item Invalid curve attacks on key exchange.
-			      \item Inconsistent validation rules across implementations.
-		      \end{itemize}
-		\item Let's examine three major categories of ECC vulnerabilities.
+		\item \textbf{The math is fine.} Every incident in the rest of this lecture is an implementation or protocol mistake wrapped around an unbroken curve.
+		\item \textbf{Three failure modes, three case studies:}
+		      \begin{enumerate}
+			      \item \textbf{Bad randomness} in ECDSA signing: the PlayStation 3.
+			      \item \textbf{Unvalidated points} in key exchange: invalid-curve and small-subgroup attacks on TLS and Monero.
+			      \item \textbf{Ambiguous standards:} Ed25519 verifiers that disagree with each other.
+		      \end{enumerate}
+		\item \textbf{Plus the ever-present one:} side channels. Any operation whose timing depends on a secret is a leak. We return to it at the end.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{ECDSA with bad randomness}
 	\begin{itemize}
-		\item \textbf{ECDSA signing requires randomness:} Each signature uses a secret random $k$ in $s = (h + rd)/k \bmod n$.
-		\item \textbf{The catastrophic mistake—reusing $k$ for two different messages:}
+		\item \textbf{Recall:} each ECDSA signature uses a secret random $k$: $r = (k \cdot G)_x \bmod n$, \quad $s = \frac{h + rd}{k} \bmod n$.
+		\item \textbf{Quick exercise:} you see two signatures $(r, s_1)$, $(r, s_2)$ on messages with hashes $h_1 \neq h_2$, with the \emph{same} $r$. What happened, and what can you compute?
+	\end{itemize}
+	\begin{itemize}[<+->]
+		\item \textbf{Same $r$ means same $k$.} Then:
 		      \begin{itemize}
-			      \item Attacker gets: $s_1 = \frac{h_1 + rd}{k}$ and $s_2 = \frac{h_2 + rd}{k}$
-			      \item Compute: $s_1 - s_2 = \frac{h_1 - h_2}{k}$
-			      \item Recover randomness: $k = \frac{h_1 - h_2}{s_1 - s_2}$
-			      \item Recover private key: $d = \frac{sk - h}{r}$
+			      \item $s_1 - s_2 = \frac{(h_1 + rd) - (h_2 + rd)}{k} = \frac{h_1 - h_2}{k}$, so $k = \frac{h_1 - h_2}{s_1 - s_2}$
+			      \item and from either signature, $d = \frac{s_1 k - h_1}{r}$. Two signatures, one private key.
 		      \end{itemize}
-		\item \textbf{Why this is devastating:} Complete private key recovery from just two signatures.
-		      \begin{itemize}
-			      \item Even \emph{bias} is fatal: a few leaky bits of $k$ across many signatures let lattice attacks recover $d$ (Minerva, 2019; LadderLeak, 2020).
-		      \end{itemize}
-		\item \textbf{Prevention:} A strong RNG—or no RNG at all: derive $k$ deterministically from the private key and message (RFC 6979, now in FIPS 186-5).
+		\item \textbf{Even \emph{bias} is fatal:} a few leaky bits of $k$ across many signatures let lattice attacks recover $d$ (Minerva, 2019; LadderLeak, 2020).
+		\item \textbf{In the wild:} Bos et al. (2014) found Bitcoin transactions signed with repeated nonces; those private keys were recoverable by anyone.\footnote{\url{https://appliedcryptography.page/paper/\#ecc-practice}}
+		\item \textbf{Prevention:} a strong RNG---or no RNG at all: derive $k$ deterministically from the private key and message (RFC 6979, now in FIPS 186-5).
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Case study: PlayStation 3 hack (2010)}
 	\begin{itemize}
-		\item \textbf{The vulnerability:} Sony's PlayStation 3 reused the same $k$ value to sign different games.
-		\item \textbf{Discovery:} The fail0verflow team at the 27th Chaos Communication Congress.
-		\item \textbf{Attack process:}
+		\item \textbf{The vulnerability:} Sony's PS3 code signing used the \emph{same} $k$ for every ECDSA signature.
+		\item \textbf{Discovery:} the fail0verflow team at the 27th Chaos Communication Congress (December 2010).
 		      \begin{itemize}
-			      \item Collected ECDSA signatures from multiple PS3 games.
-			      \item Noticed identical $r$ values (indicating the same $k$).
-			      \item Applied the mathematical attack to recover Sony's signing key.
+			      \item Signatures on different files all shared the same $r$: the tell-tale sign from the previous slide.
+			      \item Their slide on Sony's RNG: xkcd's \texttt{return 4; // chosen by fair dice roll}.
 		      \end{itemize}
 		\item \textbf{Consequences:}
 		      \begin{itemize}
-			      \item Attackers could sign any program to run on PS3.
-			      \item Homebrew software and piracy became possible.
-			      \item Sony had to revoke and update their entire signing infrastructure.
+			      \item Anyone could sign code the console would run: homebrew, Linux, and piracy.
+			      \item Keys burned into the boot chain of consoles already sold cannot simply be rotated.
+			      \item Sony's response was legal: it sued George Hotz and fail0verflow members in January 2011.
 		      \end{itemize}
-		\item \textbf{Lesson:} Even major companies can make fundamental cryptographic mistakes.
+		\item \textbf{Lesson:} the previous slide is not theoretical. One reused nonce cost Sony the root of trust of a console generation.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Invalid curve attacks}
 	\begin{itemize}
-		\item \textbf{The vulnerability:} ECDH implementations that don't validate input points.
-		\item \textbf{Mathematical insight:} Point addition formulas don't use the $b$ coefficient:
-		      $$P + Q \text{ depends only on the coordinates of } P, Q \text{ and the coefficient } a$$
+		\item \textbf{The vulnerability:} an ECDH implementation that never checks whether the point it received is actually on the curve.
+		\item \textbf{The insight (from our formulas slide):} the addition and doubling formulas use $a$ but never $b$.
+		      \begin{itemize}
+			      \item So the same code computes ``correctly'' on \emph{every} curve $y^2 = x^3 + ax + b'$, whatever $b'$ is.
+			      \item Among those curves are some with terrible group orders.
+		      \end{itemize}
 		\item \textbf{Attack scenario:}
 		      \begin{itemize}
-			      \item Alice and Bob agree on curve and base point $G$.
-			      \item Bob sends legitimate public key $bG$.
-			      \item Alice sends point $P$ from a \emph{different, weaker} curve.
-			      \item Bob computes ``shared secret'' $bP$ on the wrong curve.
+			      \item Bob has a long-term ECDH key $b$ and computes $b \cdot P$ for whatever $P$ he is sent (as TLS-ECDH servers did).
+			      \item The attacker picks a curve $E'$ with the same $a$, and a point $P \in E'$ of \emph{small} order $m$, and sends $P$.
+			      \item Bob computes $b \cdot P$ on $E'$ and derives a key from it. But $b \cdot P$ is one of only $m$ points.
 		      \end{itemize}
-		\item \textbf{Why this works:} Addition formulas work the same way on the wrong curve.
-		\item \textbf{Attacker's advantage:} Choose $P$ from a curve with a weak discrete logarithm problem.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Invalid curve attack: The mathematics}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item \textbf{Attacker's strategy:} Choose point $P$ with small order on a weak curve.
-				      \begin{itemize}
-					      \item Small order means $kP = \mathcal{O}$ for a relatively small $k$.
-					      \item Bob computes $bP$, which also has small order.
-				      \end{itemize}
-				\item \textbf{Attack execution:}
-				      \begin{itemize}
-					      \item Bob believes he computed shared secret $bP$.
-					      \item He hashes $bP$ and uses result as encryption key.
-					      \item Since $bP$ belongs to a small subgroup, the attacker can brute-force it.
-				      \end{itemize}
-				\item \textbf{Real-world example:} Found in TLS-ECDH implementations (2015).
-				      \begin{itemize}
-					      \item Paper: ``Practical Invalid Curve Attacks on TLS-ECDH''\footnote{\url{https://appliedcryptography.page/paper/\#invalid-curve}}
-					      \item Jager, Schwenk, and Somorovsky
-				      \end{itemize}
-				\item \textbf{Prevention:} Always validate that points satisfy the correct curve equation.
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Invalid curve attack prevention}
+\begin{frame}{Invalid curve attacks: the math and the fix}
 	\begin{itemize}
-		\item \textbf{Point validation:} Before using any received point $P = (x, y)$:
-		      $$\text{Check: } y^2 \stackrel{?}{=} x^3 + ax + b \pmod{p}$$
-		\item \textbf{Additional checks:}
+		\item \textbf{Recovering $b$:} try all $m$ candidates for $b \cdot P$ against Bob's response: that reveals $b \bmod m$.
 		      \begin{itemize}
-			      \item Verify point is not the point at infinity.
-			      \item Ensure coordinates are in the valid range $[0, p-1]$.
-			      \item Check point has correct order (belongs to right subgroup).
+			      \item Repeat with other small orders $m_1, m_2, \ldots$ on other curves; combine with the CRT.
+			      \item This is Pohlig-Hellman (1.7) with the attacker \emph{choosing} the smooth group. Enough handshakes recover all of $b$.
 		      \end{itemize}
-		\item \textbf{Implementation note:} Many libraries now perform validation automatically.
+		\item \textbf{In the wild:} Jager, Schwenk and Somorovsky (2015) broke TLS-ECDH servers running Bouncy Castle and Oracle's Java.\footnote{\url{https://appliedcryptography.page/paper/\#invalid-curve}}
+		\item \textbf{The fix} is cheap. Before using a received point $P = (x, y)$:
+		      \begin{itemize}
+			      \item check $x, y \in [0, p-1]$ and $y^2 \equiv x^3 + ax + b \pmod{p}$ with the \emph{correct} $b$;
+			      \item check $P \neq \mathcal{O}$ and, if the curve has a cofactor, $n \cdot P = \mathcal{O}$.
+		      \end{itemize}
+		\item \textbf{Or design it away:} X25519 uses only $x$-coordinates: every $x$ is on the curve or its (strong) twist.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Why most elliptic curves aren't prime order}
+\begin{frame}{Cofactors: why Curve25519 doesn't have prime order}
+	\definitionbox{Order and cofactor}{The \textbf{cofactor} of a curve with $\#E$ points and a base point of prime order $\ell$ is $h = \#E / \ell$. Cryptography lives in the order-$\ell$ subgroup; trouble lives in the rest.}
 	\begin{itemize}
-		\item \textbf{Mathematical reality:} The number of points on a curve is rarely prime.
-		      \begin{itemize}
-			      \item For a curve $y^2 = x^3 + ax + b$ over $\mathbb{F}_p$, the number of points is close to $p$.
-			      \item Hasse's theorem: $|n - (p + 1)| \leq 2\sqrt{p}$ where $n$ is the number of points.
-			      \item Getting exactly a prime number is statistically unlikely.
-		      \end{itemize}
-		\item \textbf{Curve25519's structure:} Has $8 \times \ell$ points where $\ell$ is a large prime.
-		      \begin{itemize}
-			      \item The factor of 8 comes from the curve's mathematical structure.
-			      \item Designers chose parameters to minimize cofactor while optimizing performance.
-			      \item Trade-off: Accept small cofactor for better arithmetic efficiency.
-		      \end{itemize}
-		\item \textbf{Why not search for prime-order curves?}
-		      \begin{itemize}
-			      \item Finding curves with prime order is computationally expensive.
-			      \item Prime-order curves often have less efficient arithmetic.
-			      \item Small cofactors (like 4 or 8) are manageable with proper protocols.
-		      \end{itemize}
-		\item \textbf{Security implication:} Non-prime order enables small subgroup attacks if not handled carefully.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Understanding elliptic curve subgroups}
-	\begin{itemize}
-		\item \textbf{What is a subgroup?} A subset of curve points that forms its own group.
-		      \begin{itemize}
-			      \item Contains the identity element (the point at infinity $\mathcal{O}$).
-			      \item Closed under addition: if $P, Q$ are in the subgroup, so is $P + Q$.
-			      \item Every element has an inverse within the subgroup.
-		      \end{itemize}
-		\item \textbf{Why do subgroups exist?} Most elliptic curves don't have prime order.
-		      \begin{itemize}
-			      \item If a curve has $n$ points and $n = q \times r$, subgroups can exist.
-			      \item Points of order $q$ form a subgroup of size $q$.
-			      \item Points of order $r$ form a subgroup of size $r$.
-		      \end{itemize}
-		\item \textbf{Example: Curve25519's structure}
-		      \begin{itemize}
-			      \item Total points: $8 \times \ell$ where $\ell$ is a large prime.
-			      \item Has a subgroup of order 8 (small!).
-			      \item Has a subgroup of order $\ell$ (large, secure).
-			      \item Cryptographic operations target the large subgroup of order $\ell$.
-		      \end{itemize}
-		\item \textbf{Security implication:} Attackers try to push operations into small subgroups where discrete log is easy.
+		\item \textbf{Prime order is available:} $\#E \approx p$ is prime about as often as a random number that size, so one can search for it. NIST P-256 and secp256k1 have $h = 1$.
+		\item \textbf{But the fast shapes can't have it:} a Montgomery curve always has the point $(0, 0)$ of order 2; a complete Edwards addition law needs points of order 4. So $4 \mid h$.
+		\item \textbf{Bernstein's trade:} the fast, complete formulas with the smallest cofactor they allow: Curve25519 has $\#E = 8\ell$, Ed448 has $h = 4$.
+		\item \textbf{The price:} 7 points besides $\mathcal{O}$ of order dividing 8. Every protocol must decide what to do when one shows up.
 	\end{itemize}
 \end{frame}
 
@@ -1127,7 +982,7 @@
 				      \end{itemize}
 				\item \textbf{Defense:} Check the order of received points, or use designs that make the issue vanish.
 				      \begin{itemize}
-					      \item X25519 ``clamps'' secret scalars to multiples of 8 partly for this reason.
+					      \item X25519 ``clamps'' secrets to multiples of 8, so $s \cdot P = \mathcal{O}$ for small-order $P$; RFC 7748 then rejects the all-zero output.
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -1156,387 +1011,120 @@
 
 \begin{frame}{Invalid curve attacks vs. small subgroup attacks}
 	\begin{itemize}
-		\item \textbf{Two distinct but related vulnerabilities:}
-		      \begin{itemize}
-			      \item Both exploit weak point validation.
-			      \item Different defense strategies.
-		      \end{itemize}
+		\item \textbf{Both exploit missing point validation;} the defenses differ.
 		\item \textbf{Invalid curve attacks:}
 		      \begin{itemize}
-			      \item Attacker sends point from a \emph{different curve} entirely.
-			      \item Point satisfies $y^2 = x^3 + ax + b'$ with the wrong $b'$ coefficient.
-			      \item Exploits that addition formulas don't use $b$.
-			      \item Defense: Verify $y^2 \stackrel{?}{=} x^3 + ax + b$ with the correct $b$.
+			      \item Attacker sends a point from a \emph{different curve} $y^2 = x^3 + ax + b'$, exploiting that the formulas never use $b$.
+			      \item Defense: check $y^2 \stackrel{?}{=} x^3 + ax + b$ with the correct $b$ (or use $x$-only arithmetic on a twist-secure curve).
 		      \end{itemize}
 		\item \textbf{Small subgroup attacks:}
 		      \begin{itemize}
-			      \item Attacker sends point from the \emph{correct curve}.
-			      \item But point has small order (belongs to small subgroup).
-			      \item Example: Point $P$ where $8P = \mathcal{O}$ instead of the expected large order.
-			      \item Defense: Verify the point has the correct order or use prime-order curves.
+			      \item Attacker sends a point from the \emph{correct curve}, but of small order: $8P = \mathcal{O}$ instead of the expected order $\ell$.
+			      \item Defense: check the order ($\ell \cdot P \stackrel{?}{=} \mathcal{O}$), clear the cofactor, or use a prime-order group.
 		      \end{itemize}
-		\item Invalid curve = wrong equation; Small subgroup = wrong order.
+		\item \textbf{One line:} invalid curve = wrong equation; small subgroup = wrong order.
+		\item Both keep resurfacing in deployed protocols: see Cremers and Jackson (2019) on which protocols check what.\footnote{\url{https://appliedcryptography.page/paper/\#prime-order}}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Ed25519 validation inconsistencies}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
+	\begin{itemize}
+		\item \textbf{Expectation:} one standard (RFC 8032, 2017), one answer to ``is this signature valid?''
+		\item \textbf{Reality:} the RFC leaves the verifier choices, and libraries chose differently:
+		      \begin{itemize}
+			      \item \textbf{Which equation:} $S \cdot B = R + \func{hash}{\cdot} \cdot A$, or the cofactored $8S \cdot B = 8R + 8\func{hash}{\cdot} \cdot A$? They disagree exactly when $R$ or $A$ has a small-order component.
+			      \item \textbf{Which encodings:} accept a $y$-coordinate $\geq p$, a non-canonical encoding of $R$ or $A$? The RFC's test vectors never ask.
+			      \item \textbf{Which keys:} reject public keys of small order? Otherwise an attacker-chosen $A$ yields signatures valid for every message under the cofactored check.
+		      \end{itemize}
+		\item \textbf{Findings:} Henry de Valence's analysis,\footnote{\url{https://hdevalence.ca/blog/2020-10-04-its-25519am/}} and Chalkias, Garillot and Nikolaenko's ``Taming the many EdDSAs'' (2020), which fed edge cases to over a dozen libraries: the same signature is valid in one, invalid in the next.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Why verifier disagreements matter}
+	\begin{itemize}
+		\item \textbf{Consensus systems:} every blockchain node must reach the \emph{same} verdict on every transaction. If node A accepts a signature that node B rejects, the chain forks; a library upgrade becomes a consensus change.
+		\item \textbf{Protocol assumptions:} anything that treats a signature or key as unique breaks when $(R, S)$ and $(R + T, S)$ both verify, for a small-order $T$.
+		\item \textbf{The fix, Zcash-style (ZIP-215, 2020):} one explicit rule set (cofactored equation, $S < \ell$, explicit handling of non-canonical and small-order points), so that batch and single verification agree and every implementation gives the same answer.
+		\item \textbf{Lesson:} ``sufficient, but not required'' is not a sentence that belongs in a signature verification spec.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Ristretto: a prime-order group on top of Curve25519}
+	\begin{itemize}
+		\item \textbf{The dilemma:} fast, complete curves (Curve25519) have cofactor 8, but most protocols and their security proofs assume a \emph{prime-order} group. Patching each protocol by hand (``multiply by 8 here'') is error-prone.
+		\item \textbf{Real bugs:} Monero (2017): a missing subgroup check let one output be spent up to 8 times. Tor v3 onion services: 8 addresses for one service.
+		\item \textbf{Ristretto's answer}\footnote{\url{https://ristretto.group/why_ristretto.html}} (after Hamburg's Decaf, 2015):\footnote{\url{https://appliedcryptography.page/paper/\#ecc-decaf}} a new \emph{encoding} in which points that differ by a small-order point encode to the same bytes.
+		      \begin{itemize}
+			      \item Protocols see a group of prime order $\ell$; underneath runs plain Curve25519 arithmetic at full speed.
+			      \item Used by \texttt{curve25519-dalek}, Signal's private groups, and most new Curve25519 designs.
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Constant time: why the textbook algorithm leaks}
+	\begin{columns}[t]
+		\begin{column}{0.5\textwidth}
+			\textbf{The leak:} textbook double-and-add
 			\begin{itemize}
-				\item \textbf{Expectation:} One standard should mean identical behavior across implementations.
-				\item \textbf{Reality:} Ed25519 implementations have different validation criteria.
-				\item \textbf{The problem:} RFC 8032 doesn't fully specify validation requirements.
-				      \begin{itemize}
-					      \item How to validate signature point $R$.
-					      \item How to validate public key point $A$.
-					      \item How to verify the signature equation.
-				      \end{itemize}
-				\item \textbf{Research findings:} Henry de Valence analyzed 15 Ed25519 implementations.\footnote{\url{https://hdevalence.ca/blog/2020-10-04-its-25519am/}}
-				      \begin{itemize}
-					      \item Each had different validation criteria.
-					      \item The same signature could be valid in one implementation, invalid in another.
-				      \end{itemize}
+				\item \texttt{R = 2R; if bit == 1: R = R + G}
+				\item Adds happen only on 1-bits: timing, power or cache footprint spell out $k$.
+				\item Minerva (2019) recovered ECDSA keys this way from smartcards.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{The fix:} the Montgomery ladder
+			\begin{itemize}
+				\item Keep $(R_0, R_1)$ with $R_1 = R_0 + G$ always.
+				\item Every bit does one add \emph{and} one double: $(2R_0, R_0 + R_1)$ for a 0, $(R_0 + R_1, 2R_1)$ for a 1.
+				\item Select by arithmetic (a constant-time swap), never by a branch.
 			\end{itemize}
 		\end{column}
 	\end{columns}
-\end{frame}
-
-\begin{frame}{Real-world impact of validation differences}
+	\vspace{-0.15cm}
 	\begin{itemize}
-		\item \textbf{Consensus failures:} In blockchain networks:
-		      \begin{itemize}
-			      \item Some nodes accept a signature, others reject it.
-			      \item Breaks consensus protocol assumptions.
-			      \item Can lead to network splits or transaction inconsistencies.
-		      \end{itemize}
-		\item \textbf{Interoperability issues:} Systems using different libraries may disagree.
-		\item \textbf{Security implications:} Inconsistent validation can enable attacks.
-		      \begin{itemize}
-			      \item Malleability attacks.
-			      \item Signature forgery in edge cases.
-		      \end{itemize}
-		\item \textbf{The solution:} Standardization efforts like ZIP-215 (Zcash) aim to:
-		      \begin{itemize}
-			      \item Specify exact validation rules.
-			      \item Ensure all implementations behave identically.
-			      \item Prevent consensus failures.
-		      \end{itemize}
-		\item \textbf{Lesson:} Cryptographic standards must be completely unambiguous.
+		\item \textbf{Same rule wherever secrets touch:} no branches, lookups, early exits or variable-time division on secrets.
+		\item \textbf{Hard even for experts:} LadderLeak (2020) broke OpenSSL ECDSA through a leaky ladder swap; TPM-Fail (2019) extracted ECDSA keys from Intel and STMicro TPM chips via timing.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Ristretto: Prime-order groups from non-prime curves}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item Modern elliptic curves face a fundamental trade-off:
-				      \begin{itemize}
-					      \item Fast curves (Curve25519): Have cofactor $h = 8$, not prime order.
-					      \item Prime-order curves: Slower, harder to implement in constant time.
-				      \end{itemize}
-				\item \textbf{Why this matters:} Many protocols assume a prime-order group.
-				      \begin{itemize}
-					      \item Security proofs require prime order.
-					      \item The cofactor creates edge cases and vulnerabilities.
-					      \item Ad-hoc protocol modifications are error-prone.
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Ristretto: Prime-order groups from non-prime curves}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\begin{itemize}
-				\item \textbf{Ristretto's solution:} Provides a prime-order group abstraction on top of Curve25519.\footnote{\url{https://ristretto.group/why_ristretto.html}}
-				      \begin{itemize}
-					      \item Based on Mike Hamburg's Decaf construction.\footnote{\url{https://appliedcryptography.page/paper/\#ecc-decaf}}
-					      \item No performance penalty vs. regular Curve25519.
-					      \item Clean abstraction for protocol designers.
-				      \end{itemize}
-				\item \textbf{Real vulnerabilities from cofactor issues:}
-				      \begin{itemize}
-					      \item Monero double-spend bug (actually octuple-spend due to $h=8$).
-					      \item Tor v3 onion addresses: 8 different addresses per service.
-					      \item Required expensive validation checks throughout protocols.
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Library selection: The ecosystem landscape}
+\begin{frame}{Library selection: don't implement ECC from scratch}
 	\begin{itemize}
-		\item \textbf{Don't implement ECC from scratch:} Cryptographic implementations require years of hardening.
-		\item \textbf{Rust ecosystem:}
-		      \begin{itemize}
-			      \item \texttt{curve25519-dalek}, \texttt{ed25519-dalek}: the standard X25519/Ed25519 stack.
-			      \item \texttt{p256}, \texttt{k256}: RustCrypto pure-Rust NIST P-256 and secp256k1.
-			      \item \texttt{aws-lc-rs}: audited, actively maintained; \texttt{rustls}'s default provider (replacing \texttt{ring}).
-		      \end{itemize}
-		\item \textbf{Go ecosystem:}
-		      \begin{itemize}
-			      \item \texttt{crypto/ecdh}, \texttt{crypto/ed25519}: standard library, misuse-resistant APIs.
-			      \item \texttt{filippo.io/edwards25519}: lower-level Edwards arithmetic when you need it.
-			      \item (\texttt{crypto/elliptic} point arithmetic is deprecated—use \texttt{crypto/ecdh}.)
-		      \end{itemize}
-		\item \textbf{Selection criteria:}
-		      \begin{itemize}
-			      \item Independent security audits; active maintenance.
-			      \item Constant-time guarantees.
-			      \item Clear documentation and examples.
-		      \end{itemize}
+		\item \textbf{Everything in this section was an implementation bug} around unbroken math. Hardened libraries have already made, and fixed, these mistakes.
+		\item \textbf{Rust:} \texttt{curve25519-dalek}, \texttt{ed25519-dalek} (X25519, Ed25519, Ristretto); \texttt{p256}, \texttt{k256} (RustCrypto); \texttt{aws-lc-rs}, \texttt{rustls}'s default provider (replacing \texttt{ring}).
+		\item \textbf{Go:} \texttt{crypto/ecdh} and \texttt{crypto/ed25519} in the standard library, with misuse-resistant APIs; \texttt{filippo.io/edwards25519} for lower-level Edwards arithmetic. (\texttt{crypto/elliptic} point arithmetic is deprecated: use \texttt{crypto/ecdh}.)
+		\item \textbf{C:} libsodium (the NaCl lineage: X25519, Ed25519, Ristretto, and almost no knobs to misconfigure); BoringSSL or OpenSSL when you need P-256 and certificates.
+		\item \textbf{How to tell a good one:} independent audits, constant-time by contract, and it passes Project Wycheproof's edge-case test vectors: invalid points, non-canonical encodings, degenerate signatures.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Performance considerations in practice}
+\begin{frame}{Where this is heading: post-quantum hybrids}
 	\begin{itemize}
-		\item \textbf{Scalar multiplication is the bottleneck:} Operations like $k \cdot G$ dominate runtime.
-		\item \textbf{Precomputation strategies:}
-		      \begin{itemize}
-			      \item Store multiples of the base point: $G, 2G, 4G, 8G, \ldots$
-			      \item Sliding window methods for arbitrary points.
-			      \item Trade memory for speed.
-		      \end{itemize}
-		\item \textbf{Coordinate systems matter:}
-		      \begin{itemize}
-			      \item Affine coordinates: Simple but require an expensive modular inverse.
-			      \item Jacobian coordinates: Avoid inverse, faster for repeated operations.
-			      \item Montgomery ladders: Optimal for X25519-style protocols.
-		      \end{itemize}
-		\item \textbf{Real-world impact:}
-		      \begin{itemize}
-			      \item TLS handshake time directly affects user experience.
-			      \item Mobile devices: battery life and thermal constraints.
-			      \item IoT devices: limited computational resources.
-		      \end{itemize}
+		\item \textbf{The threat:} a large quantum computer running Shor's algorithm solves the ECDLP outright. Every curve in this lecture falls, and the choice of curve makes no difference.
+		\item \textbf{The standards:} NIST finalized its first post-quantum standards in August 2024: ML-KEM (key exchange), ML-DSA and SLH-DSA (signatures), FIPS 203--205.
+		\item \textbf{Already deployed:} the major browsers run \emph{hybrid} X25519 + ML-KEM key exchange in TLS by default. The session key is secure if \emph{either} half holds.
+		\item \textbf{Why key exchange first:} ``harvest now, decrypt later.'' Traffic recorded today can be decrypted by a future quantum computer; a signature only needs to be unforgeable \emph{now}.
+		\item \textbf{So elliptic curves stay:} as the classical half of every hybrid, and in the signatures not yet migrated. Post-quantum cryptography gets its own lecture (2.6); verified implementations get theirs (2.5).
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Constant-time implementation: Why it matters}
+\begin{frame}{What to remember from this lecture}
 	\begin{itemize}
-		\item \textbf{The threat:} Attackers can measure timing differences to extract secrets.
-		\item \textbf{Vulnerable patterns in ECC:}
-		      \begin{itemize}
-			      \item Conditional branches based on secret bits
-			      \item Variable-time modular arithmetic
-			      \item Memory access patterns that depend on secret data
-		      \end{itemize}
-		\item \textbf{Example: Scalar multiplication timing}
-		      \begin{itemize}
-			      \item Binary method: \texttt{if (bit $\stackrel{?}{=}$ 1) result += point}
-			      \item Timing reveals which bits are 1 vs. 0.
-			      \item After enough measurements, the attacker recovers the private key.
-		      \end{itemize}
-		\item \textbf{Defense:} Always perform the same operations regardless of secret values.
-		\item \textbf{Modern libraries handle this:} But you need to choose libraries that guarantee constant-time behavior.
+		\item \textbf{Elliptic curves are Diffie-Hellman in a stranger group:} $k \cdot G$ instead of $g^k$. Only the generic $\sqrt{n}$ attacks apply, so 256 bits suffice.
+		\item \textbf{One-way by construction:} $k \cdot G$ costs a few hundred point operations; recovering $k$ costs $2^{128}$.
+		\item \textbf{ECDSA lives or dies by its nonce.} Reused: two signatures leak the key (PS3). Biased: lattices leak the key. Use RFC 6979, or use Ed25519.
+		\item \textbf{Validate what you receive, or use a design with nothing to validate.} Invalid-curve and small-subgroup attacks are skipped checks; X25519 and Ristretto leave no check to skip.
+		\item \textbf{Ambiguity in a standard becomes disagreement in the field:} fifteen years on, Ed25519 verifiers still disagree at the edges.
+		\item \textbf{Where things stand:} X25519 in TLS 1.3, SSH and Signal; Ed25519 is OpenSSH's default key type since 2023; Bitcoin, Ethereum and the web PKI stay on ECDSA.
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Memory management and sensitive data}
-	\begin{itemize}
-		\item \textbf{The problem:} Private keys in memory can be extracted by attackers.
-		\item \textbf{Attack vectors:}
-		      \begin{itemize}
-			      \item Memory dumps during crashes.
-			      \item Swap files writing secrets to disk.
-			      \item Cold boot attacks on RAM.
-			      \item Process memory scanning.
-		      \end{itemize}
-		\item \textbf{Defense strategies:}
-		      \begin{itemize}
-			      \item Zero memory immediately after use.
-			      \item Use protected memory (mlock/VirtualLock).
-			      \item Hardware security modules (HSMs) for high-value keys.
-			      \item Minimize lifetime of secrets in memory.
-		      \end{itemize}
-		\item \textbf{Language-specific considerations:}
-		      \begin{itemize}
-			      \item Rust: \texttt{zeroize} crate for secure memory clearing.
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Testing elliptic curve implementations}
-	\begin{itemize}
-		\item \textbf{Standard test vectors:} Use RFC and NIST test cases to verify correctness.
-		\item \textbf{Cross-implementation testing:}
-		      \begin{itemize}
-			      \item Generate signatures with one library, verify with another.
-			      \item Perform ECDH with different implementations.
-			      \item Ensure interoperability across programming languages.
-		      \end{itemize}
-		\item \textbf{Edge case testing:}
-		      \begin{itemize}
-			      \item Point at infinity handling.
-			      \item Invalid curve points.
-			      \item Malformed signature formats.
-			      \item Zero and maximum values.
-		      \end{itemize}
-		\item \textbf{Property-based testing:}
-		      \begin{itemize}
-			      \item Verify mathematical properties: $P + Q = Q + P$.
-			      \item Test with random inputs within valid ranges.
-			      \item Ensure operations always produce valid outputs.
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Real-world case study: WhatsApp's implementation}
-	\begin{itemize}
-		\item \textbf{Challenge:} Secure messaging for 3+ billion users across diverse devices.
-		\item \textbf{Solution:} Signal Protocol with Curve25519 and Ed25519.
-		\item \textbf{Implementation details:}
-		      \begin{itemize}
-			      \item X25519 for key agreement (ECDH).
-			      \item Ed25519 for identity key signatures.
-			      \item Custom optimizations for mobile platforms.
-			      \item Cross-platform C library for consistency.
-		      \end{itemize}
-		\item \textbf{Engineering considerations:}
-		      \begin{itemize}
-			      \item Battery life optimization on mobile devices.
-			      \item Constant-time implementation to prevent side-channel attacks.
-			      \item Extensive testing across iOS, Android, and desktop platforms.
-			      \item Regular security audits by external firms.
-		      \end{itemize}
-		\item \textbf{Lessons:} Real-world deployment requires balancing security, performance, and compatibility.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Real-world case study: TLS 1.3 performance}
-	\begin{itemize}
-		\item \textbf{Challenge:} Replace RSA key exchange with elliptic curve alternatives.
-		\item \textbf{Implementation impact:}
-		      \begin{itemize}
-			      \item X25519 ECDH: significantly faster than 2,048-bit RSA key exchange.
-			      \item Smaller certificates reduce network overhead.
-			      \item Enables features like 0-RTT handshakes.
-		      \end{itemize}
-		\item \textbf{Engineering challenges solved:}
-		      \begin{itemize}
-			      \item Constant-time implementation in BoringSSL.
-			      \item Optimized assembly for common architectures.
-			      \item Fallback implementations for edge cases.
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Common implementation pitfalls}
-	\begin{itemize}
-		\item \textbf{Pitfall 1: Poor random number generation}
-		      \begin{itemize}
-			      \item Using \texttt{rand()} instead of a cryptographic RNG.
-			      \item Not seeding random generators properly.
-			      \item Reusing random values (the PlayStation 3 scenario).
-		      \end{itemize}
-		\item \textbf{Pitfall 2: Skipping input validation}
-		      \begin{itemize}
-			      \item Not checking if points are on the correct curve.
-			      \item Accepting points at infinity without proper handling.
-			      \item Missing range checks on coordinates.
-		      \end{itemize}
-		\item \textbf{Pitfall 3: Side-channel vulnerabilities}
-		      \begin{itemize}
-			      \item Conditional operations based on secret data.
-			      \item Variable memory access patterns.
-			      \item Timing differences in error handling.
-		      \end{itemize}
-		\item \textbf{Prevention:} Use audited libraries, follow security guidelines, test extensively.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Best practices for ECC implementation}
-	\begin{itemize}
-		\item \textbf{Library selection:}
-		      \begin{itemize}
-			      \item Choose libraries with security audit history.
-			      \item Prefer constant-time implementations.
-			      \item Ensure active maintenance and updates.
-		      \end{itemize}
-		\item \textbf{Development practices:}
-		      \begin{itemize}
-			      \item Use standard curves (avoid custom parameters).
-			      \item Implement comprehensive input validation.
-			      \item Clear sensitive data from memory.
-			      \item Use secure random number generation.
-		      \end{itemize}
-		\item \textbf{Testing and deployment:}
-		      \begin{itemize}
-			      \item Test with standard vectors and edge cases.
-			      \item Perform interoperability testing.
-			      \item Monitor for timing analysis vulnerabilities.
-			      \item Plan for cryptographic agility (algorithm migration).
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Digital signatures: real-world adoption patterns}
-	\begin{itemize}
-		\item \textbf{ECDSA dominance:}
-		      \begin{itemize}
-			      \item Bitcoin, Ethereum, most cryptocurrencies.
-			      \item TLS certificates (still common).
-			      \item Legacy enterprise systems.
-		      \end{itemize}
-		\item \textbf{Ed25519 growth:}
-		      \begin{itemize}
-			      \item Supported in OpenSSH since 2014, the default since 2023.
-			      \item Signal Protocol messaging.
-			      \item Software signing (OpenBSD \texttt{signify}, \texttt{minisign}, OpenWrt).
-			      \item Newer blockchain projects (Solana, Cardano, etc.).
-		      \end{itemize}
-		\item \textbf{Migration considerations:}
-		      \begin{itemize}
-			      \item Interoperability with existing systems.
-			      \item Library availability in your ecosystem.
-			      \item Compliance requirements.
-			      \item Performance requirements.
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Digital signatures: practical implementation guidelines}
-	\begin{itemize}
-		\item \textbf{For ECDSA implementations:}
-		      \begin{itemize}
-			      \item Use cryptographically secure random number generator.
-			      \item Never reuse nonce values.
-			      \item Implement constant-time operations.
-			      \item Validate all input points.
-		      \end{itemize}
-		\item \textbf{For Ed25519 implementations:}
-		      \begin{itemize}
-			      \item Follow RFC 8032 specification carefully.
-			      \item Handle validation edge cases consistently.
-			      \item Use established libraries (libsodium, etc.).
-		      \end{itemize}
-		\item \textbf{General best practices:}
-		      \begin{itemize}
-			      \item Don't implement from scratch.
-			      \item Use constant-time libraries.
-			      \item Test with standard vectors.
-		      \end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Looking forward: Implementation challenges}
-	\begin{itemize}
-		\item \textbf{Post-quantum transition:} A large quantum computer running Shor's algorithm would break ECDLP outright.
-		      \begin{itemize}
-			      \item NIST finalized its first post-quantum standards in August 2024: ML-KEM, ML-DSA, and SLH-DSA (FIPS 203--205).
-			      \item Already deployed: major browsers now run \emph{hybrid} X25519 + ML-KEM key exchange in TLS, hedging against ``harvest now, decrypt later.''
-			      \item Elliptic curves aren't going anywhere soon: hybrids keep them in the loop, and signatures are less urgent to migrate than key exchange.
-			      \item Discussed in a future class topic!
-		      \end{itemize}
-		\item \textbf{Formal verification:} Mathematical proofs of implementation correctness.
-		      \begin{itemize}
-			      \item Higher assurance for critical applications.
-			      \item Trade-off between verification effort and deployment flexibility.
-			      \item Discussed in a future class topic!
-		      \end{itemize}
-	\end{itemize}
+\begin{frame}{Discussion time}
+	\begin{enumerate}
+		\item \textbf{P-256 or X25519?} The NIST curves have unexplained seeds and no known weakness; Curve25519 has explained constants and a cofactor. Which would you ship, and what evidence would change your mind?
+		\item \textbf{Who owns a validation bug?} RFC 8032 said ``sufficient, but not required.'' The libraries picked differently. Zcash had to write its own rules. Where should the responsibility have sat?
+		\item \textbf{Determinism cuts both ways.} Deterministic nonces ended the PS3 failure mode but opened the door to fault attacks. Would you rather trust the RNG or the hardware?
+		\item \textbf{Bitcoin took twelve years to adopt Schnorr signatures} that had been patent-free since 2008. What does that tell you about upgrading cryptography in a system nobody controls?
+	\end{enumerate}
 \end{frame}
 
 \begin{frame}[plain]
