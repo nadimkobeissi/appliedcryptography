@@ -2205,7 +2205,7 @@ queries[
 			\end{vpmodel}
 		\end{column}
 		\begin{column}{0.54\textwidth}
-			\begin{vpresult}{The trace ends with the consequence}
+			\begin{vpresult}{The trace ends with the send that makes it count}
 				\begin{lstlisting}[basicstyle=\vpcode]
 FAIL x authentication? Bob -> Alice:
        e[precondition[Alice -> Carol: m2]]
@@ -2215,14 +2215,15 @@ FAIL x authentication? Bob -> Alice:
  not in this one, is successfully used in ASSERT(MAC(psk, e), h)?
  within Alice's state: Bob sent it once, Alice accepts it twice,
  so agreement is not injective.
- ! Alice sends m2 to Carol despite the query failing.
+ ! Alice still sends m2 to Carol, so the failure counts.
 \end{lstlisting}
 			\end{vpresult}
 			\vspace{0.1em}
 			\scriptsize
 			\begin{itemize}
-				\item \texttt{precondition}, the only query option, restricts an authentication query to executions in which a later message is also sent
-				\item \texttt{m2} is guarded on its way to Carol, so a query on that message alone would never reveal the earlier failure. The option ties the two together
+				\item \texttt{precondition}, the only query option, restricts a query to the executions in which the named message is sent. Read it as: the property is a precondition for that send
+				\item Alice may forward \texttt{m2} only after authenticating \texttt{e}. Had she halted before sending it, the execution would fall outside the query and contradict nothing
+				\item The same shape states secrecy of a session key \emph{on acceptance}: \texttt{confidentiality? k[precondition[Client -> Server: req]]} ignores a key the client derived and then discarded at a failed check
 			\end{itemize}
 		\end{column}
 	\end{columns}
