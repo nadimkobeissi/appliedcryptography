@@ -29,9 +29,9 @@
 \definecolor{vpcomment}{HTML}{6E7F62}
 
 \lstdefinelanguage{Verifpal}{
-	morekeywords=[1]{principal, attacker, queries, knows, generates, leaks, public, private, password, phase, from, active, passive},
+	morekeywords=[1]{principal, attacker, queries, knows, generates, leaks, public, private, phase, from, active, passive},
 	morekeywords=[2]{confidentiality, authentication, freshness, unlinkability, equivalence, precondition},
-	morekeywords=[3]{ASSERT, CONCAT, SPLIT, HASH, MAC, HKDF, PW_HASH, PUBKEY, DH_KEX, ENC, DEC, AEAD_ENC, AEAD_DEC, PKE_ENC, PKE_DEC, SIGN, SIGNVERIF, RINGSIGN, RINGSIGNVERIF, BLIND, UNBLIND, KEM_ENCAP, KEM_DECAP, SHAMIR_SPLIT, SHAMIR_JOIN},
+	morekeywords=[3]{ASSERT, CONCAT, SPLIT, HASH, MAC, HKDF, PUBKEY, DH_KEX, ENC, DEC, AEAD_ENC, AEAD_DEC, PKE_ENC, PKE_DEC, SIGN, SIGNVERIF, RINGSIGN, RINGSIGNVERIF, BLIND, UNBLIND, KEM_ENCAP, KEM_DECAP, SHAMIR_SPLIT, SHAMIR_JOIN},
 	morekeywords=[4]{weak, forgeable, malleable},
 	morekeywords=[5]{PASS, Pass},
 	morekeywords=[6]{FAIL, Fail},
@@ -1802,7 +1802,7 @@
 			\hline
 			Model                & Applied $\pi$      & Multiset rewriting & Principals \& messages \\
 			\hline
-			Primitives           & User-defined       & User-defined       & 25 built in, fixed     \\
+			Primitives           & User-defined       & User-defined       & 24 built in, fixed     \\
 			\hline
 			Sessions             & Unbounded          & Unbounded          & Bounded (2 by default) \\
 			\hline
@@ -1948,7 +1948,6 @@ queries[
 	\begin{itemize}
 		\item \texttt{knows public c0} \quad Everyone has it, the attacker included
 		\item \texttt{knows private m1} \quad Prior knowledge, not shared with the attacker. \textbf{Long-term}: the same value in every session and every run
-		\item \texttt{knows password pw} \quad Private, but weak. If it lands inside a primitive whose output the attacker obtains, the attacker recovers it. Pass it through \texttt{PW\_HASH} first
 		\item \texttt{generates a} \quad \textbf{Fresh}: drawn anew on every run, and separately in every session
 		\item \texttt{leaks a} \quad Hands a value the principal already knows to the attacker, at that point in the protocol
 		\item \texttt{ga = PUBKEY(a)} \quad Assignment, always to a primitive expression
@@ -2021,7 +2020,7 @@ d2 = AEAD_DEC(k, e1, c0)?    // failure halts Bob here, permanently
 			\hline
 			Core              & \texttt{ASSERT}, \texttt{CONCAT}, \texttt{SPLIT}                    \\
 			\hline
-			Hashing           & \texttt{HASH}, \texttt{MAC}, \texttt{HKDF}, \texttt{PW\_HASH}       \\
+			Hashing           & \texttt{HASH}, \texttt{MAC}, \texttt{HKDF}                         \\
 			\hline
 			Public key        & \texttt{PUBKEY}, \texttt{DH\_KEX}                                   \\
 			\hline
@@ -2040,7 +2039,7 @@ d2 = AEAD_DEC(k, e1, c0)?    // failure halts Bob here, permanently
 	\vspace{0.3em}
 	\footnotesize
 	\begin{itemize}
-		\item Twenty-five, and you cannot add a twenty-sixth. That is the point
+		\item Twenty-four, and you cannot add a twenty-fifth. That is the point
 		\item \texttt{DH\_KEX(their\_public, my\_private)} is commutative, so Alice's and Bob's shared secrets are the same term
 		\item A primitive may be annotated \textbf{broken}: \texttt{SIGN[forgeable](sk, m)}, also \texttt{weak} and \texttt{malleable}. We come back to these once phases are on the table
 	\end{itemize}
