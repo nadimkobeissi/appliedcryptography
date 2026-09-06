@@ -31,7 +31,7 @@
 \lstdefinelanguage{Verifpal}{
 	morekeywords=[1]{principal, attacker, queries, knows, generates, leaks, public, private, phase, from, active, passive},
 	morekeywords=[2]{confidentiality, authentication, freshness, unlinkability, equivalence, precondition},
-	morekeywords=[3]{ASSERT, CONCAT, SPLIT, HASH, MAC, HKDF, PUBKEY, DH_KEX, ENC, DEC, AEAD_ENC, AEAD_DEC, PKE_ENC, PKE_DEC, SIGN, SIGNVERIF, RINGSIGN, RINGSIGNVERIF, BLIND, UNBLIND, KEM_ENCAP, KEM_DECAP, SHAMIR_SPLIT, SHAMIR_JOIN},
+	morekeywords=[3]{ASSERT, CONCAT, SPLIT, HASH, MAC, HKDF, PUBKEY, DH_KEX, ENC, DEC, AEAD_ENC, AEAD_DEC, PKE_ENC, PKE_DEC, SIGN, SIGNVERIF, RINGSIGN, RINGSIGNVERIF, BLIND, UNBLIND, KEM_ENCAP, KEM_DECAP, THRESHOLD_SPLIT, THRESHOLD_SIGN, THRESHOLD_JOIN},
 	morekeywords=[4]{weak, forgeable, malleable},
 	morekeywords=[5]{PASS, Pass},
 	morekeywords=[6]{FAIL, Fail},
@@ -1802,7 +1802,7 @@
 			\hline
 			Model                & Applied $\pi$      & Multiset rewriting & Principals \& messages \\
 			\hline
-			Primitives           & User-defined       & User-defined       & 24 built in, fixed     \\
+			Primitives           & User-defined       & User-defined       & 25 built in, fixed     \\
 			\hline
 			Sessions             & Unbounded          & Unbounded          & Bounded (2 by default) \\
 			\hline
@@ -1864,13 +1864,13 @@
 attacker[active]
 principal Alice[
   knows private k
-  generates m1
-  e1 = AEAD_ENC(k, m1, nil)
+  generates n1, m1
+  e1 = AEAD_ENC(k, n1, m1, nil)
 ]
-Alice -> Bob: e1
+Alice -> Bob: n1, e1
 principal Bob[
   knows private k
-  d1 = AEAD_DEC(k, e1, nil)?
+  d1 = AEAD_DEC(k, n1, e1, nil)?
 ]
 queries[
   confidentiality? m1
@@ -1885,9 +1885,9 @@ queries[
 			\vspace{0.2em}
 			\begin{itemize}
 				\item An \textbf{active} attacker owns the network
-				\item Alice and Bob share a long-term key \texttt{k}. Alice draws a fresh \texttt{m1} and encrypts it
-				\item The ciphertext crosses the network, so the attacker sees it
-				\item Two questions: can the attacker read \texttt{m1}, and could Bob accept an \texttt{e1} that Alice never sent him?
+				\item Alice and Bob share a long-term \texttt{k}. She seals a fresh \texttt{m1} under a fresh nonce \texttt{n1}
+				\item Both cross the network, as in any real implementation
+				\item Two questions: can the attacker read \texttt{m1}, and could Bob accept an \texttt{e1} Alice never sent?
 			\end{itemize}
 			\vspace{0.3em}
 			The \texttt{?} makes that decryption \textbf{checked}: if it fails, Bob halts there.
@@ -1995,8 +1995,8 @@ Bob -> Alice: [gb], e2   // gb is guarded: readable, not replaceable
 \begin{frame}[fragile]{Checked primitives: the question mark}
 	\begin{vpmodel}{Two decryptions, two behaviors}
 		\begin{lstlisting}
-d1 = AEAD_DEC(k, e1, c0)     // failure produces a value and Bob carries on
-d2 = AEAD_DEC(k, e1, c0)?    // failure halts Bob here, permanently
+d1 = AEAD_DEC(k, n1, e1, c0)   // failure produces a value and Bob carries on
+d2 = AEAD_DEC(k, n1, e1, c0)?  // failure halts Bob here, permanently
 \end{lstlisting}
 	\end{vpmodel}
 	\vspace{0.3em}
@@ -2024,25 +2024,73 @@ d2 = AEAD_DEC(k, e1, c0)?    // failure halts Bob here, permanently
 			\hline
 			Public key        & \texttt{PUBKEY}, \texttt{DH\_KEX}                                   \\
 			\hline
-			Encryption        & \texttt{ENC}, \texttt{DEC}, \texttt{AEAD\_ENC}, \texttt{AEAD\_DEC}, \\
-			                  & \texttt{PKE\_ENC}, \texttt{PKE\_DEC}                                \\
+			Encryption        & \texttt{ENC}, \texttt{DEC}, \texttt{AEAD\_ENC}, \texttt{AEAD\_DEC},           \\
+			                  & \texttt{PKE\_ENC}, \texttt{PKE\_DEC}                                          \\
 			\hline
-			Signatures        & \texttt{SIGN}, \texttt{SIGNVERIF}, \texttt{RINGSIGN},               \\
-			                  & \texttt{RINGSIGNVERIF}, \texttt{BLIND}, \texttt{UNBLIND}            \\
+			Signatures        & \texttt{SIGN}, \texttt{SIGNVERIF}, \texttt{RINGSIGN},                         \\
+			                  & \texttt{RINGSIGNVERIF}, \texttt{BLIND}, \texttt{UNBLIND}                      \\
 			\hline
-			Key encapsulation & \texttt{KEM\_ENCAP}, \texttt{KEM\_DECAP}                            \\
+			Key encapsulation & \texttt{KEM\_ENCAP}, \texttt{KEM\_DECAP}                                      \\
 			\hline
-			Secret sharing    & \texttt{SHAMIR\_SPLIT}, \texttt{SHAMIR\_JOIN}                       \\
+			Threshold         & \texttt{THRESHOLD\_SPLIT}, \texttt{THRESHOLD\_SIGN}, \texttt{THRESHOLD\_JOIN} \\
 			\hline
 		\end{tabular}
 	\end{center}
 	\vspace{0.3em}
 	\footnotesize
 	\begin{itemize}
-		\item Twenty-four, and you cannot add a twenty-fifth. That is the point
-		\item \texttt{DH\_KEX(their\_public, my\_private)} is commutative, so Alice's and Bob's shared secrets are the same term
-		\item A primitive may be annotated \textbf{broken}: \texttt{SIGN[forgeable](sk, m)}, also \texttt{weak} and \texttt{malleable}. We come back to these once phases are on the table
+		\item Twenty-five, and you cannot add a twenty-sixth. That is the point
+		\item \texttt{DH\_KEX(their\_public, my\_private)} is commutative, so Alice's and Bob's secrets are the same term
+		\item A primitive may be annotated \textbf{broken}: \texttt{SIGN[forgeable](sk, m)}, also \texttt{weak} and \texttt{malleable}, once phases are on the table
 	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{The nonce slot, and what fills it}
+	\begin{columns}[t]
+		\begin{column}{0.45\textwidth}
+			\begin{vpmodel}[top=0.5mm, bottom=0.5mm]{A counter that never advances}
+				\begin{lstlisting}[basicstyle=\vpcode]
+attacker[passive]
+principal Alice[
+  knows private k
+  knows public ctr
+  generates m1, m2
+  e1 = AEAD_ENC(k, ctr, m1, nil)
+  e2 = AEAD_ENC(k, ctr, m2, nil)
+]
+Alice -> Bob: e1, e2
+principal Bob[
+  knows private k
+  knows public ctr
+  d1 = AEAD_DEC(k, ctr, e1, nil)?
+  d2 = AEAD_DEC(k, ctr, e2, nil)?
+]
+queries[
+  confidentiality? m1
+  confidentiality? m2
+]
+\end{lstlisting}
+			\end{vpmodel}
+		\end{column}
+		\begin{column}{0.53\textwidth}
+			\begin{vpresult}[top=0.5mm, bottom=0.5mm]{Both messages, to an attacker that never touched the wire}
+				\begin{lstlisting}[basicstyle=\vpcode]
+FAIL x confidentiality? m1
+ | 1. Attacker observes e1 on the wire.
+ | 2. Attacker observes e2 on the wire.
+ | 3. Attacker recovers m1 from e1: e2 shares its key
+ |    and nonce.
+ > m1 (m1) is obtained by Attacker.
+\end{lstlisting}
+			\end{vpresult}
+			\scriptsize
+			\begin{itemize}
+				\item \texttt{AEAD\_ENC(key, nonce, plaintext, ad)}, and \texttt{AEAD\_DEC} takes the nonce in the same place
+				\item Two such terms under one key and one nonce, differing in content, are a \textbf{reused pair}: both plaintexts fall out, and any ciphertext becomes forgeable under that pair without the key, which is how AES-GCM and ChaCha20-Poly1305 really fail
+				\item \texttt{knows} gives every session the same nonce, \texttt{generates} gives each its own
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}[fragile]{Phases: modeling the passage of time}
@@ -2174,10 +2222,34 @@ scenarios[
 	\textbf{\texttt{unlinkability? c1, c2}} --- contradicted when the attacker holds a concrete \textit{link witness} tying two observed values to the same principal. Built for contact tracing, voting and RFID.
 \end{frame}
 
+\begin{frame}[fragile]{Three labels that say how to read a failure}
+	\footnotesize
+	Not every \texttt{FAIL} is a forgery. A verdict may carry a qualifier, and the report explains it once per query:
+	\vspace{0.2em}
+	\begin{vpresult}[top=0.5mm, bottom=0.5mm]{The pre-shared-key model from earlier, under an active attacker}
+		\begin{lstlisting}[basicstyle=\vpcode]
+Info . authentication? Alice -> Bob: e1 reports a duplicate that Bob cannot rule out on its own:
+       it contributes nothing to e1 before accepting it, so any run of it takes the same message
+       twice. Read it as a replay-protection question about this flight rather than as a forgery.
+FAIL x authentication? Alice -> Bob: e1  [duplicate acceptance: no recipient-generated context]
+\end{lstlisting}
+	\end{vpresult}
+	\vspace{0.3em}
+	\begin{itemize}
+		\item \texttt{[duplicate acceptance]} --- a replay the recipient \textit{could} have caught, because the value it accepted carries a nonce or key that recipient generated
+		\item \texttt{[duplicate acceptance: no recipient-generated context]} --- a replay of a flight the recipient contributed nothing to, so every run of it accepts the same message. The TLS 1.3 0-RTT replay that RFC 9846 names lands here
+		\item \texttt{[attacker-supplied value]} --- a confidentiality failure over a value the attacker put there. The principal really does compute on it, but the honest value was not disclosed
+	\end{itemize}
+	\vspace{0.2em}
+	\begin{center}
+		\small \textit{All three are still failures. The label tells you which question to take back to the protocol, not that the result can be waved away.}
+	\end{center}
+\end{frame}
+
 \begin{frame}[fragile]{A query option: precondition}
 	\begin{columns}[t]
-		\begin{column}{0.44\textwidth}
-			\begin{vpmodel}{Acting on an unauthenticated value}
+		\begin{column}{0.40\textwidth}
+			\begin{vpmodel}[top=0.5mm, bottom=0.5mm]{Acting on an unauthenticated value}
 				\begin{lstlisting}[basicstyle=\vpcode]
 attacker[active]
 principal Bob[
@@ -2197,33 +2269,33 @@ principal Carol[
   _ = HASH(m2)
 ]
 queries[
-  authentication? Bob -> Alice: e[
-    precondition[Alice -> Carol: m2]
-  ]
+  authentication? Bob -> Alice:
+    e[precondition[Alice -> Carol: m2]]
 ]
 \end{lstlisting}
 			\end{vpmodel}
 		\end{column}
-		\begin{column}{0.54\textwidth}
-			\begin{vpresult}{The trace ends with the send that makes it count}
+		\begin{column}{0.58\textwidth}
+			\begin{vpresult}[top=0.5mm, bottom=0.5mm]{The trace ends with the send that makes it count}
 				\begin{lstlisting}[basicstyle=\vpcode]
 FAIL x authentication? Bob -> Alice:
        e[precondition[Alice -> Carol: m2]]
- | 3. Attacker replays e (Bob to Alice) from another session,
+       [duplicate acceptance: no recipient-generated context]
+ | 2. Attacker replays e (Bob to Alice) from another session,
  |    where it is ENC(psk, m#2).
- > e (ENC(psk, m#2)), which Bob sent in another session and
- not in this one, is successfully used in ASSERT(MAC(psk, e), h)?
+ > e (ENC(psk, m#2)), which Bob sent in another session and not
+ in this one, is successfully used in ASSERT(MAC(psk, e), h)?
  within Alice's state: Bob sent it once, Alice accepts it twice,
  so agreement is not injective.
  ! Alice still sends m2 to Carol, so the failure counts.
 \end{lstlisting}
 			\end{vpresult}
-			\vspace{0.1em}
 			\scriptsize
+			\vspace{-0.5em}
 			\begin{itemize}
-				\item \texttt{precondition}, the only query option, restricts a query to the executions in which the named message is sent. Read it as: the property is a precondition for that send
-				\item Alice may forward \texttt{m2} only after authenticating \texttt{e}. Had she halted before sending it, the execution would fall outside the query and contradict nothing
-				\item The same shape states secrecy of a session key \emph{on acceptance}: \texttt{confidentiality? k[precondition[Client -> Server: req]]} ignores a key the client derived and then discarded at a failed check
+				\item \texttt{precondition}, the only query option, restricts a query to executions where the named message is sent. Any query kind takes one
+				\item Alice forwards \texttt{m2} only after authenticating \texttt{e}; had she halted first, that execution falls outside the query
+				\item Secrecy \emph{on acceptance} has the same shape: \texttt{confidentiality? k[precondition[Client -> Server: req]]}
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -2244,15 +2316,15 @@ principal Alice[
 Alice -> Bob: ga
 principal Bob[
   knows private m1
-  generates b
+  generates b, n
   gb = PUBKEY(b)
   ss_a = DH_KEX(ga, b)
-  e1 = AEAD_ENC(ss_a, m1, gb)
+  e1 = AEAD_ENC(ss_a, n, m1, gb)
 ]
-Bob -> Alice: gb, e1
+Bob -> Alice: gb, n, e1
 principal Alice[
   ss_b = DH_KEX(gb, a)
-  e1_dec = AEAD_DEC(ss_b, e1, gb)?
+  e1_dec = AEAD_DEC(ss_b, n, e1, gb)?
 ]
 queries[
   confidentiality? m1
@@ -2292,10 +2364,12 @@ FAIL x confidentiality? m1
        | 1. Attacker constructs PUBKEY(nil).
        | 2. Attacker replaces ga (sent by Alice to Bob) with PUBKEY(nil).
        |    (ga was PUBKEY(a))
-       | 3. Attacker observes e1 on the wire.
+       | 3. Attacker observes AEAD_ENC(DH_KEX(gb, nil), n, m1, gb) on the wire.
        | 4. Attacker observes gb on the wire.
-       | 5. Attacker constructs ss_a.
-       | 6. Attacker opens e1 with ss_a, obtaining m1.
+       | 5. Attacker constructs DH_KEX(gb, nil).
+       | 6. Attacker observes n on the wire.
+       | 7. Attacker opens AEAD_ENC(DH_KEX(gb, nil), n, m1, gb) with
+       |    DH_KEX(gb, nil), n, obtaining m1.
        > m1 (m1) is obtained by Attacker.
 
 FAIL x 3 of 3 queries failed.
@@ -2303,7 +2377,7 @@ FAIL x 3 of 3 queries failed.
 	\end{vpresult}
 	\vspace{0.3em}
 	\begin{center}
-		\small One millisecond. The other two traces use the mirror-image substitution on the return leg: \texttt{gb} becomes \texttt{PUBKEY(nil)}, \texttt{e1} becomes a ciphertext under the key Alice will now derive, and the two sides never share a secret.
+		\small The other two traces mirror this on the return leg: \texttt{gb} becomes \texttt{PUBKEY(nil)}, \texttt{e1} a ciphertext under the key Alice will now derive, and the two sides never share a secret.
 	\end{center}
 \end{frame}
 
@@ -2312,17 +2386,17 @@ FAIL x 3 of 3 queries failed.
 		\Large
 		Read the last line first. It names what went wrong.
 	\end{center}
-	\vspace{0.4em}
+	\vspace{-0.5em}
 	\begin{itemize}
-		\item \texttt{> m1 (m1) is obtained by Attacker} --- the property you asked about, and what happened to it
-		\item \textbf{Step 1}: \texttt{nil} is a public constant, so \texttt{PUBKEY(nil)} is a key whose private half the attacker holds
-		\item \textbf{Step 2}: the substitution, with the parenthetical recording what the value honestly was. This is the whole attack
-		\item \textbf{Steps 3--6}: Bob derived \texttt{ss\_a} from a public key the attacker chose, so the attacker recomputes it and decrypts
+		\item \texttt{> m1 (m1) is obtained by Attacker} --- the property you asked about, and what became of it
+		\item \textbf{Step 1}: \texttt{nil} is a public constant, so \texttt{PUBKEY(nil)} is a key whose private half the attacker has
+		\item \textbf{Step 2}: the substitution, with the parenthetical recording what the value honestly was. That is the whole attack
+		\item \textbf{Steps 3--7}: Bob derived \texttt{ss\_a} from a public key the attacker chose, so the attacker recomputes it and decrypts. \texttt{e1} prints as the term it \textit{actually} resolved to once the substitution reached Bob's run
 	\end{itemize}
-	\vspace{0.4em}
+	\vspace{0.2em}
 	\begin{center}
 		\small
-		This is the textbook Mayor-in-the-Middle, and it is not a claim about the model. Verifpal re-executed these steps against real principal state before printing them.
+		This is the textbook Mayor-in-the-Middle, and not a claim about the model: Verifpal re-executed these steps against real principal state before printing them.
 	\end{center}
 \end{frame}
 
@@ -2333,7 +2407,7 @@ FAIL x 3 of 3 queries failed.
 				\begin{lstlisting}
 Alice -> Bob: [ga]
 ...
-Bob -> Alice: [gb], e1
+Bob -> Alice: [gb], n, e1
 \end{lstlisting}
 			\end{vpmodel}
 			\vspace{0.5em}
@@ -2420,7 +2494,7 @@ queries[
 \end{frame}
 
 \begin{frame}[fragile]{Two failures, of two different shapes}
-	\begin{vpresult}{Both queries fail, for unrelated reasons}
+	\begin{vpresult}[top=0.5mm, bottom=0.5mm]{Both queries fail, for unrelated reasons}
 		\begin{lstlisting}[basicstyle=\vpcode]
 FAIL x authentication? Server -> Client: proof
        | 1. Attacker observes nonce on the wire.
@@ -2431,7 +2505,8 @@ FAIL x authentication? Server -> Client: proof
        successfully used in SIGNVERIF(gs, nonce, proof) within Client's state.
 
 FAIL x authentication? Client -> Server: signed
-       | 3. Attacker replays attestation (Client to Server) from another
+       [duplicate acceptance: no recipient-generated context]
+       | 2. Attacker replays attestation (Client to Server) from another
        |    session, where it is attestation#2.
        | 4. Attacker replays signed (Client to Server) from another
        |    session, where it is SIGN(c, attestation#2).
@@ -2443,9 +2518,8 @@ FAIL x authentication? Client -> Server: signed
        sent it once, Server accepts it twice, so agreement is not injective.
 \end{lstlisting}
 	\end{vpresult}
-	\vspace{0.2em}
 	\begin{center}
-		\small The first is a \textbf{forgery}. The second is a \textbf{replay}. They need different fixes.
+		\small The first is a \textbf{forgery}. The second is a \textbf{replay}, and its label says which kind: Server puts nothing of its own into \texttt{signed}. Different fixes.
 	\end{center}
 \end{frame}
 
@@ -2671,28 +2745,131 @@ queries[
 \end{frame}
 
 \begin{frame}[fragile]{Lowe's attack, found rather than assumed}
-	\begin{vpresult}{The warning names the peers; the trace names the runs}
+	\begin{vpresult}[top=0.5mm, bottom=0.5mm]{The warning names the peers; the trace names the runs}
 		\begin{lstlisting}[basicstyle=\vpcode]
 Warning ! Analysis performed over 2 declared peer scenarios:
 Warning ! Alice[gpeer = gb] (honest peer)
 Warning ! Alice[gpeer = gm] (corrupt peer)
 FAIL x confidentiality? nr
        | 3. Attacker is handed mk by a leaks declaration.
-       | 4. Attacker opens PKE_ENC(gm, d1) with mk, obtaining CONCAT(ni@2, ga).
-       | 7. Attacker replaces m1 (sent by Alice to Bob) with PKE_ENC(gb, d1).
+       | 4. Attacker opens PKE_ENC(gm, CONCAT(ni@2, ga)) with mk, obtaining CONCAT(ni@2, ga).
+       | 6. Attacker replaces m1 (sent by Alice to Bob) with PKE_ENC(gb, CONCAT(ni@2, ga)).
        |    (m1 was PKE_ENC(gb, CONCAT(ni, ga)))
-       | 8. Attacker replaces m2@2 (sent by Bob@2 to Alice@2) with PKE_ENC(ga, d2).
+       | 8. Attacker replaces m2@2 (sent by Bob@2 to Alice@2) with PKE_ENC(ga, CONCAT(ni@2, nr)).
        |    (m2@2 was PKE_ENC(id_b@2, CONCAT(ni_b@2, nr@2)))
-       | 13. During Alice@2's run (phase 0), attacker opens m3@2 with mk, obtaining nr.
+       | 12. During Alice@2's run (phase 0), attacker opens PKE_ENC(gm, nr) with mk, obtaining nr.
        > nr (nr) is obtained by Attacker.
 \end{lstlisting}
 	\end{vpresult}
-	\vspace{0.2em}
 	\footnotesize
 	\begin{itemize}
 		\item Nothing is forged, no key is broken. Alice's nonce and identity, sealed for Mallory, are resealed for Bob, whose identity check passes: it really is Alice's. His reply lands in Alice's run with Mallory, whose nonce check passes: it really is hers. She seals \texttt{nr} for Mallory; the attacker opens it
 		\item Bob finishes believing he spoke to Alice. \textbf{Lowe's fix}: put \texttt{gb} inside \texttt{m2}, and have Alice assert it equals \texttt{gpeer}. The query then passes. \texttt{--sessions} could never have asked this: every session replicates the same cast
 	\end{itemize}
+\end{frame}
+
+\section{Worked Example: A 3-of-5 Threshold Signature}
+
+\begin{frame}[fragile]{Three primitives for splitting a key}
+	\begin{columns}[t]
+		\begin{column}{0.5\textwidth}
+			\begin{vpmodel}[top=0.5mm, bottom=0.5mm]{A 3-of-5 signing group, abridged}
+				\begin{lstlisting}[basicstyle=\vpcode]
+principal Dealer[
+  generates k
+  pk = PUBKEY(k)
+  s1, s2, s3, s4, s5 = THRESHOLD_SPLIT[3](k)
+  ea = AEAD_ENC(psk_a, nd_a, s1, pk)  // eb, ec too
+  leaks s4
+]
+Dealer -> Alice: [pk], nd_a, ea       // Bob, Carol too
+principal Alice[
+  sa = AEAD_DEC(psk_a, nd_a, ea, pk)?
+  generates na
+  ca = PUBKEY(na)      // ca, cb, cc -> Coordinator
+]
+Coordinator -> Alice: m, cb, cc
+Coordinator -> Bob:   m, ca, cc
+Coordinator -> Carol: [m], [ca], [cb]
+principal Alice[
+  cl_a = CONCAT(ca, cb, cc)
+  pa = THRESHOLD_SIGN(sa, na, cl_a, m)
+]
+principal Coordinator[
+  sig = THRESHOLD_JOIN(pa, pb, pc)
+]
+Coordinator -> Verifier: m, sig
+
+\end{lstlisting}
+			\end{vpmodel}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\scriptsize
+			A FROST-shaped signing group, sitting on its own threshold.
+			\vspace{-0.8em}
+			\begin{itemize}
+				\item \texttt{THRESHOLD\_SPLIT[t](k)}: the bracket carries the threshold, the names on the left give the share count. Five names and a \texttt{[3]} is 3-of-5
+				\item The threshold is part of the term's identity: shares of \texttt{[2]} and \texttt{[3]} do not mix, even for one \texttt{k}
+				\item \texttt{THRESHOLD\_SIGN(share, nonce, commitments, message)} is round two: partials combine only over \textit{distinct} shares of one split, agreeing on commitments and message
+				\item \texttt{THRESHOLD\_JOIN} is symbolic Lagrange interpolation, three ways: \texttt{t} shares give \texttt{k}, \texttt{t} values \texttt{PUBKEY(share)} give \texttt{PUBKEY(k)}, and \texttt{t} partials give \texttt{SIGN(k, message)}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Two failures, neither of them enough}
+	\begin{vpresult}[top=0.5mm, bottom=0.5mm]{One leaked share, two signing oracles, and a signature the group never made}
+		\begin{lstlisting}[basicstyle=\vpcode]
+PASS + confidentiality? k   [search exhausted at 2 sessions]
+PASS + confidentiality? s1  [search exhausted at 2 sessions]
+FAIL x authentication? Coordinator -> Verifier: sig
+       | 1. Attacker observes THRESHOLD_SIGN(s1, na, cl_a, nil) on the wire.
+       | 2. Attacker observes THRESHOLD_SIGN(s2, nb, cl_a, nil) on the wire.
+       | 3. Attacker is handed s4 by a leaks declaration.
+       | 7. During Dealer's run (phase 0), attacker constructs cl_a.
+       | 8. Attacker combines SIGN(k, nil) out of the partial signatures THRESHOLD_SIGN(s1, na, cl_a, nil),
+       |    THRESHOLD_SIGN(s2, nb, cl_a, nil), THRESHOLD_SIGN(s4, nil, cl_a, nil).
+       | 9. Attacker replaces m, sig (sent by Coordinator to Verifier) with nil, SIGN(k, nil).
+       |    (sig was THRESHOLD_JOIN(pa, pb, pc))
+       | 10. Verifier's SIGNVERIF(pk, nil, SIGN(k, nil))? passes --- the attacker controls one of its inputs.
+       > sig (SIGN(k, nil)), sent by Attacker and not by Coordinator, is
+       successfully used in SIGNVERIF(pk, m, sig)? within Verifier's state.
+\end{lstlisting}
+	\end{vpresult}
+	\scriptsize
+	\begin{itemize}
+		\item Carol's round-two inputs are guarded, so her partial stays bound to the real \texttt{m}. Alice's and Bob's are not, so the attacker picks what they sign: they become \textbf{signing oracles}, which is the input validation RFC 9591 tells applications to do and this model declines to
+		\item The leaked \texttt{s4} supplies the third contribution. One leaked share is under the threshold, two oracle partials are under it, and together they are three
+		\item The group key and Alice's share stay confidential. Nothing was stolen or broken: three distinct contributions to one signature were collected
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The boundary, from both sides}
+	\begin{center}
+		\scriptsize
+		\begin{tabular}{|l|l|l|}
+			\hline
+			\textbf{Model}                 & \textbf{What the attacker has}          & \textbf{Result}         \\
+			\hline
+			\texttt{..three\_of\_five}      & Leaked \texttt{s4}, Alice as an oracle  & 2 partials, no forgery  \\
+			\hline
+			\texttt{..two\_oracles\_hold}   & Alice and Bob as oracles, no leak       & 2 partials, no forgery  \\
+			\hline
+			\texttt{..two\_oracles}         & Leaked \texttt{s4}, \textit{and} both oracles & 3 partials, forgery \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{0.2em}
+	\scriptsize
+	\begin{itemize}
+		\item The first two rows are \texttt{PASS} at the default two sessions: the search found nothing, which as always is weaker than proof
+		\item Repeating an oracle's partial does not help: \texttt{THRESHOLD\_JOIN} counts \textit{distinct} shares, and partials over another split, list or message do not join
+		\item Reuse a nonce under one share for two partials and Verifpal hands that share to the attacker: RFC 9591's nonce warning, shaped like the AEAD rule
+		\item \textit{Not} modeled: curve arithmetic, ciphersuites, or a distributed key-generation ceremony. \texttt{THRESHOLD\_SPLIT} is a trusted dealer, one symbolic nonce standing for FROST's hiding-and-binding pair
+	\end{itemize}
+	\begin{center}
+		\small \textit{A leaked share and an exposed signing oracle are different failures, filed in different places. Counting them together is what the tool does.}
+	\end{center}
 \end{frame}
 
 \section{Phases and Weakening Assumptions in Practice}
@@ -2737,9 +2914,10 @@ Bob -> Alice: [gb], gy, sig
 principal Alice[
   _ = SIGNVERIF(gb, gy, sig)?
   k = DH_KEX(gy, x)
-  e1 = AEAD_ENC(k, m1, gx)
+  generates n
+  e1 = AEAD_ENC(k, n, m1, gx)
 ]
-...
+Alice -> Bob: n, e1
 phase[1]
 principal Bob[leaks b]
 \end{lstlisting}
@@ -2782,7 +2960,7 @@ ga = PUBKEY[weak from phase 1](a)   // confidentiality lost, from phase 1 on
 \begin{frame}[fragile]{Forgeability, demonstrated}
 	\begin{columns}[t]
 		\begin{column}{0.42\textwidth}
-			\begin{vpmodel}{A signed ephemeral, bound to a nonce}
+			\begin{vpmodel}[top=0.5mm, bottom=0.5mm]{A signed ephemeral, bound to a nonce}
 				\begin{lstlisting}[basicstyle=\vpcode]
 principal Client[
   generates n, x, m1
@@ -2800,7 +2978,7 @@ Server -> Client: [gs], gy, sig
 principal Client[
   _ = SIGNVERIF(gs, HASH(gy, n), sig)?
   k = DH_KEX(gy, x)
-  e1 = AEAD_ENC(k, m1, gx)
+  e1 = AEAD_ENC(k, n, m1, gx)
 ]
 Client -> Server: e1
 \end{lstlisting}
@@ -2825,13 +3003,14 @@ FAIL x confidentiality? m1
  | 6. Client's SIGNVERIF(gs, HASH(PUBKEY(nil), n),
  |    SIGN(s, HASH(PUBKEY(nil), n)))? passes --- the attacker
  |    controls one of its inputs.
- | 10. Attacker opens e1 with k, obtaining m1.
+ | 10. Attacker opens AEAD_ENC(DH_KEX(gx, nil), n, m1, gx) with
+ |     DH_KEX(gx, nil), n, obtaining m1.
 FAIL x authentication? Server -> Client: sig
 \end{lstlisting}
 			\end{vpresult}
 			\vspace{0.1em}
 			\scriptsize
-			One bracketed word, and both properties go. The forgery is under Server's real \texttt{s}: forgeable means the secret is no longer needed, so guarding \texttt{gs} buys nothing.
+			One bracketed word, and both properties go. The forgery is under Server's real \texttt{s}: forgeable means the secret is no longer needed, so guarding \texttt{gs} buys nothing.\vspace{-0.6em}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -2839,7 +3018,7 @@ FAIL x authentication? Server -> Client: sig
 \begin{frame}[fragile]{Harvest now, decrypt later}
 	\begin{columns}[t]
 		\begin{column}{0.49\textwidth}
-			\begin{vpmodel}{Classical Diffie-Hellman}
+			\begin{vpmodel}[top=0.5mm, bottom=0.5mm]{Classical Diffie-Hellman}
 				\begin{lstlisting}[basicstyle=\vpcode]
 principal Bob[
   knows private b
@@ -2847,17 +3026,17 @@ principal Bob[
 ]
 Bob -> Alice: [gb]
 principal Alice[
-  generates a, m1
+  generates a, m1, n
   ga = PUBKEY[weak from phase 1](a)
   k = DH_KEX(gb, a)
-  e1 = AEAD_ENC(k, m1, nil)
+  e1 = AEAD_ENC(k, n, m1, nil)
 ]
-Alice -> Bob: ga, e1
+Alice -> Bob: ga, n, e1
 phase[1]
 \end{lstlisting}
 			\end{vpmodel}
-			\vspace{0.2em}
-			\begin{vpresult}{}
+			\vspace{0.1em}
+			\begin{vpresult}[top=0.5mm, bottom=0.5mm]{}
 				\begin{lstlisting}[basicstyle=\vpcode]
 FAIL x confidentiality? m1
  | 1. Attacker observes e1 on the wire.
@@ -2865,12 +3044,13 @@ FAIL x confidentiality? m1
  | 4. Attacker breaks ga under the declared
  |    `weak` assumption, obtaining a.
  | 5. Attacker constructs k.
- | 6. Attacker opens e1 with k, obtaining m1.
+ | 6. Attacker observes n on the wire.
+ | 7. Attacker opens e1 with k, n, obtaining m1.
 \end{lstlisting}
 			\end{vpresult}
 		\end{column}
 		\begin{column}{0.49\textwidth}
-			\begin{vpmodel}{Hybrid: the same DH, plus a KEM}
+			\begin{vpmodel}[top=0.5mm, bottom=0.5mm]{Hybrid: the same DH, plus a KEM}
 				\begin{lstlisting}[basicstyle=\vpcode]
 principal Bob[
   knows private b, dkb
@@ -2879,18 +3059,18 @@ principal Bob[
 ]
 Bob -> Alice: [gb], [ekb]
 principal Alice[
-  generates a, m1, r
+  generates a, m1, r, n
   ga = PUBKEY[weak from phase 1](a)
   ss, ct = KEM_ENCAP(ekb, r)
   k = HKDF(DH_KEX(gb, a), ss, nil)
-  e1 = AEAD_ENC(k, m1, nil)
+  e1 = AEAD_ENC(k, n, m1, nil)
 ]
-Alice -> Bob: ga, ct, e1
+Alice -> Bob: ga, ct, n, e1
 phase[1]
 \end{lstlisting}
 			\end{vpmodel}
-			\vspace{0.2em}
-			\begin{vpresult}{}
+			\vspace{0.1em}
+			\begin{vpresult}[top=0.5mm, bottom=0.5mm]{}
 				\begin{lstlisting}[basicstyle=\vpcode]
 PASS + confidentiality? m1
 \end{lstlisting}
@@ -2927,8 +3107,9 @@ Info . s2 is written without an annotation, but a
 				\begin{lstlisting}[basicstyle=\vpcode]
 sanity error: SIGN provides authenticity, not
   confidentiality; did you mean `SIGN[forgeable]`?
-sanity error: discrete log is a property of the key,
-  not the exchange; did you mean `PUBKEY[weak]`?
+sanity error: the secret `DH_KEX` derives is only
+  as hidden as the key it is built on; did you mean
+  `PUBKEY[weak]`?
 \end{lstlisting}
 			\end{vpresult}
 		\end{column}
@@ -2949,13 +3130,14 @@ sanity error: discrete log is a property of the key,
 \section{Limits, and Getting Started}
 
 \begin{frame}{Sound, but incomplete}
-	\footnotesize
+	\scriptsize
 	\begin{columns}[t]
 		\begin{column}{0.48\textwidth}
 			\textbf{What a \texttt{FAIL} means}
 			\begin{itemize}
-				\item A sequence of attacker actions the engine re-executed against real principal state and re-checked before printing
-				\item Nothing in the search can record a result on its own, so a bug there costs a missed attack, never an invented one
+				\item Attacker actions the engine re-executed against real principal state and re-checked before printing
+				\item Nothing in the search can record a result on its own, so a solver bug costs a missed attack, never an invented one
+				\item That covers the solver, not the deduction around it: 1.4.3 fixed several false reports that came of combining runs which could not both have happened
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.48\textwidth}
@@ -2967,8 +3149,7 @@ sanity error: discrete log is a property of the key,
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.2em}
-	\alertbox{The honest claim}{Verifpal is a bug-finding tool, not a proof-producing verifier. It says so in its own manual, and it labels the traces whose witnesses rest on within-session value sharing. Compare that to Part 2.}
+	\alertbox{The honest claim}{Verifpal is a bug-finding tool, not a proof-producing verifier. Its own manual says so, and it labels the traces whose witnesses rest on within-session sharing. Compare that to Part 2.}
 \end{frame}
 
 \begin{frame}{The command line, beyond a verdict}
@@ -2979,7 +3160,7 @@ sanity error: discrete log is a property of the key,
 			\begin{itemize}
 				\item \texttt{--result-code} appends one letter-digit pair per query: \texttt{a0a1} is a passing authentication query, then a failing one. Pin it in a test
 				\item \texttt{--fail-on-attack} exits with status 2 on any failure, for continuous integration
-				\item \texttt{--saturate} runs at one session, then two, then three, and reports the count at which the verdicts stopped changing
+				\item \texttt{--saturate} climbs from the default two sessions up to four, stops at the first count whose result code matches the one below it, and reports that analysis
 				\item \texttt{--auto-queries} discards your queries and asks the generic ones: every secret confidential, every used value authenticated and fresh. A first look, not a specification
 			\end{itemize}
 		\end{column}
@@ -3006,7 +3187,7 @@ sanity error: discrete log is a property of the key,
 		\begin{column}{0.48\textwidth}
 			\textbf{Install}
 			\begin{itemize}
-				\item Homebrew cask on macOS, winget or Scoop on Windows, deb, rpm, apk and pacman packages on Linux, or \texttt{cargo install verifpal}
+				\item Homebrew on macOS and Linux, Scoop on Windows, both with automatic updates; otherwise a release binary, or \texttt{cargo build --release} from source
 				\item Or install nothing: \url{https://verifpal.com/workbench} runs the analyzer in your browser as WebAssembly
 			\end{itemize}
 			\vspace{0.3em}
