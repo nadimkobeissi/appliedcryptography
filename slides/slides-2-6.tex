@@ -212,7 +212,15 @@
 \end{frame}
 
 \begin{frame}{Timeline: when will quantum computing arrive?}
-	\bigimagewithcaption[0.58\textwidth]{quantum-threat.png}{Source: Michele Mosca and Marco Piani, Quantum Threat Timeline Report, Global Risk Institute, 2024.}
+	\bigimagewithcaption[0.58\textwidth]{quantum-threat-1.png}{Source: Michele Mosca and Marco Piani, Quantum Threat Timeline Report, Global Risk Institute, 2025.}
+\end{frame}
+
+\begin{frame}{Timeline: when will quantum computing arrive?}
+	\bigimagewithcaption[0.58\textwidth]{quantum-threat-2.png}{Source: Michele Mosca and Marco Piani, Quantum Threat Timeline Report, Global Risk Institute, 2025.}
+\end{frame}
+
+\begin{frame}{Timeline: when will quantum computing arrive?}
+	\bigimagewithcaption[0.58\textwidth]{quantum-threat-3.png}{Source: Michele Mosca and Marco Piani, Quantum Threat Timeline Report, Global Risk Institute, 2025.}
 \end{frame}
 
 \begin{frame}{Timeline: according to Sam Jaques}
@@ -268,25 +276,29 @@
 \end{frame}
 
 \begin{frame}{But resource estimates are shrinking fast}
-	\begin{itemize}
-		\item \textbf{Google Quantum AI (2026)}\footnote{\url{https://appliedcryptography.page/paper/\#cryptocurrency-whitepaper}}: Compiled Shor circuits for 256-bit ECDLP on secp256k1
-	\end{itemize}
-	\begin{center}
-		\small
-		\begin{tabular}{|l|c|c|}
-			\hline
-			\textbf{Variant} & \textbf{Logical Qubits} & \textbf{Toffoli Gates} \\
-			\hline
-			Low-qubit        & $\leq$ 1,200            & $\leq$ 90 million      \\
-			Low-gate         & $\leq$ 1,450            & $\leq$ 70 million      \\
-			\hline
-		\end{tabular}
-	\end{center}
-	\begin{itemize}
-		\item \textbf{Physical cost}: Fewer than 500,000 qubits at a $10^{-3}$ error rate---nearly 20$\times$ below prior estimates
-		\item \textbf{Same story for RSA}: Gidney's 2025 estimate cut RSA-2048 to under 1M noisy qubits, 20$\times$ below the 2019 figure
-		\item The gap between ``can't beat a dog'' and ``could break real crypto'' is closing
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Google Quantum AI (2026)}\footnote{\url{https://appliedcryptography.page/paper/\#cryptocurrency-whitepaper}}: Compiled Shor circuits for 256-bit ECDLP on secp256k1
+			\end{itemize}
+			\begin{center}
+				\small
+				\begin{tabular}{|l|c|c|}
+					\hline
+					\textbf{Variant} & \textbf{Logical Qubits} & \textbf{Toffoli Gates} \\
+					\hline
+					Low-qubit        & $\leq$ 1,200            & $\leq$ 90 million      \\
+					Low-gate         & $\leq$ 1,450            & $\leq$ 70 million      \\
+					\hline
+				\end{tabular}
+			\end{center}
+			\begin{itemize}
+				\item \textbf{Physical cost}: Fewer than 500,000 qubits at a $10^{-3}$ error rate---nearly 20$\times$ below prior estimates
+				\item \textbf{Same story for RSA}: Gidney's 2025 estimate cut RSA-2048 to under 1M noisy qubits, 20$\times$ below the 2019 figure
+				\item The gap between ``can't beat a dog'' and ``could break real crypto'' is closing
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Fast-clock vs slow-clock: why architecture matters}
@@ -459,11 +471,11 @@
 		\item \textbf{Goal}: Solve a system of linear equations systematically
 		\item \textbf{Idea}: Apply operations that change the equations but \textit{not their solutions}, until the system is trivial to read off
 		\item \textbf{Three allowed row operations} (write $R_i$ for the $i$-th equation):
-			\begin{enumerate}
-				\item Multiply a row by a non-zero constant: $R_1 \leftarrow 2R_1$
-				\item Add a multiple of one row to another: $R_2 \leftarrow R_2 - 4R_1$
-				\item Swap two rows
-			\end{enumerate}
+		      \begin{enumerate}
+			      \item Multiply a row by a non-zero constant: $R_1 \leftarrow 2R_1$
+			      \item Add a multiple of one row to another: $R_2 \leftarrow R_2 - 4R_1$
+			      \item Swap two rows
+		      \end{enumerate}
 		\item \textbf{Bookkeeping}: Work on the \textbf{augmented matrix} $[A|\vec{b}]$: the coefficients, with the constants attached as a last column
 		\item \textbf{Strategy}: Create zeros below the diagonal, one column at a time
 	\end{itemize}
@@ -1099,17 +1111,17 @@
 		\begin{column}{0.68\textwidth}
 			\begin{enumerate}
 				\item \textbf{Why can't an attacker just solve $\vec{b} = A\vec{s} + \vec{e}_1$ for $\vec{s}$?}
-					\begin{itemize}
-						\item We just spent six slides solving exactly this kind of system. What, precisely, breaks?
-					\end{itemize}
+				      \begin{itemize}
+					      \item We just spent six slides solving exactly this kind of system. What, precisely, breaks?
+				      \end{itemize}
 				\item \textbf{Why encode the bit as $\lfloor q/2 \rfloor \cdot \mu$ rather than just $\mu$?}
-					\begin{itemize}
-						\item What would Bob see if Alice added $\mu \in \{0, 1\}$ directly to $v$?
-					\end{itemize}
+				      \begin{itemize}
+					      \item What would Bob see if Alice added $\mu \in \{0, 1\}$ directly to $v$?
+				      \end{itemize}
 				\item \textbf{What if the noise is too large?}
-					\begin{itemize}
-						\item What goes wrong if $|\vec{r}^T\vec{e}_1 - \vec{e}_2^T\vec{s} + e_3|$ exceeds $q/4$? Who notices, and when?
-					\end{itemize}
+				      \begin{itemize}
+					      \item What goes wrong if $|\vec{r}^T\vec{e}_1 - \vec{e}_2^T\vec{s} + e_3|$ exceeds $q/4$? Who notices, and when?
+				      \end{itemize}
 			\end{enumerate}
 		\end{column}
 		\begin{column}{0.32\textwidth}
@@ -1121,14 +1133,14 @@
 \begin{frame}{Decryption failures: what if the noise is too big?}
 	\begin{itemize}
 		\item \textbf{The problem}: Decapsulation is only correct while the accumulated error stays below $q/4$ in absolute value
-			\begin{itemize}
-				\item Otherwise Bob rounds to the wrong bit, and nobody notices until an authentication tag fails
-			\end{itemize}
+		      \begin{itemize}
+			      \item Otherwise Bob rounds to the wrong bit, and nobody notices until an authentication tag fails
+		      \end{itemize}
 		\item \textbf{Two ways out}:
-			\begin{enumerate}
-				\item \textbf{Error correction}: Encode the key bits redundantly so that a few flipped bits are repaired (early schemes such as NewHope used ``reconciliation'' tricks of this kind)
-				\item \textbf{Parameters}: Choose $q$ and the noise distribution so that failures are astronomically rare
-			\end{enumerate}
+		      \begin{enumerate}
+			      \item \textbf{Error correction}: Encode the key bits redundantly so that a few flipped bits are repaired (early schemes such as NewHope used ``reconciliation'' tricks of this kind)
+			      \item \textbf{Parameters}: Choose $q$ and the noise distribution so that failures are astronomically rare
+		      \end{enumerate}
 		\item \textbf{Kyber/ML-KEM takes the second route}: Its parameter sets keep the decryption failure probability below $2^{-128}$ per ciphertext
 		\item \textbf{Why this matters beyond correctness}: Decryption failures leak information about the secret key, and attackers can hunt for them---so ``rare'' has to mean \textit{cryptographically} rare
 	\end{itemize}
@@ -1323,16 +1335,16 @@
 			\textbf{The idea}: Use error correction for encryption. The secret is the ability to \textit{decode}.
 			\begin{enumerate}
 				\item Pick a ``nice'' error-correcting code
-					\begin{itemize}
-						\item Its hidden structure lets Bob efficiently correct $t$ errors
-						\item Generator matrix: $G'$
-					\end{itemize}
+				      \begin{itemize}
+					      \item Its hidden structure lets Bob efficiently correct $t$ errors
+					      \item Generator matrix: $G'$
+				      \end{itemize}
 				\item Disguise it with random matrices
-					\begin{itemize}
-						\item $S$: Random invertible matrix
-						\item $P$: Random permutation matrix
-						\item Compute: $G = S \cdot G' \cdot P$
-					\end{itemize}
+				      \begin{itemize}
+					      \item $S$: Random invertible matrix
+					      \item $P$: Random permutation matrix
+					      \item Compute: $G = S \cdot G' \cdot P$
+				      \end{itemize}
 			\end{enumerate}
 		\end{column}
 		\begin{column}{0.45\textwidth}
@@ -1383,19 +1395,19 @@
 			\textbf{Bob receives $c = m \cdot G + e = m \cdot S \cdot G' \cdot P + e$ from Alice:}
 			\begin{enumerate}
 				\item Undo the permutation using \textcolor{blue}{his private key $P$}
-					\begin{itemize}
-						\item Compute: $c' = c \cdot P^{-1} = m \cdot S \cdot G' + e'$, where $e' = e \cdot P^{-1}$
-						\item A permutation only shuffles the errors: $e'$ still has exactly $t$ ones
-					\end{itemize}
+				      \begin{itemize}
+					      \item Compute: $c' = c \cdot P^{-1} = m \cdot S \cdot G' + e'$, where $e' = e \cdot P^{-1}$
+					      \item A permutation only shuffles the errors: $e'$ still has exactly $t$ ones
+				      \end{itemize}
 				\item Decode using the hidden structure of \textcolor{blue}{his private key $G'$}
-					\begin{itemize}
-						\item The efficient decoder for $G'$ removes the $t$ errors
-						\item Output: The codeword $m \cdot S \cdot G'$, and hence the vector that encodes to it, $m \cdot S$
-					\end{itemize}
+				      \begin{itemize}
+					      \item The efficient decoder for $G'$ removes the $t$ errors
+					      \item Output: The codeword $m \cdot S \cdot G'$, and hence the vector that encodes to it, $m \cdot S$
+				      \end{itemize}
 				\item Undo the scrambling using \textcolor{blue}{his private key $S$}
-					\begin{itemize}
-						\item Compute $(m \cdot S) \cdot S^{-1} = m$
-					\end{itemize}
+				      \begin{itemize}
+					      \item Compute $(m \cdot S) \cdot S^{-1} = m$
+				      \end{itemize}
 			\end{enumerate}
 		\end{column}
 	\end{columns}
@@ -1603,16 +1615,16 @@
 	\begin{itemize}
 		\item \textbf{Critical security requirement}: Never sign twice with the same key!
 		\item \textbf{Take the two-chain fix from limitation 1}: A signature on $M$ is $(\text{Hash}^M(K_1),\ \text{Hash}^{w-M}(K_2))$
-			\begin{itemize}
-				\item Sign $M_1 = 2$: Reveal $\text{Hash}^2(K_1)$ and $\text{Hash}^{w-2}(K_2)$
-				\item Sign $M_2 = 7$: Reveal $\text{Hash}^7(K_1)$ and $\text{Hash}^{w-7}(K_2)$
-			\end{itemize}
+		      \begin{itemize}
+			      \item Sign $M_1 = 2$: Reveal $\text{Hash}^2(K_1)$ and $\text{Hash}^{w-2}(K_2)$
+			      \item Sign $M_2 = 7$: Reveal $\text{Hash}^7(K_1)$ and $\text{Hash}^{w-7}(K_2)$
+		      \end{itemize}
 		\item \textbf{The attacker now holds both directions}:
-			\begin{itemize}
-				\item From $\text{Hash}^2(K_1)$: Walk \textit{forward} to $\text{Hash}^x(K_1)$ for any $x \geq 2$
-				\item From $\text{Hash}^{w-7}(K_2)$: Walk forward to $\text{Hash}^{w-y}(K_2)$ for any $y \leq 7$
-				\item Valid forgeries for every message in $[2, 7]$---and 3, 4, 5, 6 were never signed!
-			\end{itemize}
+		      \begin{itemize}
+			      \item From $\text{Hash}^2(K_1)$: Walk \textit{forward} to $\text{Hash}^x(K_1)$ for any $x \geq 2$
+			      \item From $\text{Hash}^{w-7}(K_2)$: Walk forward to $\text{Hash}^{w-y}(K_2)$ for any $y \leq 7$
+			      \item Valid forgeries for every message in $[2, 7]$---and 3, 4, 5, 6 were never signed!
+		      \end{itemize}
 		\item \textbf{No simple fix}: Each signature reveals a position on every chain; two signatures bracket a whole range. The construction is inherently one-time.
 	\end{itemize}
 \end{frame}
@@ -1729,17 +1741,17 @@
 		\begin{column}{0.68\textwidth}
 			\begin{enumerate}
 				\item \textbf{Three families, three very different bets}
-					\begin{itemize}
-						\item Lattices: fast and small, 20-year-old assumptions. Codes: 50-year-old assumptions, 100 KB keys. Hashes: the weakest assumption, but signatures only. Which would you trust with a 30-year secret?
-					\end{itemize}
+				      \begin{itemize}
+					      \item Lattices: fast and small, 20-year-old assumptions. Codes: 50-year-old assumptions, 100 KB keys. Hashes: the weakest assumption, but signatures only. Which would you trust with a 30-year secret?
+				      \end{itemize}
 				\item \textbf{Pick an algorithm for each job}
-					\begin{itemize}
-						\item A TLS key exchange. A firmware-signing key burned into a chip for 20 years. A software-update signature. Justify each; we will compare with Google's answers later.
-					\end{itemize}
+				      \begin{itemize}
+					      \item A TLS key exchange. A firmware-signing key burned into a chip for 20 years. A software-update signature. Justify each; we will compare with Google's answers later.
+				      \end{itemize}
 				\item \textbf{Is 100 KB really too big?}
-					\begin{itemize}
-						\item For a web page, no. For a TLS handshake on a phone in a tunnel? For a satellite?
-					\end{itemize}
+				      \begin{itemize}
+					      \item For a web page, no. For a TLS handshake on a phone in a tunnel? For a satellite?
+				      \end{itemize}
 			\end{enumerate}
 		\end{column}
 		\begin{column}{0.32\textwidth}
@@ -1869,7 +1881,7 @@
 		\begin{tabular}{|l|c|c|c|c|c|}
 			\hline
 			\textbf{Algorithm} & \textbf{PQ}  & \multicolumn{2}{c|}{\textbf{Size (bytes)}} & \multicolumn{2}{c|}{\textbf{Ops/sec}}                   \\
-							&              & Client                                     & Server                                & Client & Server \\
+			                   &              & Client                                     & Server                                & Client & Server \\
 			\hline
 			ML-KEM-512         & \mycheckmark & 800                                        & 768                                   & 45,000 & 70,000 \\
 			ML-KEM-768         & \mycheckmark & 1,184                                      & 1,088                                 & 29,000 & 45,000 \\
@@ -2357,7 +2369,7 @@
 		\begin{tabular}{|l|c|c|c|}
 			\hline
 			\textbf{Protocol} & \textbf{Balanced}                   & \textbf{Typing}                     & \textbf{Offline}                     \\
-							& \textbf{($p=0$)}                    & \textbf{($p=0.5$)}                  & \textbf{($p=0.9$)}                   \\
+			                  & \textbf{($p=0$)}                    & \textbf{($p=0.5$)}                  & \textbf{($p=0.9$)}                   \\
 			\hline
 			PQ3               & 6,488 B                             & 11,176 B                            & \textcolor{red}{48,680 B}            \\
 			TR + Kyber        & 9,000 B                             & 9,540 B                             & 13,860 B                             \\
@@ -2432,7 +2444,7 @@
 
 			\vspace{2mm}
 			{\small\texttt{** WARNING: connection is not using a post-quantum key exchange algorithm.\\
-			** This session may be vulnerable to "store now, decrypt later" attacks.}}
+					** This session may be vulnerable to "store now, decrypt later" attacks.}}
 
 			\vspace{3mm}
 			\textbf{Why this matters}: It makes PQ the norm, and a missing PQ key exchange something users \textit{see}
@@ -3098,17 +3110,17 @@ if ((err = SSLHashSHA1.final(&hashCtx,
 		\item \textbf{What}: Timing attack on Kyber implementations\footnote{\url{https://appliedcryptography.page/paper/\#kyber-slash}} (Dec 2023)
 		\item \textbf{Affected}: The reference implementation and the ``production-ready'' libraries derived from it
 		\item \textbf{The vulnerability}:
-			\begin{itemize}
-				\item A division by $q$ in the decryption code compiled to variable-time instructions on some platforms
-				\item The running time depended on secret polynomial coefficients
-				\item Attacker measures decapsulation times; recovers the secret key within a couple million queries
-			\end{itemize}
+		      \begin{itemize}
+			      \item A division by $q$ in the decryption code compiled to variable-time instructions on some platforms
+			      \item The running time depended on secret polynomial coefficients
+			      \item Attacker measures decapsulation times; recovers the secret key within a couple million queries
+		      \end{itemize}
 		\item \textbf{Impact}: Complete key recovery from ``secure'' implementations
 		\item \textbf{Lesson}: The \textit{algorithm} was fine; the \textit{code} wasn't
-			\begin{itemize}
-				\item Years of review missed it; ``constant-time'' code wasn't
-				\item Constant-time programming (topic 2.5) is not optional for PQ crypto
-			\end{itemize}
+		      \begin{itemize}
+			      \item Years of review missed it; ``constant-time'' code wasn't
+			      \item Constant-time programming (topic 2.5) is not optional for PQ crypto
+		      \end{itemize}
 	\end{itemize}
 \end{frame}
 
