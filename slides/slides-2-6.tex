@@ -1857,7 +1857,7 @@
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
-				\item \textbf{2024}: The tipping point---Chrome turns on hybrid PQ key agreement by default (April), with Cloudflare, Google, and AWS already supporting it server-side\footnote{Many of the slides in this subsection are based on Bas Westerbaan's excellent blog post over at Cloudflare, but have been updated to account for developments through 2026: \url{https://blog.cloudflare.com/pq-2024/}}
+				\item \textbf{2024}: The tipping point---Chrome turns on hybrid PQ key agreement by default (April), with Cloudflare, Google, and AWS already supporting it server-side
 				\item \textbf{QUIC protocol}: Uses TLS 1.3 under the hood
 				      \begin{itemize}
 					      \item Modern transport protocol, born at Google, standardized by the IETF
@@ -2015,15 +2015,15 @@
 				\item Firefox (late 2024)
 				\item Safari: announced at WWDC 2025\footnote{\url{https://support.apple.com/en-us/122756}} for iOS 26, macOS 26, etc.
 			\end{itemize}
-			\textbf{The result}: PQ now protects 38\% of all TLS connections seen by Cloudflare\footnote{\url{https://radar.cloudflare.com/adoption-and-usage\#post-quantum-encryption-adoption}}
+			\textbf{The result}: PQ now protects 72\% of all TLS connections seen by Cloudflare\footnote{\url{https://radar.cloudflare.com/post-quantum}}
 		\end{column}
 		\begin{column}{0.4\textwidth}
 			\begin{center}
-				\textbf{PQ Adoption}\\[3mm]
+				\textbf{PQ Adoption (September 2026)}\\[3mm]
 				\begin{tikzpicture}[scale=0.8]
 					\pie[text=legend,radius=1.6]{
-						38/PQ,
-						62/Classical
+						72/PQ,
+						28/Classical
 					}
 				\end{tikzpicture}
 			\end{center}
@@ -2344,24 +2344,28 @@
 \end{frame}
 
 \begin{frame}{Katana: optimized lattice RKEM}
-	\begin{itemize}
-		\item \textbf{Ratcheting KEM (RKEM)}: KEM where ciphertext also serves as next public key
-		      \begin{itemize}
-			      \item Like how Signal reuses $g^b$ for both encryption and next public key
-			      \item Saves bandwidth by dual-purposing values
-		      \end{itemize}
-		\item \textbf{Previous attempts had security flaws}:
-		      \begin{itemize}
-			      \item Naive lattice translations of Signal's trick turn out insecure for some parameters
-			      \item The fix needs a careful proof under the hint-MLWE assumption
-		      \end{itemize}
-		\item \textbf{Katana}: New RKEM based on Kyber
-		      \begin{itemize}
-			      \item 37\% smaller than naive Kyber approach
-			      \item At 192-bit security: 1,416 bytes vs 2,272 bytes
-			      \item Provably secure under hint-MLWE
-		      \end{itemize}
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Ratcheting KEM (RKEM)}: KEM where ciphertext also serves as next public key
+				      \begin{itemize}
+					      \item Like how Signal reuses $g^b$ for both encryption and next public key
+					      \item Saves bandwidth by dual-purposing values
+				      \end{itemize}
+				\item \textbf{Previous attempts had security flaws}:
+				      \begin{itemize}
+					      \item Naive lattice translations of Signal's trick turn out insecure for some parameters
+					      \item The fix needs a careful proof under the hint-MLWE assumption
+				      \end{itemize}
+				\item \textbf{Katana}: New RKEM based on Kyber\footnote{\url{https://appliedcryptography.page/paper/\#triple-ratchet}}
+				      \begin{itemize}
+					      \item 37\% smaller than naive Kyber approach
+					      \item At 192-bit security: 1,416 bytes vs 2,272 bytes
+					      \item Provably secure under hint-MLWE
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Triple Ratchet efficiency gains}
@@ -2631,15 +2635,15 @@
 					      \item Broken by Shor's algorithm
 					      \item \textcolor{red}{Vulnerable to SNDL (Store-Now-Decrypt-Later)}
 				      \end{itemize}
-				\item \textbf{Digital signatures}
-				      \begin{itemize}
-					      \item Broken by Shor's algorithm
-					      \item \textcolor{green!70!black}{Not vulnerable to SNDL (Store-Now-Decrypt-Later)}
-				      \end{itemize}
 				\item \textbf{``Fancy'' crypto}
 				      \begin{itemize}
 					      \item Blind signatures, OPRF, etc.
 					      \item Case-by-case assessment needed
+				      \end{itemize}
+				\item \textbf{Digital signatures}
+				      \begin{itemize}
+					      \item Broken by Shor's algorithm
+					      \item \textcolor{green!70!black}{Not vulnerable to SNDL (Store-Now-Decrypt-Later)}
 				      \end{itemize}
 				\item \textbf{Symmetric crypto}
 				      \begin{itemize}
@@ -3106,22 +3110,26 @@ if ((err = SSLHashSHA1.final(&hashCtx,
 \end{frame}
 
 \begin{frame}{KyberSlash: a real-world PQ vulnerability}
-	\begin{itemize}
-		\item \textbf{What}: Timing attack on Kyber implementations\footnote{\url{https://appliedcryptography.page/paper/\#kyber-slash}} (Dec 2023)
-		\item \textbf{Affected}: The reference implementation and the ``production-ready'' libraries derived from it
-		\item \textbf{The vulnerability}:
-		      \begin{itemize}
-			      \item A division by $q$ in the decryption code compiled to variable-time instructions on some platforms
-			      \item The running time depended on secret polynomial coefficients
-			      \item Attacker measures decapsulation times; recovers the secret key within a couple million queries
-		      \end{itemize}
-		\item \textbf{Impact}: Complete key recovery from ``secure'' implementations
-		\item \textbf{Lesson}: The \textit{algorithm} was fine; the \textit{code} wasn't
-		      \begin{itemize}
-			      \item Years of review missed it; ``constant-time'' code wasn't
-			      \item Constant-time programming (topic 2.5) is not optional for PQ crypto
-		      \end{itemize}
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{What}: Timing attack on Kyber implementations\footnote{\url{https://appliedcryptography.page/paper/\#kyber-slash}} (Dec 2023)
+				\item \textbf{Affected}: The reference implementation and the ``production-ready'' libraries derived from it
+				\item \textbf{The vulnerability}:
+				      \begin{itemize}
+					      \item A division by $q$ in the decryption code compiled to variable-time instructions on some platforms
+					      \item The running time depended on secret polynomial coefficients
+					      \item Attacker measures decapsulation times; recovers the secret key within a couple million queries
+				      \end{itemize}
+				\item \textbf{Impact}: Complete key recovery from ``secure'' implementations
+				\item \textbf{Lesson}: The \textit{algorithm} was fine; the \textit{code} wasn't
+				      \begin{itemize}
+					      \item Years of review missed it; ``constant-time'' code wasn't
+					      \item Constant-time programming (topic 2.5) is not optional for PQ crypto
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{The PQ paradox}
