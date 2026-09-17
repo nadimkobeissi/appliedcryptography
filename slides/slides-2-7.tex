@@ -13,6 +13,25 @@
 \covertopicname{2.7: Cryptocurrency Cryptography}
 \coverwebsite{https://appliedcryptography.page}
 
+% Shared visual language for the mechanism diagrams.
+\colorlet{diagramgold}{cipheraccent!65!cipherdark}
+\colorlet{diagramred}{red!65!cipherdark}
+\tikzset{
+	crypto diagram/.style={
+		font=\sffamily\small,
+		every node/.style={align=center, text=cipherdark, inner sep=4pt}
+	},
+	cd card/.style={draw=ciphergraydark, fill=cipherwhite, rounded corners=4pt, line width=0.7pt},
+	cd green/.style={cd card, draw=cipherprimary!50, fill=cipherprimary!6!cipherwhite},
+	cd gold/.style={cd card, draw=diagramgold!45, fill=cipheraccent!10!cipherwhite},
+	cd red/.style={cd card, draw=diagramred!35, fill=diagramred!4!cipherwhite},
+	cd heading/.style={font=\small\bfseries, text=cipherprimarydark},
+	cd small/.style={font=\fontsize{8}{10}\selectfont},
+	cd arrow/.style={-{Stealth[length=2.2mm, width=1.6mm]}, draw=cipherprimary, line width=1pt, rounded corners=3pt},
+	cd block/.style={cd green, minimum width=1.65cm, minimum height=0.85cm, font=\small\bfseries},
+	cd tag/.style={fill=cipherlight, inner sep=2pt, font=\fontsize{8}{10}\selectfont}
+}
+
 \begin{document}
 \begin{frame}[plain]
 	\titlepage
@@ -139,6 +158,87 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{A blockchain, one link at a time}
+	\centering
+	\begin{tikzpicture}[
+			font=\sffamily,
+			y=0.95cm,
+			>=stealth,
+			every node/.style={inner sep=0pt},
+			link/.style={->, line width=1.2pt, rounded corners=4pt},
+			hash label/.style={rounded corners=3pt, minimum width=3.35cm, minimum height=0.46cm, font=\small},
+			copy label/.style={fill=cipherlight, inner sep=2pt, align=center, font=\fontsize{6.5}{7.5}\selectfont}
+		]
+		\colorlet{priorhash}{cipherdark!50}
+		\colorlet{firsthash}{cipherprimary}
+		\colorlet{secondhash}{cipheraccent!65!cipherdark}
+		\colorlet{thirdhash}{ciphersecondary}
+		\colorlet{editcolor}{red!65!cipherdark}
+
+		% Time moves right; the colored connectors show hashes copied forward.
+		\node[anchor=west, font=\small, text=cipherprimarydark] at (0,0.65)
+		{Each new block stores the previous block's fingerprint.};
+		\draw[->, cipherprimary!45, line width=0.6pt] (0,0.3) -- (13.5,0.3)
+		node[pos=1, above=3pt, anchor=south east, font=\scriptsize] {newer blocks};
+
+		% Each card separates the stored previous hash from its own computed hash.
+		\foreach \x/\blocknumber/\previoushash/\blockhash/\previouscolor/\blockcolor/\blocktime/\blocknonce/\payer/\payee/\amount/\otherpayer/\otherpayee/\otheramount in {
+				0/41/8c12/6f2a/priorhash/firsthash/12:00/8421/Alice/Bob/2/Dana/Eve/1,
+				4.85/42/6f2a/b903/firsthash/secondhash/12:10/2917/Bob/Carol/1/Eve/Frank/0.5,
+				9.7/43/b903/d781/secondhash/thirdhash/12:20/6305/Carol/Dana/0.4/Frank/Alice/0.2
+			} {
+				\begin{scope}[xshift=\x cm]
+					\fill[cipherdark!8, rounded corners=4pt] (0.05,-0.06) rectangle (3.85,-3.36);
+					\draw[fill=cipherwhite, draw=ciphergraydark, rounded corners=4pt, line width=0.7pt]
+					(0,0) rectangle (3.8,-3.3);
+					\begin{scope}
+						\clip[rounded corners=4pt] (0,0) rectangle (3.8,-3.3);
+						\fill[cipherprimarydark] (0,0) rectangle (3.8,-0.58);
+					\end{scope}
+					\node[anchor=west, font=\small\bfseries, text=cipherwhite] at (0.24,-0.29) {Block \blocknumber};
+
+					\draw[fill=\previouscolor!7!cipherwhite, draw=\previouscolor!45, rounded corners=3pt]
+					(0.23,-0.79) rectangle (3.57,-1.45);
+					\node[anchor=west, font=\fontsize{6.5}{8}\selectfont\bfseries, text=\previouscolor] at (0.38,-0.98) {PREVIOUS HASH};
+					\node[anchor=west, font=\small\ttfamily, text=\previouscolor] at (0.38,-1.26) {...\previoushash};
+					\coordinate (previous\blocknumber) at (0.23,-1.12);
+
+					\node[anchor=west, font=\fontsize{7}{8}\selectfont\bfseries, text=cipherdark!60] at (0.24,-1.79) {TRANSACTIONS};
+					\node[anchor=west, font=\fontsize{9}{11}\selectfont] at (0.24,-2.12) {\payer\ $\rightarrow$ \payee};
+					\node[anchor=east, font=\fontsize{9}{11}\selectfont\bfseries] at (3.56,-2.12) {\amount\ BTC};
+					\node[anchor=west, font=\fontsize{9}{11}\selectfont] at (0.24,-2.49) {\otherpayer\ $\rightarrow$ \otherpayee};
+					\node[anchor=east, font=\fontsize{9}{11}\selectfont\bfseries] at (3.56,-2.49) {\otheramount\ BTC};
+					\draw[ciphergraydark] (0.24,-2.76) -- (3.56,-2.76);
+					\node[anchor=west, font=\fontsize{7}{9}\selectfont, text=cipherdark!65] at (0.24,-3.03) {Time: \blocktime};
+					\node[anchor=east, font=\fontsize{7}{9}\selectfont, text=cipherdark!65] at (3.56,-3.03) {Nonce: \blocknonce};
+
+					\draw[->, \blockcolor, line width=0.7pt] (1.9,-3.3) -- (1.9,-3.66);
+					\node[anchor=west, font=\fontsize{6.5}{8}\selectfont, text=cipherdark!65] at (2.04,-3.48) {hash the header};
+					\node[hash label, fill=\blockcolor!10!cipherlight, draw=\blockcolor!55, text=\blockcolor]
+					(hash\blocknumber) at (1.9,-3.92) {Block hash: \texttt{...\blockhash}};
+				\end{scope}
+			}
+
+		% Matching colors and literal values make the links easy to follow.
+		\draw[link, firsthash] (hash41.east) -- (4.32,-3.92) -- (4.32,-1.12) -- (previous42);
+		\node[copy label, text=firsthash] at (4.32,-2.45) {copied\\forward};
+		\draw[link, secondhash] (hash42.east) -- (9.17,-3.92) -- (9.17,-1.12) -- (previous43);
+		\node[copy label, text=secondhash] at (9.17,-2.45) {copied\\forward};
+
+		% A compact counterexample explains what the hash links protect.
+		\draw[fill=editcolor!4!cipherlight, draw=editcolor!20, rounded corners=4pt]
+		(0,-4.48) rectangle (13.5,-5.33);
+		\node[font=\fontsize{9}{11}\selectfont\bfseries, text=editcolor] at (2.05,-4.73) {Edit a transaction};
+		\node[font=\fontsize{8}{10}\selectfont] at (2.05,-5.08) {Alice pays Bob: 2 $\rightarrow$ 9 BTC};
+		\draw[->, editcolor!65, thick] (4.08,-4.91) -- (4.65,-4.91);
+		\node[font=\fontsize{9}{11}\selectfont\bfseries, text=editcolor] at (6.75,-4.73) {Its block hash changes};
+		\node[font=\fontsize{8}{10}\selectfont\ttfamily] at (6.75,-5.08) {...6f2a $\rightarrow$ ...e710};
+		\draw[->, editcolor!65, thick] (8.85,-4.91) -- (9.42,-4.91);
+		\node[font=\fontsize{9}{11}\selectfont\bfseries, text=editcolor] at (11.52,-4.73) {The next link breaks};
+		\node[font=\fontsize{8}{10}\selectfont] at (11.52,-5.08) {Block 42 still records \texttt{...6f2a}};
+	\end{tikzpicture}
+\end{frame}
+
 \begin{frame}{The challenge: who gets to add the next block?}
 	\begin{center}
 		\textbf{In a decentralized system with no leader, how do we decide?}
@@ -233,6 +333,44 @@
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{Mining: many guesses, one cheap check}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.65);
+		\node[cd heading] at (1.9,-0.15) {Candidate block header};
+		\node[cd card, minimum width=3.5cm, minimum height=1.25cm, font=\fontsize{9}{12}\selectfont] (header) at (1.9,-1.15)
+		{Previous hash + Merkle root\\Time + target + \textbf{nonce}};
+		\node[cd green, minimum width=2.55cm, minimum height=1.25cm] (hashing) at (6,-1.15)
+		{\textbf{Hash the header}\\\small SHA-256 twice};
+		\node[cd gold, minimum width=4.1cm, minimum height=1.25cm] (target) at (11.1,-1.15)
+		{\textbf{Is the hash $\leq T$?}\\\small Only small outputs win};
+		\draw[cd arrow] (header) -- (hashing);
+		\draw[cd arrow] (hashing) -- (target);
+		\draw[cd arrow, draw=diagramgold] (target.south) -- (11.1,-2.22) -- (1.9,-2.22) -- (header.south);
+		\node[cd tag, text=diagramgold] at (6.5,-2.22) {Too large? Change the nonce and try again.};
+
+		\draw[cd card] (0.15,-2.7) rectangle (7.45,-5.55);
+		\node[cd heading, font=\fontsize{9}{11}\selectfont\bfseries] at (3.8,-3.02)
+		{Toy 8-bit outputs; target $T=15$};
+		\node[cd small, text=cipherdark!65] at (3.8,-3.39) {Bitcoin uses 256-bit outputs; the comparison is the same.};
+		\foreach \x/\label in {0.9/Nonce,3.55/Hash as a number,6.3/Result}
+		\node[cd small, font=\fontsize{8}{10}\selectfont\bfseries] at (\x,-3.83) {\label};
+		\draw[ciphergraydark] (0.4,-4.07) -- (7.2,-4.07);
+		\foreach \y/\nonce/\value/\result in {-4.35/17/180/try again,-4.78/18/110/try again,-5.21/19/9/valid proof} {
+				\node[font=\small\ttfamily] at (0.9,\y) {\nonce};
+				\node[font=\small\ttfamily] at (3.55,\y) {\value};
+				\node[cd small] at (6.3,\y) {\result};
+			}
+		\draw[cipherprimary, rounded corners=3pt] (0.4,-4.99) rectangle (7.2,-5.43);
+
+		\node[cd green, minimum width=5.15cm, minimum height=2.85cm] at (10.8,-4.125) {};
+		\node[cd heading] at (10.8,-3.1) {Checking the winning proof};
+		\node[font=\small\ttfamily] at (10.8,-3.67) {nonce = 19};
+		\draw[cd arrow] (10.8,-3.95) -- (10.8,-4.3);
+		\node[font=\large\bfseries, text=cipherprimary] at (10.8,-4.68) {$H=9\leq 15$};
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}{How hard is this puzzle really?}
@@ -336,6 +474,37 @@
 			\end{alertblock}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{Difficulty: resize the winning region}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.65);
+		\node[cd heading, anchor=west] at (0.15,-0.15) {Observe a 2016-block period};
+		\node[cd heading, anchor=west] at (7.15,-0.15) {Resize the target for the next period};
+		\node[cd small, anchor=west, align=left] at (0.15,-0.63) {The same number of blocks,\\in different amounts of time.};
+		\node[cd small, anchor=west, align=left] at (7.15,-0.63) {A hash wins when $H\leq T$.\\Bars show relative target sizes.};
+
+		\foreach \y/\days/\barlength/\factor/\newwidth/\verdict in {
+				-1.6/10/2.4/1.4/2.0/Smaller target: harder,
+				-3.9/20/4.8/0.7/4.0/Larger target: easier
+			} {
+				\begin{scope}[yshift=\y cm]
+					\fill[ciphergray] (0.35,-0.3) rectangle (5.15,-0.75);
+					\fill[cipherprimary!75] (0.35,-0.3) rectangle ({0.35+\barlength},-0.75);
+					\node[anchor=west, font=\small\bfseries] at (0.15,0.08) {2016 blocks in \days\ days};
+					\draw[diagramgold, dashed, thick] (3.71,-0.13) -- (3.71,-1.0);
+					\node[cd small, text=diagramgold] at (3.71,-1.22) {14-day goal};
+					\draw[cd arrow] (5.6,-0.52) -- (6.7,-0.52);
+					\node[cd small, anchor=east] at (8.05,-0.3) {old $T$};
+					\node[cd small, anchor=east] at (8.05,-0.8) {new $T$};
+					\fill[ciphergraydark, rounded corners=2pt] (8.2,-0.12) rectangle (11,-0.48);
+					\fill[cipherprimary!75, rounded corners=2pt] (8.2,-0.62) rectangle ({8.2+\newwidth},-0.98);
+					\node[cd small, anchor=west, text=cipherprimarydark] at (8.1,-1.25) {\textbf{\verdict}};
+					\node[cd small, anchor=west] at (7.15,0.24) {Difficulty $\times\,\factor$; target $\div\,\factor$};
+				\end{scope}
+			}
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}{The mining process: finding the golden ticket}
@@ -544,6 +713,37 @@
 	\end{center}
 \end{frame}
 
+\begin{frame}{A fork resolves when one branch gains more work}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[cd small, anchor=west] at (0.1,-0.1) {Each block contributes the same amount of work in this example.};
+		\node[cd heading] at (2.5,-1.15) {Shared history};
+		\node[cd block, fill=ciphergray] (b99) at (1.25,-2.2) {99};
+		\node[cd block, fill=ciphergray] (b100) at (3.5,-2.2) {100};
+		\node[cd block] (a101) at (6.1,-1.2) {101 A};
+		\node[cd block] (a102) at (8.95,-1.2) {102 A};
+		\node[cd block] (a103) at (11.8,-1.2) {103 A};
+		\node[cd block, cd gold, text=diagramgold] (b101) at (6.1,-3.25) {101 B};
+		\draw[cd arrow] (b99) -- (b100);
+		\draw[cd arrow] (b100.east) -- (4.75,-2.2) |- (a101.west);
+		\draw[cd arrow, draw=diagramgold] (4.75,-2.2) |- (b101.west);
+		\draw[cd arrow] (a101) -- (a102);
+		\draw[cd arrow] (a102) -- (a103);
+		\node[cd small, text=cipherprimary] at (10.35,-0.48) {Nodes converge on branch A};
+		\node[cd small, text=diagramgold] at (6.1,-3.94) {Valid, but now stale};
+		\node[cd gold, minimum width=4.55cm, minimum height=1.2cm, cd small] (mempool) at (10.6,-3.25)
+		{Still-valid transactions from B\\can return to the mempool\\and be mined again.};
+		\draw[cd arrow, draw=diagramgold, dashed] (b101) -- (mempool);
+		\node[cd small, anchor=west] at (0.1,-4.73) {Work beyond\\the shared history};
+		\foreach \x in {3.2,5.0,6.8}
+		\fill[cipherprimary!75, rounded corners=2pt] (\x,-4.4) rectangle ({\x+1.6},-4.82);
+		\fill[diagramgold!70, rounded corners=2pt] (3.2,-5.05) rectangle (4.8,-5.47);
+		\node[cd small, anchor=west, text=cipherprimarydark] at (8.7,-4.61) {A: 3 units of work};
+		\node[cd small, anchor=west, text=diagramgold] at (5.1,-5.26) {B: 1 unit of work};
+	\end{tikzpicture}
+\end{frame}
+
 \begin{frame}{The 51\% attack: the one big vulnerability}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -668,6 +868,35 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Spending a UTXO: payment, change, and fee}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[cd heading] at (1.8,-0.35) {Existing output};
+		\node[cd heading] at (6.2,-0.35) {Alice's transaction};
+		\node[cd heading] at (11.55,-0.35) {New outputs};
+		\node[cd card, minimum width=3.15cm, minimum height=1.65cm] (input) at (1.8,-2.12)
+		{\textbf{5 BTC}\\\small Locked to Alice's key};
+		\node[cd green, minimum width=3.55cm, minimum height=1.65cm, font=\fontsize{9}{12}\selectfont] (tx) at (6.2,-2.12)
+		{References the old output\\\textbf{Alice signs to authorize}\\its consumption};
+		\node[cd green, minimum width=3.5cm, minimum height=1.1cm] (payment) at (11.55,-1.3)
+		{\textbf{2 BTC to Bob}\\\small Payment};
+		\node[cd green, minimum width=3.5cm, minimum height=1.1cm] (change) at (11.55,-3.05)
+		{\textbf{2.9 BTC to Alice}\\\small Change};
+		\draw[cd arrow] (input) -- (tx);
+		\draw[cd arrow] (tx.east) -- (8.85,-2.12) |- (payment.west);
+		\draw[cd arrow] (8.85,-2.12) |- (change.west);
+		\node[cd red, minimum width=3.15cm, minimum height=0.95cm, cd small, text=diagramred] at (1.8,-3.8)
+		{\textbf{Consumed in full}\\Cannot be spent again};
+		\draw[cd arrow, draw=diagramred] (input.south) -- (1.8,-3.31);
+		\node[cd gold, minimum width=3.5cm, minimum height=1.1cm, font=\fontsize{9}{12}\selectfont] (fee) at (11.55,-4.95)
+		{\textbf{0.1 BTC fee for the miner}\\Not an output of this transaction};
+		\draw[cd arrow, draw=diagramgold, dashed] (tx.south) -- (6.2,-4.95) -- (fee.west);
+		\node[cd tag, text=diagramgold] at (7.9,-4.63) {inputs $-$ outputs};
+		\node[font=\large] at (3.35,-5.2) {$5 = \underbrace{2 + 2.9}_{\text{new outputs}} + \underbrace{0.1}_{\text{fee}}$};
+	\end{tikzpicture}
+\end{frame}
+
 \begin{frame}{Creating new coins: the coinbase transaction}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -748,13 +977,46 @@
 				\item Honest miners keep extending main chain
 				\item Attacker must mine faster than all honest miners combined
 				\item Probability shrinks exponentially with every block
-				\item After 6 blocks, a 10\% attacker wins $\approx$0.02\% of the time (next slide)
+				\item After 6 blocks, a 10\% attacker wins $\approx$0.02\% of the time
 			\end{itemize}
 		\end{column}
 	\end{columns}
 	\begin{alertblock}{Wait for confirmations}
 		More blocks = more security. Six confirmations is the customary threshold.
 	\end{alertblock}
+\end{frame}
+
+\begin{frame}{A double-spend is a race between histories}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[cd heading, anchor=west] at (3.7,-0.2) {Public branch: pays the merchant};
+		\node[cd card, minimum width=2.8cm, minimum height=1.5cm, font=\fontsize{9}{12}\selectfont] (coin) at (1.55,-2.65)
+		{\textbf{One unspent output}\\Owned by the attacker};
+		\node[cd green, minimum width=2.4cm, minimum height=1.15cm] (pay) at (4.85,-1.2)
+		{\textbf{Block 101}\\\small Pay merchant};
+		\node[cd red, minimum width=2.4cm, minimum height=1.15cm] (selfpay) at (4.85,-3.85)
+		{\textbf{Block 101$'$}\\\small Pay self instead};
+		\draw[cd arrow] (coin.east) -- (3.3,-2.65) |- (pay.west);
+		\draw[cd arrow, draw=diagramred] (3.3,-2.65) |- (selfpay.west);
+		\foreach \x/\height/\count in {7.6/102/2,9.6/103/3,11.6/104/4} {
+				\node[cd block] (public\height) at (\x,-1.2) {\height};
+				\node[cd small, text=cipherprimary] at (\x,-2.05) {\count\\confirmations};
+			}
+		\node[cd small, text=cipherprimary] at (4.85,-2.05) {1\\confirmation};
+		\draw[cd arrow] (pay) -- (public102);
+		\draw[cd arrow] (public102) -- (public103);
+		\draw[cd arrow] (public103) -- (public104);
+		\node[cd heading, anchor=west, text=diagramred] at (3.7,-2.85) {Private branch: spends the same output again};
+		\node[cd block, cd red] (private102) at (7.6,-3.85) {102$'$};
+		\draw[cd arrow, draw=diagramred] (selfpay) -- (private102);
+		\draw[cd arrow, draw=diagramred, dashed] (private102.east) -- (9.3,-3.85);
+		\node[cd small, text=diagramred, text width=3.5cm] at (11.25,-3.85) {The attacker must catch up\\and overtake in total work.};
+		\node[cd green, minimum width=6.25cm, minimum height=0.72cm, cd small] at (3.35,-5.28)
+		{The merchant waits while work accumulates\\above the payment.};
+		\node[cd red, minimum width=6.25cm, minimum height=0.72cm, cd small] at (10.15,-5.28)
+		{Only a heavier \textbf{valid} branch\\can replace the public branch.};
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}{Transaction confirmation in practice}
@@ -1113,6 +1375,38 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{A light wallet checks inclusion, not every rule}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\draw[cd card] (0.15,-0.1) rectangle (6.05,-5.5);
+		\node[cd heading] at (3.1,-0.45) {LIGHT WALLET};
+		\foreach \x/\name/\label in {1.2/older/{$N-1$},3.1/selected/{$N$},5/newer/{$N+1$}}
+		\node[cd green, minimum width=1.5cm, minimum height=0.73cm, cd small] (\name) at (\x,-1.28) {Header\\\label};
+		\draw[cd arrow] (older) -- (selected);
+		\draw[cd arrow] (selected) -- (newer);
+		\node[cd small] at (3.1,-2.13) {Check header links and proof-of-work};
+		\node[cd green, minimum width=4.85cm, minimum height=1cm, font=\fontsize{9}{12}\selectfont] (recompute) at (3.1,-3.44)
+		{Hash the transaction + sibling path\\\textbf{Recompute the Merkle root}};
+		\draw[cd arrow] (selected.south) -- (3.1,-1.8) -- (5.88,-1.8) -- (5.88,-2.6) -- (3.1,-2.6) -- (recompute.north);
+		\node[cd tag, text=cipherprimary] at (4.37,-2.6) {Same root?};
+		\node[cd green, minimum width=5.25cm, minimum height=0.92cm, cd small] (included) at (3.1,-4.85)
+		{\textbf{Proves inclusion}\\This transaction is in block $N$.};
+		\draw[cd arrow] (recompute.south) -- (included.north);
+
+		\draw[cd card] (8.25,-0.1) rectangle (13.35,-3.95);
+		\node[cd heading] at (10.8,-0.45) {FULL NODE};
+		\foreach \y in {-1.2,-1.35,-1.5}
+		\node[cd card, minimum width=3.6cm, minimum height=0.78cm] at (10.8,\y) {};
+		\node[font=\fontsize{9}{11}\selectfont\bfseries] at (10.8,-1.5) {Block + transactions};
+		\node[cd small] at (10.8,-2.42) {Checks signatures, available outputs,\\and the other consensus rules};
+		\draw[cd arrow] (8.25,-3.44) -- (recompute.east);
+		\node[cd tag] at (7.15,-3.12) {Transaction\\+ Merkle proof};
+		\node[cd red, minimum width=5.1cm, minimum height=1.08cm, font=\fontsize{9}{12}\selectfont] at (10.8,-4.96)
+		{An inclusion proof can accompany\\an \textbf{invalid} transaction.};
+	\end{tikzpicture}
+\end{frame}
+
 \begin{frame}{Handling odd transaction counts (and a real bug)}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -1140,6 +1434,40 @@
 			\end{alertblock}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+% Bitcoin Core documents this ambiguity in src/consensus/merkle.cpp.
+\begin{frame}{Different lists, the same Merkle root}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\foreach \offset/\treeindex/\kind/\list in {0/one/Three transactions/{A,B,C},7.1/two/Four entries/{A,B,C,C}} {
+				\begin{scope}[xshift=\offset cm]
+					\node[cd heading] at (3.2,-0.15) {\kind: $[\list]$};
+					\node[cd green, minimum width=1.6cm, minimum height=0.6cm, font=\small\bfseries] (root\treeindex) at (3.2,-1.12) {$R$};
+					\node[cd card, minimum width=2.35cm, minimum height=0.64cm, cd small] (left\treeindex) at (1.6,-2.23) {$H(h_A\,\|\,h_B)$};
+					\node[cd gold, minimum width=2.35cm, minimum height=0.64cm, cd small] (right\treeindex) at (4.85,-2.23) {$H(h_C\,\|\,h_C)$};
+					\foreach \x/\letter in {0.7/A,2.5/B,4.0/C}
+					\node[cd card, minimum width=1.04cm, minimum height=0.64cm] (leaf\treeindex\letter) at (\x,-3.45) {$h_{\letter}$};
+					\node[cd gold, minimum width=1.04cm, minimum height=0.64cm] (repeat\treeindex) at (5.7,-3.45) {$h_C$};
+					\draw[cd arrow] (leaf\treeindex A) -- (left\treeindex);
+					\draw[cd arrow] (leaf\treeindex B) -- (left\treeindex);
+					\draw[cd arrow] (leaf\treeindex C) -- (right\treeindex);
+					\draw[cd arrow, draw=diagramgold] (repeat\treeindex) -- (right\treeindex);
+					\draw[cd arrow] (left\treeindex) -- (root\treeindex);
+					\draw[cd arrow] (right\treeindex) -- (root\treeindex);
+				\end{scope}
+			}
+		\draw[cipherprimary, dashed] (rootone.east) -- (roottwo.west);
+		\node[cd tag, text=cipherprimary, font=\small\bfseries] at (6.75,-1.12) {identical};
+		\draw[diagramgold, dashed, rounded corners=3pt, line width=1pt] (5.08,-3.84) rectangle (6.32,-3.06);
+		\node[cd small, text=diagramgold] at (3.2,-4.24) {The tree rule duplicates the last \emph{hash}.};
+		\draw[diagramred, rounded corners=3pt, line width=1pt] (12.18,-3.84) rectangle (13.42,-3.06);
+		\node[cd small, text=diagramred] at (10.3,-4.24) {The list repeats the \emph{transaction}: invalid.};
+		\node[cd green, minimum width=13.05cm, minimum height=0.95cm] at (6.75,-5.13)
+		{Both compute $R=H\bigl(H(h_A\,\|\,h_B)\,\|\,H(h_C\,\|\,h_C)\bigr)$\\
+			\scriptsize Identical hash inputs: this ambiguity does not require breaking the hash function.};
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}{Beyond Bitcoin: Merkle trees everywhere}
@@ -1401,6 +1729,29 @@ contract SimpleStorage {
 	\end{alertblock}
 \end{frame}
 
+\begin{frame}{One transaction, executed by every node}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[cd green, minimum width=6.3cm, minimum height=0.75cm] (call) at (6.75,-0.45)
+		{Alice's signed transaction: \texttt{SimpleStorage.store(42)}};
+		\foreach \x/\name in {2.15/A,6.75/B,11.35/C} {
+				\draw[cd card] ({\x-1.95},-1.55) rectangle ({\x+1.95},-4.86);
+				\node[cd heading] (node\name) at (\x,-1.88) {Node \name};
+				\node[cd gold, minimum width=3.25cm, minimum height=0.62cm, font=\fontsize{9}{11}\selectfont] (before\name) at (\x,-2.56)
+				{Before: \texttt{number = 7}};
+				\node[cd small] (execute\name) at (\x,-3.47) {Execute \texttt{store(42)}\\using the EVM rules};
+				\node[cd green, minimum width=3.25cm, minimum height=0.62cm, font=\fontsize{9}{11}\selectfont] (after\name) at (\x,-4.38)
+				{After: \texttt{number = 42}};
+				\draw[cd arrow] (call.south) -- (6.75,-1.18) -| (\x,-1.55);
+				\draw[cd arrow] (before\name) -- (execute\name);
+				\draw[cd arrow] (execute\name) -- (after\name);
+			}
+		\node[cd small, text=cipherprimarydark] at (6.75,-5.43)
+		{Same starting state $+$ same ordered transactions $+$ same execution rules $\Rightarrow$ same resulting state};
+	\end{tikzpicture}
+\end{frame}
+
 \begin{frame}{The gas mechanism: paying for computation}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -1463,6 +1814,32 @@ contract SimpleStorage {
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+% Fee split follows EIP-1559: https://eips.ethereum.org/EIPS/eip-1559
+\begin{frame}{Follow the fee: one payment, two destinations}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[cd heading] at (6.75,-0.2) {Plain ETH transfer: 21,000 gas at $(30+2)$ gwei per gas};
+		\node[cd card, minimum width=4.0cm, minimum height=1.75cm] (payer) at (2.35,-2.63)
+		{\textbf{Sender pays}\\[3pt]\large 0.000672 ETH\\[3pt]\scriptsize $21{,}000\times32=672{,}000$ gwei};
+		\node[cd gold, minimum width=4.9cm, minimum height=1.55cm] (burn) at (10.7,-1.55)
+		{\textbf{Base fee: burned}\\[3pt]\small $21{,}000\times30=630{,}000$ gwei\\\small 0.000630 ETH removed from supply};
+		\node[cd green, minimum width=4.9cm, minimum height=1.55cm] (tip) at (10.7,-3.85)
+		{\textbf{Priority fee: to the block proposer}\\[3pt]\small $21{,}000\times2=42{,}000$ gwei\\\small 0.000042 ETH received as a tip};
+		\draw[cd arrow] (payer.east) -- (5.9,-2.63);
+		\fill[cipherprimary] (5.9,-2.63) circle (2.2pt);
+		\draw[cd arrow, draw=diagramgold] (5.9,-2.63) |- (burn.west);
+		\draw[cd arrow] (5.9,-2.63) |- (tip.west);
+		\node[cd tag, text=diagramgold] at (6.93,-1.23) {30 gwei/gas};
+		\node[cd tag, text=cipherprimary] at (6.93,-4.18) {2 gwei/gas};
+		% The widths are proportional to the fee shares: 30/32 and 2/32.
+		\fill[diagramgold!70, rounded corners=2pt] (0.35,-5.15) rectangle (12.35,-5.62);
+		\fill[cipherprimary] (12.35,-5.15) rectangle (13.15,-5.62);
+		\node[cd small, text=cipherdark, font=\fontsize{8}{10}\selectfont\bfseries] at (6.35,-5.385) {93.75\% burned in this example};
+		\node[cd small, anchor=south east, text=cipherprimarydark] at (13.15,-5.1) {6.25\% tip};
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}[fragile]{A real example: a simple token}
@@ -1545,6 +1922,38 @@ function withdraw() public {   // simplified
 			\textbf{Fix}: zero the balance before the call (checks, effects, interactions), or a reentrancy lock.
 		\end{column}
 	\end{columns}
+\end{frame}
+
+% Reentrancy and the ordering fix: Solidity's Security Considerations.
+\begin{frame}{Reentrancy: the second call arrives too early}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.8);
+		\node[cd red, minimum width=3.6cm, minimum height=0.65cm, font=\small\bfseries] at (2.15,-0.35) {Attacker's contract};
+		\node[cd green, minimum width=3.6cm, minimum height=0.65cm, font=\small\bfseries] at (8.05,-0.35) {Vulnerable vault};
+		\draw[ciphergraydark, thick] (2.15,-0.68) -- (2.15,-4.72);
+		\draw[ciphergraydark, thick] (8.05,-0.68) -- (8.05,-4.72);
+		\foreach \y/\label in {-1.35/{1. \texttt{withdraw()}},-3.05/{3. Callback: \texttt{withdraw()} again}} {
+				\draw[cd arrow, draw=diagramred] (2.15,\y) -- (8.05,\y);
+				\node[cd small, anchor=south, text=diagramred] at (5.1,\y) {\label};
+			}
+		\foreach \y/\label in {-2.2/{2. Send 1 ETH: runs the attacker's code},-3.9/{4. Send another 1 ETH}} {
+				\draw[cd arrow, draw=diagramgold] (8.05,\y) -- (2.15,\y);
+				\node[cd small, anchor=south, text=diagramgold] at (5.1,\y) {\label};
+			}
+		\node[cd card, minimum width=3.5cm, minimum height=0.65cm, cd small] at (11.45,-1.35) {Recorded credit: \textbf{1 ETH}};
+		\node[cd red, minimum width=3.5cm, minimum height=0.65cm, cd small, text=diagramred] at (11.45,-3.05) {Recorded credit: \textbf{still 1 ETH}};
+		\draw[cd arrow, draw=diagramred] (11.45,-1.75) -- (11.45,-2.65);
+		\node[cd tag, text=diagramred] at (11.45,-2.2) {Not cleared yet};
+		\node[cd small, anchor=west, text=diagramred] at (8.05,-4.57) {\texttt{credit = 0} happens only after calls return.};
+
+		\node[cd heading, text=cipherprimary] at (1.35,-5.48) {Safer order};
+		\node[cd green, minimum width=2.65cm, minimum height=0.6cm, cd small] (check) at (4.2,-5.48) {Check the credit};
+		\node[cd green, minimum width=2.65cm, minimum height=0.6cm, cd small] (clear) at (7.85,-5.48) {Set credit to zero};
+		\node[cd green, minimum width=2.65cm, minimum height=0.6cm, cd small] (send) at (11.5,-5.48) {Then send ETH};
+		\draw[cd arrow] (check) -- (clear);
+		\draw[cd arrow] (clear) -- (send);
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}{The aftermath: Ethereum Classic}
@@ -1726,6 +2135,33 @@ function withdraw() public {   // simplified
 	\end{columns}
 \end{frame}
 
+% Roles and timing: https://ethereum.org/developers/docs/consensus-mechanisms/pos/
+\begin{frame}{A slot: one proposal, many independent checks}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[cd gold, minimum width=4.1cm, minimum height=0.75cm, cd small] (selection) at (2.35,-0.6)
+		{Stake-weighted selection\\chooses a proposer for this slot};
+		\node[cd green, minimum width=3.65cm, minimum height=1.65cm] (proposer) at (2.35,-2.55)
+		{\textbf{Selected proposer}\\\small Builds and signs\\\small one block};
+		\draw[cd arrow] (selection) -- (proposer);
+		\node[cd block, minimum height=1.2cm] (proposal) at (6.2,-2.55) {Block\\slot $s$};
+		\draw[cd arrow] (proposer) -- (proposal);
+		\node[cd heading] at (10.5,-0.48) {Committee members};
+		\foreach \y/\name in {-1.35/A,-2.55/B,-3.75/C} {
+				\node[cd card, minimum width=4.5cm, minimum height=0.76cm, font=\fontsize{9}{11}\selectfont] (validator\name) at (10.5,\y)
+				{Validator \name: \textbf{check + attest}};
+				\draw[cd arrow] (proposal.east) -- (7.65,-2.55) |- (validator\name.west);
+				\draw[cipherprimary, line width=0.8pt, rounded corners=3pt] (validator\name.east) -- (13.2,\y) -- (13.2,-5.15);
+			}
+		\node[cd green, minimum width=7.1cm, minimum height=0.9cm, font=\fontsize{9}{12}\selectfont] (votes) at (9.3,-5.15)
+		{\textbf{Signed votes for a chain head and checkpoints}\\Attestations influence consensus, weighted by stake};
+		\draw[cd arrow] (13.2,-5.15) -- (votes.east);
+		\node[cd gold, minimum width=4.1cm, minimum height=0.9cm, font=\fontsize{9}{12}\selectfont] at (2.35,-5.15)
+		{\textbf{12 seconds per slot}\\32 slots per epoch};
+	\end{tikzpicture}
+\end{frame}
+
 \begin{frame}{How is dishonesty detected?}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -1754,6 +2190,30 @@ function withdraw() public {   // simplified
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{Two signatures can prove a slashable offense}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[cd heading, anchor=west] at (0.1,-0.15) {Example: two different block proposals for the same slot};
+		\node[cd card, minimum width=3.1cm, minimum height=1.3cm] (signer) at (1.75,-2.65)
+		{\textbf{Validator V}\\\small One signing key};
+		\node[cd green, minimum width=3.25cm, minimum height=1.58cm, font=\fontsize{9}{12}\selectfont] (first) at (6.05,-1.45)
+		{\textbf{Proposal A}\\Slot: 700\\Block root: $A$\\Signature: $\sigma_A$};
+		\node[cd red, minimum width=3.25cm, minimum height=1.58cm, font=\fontsize{9}{12}\selectfont] (second) at (6.05,-3.85)
+		{\textbf{Proposal B}\\Slot: 700\\Block root: $B\neq A$\\Signature: $\sigma_B$};
+		\draw[cd arrow] (signer.east) -- (3.85,-2.65) |- (first.west);
+		\draw[cd arrow, draw=diagramred] (3.85,-2.65) |- (second.west);
+		\node[cd card, minimum width=4.15cm, minimum height=2.6cm, font=\fontsize{9}{13}\selectfont] (evidence) at (11.15,-2.65)
+		{\textbf{Protocol checks the evidence}\\[5pt]Same validator? Yes.\\Same slot? Yes.\\Different block roots? Yes.\\Both signatures valid? Yes.};
+		\draw[cd arrow] (first.east) -- (8.4,-1.45) -- (8.4,-2.65) -- (evidence.west);
+		\draw[cd arrow, draw=diagramred] (second.east) -- (8.4,-3.85) -- (8.4,-2.65);
+		\node[cd small, text=cipherprimarydark] at (4.15,-5.25) {Anyone can submit the signed pair as evidence.};
+		\node[cd red, minimum width=4.15cm, minimum height=0.76cm, font=\small\bfseries, text=diagramred] (slash) at (11.15,-5.1)
+		{Slash stake + force exit};
+		\draw[cd arrow, draw=diagramred] (evidence) -- (slash);
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}{Critiques of proof-of-stake}
@@ -1918,6 +2378,38 @@ function withdraw() public {   // simplified
 			\end{alertblock}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+% Protocol comparison: ethereum.org/developers/docs/scaling/{optimistic,zk}-rollups/
+\begin{frame}{Rollups: challenge a claim, or verify a proof}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.85);
+		\node[cd card, minimum width=10.5cm, minimum height=0.65cm, font=\fontsize{9}{11}\selectfont] at (6.75,-0.4)
+		{Both execute batches on L2 and publish data to Ethereum so others can reconstruct the state.};
+		\node[cd heading, text=diagramgold, anchor=west] at (0.1,-1.15) {OPTIMISTIC ROLLUP};
+		\node[cd gold, minimum width=3.2cm, minimum height=1.05cm, font=\fontsize{9}{12}\selectfont] (claim) at (1.85,-2.05)
+		{\textbf{Post a claim}\\Proposed new state root};
+		\node[cd gold, minimum width=3.8cm, minimum height=1.05cm, font=\fontsize{9}{12}\selectfont] (window) at (6.75,-2.05)
+		{\textbf{Watchers check the batch}\\Challenge window: often 7 days};
+		\node[cd green, minimum width=3.2cm, minimum height=1.05cm, font=\fontsize{9}{12}\selectfont] (settle) at (11.65,-2.05)
+		{\textbf{Claim finalizes}\\If no successful challenge};
+		\draw[cd arrow, draw=diagramgold] (claim) -- (window);
+		\draw[cd arrow, draw=diagramgold] (window) -- (settle);
+		\node[cd red, minimum width=6cm, minimum height=0.55cm, cd small, text=diagramred] (fraud) at (6.75,-3.22)
+		{Successful fraud proof $\Rightarrow$ reject the claim};
+		\draw[cd arrow, draw=diagramred] (window) -- (fraud);
+		\draw[ciphergraydark] (0.15,-3.76) -- (13.35,-3.76);
+		\node[cd heading, anchor=west] at (0.1,-4.15) {VALIDITY (ZK) ROLLUP};
+		\node[cd green, minimum width=3.2cm, minimum height=1.2cm, font=\fontsize{9}{12}\selectfont] (proof) at (1.85,-5.15)
+		{\textbf{Post a claim + proof}\\Proposed new state root\\and a validity proof};
+		\node[cd green, minimum width=3.8cm, minimum height=1.2cm, font=\fontsize{9}{12}\selectfont] (verify) at (6.75,-5.15)
+		{\textbf{L1 contract verifies}\\Check the cryptographic proof\\Reject if it fails};
+		\node[cd green, minimum width=3.2cm, minimum height=1.2cm, font=\fontsize{9}{12}\selectfont] (accept) at (11.65,-5.15)
+		{\textbf{Accept the new root}\\Only if the proof verifies};
+		\draw[cd arrow] (proof) -- (verify);
+		\draw[cd arrow] (verify) -- (accept);
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}{Where this leaves us}
