@@ -69,6 +69,7 @@
 				\item You can show anyone that I knew it
 			\end{itemize}
 		\end{column}
+		\pause
 		\begin{column}{0.48\textwidth}
 			\textbf{A zero-knowledge proof:}
 			\begin{itemize}
@@ -79,10 +80,6 @@
 			\end{itemize}
 		\end{column}
 	\end{columns}
-	\vspace{0.4cm}
-	\begin{alertblock}{The paradox}
-		Convince you completely while teaching you nothing. Sounds impossible? Within the hour, you'll do it with pen and paper.
-	\end{alertblock}
 \end{frame}
 
 \begin{frame}{The Ali Baba cave}
@@ -130,12 +127,14 @@
 			\end{block}
 			\small\textbf{In the cave:} Peggy knows the word, so she can \textit{always} come out of the side Victor names.
 		\end{column}
+		\pause
 		\begin{column}{0.32\textwidth}
 			\begin{block}{2. Soundness}
 				If the statement is false, a cheating prover gets caught, except with negligible probability.
 			\end{block}
 			\small\textbf{In the cave:} without the word, Peggy must guess the shout in advance. Fooled with probability $1/2$ per round: one in a million after 20 rounds.
 		\end{column}
+		\pause
 		\begin{column}{0.32\textwidth}
 			\begin{block}{3. Zero-knowledge}
 				The verifier learns nothing beyond the fact that the statement is true.
@@ -230,41 +229,6 @@
 	\end{tikzpicture}
 \end{frame}
 
-\begin{frame}{A toy group to play with}
-	\centering
-	\begin{tikzpicture}[crypto diagram]
-		\node[anchor=east, font=\small\bfseries] at (1.4,0) {$k$};
-		\node[anchor=east, font=\small\bfseries] at (1.4,-0.62) {$2^k \bmod 23$};
-		\foreach \k/\v in {0/1,1/2,2/4,3/8,4/16,5/9,6/18,7/13,8/3,9/6,10/12} {
-				\node[cd card, minimum width=0.98cm, minimum height=0.52cm, inner sep=0pt] at ({2+\k*1.05},0) {$\k$};
-				\ifnum\k=7
-					\node[cd gold, minimum width=0.98cm, minimum height=0.52cm, inner sep=0pt, font=\small\bfseries] at ({2+\k*1.05},-0.62) {$\v$};
-				\else
-					\node[cd green, minimum width=0.98cm, minimum height=0.52cm, inner sep=0pt, font=\small\bfseries] at ({2+\k*1.05},-0.62) {$\v$};
-				\fi
-			}
-	\end{tikzpicture}
-	\begin{columns}[T]
-		\begin{column}{0.55\textwidth}
-			\textbf{The rules} ($p = 23$, $g = 2$, $n = 11$):
-			\begin{itemize}
-				\item Elements live mod $23$; exponents live mod $11$, since $2^{11} \equiv 1$
-				\item Multiplying elements adds exponents:\\$9 \cdot 12 = 2^{5+10} = 2^{15} = 2^{4} = 16$
-				\item Inverses: $(2^k)^{-1} = 2^{11-k}$, so $13^{-1} = 2^{4} = 16$ (indeed $13 \cdot 16 = 208 \equiv 1$)
-				\item Dividing exponents: $1/5 \equiv 9 \pmod{11}$, as $5 \cdot 9 = 45 \equiv 1$
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.42\textwidth}
-			\begin{exampleblock}{Meet Alice}
-				Private key $a = 7$. Public key $A = 2^7 = 13$.
-			\end{exampleblock}
-			\begin{alertblock}{Toy-sized on purpose}
-				Here anyone can read $a$ off the table. Real groups have $n \approx 2^{256}$: no table, no shortcut (the discrete log problem, 1.7).
-			\end{alertblock}
-		\end{column}
-	\end{columns}
-\end{frame}
-
 \begin{frame}{The Schnorr identification protocol}
 	\vspace{-1.5cm}
 	\begin{center}\resizebox{0.78\textwidth}{!}{
@@ -328,35 +292,6 @@
 		\node[cd green, minimum width=6.3cm, minimum height=1.05cm, font=\fontsize{9}{12}\selectfont] at (10.2,-4.95) {$g^r = 2^4 = 16$\\$Y \cdot A^c = 2^{5} \cdot 2^{7 \cdot 3} = 2^{26} = 2^{4} = 16$ \ \textcolor{cipherprimary}{\mycheckmark}};
 		\node[cd card, minimum width=6.3cm, minimum height=1.05cm, font=\fontsize{9}{12}\selectfont] at (3.3,-4.95) {\textbf{Why it always works:}\\$g^{r} = g^{y + ca} = g^{y} \cdot (g^{a})^{c} = Y \cdot A^{c}$};
 	\end{tikzpicture}
-\end{frame}
-
-\begin{frame}{Your turn: pass without knowing $a$}
-	\begin{columns}[T]
-		\begin{column}{0.48\textwidth}
-			\textbf{You are Mallory.} You know $A = 13$ but not $a$. The verifier will pick $c$ uniformly from $\{0, \ldots, 10\}$. How often can you pass?
-			\vspace{0.3cm}
-			\pause
-
-			\textbf{Attempt 1: commit honestly.}
-			\begin{itemize}
-				\item Send $Y = 2^y$ for a random $y$
-				\item Then $c$ arrives, and you need $2^r = Y \cdot A^c = 2^{y + ca}$
-				\item So $r = y + ca$: impossible without $a$ (in a real-sized group)
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.48\textwidth}
-			\pause
-			\textbf{Attempt 2: bet on the challenge.}
-			\begin{itemize}
-				\item Bet on $c^* = 2$: pick $r = 9$, send\\$Y = 2^r / A^{c^*} = 2^{9 - 14} = 2^{6} = 18$
-				\item If $c = 2$ arrives: $2^9 = 6 = 18 \cdot 13^2$ \mycheckmark
-				\item Any other $c$: stuck again
-			\end{itemize}
-			\begin{alertblock}{You win with probability $1/n$}
-				Here $1/11$; with $n \approx 2^{256}$, never. But remember the trick: \textit{choose the challenge first, then solve for $Y$}.
-			\end{alertblock}
-		\end{column}
-	\end{columns}
 \end{frame}
 
 \begin{frame}{A parable}
@@ -429,39 +364,6 @@
 		\node[cd small, text=cipherdark!65] at (7.6,-3.4) {time $\longrightarrow$};
 		\node[cd card, text width=5.9cm, align=flush left, font=\fontsize{9}{11}\selectfont, anchor=north west] at (0,-3.8) {\textbf{Toy example:} Victor picks $c = 2$, $r = 9$, so $Y = 2^{9} / 13^{2} = 2^{9 - 14} = 2^{6} = 18$. The check passes: $2^9 = 6 = 18 \cdot 13^2$. (Mallory's bet, again!)};
 		\node[cd green, text width=6.1cm, align=flush left, font=\fontsize{9}{11}\selectfont, anchor=north east] at (13.5,-3.8) {\textbf{Same distribution:} in both rows, $c$ and $r$ are uniform and independent, and $Y$ is the one value that passes the check. So a real transcript teaches Victor nothing he couldn't cook up alone.};
-	\end{tikzpicture}
-\end{frame}
-
-\begin{frame}{Why $r$ leaks nothing: a one-time pad on a clock}
-	\centering
-	\begin{tikzpicture}[crypto diagram]
-		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
-		\node[anchor=west, font=\fontsize{9.5}{11}\selectfont] at (0,-0.25) {$r = y + ca \bmod n$ is the one-time pad from 1.2: key $y$, plaintext $ca$, addition mod $n$ for XOR.};
-		% The clock of Z_11: start at ca, then spin by a uniformly random y.
-		\begin{scope}[shift={(1.95,-2.45)}]
-			\draw[ciphergraydark, line width=1.5pt] (0,0) circle (1.25);
-			\foreach \k in {0,...,10} {
-					\fill[cipherprimary] ({90-\k*360/11}:1.25) circle (2.2pt);
-					\node[cd small, inner sep=0pt] at ({90-\k*360/11}:1.58) {\k};
-				}
-			\fill[diagramgold] ({90-10*360/11}:1.25) circle (4pt);
-			\draw[cd arrow, draw=diagramgold, line width=1.2pt] ({90-10*360/11}:0.95) arc ({90-10*360/11}:{90-10*360/11-150}:0.95);
-			\node[cd small, text=diagramgold, font=\fontsize{8}{9}\selectfont\bfseries] at (0,0.1) {start at $ca$};
-			\node[cd small, text=diagramgold, font=\fontsize{8}{9}\selectfont\bfseries] at (0,-0.35) {spin by $+y$};
-		\end{scope}
-		% Two different secrets, same distribution of r.
-		\node[anchor=east, cd small, font=\fontsize{8.5}{10}\selectfont\bfseries] at (6.05,-1.3) {$y$};
-		\node[anchor=east, cd small, font=\fontsize{8.5}{10}\selectfont\bfseries] at (6.05,-1.92) {$r$ if $a = 7$};
-		\node[anchor=east, cd small, font=\fontsize{8.5}{10}\selectfont\bfseries] at (6.05,-2.54) {$r$ if $a = 2$};
-		\foreach \k in {0,...,10} {
-				\pgfmathtruncatemacro{\ra}{mod(\k+10,11)}
-				\pgfmathtruncatemacro{\rb}{mod(\k+6,11)}
-				\node[cd card, minimum width=0.56cm, minimum height=0.5cm, inner sep=0pt, font=\small] at ({6.4+\k*0.6},-1.3) {\k};
-				\node[cd green, minimum width=0.56cm, minimum height=0.5cm, inner sep=0pt, font=\small] at ({6.4+\k*0.6},-1.92) {\ra};
-				\node[cd gold, minimum width=0.56cm, minimum height=0.5cm, inner sep=0pt, font=\small] at ({6.4+\k*0.6},-2.54) {\rb};
-			}
-		\node[cd small, text width=7.2cm, align=flush left, anchor=north west] at (6.1,-2.95) {With $c = 3$: $ca \equiv 10$ if $a = 7$, and $ca \equiv 6$ if $a = 2$. Each row is a reshuffle of $0, \ldots, 10$: every $r$ appears exactly once. \textbf{If $y$ is uniform, $r$ is uniform, whatever $a$ is.}};
-		\node[cd gold, text width=12.8cm, font=\fontsize{9}{11}\selectfont] at (6.75,-5.05) {\textbf{And $Y = g^y$?} Once $c$ and $r$ are fixed, $Y$ is pinned down: it's the only value with $g^r = Y \cdot A^c$, and anyone can compute it as $g^r / A^c$. So $Y$ adds nothing either.};
 	\end{tikzpicture}
 \end{frame}
 
@@ -864,9 +766,9 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Schnorr, for any $y$ and any $c$:}
 			\begin{align*}
-				g^r & = g^{y + ca}                   \\
-				    & = g^y \cdot g^{ca}             \\
-				    & = Y \cdot (g^a)^c              \\
+				g^r & = g^{y + ca}                     \\
+				    & = g^y \cdot g^{ca}               \\
+				    & = Y \cdot (g^a)^c                \\
 				    & = Y \cdot A^c \quad \mycheckmark
 			\end{align*}
 			\begin{exampleblock}{Perfect completeness}
@@ -1519,7 +1421,7 @@
 				\begin{tabular}{lll}
 					\textbf{Challenge} & \textbf{Live: fooled} & \textbf{FS: cheat costs} \\[0.3em]
 					1 bit              & $1/2$                 & 2 hashes                 \\
-					20 bits            & $1$ in a million      & $10^6$ hashes: $<$1 s  \\
+					20 bits            & $1$ in a million      & $10^6$ hashes: $<$1 s    \\
 					128 bits           & $2^{-128}$            & $2^{128}$ hashes: never
 				\end{tabular}
 			\end{center}
@@ -1582,7 +1484,7 @@
 		\begin{column}{0.46\textwidth}
 			Log in by proving you own public key \texttt{A}:
 			{\small
-\begin{verbatim}
+				\begin{verbatim}
 def prove(a):
     y = random_scalar()
     Y = g ** y
@@ -1695,7 +1597,7 @@ def verify(A, Y, r):
 		\begin{column}{0.5\textwidth}
 			\textbf{Circom's \texttt{IsZero}:} out $= 1$ if in $= 0$, else $0$
 			{\small
-\begin{verbatim}
+				\begin{verbatim}
 template IsZero() {
   signal input in;
   signal output out;
