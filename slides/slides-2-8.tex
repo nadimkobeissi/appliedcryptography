@@ -3,8 +3,8 @@
 
 \title{Applied Cryptography - 2.8: Zero-Knowledge Proofs}
 \author{Nadim Kobeissi}
-\subject{A comprehensive introduction to zero-knowledge proofs, covering Schnorr identification, Sigma protocols, AND/OR proofs, and the Fiat-Shamir transformation for non-interactive proofs.}
-\keywords{zero-knowledge proofs, Schnorr protocol, Sigma protocols, cryptography, authentication, privacy, soundness, completeness, Fiat-Shamir transformation, non-interactive proofs, OR proofs, AND proofs, discrete logarithm, commitment schemes, challenge-response, cryptographic protocols, applied cryptography}
+\subject{A comprehensive introduction to zero-knowledge proofs, from the Ali Baba cave and Schnorr identification through Sigma protocols, AND/OR proofs, the Fiat-Shamir transformation and its 2025 attack, circuits and zkVMs, to Zcash and zero-knowledge age verification.}
+\keywords{zero-knowledge proofs, Schnorr protocol, Sigma protocols, cryptography, authentication, privacy, soundness, completeness, special soundness, simulation, Fiat-Shamir transformation, non-interactive proofs, OR proofs, AND proofs, discrete logarithm, forking lemma, circuits, zkVM, RISC Zero, Zcash, age verification, applied cryptography}
 \institute{Symbolic Software}
 \instituteimage{images/symbolicsoft-white.png}
 \date{\today}
@@ -12,6 +12,44 @@
 \coverpartname{Part 2: Real-World Cryptography}
 \covertopicname{2.8: Zero-Knowledge Proofs}
 \coverwebsite{https://appliedcryptography.page}
+
+% Shared visual language for the mechanism diagrams (as in 2.7).
+\colorlet{diagramgold}{cipheraccent!65!cipherdark}
+\colorlet{diagramred}{red!65!cipherdark}
+\tikzset{
+	crypto diagram/.style={
+		font=\sffamily\small,
+		every node/.style={align=flush center, text=cipherdark, inner sep=4pt}
+	},
+	cd card/.style={draw=ciphergraydark, fill=cipherwhite, rounded corners=4pt, line width=0.7pt},
+	cd green/.style={cd card, draw=cipherprimary!50, fill=cipherprimary!6!cipherwhite},
+	cd gold/.style={cd card, draw=diagramgold!45, fill=cipheraccent!10!cipherwhite},
+	cd red/.style={cd card, draw=diagramred!35, fill=diagramred!4!cipherwhite},
+	cd heading/.style={font=\small\bfseries, text=cipherprimarydark},
+	cd small/.style={font=\fontsize{8}{10}\selectfont},
+	cd arrow/.style={-{Stealth[length=2.2mm, width=1.6mm]}, draw=cipherprimary, line width=1pt, rounded corners=3pt},
+	cd block/.style={cd green, minimum width=1.65cm, minimum height=0.85cm, font=\small\bfseries},
+	cd tag/.style={fill=cipherlight, inner sep=2pt, font=\fontsize{8}{10}\selectfont},
+	% The cave: a ring of tunnel with an entrance at the bottom and a door at the top.
+	cave rock/.style={draw=cipherdark!55, line width=13pt},
+	cave floor/.style={draw=cipherlight, line width=10pt},
+	cave person/.style={circle, minimum size=0.42cm, inner sep=0pt, font=\fontsize{8}{9}\selectfont\bfseries, text=cipherwhite}
+}
+
+% One cave panel: #1 = x offset, #2 = extra drawing (people, speech).
+\newcommand{\cavepanel}[2]{
+	\begin{scope}[xshift=#1 cm]
+		\draw[cave rock] (0,0) circle (1.05);
+		\draw[cave rock] (0,-1.05) -- (0,-2.05);
+		\draw[cave floor] (0,0) circle (1.05);
+		\draw[cave floor] (0,-1.0) -- (0,-2.1);
+		\fill[diagramgold] (-0.09,0.87) rectangle (0.09,1.23);
+		\node[cd small, text=diagramgold, font=\fontsize{7}{8}\selectfont\bfseries] at (0,1.5) {magic door};
+		\node[font=\small\bfseries, text=cipherdark!55] at (-1.52,0) {A};
+		\node[font=\small\bfseries, text=cipherdark!55] at (1.52,0) {B};
+		#2
+	\end{scope}
+}
 
 \begin{document}
 \begin{frame}[plain]
@@ -21,116 +59,207 @@
 \section{Introduction}
 
 \begin{frame}{Zero-knowledge proofs: magic, but real}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			Imagine this scenario:
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\textbf{The usual way to prove you know a password:}
 			\begin{itemize}
-				\item I claim to know the password to a secret vault
-				\item You need to verify I really know it
-				\item But I don't want to tell you the password!
-			\end{itemize}
-			\textbf{Seems impossible?}
-			\begin{itemize}
-				\item How can I prove knowledge without revealing it?
-				\item This is the magic of zero-knowledge proofs
+				\item ``Here it is: \texttt{hunter2}''
+				\item Now \textit{you} know the secret too
+				\item You can impersonate me
+				\item You can show anyone that I knew it
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{block}{Zero-knowledge property}
-				A proof that reveals \textbf{nothing} except the truth of the statement being proven
+		\begin{column}{0.48\textwidth}
+			\textbf{A zero-knowledge proof:}
+			\begin{itemize}
+				\item ``I won't tell you, but I'll convince you I know it''
+				\item You end up certain that I know it
+				\item You learn \textit{\textbf{nothing else}}: you can't impersonate me
+				\item You can't even convince anyone else
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.4cm}
+	\begin{alertblock}{The paradox}
+		Convince you completely while teaching you nothing. Sounds impossible? Within the hour, you'll do it with pen and paper.
+	\end{alertblock}
+\end{frame}
+
+\begin{frame}{The Ali Baba cave}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,1.75) rectangle (13.5,-4.05);
+		% Panel 1: Peggy walks in and picks a side; Victor waits outside.
+		\cavepanel{2.1}{
+			\draw[cipherprimary, dashed, line width=0.9pt, -{Stealth[length=1.8mm]}] (0,-1.95) -- (0,-1.05) arc (-90:-25:1.05);
+			\node[cave person, fill=cipherprimary] at (-12:1.05) {P};
+			\node[cave person, fill=diagramgold] at (0,-2.33) {V};
+			\node[cd tag, text=cipherprimary] at (1.55,-1.05) {random\\side};
+		}
+		% Panel 2: Victor walks to the fork and shouts a side.
+		\cavepanel{6.75}{
+			\node[cave person, fill=cipherprimary] at (-12:1.05) {P};
+			\node[cave person, fill=diagramgold] (v2) at (0,-1.5) {V};
+			\node[cd card, font=\fontsize{8}{9}\selectfont\bfseries, inner sep=3pt] (shout) at (-1.55,-1.95) {``Come out\\of A!''};
+			\draw[diagramgold, line width=0.7pt] (shout.east) -- (v2.west);
+		}
+		% Panel 3: Peggy comes out of the side Victor named, using the door.
+		\cavepanel{11.4}{
+			\draw[cipherprimary, line width=1.2pt, -{Stealth[length=2mm]}] (-12:1.05) arc (-12:200:1.05);
+			\node[cave person, fill=cipherprimary] at (218:1.05) {P};
+			\node[cave person, fill=diagramgold] at (0,-1.5) {V};
+			\node[cd small, text=diagramgold, font=\fontsize{7}{8}\selectfont\bfseries] at (0,0.25) {says the\\magic word};
+			\node[cd tag, text=cipherprimary, font=\fontsize{8}{9}\selectfont\bfseries] at (-1.5,-1.5) {A \mycheckmark};
+		}
+		\foreach \x/\step in {
+				2.1/{\textbf{1.} Victor waits outside. Peggy takes path A or B at random.},
+				6.75/{\textbf{2.} Victor walks to the fork and shouts a side.},
+				11.4/{\textbf{3.} Peggy comes out that side, using the door if she must.}
+			}
+		\node[cd small, text width=4.1cm, font=\fontsize{8.5}{10.5}\selectfont, anchor=north] at (\x,-2.72) {\step};
+		\node[cd small, text=cipherdark!65] at (6.75,-3.98) {Peggy (P) knows the magic word that opens the door. Victor (V) wants to be convinced without learning it.};
+	\end{tikzpicture}
+	\let\thefootnote\relax\footnote{Quisquater et al., ``How to Explain Zero-Knowledge Protocols to Your Children'', CRYPTO 1989.}
+\end{frame}
+
+\begin{frame}{The three properties, told by the cave}
+	\begin{columns}[T]
+		\begin{column}{0.32\textwidth}
+			\begin{block}{1. Completeness}
+				If the statement is true, an honest prover convinces an honest verifier.
 			\end{block}
-			\begin{alertblock}{The paradox}
-				Convince you completely while teaching you nothing
-			\end{alertblock}
+			\small\textbf{In the cave:} Peggy knows the word, so she can \textit{always} come out of the side Victor names.
+		\end{column}
+		\begin{column}{0.32\textwidth}
+			\begin{block}{2. Soundness}
+				If the statement is false, a cheating prover gets caught, except with negligible probability.
+			\end{block}
+			\small\textbf{In the cave:} without the word, Peggy must guess the shout in advance. Fooled with probability $1/2$ per round: one in a million after 20 rounds.
+		\end{column}
+		\begin{column}{0.32\textwidth}
+			\begin{block}{3. Zero-knowledge}
+				The verifier learns nothing beyond the fact that the statement is true.
+			\end{block}
+			\small\textbf{In the cave:} Victor only sees Peggy come out of the side he picked. He could have staged that scene himself\ldots
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{What makes zero-knowledge proofs special?}
-	\begin{columns}[c]
-		\begin{column}{0.45\textwidth}
-			\textbf{Traditional proof:}
-			\begin{itemize}
-				\item ``Here's my password: \texttt{hunter2}''
-				\item You learn the secret itself
-				\item You could now impersonate me
-			\end{itemize}
-		\end{column}
+\begin{frame}{Why Victor's video convinces nobody else}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\foreach \y/\title/\subtitle/\lastx in {
+				-0.8/{Victor's film}/{Peggy knows the word}/9.5,
+				-2.3/{Mallory's raw footage}/{no word: she guesses}/12.65,
+				-3.8/{Mallory's final cut}/{misses edited out}/9.5
+			} {
+				\node[anchor=west, font=\fontsize{9}{11}\selectfont\bfseries, text=cipherprimarydark, inner sep=0pt] at (0,\y+0.14) {\title};
+				\node[anchor=west, cd small, text=cipherdark!65, inner sep=0pt] at (0,\y-0.24) {\subtitle};
+				\fill[cipherdark!85, rounded corners=2pt] (3.1,\y+0.42) rectangle (\lastx,\y-0.42);
+				\foreach \sx in {3.2,3.475,...,\lastx} {
+						\fill[cipherlight] (\sx,\y+0.36) rectangle ++(0.11,-0.08);
+						\fill[cipherlight] (\sx,\y-0.28) rectangle ++(0.11,-0.08);
+					}
+			}
+		% Victor's genuine recording: every round a success.
+		\foreach \i/\side in {0/A,1/B,2/B,3/A,4/B,5/A}
+		\node[fill=cipherwhite, minimum width=0.9cm, minimum height=0.46cm, inner sep=0pt, font=\fontsize{8}{9}\selectfont\bfseries] at ({3.65+\i*1.05},-0.8) {\side\ \textcolor{cipherprimary}{\mycheckmark}};
+		% Mallory's raw footage: she guessed wrong about half the time.
+		\foreach \i/\side/\ok in {0/A/1,1/B/0,2/B/1,3/A/0,4/A/1,5/B/1,6/A/0,7/B/1,8/A/1} {
+				\ifnum\ok=1
+					\node[fill=cipherwhite, minimum width=0.9cm, minimum height=0.46cm, inner sep=0pt, font=\fontsize{8}{9}\selectfont\bfseries] at ({3.65+\i*1.05},-2.3) {\side\ \textcolor{cipherprimary}{\mycheckmark}};
+				\else
+					\node[fill=diagramred!12!cipherwhite, minimum width=0.9cm, minimum height=0.46cm, inner sep=0pt, font=\fontsize{8}{9}\selectfont\bfseries, text=diagramred] (miss\i) at ({3.65+\i*1.05},-2.3) {\side\ $\times$};
+					\draw[diagramred, line width=0.8pt] (miss\i.north west) -- (miss\i.south east);
+				\fi
+			}
+		% Mallory's final cut keeps only the successes.
+		\foreach \i/\side in {0/A,1/B,2/A,3/B,4/B,5/A}
+		\node[fill=cipherwhite, minimum width=0.9cm, minimum height=0.46cm, inner sep=0pt, font=\fontsize{8}{9}\selectfont\bfseries] at ({3.65+\i*1.05},-3.8) {\side\ \textcolor{cipherprimary}{\mycheckmark}};
+		\draw[cd arrow, draw=diagramgold] (7.85,-2.75) -- (7.85,-3.35);
+		\node[cd tag, text=diagramgold, anchor=west] at (8.0,-3.05) {cut every miss};
+		\node[cd gold, cd small, text width=3.3cm] at (11.6,-0.8) {Carol: ``Nice film. How do I know it wasn't staged?''};
+		\node[cd green, cd small, text width=3.3cm] at (11.6,-3.8) {Looks exactly like Victor's film};
+		\node[cd small, text=cipherdark!65] at (6.75,-4.5) {Each frame: the side Victor shouted, and whether she came out of it.};
+		\node[cd gold, text width=12.8cm, font=\fontsize{9}{11}\selectfont] at (6.75,-5.2) {A film that anyone can fake proves nothing, so watching it live taught Victor nothing he couldn't have staged himself. Mallory's editing room has a name: a \textbf{simulator}.};
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Today's route}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[anchor=west, cd heading] at (0,-0.3) {Start by proving you know one number. Finish by proving a whole program ran correctly.};
+		\draw[ciphergraydark, line width=10pt, rounded corners=0.7cm] (0.2,-1.25) -- (13.1,-1.25) -- (13.1,-4.0) -- (0.2,-4.0);
+		\draw[cipherwhite, line width=0.8pt, dash pattern=on 5pt off 4pt, rounded corners=0.7cm] (0.2,-1.25) -- (13.1,-1.25) -- (13.1,-4.0) -- (0.2,-4.0);
+		\foreach \n/\x/\y/\name/\what in {
+				1/1.45/-1.25/Schnorr/{Prove you know a private key, and nothing more},
+				2/6.1/-1.25/Sigma protocols/{One pattern, many statements},
+				3/10.75/-1.25/{AND, OR}/{Combine proofs; hide which branch is true},
+				4/10.75/-4.0/Fiat-Shamir/{A hash plays the verifier: signatures, and a 2025 attack},
+				5/6.1/-4.0/Circuits and zkVMs/{Prove any program ran correctly (Project D)},
+				6/1.45/-4.0/Real world/{Zcash, and age checks on your phone}
+			} {
+				\node[circle, fill=cipherprimary, draw=cipherwhite, line width=1.2pt, minimum size=0.62cm, inner sep=0pt, font=\small\bfseries, text=cipherwhite] at (\x,\y) {\n};
+				\node[font=\small\bfseries, text=cipherprimarydark] at (\x,\y-0.58) {\name};
+				\node[cd small, text width=3.9cm, text=cipherdark!75, anchor=north] at (\x,\y-0.8) {\what};
+			}
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{From the cave to a private key}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[cd heading] at (3.2,-0.25) {In the cave};
+		\node[cd heading] at (9.95,-0.25) {In Schnorr's protocol (1989)};
+		\foreach \y/\cave/\schnorr in {
+				-0.85/{The magic word}/{The private key $a$, behind the public key $A = g^a$},
+				-1.5/{Peggy takes a random path}/{\textbf{Commit:} pick a random $y$, send $Y = g^y$},
+				-2.15/{Victor shouts A or B}/{\textbf{Challenge:} a random $c \in \mathbb{Z}_n$},
+				-2.8/{Peggy exits the named side}/{\textbf{Respond:} $r = y + ca \bmod n$},
+				-3.45/{Victor sees her come out}/{\textbf{Check:} $g^r \overset{?}{=} Y \cdot A^c$},
+				-4.1/{Fooled with prob.\ $1/2$ per round}/{Fooled with prob.\ $1/n \approx 2^{-256}$: one round is enough}
+			} {
+				\node[cd card, minimum width=5.4cm, minimum height=0.52cm, inner sep=2pt, font=\fontsize{9}{11}\selectfont] (cave) at (3.2,\y) {\cave};
+				\node[cd green, minimum width=7.2cm, minimum height=0.52cm, inner sep=2pt, font=\fontsize{9}{11}\selectfont] (sch) at (9.95,\y) {\schnorr};
+				\draw[cd arrow, draw=cipherprimary!60] (cave.east) -- (sch.west);
+			}
+		\node[cd gold, text width=12.6cm, font=\fontsize{9}{11}\selectfont] at (6.75,-5.05) {The same three moves: \textbf{commit}, \textbf{challenge}, \textbf{respond}. The cave has 2 possible challenges; Schnorr has $n$, a 256-bit prime. That's why one round suffices.};
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{A toy group to play with}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\node[anchor=east, font=\small\bfseries] at (1.4,0) {$k$};
+		\node[anchor=east, font=\small\bfseries] at (1.4,-0.62) {$2^k \bmod 23$};
+		\foreach \k/\v in {0/1,1/2,2/4,3/8,4/16,5/9,6/18,7/13,8/3,9/6,10/12} {
+				\node[cd card, minimum width=0.98cm, minimum height=0.52cm, inner sep=0pt] at ({2+\k*1.05},0) {$\k$};
+				\ifnum\k=7
+					\node[cd gold, minimum width=0.98cm, minimum height=0.52cm, inner sep=0pt, font=\small\bfseries] at ({2+\k*1.05},-0.62) {$\v$};
+				\else
+					\node[cd green, minimum width=0.98cm, minimum height=0.52cm, inner sep=0pt, font=\small\bfseries] at ({2+\k*1.05},-0.62) {$\v$};
+				\fi
+			}
+	\end{tikzpicture}
+	\begin{columns}[T]
 		\begin{column}{0.55\textwidth}
-			\textbf{Zero-knowledge proof:}
+			\textbf{The rules} ($p = 23$, $g = 2$, $n = 11$):
 			\begin{itemize}
-				\item ``I'll convince you I know the password''
-				\item You learn \textit{\textbf{only}} that I know it
-				\item You gain no ability to prove it yourself
-				\item You can't replay my proof to others
+				\item Elements live mod $23$; exponents live mod $11$, since $2^{11} \equiv 1$
+				\item Multiplying elements adds exponents:\\$9 \cdot 12 = 2^{5+10} = 2^{15} = 2^{4} = 16$
+				\item Inverses: $(2^k)^{-1} = 2^{11-k}$, so $13^{-1} = 2^{4} = 16$ (indeed $13 \cdot 16 = 208 \equiv 1$)
+				\item Dividing exponents: $1/5 \equiv 9 \pmod{11}$, as $5 \cdot 9 = 45 \equiv 1$
 			\end{itemize}
 		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{The three zero-knowledge properties}
-	\begin{block}{1. Completeness}
-		If the statement is true, an honest prover can convince an honest verifier
-	\end{block}
-	\begin{block}{2. Soundness}
-		If the statement is false, no cheating prover can convince an honest verifier (except with negligible probability)
-	\end{block}
-	\begin{block}{3. Zero-Knowledge}
-		The verifier learns nothing beyond the validity of the statement
-	\end{block}
-	\begin{center}
-		\textbf{These three properties together create the ``magic''}
-	\end{center}
-\end{frame}
-
-\begin{frame}{Also, knowledge soundness}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{Plain soundness:}
-			\begin{itemize}
-				\item ``If the statement is false, no prover can convince the verifier''
-				\item But Schnorr's statement is ``there exists $a$ with $g^a = A$''
-				\item In a cyclic group, \textit{every} $A$ has such an $a$
-				\item Always true, so plain soundness guarantees nothing here!
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{Knowledge soundness:}
-			\begin{itemize}
-				\item ``If a prover convinces the verifier, a witness\footnote{A witness is the secret information that makes a statement true: the private key behind a public key, or the solution to a puzzle.} can be \textit{extracted} from that prover''
-				\item The prover doesn't just show that $a$ exists: it must \textit{know} $a$
-				\item The guarantee authentication and signatures actually need
-				\item We'll see how to extract $a$ later (``special soundness'')
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Example: proving knowledge of a private key}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{The setup:}
-			\begin{itemize}
-				\item Public key: $A = g^{a}$
-				\item I claim to know $a$
-				\item But revealing $a$ would compromise security
-			\end{itemize}
-			\textbf{Zero-knowledge solution:}
-			\begin{enumerate}
-				\item An interactive challenge-response protocol
-				\item You pick a challenge I can't predict
-				\item Convincing (up to negligible error)
-				\item Reveals nothing about $a$
-			\end{enumerate}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{alertblock}{Can't prove to others}
-				After our interaction:
-				\begin{itemize}
-					\item You're convinced I know $a$
-					\item You've learned nothing about $a$
-					\item You can't prove to others that I know it: no transferable evidence
-				\end{itemize}
+		\begin{column}{0.42\textwidth}
+			\begin{exampleblock}{Meet Alice}
+				Private key $a = 7$. Public key $A = 2^7 = 13$.
+			\end{exampleblock}
+			\begin{alertblock}{Toy-sized on purpose}
+				Here anyone can read $a$ off the table. Real groups have $n \approx 2^{256}$: no table, no shortcut (the discrete log problem, 1.7).
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -175,89 +304,165 @@
 		}\end{center}
 \end{frame}
 
-\begin{frame}{Schnorr, step by step}
-	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
+\begin{frame}{Schnorr with toy numbers}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[cd green, minimum width=3.4cm, minimum height=1.1cm] at (1.9,-0.6) {\textbf{Prover (Alice)}\\\small knows $a = 7$};
+		\node[cd card, minimum width=3.4cm, minimum height=1.1cm] at (11.6,-0.6) {\textbf{Verifier}\\\small knows $A = 13$};
+		\draw[ciphergraydark, line width=1.2pt] (1.9,-1.15) -- (1.9,-4.2);
+		\draw[ciphergraydark, line width=1.2pt] (11.6,-1.15) -- (11.6,-4.2);
+		% Commit
+		\draw[cd arrow] (1.9,-1.75) -- (11.6,-1.75);
+		\node[cd tag, font=\small] at (6.75,-1.52) {$Y = 2^{y} = 2^{5} = 9$};
+		\node[cd small, text=cipherdark!65, anchor=west] at (2.0,-2.0) {picks a random $y = 5$};
+		% Challenge
+		\draw[cd arrow, draw=diagramgold] (11.6,-2.7) -- (1.9,-2.7);
+		\node[cd tag, font=\small] at (6.75,-2.47) {$c = 3$};
+		\node[cd small, text=cipherdark!65, anchor=east] at (11.5,-2.95) {picks a random challenge};
+		% Response
+		\draw[cd arrow] (1.9,-3.65) -- (11.6,-3.65);
+		\node[cd tag, font=\small] at (6.75,-3.42) {$r = y + ca = 5 + 3 \cdot 7 = 26 \equiv 4 \pmod{11}$};
+		\node[cd small, text=cipherdark!65, anchor=west] at (2.0,-3.9) {uses the secret $a$};
+		% Verification and completeness
+		\node[cd green, minimum width=6.3cm, minimum height=1.05cm, font=\fontsize{9}{12}\selectfont] at (10.2,-4.95) {$g^r = 2^4 = 16$\\$Y \cdot A^c = 2^{5} \cdot 2^{7 \cdot 3} = 2^{26} = 2^{4} = 16$ \ \textcolor{cipherprimary}{\mycheckmark}};
+		\node[cd card, minimum width=6.3cm, minimum height=1.05cm, font=\fontsize{9}{12}\selectfont] at (3.3,-4.95) {\textbf{Why it always works:}\\$g^{r} = g^{y + ca} = g^{y} \cdot (g^{a})^{c} = Y \cdot A^{c}$};
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Your turn: pass without knowing $a$}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\textbf{You are Mallory.} You know $A = 13$ but not $a$. The verifier will pick $c$ uniformly from $\{0, \ldots, 10\}$. How often can you pass?
+			\vspace{0.3cm}
+			\pause
+
+			\textbf{Attempt 1: commit honestly.}
 			\begin{itemize}
-				\item \textbf{Interactive proof:} three messages
-				\item \textbf{Commitment phase:} Prover commits to random $Y = g^y$
-				\item \textbf{Challenge phase:} Verifier sends random challenge $c$
-				\item \textbf{Response phase:} Prover computes $r = y + ca$
-				\item \textbf{Verification:} Check if $g^r = Y \cdot A^c$
-				\item \textbf{Zero-knowledge:} $r$ reveals nothing about $a$, thanks to the random mask $y$
-				\item \textbf{Soundness:} without $a$, the prover can't answer a random challenge
+				\item Send $Y = 2^y$ for a random $y$
+				\item Then $c$ arrives, and you need $2^r = Y \cdot A^c = 2^{y + ca}$
+				\item So $r = y + ca$: impossible without $a$ (in a real-sized group)
 			\end{itemize}
 		\end{column}
-		\begin{column}{0.4\textwidth}
-			\vspace{-1.5cm}
-			\begin{center}\resizebox{1\textwidth}{!}{
-					\begin{msc}{}
-						\setmscvalues{small}
-						\drawframe{none}
-						\setlength{\instdist}{8cm}
-						\setlength{\instwidth}{2cm}
-						\declinst{prover}{}{Prover}
-						\declinst{verifier}{}{Verifier}
-						\action*{$\begin{array}{l}
-									\text{Knows generator}~g         \\
-									\text{Knows prime}~n             \\
-									\text{Knows secret}~a            \\
-									y \twoheadleftarrow \mathbb{Z}_n \\
-									Y = g^y
-								\end{array}$}{prover}
-						\action*{$\begin{array}{l}
-									\text{Knows generator}~g                 \\
-									\text{Knows prime}~n                     \\
-									\text{Knows prover's public key}~A = g^a \\
-								\end{array}$}{verifier}
-						\nextlevel[7]
-						\mess{$Y$}{prover}{verifier}
-						\nextlevel[1]
-						\action*{$c \twoheadleftarrow \mathbb{Z}_n$}{verifier}
-						\nextlevel[2]
-						\mess{$c$}{verifier}{prover}
-						\nextlevel[1]
-						\action*{$r = (y + ca) \bmod n$}{prover}
-						\nextlevel[2]
-						\mess{$r$}{prover}{verifier}
-						\nextlevel[1]
-						\action*{$g^r \overset{?}{\equiv} Y \cdot A^c$}{verifier}
-						\nextlevel[2]
-					\end{msc}
-				}\end{center}
+		\begin{column}{0.48\textwidth}
+			\pause
+			\textbf{Attempt 2: bet on the challenge.}
+			\begin{itemize}
+				\item Bet on $c^* = 2$: pick $r = 9$, send\\$Y = 2^r / A^{c^*} = 2^{9 - 14} = 2^{6} = 18$
+				\item If $c = 2$ arrives: $2^9 = 6 = 18 \cdot 13^2$ \mycheckmark
+				\item Any other $c$: stuck again
+			\end{itemize}
+			\begin{alertblock}{You win with probability $1/n$}
+				Here $1/11$; with $n \approx 2^{256}$, never. But remember the trick: \textit{choose the challenge first, then solve for $Y$}.
+			\end{alertblock}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The verifier learned literally nothing new}
-	\begin{columns}[c]
-		\begin{column}{0.55\textwidth}
-			\begin{itemize}
-				\item After the protocol, you're convinced I know the secret
-				\item But you can't convince anyone else!
-				\item Why? The transcript looks identical to \textbf{something you could have generated alone}
-				\item \textbf{The simulation argument:}
-				      \begin{itemize}
-					      \item You could have picked $r$ and $c$ randomly
-					      \item Then computed $Y = g^r / A^c$
-					      \item This produces a valid-looking transcript!
-					      \item No way to distinguish from real interaction
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.45\textwidth}
-			\begin{alertblock}{Self-generated transcripts}
-				For \textit{any} $c$ and $r$ of your choosing:
-				\begin{itemize}
-					\item Set $Y = g^r / A^c$
-					\item Now $(Y, c, r)$ passes the check $g^r = Y \cdot A^c$
-					\item No secret was needed
-					\item And it is distributed exactly like a real transcript
-				\end{itemize}
-				This is what ``zero-knowledge'' means.
-			\end{alertblock}
-		\end{column}
-	\end{columns}
+\begin{frame}{A parable}
+	\vfill
+	{\rmfamily\itshape ``King Richard decides to hold an archery competition to identify the best archer in the land. He constructs a long wooden wall, with many targets painted on it. During the competition, he is stunned as Robin Hood stands 100 meters away from the wall and fires one arrow into the center of each of the targets. Of course, Robin Hood is declared the winner.''\par}
+	\vspace{0.5cm}
+	\pause
+	{\rmfamily\itshape ``Later that day, the Sheriff of Nottingham arrives at the King's castle. The King describes Robin Hood's exceptional performance, pointing to the arrows still in the targets. The Sheriff is not impressed. ``Robin Hood is a fraud and a liar. Those arrows prove nothing,'' he says. He takes his own bow and fires a series of arrows into blank parts of the wall. He finds a bucket of paint and paints a target around each of his arrows. ``See,'' he says again, ``arrows in targets prove nothing!''\,''\par}
+	\vfill
+\end{frame}
+
+\begin{frame}{The moral: targets first, or arrows first?}
+	\centering
+	\begin{tikzpicture}[crypto diagram,
+			target/.pic={
+					\fill[diagramred!80] (0,0) circle (0.42);
+					\fill[cipherwhite] (0,0) circle (0.3);
+					\fill[diagramred!80] (0,0) circle (0.17);
+				},
+			arrow in/.pic={
+					\draw[cipherdark, line width=1.1pt] (0,0) -- (40:0.85);
+					\draw[diagramgold, line width=1.4pt] (40:0.62) -- ++(0.02,0.16);
+					\draw[diagramgold, line width=1.4pt] (40:0.62) -- ++(0.15,-0.05);
+					\draw[diagramgold, line width=1.4pt] (40:0.74) -- ++(0.02,0.16);
+					\draw[diagramgold, line width=1.4pt] (40:0.74) -- ++(0.15,-0.05);
+				}
+		]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\foreach \offset/\who/\one/\two in {
+				0/{Robin Hood}/{Paint the targets}/{Shoot the arrows},
+				7/{The Sheriff}/{Shoot the arrows}/{Paint the targets}
+			} {
+				\begin{scope}[xshift=\offset cm]
+					\node[cd heading] at (3.25,-0.2) {\who};
+					\fill[cipheraccent!25!cipherwhite, draw=diagramgold!50, rounded corners=3pt] (0.25,-0.55) rectangle (6.25,-2.55);
+					\foreach \tx/\ty in {1.25/-1.65,3.25/-1.35,5.2/-1.75} {
+							\pic at (\tx,\ty) {target};
+							\pic at (\tx,\ty) {arrow in};
+						}
+					\node[cd card, cd small, anchor=west, minimum width=2.8cm] at (0.25,-3.0) {\textbf{1.} \one};
+					\node[cd card, cd small, anchor=east, minimum width=2.8cm] at (6.25,-3.0) {\textbf{2.} \two};
+				\end{scope}
+			}
+		\node[cd green, text width=5.7cm, font=\fontsize{9}{11}\selectfont] at (3.25,-3.95) {\textbf{Real prover:} commit to $Y$, \textit{then} the challenge $c$ arrives, then answer with $r$};
+		\node[cd gold, text width=5.7cm, font=\fontsize{9}{11}\selectfont] at (10.25,-3.95) {\textbf{Mallory (and the simulator):} pick $c$ and $r$, \textit{then} solve for $Y$};
+		\node[font=\fontsize{9}{11}\selectfont, text width=12.8cm] at (6.75,-5.1) {The two walls look identical. Only the \textbf{order of events} tells them apart, and a third party who sees the wall afterwards never saw the order.};
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{The verifier could have written the transcript himself}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[anchor=west, font=\small\bfseries, text=cipherprimarydark] at (0,-0.78) {Real conversation};
+		\node[anchor=west, cd small, text=cipherdark!65] at (0,-1.15) {with Alice, who knows $a$};
+		\node[cd green, minimum width=2.4cm, minimum height=0.95cm] (r1) at (4.6,-0.95) {$Y = g^{y}$\\\scriptsize random $y$};
+		\node[cd green, minimum width=2.4cm, minimum height=0.95cm] (r2) at (7.6,-0.95) {$c$\\\scriptsize random};
+		\node[cd green, minimum width=2.4cm, minimum height=0.95cm] (r3) at (10.6,-0.95) {$r = y + ca$\\\scriptsize needs $a$};
+		\node[anchor=west, font=\small\bfseries, text=cipherprimarydark] at (0,-2.38) {Victor, alone};
+		\node[anchor=west, cd small, text=cipherdark!65] at (0,-2.75) {no secret at all};
+		\node[cd gold, minimum width=2.4cm, minimum height=0.95cm] (s1) at (4.6,-2.55) {$c$\\\scriptsize random};
+		\node[cd gold, minimum width=2.4cm, minimum height=0.95cm] (s2) at (7.6,-2.55) {$r$\\\scriptsize random};
+		\node[cd gold, minimum width=2.4cm, minimum height=0.95cm] (s3) at (10.6,-2.55) {$Y = g^{r} / A^{c}$\\\scriptsize solved backwards};
+		\draw[cd arrow] (r1) -- (r2);
+		\draw[cd arrow] (r2) -- (r3);
+		\draw[cd arrow, draw=diagramgold] (s1) -- (s2);
+		\draw[cd arrow, draw=diagramgold] (s2) -- (s3);
+		\node[font=\small\bfseries] at (12.75,-0.95) {$(Y, c, r)$};
+		\node[font=\small\bfseries] at (12.75,-2.55) {$(Y, c, r)$};
+		\node[cd small, text=cipherdark!65] at (7.6,-3.4) {time $\longrightarrow$};
+		\node[cd card, text width=5.9cm, align=flush left, font=\fontsize{9}{11}\selectfont, anchor=north west] at (0,-3.8) {\textbf{Toy example:} Victor picks $c = 2$, $r = 9$, so $Y = 2^{9} / 13^{2} = 2^{9 - 14} = 2^{6} = 18$. The check passes: $2^9 = 6 = 18 \cdot 13^2$. (Mallory's bet, again!)};
+		\node[cd green, text width=6.1cm, align=flush left, font=\fontsize{9}{11}\selectfont, anchor=north east] at (13.5,-3.8) {\textbf{Same distribution:} in both rows, $c$ and $r$ are uniform and independent, and $Y$ is the one value that passes the check. So a real transcript teaches Victor nothing he couldn't cook up alone.};
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Why $r$ leaks nothing: a one-time pad on a clock}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[anchor=west, font=\fontsize{9.5}{11}\selectfont] at (0,-0.25) {$r = y + ca \bmod n$ is the one-time pad from 1.2: key $y$, plaintext $ca$, addition mod $n$ for XOR.};
+		% The clock of Z_11: start at ca, then spin by a uniformly random y.
+		\begin{scope}[shift={(1.95,-2.45)}]
+			\draw[ciphergraydark, line width=1.5pt] (0,0) circle (1.25);
+			\foreach \k in {0,...,10} {
+					\fill[cipherprimary] ({90-\k*360/11}:1.25) circle (2.2pt);
+					\node[cd small, inner sep=0pt] at ({90-\k*360/11}:1.58) {\k};
+				}
+			\fill[diagramgold] ({90-10*360/11}:1.25) circle (4pt);
+			\draw[cd arrow, draw=diagramgold, line width=1.2pt] ({90-10*360/11}:0.95) arc ({90-10*360/11}:{90-10*360/11-150}:0.95);
+			\node[cd small, text=diagramgold, font=\fontsize{8}{9}\selectfont\bfseries] at (0,0.1) {start at $ca$};
+			\node[cd small, text=diagramgold, font=\fontsize{8}{9}\selectfont\bfseries] at (0,-0.35) {spin by $+y$};
+		\end{scope}
+		% Two different secrets, same distribution of r.
+		\node[anchor=east, cd small, font=\fontsize{8.5}{10}\selectfont\bfseries] at (6.05,-1.3) {$y$};
+		\node[anchor=east, cd small, font=\fontsize{8.5}{10}\selectfont\bfseries] at (6.05,-1.92) {$r$ if $a = 7$};
+		\node[anchor=east, cd small, font=\fontsize{8.5}{10}\selectfont\bfseries] at (6.05,-2.54) {$r$ if $a = 2$};
+		\foreach \k in {0,...,10} {
+				\pgfmathtruncatemacro{\ra}{mod(\k+10,11)}
+				\pgfmathtruncatemacro{\rb}{mod(\k+6,11)}
+				\node[cd card, minimum width=0.56cm, minimum height=0.5cm, inner sep=0pt, font=\small] at ({6.4+\k*0.6},-1.3) {\k};
+				\node[cd green, minimum width=0.56cm, minimum height=0.5cm, inner sep=0pt, font=\small] at ({6.4+\k*0.6},-1.92) {\ra};
+				\node[cd gold, minimum width=0.56cm, minimum height=0.5cm, inner sep=0pt, font=\small] at ({6.4+\k*0.6},-2.54) {\rb};
+			}
+		\node[cd small, text width=7.2cm, align=flush left, anchor=north west] at (6.1,-2.95) {With $c = 3$: $ca \equiv 10$ if $a = 7$, and $ca \equiv 6$ if $a = 2$. Each row is a reshuffle of $0, \ldots, 10$: every $r$ appears exactly once. \textbf{If $y$ is uniform, $r$ is uniform, whatever $a$ is.}};
+		\node[cd gold, text width=12.8cm, font=\fontsize{9}{11}\selectfont] at (6.75,-5.05) {\textbf{And $Y = g^y$?} Once $c$ and $r$ are fixed, $Y$ is pinned down: it's the only value with $g^r = Y \cdot A^c$, and anyone can compute it as $g^r / A^c$. So $Y$ adds nothing either.};
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}{In other words\ldots}
@@ -287,41 +492,12 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}{Quick reminder: what does $x^{-1}$ mean?}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{In modular arithmetic:}
-			\begin{itemize}
-				\item $x^{-1}$ is the \textbf{modular inverse} of $x$
-				\item It's the number that, when multiplied by $x$, gives 1
-				\item $x \cdot x^{-1} \equiv 1 \pmod{n}$
-			\end{itemize}
-			\textbf{Example:}
-			\begin{itemize}
-				\item If $x = 3$ and $n = 7$
-				\item Then $x^{-1} = 5$ because $3 \cdot 5 = 15 \equiv 1 \pmod{7}$
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{In group elements:}
-			\begin{itemize}
-				\item If $A = g^a$, then $A^{-1} = g^{-a}$
-				\item $A \cdot A^{-1} = g^a \cdot g^{-a} = g^{a-a} = g^0 = 1$
-				\item It's the element that ``cancels out'' $A$
-			\end{itemize}
-			\begin{alertblock}{Key property}
-				$(A^c)^{-1} = A^{-c}$ \\
-				This is why we can rewrite expressions!
-			\end{alertblock}
-		\end{column}
-	\end{columns}
-\end{frame}
-
 \begin{frame}{Proof of indistinguishability}{Step 1}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item We can rearrange things so that $c$ is chosen first.
+				\item $c$ doesn't depend on $y$, so we can reorder the lines and choose $c$ first.
+				\item Nothing about the output changes: this is pure bookkeeping.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -345,8 +521,8 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item $r$ is essentially an OTP encryption of plaintext $ca$ under key $y$, using a variant of OTP with addition $\bmod\ n$.
-				\item We can achieve the same distribution by choosing $r$ uniformly and solving for $y$.
+				\item $r$ is a one-time pad encryption of $ca$ under key $y$: the clock from before.
+				\item So we get the same distribution by choosing $r$ uniformly and solving for $y$.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -370,14 +546,13 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item $Y$ is computed as
+				\item Rewrite $Y$ without $y$:
 				      \begin{align*}
-					      Y & = g^y                       \\
-					        & = g^{r-ca}                  \\
-					        & = g^{r} \cdot (g^{ca})^{-1} \\
+					      Y & = g^{y} = g^{r - ca} = g^{r} \cdot (g^{ca})^{-1} \\
 					        & = g^{r} \cdot (A^{c})^{-1}
 				      \end{align*}
-				\item By rewriting $Y$ in this way, the private exponent $a$ is no longer needed.
+				      (toy check: $2^{9 - 14} = 2^{9} \cdot (2^{14})^{-1} = 6 \cdot 8^{-1} = 6 \cdot 3 = 18$)
+				\item Now $y$ is never used. Delete its line, and this is exactly $\lib{}{schnorr-fake}$. $\blacksquare$
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -397,140 +572,38 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Understanding the exponent manipulation}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{Why does $g^{r-ca} = g^r \cdot (g^{ca})^{-1}$?}
-			\begin{itemize}
-				\item Recall the exponent rule: $g^{x-y} = \frac{g^x}{g^y}$
-				\item In group notation, division is multiplication by inverse
-				\item So $\frac{g^x}{g^y} = g^x \cdot (g^y)^{-1}$
-			\end{itemize}
-			\textbf{Step by step:}
-			\begin{enumerate}
-				\item $g^{r-ca} = \frac{g^r}{g^{ca}}$ (exponent rule)
-				\item $\frac{g^r}{g^{ca}} = g^r \cdot (g^{ca})^{-1}$ (division = multiply by inverse)
-			\end{enumerate}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{exampleblock}{Concrete example}
-				Let's use regular numbers to see why:
-				\begin{itemize}
-					\item If $g = 2$, $r = 7$, $ca = 3$
-					\item $2^{7-3} = 2^4 = 16$
-					\item $2^7 \cdot (2^3)^{-1} = 128 \cdot \frac{1}{8} = 16$ \mycheckmark
-				\end{itemize}
-			\end{exampleblock}
-			\begin{alertblock}{Observe how\ldots}
-				This manipulation lets us separate the secret exponent $a$ from the computation!
-			\end{alertblock}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{In other words\ldots}
-	\begin{center}
-		\sslinked{
-			\sslibrary{}{schnorr-real}{
-				\sslibrarysubroutine{schnorr.transcript}{a}{
-					$A := g^a$ \\
-					$y \twoheadleftarrow \mathbb{Z}_n$ \\
-					$Y := g^y$ \\
-					$c \twoheadleftarrow \mathbb{Z}_n$ \\
-					$r := (y + ca) \bmod n$ \\
-					return $(A, Y, c, r)$
-				}{1}
-			}{1}
-		}{\interchangeable{}}{
-			\sslibrary{}{schnorr-fake}{
-				\sslibrarysubroutine{schnorr.transcript}{a}{
-					$A := g^a$ \\
-					$c \twoheadleftarrow \mathbb{Z}_n$ \\
-					$r \twoheadleftarrow \mathbb{Z}_n$ \\
-					$Y := g^r \cdot (A^c)^{-1}$ \\
-					return $(A, Y, c, r)$
-				}{1}
-			}{1}
-		}
-	\end{center}
-\end{frame}
-
-\begin{frame}{A parable}
-	\begin{center}
-		\vfill
-		\large
-		\textit{\rmfamily ``King Richard decides to hold an archery competition to identify the best archer in the land. He constructs a long wooden wall, with many targets painted on it. During the competition, he is stunned as Robin Hood stands 100 meters away from the wall and fires one arrow into the center of each of the targets. Of course, Robin Hood is declared the winner.''}
-		\vfill
-	\end{center}
-\end{frame}
-
-\begin{frame}{A parable}
-	\begin{center}
-		\vfill
-		\large
-		\textit{\rmfamily ``Later that day, the Sheriff of Nottingham arrives at the King's castle. The King describes Robin Hood's exceptional performance, pointing to the arrows still in the targets. The Sheriff is not impressed. ``Robin Hood is a fraud and a liar. Those arrows prove nothing,'' he says. He takes his own bow and fires a series of arrows into blank parts of the wall. He finds a bucket of paint and paints a target around each of his arrows. ``See,'' he says again, ``arrows in targets prove nothing!''\,''}
-		\vfill
-	\end{center}
-\end{frame}
-
 \begin{frame}{Another parable}
-	\begin{center}
-		\vfill
-		\large
-		\textit{\rmfamily ``Alice, whose public key is $A = g^a$, contacts Bob and uses Schnorr's protocol to prove that she knows the secret key $a$. Bob is convinced that he is talking to Alice, and he writes down everything he sees: $(A, Y, c, r)$.''}
-		\vfill
-	\end{center}
-\end{frame}
-
-\begin{frame}{Another parable}
-	\begin{center}
-		\vfill
-		\large
-		\textit{\rmfamily ``Later that day, Charlie arrives at Bob's house. Bob mentions that he talked to Alice earlier in the day, and he shows Charlie the accepting transcript $(A,Y,c,r)$. ``That proves nothing,'' says Charlie, and he proceeds to generate his own accepting transcript $(A,Y',c',r')$, even though he doesn't know $a$.''}
-		\vfill
-	\end{center}
+	\vfill
+	{\rmfamily\itshape ``Alice, whose public key is $A = g^a$, contacts Bob and uses Schnorr's protocol to prove that she knows the secret key $a$. Bob is convinced that he is talking to Alice, and he writes down everything he sees: $(A, Y, c, r)$.''\par}
+	\vspace{0.5cm}
+	\pause
+	{\rmfamily\itshape ``Later that day, Charlie arrives at Bob's house. Bob mentions that he talked to Alice earlier in the day, and he shows Charlie the accepting transcript $(A,Y,c,r)$. ``That proves nothing,'' says Charlie, and he proceeds to generate his own accepting transcript $(A,Y',c',r')$, even though he doesn't know $a$.''\par}
+	\vspace{0.5cm}
+	\pause
+	\begin{alertblock}{The moral: Schnorr is deniable}
+		Bob is convinced, but his transcript is worthless as evidence. Hold on to this: Fiat-Shamir will take it away.
+	\end{alertblock}
+	\vfill
 \end{frame}
 
 \section{Sigma Protocols}
 
-\begin{frame}{ZK can scale to entire systems}{Reminder}
-	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
-				\item As seen previously, you can build entire \textbf{zero-knowledge protocols}, not just primitives that prove knowledge of certain numbers.
-				\item Researchers have built ``zero-knowledge virtual machines'' where you can execute
-				      an entire program that runs as a zero-knowledge proof.
-				\item ZKP battleship game: the server proves to the players that its
-				      responses to their battleship guesses are correct, without revealing any
-				      additional information (e.g., ship locations).
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.4\textwidth}
-			\imagewithcaption[0.8\textwidth]{battleship.jpg}{Battleship board game. Source: Hasbro}
-		\end{column}
-	\end{columns}
-\end{frame}
-
 \begin{frame}{Zero-knowledge is not just for logging in}
 	\begin{columns}[c]
-		\begin{column}{0.45\textwidth}
+		\begin{column}{0.55\textwidth}
 			\textbf{Statements we'd like to prove in zero knowledge:}
 			\begin{itemize}
 				\item \textit{``I know a solution to this Sudoku''}
 				\item \textit{``This encrypted number is between 0 and 100''} (a range proof)
 				\item \textit{``This encrypted vote is a yes or a no''}
 				\item \textit{``I ran this program, and this is its output''}
+				\item \textit{``My answer to your Battleship shot is honest''}
 			\end{itemize}
+			\vspace{0.2cm}
+			Schnorr handles one statement: ``I know $a$ with $g^a = A$''. Time to generalize.
 		\end{column}
-		\begin{column}{0.55\textwidth}
-			\textbf{Today's route, from Schnorr to entire programs:}
-			\begin{enumerate}
-				\item \textbf{Sigma protocols:} the general three-message pattern behind Schnorr
-				\item \textbf{AND / OR:} composing proofs (``this vote is yes OR no'')
-				\item \textbf{Fiat-Shamir:} removing the verifier, getting signatures, and a 2025 attack
-				\item \textbf{Circuits and zkVMs:} proving any program ran correctly (Battleship, Project D)
-				\item \textbf{The real world:} Zcash, and Google's age verification
-			\end{enumerate}
+		\begin{column}{0.4\textwidth}
+			\imagewithcaption[0.8\textwidth]{battleship.jpg}{Project D: the server proves every hit or miss is honest, without revealing where its ships are. Source: Hasbro}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -543,14 +616,13 @@
 			\textbf{Schnorr was just the beginning!}
 			\begin{itemize}
 				\item Schnorr proves: ``I know $a$ such that $g^a = A$''
-				\item What if we want to prove other statements?
-				\item Enter \textbf{Sigma protocols}: a general framework
+				\item \textbf{Sigma protocols}: the same moves, for other statements
 			\end{itemize}
 			\textbf{The pattern:}
 			\begin{itemize}
-				\item Public instance: $X$
-				\item Private witness: $W$
-				\item Relation: $R(X, W) = \text{true}$
+				\item Public \textbf{instance}: $X$ (everyone sees it)
+				\item Private \textbf{witness}: $W$ (makes it true)
+				\item \textbf{Relation}: $R(X, W) = \text{true}$
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -568,9 +640,9 @@
 					      \begin{itemize}
 						      \item Witness: $(p, q)$ where $X = p \cdot q$
 					      \end{itemize}
-					\item ``I know a graph coloring for $X$''
+					\item ``I know a 3-coloring of the graph $X$''
 					      \begin{itemize}
-						      \item Witness: The coloring assignment
+						      \item Witness: the coloring
 					      \end{itemize}
 				\end{itemize}
 			\end{exampleblock}
@@ -618,37 +690,31 @@
 \begin{frame}{Why ``Sigma''? The shape of the protocol}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\begin{center}
-				\huge
-				\begin{tikzpicture}
-					\node (P1) at (0,0) {Prover};
-					\node (V1) at (4,0) {Verifier};
-					\node (P2) at (0,-2) {};
-					\node (V2) at (4,-2) {};
-					\node (P3) at (0,-4) {};
-					\node (V3) at (4,-4) {};
-
-					\draw[->, thick] (P1) -- node[above] {$Y$} (V1);
-					\draw[->, thick] (V2) -- node[above] {$c$} (P2);
-					\draw[->, thick] (P3) -- node[above] {$r$} (V3);
-
-					\draw[red, ultra thick] (0.5,-0.5) -- (3.5,-0.5) -- (0.5,-2) -- (3.5,-3.5);
-				\end{tikzpicture}
-			\end{center}
+			\centering
+			\begin{tikzpicture}[crypto diagram]
+				\node[cd green, minimum width=1.7cm] at (0,0.45) {\textbf{Prover}};
+				\node[cd card, minimum width=1.7cm] at (3.6,0.45) {\textbf{Verifier}};
+				\draw[ciphergraydark, line width=1.2pt] (0,0) -- (0,-4.1);
+				\draw[ciphergraydark, line width=1.2pt] (3.6,0) -- (3.6,-4.1);
+				\draw[cd arrow, line width=1.6pt] (0,-0.3) -- node[cd tag, font=\small\bfseries, sloped, above=1pt] {$Y$} (3.6,-1.5);
+				\draw[cd arrow, line width=1.6pt, draw=diagramgold] (3.6,-1.5) -- node[cd tag, font=\small\bfseries, sloped, above=1pt] {$c$} (0,-2.7);
+				\draw[cd arrow, line width=1.6pt] (0,-2.7) -- node[cd tag, font=\small\bfseries, sloped, above=1pt] {$r$} (3.6,-3.9);
+				\node[font=\small, text=cipherdark!55] at (4.55,-2.1) {$\approx$};
+				\node[font=\fontsize{64}{64}\selectfont, text=cipherprimary!45] at (5.35,-2.05) {$\Sigma$};
+			\end{tikzpicture}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{The Greek letter $\Sigma$ (Sigma)}
 			\begin{itemize}
-				\item Three message flows
-				\item Alternating direction
-				\item Forms a ``zigzag'' pattern
-				\item Hence: Sigma protocols!
+				\item Three messages, alternating direction
+				\item Drawn over time, they zigzag across the page
+				\item Squint, and the zigzag is a $\Sigma$
 			\end{itemize}
 			\begin{alertblock}{Always this pattern}
 				\begin{enumerate}
-					\item Prover $\rightarrow$ Verifier: Commitment
-					\item Verifier $\rightarrow$ Prover: Challenge
-					\item Prover $\rightarrow$ Verifier: Response
+					\item Prover $\rightarrow$ Verifier: \textbf{commitment}
+					\item Verifier $\rightarrow$ Prover: \textbf{challenge}
+					\item Prover $\rightarrow$ Verifier: \textbf{response}
 				\end{enumerate}
 			\end{alertblock}
 		\end{column}
@@ -665,6 +731,7 @@
 			\item \textbf{Check}: A deterministic algorithm that takes transcript $(X, Y, c, r)$ as input, outputs true/false
 		\end{itemize}
 	\end{block}
+	\textbf{Note:} the state $\sigma$ is the prover's private memory between moves. In Schnorr, it's the mask $y$.
 \end{frame}
 
 \begin{frame}{Example: Schnorr as a Sigma protocol}
@@ -710,37 +777,26 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{The problem:}
 			\begin{itemize}
-				\item Given: $X = g^a h^b$
+				\item Given: $X = g^a h^b$ (two generators)
 				\item Prove: ``I know $(a, b)$''
 				\item Without revealing $(a, b)$!
 			\end{itemize}
 			\textbf{Why is this useful?}
 			\begin{itemize}
-				\item Pedersen commitments
-				\item Mix networks
-				\item Electronic voting
+				\item A Pedersen commitment $X = g^m h^s$ hides a value $m$: this proves you can open it
+				\item Anonymous credentials, mix networks, electronic voting
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{The Sigma protocol:}
+			\textbf{The Sigma protocol (Okamoto, 1992):}
 			\begin{itemize}
-				\item \textbf{Commit}:
-				      \begin{itemize}
-					      \item Pick random $r, s$
-					      \item $Y = g^r h^s$
-					      \item State: $\sigma = (r, s)$
-				      \end{itemize}
-				\item \textbf{Respond}:
-				      \begin{itemize}
-					      \item $u = r + ca$
-					      \item $v = s + cb$
-					      \item Return $(u, v)$
-				      \end{itemize}
-				\item \textbf{Check}:
-				      \begin{itemize}
-					      \item $g^u h^v \overset{?}{=} Y \cdot X^c$
-				      \end{itemize}
+				\item \textbf{Commit}: pick random $y, z$; send $Y = g^y h^z$ \\(state: $\sigma = (y, z)$)
+				\item \textbf{Respond}: $u = y + ca$ and $v = z + cb$
+				\item \textbf{Check}: $g^u h^v \overset{?}{=} Y \cdot X^c$
 			\end{itemize}
+			\begin{exampleblock}{Schnorr, twice over}
+				One mask per secret, one shared challenge. Completeness: $g^{y + ca} h^{z + cb} = g^y h^z \cdot (g^a h^b)^c$.
+			\end{exampleblock}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -775,7 +831,7 @@
 \begin{frame}{The three properties, now made precise}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Reminder} from the start of the lecture:
+			\textbf{Reminder} from the cave:
 			\begin{enumerate}
 				\item \textbf{Completeness:} honest provers always succeed
 				\item \textbf{Soundness:} dishonest provers almost always fail
@@ -794,77 +850,95 @@
 \end{frame}
 
 \begin{frame}{Completeness: honest provers always win}
-	\begin{block}{Definition: Completeness}
-		A Sigma protocol is \textbf{complete} if:
-		\begin{itemize}
-			\item For any instance $X$ and witness $W$ where $R(X,W) = \text{true}$
-			\item When the prover follows the protocol honestly
-			\item The verifier \textit{always} accepts
-		\end{itemize}
-	\end{block}
-	\textbf{In other words:}
-	\begin{itemize}
-		\item If you actually know the secret, you can always prove it
-		\item No ``false negatives'': legitimate users never get rejected
-		\item The protocol doesn't accidentally lock out honest participants
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Example: Schnorr's completeness}
-	\begin{center}
-		\textbf{Why does Schnorr always work for honest provers?}
-	\end{center}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{The honest execution:}
+			\begin{block}{Definition: Completeness}
+				For any instance $X$ and witness $W$ with $R(X,W) = \text{true}$, if the prover follows the protocol honestly, the verifier \textit{always} accepts.
+			\end{block}
+			\textbf{In other words:}
 			\begin{itemize}
-				\item Prover knows $a$ where $A = g^a$
-				\item Sends $Y = g^y$ for random $y$
-				\item Receives challenge $c$
-				\item Responds with $r = y + ca$
+				\item If you actually know the secret, you can always prove it
+				\item No ``false negatives'': legitimate users never get locked out
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Verification always succeeds:}
+			\textbf{Schnorr, for any $y$ and any $c$:}
 			\begin{align*}
 				g^r & = g^{y + ca}                   \\
 				    & = g^y \cdot g^{ca}             \\
 				    & = Y \cdot (g^a)^c              \\
-				    & = Y \cdot A^c \quad \checkmark
+				    & = Y \cdot A^c \quad \mycheckmark
 			\end{align*}
-		\end{column}
-	\end{columns}
-	\begin{exampleblock}{Perfect completeness}
-		Honest prover succeeds with probability 1
-	\end{exampleblock}
-\end{frame}
-
-\begin{frame}{Special soundness: cheaters get caught}
-	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
-			\textbf{The challenge for cheaters:}
-			\begin{itemize}
-				\item Prover doesn't know the witness
-				\item Must commit to $Y$ before seeing challenge
-				\item Can't predict what challenge will be
-				\item Must be ready for \textit{any} challenge!
-			\end{itemize}
-			\textbf{The extraction principle:}
-			\begin{itemize}
-				\item If you can answer two different challenges\ldots
-				\item \ldots for the same commitment $Y$\ldots
-				\item \ldots then you must know the witness!
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.4\textwidth}
-			\begin{alertblock}{Key insight}
-				Being able to handle multiple challenges proves knowledge
-			\end{alertblock}
-			\begin{exampleblock}{Why ``special''?}
-				It's soundness with a concrete recipe: two accepting transcripts with the same commitment are enough to compute the witness
+			\begin{exampleblock}{Perfect completeness}
+				Honest provers succeed with probability 1. (Toy run: $16 = 16$.)
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{Soundness isn't enough: knowledge soundness}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{Plain soundness:}
+			\begin{itemize}
+				\item ``If the statement is false, no prover can convince the verifier''
+				\item But Schnorr's statement is ``there exists $a$ with $g^a = A$''
+				\item In a cyclic group, \textit{every} $A$ has such an $a$ (look at the toy table: every element appears)
+				\item Always true, so plain soundness guarantees nothing here!
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Knowledge soundness:}
+			\begin{itemize}
+				\item ``If a prover convinces the verifier, a witness\footnote{A witness is the secret information that makes a statement true: the private key behind a public key, or the solution to a puzzle.} can be \textit{extracted} from that prover''
+				\item The prover doesn't just show that $a$ exists: it must \textit{know} $a$
+				\item The guarantee authentication and signatures actually need
+				\item Next: the concrete version, \textbf{special soundness}
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{One answer hides $a$; two answers reveal it}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[anchor=west, font=\fontsize{9.5}{11}\selectfont] at (0,-0.25) {Read the response as a line, $r = y + a \cdot c$: the \textbf{intercept} $y$ is the mask, the \textbf{slope} $a$ is the secret.};
+		% Left: one transcript.
+		\node[cd heading] at (3.35,-0.85) {One transcript $(Y, c, r)$};
+		\begin{scope}[shift={(0.8,-4.35)}]
+			\draw[-{Stealth[length=2mm]}, cipherdark!60, line width=0.8pt] (0,0) -- (5.2,0) node[right, inner sep=1pt] {$c$};
+			\draw[-{Stealth[length=2mm]}, cipherdark!60, line width=0.8pt] (0,0) -- (0,3.05) node[above, inner sep=1pt] {$r$};
+			\begin{scope}
+				\clip (0,0) rectangle (5,2.95);
+				\foreach \s in {-0.3,0.15,0.45,0.7}
+				\draw[diagramgold, dashed, line width=0.9pt] (0,{1.8-2.4*\s}) -- (5,{1.8+2.6*\s});
+			\end{scope}
+			\foreach \s in {-0.3,0.15,0.45,0.7}
+			\fill[diagramgold] (0,{1.8-2.4*\s}) circle (2pt);
+			\node[cd small, text=diagramgold, anchor=east] at (-0.05,1.45) {$y'$?};
+			\fill[cipherprimary] (2.4,1.8) circle (3pt);
+			\node[cd small, font=\fontsize{8}{9}\selectfont\bfseries, anchor=south east] at (2.35,1.85) {$(c, r)$};
+		\end{scope}
+		\node[cd small, text width=5.6cm, anchor=north] at (3.35,-4.6) {Every slope $a'$ fits, with its own intercept $y' = r - a'c$. The verifier never sees $y$ (only $Y = g^y$), so no $a'$ is ruled out.};
+		% Right: two transcripts with the same Y.
+		\node[cd heading] at (10.15,-0.85) {Two transcripts, same $Y$};
+		\begin{scope}[shift={(7.6,-4.35)}]
+			\draw[-{Stealth[length=2mm]}, cipherdark!60, line width=0.8pt] (0,0) -- (5.2,0) node[right, inner sep=1pt] {$c$};
+			\draw[-{Stealth[length=2mm]}, cipherdark!60, line width=0.8pt] (0,0) -- (0,3.05) node[above, inner sep=1pt] {$r$};
+			\draw[cipherprimary, line width=1.3pt] (0,0.75) -- (5,2.95);
+			\fill[cipherprimary] (0,0.75) circle (2.5pt);
+			\node[cd small, text=cipherprimary, anchor=east] at (-0.05,0.75) {$y$};
+			\draw[cipherdark!50, dashed] (1.2,1.278) -- (4.1,1.278) -- (4.1,2.554);
+			\node[cd small, anchor=north] at (2.65,1.278) {$c - c'$};
+			\node[cd small, anchor=west] at (4.12,1.9) {$r - r'$};
+			\fill[cipherprimary] (1.2,1.278) circle (3pt);
+			\fill[cipherprimary] (4.1,2.554) circle (3pt);
+			\node[cd small, font=\fontsize{8}{9}\selectfont\bfseries, anchor=south east] at (1.15,1.33) {$(c', r')$};
+			\node[cd small, font=\fontsize{8}{9}\selectfont\bfseries, anchor=south east] at (4.05,2.6) {$(c, r)$};
+		\end{scope}
+		\node[cd small, text width=5.6cm, anchor=north] at (10.15,-4.6) {Same $Y$ means same intercept. Two points pin down the line, and its slope is the secret: $a = (r - r')/(c - c')$.};
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}{Special soundness: formal definition}
@@ -878,7 +952,7 @@
 			\item Such that $R(X, W) = \text{true}$
 		\end{itemize}
 	\end{block}
-	\textbf{Interpretation:} If you can answer two different challenges for the same commitment, you must know the secret!
+	\textbf{Interpretation:} being ready for \textit{two} different challenges on the same commitment means you know the secret. Why ``special''? It's soundness with a concrete recipe for the extractor.
 \end{frame}
 
 \begin{frame}{Example: extracting from Schnorr}
@@ -886,15 +960,14 @@
 		\begin{column}{0.5\textwidth}
 			\textbf{Two accepting transcripts, same $Y$:}
 			\begin{itemize}
-				\item Transcript 1: $(Y, c, r)$, valid since $g^r = Y \cdot A^c$
-				\item Transcript 2: $(Y, c', r')$, valid since $g^{r'} = Y \cdot A^{c'}$
-				\item Different challenges: $c \neq c'$
+				\item $(Y, c, r)$, valid since $g^r = Y \cdot A^c$
+				\item $(Y, c', r')$, valid since $g^{r'} = Y \cdot A^{c'}$
+				\item Different challenges: $c \neq c'$, so $(c - c')^{-1} \bmod n$ exists ($n$ is prime)
 			\end{itemize}
-			\textbf{One detail:}
-			\begin{itemize}
-				\item The last step divides by $c - c'$
-				\item Fine: $c \neq c'$ and $n$ is prime, so $(c - c')^{-1} \bmod n$ exists
-			\end{itemize}
+			\begin{exampleblock}{Toy check (Alice, $Y = 9$)}
+				$(c, r) = (3, 4)$ and $(c', r') = (8, 6)$:\\
+				$a = \frac{4 - 6}{3 - 8} = \frac{-2}{-5} = 2 \cdot 5^{-1} = 2 \cdot 9 = 18 \equiv 7$ \mycheckmark
+			\end{exampleblock}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Extract the secret:}
@@ -910,16 +983,45 @@
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Your turn: extract a mystery key}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			Bob's public key is $B = 3$ (same toy group). You recorded two of his accepting transcripts:
+			\begin{center}
+				$(Y, c, r) = (4, 1, 10)$ \qquad $(Y, c', r') = (4, 4, 1)$
+			\end{center}
+			\begin{enumerate}
+				\item Check that both transcripts pass
+				\item Recover Bob's private key $b$
+			\end{enumerate}
+			\textbf{Hint:} $1/8 \equiv 7 \pmod{11}$, since $8 \cdot 7 = 56 \equiv 1$.
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\pause
+			\textbf{1. Both pass} ($4 = 2^2$ and $3 = 2^8$):
+			\begin{itemize}
+				\item $Y \cdot B^{1} = 2^{2 + 8} = 2^{10} = 2^{r}$ \mycheckmark
+				\item $Y \cdot B^{4} = 2^{2 + 32} = 2^{1} = 2^{r'}$ \mycheckmark
+			\end{itemize}
+			\pause
+			\textbf{2. Extract:}
+			\[
+				b = \frac{10 - 1}{1 - 4} = \frac{9}{-3} = \frac{9}{8} = 9 \cdot 7 = 63 \equiv 8
+			\]
+			And indeed $2^8 = 3 = B$. Bob reused $Y$, and that was enough.
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Why extraction implies soundness}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{The contrapositive argument:}
 			\begin{itemize}
-				\item If prover doesn't know witness\ldots
-				\item Then can't produce two valid responses
-				\item So can succeed for at most one challenge
-				\item But challenge is random!
-				\item Probability of guessing right: $\frac{1}{|\mathcal{C}|}$
+				\item Suppose a prover doesn't know the witness
+				\item Then for each $Y$ it sends, it can answer at most \textit{one} challenge (two answers would let us extract!)
+				\item The challenge is random, chosen after $Y$
+				\item So it passes with probability at most $1 / |\mathcal{C}|$
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -927,55 +1029,79 @@
 				Cheating probability $\leq \frac{1}{\text{number of challenges}}$
 			\end{alertblock}
 			\begin{exampleblock}{For Schnorr}
-				$|\mathcal{C}| = n$ (prime order)\\
-				Cheating probability $\approx \frac{1}{2^{256}}$\\
-				Essentially impossible!
+				$|\mathcal{C}| = n$, a 256-bit prime\\
+				Cheating probability $\approx 2^{-256}$\\
+				(The cave: $|\mathcal{C}| = 2$, hence the many rounds.)
 			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{The extractor, in the wild: never reuse $y$}
+	\begin{columns}[c]
+		\begin{column}{0.5\textwidth}
+			\textbf{The extractor is a thought experiment\ldots}
+			\begin{itemize}
+				\item \ldots until a real prover reuses its mask $y$
+				\item Same $y$, same $Y$: two transcripts with one commitment, exactly the extractor's input
+				\item Anyone who sees both computes $a = (r - r')/(c - c')$
+			\end{itemize}
+			\begin{exampleblock}{The fix}
+				Derive $y$ from the key and the message (Ed25519; RFC 6979 for ECDSA): no randomness to fail.
+			\end{exampleblock}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{alertblock}{It keeps happening}
+				\begin{itemize}
+					\item \textbf{Sony PlayStation 3 (2010):} its ECDSA signatures used the same nonce every time; fail0verflow recovered Sony's signing key
+					\item \textbf{Android (2013):} a random number generator bug repeated ECDSA nonces; Bitcoin wallets were emptied
+				\end{itemize}
+				ECDSA isn't Schnorr, but the algebra of the attack is the same.
+			\end{alertblock}
 		\end{column}
 	\end{columns}
 \end{frame}
 
 \begin{frame}{Zero-knowledge: the formal definition}
 	\begin{block}{Definition: Zero-Knowledge}
-		A Sigma protocol is \textbf{zero-knowledge} if:
-		\begin{itemize}
-			\item There exists a simulator algorithm that can generate convincing transcripts
-			\item Without knowing the witness!
-			\item These simulated transcripts are indistinguishable from real ones
-		\end{itemize}
+		A Sigma protocol is \textbf{zero-knowledge} if there exists an efficient \textbf{simulator} that, without the witness, outputs transcripts indistinguishable from real ones.
 	\end{block}
-	\textbf{In other words:}
-	\begin{itemize}
-		\item If fake transcripts look identical to real ones\ldots
-		\item And fake transcripts contain no information about the witness\ldots
-		\item Then real transcripts must not leak information either!
-		\item We saw this earlier when we proved $\lib{}{schnorr-real} \equiv \lib{}{schnorr-fake}$.
-	\end{itemize}
+	\begin{columns}[T]
+		\begin{column}{0.5\textwidth}
+			\textbf{Why this captures ``learns nothing'':}
+			\begin{itemize}
+				\item Whatever the verifier could compute from a real transcript\ldots
+				\item \ldots it could compute from a simulated one
+				\item And simulated ones contain no information about the witness
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{We've seen it three times:}
+			\begin{itemize}
+				\item The cave: Mallory's edited film
+				\item Robin Hood: the Sheriff's paint bucket
+				\item The proof: $\lib{}{schnorr-real} \equiv \lib{}{schnorr-fake}$
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Honest-verifier zero-knowledge}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{A subtlety:}
+			\textbf{A subtlety in our simulator:}
 			\begin{itemize}
-				\item Sigma protocols are ``honest-verifier'' ZK
-				\item Assumes verifier follows the protocol
-				\item Chooses challenges randomly
-				\item Doesn't try to be clever
+				\item It picks $c$ itself, uniformly and independently of $Y$
+				\item So it only matches verifiers that do the same: \textbf{honest-verifier} zero-knowledge (HVZK)
 			\end{itemize}
-			\textbf{What about cheating verifiers?}
-			\begin{itemize}
-				\item Might choose challenges adaptively
-				\item Could try to extract information
-				\item Harder to protect against!
-			\end{itemize}
+			\textbf{A cheating verifier} could compute $c = \func{hash}{Y}$ instead. ``Pick $c$ first'' no longer works, and the transcript becomes evidence that the prover took part.
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{exampleblock}{Good news}
-				For most applications, honest-verifier ZK is sufficient
+				For most applications, HVZK is enough, and there are standard fixes when it isn't (e.g., the verifier commits to $c$ before seeing $Y$)
 			\end{exampleblock}
-			\begin{alertblock}{Later: Fiat-Shamir}
-				We'll see how to make protocols secure against any verifier by removing interaction entirely!
+			\begin{alertblock}{Remember $c = \func{hash}{Y}$}
+				This cheating verifier's trick is, almost exactly, the next section's big idea: Fiat-Shamir.
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -984,59 +1110,29 @@
 \section{Proving AND, OR}
 
 \begin{frame}{Combining proofs: AND and OR}
-	\begin{center}
-		\textbf{What if we need to prove more complex statements?}
-	\end{center}
-	\begin{columns}[c]
+	\begin{columns}[T]
 		\begin{column}{0.5\textwidth}
-			\textbf{OR statements:}
+			\textbf{OR:} one condition holds, and you don't say which
 			\begin{itemize}
-				\item ``I know the private key for $A_1$ OR $A_2$''
-				\item ``This vote encrypts YES or NO''
-				\item Prove one of several conditions
-				\item Without revealing which one!
+				\item ``I know the private key for $A_1$ OR $A_2$'': \textbf{anonymous authentication}
+				\item ``This encrypted vote is YES or NO'': \textbf{e-voting}. Only valid votes count, and nobody learns which
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{AND statements:}
+			\textbf{AND:} every condition holds
 			\begin{itemize}
 				\item ``I know $a$ AND $b$ such that\ldots''
-				\item ``These discrete logs are equal''
-				\item Prove multiple conditions hold
-				\item All must be satisfied
+				\item ``These discrete logs are equal'': e.g., ``I decrypted this ballot with the election's real key''
 			\end{itemize}
 		\end{column}
 	\end{columns}
+	\vspace{0.2cm}
 	\begin{alertblock}{The challenge}
-		How to combine Sigma protocols while preserving zero-knowledge?
+		Combine Sigma protocols so that the result is still zero-knowledge, and still a Sigma protocol (so we can keep combining).
 	\end{alertblock}
 \end{frame}
 
 \subsection{OR Proofs}
-
-\begin{frame}{Example use cases for OR proofs}
-	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
-			\textbf{1. Anonymous authentication:}
-			\begin{itemize}
-				\item Public keys: $A_1, A_2$ (authorized users)
-				\item Alice proves she knows one private key
-				\item Doesn't reveal which user she is!
-			\end{itemize}
-			\textbf{2. Electronic voting:}
-			\begin{itemize}
-				\item Encrypted vote: $C = \text{Enc}(\text{vote})$
-				\item Prove: $\text{Dec}(SK, C) \in \{\text{yes}, \text{no}\}$
-				\item Ensures valid vote without revealing it
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.4\textwidth}
-			\begin{alertblock}{The guarantee}
-				The verifier learns that at least one condition holds, and nothing about \textit{which} one
-			\end{alertblock}
-		\end{column}
-	\end{columns}
-\end{frame}
 
 \begin{frame}{The Robin Hood analogy}
 	\begin{columns}[c]
@@ -1081,35 +1177,35 @@
 			      \end{itemize}
 		\end{enumerate}
 	\end{block}
+	\textbf{Why sound?} Once $C$ arrives, a prover who knows neither witness is stuck with \textit{two} challenges it didn't choose (it can fix at most one of them in advance).
 \end{frame}
 
 \begin{frame}{OR proofs: how it works}
 	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{If prover knows witness for $P_0$:}
+		\begin{column}{0.46\textwidth}
+			\textbf{If the prover knows a witness for $P_0$:}
 			\begin{enumerate}
-				\item Generate real $Y_0$ using witness
-				\item Simulate fake transcript for $\Sigma_1$:
-				      \begin{itemize}
-					      \item Choose random $C_1, R_1$
-					      \item Compute $Y_1$ backwards
-				      \end{itemize}
-				\item Receive challenge $C$ from verifier
+				\item Simulate $\Sigma_1$ (Mallory's bet!): pick $C_1, R_1$ at random, compute $Y_1$ backwards
+				\item Commit honestly for $\Sigma_0$: real $Y_0$
+				\item Receive the challenge $C$
 				\item Set $C_0 = C - C_1$
-				\item Use witness to compute real $R_0$
+				\item Answer $C_0$ with the witness: real $R_0$
 			\end{enumerate}
 		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{Why it's zero-knowledge:}
-			\begin{itemize}
-				\item One transcript is real
-				\item One transcript is simulated
-				\item Verifier can't tell which is which!
-				\item Distribution looks identical regardless of which witness we have
-			\end{itemize}
-			\begin{alertblock}{The trick}
-				Prover controls one challenge completely, must adapt to the other
-			\end{alertblock}
+		\begin{column}{0.52\textwidth}
+			\centering
+			\begin{tikzpicture}[crypto diagram]
+				\node[cd heading] at (2.9,0.35) {Splitting the verifier's challenge};
+				\draw[cd card] (0,-0.1) rectangle (5.8,-0.75);
+				\node[font=\small\bfseries] at (2.9,-0.43) {$C$ (verifier's challenge)};
+				\draw[cd gold] (0,-1.15) rectangle (2.2,-1.8);
+				\node[font=\small\bfseries, text=diagramgold] at (1.1,-1.48) {$C_1$};
+				\draw[cd green] (2.3,-1.15) rectangle (5.8,-1.8);
+				\node[font=\small\bfseries, text=cipherprimary] at (4.05,-1.48) {$C_0 = C - C_1$};
+				\node[cd small, text=diagramgold, anchor=north] at (1.1,-1.85) {chosen \textit{first}:\\simulated};
+				\node[cd small, text=cipherprimary, anchor=north] at (4.05,-1.85) {whatever is left:\\answered with the witness};
+				\node[cd green, text width=5.5cm, font=\fontsize{9}{11}\selectfont, anchor=north] at (2.9,-2.75) {The verifier sees two uniform-looking pieces that add up to $C$. Which one was chosen first? No way to tell, so it can't tell which witness you hold.};
+			\end{tikzpicture}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1153,79 +1249,50 @@
 		}\end{center}
 \end{frame}
 
-\begin{frame}{Example: proving knowledge of one private key}
-	\textbf{Setup:} Public keys $A_0 = g^{a_0}$ and $A_1 = g^{a_1}$\\
-	\textbf{Alice knows $a_0$ (but not $a_1$) and wants to prove she knows one of them:}
-	\begin{enumerate}
-		\item \textbf{Commit phase:}
-		      \begin{itemize}
-			      \item Real: Pick $y_0 \twoheadleftarrow \mathbb{Z}_n$, compute $Y_0 = g^{y_0}$
-			      \item Fake: Pick $C_1, R_1 \twoheadleftarrow \mathbb{Z}_n$, compute $Y_1 = g^{R_1} \cdot A_1^{-C_1}$
-			      \item Send $(Y_0, Y_1)$
-		      \end{itemize}
-		\item \textbf{Challenge:} Receive $C$ from verifier
-		\item \textbf{Response phase:}
-		      \begin{itemize}
-			      \item Compute $C_0 = C - C_1$
-			      \item Compute $R_0 = y_0 + C_0 \cdot a_0$
-			      \item Send $(C_0, R_0, C_1, R_1)$
-		      \end{itemize}
-	\end{enumerate}
-	\textbf{Verification:} Check $C_0 + C_1 = C$ and that both Schnorr transcripts are valid
+\begin{frame}{Example: an OR proof with toy numbers}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[anchor=west, font=\fontsize{9.5}{11}\selectfont] at (0,-0.2) {Public keys $A_0 = 13$ and $A_1 = 6$. Alice knows $a_0 = 7$, but not $a_1$. She proves she knows one of them.};
+		\node[cd heading] at (5.55,-0.75) {Branch 0: real (knows $a_0 = 7$)};
+		\node[cd heading] at (10.6,-0.75) {Branch 1: simulated};
+		\foreach \y/\step/\real/\fake in {
+				-1.35/{1. Commit}/{random $y_0 = 5$: $Y_0 = 2^5 = 9$}/{pick $C_1 = 4$, $R_1 = 5$: $Y_1 = 2^{5} \cdot (6^{4})^{-1} = 9 \cdot 8^{-1} = 4$},
+				-2.2/{2. $C = 6$ arrives}/{$C_0 = C - C_1 = 6 - 4 = 2$}/{already fixed: $C_1 = 4$},
+				-3.05/{3. Respond}/{$R_0 = y_0 + C_0 a_0 = 5 + 14 = 19 \equiv 8$}/{already fixed: $R_1 = 5$},
+				-3.9/{4. Verifier checks}/{$2^{8} = 3$ and $Y_0 A_0^{C_0} = 9 \cdot 13^{2} = 3$ \mycheckmark}/{$2^{5} = 9$ and $Y_1 A_1^{C_1} = 4 \cdot 6^{4} = 9$ \mycheckmark}
+			} {
+				\node[anchor=west, font=\fontsize{9}{11}\selectfont\bfseries, text=cipherprimarydark] at (0,\y) {\step};
+				\node[cd green, minimum width=4.95cm, minimum height=0.66cm, inner sep=2pt, font=\fontsize{8.5}{10}\selectfont] at (5.55,\y) {\real};
+				\node[cd gold, minimum width=4.95cm, minimum height=0.66cm, text width=4.8cm, inner sep=2pt, font=\fontsize{8.5}{10}\selectfont] at (10.6,\y) {\fake};
+			}
+		\node[cd card, text width=12.9cm, font=\fontsize{9}{11}\selectfont] at (6.75,-4.95) {Also $C_0 + C_1 = 2 + 4 = 6 = C$ \mycheckmark. The verifier gets $(C_0, R_0, C_1, R_1) = (2, 8, 4, 5)$: two random-looking challenge--response pairs that both pass. Nothing marks branch 1 as the fake.};
+	\end{tikzpicture}
 \end{frame}
 
 \subsection{AND Proofs}
 
-\begin{frame}{AND proofs: proving multiple conditions}
+\begin{frame}{AND proofs: one challenge for everyone}
 	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.42\textwidth}
 			\textbf{The problem:}
 			\begin{itemize}
-				\item Prove multiple conditions simultaneously
-				\item All must be true
-				\item Example: ``I know $a$ such that $g_1^a = A_1$ AND $g_2^a = A_2$ AND $g_3^a = A_3$''
+				\item Prove that several conditions hold at once
+				\item Running the protocols separately gives several challenges: no longer a single Sigma protocol, so we can't nest it inside an OR
 			\end{itemize}
-			\textbf{Naive approach:}
-			\begin{itemize}
-				\item Run the protocols separately?
-				\item Problem: each run has its own challenge
-				\item The result is no longer a single Sigma protocol!
-			\end{itemize}
+			\textbf{The fix:} commit to everything, then answer \textit{one} shared challenge. Soundness and zero-knowledge both carry over.
 		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{The solution:}
-			\begin{itemize}
-				\item Use the \textit{same} challenge for all
-				\item Commit to all statements
-				\item Receive one challenge
-				\item Respond to all with same challenge
-			\end{itemize}
-			\begin{exampleblock}{How it works}
-				Reusing the challenge maintains both soundness and zero-knowledge
-			\end{exampleblock}
+		\begin{column}{0.56\textwidth}
+			\begin{block}{The protocol, for $\Sigma_1, \ldots, \Sigma_k$}
+				\begin{enumerate}
+					\item \textbf{Commit:} $(Y_i, \sigma_i) \leftarrow \Sigma_i.\text{Commit}(X_i, W_i)$ for all $i$; send $(Y_1, \ldots, Y_k)$
+					\item \textbf{Challenge:} receive a single $C$
+					\item \textbf{Respond:} $R_i \leftarrow \Sigma_i.\text{Respond}(\sigma_i, C)$ for all $i$; send $(R_1, \ldots, R_k)$
+					\item \textbf{Verify:} every $(Y_i, C, R_i)$ is valid
+				\end{enumerate}
+			\end{block}
 		\end{column}
 	\end{columns}
-\end{frame}
-
-\begin{frame}{AND proof construction}
-	\textbf{Given:} Sigma protocols $\Sigma_1, \Sigma_2, \ldots, \Sigma_k$ for conditions $P_1, P_2, \ldots, P_k$\\
-	\textbf{Goal:} Prove ``I know $W$ such that $P_1(X,W)$ AND $P_2(X,W)$ AND \ldots AND $P_k(X,W)$''
-	\begin{block}{The protocol}
-		\begin{enumerate}
-			\item \textbf{Commit:} Run commit phase for all protocols
-			      \begin{itemize}
-				      \item $(Y_i, \sigma_i) \leftarrow \Sigma_i.\text{Commit}(X_i, W_i)$ for all $i$
-				      \item Send $(Y_1, Y_2, \ldots, Y_k)$
-			      \end{itemize}
-			\item \textbf{Challenge:} Receive single $C$ from verifier
-			\item \textbf{Respond:} Use same $C$ for all protocols
-			      \begin{itemize}
-				      \item $R_i \leftarrow \Sigma_i.\text{Respond}(\sigma_i, C)$ for all $i$
-				      \item Send $(R_1, R_2, \ldots, R_k)$
-			      \end{itemize}
-			\item \textbf{Verify:} Check all transcripts $(Y_i, C, R_i)$ are valid
-		\end{enumerate}
-	\end{block}
 \end{frame}
 
 \begin{frame}{Example: proving equality of discrete logs}
@@ -1236,20 +1303,15 @@
 				\item \textbf{Commit:}
 				      \begin{itemize}
 					      \item Pick one $y \twoheadleftarrow \mathbb{Z}_n$
-					      \item Compute $Y_i = g_i^y$ for $i = 1, 2, 3$
-					      \item Send $(Y_1, Y_2, Y_3)$
+					      \item Send $Y_i = g_i^y$ for $i = 1, 2, 3$
 				      \end{itemize}
 				\item \textbf{Challenge:} Receive $C$
+				\item \textbf{Respond:} Send $R = y + C \cdot a$
 			\end{enumerate}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{enumerate}
-				\setcounter{enumi}{2}
-				\item \textbf{Respond:}
-				      \begin{itemize}
-					      \item Compute $R = y + C \cdot a$
-					      \item Send $R$
-				      \end{itemize}
+				\setcounter{enumi}{3}
 				\item \textbf{Verify:}
 				      \begin{itemize}
 					      \item Check $g_1^R = Y_1 \cdot A_1^C$
@@ -1260,25 +1322,46 @@
 		\end{column}
 	\end{columns}
 	\begin{alertblock}{One $y$, one $R$: that is what proves equality}
-		Separate runs allow different $a$'s; one shared $y$ and $R$ forces the \textit{same} $a$ everywhere.
+		Separate runs allow different $a$'s; one shared $y$ and $R$ forces the \textit{same} $a$ everywhere. You'll meet it in e-voting (proving a ballot was decrypted with the real key) and in Privacy Pass (a server proving it used the same key for every user).
 	\end{alertblock}
 \end{frame}
 
 \begin{frame}{Combining AND and OR}
-	\begin{center}
-		\textbf{We can build complex logical statements!}
-	\end{center}
-	\textbf{Example:} ``I know the private key for ($A_1$ OR $A_2$) AND ($B_1$ OR $B_2$)''
-	\begin{itemize}
-		\item Meaning: I'm one of users $\{A_1, A_2\}$ AND one of users $\{B_1, B_2\}$
-		\item Four possible combinations, but verifier learns nothing about which!
-	\end{itemize}
-	\textbf{Construction approach:}
-	\begin{enumerate}
-		\item Build OR protocols for each clause
-		\item Combine them using AND construction
-		\item Result: Single protocol proving the entire statement
-	\end{enumerate}
+	\begin{columns}[c]
+		\begin{column}{0.45\textwidth}
+			\textbf{Example:} ``I know the private key for ($A_1$ OR $A_2$) AND ($B_1$ OR $B_2$)''
+			\begin{itemize}
+				\item Four possible combinations; the verifier learns nothing about which
+			\end{itemize}
+			\textbf{Construction:}
+			\begin{enumerate}
+				\item An OR proof for each clause
+				\item Combine them with AND
+				\item Result: one Sigma protocol for the whole formula, so you can keep nesting
+			\end{enumerate}
+		\end{column}
+		\begin{column}{0.53\textwidth}
+			\centering
+			\begin{tikzpicture}[crypto diagram, level distance=1.35cm]
+				\node[cd card, font=\small\bfseries, minimum width=1.6cm] (and) at (3.3,0) {AND};
+				\node[cd card, font=\small\bfseries, minimum width=1.4cm] (or1) at (1.55,-1.45) {OR};
+				\node[cd card, font=\small\bfseries, minimum width=1.4cm] (or2) at (5.05,-1.45) {OR};
+				\node[cd green, minimum width=1.25cm] (a1) at (0.7,-2.95) {$A_1$};
+				\node[cd gold, minimum width=1.25cm] (a2) at (2.4,-2.95) {$A_2$};
+				\node[cd gold, minimum width=1.25cm] (b1) at (4.2,-2.95) {$B_1$};
+				\node[cd green, minimum width=1.25cm] (b2) at (5.9,-2.95) {$B_2$};
+				\draw[cd arrow, -] (and) -- node[cd tag, pos=0.45] {$C$} (or1);
+				\draw[cd arrow, -] (and) -- node[cd tag, pos=0.45] {$C$} (or2);
+				\draw[cd arrow, -] (or1) -- (a1);
+				\draw[cd arrow, -, draw=diagramgold] (or1) -- (a2);
+				\draw[cd arrow, -, draw=diagramgold] (or2) -- (b1);
+				\draw[cd arrow, -] (or2) -- (b2);
+				\node[cd small, text=cipherdark!70] at (1.55,-3.65) {$C_{A_1} + C_{A_2} = C$};
+				\node[cd small, text=cipherdark!70] at (5.05,-3.65) {$C_{B_1} + C_{B_2} = C$};
+				\node[cd small, text width=6cm] at (3.3,-4.45) {Knowing $a_1$ and $b_2$: two \textcolor{cipherprimary}{\textbf{real}} leaves, two \textcolor{diagramgold}{\textbf{simulated}}. All four transcripts look alike.};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \section{Non-Interactive Zero-Knowledge Proofs}
@@ -1308,50 +1391,41 @@
 				\item But still zero-knowledge!
 			\end{itemize}
 			\begin{alertblock}{The challenge}
-				How to ensure $C$ comes after $Y$ without a verifier?
+				Without a verifier, who guarantees that $C$ is unpredictable and comes \textit{after} $Y$?
 			\end{alertblock}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The Fiat-Shamir transformation}
-	\begin{center}
-		\textbf{Replace the verifier with a hash function!}
-	\end{center}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{Requirements:}
-				      \begin{itemize}
-					      \item Challenge must be unpredictable
-					      \item Must depend on commitment $Y$
-					      \item Solution: $C := \func{hash}{X, Y}$
-					      \item Hash function acts as ``virtual verifier''
-				      \end{itemize}
-			\end{itemize}
-			\begin{itemize}
-				\item \textbf{Properties needed:}
-				      \begin{itemize}
-					      \item Hash function modeled as a random oracle
-					      \item Output unpredictable before input
-					      \item Uniformly distributed output
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{exampleblock}{Random oracle}
-				\begin{itemize}
-					\item A theoretical hash function that:
-					      \begin{itemize}
-						      \item Returns random output for each new input
-						      \item Always returns same output for same input
-						      \item Output is uniformly distributed
-					      \end{itemize}
-					\item In practice, we use SHA-256 or similar, which approximates these properties
-				\end{itemize}
-			\end{exampleblock}
-		\end{column}
-	\end{columns}
+\begin{frame}{The Fiat-Shamir transformation (1986)}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		% Interactive
+		\node[cd heading] at (2.9,-0.2) {Interactive};
+		\node[cd green, minimum width=1.7cm] (p1) at (0.95,-0.85) {\textbf{Prover}};
+		\node[cd card, minimum width=1.7cm] (v1) at (4.85,-0.85) {\textbf{Verifier}};
+		\draw[ciphergraydark, line width=1.2pt] (0.95,-1.2) -- (0.95,-3.55);
+		\draw[ciphergraydark, line width=1.2pt] (4.85,-1.2) -- (4.85,-3.55);
+		\draw[cd arrow] (0.95,-1.65) -- node[cd tag, above=1pt] {$Y$} (4.85,-1.65);
+		\draw[cd arrow, draw=diagramgold] (4.85,-2.45) -- node[cd tag, above=1pt] {random $c$} (0.95,-2.45);
+		\draw[cd arrow] (0.95,-3.25) -- node[cd tag, above=1pt] {$r$} (4.85,-3.25);
+		\draw[diagramgold!60, line width=1pt, dashed] (6.45,-0.4) -- (6.45,-3.8);
+		% Non-interactive
+		\node[cd heading] at (10.05,-0.2) {Fiat-Shamir: the hash plays the verifier};
+		\node[cd green, minimum width=1.7cm] at (7.9,-0.85) {\textbf{Prover}};
+		\node[cd card, minimum width=1.9cm, font=\small] (y) at (7.9,-1.65) {$Y = g^y$};
+		\node[cd gold, minimum width=2.4cm, font=\small] (h) at (10.8,-1.65) {$c = \func{hash}{X, Y}$};
+		\node[cd card, minimum width=1.9cm, font=\small] (r) at (7.9,-2.55) {$r = y + ca$};
+		\draw[cd arrow] (y) -- (h);
+		\draw[cd arrow, draw=diagramgold] (h.south) |- (r.east);
+		\draw[cd arrow] (y) -- (r);
+		\node[cd green, minimum width=2.6cm, font=\small] (proof) at (8.55,-3.55) {proof $\pi = (Y, r)$};
+		\draw[cd arrow] (r) -- (7.9,-3.2);
+		\node[cd small, text=cipherdark!70, anchor=west] at (10.0,-3.55) {anyone, any time: recompute\\$c = \func{hash}{X, Y}$, then check};
+		% Random oracle
+		\node[cd gold, text width=12.9cm, align=flush left, font=\fontsize{9}{11}\selectfont] at (6.75,-5.05) {\textbf{The model:} treat the hash as a \textbf{random oracle}, a fresh uniform output for every new input and the same output for a repeated one. SHA-256 stands in for it in practice. Since $c$ depends on $Y$, the prover must fix $Y$ first, just as with a live verifier.};
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}{Fiat-Shamir: the construction}
@@ -1375,7 +1449,7 @@
 		\end{column}
 	\end{columns}
 	\begin{center}
-		\textbf{The proof is just $(Y, R)$ - no interaction needed!}
+		\textbf{The proof is just $(Y, R)$: no interaction needed!}
 	\end{center}
 \end{frame}
 
@@ -1403,7 +1477,7 @@
 		\end{column}
 	\end{columns}
 	\begin{alertblock}{This is a digital signature!}
-		If we include a message $m$ in the hash: $c = \func{hash}{A, Y, m}$, we get the Schnorr signature scheme!
+		Put a message $m$ in the hash, $c = \func{hash}{A, Y, m}$, and you get the Schnorr signature scheme: a proof of knowledge of $a$ that is bound to $m$.
 	\end{alertblock}
 \end{frame}
 
@@ -1429,87 +1503,109 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The forking lemma: extracting witnesses}
-	\begin{block}{Lemma (Forking Lemma, Pointcheval-Stern 1996)}
-		If an algorithm $A$ can produce valid Fiat-Shamir proofs with non-negligible probability, then we can extract a valid witness with non-negligible probability.
-	\end{block}
-	\textbf{The extraction strategy:}
-	\begin{enumerate}
-		\item Run $A$ until it outputs valid proof $(Y, R)$
-		\item ``Rewind'' $A$ to when it queried $\func{hash}{X, Y}$
-		\item Give a different hash output $C'$ this time
-		\item If $A$ outputs another valid proof with same $Y$:
-		      \begin{itemize}
-			      \item We have two transcripts: $(Y, C, R)$ and $(Y, C', R')$
-			      \item Extract witness using special soundness!
-		      \end{itemize}
-	\end{enumerate}
-\end{frame}
-
-\begin{frame}{Wait, how can the hash give different outputs?}
-	\vspace{-0.5cm}
-	\begin{center}
-		\textbf{If $\func{hash}{X, Y}$ is deterministic, how do we get $C' \neq C$?}
-	\end{center}
+\begin{frame}{Fiat-Shamir needs a huge challenge space}
 	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.47\textwidth}
+			\textbf{Make the cave non-interactive:} Peggy's challenge bit is now $\func{hash}{\text{her commitment}}$.
 			\begin{itemize}
-				\item We're in the \textbf{random oracle model}
-				\item The extractor \textit{controls} the oracle
-				\item We can ``reprogram'' hash outputs!
-				\item Same input, different output (in simulation)
+				\item A cheater just retries: commit, hash, and if the bit names the wrong side, start over
+				\item Two tries on average, and no one sees the failures
+				\item Live, Victor would never let her retry. Offline, nobody is watching
 			\end{itemize}
-			\textbf{How rewinding works:}
-			\begin{enumerate}
-				\item Run algorithm $A$ with oracle $H$
-				\item Record query $\func{hash}{X, Y} = C$
-				\item Rewind to that point
-				\item Answer with $C' \neq C$ instead
-			\end{enumerate}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{alertblock}{This is a proof technique}
-				\begin{itemize}
-					\item Not how real hashes work!
-					\item Extractor is a \textit{thought experiment}
-					\item Shows: if you can produce valid proofs, you must know the witness
-					\item Real hash functions are deterministic
-				\end{itemize}
+			\begin{center}
+				\small
+				\begin{tabular}{lll}
+					\textbf{Challenge} & \textbf{Live: fooled} & \textbf{FS: cheat costs} \\[0.3em]
+					1 bit              & $1/2$                 & 2 hashes                 \\
+					20 bits            & $1$ in a million      & $10^6$ hashes: $<$1 s  \\
+					128 bits           & $2^{-128}$            & $2^{128}$ hashes: never
+				\end{tabular}
+			\end{center}
+			\begin{alertblock}{The rule}
+				Fiat-Shamir soundness is counted in hash evaluations. Schnorr's 256-bit $c$ is fine; protocols with small challenges need enough parallel repetitions to reach 128 bits.
 			\end{alertblock}
-			If $A$ succeeds for \textit{any} hash output, it must be able to handle multiple challenges $\Rightarrow$ extraction works
 		\end{column}
 	\end{columns}
 \end{frame}
 
+\begin{frame}{The forking lemma: rewind and fork}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[anchor=west, font=\fontsize{9.5}{11}\selectfont, text width=13.3cm, align=flush left] at (0,-0.35) {\textbf{Forking lemma} (Pointcheval-Stern, 1996): if $\mathcal{A}$ outputs valid Fiat-Shamir proofs with non-negligible probability, rewinding it as below yields a witness with non-negligible probability.};
+		\node[cd card, minimum width=1.6cm] (start) at (0.85,-2.2) {run $\mathcal{A}$};
+		\node[cd green, minimum width=2.6cm, font=\fontsize{9}{11}\selectfont] (query) at (3.6,-2.2) {$\mathcal{A}$ asks for\\$\func{hash}{X, Y}$};
+		\draw[cd arrow] (start) -- (query);
+		\node[cd card, minimum width=3.3cm, font=\fontsize{9}{11}\selectfont] (up) at (7.6,-1.45) {answer $C$ $\Rightarrow$ proof $(Y, R)$};
+		\node[cd gold, minimum width=3.3cm, font=\fontsize{9}{11}\selectfont] (down) at (7.6,-2.95) {rewind, answer $C'$\\$\Rightarrow$ proof $(Y, R')$};
+		\draw[cd arrow] (query.east) -- ++(0.35,0) |- (up.west);
+		\draw[cd arrow, draw=diagramgold] (query.east) -- ++(0.35,0) |- (down.west);
+		\node[cd tag, text=diagramgold] at (5.2,-2.2) {fork};
+		\node[cd green, minimum width=2.9cm, font=\fontsize{9}{11}\selectfont] (ext) at (11.75,-2.2) {\textbf{Extract}\\$(Y, C, R, C', R')$\\$\Rightarrow W$};
+		\draw[cd arrow] (up.east) -| (ext.north);
+		\draw[cd arrow] (down.east) -| (ext.south);
+		\node[cd card, text width=6.1cm, align=flush left, font=\fontsize{8.5}{10.5}\selectfont, anchor=north west] at (0,-3.8) {\textbf{Same $Y$ on both branches:} everything before the fork replays identically, same random coins included. Special soundness does the rest.};
+		\node[cd gold, text width=6.3cm, align=flush left, font=\fontsize{8.5}{10.5}\selectfont, anchor=north east] at (13.5,-3.8) {\textbf{But hashes are deterministic!} The extractor \textit{simulates} the random oracle, so it may answer the same query differently after rewinding. A thought experiment: you can't do this to SHA-256.};
+	\end{tikzpicture}
+\end{frame}
+
 \begin{frame}{Deniability lost!}
-	\begin{center}
-		\textbf{Fiat-Shamir destroys the deniability property}
-	\end{center}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\textbf{Interactive Sigma protocol:}
 			\begin{itemize}
 				\item Transcripts are deniable
-				\item Anyone can generate fake transcripts
-				\item Choose $C, R$ first, compute $Y$
+				\item Anyone can fake one: choose $C, R$ first, compute $Y$
 				\item Indistinguishable from real
-				\item \textbf{Can't prove to third parties}
+				\item \textbf{Can't prove anything to third parties}
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Fiat-Shamir proof:}
 			\begin{itemize}
-				\item Have constraint $C = \func{hash}{X, Y}$
-				\item Everyone can verify this constraint
-				\item Can't generate fake proofs
-				\item Only witness holder can create
+				\item $C = \func{hash}{X, Y}$, checkable by everyone
+				\item ``Choose $C$ first'' fails: $C$ must hash a $Y$ you haven't computed yet
+				\item Only the witness holder can create one
 				\item \textbf{Transferable evidence!}
 			\end{itemize}
 		\end{column}
 	\end{columns}
 	\begin{alertblock}{Trade-off}
-		We gain non-interactivity but lose deniability. The proof becomes a permanent, transferable piece of evidence.
+		We gain non-interactivity but lose deniability: Victor's film now has the hash baked in, so Mallory can't stage it. Exactly what a signature needs.
 	\end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Your turn: spot the bugs}
+	\begin{columns}[T]
+		\begin{column}{0.46\textwidth}
+			Log in by proving you own public key \texttt{A}:
+			{\small
+\begin{verbatim}
+def prove(a):
+    y = random_scalar()
+    Y = g ** y
+    c = H(Y)
+    r = (y + c * a) % n
+    return (Y, r)
+
+def verify(A, Y, r):
+    c = H(Y)
+    return g ** r == Y * A ** c
+\end{verbatim}
+			}
+			SHA-256, 256-bit $n$. What's wrong?
+		\end{column}
+		\begin{column}{0.52\textwidth}
+			\pause
+			\textbf{Bug 1: the statement isn't hashed.} Mallory takes someone else's key $B$ as her ``commitment'': $Y = B$, $c = \func{hash}{B}$, picks any $r$, then solves for $A = (g^r / B)^{1/c}$. A valid proof for a key whose secret she doesn't know. Fix: $c = \func{hash}{A, Y}$.
+			\pause
+			\vspace{0.2cm}
+
+			\textbf{Bug 2: no context is hashed.} The proof is transferable, so an eavesdropper who sees one login can replay $(Y, r)$ forever. Fix: hash a fresh server nonce and the session: $c = \func{hash}{A, Y, \text{nonce}, \text{session}}$.
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Fiat-Shamir is everywhere}
@@ -1538,84 +1634,7 @@
 
 \subsection{From Statements to Circuits}
 
-\begin{frame}{From statements to circuits: a paradigm shift}
-	\begin{center}
-		\textbf{Wait, why are we suddenly talking about circuits?}
-	\end{center}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{So far, we proved statements like:}
-			\begin{itemize}
-				\item ``I know $a$ such that $g^a = A$''
-				\item ``I know a 3-coloring of this graph''
-				\item Specific mathematical relations
-			\end{itemize}
-			\textbf{But what if we want to prove:}
-			\begin{itemize}
-				\item ``I computed this SHA-256 correctly''
-				\item ``This transaction is valid''
-				\item ``I executed this program correctly''
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{alertblock}{The idea}
-				Any computation can be represented as a circuit!
-			\end{alertblock}
-			\begin{exampleblock}{Think of it like:}
-				Instead of proving ``I know $x$'', we prove ``I know $x$ such that circuit $C(x) = y$''
-			\end{exampleblock}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{What is a circuit?}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{A circuit is just a computation graph:}
-				      \begin{itemize}
-					      \item Gates: AND, OR, NOT, ADD, MUL, etc.
-					      \item Wires: Connect gates together
-					      \item Inputs: Public ($x$) and private ($w$)
-					      \item Output: Result of computation
-				      \end{itemize}
-				\item \textbf{Example: $y = (a + b) \cdot c$}
-				      \begin{center}
-					      \begin{tikzpicture}[scale=0.7]
-						      \node[circle,draw] (a) at (0,1.6) {$a$};
-						      \node[circle,draw] (b) at (0,0) {$b$};
-						      \node[circle,draw] (c) at (0,-1.6) {$c$};
-						      \node[rectangle,draw] (add) at (2,0.8) {$+$};
-						      \node[rectangle,draw] (mul) at (4,0) {$\times$};
-						      \node[circle,draw] (y) at (6,0) {$y$};
-
-						      \draw[->] (a) -- (add);
-						      \draw[->] (b) -- (add);
-						      \draw[->] (add) -- (mul);
-						      \draw[->] (c) -- (mul);
-						      \draw[->] (mul) -- (y);
-					      \end{tikzpicture}
-				      \end{center}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{Why circuits?}
-				      \begin{itemize}
-					      \item Universal representation
-					      \item Any algorithm $\rightarrow$ circuit
-					      \item Fixed structure (no loops!)
-					      \item Easy to verify gate-by-gate
-				      \end{itemize}
-			\end{itemize}
-			\begin{exampleblock}{The power}
-				Once we can prove statements about circuits, we can prove statements about \textit{any computation}!
-			\end{exampleblock}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Example: proving knowledge of a hash preimage}
+\begin{frame}{Why circuits? One protocol for every statement}
 	\begin{center}
 		\textbf{Claim: ``I know $x$ such that SHA-256($x$) = $y$''}
 	\end{center}
@@ -1638,8 +1657,37 @@
 		\end{column}
 	\end{columns}
 	\begin{alertblock}{The shift}
-		Old way: a clever protocol per statement. New way: write the computation as a circuit, and use one protocol for everything.
+		Old way: a clever protocol per statement. New way: write the computation as a circuit, and use one protocol for everything: ``I know $w$ such that $C(x, w) = y$''.
 	\end{alertblock}
+\end{frame}
+
+\begin{frame}{What is a circuit? A worked example}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[anchor=west, font=\fontsize{9.5}{11}\selectfont] at (0,-0.25) {\textbf{Claim:} ``I know $x$ such that $x^3 + x + 5 = 35$.'' The witness is $x = 3$.};
+		\node[cd gold, circle, minimum size=0.85cm, font=\small\bfseries] (x) at (0.6,-2.6) {$x$};
+		\node[cd small, text=diagramgold] at (0.6,-3.3) {private};
+		\node[cd green, minimum width=1cm, minimum height=0.8cm, font=\bfseries] (m1) at (2.3,-1.5) {$\times$};
+		\node[cd green, minimum width=1cm, minimum height=0.8cm, font=\bfseries] (m2) at (4.3,-1.5) {$\times$};
+		\node[cd green, minimum width=1cm, minimum height=0.8cm, font=\bfseries] (a1) at (6.2,-2.6) {$+$};
+		\node[cd green, minimum width=1cm, minimum height=0.8cm, font=\bfseries] (a2) at (8.0,-2.6) {$+$};
+		\node[cd card, circle, minimum size=0.75cm, font=\small\bfseries] (five) at (8.0,-3.95) {$5$};
+		\node[cd small, text=cipherdark!65, anchor=north] at (8.0,-4.35) {public constant};
+		\node[cd card, minimum width=1.1cm, minimum height=0.8cm, font=\small\bfseries] (out) at (9.6,-2.6) {$35$};
+		\node[cd small, text=cipherdark!65, anchor=north] at (9.6,-3.05) {public\\output};
+		\draw[cd arrow] (x.north) |- ([yshift=4pt]m1.west);
+		\draw[cd arrow] (x.north east) -- ([yshift=-5pt]m1.west);
+		\draw[cd arrow] (m1) -- node[cd tag, text=diagramgold, font=\fontsize{8}{9}\selectfont\bfseries, above=2pt] {$v_1 = 9$} (m2);
+		\draw[cd arrow] (x.east) -- (3.3,-2.6) -- (3.3,-1.75) -- ([yshift=-5pt]m2.west);
+		\draw[cd arrow] (m2.east) -| node[cd tag, text=diagramgold, font=\fontsize{8}{9}\selectfont\bfseries, pos=0.3, above=2pt] {$v_2 = 27$} (a1.north);
+		\draw[cd arrow] (x.south east) -- (1.2,-3.0) -- (5.4,-3.0) -- ([yshift=-5pt]a1.west);
+		\draw[cd arrow] (a1) -- node[cd tag, text=diagramgold, font=\fontsize{8}{9}\selectfont\bfseries, above=2pt] {$v_3 = 30$} (a2);
+		\draw[cd arrow] (five) -- (a2);
+		\draw[cd arrow] (a2) -- (out);
+		\node[cd card, text width=5.2cm, align=flush left, font=\fontsize{8.5}{10.5}\selectfont, anchor=north west] at (0,-3.95) {\textbf{Gates:} $+$ and $\times$ modulo a prime. No loops: the circuit has a fixed size, so loops get unrolled.};
+		\node[cd green, text width=2.9cm, align=flush left, font=\fontsize{8.5}{10.5}\selectfont, anchor=north east] at (13.5,-0.75) {\textbf{The proof shows each gate holds:}\\$v_1 = x \cdot x$\\$v_2 = v_1 \cdot x$\\$v_3 = v_2 + x$\\$v_3 + 5 = 35$\\\ldots while hiding $x$ and all the \textcolor{diagramgold}{wire values}.};
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}[fragile]{From theory to practice: ZK programming}
@@ -1673,6 +1721,30 @@ template IsZero() {
 	\end{columns}
 \end{frame}
 
+\begin{frame}{Your turn: delete one line}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			Remove the last constraint from \texttt{IsZero}, \texttt{in*out === 0}. The circuit still compiles, and honest provers still get the right answer.
+			\vspace{0.2cm}
+
+			\textbf{What can a cheating prover prove now?}
+			\pause
+			\vspace{0.2cm}
+
+			Take in $= 5$. The hint is unchecked, so set inv $= 0$. Then out $= -5 \cdot 0 + 1 = 1$, and no remaining constraint objects: a valid proof that $5$ is zero.
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\pause
+			\begin{alertblock}{Under-constrained circuits}
+				The proof system was fine; the circuit said less than its author meant. One of the most common real ZK bugs.
+			\end{alertblock}
+			\begin{exampleblock}{It happened: Tornado Cash (2019)}
+				A circomlib hash used \texttt{=} where it needed \texttt{<==}: a missing constraint, so anyone could forge withdrawals. The team exploited it first to rescue the funds.
+			\end{exampleblock}
+		\end{column}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{The cost of generality}
 	\begin{center}
 		\textbf{Circuit ZK is powerful but comes with trade-offs}
@@ -1684,7 +1756,7 @@ template IsZero() {
 				\item Universal: works for any computation
 				\item Compositional: combine circuits
 				\item Tool support: compilers, libraries
-				\item No need for crypto expertise
+				\item No need to design a new protocol
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1693,7 +1765,7 @@ template IsZero() {
 				\item Less efficient than custom protocols
 				\item Circuit can be huge (millions of gates)
 				\item Proving time can be slow
-				\item More complex security analysis
+				\item New bug classes: under-constrained circuits
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1743,120 +1815,23 @@ template IsZero() {
 			\textbf{What is GKR?}
 			\begin{itemize}
 				\item Protocol by Goldwasser-Kalai-Rothblum
-				\item Proves correctness of computations
-				\item Works for bounded-depth circuits
-				\item Combined with polynomial commitments
-			\end{itemize}
-			\textbf{The claim being proved:}
-			\begin{itemize}
-				\item Circuit $C$, input $x$, witness $w$
-				\item Prove: $\exists w$ such that $C(x,w) = y$
+				\item Proves ``$C(x, w) = y$'' for bounded-depth circuits, layer by layer
+				\item Combined with a polynomial commitment to $w$
+				\item Used in practice (e.g., Expander), and a building block of many SNARKs
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Why this matters:}
-			\begin{itemize}
-				\item Widely studied in the literature
-				\item Used in practice (e.g., Expander)
-				\item Considered secure with Fiat-Shamir
-				\item Foundation of many SNARKs
-			\end{itemize}
 			\begin{exampleblock}{The protocol flow}
 				\begin{enumerate}
-					\item Commit to witness $w$
-					\item Verifier picks random $r$
-					\item Run GKR reduction
-					\item Verify with polynomial commitment
+					\item Commit to the witness $w$
+					\item Verifier picks a random point $r$
+					\item Compare the claimed output with the real one \textit{at the point $r$}
+					\item Run the GKR reduction, check with the polynomial commitment
 				\end{enumerate}
 			\end{exampleblock}
+			With Fiat-Shamir, $r$ is a hash of the circuit, the claim and the commitment.
 		\end{column}
 	\end{columns}
-\end{frame}
-
-\begin{frame}{The attack: exploiting self-reference}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{The circular dependency problem:}
-			\begin{itemize}
-				\item Circuit $C^*$ determines challenge $r$
-				\item Changing $C^*$ changes $r$
-				\item How to break this cycle?
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{The solution: self-describing circuits}
-			\begin{itemize}
-				\item Give the circuit its own description!
-				\item Witness $w = \langle C^* \rangle$ (circuit digest)
-				\item Now circuit can compute $r$ internally
-				\item No circular dependency
-			\end{itemize}
-			\begin{alertblock}{The trick}
-				Circuit outputs $(\gamma, \gamma-1)$ where $\gamma = \func{hash}{\langle C^* \rangle, y^*, \text{comm}(w)}$. The claimed output $(0,0)$ is always false!
-			\end{alertblock}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{What is a circuit digest?}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{From circuit to digest:}
-			\begin{itemize}
-				\item A circuit $C$ is a computation graph: gates, wires, inputs, outputs
-				\item Serialize it in a fixed order and hash it: the \textbf{circuit digest} $\psi = \langle C \rangle$
-				\item $\psi$ goes into the Fiat-Shamir hash: the challenge depends on \textit{which} circuit is proved
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{Why digests matter for the attack:}
-			\begin{itemize}
-				\item A circuit can't contain its own digest (circular)
-				\item But it can receive it as the witness: $w = \psi = \langle C^* \rangle$
-				\item Then it can hash its own description, just like the verifier does
-			\end{itemize}
-			\begin{alertblock}{If a circuit is deep enough, it can:}
-				\begin{itemize}
-					\item Compute $\func{hash}{\psi, \ldots}$ internally
-					\item Predict its own challenge!
-				\end{itemize}
-			\end{alertblock}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{How the attack works step by step}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{The attacking circuit $C^*$:}
-			\begin{enumerate}
-				\item Input: witness $w$
-				\item Interpret $w$ as circuit digest $\psi$
-				\item Compute $\alpha = \text{comm}(w)$
-				\item Compute $\gamma = \func{hash}{\psi, y^*, \alpha}$
-				\item Output: $(\gamma, \gamma - 1)$
-			\end{enumerate}
-			\textbf{The false claim:}
-			\begin{itemize}
-				\item Prover claims: $\exists w: C^*(w) = (0,0)$
-				\item Reality: Output is always $(\gamma, \gamma-1) \neq (0,0)$
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{Why verification passes:}
-			\begin{itemize}
-				\item Set $w = \langle C^* \rangle$
-				\item Verifier computes: $r = \func{hash}{\langle C^* \rangle, y^*, \alpha}$
-				\item But this equals $\gamma$ by construction!
-				\item Multilinear extension (MLE) of real output at $r$: $\hat{y}(r) = \gamma - r = 0$
-				\item MLE of claimed $(0,0)$ at $r$: also $0$
-				\item They match! GKR proceeds honestly from here
-			\end{itemize}
-		\end{column}
-	\end{columns}
-	\begin{center}
-		\textbf{At exactly the challenge point $r$, real and fake outputs have the same MLE value}
-	\end{center}
 \end{frame}
 
 \begin{frame}{Understanding the attack: an exam analogy}
@@ -1875,30 +1850,59 @@ template IsZero() {
 	\end{alertblock}
 \end{frame}
 
-\begin{frame}{What the attack needs, and what it exploits}
+\begin{frame}{Circuit digests: how a circuit can talk about itself}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{The depth requirement:}
+			\textbf{From circuit to digest:}
 			\begin{itemize}
-				\item Attack needs: $d \geq d_{\text{comm}} + d_h + \mathcal{O}(1)$
-				\item The circuit must be deep enough to compute the hash and the commitment itself
-				\item Many practical circuits are, and it works for \textit{any} concrete hash function
+				\item Serialize a circuit $C$ (gates, wires, inputs, outputs) in a fixed order and hash it: the \textbf{circuit digest} $\psi = \langle C \rangle$
+				\item $\psi$ goes into the Fiat-Shamir hash: the challenge depends on \textit{which} circuit is proved
 			\end{itemize}
-			\textbf{Who can pull it off?}
+			\textbf{The circular dependency:}
 			\begin{itemize}
-				\item Whoever gets to choose the circuit, or to slip one in (next slide)
+				\item The attacker wants $C^*$ to compute its own challenge $r$
+				\item But $r$ depends on $\langle C^* \rangle$, and changing $C^*$ changes $\langle C^* \rangle$
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\textbf{Key properties exploited:}
-			\begin{itemize}
-				\item GKR doesn't commit to computation trace
-				\item Challenge point determined by hash of transcript
-				\item Circuit can embed cryptographic operations
-				\item Self-reference through witness
-			\end{itemize}
+			\begin{alertblock}{Breaking the cycle}
+				\begin{itemize}
+					\item A circuit can't contain its own digest
+					\item But it can receive it as the witness: $w = \langle C^* \rangle$
+					\item Then it can hash its own description, exactly as the verifier will
+				\end{itemize}
+			\end{alertblock}
+			If the circuit is deep enough to evaluate the hash, it can \textbf{predict its own challenge}.
 		\end{column}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{The attack, step by step}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\draw[cd card, fill=cipherprimary!3!cipherwhite] (0,-0.1) rectangle (5.6,-5.6);
+		\node[cd heading] at (2.8,-0.4) {The attacking circuit $C^*$};
+		\foreach \y/\name/\content in {
+				-1.05/w/{Input: witness $w$},
+				-1.9/psi/{Read $w$ as a digest $\psi$},
+				-2.75/alpha/{$\alpha = \text{comm}(w)$},
+				-3.6/gamma/{$\gamma = \func{hash}{\psi, y^*, \alpha}$},
+				-4.45/out/{Output $(\gamma,\ \gamma - 1)$}
+			} {
+				\node[cd green, minimum width=4.2cm, minimum height=0.6cm, inner sep=2pt, font=\fontsize{9}{11}\selectfont] (\name) at (2.8,\y) {\content};
+			}
+		\foreach \a/\b in {w/psi,psi/alpha,alpha/gamma,gamma/out}
+		\draw[cd arrow] (\a) -- (\b);
+		\node[cd small, text=diagramred] at (2.8,-5.1) {Never $(0, 0)$: the claim is \textbf{false}};
+		% Prover and verifier
+		\node[cd gold, text width=6.8cm, align=flush left, font=\fontsize{9}{11}\selectfont] (claim) at (10,-0.55) {\textbf{Prover:} claims $C^*(w) = y^* = (0, 0)$, and sets the witness to $w = \langle C^* \rangle$};
+		\node[cd card, text width=6.8cm, align=flush left, font=\fontsize{9}{11}\selectfont] (ver) at (10,-1.65) {\textbf{Verifier (Fiat-Shamir):} $r = \func{hash}{\langle C^* \rangle, y^*, \text{comm}(w)}$};
+		\draw[diagramgold, line width=1.2pt, dashed] (gamma.east) -- (5.95,-3.6) -- (5.95,-1.65) -- (ver.west);
+		\node[cd tag, text=diagramgold, font=\fontsize{8.5}{10}\selectfont\bfseries] at (5.95,-2.65) {$r = \gamma$};
+		\node[cd green, text width=6.8cm, align=flush left, font=\fontsize{9}{11}\selectfont] at (10,-3.1) {\textbf{Compare outputs at the point $r$}, using the multilinear extension $\hat{y}(x) = y_0 (1 - x) + y_1 x$:\\Real $(\gamma, \gamma - 1)$: $\hat{y}(r) = \gamma - r = 0$\\Claimed $(0, 0)$: $\hat{y}(r) = 0$};
+		\node[cd red, text width=6.8cm, align=flush left, font=\fontsize{9}{11}\selectfont] at (10,-4.85) {\textbf{They match}, exactly at the one point that gets checked. GKR proceeds honestly from here, and the verifier accepts a false claim.};
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}{Extended attack: backdooring any circuit}
@@ -1934,33 +1938,26 @@ template IsZero() {
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Implications for practice}
-	\begin{columns}[c]
+\begin{frame}{What the attack needs, and what to do about it}
+	\begin{columns}[T]
 		\begin{column}{0.5\textwidth}
-			\textbf{Immediate impact:}
+			\textbf{What it needs:}
 			\begin{itemize}
-				\item GKR+FS is not secure in general
-				\item Affects deployed systems
-				\item No ``safe'' hash function choice
-				\item Circuit implementation matters!
+				\item Depth $d \geq d_{\text{comm}} + d_h + \mathcal{O}(1)$, to run the commitment and the hash in-circuit
+				\item Someone who picks the circuit, or slips in a backdoored one
+				\item Any concrete hash: no ``safe'' choice
 			\end{itemize}
-			\textbf{Particularly concerning:}
-			\begin{itemize}
-				\item Recursive proof composition
-				\item Circuits that use crypto primitives
-				\item Hard to audit implementations
-			\end{itemize}
+			\textbf{Particularly exposed:} recursive proofs (their circuits verify other proofs, so they hash), and third-party circuits nobody audits.
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\textbf{Mitigations:}
 			\begin{itemize}
-				\item Cap the circuit depth
-				\item Distrust in-circuit crypto operations
+				\item Cap the circuit depth below what the hash needs
 				\item Know where your circuit came from
 				\item Use canonical representations
 			\end{itemize}
-			\begin{exampleblock}{Silver lining}
-				Simple circuits (e.g., for lookups) seem safe: they have canonical forms
+			\begin{exampleblock}{The lesson}
+				The random oracle model is a heuristic. Here, a real, deployed protocol falls outside it.
 			\end{exampleblock}
 		\end{column}
 	\end{columns}
@@ -1971,75 +1968,49 @@ template IsZero() {
 \begin{frame}{What is a zkVM?}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
+			\textbf{The concept:}
 			\begin{itemize}
-				\item \textbf{The concept:}
-				      \begin{itemize}
-					      \item A black-box virtual machine that executes programs
-					      \item Generates ZK proofs of correct execution
-					      \item Proves: ``I ran program P on input X and got output Y''
-					      \item \textit{Without revealing intermediate states!}
-				      \end{itemize}
-				\item \textbf{Think of it as:}
-				      \begin{itemize}
-					      \item Computer + ZK proof system
-					      \item Run any program privately
-					      \item Prove the result is correct
-				      \end{itemize}
+				\item A virtual machine that runs ordinary programs\ldots
+				\item \ldots and outputs a proof that it ran them correctly
+				\item Proves: ``I ran program $P$ on some input and got output $Y$''
+				\item \textit{Without revealing private inputs or intermediate states!}
 			\end{itemize}
+			\textbf{Think of it as:} a whole CPU, written once as a circuit, so that you never have to write one yourself.
 		\end{column}
 		\begin{column}{0.5\textwidth}
+			\textbf{Why does this matter?}
 			\begin{itemize}
-				\item \textbf{Why does this matter?}
-				      \begin{itemize}
-					      \item No need to design custom circuits
-					      \item Write normal code, get ZK proofs
-					      \item Developers don't need crypto expertise
-					      \item One system for all computations
-				      \end{itemize}
+				\item No need to design custom circuits
+				\item Write normal code (Rust, C++), get ZK proofs
+				\item No constraint-level bugs to write yourself (\texttt{IsZero} is someone else's problem)
+				\item One system for all computations
 			\end{itemize}
+			\begin{alertblock}{The catch}
+				Generality costs: every instruction of every run becomes constraints.
+			\end{alertblock}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{zkVM architecture and components}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{Core components:}
-			\begin{itemize}
-				\item \textbf{Instruction Set:}
-				      \begin{itemize}
-					      \item RISC-V, MIPS, or custom
-					      \item Simple, well-defined operations
-					      \item Each instruction becomes constraints
-				      \end{itemize}
-				\item \textbf{Memory model:}
-				      \begin{itemize}
-					      \item RAM with read/write operations
-					      \item Stack and heap management
-					      \item Every access must be proven consistent
-				      \end{itemize}
-				\item \textbf{Execution trace:}
-				      \begin{itemize}
-					      \item Record of all state transitions
-					      \item Forms the witness for the proof
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{The proving process:}
-			\begin{enumerate}
-				\item Load program into VM
-				\item Execute with private inputs
-				\item Record execution trace
-				\item Generate constraints from trace
-				\item Create ZK proof of constraints
-				\item Output: proof + public result
-			\end{enumerate}
-			\begin{exampleblock}{Examples in practice}
-				RISC Zero, SP1, Jolt, Cairo VM, each with different trade-offs
-			\end{exampleblock}
-		\end{column}
-	\end{columns}
+\begin{frame}{Inside a zkVM}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[cd card, minimum width=3.6cm, minimum height=1.35cm, font=\fontsize{8.5}{10.5}\selectfont] (prog) at (1.7,-0.95) {\textbf{Guest program}\\ordinary Rust, compiled\\to a RISC-V binary};
+		\node[cd card, minimum width=3.6cm, minimum height=1.35cm, font=\fontsize{8.5}{10.5}\selectfont] (run) at (6.75,-0.95) {\textbf{Execute}\\with private inputs, like\\any emulator would};
+		\node[cd gold, minimum width=3.6cm, minimum height=1.35cm, font=\fontsize{8.5}{10.5}\selectfont] (trace) at (11.8,-0.95) {\textbf{Execution trace}\\every cycle's registers\\and memory: the witness};
+		\node[cd green, minimum width=3.6cm, minimum height=1.35cm, font=\fontsize{8.5}{10.5}\selectfont] (cons) at (11.8,-3.05) {\textbf{Constraints}\\one set per instruction,\\plus memory consistency};
+		\node[cd green, minimum width=3.6cm, minimum height=1.35cm, font=\fontsize{8.5}{10.5}\selectfont] (prove) at (6.75,-3.05) {\textbf{Prove}\\a STARK over the trace,\\often wrapped recursively};
+		\node[cd gold, minimum width=3.6cm, minimum height=1.35cm, font=\fontsize{8.5}{10.5}\selectfont] (rec) at (1.7,-3.05) {\textbf{Receipt}\\journal (public outputs)\\+ seal (the proof)};
+		\draw[cd arrow] (prog) -- (run);
+		\draw[cd arrow] (run) -- (trace);
+		\draw[cd arrow] (trace) -- node[cd tag, right=2pt] {arithmetize} (cons);
+		\draw[cd arrow] (cons) -- (prove);
+		\draw[cd arrow] (prove) -- (rec);
+		\node[cd card, minimum width=3.6cm, font=\fontsize{8.5}{10.5}\selectfont] (ver) at (1.7,-4.75) {\textbf{Anyone verifies}\\seal + journal + ImageID};
+		\draw[cd arrow] (rec) -- (ver);
+		\node[cd green, text width=8.3cm, align=flush left, font=\fontsize{9}{11}\selectfont, anchor=west] at (4.2,-4.75) {\textbf{ImageID} = the hash of the guest binary. The verifier checks the proof against it, so the receipt proves \textit{which} program ran. Examples: RISC Zero, SP1, Jolt, Cairo; each makes different trade-offs.};
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}{What are zkVMs used for?}
@@ -2070,25 +2041,6 @@ template IsZero() {
 \end{frame}
 
 \subsection{RISC Zero}
-
-\begin{frame}{Remember this?}
-	\begin{columns}[c]
-		\begin{column}{0.6\textwidth}
-			\begin{itemize}[<+->]
-				\item \textbf{Zero-knowledge proofs} allow you to prove that you know
-				      a secret without revealing any information about it.
-				\item Researchers have built ``zero-knowledge virtual machines'' where you can execute
-				      an entire program that runs as a zero-knowledge proof.
-				\item ZKP battleship game: the server proves to the players that its
-				      responses to their battleship guesses are correct, without revealing any
-				      additional information (e.g., ship locations).
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.4\textwidth}
-			\imagewithcaption{battleship.jpg}{Battleship board game. Source: Hasbro}
-		\end{column}
-	\end{columns}
-\end{frame}
 
 \begin{frame}{RISC Zero: making ZK development accessible}
 	\begin{columns}[c]
@@ -2138,13 +2090,7 @@ template IsZero() {
 					      \item Generate proof (receipt)
 					      \item Anyone can verify with the ImageID
 				      \end{enumerate}
-				\item \textbf{The guest program:}
-				      \begin{itemize}
-					      \item Core logic that gets proven
-					      \item Standard Rust code
-					      \item Access to most crates
-					      \item Defines public/private inputs
-				      \end{itemize}
+				\item \textbf{The guest program:} standard Rust; reads inputs with \texttt{env::read()}, publishes outputs with \texttt{env::commit()}
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -2160,7 +2106,6 @@ template IsZero() {
 					      \item \textbf{Remote proving (RISC Zero's hosted service):}
 					            \begin{itemize}
 						            \item Cloud-based proving
-						            \item No host code needed
 						            \item Pay per proof
 						            \item Easier to get started
 					            \end{itemize}
@@ -2195,7 +2140,7 @@ template IsZero() {
 				\item Cheating is caught, except with negligible probability
 			\end{itemize}
 			\begin{alertblock}{The witness}
-				The secret \texttt{GameState}: 5 ships with positions, orientations, and a random ``pepper'' for hiding
+				The secret \texttt{GameState}: 5 ships with positions and orientations, plus a random ``pepper'' against brute-forcing
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -2277,32 +2222,12 @@ fn main() {
 	\end{columns}
 \end{frame}
 
-\begin{frame}{ZK Battleship: verification and security}
-	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\textbf{What the host verifies:}
-			\begin{enumerate}
-				\item \textbf{Init proof valid:} Board follows game rules
-				\item \textbf{Round proof valid:} Shot computed correctly
-				\item \textbf{State consistency:} \texttt{old\_state} matches previous \texttt{new\_state}
-				\item \textbf{Shot consistency:} Proof uses the actual shot sent
-			\end{enumerate}
-			\textbf{Security guarantees:}
-			\begin{itemize}
-				\item \textbf{Privacy:} Board never revealed to verifier
-				\item \textbf{Soundness:} Cannot lie about hit/miss results
-				\item \textbf{Integrity:} Cannot change board mid-game
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
 \begin{frame}{ZK Battleship: one round, end to end}
 	\begin{columns}[c]
-		\begin{column}{1\textwidth}
-			\vspace{-2cm}
+		\begin{column}{0.55\textwidth}
+			\vspace{-1.6cm}
 			\begin{center}
-				\resizebox{0.6\textwidth}{!}{
+				\resizebox{0.85\textwidth}{!}{
 					\begin{msc}{}
 						\setmscvalues{small}
 						\drawframe{none}
@@ -2337,6 +2262,16 @@ fn main() {
 				}
 			\end{center}
 		\end{column}
+		\begin{column}{0.43\textwidth}
+			\textbf{What the player checks:}
+			\begin{enumerate}
+				\item \textbf{Init proof:} the board follows the rules
+				\item \textbf{Round proof:} the answer is correct
+				\item \textbf{State chain:} \texttt{old\_state} is the last \texttt{new\_state}
+				\item \textbf{Shot:} the proof is about the shot sent
+			\end{enumerate}
+			\textbf{What that buys:} the board stays secret, hits can't be faked, and ships can't move mid-game.
+		\end{column}
 	\end{columns}
 \end{frame}
 
@@ -2345,200 +2280,72 @@ fn main() {
 \begin{frame}{The zkVM promise vs. reality}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
+			\textbf{The promise:}
 			\begin{itemize}
-				\item \textbf{The promise:}
-				      \begin{itemize}
-					      \item ``Democratize SNARKs''
-					      \item No specialized expertise needed
-					      \item Prove any program execution
-					      \item Amazing developer experience
-					      \item Ready for deployment today
-				      \end{itemize}
-				\item \textbf{The reality:}
-				      \begin{itemize}
-					      \item Riddled with bugs
-					      \item 100,000$\times$ slower than native
-					      \item Years from production-ready
-					      \item Security theater, not security
-				      \end{itemize}
+				\item ``Democratize SNARKs'': no specialized expertise needed
+				\item Prove any program execution
+				\item Amazing developer experience
+				\item Ready for deployment today
+			\end{itemize}
+			\textbf{The reality:}
+			\begin{itemize}
+				\item Riddled with bugs
+				\item $10^5$--$10^6\times$ slower than native
+				\item Years from production-ready
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{The hard truth:}
-				      \begin{itemize}
-					      \item Projects claiming to use zkVMs for security today are either:
-					            \begin{itemize}
-						            \item Secured by permissioning (not SNARKs)
-						            \item Vulnerable to attack
-						            \item Paying enormous costs for false security
-					            \end{itemize}
-				      \end{itemize}
-				\item \textbf{Time to maturity:}
-				      \begin{itemize}
-					      \item We are still \textbf{years away} from meeting even basic goals for secure and performant zkVMs
-				      \end{itemize}
-			\end{itemize}
+			\begin{alertblock}{The hard truth}
+				Projects claiming to use zkVMs for security today are either:
+				\begin{itemize}
+					\item Secured by permissioning (not SNARKs)
+					\item Vulnerable to attack
+					\item Paying enormous costs for false security
+				\end{itemize}
+			\end{alertblock}
+			We are still \textbf{years away} from meeting even basic goals for secure and performant zkVMs.
 		\end{column}
 	\end{columns}
 \end{frame}
 
 \begin{frame}{Security stages: the path to trusted zkVMs}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{Stage 1: Correct protocols}
-				      \begin{itemize}
-					      \item \textbf{1a:} Formally verify PIOP soundness\footnote{PIOP: polynomial interactive oracle proof; PCS: polynomial commitment scheme.}
-					      \item \textbf{1b:} Verify PCS is binding
-					      \item \textbf{1c:} Verify Fiat-Shamir security
-					      \item \textbf{1d:} Verify constraint $\leftrightarrow$ VM semantics
-					      \item \textbf{1e:} Glue everything together
-				      \end{itemize}
-				\item \textbf{Timeline (2025 estimate):} no zkVM likely to fully meet Stage 1 for at least \textbf{2 years}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{Stage 2: Correct verifier}
-				      \begin{itemize}
-					      \item Formally verify implementation
-					      \item Match protocol from Stage 1
-					      \item Focus on verifier (simpler than prover)
-					      \item Ensures soundness in practice
-				      \end{itemize}
-				\item \textbf{Stage 3: Correct prover}
-				      \begin{itemize}
-					      \item Verify prover implementation
-					      \item Ensures completeness
-					      \item Zero-knowledge if claimed
-				      \end{itemize}
-				\item \textbf{Timeline (2025 estimate):} Stage 3 in \textbf{4+ years}
-			\end{itemize}
-		\end{column}
-	\end{columns}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[cd red, text width=2.9cm, minimum height=1.6cm, anchor=south west, align=flush left, font=\fontsize{9}{11}\selectfont] at (0.0,-4.75) {\textbf{Stage 0: Today}\\deployed, but no part formally verified};
+		\node[cd tag, font=\fontsize{8.5}{10}\selectfont\bfseries, text=cipherprimarydark] at (1.6,-5.05) {now};
+		\node[cd gold, text width=2.9cm, minimum height=2.5cm, anchor=south west, align=flush left, font=\fontsize{9}{11}\selectfont] at (3.4,-4.75) {\textbf{Stage 1: Correct protocols}\\verify the PIOP, the PCS, Fiat-Shamir, and that constraints match VM semantics};
+		\node[cd tag, font=\fontsize{8.5}{10}\selectfont\bfseries, text=cipherprimarydark] at (5.0,-5.05) {$\approx$ 2 years};
+		\node[cd green, text width=2.9cm, minimum height=3.4cm, anchor=south west, align=flush left, font=\fontsize{9}{11}\selectfont] at (6.8,-4.75) {\textbf{Stage 2: Correct verifier}\\a formally verified verifier implementation, matching Stage 1};
+		\node[cd tag, font=\fontsize{8.5}{10}\selectfont\bfseries, text=cipherprimarydark] at (8.4,-5.05) {$\approx$ 3 years};
+		\node[cd green, text width=2.9cm, minimum height=4.3cm, anchor=south west, align=flush left, font=\fontsize{9}{11}\selectfont] at (10.2,-4.75) {\textbf{Stage 3: Correct prover}\\completeness, and zero-knowledge if claimed};
+		\node[cd tag, font=\fontsize{8.5}{10}\selectfont\bfseries, text=cipherprimarydark] at (11.8,-5.05) {4+ years};
+		\draw[cd arrow, draw=cipherprimary!60] (0.2,-5.45) -- (13.3,-5.45);
+		\node[anchor=north west, font=\fontsize{9}{11}\selectfont, text=cipherdark!80, text width=6.4cm, align=flush left, inner sep=0pt] at (0,-0.1) {Each stage builds on the one below (estimates as of 2025). \textbf{Soundness hinges on Stage 2}: the verifier stands between a false claim and acceptance. Production-ready: 5+ years.};
+	\end{tikzpicture}
+	\let\thefootnote\relax\footnote{PIOP: polynomial interactive oracle proof; PCS: polynomial commitment scheme.}
 \end{frame}
 
-\begin{frame}{Critical caveats and open problems}
-	\begin{columns}[c]
+\begin{frame}{Caveats, open problems, and performance}
+	\begin{columns}[T]
 		\begin{column}{0.5\textwidth}
+			\textbf{Open problems:}
 			\begin{itemize}
-				\item \textbf{Fiat-Shamir vulnerability:}
-				      \begin{itemize}
-					      \item Open research questions remain
-					      \item Random oracle $\neq$ real hash functions
-					      \item Known attacks involve recursive circuits
-					      \item A Stage 2 system could be found insecure!
-				      \end{itemize}
-				\item \textbf{The bytecode problem:}
-				      \begin{itemize}
-					      \item Proving correct execution of flawed code?
-					      \item Need formally verified bytecode
-					      \item Enormous challenge outside zkVM scope
-				      \end{itemize}
+				\item \textbf{Fiat-Shamir:} a real hash isn't a random oracle; even a Stage 2 system could fall
+				\item \textbf{The bytecode problem:} proving that flawed code ran correctly is worthless
+				\item \textbf{Recursion:} every layer of the proof stack must be verified
+				\item \textbf{Shortcuts:} some deployments use $<$100 bits of security, not 128
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
+			\textbf{Why so slow?}
 			\begin{itemize}
-				\item \textbf{Recursion complications:}
-				      \begin{itemize}
-					      \item Every PIOP must be verified
-					      \item Every commitment scheme too
-					      \item Every constraint system
-					      \item Multiplies verification burden
-				      \end{itemize}
+				\item Every instruction becomes constraints
+				\item Every memory access must be proven consistent
+				\item Polynomial commitments and recursion are expensive
 			\end{itemize}
-			\begin{itemize}
-				\item Current deployments skimp on security for performance:
-				      \begin{itemize}
-					      \item Some use $<$100 bits of security
-					      \item Should use 128+ bits minimum
-					      \item If performance were good, we wouldn't compromise
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Performance reality check}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{Current performance:}
-				      \begin{itemize}
-					      \item 100,000$\times$ to 1,000,000$\times$ slower
-					      \item Simple operations take seconds
-					      \item Complex programs take hours
-					      \item Memory operations particularly costly
-				      \end{itemize}
-				\item \textbf{Why so slow?}
-				      \begin{itemize}
-					      \item Every instruction $\rightarrow$ constraints
-					      \item Every memory access must be proven consistent
-					      \item Polynomial commitments are expensive
-					      \item Recursion adds more overhead
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{The performance stages ahead:}
-				      \begin{itemize}
-					      \item Hardware acceleration (GPUs, ASICs)
-					      \item Better constraint systems
-					      \item Optimized polynomial arithmetic
-					      \item Proof composition techniques
-				      \end{itemize}
-			\end{itemize}
-			\begin{exampleblock}{Reality check}
-				Even with all optimizations, expect 1,000$\times$ overhead for years to come
-			\end{exampleblock}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{The road ahead: realistic expectations}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{What to focus on now:}
-				      \begin{itemize}
-					      \item Formal verification efforts
-					      \item Basic security properties
-					      \item Performance fundamentals
-					      \item Not post-quantum (yet)
-					            \begin{itemize}
-						            \item Quantum computers: 5+ years away
-						            \item Bugs: existential risk today
-						            \item Use classical SNARKs for now
-					            \end{itemize}
-				      \end{itemize}
-				\item \textbf{Timeline (2025 estimate):}
-				      \begin{itemize}
-					      \item 2 years: Stage 1 protocols
-					      \item 3 years: Stage 2 verifiers
-					      \item 4+ years: Stage 3 provers
-					      \item 5+ years: Production-ready
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{Key takeaways:}
-				      \begin{itemize}
-					      \item Don't believe the hype
-					      \item Current deployments are insecure
-					      \item Performance is prohibitive
-					      \item Years of work ahead
-				      \end{itemize}
-			\end{itemize}
-			\begin{alertblock}{Remember}
-				Anyone claiming zkVMs are ready for production deployment is either:
-				\begin{itemize}
-					\item Misinformed
-					\item Misleading you
-					\item Taking enormous risks
-				\end{itemize}
+			\begin{alertblock}{Realistic expectations}
+				Expect $1{,}000\times$ overhead for years, even with GPUs and ASICs. Post-quantum can wait: bugs are today's existential risk.
 			\end{alertblock}
 		\end{column}
 	\end{columns}
@@ -2551,123 +2358,70 @@ fn main() {
 \begin{frame}{Zcash: bringing ZK to cryptocurrency}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
+			\textbf{Bitcoin's transparency (recall 2.7):}
 			\begin{itemize}
-				\item \textbf{Bitcoin's transparency:}
-				      \begin{itemize}
-					      \item All transactions are public
-					      \item Addresses are pseudonymous
-					      \item But can be linked and traced
-					      \item Chain analysis reveals patterns
-					      \item Privacy through obscurity fails
-				      \end{itemize}
-				\item \textbf{The need for privacy:}
-				      \begin{itemize}
-					      \item Financial privacy is fundamental
-					      \item Fungibility requires privacy
-					      \item Businesses need confidentiality
-				      \end{itemize}
+				\item All transactions are public
+				\item Addresses are pseudonymous, but can be linked and traced
+				\item Chain analysis reveals patterns
+			\end{itemize}
+			\textbf{Why privacy matters:}
+			\begin{itemize}
+				\item Financial privacy is fundamental
+				\item Fungibility: a coin with a traceable past can be refused
+				\item Businesses need confidentiality
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
+			\textbf{Enter Zcash (2016):}
 			\begin{itemize}
-				\item \textbf{Enter Zcash (2016):}
+				\item First production use of zk-SNARKs
+				\item Two kinds of addresses:
 				      \begin{itemize}
-					      \item First production use of zk-SNARKs
-					      \item Optional privacy for transactions
-					      \item Prove transaction validity without revealing:
-					            \begin{itemize}
-						            \item Sender
-						            \item Receiver
-						            \item Amount
-					            \end{itemize}
-					      \item The first time ZK proofs guarded real money
+					      \item \textbf{Transparent} (t-addresses): work like Bitcoin, fully visible
+					      \item \textbf{Shielded} (z-addresses): hide sender, receiver, and amount
 				      \end{itemize}
+				\item The first time ZK proofs guarded real money
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{How Zcash works: shielded transactions}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{Two types of addresses:}
-			\begin{itemize}
-				\item \textbf{Transparent (t-addresses):}
-				      \begin{itemize}
-					      \item Work like Bitcoin
-					      \item Fully visible on blockchain
-					      \item Start with 't'
-				      \end{itemize}
-				\item \textbf{Shielded (z-addresses):}
-				      \begin{itemize}
-					      \item Use zero-knowledge proofs
-					      \item Hide transaction details
-					      \item Start with 'z'
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{What the ZK proof proves:}
-			\begin{itemize}
-				\item The input notes exist on the chain
-				\item The sender owns them
-				\item They haven't been spent before
-				\item Values balance: no ZEC created from nothing
-			\end{itemize}
-			\begin{alertblock}{The magic}
-				All this is proved without revealing which notes are spent or created!
-			\end{alertblock}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{Evolution and improvements}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{Performance journey:}
-			\begin{itemize}
-				\item \textbf{Sprout (2016):}
-				      \begin{itemize}
-					      \item Proof generation: $\approx$40 seconds
-					      \item Memory: $\approx$3 GB
-					      \item Mobile impossible
-				      \end{itemize}
-				\item \textbf{Sapling (2018):}
-				      \begin{itemize}
-					      \item Proof generation: $\approx$2.5 seconds
-					      \item Memory: $\approx$40 MB
-					      \item Mobile feasible
-				      \end{itemize}
-				\item \textbf{Orchard / Halo 2 (2022):}
-				      \begin{itemize}
-					      \item No trusted setup!
-					      \item Supports recursive proofs
-					      \item Proving is fast enough for phones
-				      \end{itemize}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{Key innovations:}
-			\begin{itemize}
-				\item Viewing keys for auditing
-				\item Memo field for encrypted messages
-				\item Unified addresses
-				\item Hardware wallet support
-			\end{itemize}
-			\begin{alertblock}{The trade-off}
-				Privacy comes at a cost: shielded transactions are more expensive and complex than transparent ones
-			\end{alertblock}
-		\end{column}
-	\end{columns}
+\begin{frame}{A shielded spend: what the chain sees}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\tikzset{zc/.style={font=\fontsize{8.5}{10.5}\selectfont}}
+		% Left: the note and the commitment tree.
+		\node[cd heading] at (2.1,-0.2) {1. Alice receives a note};
+		\node[cd gold, zc] (note) at (2.1,-0.95) {\textbf{Note:} 5 ZEC, owner Alice};
+		\node[cd green, zc] (root) at (2.1,-2.0) {public tree root};
+		\foreach \x/\n in {0.6/a,1.6/b,2.6/c,3.6/d} {
+				\draw[cipherprimary!50, line width=0.7pt] (\x,-2.85) -- (root.south);
+				\node[cd card, minimum width=0.85cm, font=\fontsize{8}{9}\selectfont\ttfamily] (leaf\n) at (\x,-3.05) {cm};
+			}
+		\node[cd gold, minimum width=0.85cm, font=\fontsize{8}{9}\selectfont\ttfamily\bfseries] at (3.6,-3.05) {cm};
+		\draw[cd arrow, draw=diagramgold, dashed] (note.east) -- ++(0.3,0) |- node[cd tag, text=diagramgold, pos=0.2, right=1pt] {commit} (leafd.east);
+		\node[cd small, anchor=north] at (2.1,-3.45) {Every commitment joins one\\public tree. Which leaf is\\Alice's? Nobody can tell.};
+		% Middle: the spend.
+		\node[cd heading] at (6.75,-0.2) {2. Alice pays Bob};
+		\node[cd card, zc, align=flush left] (tx) at (6.75,-1.55) {\textbf{Published:}\\nullifier \texttt{nf}\\Bob's new \texttt{cm'}\\proof $\pi$};
+		\node[cd small, anchor=north, text width=4.0cm] at (6.75,-2.65) {\texttt{nf} comes from the note and Alice's secret key: no one else can link it to her \texttt{cm}.};
+		% Right: what the proof says, and the chain's checks.
+		\node[cd heading] at (11.3,-0.2) {3. The proof $\pi$ says};
+		\node[cd green, zc, align=flush left] at (11.3,-1.55) {Some \texttt{cm} in the tree is my note\\I hold the key that owns it\\\texttt{nf} is that note's nullifier\\Values balance: in $=$ out $+$ fee};
+		\node[cd card, zc, align=flush left] at (11.3,-3.25) {\textbf{Chain checks:} $\pi$ is valid,\\and \texttt{nf} is new (no double spend)};
+		\node[cd red, text width=12.9cm, font=\fontsize{9}{11}\selectfont] at (6.75,-5.2) {The chain never learns \textbf{which} note was spent, \textbf{who} paid, or \textbf{how much}, yet it still refuses a double spend.};
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}{Zcash: lessons from a decade in production}
-	\begin{columns}[c]
+	\begin{columns}[T]
 		\begin{column}{0.5\textwidth}
-			\textbf{What went right:}
+			\textbf{Performance journey:}
 			\begin{itemize}
-				\item First ZK system guarding real money
-				\item Proof-system engineering (Sprout, Sapling, Orchard) the whole field reused
+				\item \textbf{Sprout (2016):} $\approx$40 s, $\approx$3 GB per proof
+				\item \textbf{Sapling (2018):} $\approx$2.5 s, $\approx$40 MB: phones feasible
+				\item \textbf{Orchard / Halo 2 (2022):} no trusted setup, recursive proofs
 			\end{itemize}
 			\textbf{What went wrong:}
 			\begin{itemize}
@@ -2680,9 +2434,11 @@ fn main() {
 			\begin{itemize}
 				\item Optional privacy gets little use: most ZEC sat in the transparent pool for years
 				\item A trusted setup is a permanent liability; Halo 2 removed it
-				\item Peer-reviewed proof systems can still be wrong (compare Fiat-Shamir)
-				\item Proving time decides whether phones can join (40 s $\rightarrow$ 2.5 s)
+				\item Peer-reviewed proof systems can still be wrong
 			\end{itemize}
+			\begin{alertblock}{In one line}
+				Privacy must be easy and fast, or people won't use it.
+			\end{alertblock}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -2714,38 +2470,27 @@ fn main() {
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The age verification problem}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\textbf{Current approaches:}
-			\begin{itemize}
-				\item Upload government ID
-				\item Credit card verification
-				\item Face recognition + AI
-				\item Third-party identity services
-			\end{itemize}
-			\textbf{Problems:}
-			\begin{itemize}
-				\item Privacy nightmare
-				\item Data breaches
-				\item Identity theft risk
-				\item Tracking across sites
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{The ZK solution:}
-			\begin{itemize}
-				\item Prove: ``I am over 18''
-				\item Reveal: Nothing else!
-				\item No name, no birthdate
-				\item No tracking possible
-				\item Cryptographically secure
-			\end{itemize}
-			\begin{block}{Question for you}
-				What other attributes could we prove this way? Think beyond age\ldots
-			\end{block}
-		\end{column}
-	\end{columns}
+\begin{frame}{An age check, with and without zero knowledge}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		% Today
+		\node[cd heading, anchor=west] at (0,-0.2) {Today: upload your ID};
+		\node[cd card, minimum width=2.6cm, minimum height=1cm, font=\fontsize{8.5}{10.5}\selectfont] (id1) at (1.4,-1.05) {\textbf{Your ID}\\name, photo, birthdate};
+		\node[cd red, minimum width=2.6cm, minimum height=1cm, font=\fontsize{8.5}{10.5}\selectfont] (site1) at (6.2,-1.05) {\textbf{Website}\\keeps a copy of it all};
+		\draw[cd arrow, draw=diagramred] (id1) -- node[cd tag, above=1pt, text=diagramred] {everything} (site1);
+		\node[cd small, text=diagramred, text width=5.4cm, align=flush left, anchor=west] at (7.85,-1.05) {Breaches, identity theft, tracking across sites: every site becomes a honeypot.};
+		\draw[ciphergraydark, line width=0.8pt] (0,-1.85) -- (13.5,-1.85);
+		% With ZK
+		\node[cd heading, anchor=west] at (0,-2.2) {With zero knowledge};
+		\node[cd card, minimum width=2.6cm, minimum height=1.05cm, font=\fontsize{8.5}{10.5}\selectfont] (issuer) at (1.4,-3.2) {\textbf{Issuer}\\government or bank};
+		\node[cd gold, minimum width=3.1cm, minimum height=1.05cm, font=\fontsize{8.5}{10.5}\selectfont] (wallet) at (6.2,-3.2) {\textbf{Wallet on your phone}\\signed credential, stays here};
+		\node[cd green, minimum width=2.5cm, minimum height=1.05cm, font=\fontsize{8.5}{10.5}\selectfont] (site2) at (11.9,-3.2) {\textbf{Website}\\learns: over 18};
+		\draw[cd arrow] (issuer) -- node[cd tag, above=1pt] {signs, once} (wallet);
+		\draw[cd arrow] (wallet) -- node[cd tag, above=1pt] {ZK proof,\\fresh each time} (site2);
+		\node[cd green, text width=6.7cm, align=flush left, font=\fontsize{8.5}{10.5}\selectfont, anchor=north west] at (0,-4.05) {\textbf{The statement:} ``I know a credential with a valid issuer signature, whose birthdate is before today minus 18 years.'' Witness: the credential and its signature.};
+		\node[cd card, text width=5.7cm, align=flush left, font=\fontsize{8.5}{10.5}\selectfont, anchor=north east] at (13.5,-4.05) {\textbf{Not revealed:} name, birthdate, even the signature. Two sites can't link your visits: each proof is fresh.};
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}{So, what else could you prove about yourself?}
@@ -2775,6 +2520,10 @@ fn main() {
 			\end{itemize}
 		\end{column}
 	\end{columns}
+	\vspace{0.3cm}
+	\begin{block}{Question for you}
+		Pick one. What is the statement, what is the witness, and who issues it?
+	\end{block}
 \end{frame}
 
 \begin{frame}{The European regulatory landscape}
@@ -2811,23 +2560,45 @@ fn main() {
 
 \subsection{Wrapping Up}
 
-\begin{frame}{What we learned today}
-	\begin{columns}[c]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{Schnorr:} commit $Y = g^y$, challenge $c$, respond $r = y + ca$; a transcript can be faked, so it teaches the verifier nothing
-				\item \textbf{Sigma protocols:} the general three-message pattern. Special soundness: two transcripts with the same $Y$ give away the witness
-				\item \textbf{AND / OR:} share one challenge, or split it and simulate the branch you can't prove
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-				\item \textbf{Fiat-Shamir:} the hash plays verifier. Gained: signatures, non-interaction. Lost: deniability, and a real hash is not a random oracle (the 2025 attack)
-				\item \textbf{Circuits and zkVMs:} prove any program ran correctly, at $10^5$--$10^6\times$ the cost, on immature systems
-				\item \textbf{In the wild:} Zcash since 2016; ZK age verification arriving on phones and in EU wallets
-			\end{itemize}
-		\end{column}
-	\end{columns}
+\begin{frame}{Five common misconceptions}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\node[cd heading] at (2.9,-0.2) {Myth};
+		\node[cd heading] at (9.6,-0.2) {Reality};
+		\foreach \y/\myth/\reality in {
+				-0.8/{``Zero-knowledge hides the statement.''}/{The statement is public (``I'm over 18''). Only the witness is hidden.},
+				-1.78/{``A valid proof means the claim is true.''}/{Only as good as the soundness and the circuit: BCTV14, Tornado Cash, the 2025 attack.},
+				-2.76/{``A proof shows my program is correct.''}/{It shows the program \textit{ran as written}. A buggy program gives a correctly proven wrong answer.},
+				-3.74/{``Zero-knowledge means private.''}/{The proof leaks nothing. Metadata, issuers, wallets and timing still can.},
+				-4.72/{``What goes in the Fiat-Shamir hash is a detail.''}/{Forget the statement (Helios) or the context (replay), and proofs get forged.}
+			} {
+				\node[cd red, text width=5.3cm, minimum height=0.8cm, align=flush left, font=\fontsize{9}{11}\selectfont] (m) at (2.9,\y) {\myth};
+				\node[cd green, text width=6.9cm, minimum height=0.8cm, align=flush left, font=\fontsize{9}{11}\selectfont] (r) at (9.6,\y) {\reality};
+				\draw[cd arrow] (m) -- (r);
+			}
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{What we learned: the route, revisited}
+	\centering
+	\begin{tikzpicture}[crypto diagram]
+		\path[use as bounding box] (0,0) rectangle (13.5,-5.7);
+		\draw[ciphergraydark, line width=10pt, rounded corners=0.7cm] (0.2,-0.45) -- (13.1,-0.45) -- (13.1,-3.2) -- (0.2,-3.2);
+		\draw[cipherwhite, line width=0.8pt, dash pattern=on 5pt off 4pt, rounded corners=0.7cm] (0.2,-0.45) -- (13.1,-0.45) -- (13.1,-3.2) -- (0.2,-3.2);
+		\foreach \n/\x/\y/\name/\what in {
+				1/1.55/-0.45/Schnorr/{Commit, challenge, respond. Transcripts can be faked, so they teach nothing},
+				2/6.1/-0.45/Sigma protocols/{Two answers to one commitment give away the witness: never reuse $y$},
+				3/10.65/-0.45/{AND, OR}/{Share one challenge, or split it and simulate the branch you can't prove},
+				4/10.65/-3.2/Fiat-Shamir/{The hash plays verifier. Gained: signatures. Lost: deniability. Hash everything},
+				5/6.1/-3.2/Circuits and zkVMs/{Any program, at $10^5$--$10^6\times$ the cost; beware under-constrained circuits},
+				6/1.55/-3.2/Real world/{Zcash since 2016; ZK age checks coming to EU wallets}
+			} {
+				\node[circle, fill=cipherprimary, draw=cipherwhite, line width=1.2pt, minimum size=0.62cm, inner sep=0pt, font=\small\bfseries, text=cipherwhite] at (\x,\y) {\n};
+				\node[font=\small\bfseries, text=cipherprimarydark] at (\x,\y-0.55) {\name};
+				\node[cd small, text width=4.1cm, anchor=north] at (\x,\y-0.78) {\what};
+			}
+	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}{Questions to ponder}
