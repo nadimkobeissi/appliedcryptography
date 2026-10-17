@@ -194,7 +194,7 @@
 					      \item Find the third point where this line meets the curve.
 					      \item Reflect it across the $x$-axis: that's $P + Q$.
 				      \end{itemize}
-				\item \textbf{Why the reflection?} It makes a beautiful rule hold: \emph{any three curve points on one line sum to zero}---the property that will make the curve a group (coming up).
+				\item \textbf{Why the reflection?} It makes a beautiful rule hold: \emph{any three curve points on one line sum to zero}, the property that will make the curve a group (coming up).
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -272,7 +272,7 @@
 		\end{tikzpicture}
 	\end{center}
 	\begin{itemize}
-		\item \textbf{Cost:} at most 255 doublings and 255 additions for a 256-bit $k$---microseconds on a laptop.
+		\item \textbf{Cost:} at most 255 doublings and 255 additions for a 256-bit $k$ (microseconds on a laptop).
 		\item \textbf{The asymmetry that powers everything:} computing $k \cdot G$ from $k$ takes a few hundred point operations. Recovering $k$ from $k \cdot G$? No known shortcut.
 	\end{itemize}
 \end{frame}
@@ -797,7 +797,7 @@
 		      \end{itemize}
 		\item \textbf{Security improvements:}
 		      \begin{itemize}
-			      \item No suspicious constants---all parameters have clear origins.
+			      \item No suspicious constants: all parameters have clear origins.
 			      \item Edwards form (Ed25519) has complete addition formulas.
 			      \item More resistant to timing attacks.
 		      \end{itemize}
@@ -843,8 +843,8 @@
 	\begin{itemize}
 		\item \textbf{Same curve, two forms. Each form is ideal for a different job:}
 		      \begin{itemize}
-			      \item Montgomery form: $x$-coordinate-only ``ladder''---simple, fast, constant-time ECDH.
-			      \item Edwards form: complete addition formulas, no special cases---safe signatures.
+			      \item Montgomery form: $x$-coordinate-only ``ladder'' for simple, fast, constant-time ECDH.
+			      \item Edwards form: complete addition formulas (no special cases) for safe signatures.
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -854,7 +854,7 @@
 		\item \textbf{secp256k1: the blockchain workhorse.}
 		      \begin{itemize}
 			      \item $y^2 = x^3 + 7$: standardized by SECG (2000), chosen for Bitcoin by Satoshi Nakamoto, inherited by Ethereum.
-			      \item Almost no arbitrary constants---``rigid'' by construction, unlike the NIST curves.
+			      \item Almost no arbitrary constants (``rigid'' by construction), unlike the NIST curves.
 			      \item (This is the curve behind the \texttt{k256} library naming.)
 		      \end{itemize}
 		\item \textbf{National standards:}
@@ -921,7 +921,7 @@
 		      \end{itemize}
 		\item \textbf{Even \emph{bias} is fatal:} a few leaky bits of $k$ across many signatures let lattice attacks recover $d$ (Minerva, 2019; LadderLeak, 2020).
 		\item \textbf{In the wild:} Bos et al. (2014) found Bitcoin transactions signed with repeated nonces; those private keys were recoverable by anyone.\footnote{\url{https://appliedcryptography.page/paper/\#ecc-practice}}
-		\item \textbf{Prevention:} a strong RNG---or no RNG at all: derive $k$ deterministically from the private key and message (RFC 6979, now in FIPS 186-5).
+		\item \textbf{Prevention:} a strong RNG, or no RNG at all: derive $k$ deterministically from the private key and message (RFC 6979, now in FIPS 186-5).
 	\end{itemize}
 \end{frame}
 

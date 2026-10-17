@@ -155,7 +155,7 @@
 		\end{itemize}
 	}
 	\begin{itemize}[<+->]
-		\item ``Hard'' means hard for \textbf{every} algorithm, not just the ones we have thought of --- which is what makes hardness so difficult to prove.
+		\item ``Hard'' means hard for \textbf{every} algorithm, not just the ones we have thought of, which is what makes hardness so difficult to prove.
 		\item Faster hardware only shifts constants: what is hard today should stay hard after ten more years of Moore's law.
 	\end{itemize}
 \end{frame}
@@ -316,7 +316,7 @@
 	\begin{itemize}[<+->]
 		\item Most practical algorithms we use daily are in class P.
 		\item Examples: Sorting, searching, basic arithmetic.
-		\item Cryptography relies on problems \textbf{believed} not to be in P --- nobody can prove it!
+		\item Cryptography relies on problems \textbf{believed} not to be in P: nobody can prove it!
 	\end{itemize}
 \end{frame}
 
@@ -340,7 +340,7 @@
 	\begin{itemize}[<+->]
 		\item \textbf{Key insight}: Easy to check, hard to find!
 		\item Given a potential solution, you can run a polynomial-time algorithm to verify if it's correct.
-		\item You don't need to find the solution efficiently --- only verify it efficiently.
+		\item You don't need to find the solution efficiently, only verify it efficiently.
 		\item \textbf{Relationship}: $P \subseteq NP$ (if you can solve it quickly, you can certainly verify it quickly).
 	\end{itemize}
 \end{frame}
@@ -398,7 +398,7 @@
 	}
 	\begin{itemize}[<+->]
 		\item Discovered in the 1970s during the development of complexity theory.
-		\item \textbf{Remarkable discovery}: All NP-complete problems are fundamentally equally hard!
+		\item \textbf{Discovery}: All NP-complete problems are equally hard!
 		\item Examples: Boolean satisfiability (SAT), traveling salesman problem, graph coloring.
 	\end{itemize}
 \end{frame}
@@ -440,7 +440,7 @@
 				      \begin{itemize}
 					      \item Any shortcut across the middle only makes the trip longer.
 				      \end{itemize}
-				\item Structure gives it away --- you solve it at a glance.
+				\item Structure gives it away: you solve it at a glance.
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -482,12 +482,12 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
-				\item The \textbf{same} twelve cities --- now scattered with no pattern.
+				\item The \textbf{same} twelve cities, now scattered with no pattern.
 				\item Same count, the \textbf{same} $19{,}958{,}400$ possible tours.
 				\item Nothing to read off: to be sure of the best route, you must search.
 			\end{itemize}
 			\vspace{0.1em}
-			\alertbox{The real lesson}{
+			\alertbox{The lesson}{
 				Same problem, same \textbf{size}, yet wildly different difficulty. The hardness lives in the \emph{instance}, not just in $n$.
 			}
 		\end{column}
@@ -526,9 +526,9 @@
 	}
 	\begin{itemize}[<+->]
 		\item You can transform \textbf{any} (generalized) Sudoku puzzle into a Boolean formula: the Sudoku has a solution $\Leftrightarrow$ the formula is satisfiable.
-		\item NP-complete means: \textbf{every} problem in NP reduces to it. So all NP-complete problems reduce to each other --- the same problem in different costumes.
+		\item NP-complete means: \textbf{every} problem in NP reduces to it. So all NP-complete problems reduce to each other (the same problem in different costumes).
 		\item \textbf{Consequence}: a polynomial-time algorithm for Sudoku would solve \textbf{every} problem in NP efficiently, and prove $P = NP$.
-		\item \textbf{The practical upside}: progress on one is progress on all --- better SAT solvers mean better chip verification and planning.
+		\item \textbf{The practical upside}: progress on one is progress on all; better SAT solvers mean better chip verification and planning.
 	\end{itemize}
 \end{frame}
 
@@ -544,7 +544,7 @@
 					      \item All classic Metroid games
 					      \item All classic Pok\'emon role-playing games
 				      \end{itemize}
-				\item \textbf{The catch}: ``Generalized versions'' with arbitrarily large levels.
+				\item \textbf{Caveat}: ``Generalized versions'' with arbitrarily large levels.
 				      \begin{itemize}
 					      \item Real Nintendo levels are designed to be solvable by humans.
 					      \item But the \textbf{mathematical structure} of these games is inherently complex.
@@ -588,14 +588,14 @@
 			      \item Finding preimages becomes easy.
 			      \item Digital signatures, password storage, all broken.
 		      \end{itemize}
-		\item \textbf{All of modern cryptography} would collapse overnight --- except the one-time pad and other information-theoretic schemes, which never relied on hardness.
+		\item \textbf{All of modern cryptography} would collapse overnight, except the one-time pad and other information-theoretic schemes, which never relied on hardness.
 		\item \textbf{But also}: protein folding, logistics, chip design and finding mathematical proofs would all become easy\ldots
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{The million-dollar question: why we don't panic}
 	\begin{itemize}[<+->]
-		\item The \textbf{Clay Mathematics Institute} offers \$1,000,000 for settling P vs.\ NP --- one of its seven ``Millennium Prize Problems'', unclaimed since 2000.
+		\item The \textbf{Clay Mathematics Institute} offers \$1,000,000 for settling P vs.\ NP, one of its seven ``Millennium Prize Problems'', unclaimed since 2000.
 		\item Scott Aaronson calls it \textit{``one of the deepest questions that human beings have ever asked''}.
 		\item \textbf{The consensus}: most complexity theorists believe $P \neq NP$.
 		      \begin{itemize}
@@ -605,7 +605,7 @@
 	\definitionbox{Why the question is so hard}{
 		\begin{itemize}
 			\item \textbf{Proving $P = NP$}: exhibit one polynomial-time algorithm for one NP-complete problem.
-			\item \textbf{Proving $P \neq NP$}: show that no such algorithm can \textbf{ever} exist, for any of them --- a statement about all possible programs.
+			\item \textbf{Proving $P \neq NP$}: show that no such algorithm can \textbf{ever} exist, for any of them (a statement about all possible programs).
 		\end{itemize}
 	}
 \end{frame}
@@ -649,7 +649,7 @@
 					      \item \textbf{Example}: given $g^a \bmod p$ for random $a$, find $a$ (Diffie-Hellman).
 					      \item \textbf{Example}: factoring $N = pq$ for random primes (RSA).
 				      \end{itemize}
-				\item Exception: lattices (Ajtai, 1996) --- random instances are as hard as the worst case.
+				\item Exception: lattices (Ajtai, 1996), where random instances are as hard as the worst case.
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -790,7 +790,7 @@
 			      \item $2^3 \bmod 5 = 3$
 			      \item $2^4 \bmod 5 = 1$
 		      \end{itemize}
-		\item We got $\{2, 4, 3, 1\}$ - that's all the elements! So $g = 2$ is a generator.
+		\item We got $\{2, 4, 3, 1\}$: that's all the elements! So $g = 2$ is a generator.
 		\item \textbf{Generators are crucial}: They let us express every group element as a power of $g$.
 	\end{itemize}
 \end{frame}
@@ -843,7 +843,7 @@
 	\begin{itemize}[<+->]
 		\item \textbf{Brute force}: try every $x \in \{0, 1, \ldots, p-2\}$ until $g^x \equiv h \pmod{p}$.
 		      \begin{itemize}
-			      \item Running time: $\mathcal{O}(p)$ --- for a 2048-bit prime, longer than the age of the universe.
+			      \item Running time: $\mathcal{O}(p)$; for a 2048-bit prime, longer than the age of the universe.
 		      \end{itemize}
 		\item But brute force is the \textit{dumbest} possible algorithm. Surely we can be smarter?
 		\item Two classic \textbf{generic} algorithms beat brute force in \textbf{any} group:
@@ -971,7 +971,7 @@
 		\item \textbf{Why do we need this?} Indistinguishability!
 		      \begin{itemize}
 			      \item What if an attacker can compute the first 32 bits of $g^{ab}$?
-			      \item CDH isn't broken, but the attacker learns something --- and that partial leak may be all an application needs to fail.
+			      \item CDH isn't broken, but the attacker learns something. That partial leak may be all an application needs to fail.
 		      \end{itemize}
 		\item \textbf{DDH ensures}: The shared secret $g^{ab}$ is \textbf{indistinguishable} from a random group element.
 		\item \textbf{Where it's used}: security proofs of ElGamal, Cramer-Shoup and many key exchange protocols. In our library notation, it's what lets us swap the real key for a uniform one.
@@ -1046,14 +1046,14 @@
 \begin{frame}{Don't use $g^{ab}$ directly as a key}
 	\begin{itemize}[<+->]
 		\item Alice and Bob share $S = g^{ab} \bmod p$. \textbf{Tempting}: just use $S$ as an AES key!
-		\item \textbf{Problem}: $S$ is \textbf{not} a uniformly random bitstring --- it's a specific element of a specific algebraic group.
+		\item \textbf{Problem}: $S$ is \textbf{not} a uniformly random bitstring; it's a specific element of a specific algebraic group.
 		      \begin{itemize}
 			      \item It always lies in the subgroup generated by $g$, and depending on $g$ may always be a \textbf{quadratic residue}.
 			      \item Its byte-length can vary (leading zero bytes), a classic source of real bugs: the \textbf{Raccoon attack} (2020) on TLS 1.2 exploited exactly this.
 		      \end{itemize}
-		\item Structured, biased input makes a \textbf{terrible} symmetric key --- it hands an attacker a head start.
+		\item Structured, biased input makes a \textbf{terrible} symmetric key: it hands an attacker a head start.
 	\end{itemize}
-	\alertbox{Rule of thumb}{Never feed a shared secret straight into a cipher --- always pass it through a \textbf{KDF} first.}
+	\alertbox{Rule of thumb}{Never feed a shared secret straight into a cipher; always pass it through a \textbf{KDF} first.}
 \end{frame}
 
 \begin{frame}{Pseudorandom and uniform distributions}{Reminder}
@@ -1158,7 +1158,7 @@
 \end{frame}
 
 \begin{frame}{Logjam finding: 512-bit primes still in use}
-	2,631 servers with browser-trusted certificates used 512-bit primes --- no export downgrade needed!
+	2,631 servers with browser-trusted certificates used 512-bit primes. No export downgrade needed!
 	\begin{itemize}[<+->]
 		\item \textbf{Why this is bad}:
 		      \begin{itemize}
@@ -1188,7 +1188,7 @@
 			      \item Then an attacker recovers the exponent piece by piece, one small factor at a time. (How? Next slide.)
 		      \end{itemize}
 		\item \textbf{Safe usage}: $g$ generates a subgroup of one large prime order $q$, and exponents live in $\{1, \ldots, q-1\}$. Then there are no small pieces to recover.
-		\item \textbf{Real impact}: 159 hosts fully compromised, including VPN devices and web-conferencing servers.
+		\item \textbf{Impact}: 159 hosts fully compromised, including VPN devices and web-conferencing servers.
 	\end{itemize}
 \end{frame}
 
@@ -1231,9 +1231,9 @@
 			      \item How? $h^5 = (g^5)^x$ and $g^5$ has order $8$: a discrete log in a group of $8$ elements gives $x \bmod 8$. Likewise $h^8 = (g^8)^x$ gives $x \bmod 5$.
 		      \end{itemize}
 		\item Combine with the \textbf{Chinese Remainder Theorem}: one $x \bmod 40$ matches both.
-		\item Total: $\sim 13$ checks instead of $40$ --- and the saving \textbf{explodes} for large primes.
+		\item Total: $\sim 13$ checks instead of $40$, and the saving \textbf{explodes} for large primes.
 	\end{itemize}
-	\definitionbox{The general rule}{If the largest prime factor of $p - 1$ has $b$ bits, Pohlig-Hellman runs in $\mathcal{O}(\sqrt{2^b})$ time --- regardless of how big $p$ is!}
+	\definitionbox{The general rule}{If the largest prime factor of $p - 1$ has $b$ bits, Pohlig-Hellman runs in $\mathcal{O}(\sqrt{2^b})$ time, regardless of how big $p$ is!}
 \end{frame}
 
 \begin{frame}{Safe primes: closing the door on Pohlig-Hellman}
@@ -1596,7 +1596,7 @@
 			      \item 4096-bit RSA signature: $\sim$10ms; Ed25519 signature: $\sim$0.1ms
 			      \item (RSA \emph{verification} is fast, which is why it lingered in certificates)
 		      \end{itemize}
-		\item \textbf{Implementation pitfalls}: Textbook RSA is deterministic and malleable, so it needs padding --- and PKCS\#1 v1.5 padding gave us Bleichenbacher's oracle attack (1998), rediscovered as ROBOT in 2018
+		\item \textbf{Implementation pitfalls}: Textbook RSA is deterministic and malleable, so it needs padding, and PKCS\#1 v1.5 padding gave us Bleichenbacher's oracle attack (1998), rediscovered as ROBOT in 2018
 		\item \textbf{The future is elliptic curves and post-quantum}: Time better spent there!
 	\end{itemize}
 \end{frame}

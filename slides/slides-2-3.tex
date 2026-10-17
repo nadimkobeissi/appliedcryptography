@@ -22,7 +22,7 @@
 
 \begin{frame}{The Dark Ages}
 	\begin{itemize}
-		\item \textbf{Pretty Good Privacy} (PGP)---created by Phil Zimmermann in 1991
+		\item \textbf{Pretty Good Privacy} (PGP), created by Phil Zimmermann in 1991
 		\item First widely available strong encryption for everyday people
 		\item Uses public key cryptography for email encryption and digital signatures
 		\item Before PGP, strong crypto was effectively government/military-only and export-controlled: Zimmermann spent 1993--1996 under criminal investigation for ``exporting munitions''
@@ -128,7 +128,7 @@
 			\begin{itemize}
 				\item \textbf{Usability nightmare}
 				      \begin{itemize}
-					      \item ``Why Johnny Can't Encrypt'' (1999)---landmark usability study\footnote{\url{https://appliedcryptography.page/paper/\#johnny-cant}}
+					      \item ``Why Johnny Can't Encrypt'' (1999), landmark usability study\footnote{\url{https://appliedcryptography.page/paper/\#johnny-cant}}
 					      \item Key management too complex for average users
 					      \item Easy to make catastrophic mistakes
 				      \end{itemize}
@@ -197,7 +197,7 @@
 \begin{frame}{Why Johnny Still, Still Can't Encrypt (2015)}
 	\begin{columns}[T]
 		\begin{column}{0.5\textwidth}
-			\textbf{The Study---16 Years Later}
+			\textbf{The Study: 16 Years Later}
 			\begin{itemize}
 				\item Ruoti et al.\ tested Mailvelope\footnote{\url{https://appliedcryptography.page/paper/\#johnny-still}}
 				\item Modern PGP extension for webmail (Gmail)
@@ -283,7 +283,7 @@
 		      \begin{itemize}
 			      \item Messages authenticated to recipient
 			      \item But no cryptographic proof for third parties
-			      \item Like a real conversation---no permanent record
+			      \item Like a real conversation: no permanent record
 		      \end{itemize}
 		\item \textbf{Socialist Millionaire Protocol}\footnote{\url{https://appliedcryptography.page/paper/\#otr-auth}}
 		      \begin{itemize}
@@ -365,7 +365,7 @@
 
 \begin{frame}{About this section}
 	\begin{itemize}
-		\item We're going to use OTR in order to start understanding how secure messaging protocols are designed.
+		\item We're going to use OTR to start understanding how secure messaging protocols are designed.
 		\item A core concept we're going to expand on in some detail: \textbf{authenticated key exchange} (AKE), especially how it applies to secure messaging protocols.
 		\item Along the way: identity binding, replay protection, key compromise impersonation, and how to properly derive keys.
 	\end{itemize}
@@ -383,7 +383,7 @@
 		      \begin{itemize}
 			      \item Messages authenticated to recipient
 			      \item But no cryptographic proof for third parties
-			      \item Like a real conversation---no permanent record
+			      \item Like a real conversation: no permanent record
 		      \end{itemize}
 		\item \textbf{Socialist Millionaire Protocol}
 		      \begin{itemize}
@@ -973,13 +973,13 @@
 					      \item Generate any length needed
 					      \item Multiple keys from one PRK
 				      \end{itemize}
-				\item \textbf{Now standard}: RFC 5869---the KDF of the modern protocol stack
+				\item \textbf{Now standard}: RFC 5869, the KDF of the modern protocol stack
 			\end{itemize}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{HKDF in practice: reimagining OTR's key derivation}{OTR (2004) predates HKDF (2010)---here is how it could look today}
+\begin{frame}{HKDF in practice: reimagining OTR's key derivation}{OTR (2004) predates HKDF (2010); here is how it could look today}
 	\begin{columns}[c]
 		\begin{column}{0.45\textwidth}
 			\textbf{From one secret to many keys:}
@@ -1104,7 +1104,7 @@
 					      \item ``Message key cache''
 					      \item Trade-off: usability vs security
 				      \end{itemize}
-				\item \textbf{Real impact:}
+				\item \textbf{Impact:}
 				      \begin{itemize}
 					      \item Forward secrecy weakened
 					      \item Attack window extended
@@ -1226,7 +1226,7 @@
 			\begin{itemize}
 				\item Mallory can convince Alice she completed an AKE with Bob, while Bob knows nothing of it
 				\item \textbf{Limitations:} no MITM, no decryption, no impersonation of either party
-				\item \textbf{Real impact:} Alice thinks she's secure with Bob and sends encrypted messages Bob can't read
+				\item \textbf{Impact:} Alice thinks she's secure with Bob and sends encrypted messages Bob can't read
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1290,7 +1290,7 @@
 			\textbf{The root cause is timing, not the MAC:}
 			\begin{itemize}
 				\item Alice reveals a MAC key while Bob will still accept messages under it
-				\item \textbf{Fix}: both sides must agree on when a key pair is retired---reveal only once the peer has moved on, and have the receiver actually refuse retired keys
+				\item \textbf{Fix}: both sides must agree on when a key pair is retired; reveal only once the peer has moved on, and have the receiver actually refuse retired keys
 				\item \textbf{Lesson}: a security feature (deniability) implemented as a mechanism (key revelation) interacts with the whole protocol state machine
 			\end{itemize}
 		\end{column}
@@ -1428,7 +1428,7 @@
 
 \begin{frame}{X3DH: Signal's asynchronous key exchange}
 	\begin{itemize}
-		\item $spk$: ``Signed pre-key''---a medium-term key, signed by Bob's identity key
+		\item $spk$: ``Signed pre-key'', a medium-term key, signed by Bob's identity key
 		      \begin{itemize}
 			      \item Replaced every 2 days
 		      \end{itemize}
@@ -1440,7 +1440,7 @@
 		\item $c_0 \ldots c_n$: Various constants found in the protocol
 		\item Alice can compute $S$ even if Bob is offline, then derive the session keys from it
 		\item \textbf{Authentication is implicit} (DH with identity keys, no signatures). Look at $\Delta_1$: anyone holding Bob's $spk$ private value can compute it for \textit{any} $g^A$, and impersonate anyone to Bob (KCI!)
-		\item \textbf{2023 update}: X3DH became \textbf{PQXDH}, mixing a post-quantum KEM (Kyber, now ML-KEM) into $S$ against ``harvest now, decrypt later''---more in topic 2.6
+		\item \textbf{2023 update}: X3DH became \textbf{PQXDH}, mixing a post-quantum KEM (Kyber, now ML-KEM) into $S$ against ``harvest now, decrypt later'' (more in topic 2.6)
 	\end{itemize}
 \end{frame}
 
@@ -1555,7 +1555,7 @@
 					      \item Can't decrypt without keys
 					      \item Time travel won't help the attacker
 				      \end{itemize}
-				\item \textbf{Example:} Laptop stolen after conversation---past messages safe
+				\item \textbf{Example:} Laptop stolen after conversation; past messages safe
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -1570,7 +1570,7 @@
 					      \item New ephemeral keys
 					      \item Attacker locked out again
 				      \end{itemize}
-				\item \textbf{Example:} Laptop stolen but recovered---future messages re-secure
+				\item \textbf{Example:} Laptop stolen but recovered; future messages re-secure
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1682,7 +1682,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Can your messages truly be secure after a hack?}
+\begin{frame}{Can your messages be secure after a hack?}
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{center}
@@ -1796,7 +1796,7 @@
 \begin{frame}{Why 40 sessions?}
 	\textbf{Signal's Magic Number: 40}
 	\begin{itemize}
-		\item Not arbitrary---it represents a design choice
+		\item Not arbitrary: it represents a design choice
 		\item Each session = tolerance for one ``desync event''
 		\item More sessions = Better usability, Worse security
 	\end{itemize}
@@ -1963,7 +1963,7 @@
 		\end{column}
 	\end{columns}
 	\begin{alertblock}{Real-world Impact}
-		Pavel Durov's company can read your cloud chats whenever it likes---policy, not cryptography
+		Pavel Durov's company can read your cloud chats whenever it likes: policy, not cryptography
 	\end{alertblock}
 \end{frame}
 
@@ -2219,13 +2219,13 @@
 		      \begin{itemize}
 			      \item Authenticated key exchange with identity binding (SIGMA)
 			      \item Sound key derivation (HKDF) and ratcheting for forward secrecy
-			      \item Post-compromise security---real, but with real-world limits
+			      \item Post-compromise security: real, but with real-world limits
 		      \end{itemize}
 		\item \textbf{Where things stand in 2026}
 		      \begin{itemize}
 			      \item The Signal Protocol protects billions of users by default
 			      \item Group messaging is converging on MLS (RFC 9420)
-			      \item The post-quantum transition is underway: PQXDH (2023), iMessage PQ3 (2024), Signal's Triple Ratchet (2025)---all in topic 2.6
+			      \item The post-quantum transition is underway: PQXDH (2023), iMessage PQ3 (2024), Signal's Triple Ratchet (2025), all in topic 2.6
 		      \end{itemize}
 	\end{itemize}
 \end{frame}

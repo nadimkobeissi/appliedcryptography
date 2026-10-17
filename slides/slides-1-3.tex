@@ -711,8 +711,8 @@
 		\item In cryptography, useful abstractions like ``encryption scheme'' are called \textbf{primitives}.
 		\item Three things are important when defining a cryptographic primitive:
 		      \begin{enumerate}
-			      \item \textbf{Syntax}: The basic raw interface -- algorithms, inputs/outputs, and their types.
-			      \item \textbf{Correctness}: Basic functionality without adversaries -- e.g., ``decryption should be the inverse of encryption''.
+			      \item \textbf{Syntax}: The basic raw interface (algorithms, inputs/outputs, and their types).
+			      \item \textbf{Correctness}: Basic functionality without adversaries (e.g., ``decryption should be the inverse of encryption'').
 			      \item \textbf{Security}: Guarantees that hold in specific attack scenarios with adversaries.
 		      \end{enumerate}
 	\end{itemize}
@@ -961,7 +961,7 @@
 
 \begin{frame}{Understanding tiny probabilities}
 	\begin{itemize}
-		\item Let's put extremely small probabilities in perspective:
+		\item To put extremely small probabilities in perspective:
 		      \begin{itemize}
 			      \item In 2009, Patricia Demauro rolled dice 154 consecutive times in craps without getting a 7.
 			      \item Probability of this event: $(30/36)^{154} \approx 2^{-40.5}$
@@ -988,15 +988,15 @@
 		      \end{itemize}
 		\item Probabilities must be between 0 and 1:
 		      \begin{itemize}
-			      \item $2^{40}$ would be a huge number (over a trillion) -- not a valid probability!
-			      \item $2^{-40}$ is a tiny fraction -- exactly what we want for unlikely events
+			      \item $2^{40}$ would be a huge number (over a trillion), not a valid probability!
+			      \item $2^{-40}$ is a tiny fraction, exactly what we want for unlikely events
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Computational scale of Bitcoin mining}
 	\begin{itemize}
-		\item Let's consider cryptocurrencies based on proof-of-work, like Bitcoin.
+		\item Consider cryptocurrencies based on proof-of-work, like Bitcoin.
 		\item These systems incentivize users to perform truly obscene amounts of computation: miners race to compute SHA-256 hashes as fast as possible.
 		\item Order-of-magnitude figures, as of 2025:
 		      \begin{itemize}
@@ -1043,7 +1043,7 @@
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item Concrete security of AES-128: best known attack $\approx 2^{126.1}$ operations (biclique cryptanalysis, 2011) -- barely better than brute force ($2^{128}$), and hopelessly out of reach.
+				\item Concrete security of AES-128: best known attack $\approx 2^{126.1}$ operations (biclique cryptanalysis, 2011), barely better than brute force ($2^{128}$), and hopelessly out of reach.
 				\item AES-256: best known attack $\approx 2^{254.4}$ operations.
 				\item Asymptotic approach: both are simply ``computationally secure''.
 			\end{itemize}
@@ -1146,7 +1146,7 @@
 					      \item 97\%?
 				      \end{itemize}
 				\item Many people guess around 15--20\%, but the actual probability is about 97\%!
-				\item This is counterintuitive because \textbf{we're not looking for a specific birthday -- we're looking for \textit{any} match among all possible pairs}.
+				\item This is counterintuitive because \textbf{we're not looking for a specific birthday; we're looking for \textit{any} match among all possible pairs}.
 				\item With 50 students, we have $\binom{50}{2} = 1{,}225$ possible pairs to check!\footnote{$\binom{50}{2}$ is a binomial coefficient. It means: \textit{``how many ways can I choose two different items from a set of 50?''}}
 			\end{itemize}
 		\end{column}
@@ -1191,14 +1191,14 @@
 
 \begin{frame}{The ``bad event'' proof technique}{Why we need a new tool}
 	\begin{itemize}[<+->]
-		\item So far, two libraries counted as \textbf{interchangeable} only when they behaved \textit{identically} -- differing at most in \textit{unreachable code} or an \textit{unused variable}.
+		\item So far, two libraries counted as \textbf{interchangeable} only when they behaved \textit{identically}, differing at most in \textit{unreachable code} or an \textit{unused variable}.
 		\item But very often two libraries are \textbf{almost} identical: they behave the same way \textit{except} in one rare situation, such as\ldots
 		      \begin{itemize}
 			      \item a collision between two random values,
 			      \item correctly guessing a secret,
 			      \item or sampling the same key twice.
 		      \end{itemize}
-		\item Intuitively they should \textit{still} be indistinguishable -- the ``bad'' situation almost never happens.
+		\item Intuitively they should \textit{still} be indistinguishable: the ``bad'' situation almost never happens.
 		\item The \textbf{bad event technique} is how we turn that intuition into an actual proof.
 	\end{itemize}
 \end{frame}
@@ -1211,7 +1211,7 @@
 				\\[0.6em]
 				They are wired so they can only ever \textbf{diverge} after crossing a single \hl{tripwire}.
 				\\[0.6em]
-				As long as nobody trips it, the two are \textbf{perfectly identical} -- no program can tell them apart.
+				As long as nobody trips it, the two are \textbf{perfectly identical}: no program can tell them apart.
 				\\[0.6em]
 				So the \textit{only} way to distinguish them is to \textbf{trip the wire}.
 			}
@@ -1219,7 +1219,7 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}[<+->]
 				\item In code, we mark the tripwire by setting \hl{$\texttt{bad} \coloneq \texttt{true}$}.
-				\item Once set, it stays \texttt{true} forever -- it's a tripwire, not a toggle.
+				\item Once set, it stays \texttt{true} forever. It's a tripwire, not a toggle.
 				\item ``Triggering the bad event'' simply means \textbf{the code trips this wire}.
 				\item Key consequence: a program's \textbf{advantage} can be no bigger than the \textbf{chance of tripping the wire}.
 			\end{itemize}
@@ -1358,7 +1358,7 @@
 			\begin{itemize}[<+->]
 				\item All that's left is to bound how likely the tripwire is tripped.
 				\item The bad event is exactly $R = X$, with $R \twoheadleftarrow \bits^\lambda$ fresh and uniform. For a single call, $\prob{\texttt{bad}} = \prob{R = X} = 1/2^\lambda$.
-				\item Across $q$ calls, a union bound gives $\prob{\texttt{bad}} \leq q/2^\lambda$ -- still \textbf{negligible} for any polynomial $q$ (the same ``rare collision'' flavor as the birthday bound).
+				\item Across $q$ calls, a union bound gives $\prob{\texttt{bad}} \leq q/2^\lambda$, still \textbf{negligible} for any polynomial $q$ (the same ``rare collision'' flavor as the birthday bound).
 				\item Since advantage $\leq \prob{\texttt{bad}} \leq q/2^\lambda$, which is negligible, we conclude \lib{}{1} $\approxeq$ \lib{}{2}. \textbf{Done!}
 			\end{itemize}
 		\end{column}
@@ -1380,7 +1380,7 @@
 
 \begin{frame}{The ``end-of-time'' strategy for bad events}
 	\begin{itemize}[<+->]
-		\item Sometimes the bad event is awkward to reason about \textit{mid-execution} -- especially when the adversary gets to choose values as it goes.
+		\item Sometimes the bad event is awkward to reason about \textit{mid-execution}, especially when the adversary gets to choose values as it goes.
 		\item \textbf{The trick:} don't check the tripwire along the way. Instead:
 		      \begin{enumerate}
 			      \item Run the library normally, just \textbf{recording} the values it samples and sees.
@@ -1389,7 +1389,7 @@
 		\item Why this helps:
 		      \begin{itemize}
 			      \item It \textbf{separates} the library's normal behavior from the bad-event bookkeeping.
-			      \item With every value in hand at once, \prob{\texttt{bad}} is far easier to bound -- often with a single union or birthday bound.
+			      \item With every value in hand at once, \prob{\texttt{bad}} is far easier to bound, often with a single union or birthday bound.
 		      \end{itemize}
 		\item We'll lean on this trick in the next topic!
 	\end{itemize}

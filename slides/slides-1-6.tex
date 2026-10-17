@@ -295,7 +295,7 @@
 					      \item 97\%?
 				      \end{itemize}
 				\item Many people guess around 15--20\%, but the actual probability is about 97\%!
-				\item This is counterintuitive because \textbf{we're not looking for a specific birthday -- we're looking for \textit{any} match among all possible pairs}.
+				\item This is counterintuitive because \textbf{we're not looking for a specific birthday; we're looking for \textit{any} match among all possible pairs}.
 				\item With 50 students, we have $\binom{50}{2} = 1{,}225$ possible pairs to check!\footnote{$\binom{50}{2}$ is a binomial coefficient. It means: \textit{``how many ways can I choose two different items from a set of 50?''}}
 			\end{itemize}
 		\end{column}
@@ -628,7 +628,7 @@
 	\begin{itemize}
 		\item In 2004, Xiaoyun Wang and her team at Shandong University demonstrated the first practical MD5 collision, twelve years after MD5 was published.
 		\item Announced at the CRYPTO 2004 rump session, causing a sensation: MD5 was everywhere, from certificates to file integrity checks.
-		\item Interesting backstory: the team's early attempts failed because of an \textbf{endianness} mix-up. The Chinese translation of Bruce Schneier's \emph{Applied Cryptography} had the byte ordering of MD5 wrong.
+		\item Backstory: the team's early attempts failed because of an \textbf{endianness} mix-up. The Chinese translation of Bruce Schneier's \emph{Applied Cryptography} had the byte ordering of MD5 wrong.
 		\item Once corrected, the attack worked: about an hour on an IBM p690 in 2005. Today, a laptop finds an MD5 collision in seconds.
 		\item This discovery accelerated the migration away from MD5 in security applications. ``Accelerated'' is generous, as we'll see.
 	\end{itemize}
@@ -648,7 +648,7 @@
 \begin{frame}{MD5 chosen-prefix collisions in the wild}{Attacking certificate authorities}
 	\begin{itemize}
 		\item In 2008, Sotirov, Stevens, Appelbaum, Lenstra, Molnar, Osvik and de Weger forged a \textbf{rogue CA certificate}: $P$ = an ordinary website certificate that RapidSSL would sign, $P'$ = a CA certificate. One signature, valid for both.
-		\item The catch: the CA fills in the serial number and validity period, so $P$ had to be predicted. RapidSSL used sequential serials and a fixed delay. The collision itself took a day or two on 200 PlayStation 3s.
+		\item But the CA fills in the serial number and validity period, so $P$ had to be predicted. RapidSSL used sequential serials and a fixed delay. The collision itself took a day or two on 200 PlayStation 3s.
 		\item Demonstrated at the 25th Chaos Communication Congress (December 2008). MD5 was finally dropped for certificate signatures.
 		\item Encore, 2012: the \textbf{Flame} malware forged a Microsoft code-signing certificate with a new, independently developed chosen-prefix MD5 collision.
 	\end{itemize}
@@ -1062,7 +1062,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Best practices for password hashing}{OWASP Password Storage Cheat Sheet, 2025}
+\begin{frame}{Password hashing recommendations}{OWASP Password Storage Cheat Sheet, 2025}
 	\begin{itemize}
 		\item Use a dedicated password hashing function, never raw SHA-256. In order of preference (and tune upward as your login latency budget allows):\footnote{\url{https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html}}
 		      \begin{itemize}

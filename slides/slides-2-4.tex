@@ -24,7 +24,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item Cloud storage is a prevalent computing paradigm today
+				\item Cloud storage is a prevalent computing model today
 				\item Outsources data storage to third-party services
 				\item Benefits for users:
 				      \begin{itemize}
@@ -116,7 +116,7 @@
 
 \begin{frame}{Key management challenges}
 	\begin{itemize}
-		\item E2EE hands key management to the user --- and humans cannot memorize 256-bit keys
+		\item E2EE hands key management to the user, and humans cannot memorize 256-bit keys
 		\item So in practice, everything is bootstrapped from a \textbf{password}
 		\item Fundamental limitation: passwords come from a small space, so \textbf{dictionary attacks} are always on the table
 		\item A slow key derivation function buys time; it does not change the size of the space
@@ -150,10 +150,10 @@
 		\item E2EE requirement: the server must never learn the key that encrypts your data
 		\item So one password must do two jobs, and the server may only see one of them:
 		      \begin{itemize}
-			      \item \textbf{Two passwords:} one for login, one for encryption (Proton Mail offers this as an option) --- nobody wants two passwords
-			      \item \textbf{One password, two derived keys:} stretch it, send half of the output to the server as an \textit{authentication key}, keep the other half as the \textit{encryption key} --- MEGA's approach
-			      \item \textbf{Password-authenticated key exchange (PAKE):} prove you know the password without the server ever holding a password-equivalent --- SRP, OPAQUE; more later
-			      \item \textbf{Hardware-backed:} passkeys, Secure Enclave --- requires specific devices or platforms
+			      \item \textbf{Two passwords:} one for login, one for encryption (Proton Mail offers this as an option); nobody wants two passwords
+			      \item \textbf{One password, two derived keys:} stretch it, send half of the output to the server as an \textit{authentication key}, keep the other half as the \textit{encryption key} (MEGA's approach)
+			      \item \textbf{Password-authenticated key exchange (PAKE):} prove you know the password without the server ever holding a password-equivalent (SRP, OPAQUE; more later)
+			      \item \textbf{Hardware-backed:} passkeys, Secure Enclave (requires specific devices or platforms)
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -190,8 +190,8 @@
 		\item \textbf{What users expect} (trained by Gmail, Facebook, \ldots): ``forgot password'' always works, and data is never permanently lost
 		\item \textbf{What E2EE providers can offer instead:}
 		      \begin{itemize}
-			      \item \textbf{Recovery keys:} a long random string the user must store somewhere safe --- routinely lost or never written down (Apple ADP and WhatsApp's 64-digit key, both coming up)
-			      \item \textbf{Social recovery:} split the key among trusted contacts, any $t$ of $n$ can restore it --- setup is complex, and the contacts must be trusted
+			      \item \textbf{Recovery keys:} a long random string the user must store somewhere safe; routinely lost or never written down (Apple ADP and WhatsApp's 64-digit key, both coming up)
+			      \item \textbf{Social recovery:} split the key among trusted contacts, any $t$ of $n$ can restore it. Setup is complex, and the contacts must be trusted
 			      \item \textbf{Security questions:} familiar, but weak against anyone who knows you
 		      \end{itemize}
 		\item Each is a different trade-off between passing the mud puddle test and keeping the provider out
@@ -207,8 +207,8 @@
 				      \begin{itemize}
 					      \item Photos, Notes, iCloud Drive, Reminders, Safari bookmarks, iCloud and Messages backups
 				      \end{itemize}
-				\item \textbf{Recovery:} before ADP can be turned on, the user must set up a recovery contact or a recovery key --- Apple keeps no copy of the keys and cannot recover the data
-				\item Fundamental tension: security vs.\ recoverability --- Apple chose opt-in over mandatory E2EE
+				\item \textbf{Recovery:} before ADP can be turned on, the user must set up a recovery contact or a recovery key; Apple keeps no copy of the keys and cannot recover the data
+				\item Fundamental tension: security vs.\ recoverability; Apple chose opt-in over mandatory E2EE
 				\item 2025: withdrawn for new UK users under government pressure (more later)\footnote{\url{https://support.apple.com/en-us/122234}}
 			\end{itemize}
 		\end{column}
@@ -234,7 +234,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Passkeys: a new authentication paradigm}{Quick aside}
+\begin{frame}{Passkeys: a new way to authenticate}{Quick aside}
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
@@ -268,7 +268,7 @@
 			      \item Two salts per evaluation, so a site can rotate to a new key without losing the old one
 			      \item Under the hood: typically HMAC-SHA-256 (CTAP2's \texttt{hmac-secret} extension)
 		      \end{itemize}
-		\item \textbf{What it enables:} authenticate with the passkey, evaluate the PRF, unwrap your encryption keys --- no password anywhere, multi-device via platform sync
+		\item \textbf{What it enables:} authenticate with the passkey, evaluate the PRF, unwrap your encryption keys; no password anywhere, multi-device via platform sync
 		\item \textbf{Limitations:} support has broadened since 2024 (Chrome, Safari 18+, platform authenticators) but is uneven across hardware security keys
 		\item No longer hypothetical: WhatsApp shipped passkey-encrypted backups in late 2025 (more on this later in this lecture)
 	\end{itemize}
@@ -277,7 +277,7 @@
 \begin{frame}{File sharing challenges}
 	\begin{itemize}
 		\item Primary feature: sharing files with selected users
-		\item Recipients need the file's decryption key --- and it cannot travel unprotected through an untrusted provider
+		\item Recipients need the file's decryption key, and it cannot travel unprotected through an untrusted provider
 		\item Common solutions:
 		      \begin{itemize}
 			      \item Encrypt the file key under the recipient's public key
@@ -320,7 +320,7 @@
 				\item What went wrong at MEGA, at Nextcloud, and across the rest of the ecosystem
 				\item Authentication done better: SRP and OPAQUE
 				\item Case study: WhatsApp's encrypted backups, and what we have to take on faith
-				\item How cryptographers would design E2EE storage from scratch --- with a proof
+				\item How cryptographers would design E2EE storage from scratch, with a proof
 			\end{enumerate}
 		\end{column}
 	\end{columns}
@@ -361,7 +361,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.6\textwidth}
 			\begin{itemize}
-				\item Password serves as root of trust for the entire key hierarchy
+				\item Password is the root of trust for the entire key hierarchy
 				\item Key derivation from password:
 				      \begin{itemize}
 					      \item \textbf{Authentication key:} Identifies user to MEGA
@@ -417,7 +417,7 @@
 				\item \textbf{Problem 2:} The server stores the password-encrypted master key and an authentication hash
 				      \begin{itemize}
 					      \item Anyone who breaches (or runs!) the server can mount offline dictionary attacks
-					      \item A slow KDF only buys time --- weak passwords still fall
+					      \item A slow KDF only buys time; weak passwords still fall
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -597,7 +597,7 @@
 					      \item Ability to modify key ciphertexts
 					      \item Control authentication plaintexts
 				      \end{itemize}
-				\item \textbf{Cost:} one login recovers 32 bytes --- one full node key
+				\item \textbf{Cost:} one login recovers 32 bytes (one full node key)
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -646,7 +646,7 @@
 
 \begin{frame}{MEGA attacks: summary}
 	\begin{center}
-		\textbf{Note: Due to time constraints, we won't dive into the details of each attack}
+		\textbf{Note: Due to time constraints, we won't go into the details of each attack}
 	\end{center}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
@@ -954,13 +954,13 @@
 	\begin{itemize}
 		\item \textbf{Disclosure:} January 2, 2023; Nextcloud confirmed within ten days; patches for all three vulnerabilities on March 29, 2023, each with a CVE
 		\item \textbf{Ghost key and nonce reuse:} straightforward implementation fixes (a bounds check; a fresh nonce on every re-encryption)
-		\item \textbf{Key insertion:} no such quick fix --- the design had no notion of \textit{who} encrypted a metadata key
+		\item \textbf{Key insertion:} no such quick fix; the design had no notion of \textit{who} encrypted a metadata key
 		      \begin{itemize}
 			      \item Stop-gap: a checksum over the metadata keys, derived from the user's own mnemonic
 			      \item Only the owner can verify it, so \textbf{E2EE file sharing was disabled} until a redesign
 			      \item A significant revision of the cryptographic design later restored sharing
 		      \end{itemize}
-		\item \textbf{Lesson:} authentication is as important as confidentiality --- and much harder to retrofit
+		\item \textbf{Lesson:} authentication is as important as confidentiality, and much harder to retrofit
 	\end{itemize}
 \end{frame}
 
@@ -1001,7 +1001,7 @@
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
-				\item 2024 (ACM CCS): a systematic analysis of five more E2EE providers --- Sync, pCloud, Icedrive, Seafile, Tresorit\footnote{\url{https://appliedcryptography.page/paper/\#cloud-broken}}
+				\item 2024 (ACM CCS): a systematic analysis of five more E2EE providers (Sync, pCloud, Icedrive, Seafile, Tresorit)\footnote{\url{https://appliedcryptography.page/paper/\#cloud-broken}}
 				\item Collectively serving 22+ million users
 				\item \textbf{Key finding:} the same failures, rediscovered independently by each vendor
 				\item \textbf{Common patterns:}
@@ -1075,7 +1075,7 @@
 					      \item Ad-hoc designs that misunderstand what a primitive guarantees (encryption $\neq$ integrity, PKE $\neq$ authentication)
 					      \item Nobody wrote down a threat model with a malicious server in it
 				      \end{itemize}
-				\item \textbf{Key lesson:} E2EE cloud storage is not a ``solved problem'' --- it is a problem the industry solved wrong, five times
+				\item \textbf{Key lesson:} E2EE cloud storage is not a ``solved problem''; it is a problem the industry solved wrong, five times
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -1104,16 +1104,16 @@
 
 \begin{frame}{Beyond password hashing: PAKEs}
 	\begin{itemize}
-		\item With password hashing, the server \textit{sees your password} at every login --- TLS protects it in transit, then the server hashes it
+		\item With password hashing, the server \textit{sees your password} at every login: TLS protects it in transit, then the server hashes it
 		      \begin{itemize}
 			      \item A malicious or compromised server can simply log passwords as they arrive
 			      \item And a stolen hash database is an offline dictionary attack waiting to happen (salts and memory-hard functions slow it down; they don't stop it)
 		      \end{itemize}
 		\item \textbf{Password-authenticated key exchange (PAKE)}, sometimes marketed as ``zero-knowledge password proofs'':
 		      \begin{itemize}
-			      \item The server never sees the password --- not at login, not even at registration
+			      \item The server never sees the password: not at login, not even at registration
 			      \item An eavesdropper, or a fake server, learns nothing it can attack offline
-			      \item Both sides end up with a shared session key --- handy for E2EE storage
+			      \item Both sides end up with a shared session key, handy for E2EE storage
 		      \end{itemize}
 		\item Two examples: \textbf{SRP} (1998, deployed everywhere) and \textbf{OPAQUE} (2018, the modern one)
 	\end{itemize}
@@ -1257,7 +1257,7 @@
 				\item \textbf{The magic:} the server stores a ``password file'' per user, but:
 				      \begin{itemize}
 					      \item It contains no password and no password hash
-					      \item In the protocol, the server only ever sees \textit{blinded} values --- nothing it can test a guess against
+					      \item In the protocol, the server only ever sees \textit{blinded} values: nothing it can test a guess against
 					      \item The client proves knowledge of the password without revealing it
 					            \begin{itemize}
 						            \item You could even say they perform a \textit{zero-knowledge proof}!
@@ -1382,7 +1382,7 @@
 				      \begin{itemize}
 					      \item Blinds password: $\alpha = H(pw)^r$
 					      \item Sends $\alpha$ to server
-					      \item Note: This $r$ is freshly sampled --- different from the one used at registration and at each previous login
+					      \item Note: This $r$ is freshly sampled, different from the one used at registration and at each previous login
 				      \end{itemize}
 				\item[2.]\textbf{Server responds:}
 				      \begin{itemize}
@@ -1416,7 +1416,7 @@
 			\textbf{From the protocol: no}
 			\begin{itemize}
 				\item It sees only $\alpha = H(pw)^r$: a uniformly random group element, fresh each login
-				\item Nothing to test a guess against --- same for an eavesdropper or a phishing server
+				\item Nothing to test a guess against; same for an eavesdropper or a phishing server
 				\item Contrast SRP: the salt is public, so attackers can \textit{pre-compute} a per-user dictionary
 			\end{itemize}
 		\end{column}
@@ -1424,7 +1424,7 @@
 			\textbf{From its own password file: yes, slowly}
 			\begin{itemize}
 				\item Whoever holds $k$ and $env$ can guess: compute $H(pw')^k$, try to open $env$
-				\item Unavoidable for any password scheme --- the server must be able to check the password
+				\item Unavoidable for any password scheme: the server must be able to check the password
 				\item OPAQUE's promise: no pre-computation ($k$ is a secret salt); every guess pays for the memory-hard hash
 				\item WhatsApp's trick, next: keep $k$ inside an HSM that counts attempts
 			\end{itemize}
@@ -1447,13 +1447,13 @@
 			\begin{itemize}
 				\item[\textcolor{green}{\mycheckmark}] Mutual authentication and key confirmation
 				\item[\textcolor{green}{\mycheckmark}] A fake server learns nothing about the password (unlike a phishing page that asks you to type it)
-				\item[\textcolor{green}{\mycheckmark}] Each online guess costs one interaction --- so rate limiting actually works
+				\item[\textcolor{green}{\mycheckmark}] Each online guess costs one interaction, so rate limiting actually works
 			\end{itemize}
 		\end{column}
 	\end{columns}
 	\vspace{0.3cm}
 	\begin{center}
-		\textbf{Bonus:} the client also gets an \textit{export key} nobody else knows --- authentication and key derivation in one protocol!
+		\textbf{Bonus:} the client also gets an \textit{export key} nobody else knows. Authentication and key derivation in one protocol!
 	\end{center}
 \end{frame}
 
@@ -1660,7 +1660,7 @@
 				\item \textbf{Key properties of OPAQUE:}
 				      \begin{itemize}
 					      \item Server never learns the password
-					      \item No offline dictionary attacks without the OPRF key --- which never leaves the HSM
+					      \item No offline dictionary attacks without the OPRF key, which never leaves the HSM
 					      \item Derives an encryption key (the export key) from the password
 					      \item Strong security proofs
 				      \end{itemize}
@@ -1791,7 +1791,7 @@
 				      \end{itemize}
 				\item \textbf{Trade-offs:}
 				      \begin{itemize}
-					      \item[\textcolor{green}{\mycheckmark}] Maximum security --- no trust required
+					      \item[\textcolor{green}{\mycheckmark}] Maximum security: no trust required
 					      \item[\textcolor{green}{\mycheckmark}] No brute-force risk
 					      \item[\textcolor{red}{$\times$}] User responsibility for key management
 					      \item[\textcolor{red}{$\times$}] Lost key = lost backups forever
@@ -1804,15 +1804,15 @@
 
 \begin{frame}{What WhatsApp got right}
 	\begin{itemize}
-		\item \textbf{A standard protocol instead of a homebrew one:} OPAQUE, with a published security proof --- compare MEGA's AES-ECB key wrapping and custom RSA padding
+		\item \textbf{A standard protocol instead of a homebrew one:} OPAQUE, with a published security proof (compare MEGA's AES-ECB key wrapping and custom RSA padding)
 		\item \textbf{A stated threat model:} the cloud provider, an outside attacker, and brute force on the password are in scope; WhatsApp's own HSMs are trusted
-		\item \textbf{A published whitepaper}, later formally analyzed in the UC framework (Davies et al., CRYPTO 2023)\footnote{Gareth T. Davies, Sebastian Faller, Kai Gellert, Tobias Handirk, Julia Hesse, M\'at\'e Horv\'ath and Tibor Jager, \textit{Security Analysis of the WhatsApp End-to-End Encrypted Backup Protocol}, CRYPTO 2023.} --- under the assumption that the HSM is honest
+		\item \textbf{A published whitepaper}, later formally analyzed in the UC framework (Davies et al., CRYPTO 2023)\footnote{Gareth T. Davies, Sebastian Faller, Kai Gellert, Tobias Handirk, Julia Hesse, M\'at\'e Horv\'ath and Tibor Jager, \textit{Security Analysis of the WhatsApp End-to-End Encrypted Backup Protocol}, CRYPTO 2023.}, under the assumption that the HSM is honest
 		\item \textbf{User choice:} password + HSM vault, a self-managed 64-digit key, or (since 2025) a passkey
 		\item \textbf{Complexity hidden:} the user sees a password prompt; the OPRF, the AKE and the HSM consensus are invisible
 	\end{itemize}
 	\vspace{0.3cm}
 	\begin{center}
-		\textit{Now let's look at what that threat model leaves out.}
+		\textit{Next: what that threat model leaves out.}
 	\end{center}
 \end{frame}
 
@@ -1820,15 +1820,15 @@
 
 \begin{frame}{Specification ambiguity: a flaw in the whitepaper}
 	\begin{itemize}
-		\item \textbf{The problem:} the whitepaper calls $\mathtt{OPAQUE}_K$ ``a symmetric key which is used to secure the backup key $K$'' --- and never says \textit{which} OPAQUE output it is
+		\item \textbf{The problem:} the whitepaper calls $\mathtt{OPAQUE}_K$ ``a symmetric key which is used to secure the backup key $K$'', and never says \textit{which} OPAQUE output it is
 		\item \textbf{Two candidates:}
 		      \begin{itemize}
 			      \item \textbf{Export key:} known to the client only
 			      \item \textbf{Session key:} shared with the server
 		      \end{itemize}
-		\item \textbf{Why it matters:} if it were the session key, the vault could decrypt $K$ directly --- the whole point of the design would be gone
+		\item \textbf{Why it matters:} if it were the session key, the vault could decrypt $K$ directly, and the backups would no longer be end-to-end encrypted
 		\item \textbf{Resolving it takes outside knowledge:} the key is output by \textit{registration}, which in OPAQUE involves no key exchange, so it must be the export key; the login flow also lists $\mathtt{SHARED}_K$ separately
-		\item \textbf{Lesson:} a cryptographic specification must be unambiguous \textit{on its own}. Two implementers reading this document could make different choices --- and one of them would be catastrophic
+		\item \textbf{Lesson:} a cryptographic specification must be unambiguous \textit{on its own}. Two implementers reading this document could make different choices, and one of them would be catastrophic
 	\end{itemize}
 \end{frame}
 
@@ -1912,7 +1912,7 @@
 					      \item Legal requirements?
 					      \item Law enforcement pressure?
 				      \end{itemize}
-				\item \textbf{The irony:} Meta runs key transparency for WhatsApp identity keys (2023) and, since 2026, for the vault's fleet keys --- but a transparency log proves \textit{which} keys are in use, not \textit{what} runs behind them
+				\item \textbf{The irony:} Meta runs key transparency for WhatsApp identity keys (2023) and, since 2026, for the vault's fleet keys. But a transparency log proves \textit{which} keys are in use, not \textit{what} runs behind them
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -2030,7 +2030,7 @@
 			\textbf{Sync, pCloud (2024):} same mistake as Nextcloud, made independently
 			\vspace{0.2cm}
 
-			\textbf{Lesson:} understand exactly what each primitive guarantees --- ``it encrypts, so it's secure'' is how every one of these systems was designed
+			\textbf{Lesson:} understand exactly what each primitive guarantees; ``it encrypts, so it's secure'' is how every one of these systems was designed
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -2130,10 +2130,10 @@
 				\item \textbf{PRF (Pseudorandom Function):} $F: \bits^{\kappa} \times \bits^{*} \to \bits^{\kappa}$
 				\item \textbf{MAC (Message Authentication Code):} For integrity verification
 				\item \textbf{AEAD (Authenticated Encryption):} AES-GCM or ChaCha20-Poly1305
-				\item \textbf{2HashDH OPRF:} Password-based key derivation with the server's help --- no pre-computation, nothing for outsiders to attack offline
+				\item \textbf{2HashDH OPRF:} Password-based key derivation with the server's help; no pre-computation, nothing for outsiders to attack offline
 			\end{itemize}
 			\vspace{0.3cm}
-			\textbf{Key insight:} Use standard, proven primitives --- don't invent new ones!
+			\textbf{Key insight:} Use standard, proven primitives; don't invent new ones!
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -2144,7 +2144,7 @@
 			\begin{itemize}
 				\item \textbf{Problem:} How to derive keys from passwords without server learning them?
 				\item \textbf{Challenge:} Server needs to help with computation, but shouldn't learn password
-				\item \textbf{Solution:} an Oblivious Pseudorandom Function (OPRF) --- the same idea as in OPAQUE
+				\item \textbf{Solution:} an Oblivious Pseudorandom Function (OPRF), the same idea as in OPAQUE
 				      \begin{itemize}
 					      \item Client has secret input (account ID + password)
 					      \item Server has key $k$
@@ -2153,7 +2153,7 @@
 				\item \textbf{In our protocol:}
 				      \begin{itemize}
 					      \item Client generates OPRF key during registration
-					      \item Sends the key to the server --- so the key is honestly random, not server-chosen
+					      \item Sends the key to the server, so the key is honestly random, not server-chosen
 					      \item Later uses OPRF to derive keys from password
 				      \end{itemize}
 			\end{itemize}
@@ -2172,7 +2172,7 @@
 					      \item Client picks random blinding factor $r \twoheadleftarrow \mathbb{Z}_q$
 					      \item Client sends blinded value: $\alpha = H_1(x)^r$ to server
 						            {\footnotesize\begin{itemize}
-								            \item Client hashes their secret input $x$ to get $H_1(x)$, raises it to the power of $r$, and sends this ``blinded'' result to the server --- the server cannot determine $x$ from this
+								            \item Client hashes their secret input $x$ to get $H_1(x)$, raises it to the power of $r$, and sends this ``blinded'' result to the server; the server cannot determine $x$ from this
 							            \end{itemize}}
 					      \item Server computes: $\beta = \alpha^k = H_1(x)^{rk}$ and returns it
 					      \item Client unblinds: $\beta^{1/r} = H_1(x)^k$
@@ -2188,11 +2188,11 @@
 
 \begin{frame}{The 2HashDH OPRF: what it buys us}
 	\begin{itemize}
-		\item \textbf{Obliviousness:} for random $r$, $\alpha = H_1(x)^r$ is a uniformly random group element --- the server learns nothing about $x$, at registration or at any login
-		\item \textbf{Pseudorandomness:} without $k$, the output $y$ is unpredictable --- a network attacker, or anyone who steals the client's transcript, has nothing to guess against
+		\item \textbf{Obliviousness:} for random $r$, $\alpha = H_1(x)^r$ is a uniformly random group element; the server learns nothing about $x$, at registration or at any login
+		\item \textbf{Pseudorandomness:} without $k$, the output $y$ is unpredictable; a network attacker, or anyone who steals the client's transcript, has nothing to guess against
 		\item \textbf{No pre-computation:} $k$ acts as a secret salt that is never sent to the client
-		\item \textbf{What it cannot do:} the party holding $k$ (here, the server) can still run a dictionary attack after the fact --- which is why the paper wants $H_1$ and $H_2$ slow and memory-hard, and why the client picks $k$
-		\item Same primitive as in OPAQUE and in WhatsApp's vault --- there, $k$ lives inside the HSM
+		\item \textbf{What it cannot do:} the party holding $k$ (here, the server) can still run a dictionary attack after the fact, which is why the paper wants $H_1$ and $H_2$ slow and memory-hard, and why the client picks $k$
+		\item Same primitive as in OPAQUE and in WhatsApp's vault; there, $k$ lives inside the HSM
 	\end{itemize}
 \end{frame}
 

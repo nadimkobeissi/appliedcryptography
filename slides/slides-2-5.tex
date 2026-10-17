@@ -136,7 +136,7 @@
 
 \begin{frame}{Today: the promise, the pitfalls, and the practice}
 	\footnotesize
-	\textbf{Part 1 --- The promise: computer-aided cryptography}
+	\textbf{Part 1. The promise: computer-aided cryptography}
 	\begin{itemize}
 		\item Why cryptography fails at three levels: design, implementation, deployment
 		\item Tools that prove designs secure: ProVerif, Tamarin, CryptoVerif, \fstar
@@ -144,12 +144,12 @@
 		\item Side channels, constant-time code, and TLS 1.3 designed alongside its proofs
 		\item Signal's key transparency, and the assumption it discharges
 	\end{itemize}
-	\textbf{Part 2 --- The pitfalls: verification theatre}
+	\textbf{Part 2. The pitfalls: verification theatre}
 	\begin{itemize}
 		\item Thirteen vulnerabilities I found in ``the formally verified crypto library''
 		\item Five ways verification claims fail, and what separates real assurance from its \textit{appearance}
 	\end{itemize}
-	\textbf{Part 3 --- The practice: modeling protocols in Verifpal}
+	\textbf{Part 3. The practice: modeling protocols in Verifpal}
 	\begin{itemize}
 		\item The language, the attacker, the five queries
 		\item Three protocols modeled, attacked, and repaired from the traces
@@ -376,7 +376,7 @@
 	\end{enumerate}
 	\vspace{0.5em}
 	\begin{center}
-		CAC tools primarily target \textbf{game-based, concrete} security---exactly the style of reasoning we practiced in Part 1 of this course
+		CAC tools primarily target \textbf{game-based, concrete} security, exactly the style of reasoning we practiced in Part 1 of this course
 	\end{center}
 \end{frame}
 
@@ -853,7 +853,7 @@
 	\textbf{Rules:} No secret-dependent branches, no secret-dependent memory access, no variable-time operations on secrets
 	\vspace{0.5em}
 
-	\textbf{Example --- constant-time selection:}
+	\textbf{Example (constant-time selection):}
 	\begin{flushleft}
 		\textit{Insecure:} \texttt{if (secret\_bit) \{ result = a; \} else \{ result = b; \}}
 	\end{flushleft}
@@ -947,7 +947,7 @@
 	\end{enumerate}
 	\vspace{0.5em}
 	\begin{center}
-		\textit{Each ``fix'' introduced a new vulnerability---for over a decade}
+		\textit{For over a decade, each ``fix'' introduced a new vulnerability}
 	\end{center}
 \end{frame}
 
@@ -2039,7 +2039,7 @@ d2 = AEAD_DEC(k, n1, e1, c0)?  // failure halts Bob here, permanently
 	\vspace{0.3em}
 	\footnotesize
 	\begin{itemize}
-		\item Twenty-five, and you cannot add a twenty-sixth. That is the point
+		\item Twenty-five, and you cannot add a twenty-sixth, by design
 		\item \texttt{DH\_KEX(their\_public, my\_private)} is commutative, so Alice's and Bob's secrets are the same term
 		\item A primitive may be annotated \textbf{broken}: \texttt{SIGN[forgeable](sk, m)}, also \texttt{weak} and \texttt{malleable}, once phases are on the table
 	\end{itemize}
@@ -2207,19 +2207,19 @@ scenarios[
 
 \begin{frame}{The other three}
 	\small
-	\textbf{\texttt{freshness? v}} --- contradicted when \texttt{v} resolves to a value containing no \texttt{generates} constant at any depth, and a principal uses it inside a primitive.
+	\textbf{\texttt{freshness? v}}: contradicted when \texttt{v} resolves to a value containing no \texttt{generates} constant at any depth, and a principal uses it inside a primitive.
 	\begin{itemize}
 		\item About how a value is \textit{derived}, not who knows it: leaking a generated value does not make it stale
 		\item Catches values that \textit{could} be replayed, where \texttt{authentication?} catches the replays actually carried out
 	\end{itemize}
 	\vspace{0.3em}
-	\textbf{\texttt{equivalence? c1, c2}} --- contradicted when a principal holds both and they do not resolve to equivalent values, after mutation and rewriting.
+	\textbf{\texttt{equivalence? c1, c2}}: contradicted when a principal holds both and they do not resolve to equivalent values, after mutation and rewriting.
 	\begin{itemize}
 		\item Answered by a \textit{divergence} in principals' states, not by a deduction in attacker knowledge
 		\item Halting a principal is not the same as making two diverge, and Verifpal will not report it as such
 	\end{itemize}
 	\vspace{0.3em}
-	\textbf{\texttt{unlinkability? c1, c2}} --- contradicted when the attacker holds a concrete \textit{link witness} tying two observed values to the same principal. Built for contact tracing, voting and RFID.
+	\textbf{\texttt{unlinkability? c1, c2}}: contradicted when the attacker holds a concrete \textit{link witness} tying two observed values to the same principal. Built for contact tracing, voting and RFID.
 \end{frame}
 
 \begin{frame}[fragile]{Three labels that say how to read a failure}
@@ -2236,9 +2236,9 @@ FAIL x authentication? Alice -> Bob: e1  [duplicate acceptance: no recipient-gen
 	\end{vpresult}
 	\vspace{0.3em}
 	\begin{itemize}
-		\item \texttt{[duplicate acceptance]} --- a replay the recipient \textit{could} have caught, because the value it accepted carries a nonce or key that recipient generated
-		\item \texttt{[duplicate acceptance: no recipient-generated context]} --- a replay of a flight the recipient contributed nothing to, so every run of it accepts the same message. The TLS 1.3 0-RTT replay that RFC 9846 names lands here
-		\item \texttt{[attacker-supplied value]} --- a confidentiality failure over a value the attacker put there. The principal really does compute on it, but the honest value was not disclosed
+		\item \texttt{[duplicate acceptance]}: a replay the recipient \textit{could} have caught, because the value it accepted carries a nonce or key that recipient generated
+		\item \texttt{[duplicate acceptance: no recipient-generated context]}: a replay of a flight the recipient contributed nothing to, so every run of it accepts the same message. The TLS 1.3 0-RTT replay that RFC 9846 names lands here
+		\item \texttt{[attacker-supplied value]}: a confidentiality failure over a value the attacker put there. The principal really does compute on it, but the honest value was not disclosed
 	\end{itemize}
 	\vspace{0.2em}
 	\begin{center}
@@ -2388,7 +2388,7 @@ FAIL x 3 of 3 queries failed.
 	\end{center}
 	\vspace{-0.5em}
 	\begin{itemize}
-		\item \texttt{> m1 (m1) is obtained by Attacker} --- the property you asked about, and what became of it
+		\item \texttt{> m1 (m1) is obtained by Attacker}: the property you asked about, and what became of it
 		\item \textbf{Step 1}: \texttt{nil} is a public constant, so \texttt{PUBKEY(nil)} is a key whose private half the attacker has
 		\item \textbf{Step 2}: the substitution, with the parenthetical recording what the value honestly was. That is the whole attack
 		\item \textbf{Steps 3--7}: Bob derived \texttt{ss\_a} from a public key the attacker chose, so the attacker recomputes it and decrypts. \texttt{e1} prints as the term it \textit{actually} resolved to once the substitution reached Bob's run

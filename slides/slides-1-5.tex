@@ -314,7 +314,7 @@
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}
 			\begin{itemize}
-				\item In mythology, an oracle answered on behalf of the gods --- often enigmatically.
+				\item In mythology, an oracle answered on behalf of the gods, often enigmatically.
 				\item In cryptography, an oracle is a black box you may query but never open; we use them in proofs and in attacks.
 				\item Our \func{nulloracle}{C} answers one yes/no question: does $\texttt{Dec}(K, C)$ contain a null (\bit{0}\bit{0}) byte?
 				\item One bit per query. Watch what we can do with it.
@@ -483,7 +483,7 @@
 \begin{frame}{CTR mode is malleable}{The power of chosen-ciphertext attacks}
 	\begin{itemize}
 		\item With at most 255 queries per byte, we can completely decrypt any ciphertext!
-		\item For context: a 1KB file falls to at most $1024 \times 255 \approx 261{,}000$ queries --- about half that on average.
+		\item For context: a 1KB file falls to at most $1024 \times 255 \approx 261{,}000$ queries (about half that on average).
 		\item This is extremely practical for an attacker.
 		\item All from a single bit of information about the plaintext (contains null or not).
 		\item This attack works because:
@@ -663,7 +663,7 @@
 				$\Sigma$ is \textbf{CCA-secure} if these two libraries are indistinguishable:
 			}
 			\begin{itemize}
-				\item The adversary now gets a \emph{decryption} oracle too --- not just encryption.
+				\item The adversary now gets a \emph{decryption} oracle too, not just encryption.
 				\item The ideal \lib{\Sigma}{cca-rand} answers its own ciphertexts from memory ($\mathcal{D}$); anything else is decrypted for real, so whatever the scheme leaks about tampered ciphertexts is on display.
 			\end{itemize}
 		\end{column}
@@ -697,12 +697,12 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{Malleability breaks CCA --- the one you've already met}
+\begin{frame}{Malleability breaks CCA: the one you've already met}
 	\begin{columns}[c]
 		\begin{column}{0.55\textwidth}
 			\begin{itemize}
 				\item Take our CPA-secure PRF scheme. It is \textbf{not} CCA-secure.
-				\item Recall CTR's malleability: flipping a bit in the ciphertext flips the \emph{same} bit in the plaintext. This scheme has it too --- $S$ is just $M$ XOR'd with a keystream.
+				\item Recall CTR's malleability: flipping a bit in the ciphertext flips the \emph{same} bit in the plaintext. This scheme has it too; $S$ is just $M$ XOR'd with a keystream.
 				\item \textbf{The recipe} (any malleable scheme): find a ciphertext tweak that makes a \emph{predictable} change to the plaintext, then let the decryption oracle confirm it.
 				\item Here: XOR any $\Delta$ into $S$, and the decryption comes back as $M \oplus \Delta$.
 			\end{itemize}
@@ -738,7 +738,7 @@
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
 				\item \textbf{Real library:} $M' = M \oplus \Delta$ every time, so it returns \texttt{true} with probability $1$.
-				\item \textbf{Ideal (\lib{}{cca-rand}):} the mauled ciphertext isn't in $\mathcal{D}$, so $M'$ is unrelated to $M$ --- \texttt{true} with probability $\approx \frac{1}{2^\lambda}$.
+				\item \textbf{Ideal (\lib{}{cca-rand}):} the mauled ciphertext isn't in $\mathcal{D}$, so $M'$ is unrelated to $M$ (\texttt{true} with probability $\approx \frac{1}{2^\lambda}$).
 				\item One predictable relationship is all it takes. \textbf{Not CCA-secure.}
 			\end{itemize}
 		\end{column}
@@ -749,8 +749,8 @@
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
 			\begin{itemize}
-				\item A tougher scheme: $S = F(K, R) \oplus F(K, M)$, and decryption \emph{inverts} the PRF --- so $F$ must be a PRP like AES.
-				\item No single-bit maul works here --- so we get sneakier.
+				\item A tougher scheme: $S = F(K, R) \oplus F(K, M)$, and decryption \emph{inverts} the PRF, so $F$ must be a PRP like AES.
+				\item No single-bit maul works here, so we get sneakier.
 				\item \textbf{The recipe}: request two encryptions (use the \emph{same} $M$), then mix and match their halves into ``Frankenstein'' ciphertexts.
 			\end{itemize}
 		\end{column}
@@ -778,7 +778,7 @@
 				\item Encrypt the same $M$ twice: $R_1\|S_1$ and $R_2\|S_2$.
 				\item Swap the halves and decrypt $R_1\|S_2$ and $R_2\|S_1$. Both unwrap to the \emph{same} value:
 				      \[ F^{-1}\big(K,\; F(K, R_1) \oplus F(K, R_2) \oplus F(K, M)\big). \]
-				\item Equal outputs can't happen in the ideal world (only w.p.\ $\approx \frac{1}{2^\lambda}$). Distinguished --- and forged.
+				\item Equal outputs can't happen in the ideal world (only w.p.\ $\approx \frac{1}{2^\lambda}$). Distinguished and forged.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.45\textwidth}
@@ -1482,10 +1482,10 @@
 
 \begin{frame}{Key commitment in authenticated encryption}
 	\begin{itemize}
-		\item \textbf{Key commitment}: a ciphertext should decrypt validly under \emph{one} key only --- the one that produced it.
+		\item \textbf{Key commitment}: a ciphertext should decrypt validly under \emph{one} key only, the one that produced it.
 		\item AES-GCM and ChaCha20-Poly1305 do \textbf{not} have it: their tags are polynomial equations in the key, so given $K_1$ and $K_2$ one can solve for a ciphertext that verifies under both.\footnote{\url{https://appliedcryptography.page/paper/\#key-commitment}}
 		\item Attack: craft one ciphertext $C$ that decrypts to a harmless message under $K_1$ and to malicious content under $K_2$. Whoever holds which key sees a different, fully ``authenticated'' plaintext.
-		\item Real casualties: Facebook Messenger's abuse-reporting system (the ``invisible salamanders'' attack, 2018) and password-guessing ``partitioning oracles'' against Shadowsocks (2021).
+		\item Casualties: Facebook Messenger's abuse-reporting system (the ``invisible salamanders'' attack, 2018) and password-guessing ``partitioning oracles'' against Shadowsocks (2021).
 		\item Fixes exist (commit to the key with a hash, or use a committing AEAD). The lesson: ``authenticated'' does not mean ``bound to the key you think''.
 	\end{itemize}
 \end{frame}
@@ -1565,7 +1565,7 @@
 		      \begin{itemize}
 			      \item Bob asks Alice which file to display; she answers with $C = \texttt{Enc}(K, \texttt{family-recipes.txt})$.
 			      \item Later Bob asks which file to \emph{delete}. The adversary replays Alice's $C$.
-			      \item $C$ is genuine, so it verifies --- and Bob deletes the family recipes.
+			      \item $C$ is genuine, so it verifies, and Bob deletes the family recipes.
 		      \end{itemize}
 		\item Nothing was forged. Bob trusted any ciphertext that decrypts successfully, and the ciphertext said nothing about \emph{which question} it was answering.
 	\end{itemize}
@@ -1670,7 +1670,7 @@
 		\begin{column}{0.55\textwidth}
 			\begin{itemize}
 				\item ElGamal is CPA-secure but malleable: same disease, public-key edition.
-				\item \textbf{Fujisaki-Okamoto (FO) transform}: derive the randomness from the message; decryption re-encrypts and compares --- ``verify, then decrypt''.
+				\item \textbf{Fujisaki-Okamoto (FO) transform}: derive the randomness from the message; decryption re-encrypts and compares (``verify, then decrypt'').
 				\item Now deterministic, so it is used on a fresh random $M$ (key encapsulation), not on emails. More in 2.6.
 			\end{itemize}
 		\end{column}
