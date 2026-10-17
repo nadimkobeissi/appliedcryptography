@@ -715,16 +715,16 @@
 
 \begin{frame}{The NIST controversy: suspicious constants}
 	\begin{itemize}[<+->]
-		\item \textbf{The problem:} Only the NSA knows the true origin of the $b$ coefficient in NIST curves.
+		\item \textbf{The problem (2000--2026):} the NSA supplied the constants behind the $b$ coefficients of the NIST curves, with no account of where they came from.
 		\item \textbf{NSA's explanation:} $b$ results from hashing a ``random-looking'' constant with SHA-1.
 		      \begin{itemize}
 			      \item P-256's $b$ comes from: \texttt{c49d3608 86e70493 6a6678e1 139d26b7 819f7e90}
-			      \item But why this particular constant? Nobody knows.
+			      \item But where did this particular constant come from? Nobody outside the NSA could say, until 2026.
 		      \end{itemize}
 		\item \textbf{Community response:}
 		      \begin{itemize}
-			      \item Most experts don't believe the curves hide backdoors.
-			      \item But the lack of transparency creates suspicion.
+			      \item Most experts didn't believe the curves hid backdoors.
+			      \item But the lack of transparency created suspicion.
 			      \item Led to development of alternative curves with transparent parameters.
 		      \end{itemize}
 		\item \textbf{Post-Snowden era:} Increased scrutiny of NSA-designed cryptographic standards.
@@ -767,6 +767,24 @@
 		\item \textbf{Plausible deniability:} without $d$ the backdoor is undetectable: recovering $d$ from $(P, Q)$ is an ECDLP.
 	\end{itemize}
 	\alertbox{{A backdoored generator, not a backdoored curve}}{Dual\_EC runs on the ordinary P-256 curve; the trapdoor is the secret relation between $P$ and $Q$. The NIST curves have no known weakness. What died was the presumption of good faith behind unexplained constants.}
+\end{frame}
+
+\begin{frame}{The NIST seeds, finally explained (2026)}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{The folklore:} Jerry Solinas (NSA) recalled hashing ``Give Bob and Jerry a raise''.
+				\item \textbf{Solved} by Anthropic researchers using Claude: the seeds were never hashes.\footnote{\url{https://www.anthropic.com/research/ecdsa-curve-origins}}
+				      \begin{itemize}
+					      \item Raw output of C's \texttt{lrand48}, seeded with a Unix timestamp, in 20-byte candidates.
+					      \item P-256: seeded at 01:52:34 UTC on 16 August 1997; candidate 1842 was published.
+					      \item Recovered with lattice reduction: \texttt{lrand48} leaks the top bits of its state.
+				      \end{itemize}
+				\item \textbf{What it means:} no break; reproducible seeds leave little room for a trapdoor.
+			\end{itemize}
+			\alertbox{{Explained is not the same as rigid}}{Candidate 876 was also a valid prime-order curve; why 1842 won is unknown, as is the origin of the P-224 to P-521 base points. Rigid curves like Curve25519 leave no such choices.}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Curve25519: fast, and nothing up its sleeve}
@@ -1120,7 +1138,7 @@
 
 \begin{frame}{Discussion time}
 	\begin{enumerate}
-		\item \textbf{P-256 or X25519?} The NIST curves have unexplained seeds and no known weakness; Curve25519 has explained constants and a cofactor. Which would you ship, and what evidence would change your mind?
+		\item \textbf{P-256 or X25519?} The NIST curves have no known weakness and, since 2026, explained seeds (but not base points); Curve25519 has rigid constants and a cofactor. Which would you ship, and what evidence would change your mind?
 		\item \textbf{Who owns a validation bug?} RFC 8032 said ``sufficient, but not required.'' The libraries picked differently. Zcash had to write its own rules. Where should the responsibility have sat?
 		\item \textbf{Determinism cuts both ways.} Deterministic nonces ended the PS3 failure mode but opened the door to fault attacks. Would you rather trust the RNG or the hardware?
 		\item \textbf{Bitcoin took twelve years to adopt Schnorr signatures} that had been patent-free since 2008. What does that tell you about upgrading cryptography in a system nobody controls?
