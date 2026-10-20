@@ -1534,7 +1534,7 @@
 		\item \textbf{Post-compromise security!}
 		      \begin{itemize}
 			      \item If an attacker steals your state at time $t$\ldots
-			      \item After one DH ratchet step, they're locked out again
+			      \item After your next DH ratchet step (not your peer's), they're locked out again
 			      \item Fresh randomness from new ephemeral keys
 			      \item OTR's per-message DH ratchet had this idea first; the Double Ratchet makes it work asynchronously
 		      \end{itemize}

@@ -2053,40 +2053,39 @@ d2 = AEAD_DEC(k, n1, e1, c0)?  // failure halts Bob here, permanently
 attacker[passive]
 principal Alice[
   knows private k
-  knows public ctr
-  generates m1, m2
-  e1 = AEAD_ENC(k, ctr, m1, nil)
-  e2 = AEAD_ENC(k, ctr, m2, nil)
+  knows public ctr, hello
+  generates m
+  e1 = AEAD_ENC(k, ctr, hello, nil)
+  e2 = AEAD_ENC(k, ctr, m, nil)
 ]
 Alice -> Bob: e1, e2
 principal Bob[
   knows private k
-  knows public ctr
+  knows public ctr, hello
   d1 = AEAD_DEC(k, ctr, e1, nil)?
   d2 = AEAD_DEC(k, ctr, e2, nil)?
 ]
 queries[
-  confidentiality? m1
-  confidentiality? m2
+  confidentiality? m
 ]
 \end{lstlisting}
 			\end{vpmodel}
 		\end{column}
 		\begin{column}{0.53\textwidth}
-			\begin{vpresult}[top=0.5mm, bottom=0.5mm]{Both messages, to an attacker that never touched the wire}
+			\begin{vpresult}[top=0.5mm, bottom=0.5mm]{The secret, to an attacker that never touched the wire}
 				\begin{lstlisting}[basicstyle=\vpcode]
-FAIL x confidentiality? m1
- | 1. Attacker observes e1 on the wire.
- | 2. Attacker observes e2 on the wire.
- | 3. Attacker recovers m1 from e1: e2 shares its key
- |    and nonce.
- > m1 (m1) is obtained by Attacker.
+FAIL x confidentiality? m
+ | 1. Attacker observes e2 on the wire.
+ | 2. Attacker observes e1 on the wire.
+ | 3. Attacker recovers m from e2: e1 shares its key
+ |    and nonce, and Attacker knows its plaintext.
+ > m (m) is obtained by Attacker.
 \end{lstlisting}
 			\end{vpresult}
 			\scriptsize
 			\begin{itemize}
 				\item \texttt{AEAD\_ENC(key, nonce, plaintext, ad)}, and \texttt{AEAD\_DEC} takes the nonce in the same place
-				\item Two such terms under one key and one nonce, differing in content, are a \textbf{reused pair}: both plaintexts fall out, and any ciphertext becomes forgeable under that pair without the key, which is how AES-GCM and ChaCha20-Poly1305 really fail
+				\item Two such terms under one key and one nonce, differing in content, are a \textbf{reused pair}: they leak the XOR of their plaintexts, so a known one gives away the other, and any ciphertext becomes forgeable under that pair without the key, which is how AES-GCM and ChaCha20-Poly1305 really fail
 				\item \texttt{knows} gives every session the same nonce, \texttt{generates} gives each its own
 			\end{itemize}
 		\end{column}
