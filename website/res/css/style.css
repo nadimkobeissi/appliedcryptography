@@ -592,9 +592,10 @@ hr {
 
 /* ──────────────  Adopters strip  ──────────────
    Institutional adopters rendered as uniform monochrome wordmarks:
-   each logo's alpha channel masks a cedar-ink fill, so five clashing
-   brand palettes read as one set and the white AUB mark and the dark
-   European marks all behave identically in light and dark. */
+   each logo's alpha channel masks a cedar-ink fill, so clashing brand
+   palettes read as one set and the white AUB mark and the dark
+   European marks all behave identically in light and dark. Stacked
+   (non-wordmark) logos set --scale so they carry comparable weight. */
 
 .adopters {
 	background-color: var(--surface-alt);
@@ -623,8 +624,8 @@ hr {
 .adopter-mark {
 	--mark-h: 26px;
 	display: block;
-	height: var(--mark-h);
-	width: calc(var(--mark-h) * var(--ar));
+	height: calc(var(--mark-h) * var(--scale, 1));
+	width: calc(var(--mark-h) * var(--scale, 1) * var(--ar));
 	background-color: var(--muted);
 	-webkit-mask-image: var(--logo);
 	mask-image: var(--logo);

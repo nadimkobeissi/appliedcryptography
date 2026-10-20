@@ -42,7 +42,7 @@
 		\item \textbf{Common misconception}: A quantum computer does \textit{not} simply ``try all $2^n$ answers in parallel''
 		      \begin{itemize}
 			      \item Measuring yields just \textit{one} outcome; the art is making it the useful one
-			      \item This is why only \textit{certain} problems admit quantum speedups---and why not all cryptography is equally at risk
+			      \item This is why only \textit{certain} problems admit quantum speedups, and why not all cryptography is equally at risk
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -89,7 +89,7 @@
 		      \begin{itemize}
 			      \item Can't copy quantum states (no-cloning theorem), so classical redundancy tricks don't directly apply
 			      \item Need $\approx$1,000 physical qubits to make 1 error-corrected \textit{logical} qubit
-			      \item 2024 milestone: Google's Willow chip ran ``below threshold''---logical error rates now \textit{fall} as the error-correcting code grows
+			      \item 2024 milestone: Google's Willow chip ran ``below threshold'' (logical error rates now \textit{fall} as the error-correcting code grows)
 		      \end{itemize}
 	\end{itemize}
 \end{frame}
@@ -115,7 +115,7 @@
 			      \item Haystack: $\{0,1\}^n$ (all possible inputs)
 			      \item Needle: Special input $X$ where $F(X) = 1$
 		      \end{itemize}
-		\item \textbf{Good news}: The quadratic speedup is \textit{provably optimal} for black-box search---no quantum algorithm can do better
+		\item \textbf{Good news}: The quadratic speedup is \textit{provably optimal} for black-box search; no quantum algorithm can do better
 	\end{itemize}
 \end{frame}
 
@@ -200,7 +200,7 @@
 \begin{frame}{Timeline: when will quantum computing arrive?}
 	\begin{itemize}
 		\item \textbf{Current state}: Machines with 100--1,000 noisy physical qubits; only the earliest demonstrations of error-corrected logical qubits
-		\item \textbf{Required for cryptanalysis}: Thousands of \textit{logical} qubits---roughly a million physical qubits with today's error correction
+		\item \textbf{Required for cryptanalysis}: Thousands of \textit{logical} qubits (roughly a million physical qubits with today's error correction)
 		\item \textbf{Expert predictions}: 10--30 years until \textit{cryptographically relevant} quantum computers, or CRQCs (depending on who you ask)
 		\item \textbf{But consider}:
 		      \begin{itemize}
@@ -234,7 +234,7 @@
 		\item \textbf{2019}: Attempted to factor $35 = 5 \times 7$
 		\item \textbf{In 25 years}: Progress from 15 to 21
 		\item \textbf{For context}: A 1981 VIC-20 home computer can factor these numbers instantly
-		\item These aren't even true applications of Shor's algorithm---they use ``compiled'' versions with prior knowledge of the answer
+		\item These aren't even true applications of Shor's algorithm: they use ``compiled'' versions with prior knowledge of the answer
 	\end{itemize}
 \end{frame}
 
@@ -293,7 +293,7 @@
 				\end{tabular}
 			\end{center}
 			\begin{itemize}
-				\item \textbf{Physical cost}: Fewer than 500,000 qubits at a $10^{-3}$ error rate---nearly 20$\times$ below prior estimates
+				\item \textbf{Physical cost}: Fewer than 500,000 qubits at a $10^{-3}$ error rate, nearly 20$\times$ below prior estimates
 				\item \textbf{Same story for RSA}: Gidney's 2025 estimate cut RSA-2048 to under 1M noisy qubits, 20$\times$ below the 2019 figure
 				\item The gap between ``can't beat a dog'' and ``could break real crypto'' is closing
 			\end{itemize}
@@ -403,7 +403,7 @@
 		\item \textbf{Key insight}: Some mathematical problems remain hard even for quantum computers
 		\item \textbf{LWE}: Based on solving noisy systems of linear equations
 		      \begin{itemize}
-			      \item Introduced by Oded Regev in 2005---work later recognized with the G\"odel Prize (2018)
+			      \item Introduced by Oded Regev in 2005, in work later recognized with the G\"odel Prize (2018)
 		      \end{itemize}
 		\item \textbf{Security foundation}: The difficulty of distinguishing random noise from structured noise
 		\item Forms the basis for many post-quantum cryptographic schemes
@@ -575,7 +575,7 @@
 \begin{frame}{Row echelon form and back substitution}
 	\begin{columns}[c]
 		\begin{column}{0.5\textwidth}
-			\textbf{Row echelon form}: Keep going until every pivot sits to the right of the one above it, with only zeros below---a ``staircase''
+			\textbf{Row echelon form}: Keep going until every pivot sits to the right of the one above it, with only zeros below (a ``staircase'')
 			\[
 				\left[\begin{array}{ccccc|c}
 						\ast & \ast & \ast & \ast & \ast & \ast \\
@@ -609,10 +609,10 @@
 		      \end{itemize}
 		\item \textbf{Works in finite fields}: The same algorithm applies modulo $q$
 		      \begin{itemize}
-			      \item Even better: arithmetic modulo $q$ is exact---no rounding, no numerical instability
+			      \item Even better: arithmetic modulo $q$ is exact (no rounding, no numerical instability)
 		      \end{itemize}
 		\item \textbf{In practice}: Optimized solvers handle millions of variables in seconds
-		\item \textbf{The takeaway}: Exact linear equations pose \textit{zero} difficulty to attackers---to get cryptography, we must break linearity itself
+		\item \textbf{The takeaway}: Exact linear equations pose \textit{zero} difficulty to attackers; to get cryptography, we must break linearity itself
 	\end{itemize}
 \end{frame}
 
@@ -670,7 +670,7 @@
 		      \end{itemize}
 		\item \textbf{Why ``lattice-based''}: Solving LWE amounts to finding a lattice point closest to a target in high dimensions
 		      \begin{itemize}
-			      \item Regev's proof: Solving \textit{random} LWE instances is as hard as \textit{worst-case} lattice problems---no unlucky weak keys
+			      \item Regev's proof: Solving \textit{random} LWE instances is as hard as \textit{worst-case} lattice problems (no unlucky weak keys)
 		      \end{itemize}
 		\item \textbf{Intuition}: Small errors destroy the algebraic structure
 		      \begin{itemize}
@@ -815,7 +815,7 @@
 	\end{center}
 	\vspace{5mm}
 	\begin{itemize}
-		\item \textbf{The LWE assumption}: These two distributions are computationally indistinguishable---\textbf{even for quantum computers}. No known quantum algorithm does meaningfully better than classical ones here.
+		\item \textbf{The LWE assumption}: These two distributions are computationally indistinguishable, \textbf{even for quantum computers}. No known quantum algorithm does meaningfully better than classical ones here.
 	\end{itemize}
 \end{frame}
 
@@ -824,7 +824,7 @@
 		\begin{column}{0.65\textwidth}
 			\begin{itemize}
 				\item \textbf{Working modulo $q$}: Think of $\mathbb{Z}_q$ as a circle
-				\item \textbf{``small'' means ``close to 0''}---in either direction!
+				\item \textbf{``small'' means ``close to 0''}, in either direction!
 				      \begin{itemize}
 					      \item Example: If $q = 11$, then $10 \equiv -1 \pmod{11}$ is ``small''
 				      \end{itemize}
@@ -928,7 +928,7 @@
 	\vspace{5mm}
 	\begin{center}
 		\textbf{Both achieve the same goal}: Establish a shared secret key\\
-		\textbf{Why KEMs here?} Lattices offer no commutative magic like $g^{ab} = g^{ba}$---but encrypting a random key to a public key comes naturally
+		\textbf{Why KEMs here?} Lattices offer no commutative magic like $g^{ab} = g^{ba}$, but encrypting a random key to a public key comes naturally
 	\end{center}
 \end{frame}
 
@@ -939,7 +939,7 @@
 			      \item \textbf{By abuse of notation}, we represent $\vec{v}$ as an $n \times 1$
 			            matrix (column): $\vec{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{bmatrix}$
 			      \item This convention enables matrix-vector multiplication: $A\vec{v}$
-			      \item Vectors aren't inherently ``row'' or ``column''---that's a matrix representation
+			      \item Vectors aren't inherently ``row'' or ``column''; that's a matrix representation
 		      \end{itemize}
 
 		\item \textbf{Matrices}: 2D arrays, e.g., $A \in \mathbb{Z}_q^{n \times n}$
@@ -1096,13 +1096,13 @@
 		      \end{itemize}
 		\item \textbf{Alice's ciphertext looks random too}: $(\vec{u}, v)$ are LWE samples with secret $\vec{r}$
 		      \begin{itemize}
-			      \item An eavesdropper sees only random-looking vectors---the bit $\mu$ is buried in noise
+			      \item An eavesdropper sees only random-looking vectors; the bit $\mu$ is buried in noise
 		      \end{itemize}
 		\item \textbf{The reduction}: Any attack on the KEM yields a distinguisher for LWE
 		      \begin{itemize}
 			      \item Security rests on a single, heavily studied assumption
 		      \end{itemize}
-		\item \textbf{Historical note}: This is essentially Regev's original encryption scheme (2005)---the direct ancestor of Kyber/ML-KEM
+		\item \textbf{Historical note}: This is essentially Regev's original encryption scheme (2005), the direct ancestor of Kyber/ML-KEM
 	\end{itemize}
 \end{frame}
 
@@ -1142,7 +1142,7 @@
 			      \item \textbf{Parameters}: Choose $q$ and the noise distribution so that failures are astronomically rare
 		      \end{enumerate}
 		\item \textbf{Kyber/ML-KEM takes the second route}: Its parameter sets keep the decryption failure probability below $2^{-128}$ per ciphertext
-		\item \textbf{Why this matters beyond correctness}: Decryption failures leak information about the secret key, and attackers can hunt for them---so ``rare'' has to mean \textit{cryptographically} rare
+		\item \textbf{Why this matters beyond correctness}: Decryption failures leak information about the secret key, and attackers can hunt for them. So ``rare'' has to mean \textit{cryptographically} rare
 	\end{itemize}
 \end{frame}
 
@@ -1276,10 +1276,10 @@
 			\begin{itemize}
 				\item Received: \bit{100 110 000} (two bits flipped in transit)
 				\item Decode: \bit{0} (majority \bit{0}) \bit{1} (majority \bit{1}) \bit{0} (unanimous)
-				\item Result: \bit{010} --- both errors corrected!
+				\item Result: \bit{010}, both errors corrected!
 			\end{itemize}
 
-			\textbf{Limitation}: Two flips in the \textit{same} chunk fool the majority vote---and we pay $3\times$ the bandwidth for single-error protection
+			\textbf{Limitation}: Two flips in the \textit{same} chunk fool the majority vote, and we pay $3\times$ the bandwidth for single-error protection
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -1623,7 +1623,7 @@
 		      \begin{itemize}
 			      \item From $\text{Hash}^2(K_1)$: Walk \textit{forward} to $\text{Hash}^x(K_1)$ for any $x \geq 2$
 			      \item From $\text{Hash}^{w-7}(K_2)$: Walk forward to $\text{Hash}^{w-y}(K_2)$ for any $y \leq 7$
-			      \item Valid forgeries for every message in $[2, 7]$---and 3, 4, 5, 6 were never signed!
+			      \item Valid forgeries for every message in $[2, 7]$, and 3, 4, 5, 6 were never signed!
 		      \end{itemize}
 		\item \textbf{No simple fix}: Each signature reveals a position on every chain; two signatures bracket a whole range. The construction is inherently one-time.
 	\end{itemize}
@@ -1793,7 +1793,7 @@
 
 	\begin{itemize}
 		\item \textbf{ML}: Module Lattice, \textbf{FN}: Fast Fourier transform over NTRU, \textbf{SLH}: Stateless Hash-based
-		\item \textbf{March 2025}: HQC (code-based) selected as a \textit{backup} KEM---a hedge in case lattice cryptanalysis improves
+		\item \textbf{March 2025}: HQC (code-based) selected as a \textit{backup} KEM, a hedge in case lattice cryptanalysis improves
 	\end{itemize}
 \end{frame}
 
@@ -1814,7 +1814,7 @@
 			\begin{itemize}
 				\item Lattices and codes have no commutative magic like $g^{ab} = g^{ba}$, but ``encrypt a random key'' comes naturally
 				\item No reconciliation machinery, no extra round trips
-				\item Isogenies \textit{did} offer DH-style key agreement (SIKE)---until 2022
+				\item Isogenies \textit{did} offer DH-style key agreement (SIKE), until 2022
 				\item NIST's call asked for KEMs, so every mathematical family competed on the same interface
 			\end{itemize}
 		\end{column}
@@ -1857,7 +1857,7 @@
 	\begin{columns}[c]
 		\begin{column}{1\textwidth}
 			\begin{itemize}
-				\item \textbf{2024}: The tipping point---Chrome turns on hybrid PQ key agreement by default (April), with Cloudflare, Google, and AWS already supporting it server-side\footnote{Many of the slides in this subsection are based on Bas Westerbaan's excellent blog post over at Cloudflare, but have been updated to account for developments through 2026: \url{https://blog.cloudflare.com/pq-2024/}}
+				\item \textbf{2024}: The tipping point, as Chrome turns on hybrid PQ key agreement by default (April), with Cloudflare, Google, and AWS already supporting it server-side
 				\item \textbf{QUIC protocol}: Uses TLS 1.3 under the hood
 				      \begin{itemize}
 					      \item Modern transport protocol, born at Google, standardized by the IETF
@@ -2015,15 +2015,15 @@
 				\item Firefox (late 2024)
 				\item Safari: announced at WWDC 2025\footnote{\url{https://support.apple.com/en-us/122756}} for iOS 26, macOS 26, etc.
 			\end{itemize}
-			\textbf{The result}: PQ now protects 38\% of all TLS connections seen by Cloudflare\footnote{\url{https://radar.cloudflare.com/adoption-and-usage\#post-quantum-encryption-adoption}}
+			\textbf{The result}: PQ now protects 72\% of all TLS connections seen by Cloudflare\footnote{\url{https://radar.cloudflare.com/post-quantum}}
 		\end{column}
 		\begin{column}{0.4\textwidth}
 			\begin{center}
-				\textbf{PQ Adoption}\\[3mm]
+				\textbf{PQ Adoption (September 2026)}\\[3mm]
 				\begin{tikzpicture}[scale=0.8]
 					\pie[text=legend,radius=1.6]{
-						38/PQ,
-						62/Classical
+						72/PQ,
+						28/Classical
 					}
 				\end{tikzpicture}
 			\end{center}
@@ -2290,7 +2290,7 @@
 				      \begin{itemize}
 					      \item Triple Ratchet protocol (2025)\footnote{\url{https://appliedcryptography.page/paper/\#triple-ratchet}}
 					      \item Bandwidth-efficient hybrid-secure messaging, fixing PQ3's inefficiencies
-					      \item In production as \textbf{SPQR} (Sparse Post-Quantum Ratchet) since October 2025---shipped with machine-checked proofs (recall topic 2.5!)
+					      \item In production as \textbf{SPQR} (Sparse Post-Quantum Ratchet) since October 2025, shipped with machine-checked proofs (recall topic 2.5!)
 				      \end{itemize}
 				\item \textbf{Key innovation}: Three parallel ratchets
 				      \begin{enumerate}
@@ -2344,24 +2344,28 @@
 \end{frame}
 
 \begin{frame}{Katana: optimized lattice RKEM}
-	\begin{itemize}
-		\item \textbf{Ratcheting KEM (RKEM)}: KEM where ciphertext also serves as next public key
-		      \begin{itemize}
-			      \item Like how Signal reuses $g^b$ for both encryption and next public key
-			      \item Saves bandwidth by dual-purposing values
-		      \end{itemize}
-		\item \textbf{Previous attempts had security flaws}:
-		      \begin{itemize}
-			      \item Naive lattice translations of Signal's trick turn out insecure for some parameters
-			      \item The fix needs a careful proof under the hint-MLWE assumption
-		      \end{itemize}
-		\item \textbf{Katana}: New RKEM based on Kyber
-		      \begin{itemize}
-			      \item 37\% smaller than naive Kyber approach
-			      \item At 192-bit security: 1,416 bytes vs 2,272 bytes
-			      \item Provably secure under hint-MLWE
-		      \end{itemize}
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{Ratcheting KEM (RKEM)}: KEM where the ciphertext is also the next public key
+				      \begin{itemize}
+					      \item Like how Signal reuses $g^b$ for both encryption and next public key
+					      \item Saves bandwidth by dual-purposing values
+				      \end{itemize}
+				\item \textbf{Previous attempts had security flaws}:
+				      \begin{itemize}
+					      \item Naive lattice translations of Signal's trick turn out insecure for some parameters
+					      \item The fix needs a careful proof under the hint-MLWE assumption
+				      \end{itemize}
+				\item \textbf{Katana}: New RKEM based on Kyber\footnote{\url{https://appliedcryptography.page/paper/\#triple-ratchet}}
+				      \begin{itemize}
+					      \item 37\% smaller than naive Kyber approach
+					      \item At 192-bit security: 1,416 bytes vs 2,272 bytes
+					      \item Provably secure under hint-MLWE
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{Triple Ratchet efficiency gains}
@@ -2476,7 +2480,7 @@
 		      \begin{itemize}
 			      \item \textbf{P2PK scripts}: Public key stored directly ($\sim$1.7M BTC)
 			      \item \textbf{Address reuse}: Public key exposed after first spend
-			      \item \textbf{Taproot (P2TR)}: Stores tweaked public key in script---a quantum security regression
+			      \item \textbf{Taproot (P2TR)}: Stores tweaked public key in script, a quantum security regression
 		      \end{itemize}
 		\item \textbf{Total}: $\sim$6.7 million BTC in quantum-vulnerable addresses\footnote{\url{https://appliedcryptography.page/paper/\#cryptocurrency-whitepaper}}
 	\end{itemize}
@@ -2631,15 +2635,15 @@
 					      \item Broken by Shor's algorithm
 					      \item \textcolor{red}{Vulnerable to SNDL (Store-Now-Decrypt-Later)}
 				      \end{itemize}
-				\item \textbf{Digital signatures}
-				      \begin{itemize}
-					      \item Broken by Shor's algorithm
-					      \item \textcolor{green!70!black}{Not vulnerable to SNDL (Store-Now-Decrypt-Later)}
-				      \end{itemize}
 				\item \textbf{``Fancy'' crypto}
 				      \begin{itemize}
 					      \item Blind signatures, OPRF, etc.
 					      \item Case-by-case assessment needed
+				      \end{itemize}
+				\item \textbf{Digital signatures}
+				      \begin{itemize}
+					      \item Broken by Shor's algorithm
+					      \item \textcolor{green!70!black}{Not vulnerable to SNDL (Store-Now-Decrypt-Later)}
 				      \end{itemize}
 				\item \textbf{Symmetric crypto}
 				      \begin{itemize}
@@ -2812,7 +2816,6 @@
 			      \item Implementation pitfalls less understood
 			      \item Potential for unexpected attacks
 		      \end{itemize}
-		\item Let's explore what can go wrong\ldots
 	\end{itemize}
 \end{frame}
 
@@ -2827,7 +2830,7 @@
 				      \begin{itemize}
 					      \item Decoding a \textit{random} linear code is provably NP-hard (shown back in 1978)
 					      \item Sounds amazing: NP-hard = practically unbreakable!
-					      \item But NP-hardness is a \textit{worst-case} notion---cryptographic security rests on the \textit{average case}\ldots
+					      \item But NP-hardness is a \textit{worst-case} notion; cryptographic security rests on the \textit{average case}\ldots
 					      \item \ldots and McEliece's Goppa codes aren't random: the ``syzygy distinguisher'' now tells them apart from random codes in subexponential time\footnote{Eurocrypt 2025 paper found a subexponential distinguisher for McEliece: \url{https://appliedcryptography.page/paper/\#syzygy-distinguisher}}
 				      \end{itemize}
 				\item \textbf{Real-world complications}:
@@ -2876,7 +2879,7 @@
 	\end{columns}
 \end{frame}
 
-\begin{frame}{The unknown attack landscape}
+\begin{frame}{Unknown attacks}
 	\begin{itemize}
 		\item \textbf{With RSA}: We know strong attacks
 		      \begin{itemize}
@@ -2892,7 +2895,7 @@
 		      \end{itemize}
 		\item \textbf{Example}: Schemes broken \textit{during} the NIST competition
 		      \begin{itemize}
-			      \item Rainbow (multivariate, a finalist): broken in 2022---``a weekend on a laptop''
+			      \item Rainbow (multivariate, a finalist): broken in 2022 (``a weekend on a laptop'')
 			      \item SIKE (isogeny-based, an alternate): broken in 2022, in about an hour on a laptop
 			      \item Both had survived years of scrutiny; the proofs were correct, but the assumptions weren't
 		      \end{itemize}
@@ -3106,22 +3109,26 @@ if ((err = SSLHashSHA1.final(&hashCtx,
 \end{frame}
 
 \begin{frame}{KyberSlash: a real-world PQ vulnerability}
-	\begin{itemize}
-		\item \textbf{What}: Timing attack on Kyber implementations\footnote{\url{https://appliedcryptography.page/paper/\#kyber-slash}} (Dec 2023)
-		\item \textbf{Affected}: The reference implementation and the ``production-ready'' libraries derived from it
-		\item \textbf{The vulnerability}:
-		      \begin{itemize}
-			      \item A division by $q$ in the decryption code compiled to variable-time instructions on some platforms
-			      \item The running time depended on secret polynomial coefficients
-			      \item Attacker measures decapsulation times; recovers the secret key within a couple million queries
-		      \end{itemize}
-		\item \textbf{Impact}: Complete key recovery from ``secure'' implementations
-		\item \textbf{Lesson}: The \textit{algorithm} was fine; the \textit{code} wasn't
-		      \begin{itemize}
-			      \item Years of review missed it; ``constant-time'' code wasn't
-			      \item Constant-time programming (topic 2.5) is not optional for PQ crypto
-		      \end{itemize}
-	\end{itemize}
+	\begin{columns}[c]
+		\begin{column}{1\textwidth}
+			\begin{itemize}
+				\item \textbf{What}: Timing attack on Kyber implementations\footnote{\url{https://appliedcryptography.page/paper/\#kyber-slash}} (Dec 2023)
+				\item \textbf{Affected}: The reference implementation and the ``production-ready'' libraries derived from it
+				\item \textbf{The vulnerability}:
+				      \begin{itemize}
+					      \item A division by $q$ in the decryption code compiled to variable-time instructions on some platforms
+					      \item The running time depended on secret polynomial coefficients
+					      \item Attacker measures decapsulation times; recovers the secret key within a couple million queries
+				      \end{itemize}
+				\item \textbf{Impact}: Complete key recovery from ``secure'' implementations
+				\item \textbf{Lesson}: The \textit{algorithm} was fine; the \textit{code} wasn't
+				      \begin{itemize}
+					      \item Years of review missed it; ``constant-time'' code wasn't
+					      \item Constant-time programming (topic 2.5) is not optional for PQ crypto
+				      \end{itemize}
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \begin{frame}{The PQ paradox}

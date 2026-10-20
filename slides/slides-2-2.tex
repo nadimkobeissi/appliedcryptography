@@ -36,13 +36,13 @@
 
 \begin{frame}{The arc of RC4}
 	\begin{itemize}[<+->]
-		\item \textbf{1987 --- Birth.} Ron Rivest designs RC4 as a trade secret at RSA Security.
-		\item \textbf{1994 --- Escape.} The algorithm is leaked anonymously to the Cypherpunks mailing list.
-		\item \textbf{1990s--2000s --- Empire.} The most widely deployed stream cipher in history: WEP, SSL/TLS, SSH-1, Office, PDF.
-		\item \textbf{1995--2001 --- Hairline cracks.} Academics find statistical oddities. Nobody panics.
-		\item \textbf{2001 --- WEP falls.} Fluhrer--Mantin--Shamir turn an oddity into total Wi-Fi key recovery.
-		\item \textbf{2013--2015 --- TLS falls.} Bias attacks recover cookies and passwords from HTTPS.
-		\item \textbf{2015 --- Prohibition.} RFC 7465 bans RC4 in TLS; browsers finish the job by 2016.
+		\item \textbf{1987: Birth.} Ron Rivest designs RC4 as a trade secret at RSA Security.
+		\item \textbf{1994: Escape.} The algorithm is leaked anonymously to the Cypherpunks mailing list.
+		\item \textbf{1990s--2000s: Empire.} The most widely deployed stream cipher in history: WEP, SSL/TLS, SSH-1, Office, PDF.
+		\item \textbf{1995--2001: Hairline cracks.} Academics find statistical oddities. Nobody panics.
+		\item \textbf{2001: WEP falls.} Fluhrer--Mantin--Shamir turn an oddity into total Wi-Fi key recovery.
+		\item \textbf{2013--2015: TLS falls.} Bias attacks recover cookies and passwords from HTTPS.
+		\item \textbf{2015: Prohibition.} RFC 7465 bans RC4 in TLS; browsers finish the job by 2016.
 	\end{itemize}
 	\onslide<+->{\centering\textbf{Twenty-eight years from design to formal ban.}}
 \end{frame}
@@ -58,7 +58,7 @@
 				\item \textbf{September 1994:} the algorithm is posted anonymously to the Cypherpunks mailing list.
 				      \begin{itemize}
 					      \item Verified against licensed implementations within days.
-					      \item RSA never confirmed it, so the public version was politely called \textbf{``Alleged RC4''} or \textbf{ARCFOUR} --- a name OpenSSH kept until 2017 and GnuTLS keeps today.
+					      \item RSA never confirmed it, so the public version was politely called \textbf{``Alleged RC4''} or \textbf{ARCFOUR}, a name OpenSSH kept until 2017 and GnuTLS keeps today.
 				      \end{itemize}
 			\end{itemize}
 		\end{column}
@@ -165,7 +165,7 @@
 			\begin{itemize}[<+->]
 				\item $S$ starts as the identity permutation and \textbf{every operation is a swap}, so $S$ stays a permutation forever: no value is lost or duplicated.
 				\item The KSA's whole job is to make it look uniformly drawn from all $256!$ of them. \textbf{Every attack in this lecture says the same thing:} it does not quite manage it.
-				\item \textbf{Careful:} $S$ is a permutation, but RC4 is \emph{not} a PRP. It is a PRG --- seed in, keystream out.
+				\item \textbf{Careful:} $S$ is a permutation, but RC4 is \emph{not} a PRP. It is a PRG (seed in, keystream out).
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.5\textwidth}
@@ -246,13 +246,13 @@
 
 \begin{frame}{Early warnings (1995--2001)}
 	\begin{itemize}[<+->]
-		\item \textbf{1995 --- Roos.} The first bytes of $S$ after the KSA are correlated with the first bytes of the key, and a class of \textbf{weak keys} leaves structure that survives into the keystream.
+		\item \textbf{1995: Roos.} The first bytes of $S$ after the KSA are correlated with the first bytes of the key, and a class of \textbf{weak keys} leaves structure that survives into the keystream.
 		      \begin{itemize}
 			      \item Published to \texttt{sci.crypt}, not to a conference. Treated as a curiosity.
 		      \end{itemize}
-		\item \textbf{1996 --- Jenkins' ``Glimpse'' theorem.} Each keystream byte leaks the internal state: $\Pr[S[j] = i - Z] \approx 2/256$, twice what it should be.
-		\item \textbf{1997 --- Goli\'{c} (Eurocrypt).} A linear statistical weakness in the output, giving a distinguisher from random.
-		\item \textbf{2001 --- Mantin \& Shamir (FSE).} The cleanest result of the era, and the one that should have ended RC4 on the spot.
+		\item \textbf{1996: Jenkins' ``Glimpse'' theorem.} Each keystream byte leaks the internal state: $\Pr[S[j] = i - Z] \approx 2/256$, twice what it should be.
+		\item \textbf{1997: Goli\'{c} (Eurocrypt).} A linear statistical weakness in the output, giving a distinguisher from random.
+		\item \textbf{2001: Mantin \& Shamir (FSE).} The cleanest result of the era, and the one that should have ended RC4 on the spot.
 	\end{itemize}
 	\onslide<+->{\centering\textit{Every one of these was public. Every one was deployed straight past.}}
 \end{frame}
@@ -269,7 +269,7 @@
 		\begin{column}{0.48\textwidth}
 			\onslide<+->{
 				\definitionbox{Why this is devastating}{
-					Take one plaintext byte encrypted under many independent keys --- say, a byte of a session cookie, resent at the same position in every request.
+					Take one plaintext byte encrypted under many independent keys: say, a byte of a session cookie, resent at the same position in every request.
 					\vspace{0.5em}
 					\\
 					The most common ciphertext byte at position 2 is $M_2 \oplus 0 = M_2$.
@@ -469,7 +469,7 @@
 			\end{center}
 			\onslide<+->{
 				\alertbox{Note what is \emph{not} needed}{
-					No brute force. No cryptographic assumption. No interaction with the network. Just listening, and arithmetic.
+					No brute force, no cryptographic assumption, no interaction with the network: just listening, and arithmetic.
 				}
 			}
 		\end{column}
@@ -511,7 +511,7 @@
 		\item \textbf{August 2001:} the FMS paper appears at Selected Areas in Cryptography.
 		\item \textbf{August 2001:} Stubblefield, Ioannidis and Rubin implement it and pull a real key off a real access point, in a paper titled \textit{Using the Fluhrer, Mantin, and Shamir Attack to Break WEP}.
 		\item \textbf{Weeks later:} \textbf{AirSnort} and \textbf{WEPCrack} ship as free public tools. Point, click, wait for a few million packets, get the key.
-		\item \textbf{2004--2006:} \textbf{aircrack-ng} adds \textbf{packet injection} --- replay an ARP request and the access point generates traffic on demand. The attacker stops waiting for a busy network and manufactures the traffic instead.
+		\item \textbf{2004--2006:} \textbf{aircrack-ng} adds \textbf{packet injection}. Replay an ARP request and the access point generates traffic on demand. The attacker stops waiting for a busy network and manufactures the traffic instead.
 	\end{itemize}
 	\onslide<+->{\centering\textbf{From ``interesting theoretical result'' to script-kiddie tool: a few weeks.}}
 \end{frame}
@@ -521,7 +521,7 @@
 		\begin{column}{0.54\textwidth}
 			\begin{itemize}[<+->]
 				\item \textbf{Klein:} a stronger key--keystream correlation that does \emph{not} need the special FMS IV shape. Suddenly \emph{every} packet is useful, not one in $2^{16}$.
-				\item \textbf{PTW --- Tews, Weinmann and Pyshkin (2007):} combine Klein's correlation with key ranking, and recover each key byte independently instead of left to right, so one wrong byte no longer poisons the rest.
+				\item \textbf{PTW (Tews, Weinmann and Pyshkin, 2007):} combine Klein's correlation with key ranking, and recover each key byte independently instead of left to right, so one wrong byte no longer poisons the rest.
 				      \begin{itemize}
 					      \item \textbf{40{,}000} packets for $50\%$ success, \textbf{85{,}000} for $95\%$.
 					      \item Paper title: \textit{Breaking 104 bit WEP in less than 60 seconds}.
@@ -537,7 +537,7 @@
 					\\[0.2em]
 					\textbf{2007:} tens of thousands, under a minute.
 					\\[0.5em]
-					Between 2001 and 2007 the weakness stayed the same --- the key schedule leaking into the first bytes. Only the exploitation improved.
+					Between 2001 and 2007 the weakness stayed the same: the key schedule leaking into the first bytes. Only the exploitation improved.
 				}
 			}
 			\onslide<+->{\centering\textit{``Attacks always get better; they never get worse.''}}
@@ -560,9 +560,9 @@
 \begin{frame}{The BEAST irony (2011)}
 	\begin{itemize}[<+->]
 		\item By 2011, TLS deployments had two realistic choices: \textbf{AES in CBC mode}, or \textbf{RC4}.
-		\item Then \textbf{BEAST} broke CBC in TLS 1.0 --- a chosen-plaintext attack on predictable CBC initialisation vectors, able to decrypt cookies out of a live browser session.
+		\item Then \textbf{BEAST} broke CBC in TLS 1.0: a chosen-plaintext attack on predictable CBC initialisation vectors, able to decrypt cookies out of a live browser session.
 		\item The industry's advice was immediate and near-unanimous: \textbf{switch to RC4}. It is a stream cipher, so there are no CBC IVs, no padding, and no padding oracles.
-		\item It worked, and RC4 usage \emph{rose sharply} --- to roughly half of all TLS traffic.
+		\item It worked, and RC4 usage \emph{rose sharply}, to roughly half of all TLS traffic.
 	\end{itemize}
 	\onslide<+->{
 		\alertbox{The trap}{
@@ -585,7 +585,7 @@
 					\textbf{Single-byte:} at a fixed position $r \leq 256$, some values of $Z_r$ beat $1/256$. Strong, but only near the start.
 					\vspace{0.4em}
 					\\
-					\textbf{Double-byte (Fluhrer--McGrew):} certain \emph{pairs} $(Z_r, Z_{r+1})$ beat $1/256^2$, by only $\approx 1/256$ relative --- but \textbf{everywhere} in the keystream, not just the start.
+					\textbf{Double-byte (Fluhrer--McGrew):} certain \emph{pairs} $(Z_r, Z_{r+1})$ beat $1/256^2$, by only $\approx 1/256$ relative, but \textbf{everywhere} in the keystream, not just the start.
 				}
 			}
 		\end{column}
@@ -607,7 +607,7 @@
 					Telling a coin with bias $\varepsilon$ from a fair one takes about $1/\varepsilon^2$ flips.
 					\vspace{0.4em}
 					\\
-					Halve the bias and you \emph{quadruple} the samples --- but you never make the attack impossible, only expensive.
+					Halve the bias and you \emph{quadruple} the samples, but you never make the attack impossible, only expensive.
 				}
 			}
 			\onslide<+->{\centering And the attacker controls $n$: inject JavaScript into any page the victim loads and it will issue requests all day. ``Needs $2^{30}$ ciphertexts'' is a claim about \emph{time}, not feasibility.}
@@ -630,7 +630,7 @@
 					Single-byte biases live in the first 256 bytes, so TLS could have escaped them by discarding the keystream's start. ABSAB is a \textbf{long-term} bias, present at position 10 and at position 10 million: there is no prefix you can throw away.
 					\vspace{0.4em}
 					\\
-					It also relates a byte to \emph{another byte of the same plaintext} --- exactly what you want against structured plaintext like a password.
+					It also relates a byte to \emph{another byte of the same plaintext}, exactly what you want against structured plaintext like a password.
 				}
 			}
 		\end{column}
@@ -645,7 +645,7 @@
 			      \item Target \textbf{passwords} rather than cookies: HTTP Basic Authentication and IMAP resend the password on \emph{every} request.
 			      \item Combine the keystream biases with how humans actually choose passwords: Bayesian inference over a dictionary.
 		      \end{itemize}
-		\item \textbf{Vanhoef and Piessens, ``RC4 NOMORE'' (USENIX Security).} The same machinery, actually executed: a real browser cookie decrypted in \textbf{52 hours}, and \textbf{WPA-TKIP} --- WEP's own RC4-based replacement --- broken in about \textbf{one}.\footnote{\url{https://appliedcryptography.page/paper/\#rc4-biases}}
+		\item \textbf{Vanhoef and Piessens, ``RC4 NOMORE'' (USENIX Security).} The same machinery, actually executed: a real browser cookie decrypted in \textbf{52 hours}, and \textbf{WPA-TKIP} (WEP's own RC4-based replacement) broken in about \textbf{one}.\footnote{\url{https://appliedcryptography.page/paper/\#rc4-biases}}
 	\end{itemize}
 	\onslide<+->{\centering\textbf{After this, no serious argument for keeping RC4 remained.}}
 \end{frame}
@@ -660,7 +660,7 @@
 					      \item Drawn from a small, skewed alphabet, then base64-encoded in Basic Auth, which imposes a rigid known format.
 					      \item Very likely to be in a leaked password list.
 				      \end{itemize}
-				\item So the attacker never has to \emph{recover} the password --- only narrow the candidates until a dictionary finishes: $2^{26}$ encryptions, against $\approx 2^{34}$ for a cookie.
+				\item So the attacker never has to \emph{recover} the password, only narrow the candidates until a dictionary finishes: $2^{26}$ encryptions, against $\approx 2^{34}$ for a cookie.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.45\textwidth}
@@ -679,7 +679,7 @@
 \begin{frame}{The long goodbye}
 	\begin{itemize}[<+->]
 		\item \textbf{2013:} AlFardan et al. lands. The IETF opens the deprecation discussion; Microsoft, Google and Mozilla start advising against RC4.
-		\item \textbf{2014:} \textbf{POODLE} kills SSL 3.0. Not an RC4 attack --- but SSL 3.0's only other option was CBC, so between POODLE and the biases, \textbf{SSL 3.0 had no safe cipher left at all}.\footnote{\url{https://appliedcryptography.page/paper/\#google-poodle}}
+		\item \textbf{2014:} \textbf{POODLE} kills SSL 3.0. Not an RC4 attack, but SSL 3.0's only other option was CBC, so between POODLE and the biases, \textbf{SSL 3.0 had no safe cipher left at all}.\footnote{\url{https://appliedcryptography.page/paper/\#google-poodle}}
 		\item \textbf{February 2015: RFC 7465}, \textit{Prohibiting RC4 Cipher Suites}: ``TLS clients MUST NOT include RC4 cipher suites'' and ``TLS servers MUST NOT select an RC4 cipher suite.''
 		\item \textbf{September 2015:} Google, Mozilla and Microsoft announce removal \emph{on the same day}, so that no single browser would take the blame for breaking sites. Chrome 48 and Firefox 44 ship it in January 2016; Microsoft follows that August.
 	\end{itemize}
@@ -691,11 +691,11 @@
 \begin{frame}{Six lessons}
 	\begin{itemize}[<+->]
 		\item \textbf{1. A primitive's interface is part of its security.} RC4's missing nonce was not a bug in any line of its code, and it caused both catastrophes.
-		\item \textbf{2. Small biases are not small.} A $2^{-8}$ relative bias sounds negligible until the attacker has $2^{30}$ samples --- and the modern web hands out samples for free.
+		\item \textbf{2. Small biases are not small.} A $2^{-8}$ relative bias sounds negligible until the attacker has $2^{30}$ samples, and the modern web hands out samples for free.
 		\item \textbf{3. ``Theoretical'' means ``practical, later.''} FMS to AirSnort took a few weeks. Mantin--Shamir to a TLS break took twelve years, but it arrived.
 		\item \textbf{4. Attacks compose.} Bias plus password structure. Downgrade plus weak cipher. Results are components, and components multiply.
 		\item \textbf{5. Fleeing an attack is not a strategy.} BEAST pushed the industry out of a broken mode and into a broken cipher. Have somewhere \emph{good} to run to.
-		\item \textbf{6. Plan the exit before you need it.} \textbf{Cryptographic agility} --- negotiating algorithms, and being able to remove them --- has to be designed in from day one.
+		\item \textbf{6. Plan the exit before you need it.} \textbf{Cryptographic agility} (negotiating algorithms, and being able to remove them) has to be designed in from day one.
 	\end{itemize}
 \end{frame}
 
@@ -717,7 +717,7 @@
 					ChaCha20 says: \emph{apply a strong public function to a counter, keyed by the secret.}
 					\vspace{0.4em}
 					\\
-					The second is a PRF evaluated at distinct points --- a shape we know how to reason about, shared with AES-CTR.
+					The second is a PRF evaluated at distinct points: a shape we know how to reason about, shared with AES-CTR.
 				}
 			}
 			\onslide<+->{\centering\textbf{It fails differently:} repeat a nonce under one key and you are back to a two-time pad.}
@@ -732,8 +732,8 @@
 		\item \textbf{Recorded traffic.} Anyone who archived RC4-protected sessions in 2013 can attack them at leisure today. Deprecation does not protect the past.
 	\end{itemize}
 	\onslide<+->{
-		\alertbox{The real lesson about deprecation}{
-			An algorithm dies when its last deployment stops, not when the RFC is published --- and those can be decades apart. Judge the cost of adopting an algorithm by how hard it will be to remove.
+		\alertbox{The lesson about deprecation}{
+			An algorithm dies when its last deployment stops, not when the RFC is published, and those can be decades apart. Judge the cost of adopting an algorithm by how hard it will be to remove.
 		}
 	}
 \end{frame}
