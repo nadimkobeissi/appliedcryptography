@@ -39,8 +39,14 @@
 		import {
 			initViewer
 		} from '../res/js/pdfviewer.js'
-		initViewer(`https://appliedcryptography.page/final-exam/final-exam.pdf`, {
-			title: `Final Exam`
+		const exams = {
+			"summer-2026": `Summer 2026`,
+			"fall-2025": `Fall 2025`
+		}
+		const m = window.location.hash.substring(1).match(/^([a-z]+-\d{4})(?:&|$)/)
+		const anchor = (m && exams[m[1]]) ? m[1] : Object.keys(exams)[0]
+		initViewer(`https://appliedcryptography.page/final-exam/final-exam-${anchor}.pdf`, {
+			title: `Final Exam (${exams[anchor]})`
 		})
 	</script>
 </head>
